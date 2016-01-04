@@ -1,0 +1,174 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using AutoMapper;
+using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Entities;
+using Deviser.Core.Library.DomainTypes;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
+using Autofac;
+
+namespace Deviser.Core.Library.Layouts
+{
+    public class LayoutManager : ILayoutManager
+    {
+        //Logger
+        private readonly ILogger<LayoutProvider> logger;
+        private IContainer container;
+
+        ILayoutProvider layoutProvider;
+        IPageProvider pageProvider;
+        IPageContentProvider pageContentProvider;
+
+        public LayoutManager(IContainer container)
+        {
+            this.container = container;
+            layoutProvider = container.Resolve<ILayoutProvider>();
+            pageProvider = container.Resolve<IPageProvider>();
+            pageContentProvider = container.Resolve<IPageContentProvider>();
+        }
+
+
+        public List<PageLayout> GetPageLayouts()
+        {
+            try
+            {
+                var resultLayouts = layoutProvider.GetLayouts();
+                List<PageLayout> result = new List<PageLayout>();
+                foreach (var layout in resultLayouts)
+                {
+                    if (layout != null && !string.IsNullOrEmpty(layout.Config))
+                        result.Add(ConvertToPageLayout(layout));
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting all page layouts"), ex);
+            }
+            return null;
+        }
+
+        public PageLayout CreatePageLayout(PageLayout pageLayout)
+        {
+            try
+            {
+                if (pageLayout.IsChanged)
+                {
+                    DeleteModulesAndContent(pageLayout);
+                    CreateElement(pageLayout.ContentItems, pageLayout.PageId);
+                }
+                var layout = ConvertToLayout(pageLayout);
+                var resultLayout = layoutProvider.CreateLayout(layout);
+                var result = ConvertToPageLayout(resultLayout);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while creating a page layout, LayoutName: ", pageLayout.Name), ex);
+            }
+            return null;
+        }
+
+        public PageLayout UpdatePageLayout(PageLayout pageLayout)
+        {
+            try
+            {
+                if (pageLayout.IsChanged)
+                {
+                    DeleteModulesAndContent(pageLayout);
+                    CreateElement(pageLayout.ContentItems, pageLayout.PageId);
+                }
+                var layout = ConvertToLayout(pageLayout);
+                var resultLayout = layoutProvider.UpdateLayout(layout);
+                var result = ConvertToPageLayout(resultLayout);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while updating page layout, LayoutName: ", pageLayout.Name), ex);
+            }
+            return null;
+        }
+
+
+        private Layout ConvertToLayout(PageLayout pageLayout)
+        {
+            Layout layout = Mapper.Map<Layout>(pageLayout);
+            layout.Config = JsonConvert.SerializeObject(pageLayout.ContentItems); //JsonConvert.DeserializeObject<List<ContentItem>>(Model.Layout.Config, new ContentItemConverter());
+            return layout;
+        }
+
+        private PageLayout ConvertToPageLayout(Layout layout)
+        {
+            var pageLayout = Mapper.Map<PageLayout>(layout);
+            pageLayout.ContentItems = JsonConvert.DeserializeObject<List<ContentItem>>(layout.Config);
+            return pageLayout;
+
+        }
+
+        private void DeleteModulesAndContent(PageLayout pageLayout)
+        {
+            //When page layout is being copied, all modules and contents should be deleted.
+            var pageModules = pageProvider.GetPageModules(pageLayout.PageId);
+            var pageContents = pageContentProvider.Get(pageLayout.PageId, Globals.FallbackLanguage);
+            if (pageModules != null && pageModules.Count > 0)
+            {
+                foreach (var pageModule in pageModules)
+                {
+                    pageModule.IsDeleted = true;
+                    pageProvider.UpdatePageModule(pageModule);
+                }
+            }
+
+            if (pageContents != null && pageContents.Count > 0)
+            {
+                foreach (var content in pageContents)
+                {
+                    content.IsDeleted = true;
+                    pageContentProvider.Update(content);
+                }
+            }
+        }
+
+        private void CreateElement(List<ContentItem> contentItems, int pageId)
+        {
+            if (contentItems != null && contentItems.Count > 0)
+            {
+                foreach (var contentItem in contentItems)
+                {
+                    if (contentItem.Type == "text")
+                    {
+                        PageContent pageContent = new PageContent
+                        {
+                            PageId = pageId,
+                            ContainerId = contentItem.Id,
+                            CultureCode = Globals.FallbackLanguage
+                        };
+                        pageContentProvider.Create(pageContent);
+
+                    }
+                    else if (contentItem.Type == "module")
+                    {
+                        PageModule pageModule = new PageModule
+                        {
+                            PageId = pageId,
+                            ModuleId = contentItem.Module.Id,
+                            ContainerId = contentItem.Id
+                        };
+                        pageProvider.CreatePageModule(pageModule);
+                    }
+
+                    if (contentItem.ContentItems != null)
+                    {
+                        CreateElement(contentItem.ContentItems, pageId);
+                    }
+                }
+            }
+        }
+    }
+}
