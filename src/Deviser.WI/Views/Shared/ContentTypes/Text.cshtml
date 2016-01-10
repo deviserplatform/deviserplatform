@@ -1,0 +1,35 @@
+﻿@model Deviser.Core.Library.DomainTypes.ControlData
+
+@{
+    bool isEditMode = false;
+    string contentType = "";
+    if (ViewData["isEditMode"] != null)
+    {
+        isEditMode = (bool)ViewData["isEditMode"];
+    }
+    if (ViewData["contentType"] != null)
+    {
+        contentType = (string)ViewData["contentType"];
+    }
+    var pageContent = Model.PageContents.FirstOrDefault();
+    string contentEditable = (isEditMode) ? "sd-edit" : "";
+
+}
+
+@if (pageContent != null)
+{
+    if (isEditMode)
+    {
+        <div @contentEditable content-id="@pageContent.Id" container-id="@Model.ContentItem.Id" content-type="@contentType" on-save="editVM.save" ng-model="editVM.pageContents">
+            
+        </div>
+    }
+    else
+    {
+        <div>
+            @pageContent.ContentData
+        </div>
+    }
+
+}
+

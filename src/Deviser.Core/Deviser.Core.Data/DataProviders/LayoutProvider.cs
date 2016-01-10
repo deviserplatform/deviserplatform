@@ -28,8 +28,9 @@ namespace Deviser.Core.Data.DataProviders
         //Constructor
         public LayoutProvider(ILifetimeScope container)
         {
-            this.container = container;            
+            this.container = container;
             logger = container.Resolve<ILogger<LayoutProvider>>();
+            context = container.Resolve<DeviserDBContext>();
         }
 
         //Custom Field Declaration
@@ -37,13 +38,10 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    IEnumerable<Layout> returnData = context.Layout
-                        .ToList();
+                IEnumerable<Layout> returnData = context.Layout
+                    .ToList();
 
-                    return new List<Layout>(returnData);
-                }
+                return new List<Layout>(returnData);
             }
             catch (Exception ex)
             {
@@ -56,15 +54,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    Layout returnData = context.Layout
 
-                       .Where(e => e.Id == layoutId)
-                       .FirstOrDefault();
+                Layout returnData = context.Layout
 
-                    return returnData;
-                }
+                   .Where(e => e.Id == layoutId)
+                   .FirstOrDefault();
+
+                return returnData;
             }
             catch (Exception ex)
             {
@@ -77,11 +73,8 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 Layout resultLayout;
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    resultLayout = context.Layout.Add(layout, GraphBehavior.SingleObject).Entity;
-                    context.SaveChanges();
-                }
+                resultLayout = context.Layout.Add(layout, GraphBehavior.SingleObject).Entity;
+                context.SaveChanges();
                 return resultLayout;
             }
             catch (Exception ex)
@@ -95,13 +88,10 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 Layout resultLayout;
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    resultLayout = context.Layout.Attach(layout, GraphBehavior.SingleObject).Entity;
-                    context.Entry(layout).State = EntityState.Modified;
+                resultLayout = context.Layout.Attach(layout, GraphBehavior.SingleObject).Entity;
+                context.Entry(layout).State = EntityState.Modified;
 
-                    context.SaveChanges();
-                }
+                context.SaveChanges();
                 return resultLayout;
             }
             catch (Exception ex)

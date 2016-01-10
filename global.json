@@ -2,7 +2,8 @@
   "projects": [
     "src",
     "test",
-    "src/Deviser.Core"
+    "src/Deviser.Core",
+    "src/Deviser.Modules"
   ],
   "sdk": {
     "version": "1.0.0-rc1-update1"

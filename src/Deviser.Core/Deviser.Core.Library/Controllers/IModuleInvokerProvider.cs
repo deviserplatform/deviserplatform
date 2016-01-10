@@ -6,6 +6,6 @@ namespace Deviser.Core.Library.Controllers
     public interface IModuleInvokerProvider
     {
         int Order { get; }
-        IActionInvoker CreateInvoker(ActionContext actionContext);
+        IModuleActionInvoker CreateInvoker(ActionContext actionContext);
     }
 }

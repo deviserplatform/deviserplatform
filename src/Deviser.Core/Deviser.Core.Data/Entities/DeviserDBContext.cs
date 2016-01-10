@@ -87,6 +87,10 @@ namespace Deviser.Core.Data.Entities
 
                 entity.Property(e => e.ControllerNamespace).HasMaxLength(200);
 
+                entity.Property(e => e.DisplayName).HasMaxLength(50); 
+
+                entity.Property(e=>e.IsDefault).IsRequired().HasDefaultValue(false);
+
                 entity.HasOne(d => d.ModuleActionType).WithMany(p => p.ModuleAction).HasForeignKey(d => d.ModuleActionTypeId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(d => d.Module).WithMany(p => p.ModuleAction).HasForeignKey(d => d.ModuleId).OnDelete(DeleteBehavior.Restrict);

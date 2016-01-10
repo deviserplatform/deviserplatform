@@ -14,6 +14,10 @@ using Autofac.Extensions.DependencyInjection;
 using Deviser.WI.Services;
 using Deviser.Core.Data.Entities;
 using Autofac.Features.ResolveAnything;
+using Microsoft.AspNet.Localization;
+using System.Globalization;
+using Microsoft.AspNet.Routing;
+using Deviser.Core.Library.Modules;
 
 namespace Deviser.WI
 {
@@ -47,13 +51,17 @@ namespace Deviser.WI
             services.AddEntityFramework()
                 .AddSqlServer()
                 .AddDbContext<DeviserDBContext>(options =>
-                    options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
+                    options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"])
+                    .MigrationsAssembly("Deviser.WI"));
 
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<DeviserDBContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc();
+            services.AddMvc().AddRazorOptions(options =>
+            {
+                options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
+            });
 
             services.AddCaching(); // Adds a default in-memory implementation of IDistributedCache
 
@@ -74,7 +82,10 @@ namespace Deviser.WI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app,
+            IHostingEnvironment env,
+            ILoggerFactory loggerFactory,
+            ILifetimeScope container)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -102,6 +113,27 @@ namespace Deviser.WI
                 catch { }
             }
 
+            var defaultRequestCulture = new RequestCulture(new CultureInfo("en-US"));
+            var requestLocalizationOptions = new RequestLocalizationOptions
+            {
+                SupportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("en-US"),
+                    new CultureInfo("de-CH"),
+                    new CultureInfo("fr-CH"),
+                    new CultureInfo("it-CH")
+                },
+                SupportedUICultures = new List<CultureInfo>
+                {
+                    new CultureInfo("en-US"),
+                    new CultureInfo("de-CH"),
+                    new CultureInfo("fr-CH"),
+                    new CultureInfo("it-CH")
+                }
+            };
+
+            app.UseRequestLocalization(requestLocalizationOptions, defaultRequestCulture);
+
             app.UseIISPlatformHandler(options => options.AuthenticationDescriptions.Clear());
 
             app.UseStaticFiles();
@@ -116,8 +148,17 @@ namespace Deviser.WI
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                   name: "default",
+                   template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(name: "areaRoute",
+                    template: "modules/{area:exists}/{controller=Home}/{action=Index}");
+
+                routes.MapRoute(
+                name: "CmsRoute",
+                template: "{*permalink}",
+                defaults: new { controller = "Page", action = "Index" },
+                constraints: new { permalink = container.Resolve<IRouteConstraint>() });
             });
         }
 

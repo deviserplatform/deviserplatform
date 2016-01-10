@@ -59,7 +59,7 @@ namespace Deviser.Core.Library.Controllers
         }
 
         /// <inheritdoc />
-        public IActionInvoker CreateInvoker(ActionContext actionContext)
+        public IModuleActionInvoker CreateInvoker(ActionContext actionContext)
         {
             if (actionContext == null)
             {
@@ -70,7 +70,7 @@ namespace Deviser.Core.Library.Controllers
 
             if (actionDescriptor != null)
             {
-                var result = new ControllerActionInvoker(
+                var result = new ModuleActionInvoker(
                     actionContext,
                     _filterProviders,
                     _controllerFactory,

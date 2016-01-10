@@ -23,15 +23,16 @@ namespace Deviser.Core.Data.DataProviders
     {
         //Logger
         private readonly ILogger<LayoutProvider> logger;
-        private IContainer container;
+        private ILifetimeScope container;
 
         DeviserDBContext context;
 
         //Constructor
-        public PageContentProvider(IContainer container)
+        public PageContentProvider(ILifetimeScope container)
         {
             this.container = container;
             logger = container.Resolve<ILogger<LayoutProvider>>();
+            context = container.Resolve<DeviserDBContext>();
         }
 
         //Custom Field Declaration
@@ -40,14 +41,10 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    PageContent returnData = context.PageContent
-                       .Where(e => e.Id == pageContentId && e.IsDeleted == false)
-                       .FirstOrDefault();
-
-                    return returnData;
-                }
+                PageContent returnData = context.PageContent
+                   .Where(e => e.Id == pageContentId && e.IsDeleted == false)
+                   .FirstOrDefault();
+                return returnData;
             }
             catch (Exception ex)
             {
@@ -59,14 +56,10 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    IEnumerable<PageContent> returnData = context.PageContent
-                        .Where(e => e.ContainerId == containerId && e.IsDeleted == false)
-                        .ToList();
-
-                    return new List<PageContent>(returnData);
-                }
+                IEnumerable<PageContent> returnData = context.PageContent
+                    .Where(e => e.ContainerId == containerId && e.IsDeleted == false)
+                    .ToList();
+                return new List<PageContent>(returnData);
             }
             catch (Exception ex)
             {
@@ -78,13 +71,10 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    IEnumerable<PageContent> returnData = context.PageContent
-                        .Where(e => e.PageId == pageId && e.CultureCode == cultureCode)
-                        .ToList();
-                    return new List<PageContent>(returnData);
-                }
+                IEnumerable<PageContent> returnData = context.PageContent
+                    .Where(e => e.PageId == pageId && e.CultureCode == cultureCode)
+                    .ToList();
+                return new List<PageContent>(returnData);
             }
             catch (Exception ex)
             {
@@ -97,12 +87,9 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 PageContent resultPageContent;
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    content.Id = Guid.NewGuid(); content.CreatedDate = DateTime.Now;
-                    resultPageContent = context.PageContent.Add(content, GraphBehavior.SingleObject).Entity;
-                    context.SaveChanges();
-                }
+                content.Id = Guid.NewGuid(); content.CreatedDate = DateTime.Now;
+                resultPageContent = context.PageContent.Add(content, GraphBehavior.SingleObject).Entity;
+                context.SaveChanges();
                 return resultPageContent;
             }
             catch (Exception ex)
@@ -116,14 +103,10 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 PageContent resultPageContent;
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    content.LastModifiedDate = DateTime.Now;
-                    resultPageContent = context.PageContent.Attach(content, GraphBehavior.SingleObject).Entity;
-                    context.Entry(content).State = EntityState.Modified;
-
-                    context.SaveChanges();
-                }
+                content.LastModifiedDate = DateTime.Now;
+                resultPageContent = context.PageContent.Attach(content, GraphBehavior.SingleObject).Entity;
+                context.Entry(content).State = EntityState.Modified;
+                context.SaveChanges();
                 return resultPageContent;
             }
             catch (Exception ex)

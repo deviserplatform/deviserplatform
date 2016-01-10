@@ -12,22 +12,23 @@ namespace Deviser.Core.Data.DataProviders
     public interface ISiteSettingProvider
     {
         List<SiteSetting> GetSettings();
-     
+
     }
 
-    public class SiteSettingProvider :  DataProviderBase , ISiteSettingProvider 
+    public class SiteSettingProvider : DataProviderBase, ISiteSettingProvider
     {
         //Logger
         private readonly ILogger<LayoutProvider> logger;
-        private IContainer container;
+        private ILifetimeScope container;
 
         DeviserDBContext context;
 
         //Constructor
-        public SiteSettingProvider(IContainer container)
+        public SiteSettingProvider(ILifetimeScope container)
         {
             this.container = container;
             logger = container.Resolve<ILogger<LayoutProvider>>();
+            context = container.Resolve<DeviserDBContext>();
         }
 
         //Custom Field Declaration
@@ -35,11 +36,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    IEnumerable<SiteSetting> returnData = context.SiteSetting.ToList();
-                    return new List<SiteSetting>(returnData);
-                }
+                IEnumerable<SiteSetting> returnData = context.SiteSetting.ToList();
+                return new List<SiteSetting>(returnData);
             }
             catch (Exception ex)
             {
@@ -47,7 +45,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
- 
+
     }
 
 }//End namespace

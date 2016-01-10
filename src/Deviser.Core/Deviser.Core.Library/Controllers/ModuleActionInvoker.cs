@@ -14,6 +14,8 @@ using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNet.Mvc.Controllers;
 using Microsoft.AspNet.Mvc.Abstractions;
+using Microsoft.AspNet.Mvc.Diagnostics;
+using System.Runtime.ExceptionServices;
 
 namespace Deviser.Core.Library.Controllers
 {
@@ -21,7 +23,17 @@ namespace Deviser.Core.Library.Controllers
     {
         private static readonly IFilterMetadata[] EmptyFilterArray = new IFilterMetadata[0];
         private readonly IReadOnlyList<IFilterProvider> _filterProviders;
+        private ActionExecutingContext _actionExecutingContext;
+        private ActionExecutedContext _actionExecutedContext;
         private readonly IControllerActionArgumentBinder _argumentBinder;
+
+        private IFilterMetadata[] _filters;
+        private FilterCursor _cursor;
+
+        DiagnosticSource _diagnosticSource;
+
+        private const string ActionFilterShortCircuitLogMessage =
+            "Request was short circuited at action filter '{ActionFilter}'.";
 
         protected new object Instance { get; private set; }
 
@@ -58,26 +70,29 @@ namespace Deviser.Core.Library.Controllers
         {
             _filterProviders = filterProviders;
             _argumentBinder = controllerActionArgumentBinder;
+            _diagnosticSource = diagnosticSource;
         }
 
         public async Task<IActionResult> InvokeAction()
         {
             //_cursor.Reset();
-            var _filters = GetFilters();
+            _filters = GetFilters();
+            _cursor = new FilterCursor(_filters);
 
             Instance = CreateInstance();
 
             var arguments = await BindActionArgumentsAsync(ActionContext, ActionBindingContext);
 
-            var _actionExecutingContext = new ActionExecutingContext(
+            _actionExecutingContext = new ActionExecutingContext(
                 ActionContext,
                 _filters,
                 arguments,
                 Instance);
-                        
-            var result = await InvokeActionAsync(_actionExecutingContext);
 
-            return result;
+            //var result = await InvokeActionAsync(_actionExecutingContext);
+            await InvokeActionFilterAsync();
+
+            return _actionExecutedContext.Result;
         }
 
         protected override Task<IDictionary<string, object>> BindActionArgumentsAsync(
@@ -147,7 +162,199 @@ namespace Deviser.Core.Library.Controllers
             }
         }
 
-        
+        private async Task<ActionExecutedContext> InvokeActionFilterAsync()
+        {
+            Debug.Assert(_actionExecutingContext != null);
+            if (_actionExecutingContext.Result != null)
+            {
+                // If we get here, it means that an async filter set a result AND called next(). This is forbidden.
+                var message = Resources.FormatAsyncActionFilter_InvalidShortCircuit(
+                    typeof(IAsyncActionFilter).Name,
+                    nameof(ActionExecutingContext.Result),
+                    typeof(ActionExecutingContext).Name,
+                    typeof(ActionExecutionDelegate).Name);
+
+                throw new InvalidOperationException(message);
+            }
+
+            var item = _cursor.GetNextFilter<IActionFilter, IAsyncActionFilter>();
+            try
+            {
+                if (item.FilterAsync != null)
+                {
+                    _diagnosticSource.BeforeOnActionExecution(
+                        _actionExecutingContext,
+                        item.FilterAsync);
+
+                    await item.FilterAsync.OnActionExecutionAsync(_actionExecutingContext, InvokeActionFilterAsync);
+
+                    _diagnosticSource.AfterOnActionExecution(
+                        _actionExecutingContext.ActionDescriptor,
+                        _actionExecutedContext,
+                        item.FilterAsync);
+
+                    if (_actionExecutedContext == null)
+                    {
+                        // If we get here then the filter didn't call 'next' indicating a short circuit
+
+                        Logger.LogVerbose(ActionFilterShortCircuitLogMessage, item.FilterAsync.GetType().FullName);
+
+                        _actionExecutedContext = new ActionExecutedContext(
+                            _actionExecutingContext,
+                            _filters,
+                            Instance)
+                        {
+                            Canceled = true,
+                            Result = _actionExecutingContext.Result,
+                        };
+                    }
+                }
+                else if (item.Filter != null)
+                {
+                    _diagnosticSource.BeforeOnActionExecuting(
+                        _actionExecutingContext,
+                        item.Filter);
+
+                    item.Filter.OnActionExecuting(_actionExecutingContext);
+
+                    _diagnosticSource.AfterOnActionExecuting(
+                        _actionExecutingContext,
+                        item.Filter);
+
+                    if (_actionExecutingContext.Result != null)
+                    {
+                        // Short-circuited by setting a result.
+
+                        Logger.LogVerbose(ActionFilterShortCircuitLogMessage, item.Filter.GetType().FullName);
+
+                        _actionExecutedContext = new ActionExecutedContext(
+                            _actionExecutingContext,
+                            _filters,
+                            Instance)
+                        {
+                            Canceled = true,
+                            Result = _actionExecutingContext.Result,
+                        };
+                    }
+                    else
+                    {
+                        _diagnosticSource.BeforeOnActionExecuted(
+                            _actionExecutingContext.ActionDescriptor,
+                            _actionExecutedContext,
+                            item.Filter);
+
+                        item.Filter.OnActionExecuted(await InvokeActionFilterAsync());
+
+                        _diagnosticSource.BeforeOnActionExecuted(
+                            _actionExecutingContext.ActionDescriptor,
+                            _actionExecutedContext,
+                            item.Filter);
+                    }
+                }
+                else
+                {
+                    // All action filters have run, execute the action method.
+                    IActionResult result = null;
+
+                    try
+                    {
+                        _diagnosticSource.BeforeActionMethod(
+                            ActionContext,
+                            _actionExecutingContext.ActionArguments,
+                            _actionExecutingContext.Controller);
+
+                        result = await InvokeActionAsync(_actionExecutingContext);
+                    }
+                    finally
+                    {
+                        _diagnosticSource.AfterActionMethod(
+                            ActionContext,
+                            _actionExecutingContext.ActionArguments,
+                            _actionExecutingContext.Controller,
+                            result);
+                    }
+
+                    _actionExecutedContext = new ActionExecutedContext(
+                        _actionExecutingContext,
+                        _filters,
+                        Instance)
+                    {
+                        Result = result
+                    };
+                }
+            }
+            catch (Exception exception)
+            {
+                // Exceptions thrown by the action method OR filters bubble back up through ActionExcecutedContext.
+                _actionExecutedContext = new ActionExecutedContext(
+                    _actionExecutingContext,
+                    _filters,
+                    Instance)
+                {
+                    ExceptionDispatchInfo = ExceptionDispatchInfo.Capture(exception)
+                };
+            }
+            return _actionExecutedContext;
+        }
+
+        private struct FilterCursor
+        {
+            private int _index;
+            private readonly IFilterMetadata[] _filters;
+
+            public FilterCursor(int index, IFilterMetadata[] filters)
+            {
+                _index = index;
+                _filters = filters;
+            }
+
+            public FilterCursor(IFilterMetadata[] filters)
+            {
+                _index = 0;
+                _filters = filters;
+            }
+
+            public void Reset()
+            {
+                _index = 0;
+            }
+
+            public FilterCursorItem<TFilter, TFilterAsync> GetNextFilter<TFilter, TFilterAsync>()
+                where TFilter : class
+                where TFilterAsync : class
+            {
+                while (_index < _filters.Length)
+                {
+                    var filter = _filters[_index] as TFilter;
+                    var filterAsync = _filters[_index] as TFilterAsync;
+
+                    _index += 1;
+
+                    if (filter != null || filterAsync != null)
+                    {
+                        return new FilterCursorItem<TFilter, TFilterAsync>(_index, filter, filterAsync);
+                    }
+                }
+
+                return default(FilterCursorItem<TFilter, TFilterAsync>);
+            }
+        }
+
+        private struct FilterCursorItem<TFilter, TFilterAsync>
+        {
+            public readonly int Index;
+            public readonly TFilter Filter;
+            public readonly TFilterAsync FilterAsync;
+
+            public FilterCursorItem(int index, TFilter filter, TFilterAsync filterAsync)
+            {
+                Index = index;
+                Filter = filter;
+                FilterAsync = filterAsync;
+            }
+        }
+
+
     }
 
 

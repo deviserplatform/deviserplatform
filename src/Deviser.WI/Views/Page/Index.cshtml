@@ -1,0 +1,32 @@
+﻿@model Deviser.Core.Data.Entities.Page
+@using Newtonsoft.Json
+@using Deviser.Core.Library.DomainTypes
+@using Deviser.Core.Library.Controllers
+@using Deviser.WI.Infrastructure
+
+@{
+    //if (ViewBag.Skin != null)
+    //{
+    //    Layout = ViewBag.Skin;
+    //}
+
+    ViewBag.Title = "Index";
+    Dictionary<string, string> moduleActionResults = (Dictionary<string, string>)ViewBag.ModuleActionResults;
+}
+<script type="text/javascript">
+    var appContext =  @Html.Raw(SDJsonConvert.Serialize(ViewBag.AppContext));
+    console.log(appContext);
+</script>
+
+@*<div sde-title="test">
+    <div>Item1</div>
+    <div>Item2</div>
+    <div>Item3</div>
+</div>*@
+
+
+
+<div sde-page="@Model" sde-module-results="@moduleActionResults">
+
+</div>
+

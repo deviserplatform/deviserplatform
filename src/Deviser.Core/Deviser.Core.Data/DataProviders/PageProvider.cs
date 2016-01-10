@@ -31,15 +31,16 @@ namespace Deviser.Core.Data.DataProviders
     {
         //Logger
         private readonly ILogger<LayoutProvider> logger;
-        private IContainer container;
+        private ILifetimeScope container;
 
         DeviserDBContext context;
 
         //Constructor
-        public PageProvider(IContainer container)
+        public PageProvider(ILifetimeScope container)
         {
             this.container = container;
             logger = container.Resolve<ILogger<LayoutProvider>>();
+            context = container.Resolve<DeviserDBContext>();
         }
 
         //Custom Field Declaration
@@ -47,18 +48,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    /*IEnumerable<> returnData = context.Pages.Include(x => x.ChildPages
-                                                                        .Select(y => y.ChildPages.Select(c => c.ChildPages.Select(gc => gc.ChildPages.Select(ggc => ggc.ChildPages)))))
-                                                                        .Where(.Where(e=>e.ParentId==null&&e.IsDeleted==false));*/
-                    /*List<> returnData = new List<>();
-                    returnData.Add(context.Pages.ToList().First());*/
+                /*IEnumerable<> returnData = context.Pages.Include(x => x.ChildPages
+                                                                    .Select(y => y.ChildPages.Select(c => c.ChildPages.Select(gc => gc.ChildPages.Select(ggc => ggc.ChildPages)))))
+                                                                    .Where(.Where(e=>e.ParentId==null&&e.IsDeleted==false));*/
+                /*List<> returnData = new List<>();
+                returnData.Add(context.Pages.ToList().First());*/
 
-                    return context.Page
-                        .Include(p => p.PageTranslation) //("PageTranslations")  
-                        .ToList().First();
-                }
+                return context.Page
+                    .Include(p => p.PageTranslation) //("PageTranslations")  
+                    .ToList().First();
             }
             catch (Exception ex)
             {
@@ -70,18 +68,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    IEnumerable<Page> returnData = context.Page
-                        .Where(e => e.ParentId == null)
-                        //.Include("PageTranslations").Include("ChildPages").Include("PageModules").Include("PageModules.Module")
-                        .Include(p => p.PageTranslation).Include(p => p.ChildPage)
-                        .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
-                        .OrderBy(p => p.Id)
-                        .ToList();
+                IEnumerable<Page> returnData = context.Page
+                    .Where(e => e.ParentId == null)
+                    //.Include("PageTranslations").Include("ChildPages").Include("PageModules").Include("PageModules.Module")
+                    .Include(p => p.PageTranslation).Include(p => p.ChildPage)
+                    .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
+                    .OrderBy(p => p.Id)
+                    .ToList();
 
-                    return new List<Page>(returnData);
-                }
+                return new List<Page>(returnData);
             }
             catch (Exception ex)
             {
@@ -94,18 +89,17 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    Page returnData = context.Page
-                       .Where(e => e.Id == pageId)
-                       //.Include("PageTranslations").Include("Layout").Include("PageContents").Include("PageModules")
-                       .Include(p => p.PageTranslation).Include(p => p.ChildPage)
-                       .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
-                       .OrderBy(p => p.Id)
-                       .FirstOrDefault();
+                Page returnData = context.Page
+                   .Where(e => e.Id == pageId)
+                   //.Include("PageTranslations").Include("Layout").Include("PageContents").Include("PageModules")
+                   .Include(p => p.PageTranslation)
+                   .Include(p => p.Layout)
+                   .Include(p => p.PageContent)
+                   .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
+                   .OrderBy(p => p.Id)
+                   .FirstOrDefault();
 
-                    return returnData;
-                }
+                return returnData;
             }
             catch (Exception ex)
             {
@@ -118,12 +112,9 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 Page resultPage;
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    page.CreatedDate = DateTime.Now; page.LastModifiedDate = DateTime.Now;
-                    resultPage = context.Page.Add(page, GraphBehavior.SingleObject).Entity;
-                    context.SaveChanges();
-                }
+                page.CreatedDate = DateTime.Now; page.LastModifiedDate = DateTime.Now;
+                resultPage = context.Page.Add(page, GraphBehavior.SingleObject).Entity;
+                context.SaveChanges();
                 return resultPage;
             }
             catch (Exception ex)
@@ -137,13 +128,10 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 Page resultPage;
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    page.LastModifiedDate = DateTime.Now;
-                    //resultPage = context.UpdateGraph<Page>(page, map => map.OwnedCollection(p => p.PageTranslations));
-                    resultPage = context.Page.Update(page, GraphBehavior.IncludeDependents).Entity;
-                    context.SaveChanges();
-                }
+                page.LastModifiedDate = DateTime.Now;
+                //resultPage = context.UpdateGraph<Page>(page, map => map.OwnedCollection(p => p.PageTranslations));
+                resultPage = context.Page.Update(page, GraphBehavior.IncludeDependents).Entity;
+                context.SaveChanges();
                 return resultPage;
             }
             catch (Exception ex)
@@ -157,13 +145,10 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 Page resultPage = null;
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    page.LastModifiedDate = DateTime.Now;
-                    UpdatePageTreeTree(context, page);
-                    context.SaveChanges();
-                    resultPage = context.Page.ToList().First();
-                }
+                page.LastModifiedDate = DateTime.Now;
+                UpdatePageTreeTree(context, page);
+                context.SaveChanges();
+                resultPage = context.Page.ToList().First();
                 return resultPage;
             }
             catch (Exception ex)
@@ -210,14 +195,11 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    IEnumerable<PageTranslation> returnData = context.PageTranslation
-                        .Where(e => e.Locale.ToLower() == locale.ToLower())
-                        .OrderBy(p => p.PageId)
-                        .ToList();
-                    return new List<PageTranslation>(returnData);
-                }
+                IEnumerable<PageTranslation> returnData = context.PageTranslation
+                    .Where(e => e.Locale.ToLower() == locale.ToLower())
+                    .OrderBy(p => p.PageId)
+                    .ToList();
+                return new List<PageTranslation>(returnData);
             }
             catch (Exception ex)
             {
@@ -229,15 +211,12 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    IEnumerable<PageModule> returnData = context.PageModule
-                        .Where(e => e.PageId == pageId)
-                        .OrderBy(p => p.Id)
-                        .ToList();
+                IEnumerable<PageModule> returnData = context.PageModule
+                    .Where(e => e.PageId == pageId)
+                    .OrderBy(p => p.Id)
+                    .ToList();
 
-                    return new List<PageModule>(returnData);
-                }
+                return new List<PageModule>(returnData);
             }
             catch (Exception ex)
             {
@@ -250,15 +229,12 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    PageModule returnData = context.PageModule
-                       .Where(e => e.Id == pageModuleId)
-                       .OrderBy(p => p.Id)
-                       .FirstOrDefault();
+                PageModule returnData = context.PageModule
+                   .Where(e => e.Id == pageModuleId)
+                   .OrderBy(p => p.Id)
+                   .FirstOrDefault();
 
-                    return returnData;
-                }
+                return returnData;
             }
             catch (Exception ex)
             {
@@ -271,15 +247,12 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    PageModule returnData = context.PageModule
-                       .Where(e => e.ContainerId == containerId)
-                       .OrderBy(p => p.Id)
-                       .FirstOrDefault();
+                PageModule returnData = context.PageModule
+                   .Where(e => e.ContainerId == containerId)
+                   .OrderBy(p => p.Id)
+                   .FirstOrDefault();
 
-                    return returnData;
-                }
+                return returnData;
             }
             catch (Exception ex)
             {
@@ -292,11 +265,8 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 PageModule resultPageModule;
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    resultPageModule = context.PageModule.Add(pageModule, GraphBehavior.SingleObject).Entity;
-                    context.SaveChanges();
-                }
+                resultPageModule = context.PageModule.Add(pageModule, GraphBehavior.SingleObject).Entity;
+                context.SaveChanges();
                 return resultPageModule;
             }
             catch (Exception ex)
@@ -310,12 +280,9 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 PageModule resultPageModule;
-                using (context = container.Resolve<DeviserDBContext>())
-                {
-                    resultPageModule = context.PageModule.Attach(pageModule, GraphBehavior.SingleObject).Entity;
-                    context.Entry(pageModule).State = EntityState.Modified;
-                    context.SaveChanges();
-                }
+                resultPageModule = context.PageModule.Attach(pageModule, GraphBehavior.SingleObject).Entity;
+                context.Entry(pageModule).State = EntityState.Modified;
+                context.SaveChanges();
                 return resultPageModule;
             }
             catch (Exception ex)
@@ -326,5 +293,4 @@ namespace Deviser.Core.Data.DataProviders
         }
 
     }
-
-}//End namespace
+}
