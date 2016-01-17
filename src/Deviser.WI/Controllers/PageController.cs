@@ -1,7 +1,9 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
+using Deviser.Core.Library;
 using Deviser.Core.Library.Controllers;
+using Deviser.Core.Library.Sites;
 using Microsoft.AspNet.Mvc;
 using System;
 using System.Collections.Generic;
@@ -14,38 +16,69 @@ namespace Deviser.WI.Controllers
     {
         ILifetimeScope container;
         IPageProvider pageProvider;
+        IPageManager pageManager;
         IDeviserControllerFactory deviserControllerFactory;
 
-        public PageController(ILifetimeScope container)
+        public PageController(ILifetimeScope container)            
         {
             this.container = container;
             this.pageProvider = container.Resolve<IPageProvider>();
+            this.pageManager = container.Resolve<IPageManager>();
             this.deviserControllerFactory = container.Resolve<IDeviserControllerFactory>();
         }
 
         public async Task<IActionResult> Index(string permalink)
+        {  
+            Page currentPage = await GetPageModules(permalink);
+            if (currentPage != null)
+            {   
+                return View(currentPage);
+            }
+            return null;
+        }
+
+        public IActionResult Layout(string permalink)
+        {
+            //Page currentPage = await GetPageModules(permalink);
+            if (AppContext != null)
+            {
+                ViewBag.Skin = Globals.AdminSkin;
+                ViewBag.AppContext = AppContext;
+                return View(ViewBag);
+            }
+            return null;
+        }
+
+        public IActionResult Edit(string permalink)
+        {  
+            if (AppContext != null)
+            {
+                ViewBag.Skin = Globals.AdminSkin;
+                ViewBag.AppContext = AppContext;
+                return View(AppContext.CurrentPage);
+            }
+            return null;
+        }
+
+        private async Task<Page> GetPageModules(string permalink)
         {
             permalink = "/" + permalink;
-            Page currentPage;
-            var pageTranslation = pageProvider.GetPageTranslations(CurrentCulture.ToString());
-
-            var currentPageTranslation = pageTranslation.FirstOrDefault(p => (p != null && p.URL.ToLower() == permalink.ToLower()));
-
-            if (currentPageTranslation != null)
+            Page currentPage = pageManager.GetPageByUrl(permalink, CurrentCulture.ToString());
+            AppContext appContext = new AppContext();
+            if (currentPage != null)
             {
-                currentPage = pageProvider.GetPage(currentPageTranslation.PageId);
-                AppContext.CurrentPageId = currentPage.Id;
-                AppContext.CurrentLink = permalink;
-                AppContext.CurrentPage = currentPage;
+                appContext.CurrentPageId = currentPage.Id;
+                appContext.CurrentLink = permalink;
+                appContext.CurrentPage = currentPage;
                 Dictionary<string, string> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(ActionContext, currentPage.Id);
                 //Skins are not used for sometime period
                 string skin = "";
                 if (!string.IsNullOrEmpty(currentPage.SkinSrc))
                     skin = currentPage.SkinSrc;
                 else
-                    skin = "[G]Skins/Skyline/Home.cshtml";
+                    skin = "[G]Themes/Skyline/Home.cshtml";
 
-                skin = skin.Replace("[G]", "~/Portals/_default/");
+                skin = skin.Replace("[G]", "~/Sites/Default/");
 
                 //var contentModuleHtml = System.Web.Mvc.Html.renderac
 
@@ -59,15 +92,13 @@ namespace Deviser.WI.Controllers
 
 
                 //return View(skin, skinModel);
-                ViewBag.AppContext = AppContext;
+                AppContext = appContext;
+                ViewBag.AppContext = appContext;
                 ViewBag.ModuleActionResults = moduleActionResults;
                 ViewBag.Skin = skin;
-                return View(currentPage);
             }
-
-            return null;
+            return currentPage;
         }
-
 
     }
 }

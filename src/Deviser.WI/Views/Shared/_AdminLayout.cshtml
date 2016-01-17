@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - Deviser.WI</title>
+
+        <!-- BEGIN GLOBAL MANDATORY STYLES -->
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+        <link href="~/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+        
+        @*<link href="~/lib/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" />*@
+        <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />        
+        <!-- END GLOBAL MANDATORY STYLES -->
+        <!-- BEGIN THEME GLOBAL STYLES -->
+        <link href="~/css/metronic/components.css" rel="stylesheet" />
+        <link href="~/css/metronic/plugins.css" rel="stylesheet" />
+        <!-- END THEME GLOBAL STYLES -->
+        <!-- BEGIN THEME LAYOUT STYLES -->
+        <link href="~/css/metronic/layout.css" rel="stylesheet" />
+        <link href="~/css/metronic/darkblue.css" rel="stylesheet" />
+        <link href="~/css/metronic/custom.css" rel="stylesheet" />
+        <link href="~/css/override.css" rel="stylesheet" />
+        <!-- END THEME LAYOUT STYLES -->
+    </head>
+    <body>
+        @RenderBody()
+        
+
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/bootstrap-hover-dropdown/bootstrap-hover-dropdown.js"></script>
+        <script src="~/js/metronic/app.js"></script>
+        <script src="~/js/metronic/layout.js"></script>
+        @*<script src="~/js/metronic/dashboard.js"></script>*@
+        @RenderSection("scripts", required: false)
+    </body>
+</html>

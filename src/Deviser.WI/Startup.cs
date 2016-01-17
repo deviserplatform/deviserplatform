@@ -1,24 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Autofac.Features.ResolveAnything;
+using Deviser.Core.Data.Entities;
+using Deviser.Core.Library.Modules;
+using Deviser.WI.Services;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Localization;
+using Microsoft.AspNet.Mvc;
+using Microsoft.AspNet.Mvc.Formatters;
+using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNet.Routing;
 using Microsoft.Data.Entity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using Deviser.WI.Services;
-using Deviser.Core.Data.Entities;
-using Autofac.Features.ResolveAnything;
-using Microsoft.AspNet.Localization;
+using Newtonsoft.Json.Serialization;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
-using Microsoft.AspNet.Routing;
-using Deviser.Core.Library.Modules;
-
+using System.Linq;
+using System.Threading.Tasks;
 namespace Deviser.WI
 {
     public class Startup
@@ -61,6 +65,41 @@ namespace Deviser.WI
             services.AddMvc().AddRazorOptions(options =>
             {
                 options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
+            });
+
+
+            //.AddMvcOptions(options =>
+            // {
+            //     var jsonOutputFormatter = new JsonOutputFormatter();
+            //     jsonOutputFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            //     //jsonOutputFormatter.SerializerSettings.DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore;
+            //     jsonOutputFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
+            //     jsonOutputFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+
+            //     //options.OutputFormatters.Remove(options.OutputFormatters.FirstOrDefault())
+            //     options.OutputFormatters.RemoveAll(formatter => formatter.Instance.GetType() == typeof(JsonOutputFormatter));
+            //     options.OutputFormatters.Insert(0, jsonOutputFormatter);
+            //     options.OutputFormatters
+            //})
+
+            services.Configure<MvcOptions>(options =>
+            {
+
+                var jsonOutputFormatter = new JsonOutputFormatter();
+                jsonOutputFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                //jsonOutputFormatter.SerializerSettings.DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore;
+                jsonOutputFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
+                jsonOutputFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+
+
+                var jsonFormatterOld = options.OutputFormatters.FirstOrDefault(formatter => formatter is JsonOutputFormatter);
+                if (jsonFormatterOld != null)
+                {
+                    options.OutputFormatters.Remove(jsonFormatterOld);
+                }
+                //options.OutputFormatters.RemoveAll(formatter => formatter.Instance.GetType() == typeof(JsonOutputFormatter));
+                options.OutputFormatters.Insert(0, jsonOutputFormatter);
+
             });
 
             services.AddCaching(); // Adds a default in-memory implementation of IDistributedCache

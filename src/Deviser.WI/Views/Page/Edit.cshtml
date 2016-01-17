@@ -1,0 +1,26 @@
+﻿@model Deviser.Core.Data.Entities.Page
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Sites/Default/Themes/Skyline/Home.cshtml";
+    //if (ViewBag.Skin != null)
+    //{
+    //    Layout = ViewBag.Skin;
+    //}    
+    Dictionary<string, string> moduleActionResults = (Dictionary<string, string>)ViewBag.ModuleActionResults;
+}
+
+<script type="text/javascript">
+    var appContext =  @Html.Raw(SDJsonConvert.SerializeObject(ViewBag.AppContext));
+    console.log(appContext);
+</script>
+
+
+
+<div ng-app="deviserEdit" ng-controller="editCtrl as editVM">
+
+    @Html.Partial("~/Views/Shared/ContentTypes/EditContent.cshtml")
+    <div sde-page="@Model" sde-module-results="@moduleActionResults">
+
+    </div>
+</div>

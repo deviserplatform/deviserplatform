@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Deviser.WI.Infrastructure
+namespace Deviser.Core.Library
 {
     public class SDJsonConvert
     {
@@ -20,7 +20,7 @@ namespace Deviser.WI.Infrastructure
             };
         }
 
-        public static string Serialize(object value)
+        public static string SerializeObject(object value)
         {
             string result = JsonConvert.SerializeObject(value, settings);
             return result;

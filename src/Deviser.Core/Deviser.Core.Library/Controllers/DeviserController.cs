@@ -14,6 +14,7 @@ namespace Deviser.Core.Library.Controllers
 {
     public class DeviserController : Controller
     {
+        
         protected ISession Session
         {
             get
@@ -26,11 +27,21 @@ namespace Deviser.Core.Library.Controllers
         {
             get
             {
-                if(Session.GetObjectFromJson<AppContext>("AppContext") == null)
+                AppContext returnValue = Session.GetObjectFromJson<AppContext>("AppContext");
+                if (returnValue == null)
                 {
-                    Session.SetObjectAsJson("AppContext", new AppContext());
+                    returnValue = new AppContext();
+                    Session.SetObjectAsJson("AppContext", returnValue);
                 }
-                return Session.GetObjectFromJson<AppContext>("AppContext");
+                return returnValue;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+                Session.SetObjectAsJson("AppContext", value);
             }
         }
 
@@ -44,9 +55,27 @@ namespace Deviser.Core.Library.Controllers
             }
         }
 
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            base.OnActionExecuting(context);
-        }
+        //public override void OnActionExecuting(ActionExecutingContext context)
+        //{
+        //    base.OnActionExecuting(context);
+        //    AppContext returnValue = Session.GetObjectFromJson<AppContext>("AppContext");
+        //    if (returnValue == null)
+        //    {
+        //        returnValue = new AppContext();
+        //        Session.SetObjectAsJson("AppContext", returnValue);
+        //    }
+        //    AppContext = returnValue;
+        //}
+
+        //public override void OnActionExecuted(ActionExecutedContext context)
+        //{
+        //    base.OnActionExecuted(context);
+            
+        //    if (AppContext == null)
+        //    {
+        //        AppContext = new AppContext();                
+        //    }
+        //    Session.SetObjectAsJson("AppContext", AppContext);
+        //}
     }
 }

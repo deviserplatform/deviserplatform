@@ -7,7 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Deviser.WI.Controllers
+namespace Deviser.WI.Controllers.Api
 {
     [Route("api/[controller]")]
     public class TestController : Controller

@@ -12,14 +12,14 @@ namespace Deviser.Core.Library.Extensions
     {
         public static void SetObjectAsJson(this ISession session, string key, object value)
         {
-            session.SetString(key, JsonConvert.SerializeObject(value));
+            session.SetString(key, SDJsonConvert.SerializeObject(value));
         }
 
         public static T GetObjectFromJson<T>(this ISession session, string key)
         {
             var value = session.GetString(key);
 
-            return value == null ? default(T) : JsonConvert.DeserializeObject<T>(value);
+            return value == null ? default(T) : SDJsonConvert.DeserializeObject<T>(value);
         }
     }
 }

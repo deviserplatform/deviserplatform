@@ -1,0 +1,42 @@
+﻿@using System.Security.Claims
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string loggedInClass = User.IsSignedIn() ? "logged-in" : "";
+}
+
+@Component.Invoke("ControlBar")
+
+
+<div class="navbar navbar-inverse navbar-static-top @loggedInClass">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a asp-controller="Home" asp-action="Index" class="navbar-brand">Deviser.WI</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li><a asp-controller="Home" asp-action="About">About</a></li>
+                <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+            </ul>
+            @await Html.PartialAsync("_LoginPartial")
+        </div>
+    </div>
+</div>
+
+<div class="container body-content">
+    @RenderBody()    
+    <hr />
+    <footer>
+        <p>&copy; 2015 - Deviser.WI</p>
+    </footer>
+</div>
+
+@section Scripts{
+    @RenderSection("scripts", required: false)
+}

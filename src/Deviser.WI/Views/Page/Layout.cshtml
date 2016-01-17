@@ -1,0 +1,212 @@
+﻿@{
+    if (ViewBag.Skin != null)
+    {
+        Layout = "~/Sites/Default/Themes/Skyline/LayoutDesigner.cshtml";
+    }
+}
+<script type="text/javascript">
+    var appContext =  @Html.Raw(SDJsonConvert.SerializeObject(ViewBag.AppContext));
+    console.log(appContext);
+</script>
+
+<div class="container-fluid body-content" ng-app="deviserLayout">
+    <div class="col-md-12" ng-controller="LayoutCtrl as layoutVM">
+        <script type="text/ng-template" id="contentItems.html">           
+            <div class="row dnd-list"
+                 dnd-list="item.contentItems"
+                 dnd-drop="layoutVM.dropCallback(event, index, item)">
+                <div ng-bind="parentItem = item" style="display:none"></div>
+                <div class="content-item"
+                     ng-repeat="item in item.contentItems"
+                     dnd-draggable="item"
+                     dnd-effect-allowed="move"                                                              
+                     dnd-moved="layoutVM.itemMoved(parentItem, $index)"
+                     dnd-selected="layoutVM.selectedItem  = item"
+                     ng-class="{selected:layoutVM.selectedItem === item}"
+                     ng-include="item.layoutTemplate + '.html'">
+                </div>
+            </div>
+        </script>
+        <script type="text/ng-template" id="repeater.html">
+            <div class="container-element box box-blue">
+                <div ng-bind="item.index = $index+1" style="display:none"></div>
+                <h3>{{item.type}} {{item.index}}</h3>
+                <div class="container-content">
+                    <div ng-include="'contentItems.html'"></div>
+                </div>
+            </div>
+        </script>
+        <script type="text/ng-template" id="column.html">
+            <div class="col-md-3">
+                <div class="container-element box box-blue">
+                    <div ng-bind="item.index = $index+1" style="display:none"></div>
+                    <h3>{{item.type}} {{item.index}}</h3>
+                    <div class="container-content">
+                        <div ng-include="'contentItems.html'"></div>
+                    </div>
+                </div>
+            </div>
+        </script>
+        <script type="text/ng-template" id="item.html">
+            <div ng-bind="item.index = $index+1" style="display:none"></div>
+            <div class="item">{{item.type}} {{item.index}}</div>
+        </script>
+        <script type="text/ng-template" id="module.html">
+            <div ng-bind="item.index = $index+1" style="display:none"></div>
+            <div class="item">{{item.module.label}} {{item.index}}</div>
+        </script>
+
+        <div>
+            <div ng-class="{'alert alert-danger':layoutVM.message.messageType=='error',
+                     'alert alert-info':layoutVM.message.messageType=='info',
+                     'alert alert-success':layoutVM.message.messageType=='success',
+                     'alert alert-warning':layoutVM.message.messageType=='warning'}" role="alert">
+                {{layoutVM.message.content}}
+            </div>
+        </div>
+        <div class="layout-container nestedDemo">
+            <div class="col-md-2">
+                <div class="toolbox box box-grey box-padding">
+                    <h3>Content Elements</h3>
+                    <div>
+                        <!-- The toolbox only allows to copy objects, not move it. After a new
+                        element was created, dnd-copied is invoked and we generate the next id -->
+                        <div ng-repeat="contentType in layoutVM.contentTypes track by $index"
+                             dnd-draggable="contentType"
+                             dnd-effect-allowed="copy"
+                             dnd-copied="contentType.id = layoutVM.newGuid()">
+                            <button type="button" class="btn btn-default">{{contentType.type}}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbox box box-grey box-padding">
+                    <h3>Modules</h3>
+                    <div>
+                        <!-- The toolbox only allows to copy objects, not move it. After a new
+                        element was created, dnd-copied is invoked and we generate the next id -->
+                        <div ng-repeat="contentType in layoutVM.modules track by $index"
+                             dnd-draggable="contentType"
+                             dnd-effect-allowed="copy"
+                             dnd-copied="contentType.id = layoutVM.newGuid()">
+                            <button type="button" class="btn btn-default">{{contentType.module.label}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+
+                <div class="form-group">
+                    <div class="btn-group" dropdown is-open="status.isopen">
+                        <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+                            <span ng-show="layoutVM.pageLayout.name">{{layoutVM.pageLayout.name}} <i class="fa fa-angle-down"></i></span>
+                            <span ng-show="!layoutVM.pageLayout.name">Choose layout <i class="fa fa-angle-down"></i></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li ng-repeat="layout in layoutVM.layouts track by $index"><a href ng-click="layoutVM.selectLayout(layout)">{{layout.name}}</a></li>
+                        </ul>
+                    </div>
+                    <button type="button" class="btn btn-success" ng-click="layoutVM.newLayout()"><i class="fa fa-plus"></i> New Layout</button>
+                    <button type="button" class="btn btn-default" ng-click="layoutVM.copyLayout()"><i class="fa fa-files-o"></i> Copy Layout</button>
+                    <button type="button" class="btn btn-primary" ng-click="layoutVM.saveLayout()">Save Layout</button>
+                    <button type="button" class="btn btn-danger" ng-click="layoutVM.deleteLayout()" ng-disabled="!layoutVM.pageLayout.id"><i class="fa fa-trash"></i> Delete Layout</button>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Layout Name</label>
+                            <input type="text" class="form-control" placeholder="Give name for this layout" ng-model="layoutVM.pageLayout.name" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="dropzone box box-yellow">
+                            <!-- The dropzone also uses the list template -->
+                            <h3>Page Container</h3>                           
+                            <div class="row dnd-list"
+                                 dnd-list="layoutVM.pageLayout.contentItems"
+                                 dnd-drop="layoutVM.dropCallback(event, index, item)">
+                                <div class="content-item"
+                                     ng-repeat="item in layoutVM.pageLayout.contentItems"
+                                     dnd-draggable="item"
+                                     dnd-effect-allowed="move"                                     
+                                     dnd-moved="layoutVM.itemMoved(layoutVM.pageLayout, $index)"
+                                     dnd-selected="layoutVM.selectedItem  = item"
+                                     ng-class="{selected:layoutVM.selectedItem === item}"
+                                     ng-include="item.layoutTemplate + '.html'">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="dropzone box box-yellow">
+                            <!-- The dropzone also uses the list template -->
+                            <h3>Removed items</h3>
+                            <div class="row dnd-list"
+                                 dnd-list="layoutVM.pageLayout.removedContentItems"
+                                 dnd-drop="layoutVM.dropCallback(event, index, item)">
+                                <div class="content-item"
+                                     ng-repeat="item in layoutVM.pageLayout.removedContentItems"
+                                     dnd-draggable="item"
+                                     dnd-effect-allowed="move"
+                                     dnd-moved="layoutVM.itemMoved(layoutVM.pageLayout, $index)"
+                                     dnd-selected="layoutVM.selectedItem  = item"
+                                     ng-class="{selected:layoutVM.selectedItem === item}"
+                                     ng-include="item.layoutTemplate + '.html'">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                @*<div view-source="nested" highlight-lines="{markup: '1-18, 20-28, 40-42, 57-68, 78-82'}"></div>*@
+            </div>
+            <!-- Sidebar -->
+            <div class="col-md-2">
+                <div class="box box-grey box-padding">
+                    <h3>Selected</h3>
+                    <strong>Item Type: </strong> {{layoutVM.selectedItem.type}}
+                    <br>
+                    <br>
+                    <strong>Properties</strong>
+                    <table>
+                        <tbody>
+                            <tr ng-repeat="property in layoutVM.selectedItem.properties track by $index">
+                                <td>
+                                    {{property.propertyName}}:
+                                </td>
+                                <td>
+                                    <input type="text" ng-model="property.ropertyValue" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="trashcan box box-grey box-padding">
+                    <!-- If you use [] as referenced list, the dropped elements will be lost -->
+                    <h3>Trashcan</h3>
+                    <ul dnd-list="[]" dnd-drop="layoutVM.deleteElement(event, index, item)">
+                        <li><i class="fa fa-trash"></i></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <pre>{{layoutVM.pageLayout | json}}</pre>
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>

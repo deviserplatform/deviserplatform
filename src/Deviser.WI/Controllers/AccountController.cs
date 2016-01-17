@@ -116,7 +116,7 @@ namespace Deviser.WI.Controllers
                     //    "Please confirm your account by clicking this link: <a href=\"" + callbackUrl + "\">link</a>");
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
-                    return RedirectToAction(nameof(HomeController.Index), "Home");
+                    return RedirectToLocal();
                 }
                 AddErrors(result);
             }
@@ -133,7 +133,7 @@ namespace Deviser.WI.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToLocal();
         }
 
         //
@@ -450,7 +450,7 @@ namespace Deviser.WI.Controllers
             return await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
         }
 
-        private IActionResult RedirectToLocal(string returnUrl)
+        private IActionResult RedirectToLocal(string returnUrl=null)
         {
             if (Url.IsLocalUrl(returnUrl))
             {
@@ -458,7 +458,8 @@ namespace Deviser.WI.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return Redirect("/Home");
+                //return RedirectToAction("Index", "Page", new { permalink = "Home" });
             }
         }
 
