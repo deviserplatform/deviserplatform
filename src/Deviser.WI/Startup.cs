@@ -3,6 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 using Autofac.Features.ResolveAnything;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.Modules;
+using Deviser.WI.Infrastructure;
 using Deviser.WI.Services;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
@@ -105,6 +106,8 @@ namespace Deviser.WI
             services.AddCaching(); // Adds a default in-memory implementation of IDistributedCache
 
             services.AddSession();
+
+            MapperConfig.CreateMaps();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();

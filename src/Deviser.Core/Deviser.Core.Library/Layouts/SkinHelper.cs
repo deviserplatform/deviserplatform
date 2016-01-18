@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.Layouts
 {
-    public class LayoutProvider
+    public static class SkinHelper
     {
-
         public static List<KeyValuePair<string, string>> GetHostSkins()
         {
             string skinRoot = "Skins";

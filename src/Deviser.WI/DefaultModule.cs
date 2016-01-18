@@ -1,7 +1,10 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
+using Deviser.Core.Library;
 using Deviser.Core.Library.Controllers;
+using Deviser.Core.Library.Layouts;
+using Deviser.Core.Library.Modules;
 using Deviser.Core.Library.Sites;
 using Deviser.WI.Infrastructure;
 using Microsoft.AspNet.Routing;
@@ -29,7 +32,12 @@ namespace Deviser.WI
             builder.RegisterType<SiteSettingProvider>().As<ISiteSettingProvider>();
             builder.RegisterType<UserProvider>().As<IUserProvider>();
 
-            builder.RegisterType<PageManager>().As<IPageManager>(); 
+            builder.RegisterType<PageManager>().As<IPageManager>();
+            builder.RegisterType<ModuleManager>().As<IModuleManager>();
+            builder.RegisterType<LayoutManager>().As<ILayoutManager>();
+            builder.RegisterType<Navigation>().As<INavigation>();
+            
+
 
             //Autofac Property injection is not working
             //ref: https://github.com/autofac/Autofac.Mvc/issues/1

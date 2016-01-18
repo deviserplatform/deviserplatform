@@ -1,0 +1,48 @@
+﻿{
+    "contentTypes": [
+        {
+            "type": "text",
+            "isRepeater": false,
+            "properties" : [
+                {
+                    "propertyName": "cssClass",
+                    "propertyValue" : ""
+                }
+            ]
+
+        },
+        {
+            "type": "container",
+            "isRepeater": true,
+            "properties" : [
+                {
+                    "propertyName": "cssClass",
+                    "propertyValue" : ""
+                }
+            ]
+
+        },
+        {
+            "type": "column",
+            "isRepeater": true,
+            "properties": [
+                {
+                    "propertyName": "cssClass",
+                    "propertyValue": ""
+                }
+            ]
+        },
+        {
+            "type": "testContainer",
+            "isRepeater": true,
+            "properties" : [
+                {
+                    "propertyName": "cssClass",
+                    "propertyValue" : ""
+                }
+            ]
+        }
+
+    ]
+
+}

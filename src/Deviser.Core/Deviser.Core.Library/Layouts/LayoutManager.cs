@@ -17,16 +17,15 @@ namespace Deviser.Core.Library.Layouts
     public class LayoutManager : ILayoutManager
     {
         //Logger
-        private readonly ILogger<LayoutProvider> logger;
-        private IContainer container;
+        private readonly ILogger<LayoutManager> logger;
 
         ILayoutProvider layoutProvider;
         IPageProvider pageProvider;
         IPageContentProvider pageContentProvider;
 
-        public LayoutManager(IContainer container)
+        public LayoutManager(ILifetimeScope container)
         {
-            this.container = container;
+            logger = container.Resolve<ILogger<LayoutManager>>();
             layoutProvider = container.Resolve<ILayoutProvider>();
             pageProvider = container.Resolve<IPageProvider>();
             pageContentProvider = container.Resolve<IPageContentProvider>();

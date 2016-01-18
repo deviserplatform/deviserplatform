@@ -17,8 +17,9 @@ namespace Deviser.Core.Library
 
         IPageProvider pageProvider;
 
-        public Navigation(IContainer container)
+        public Navigation(ILifetimeScope container)
         {
+            logger = container.Resolve<ILogger<LayoutProvider>>();
             pageProvider = container.Resolve<IPageProvider>();
         }
 

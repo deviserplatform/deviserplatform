@@ -27,7 +27,7 @@ namespace Deviser.Core.Library
             {
                 if (hostMapPath == null)
                 {
-                    hostMapPath = Path.Combine(ApplicationMapPath, @"Portals\_default\");
+                    hostMapPath = Path.Combine(ApplicationMapPath, @"Sites\Default\");
                 }
                 return hostMapPath;
             }
@@ -65,7 +65,7 @@ namespace Deviser.Core.Library
         {
             get
             {
-                return "~/Portals/_default/Skins/Skyline/Admin.cshtml";
+                return "~/Sites/Default/Themes/Skyline/Admin.cshtml";
             }
         }
 
