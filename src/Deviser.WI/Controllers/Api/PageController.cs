@@ -51,8 +51,7 @@ namespace DeviserWI.Controllers.API
             }
         }
 
-        [HttpGet]
-        [Route("api/page/{id:int}")]
+        [HttpGet("{id}")]        
         public IActionResult Get(int id)
         {
             try

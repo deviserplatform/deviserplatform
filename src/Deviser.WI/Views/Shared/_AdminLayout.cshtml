@@ -11,6 +11,8 @@
         
         @*<link href="~/lib/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" />*@
         <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />        
+        <link href="~/lib/angular-ui-tree/dist/angular-ui-tree.min.css" rel="stylesheet" />
+        <link href="~/lib/angular-ui-select/dist/select.css" rel="stylesheet" />
         <!-- END GLOBAL MANDATORY STYLES -->
         <!-- BEGIN THEME GLOBAL STYLES -->
         <link href="~/css/metronic/components.css" rel="stylesheet" />
@@ -21,6 +23,7 @@
         <link href="~/css/metronic/darkblue.css" rel="stylesheet" />
         <link href="~/css/metronic/custom.css" rel="stylesheet" />
         <link href="~/css/override.css" rel="stylesheet" />
+        <link href="~/css/site.css" rel="stylesheet" />
         <!-- END THEME LAYOUT STYLES -->
     </head>
     <body>
@@ -29,9 +32,26 @@
 
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/underscore/underscore-min.js"></script>
         <script src="~/lib/bootstrap-hover-dropdown/bootstrap-hover-dropdown.js"></script>
         <script src="~/js/metronic/app.js"></script>
         <script src="~/js/metronic/layout.js"></script>
+
+        <script src="~/lib/angular/angular.js"></script>
+        <script src="~/lib/angular-sanitize/angular-sanitize.js"></script>
+        <script src="~/lib/angular-ui-router/release/angular-ui-router.js"></script>
+        <script src="~/lib/angular-bootstrap/ui-bootstrap.js"></script>
+        <script src="~/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+        <script src="~/lib/angular-ui-select/dist/select.js"></script>
+        <script src="~/lib/angular-ui-tree/dist/angular-ui-tree.js"></script>
+        <script src="~/lib/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js"></script>
+        <script src="~/lib/ng-password-strength/dist/scripts/ng-password-strength.js"></script>
+
+        <script src="~/js/src/app/sdlib.js"></script>
+        <script src="~/js/src/app/layout.js"></script>
+        <script src="~/js/src/app/edit.js"></script>
+        <script src="~/js/src/app/services.js"></script>
+        <script src="~/js/src/app/config.js"></script>
         @*<script src="~/js/metronic/dashboard.js"></script>*@
         @RenderSection("scripts", required: false)
     </body>
