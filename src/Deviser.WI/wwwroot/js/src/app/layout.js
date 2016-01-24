@@ -4,25 +4,26 @@
     'ui.router',
     'ui.bootstrap',
     'dndLists',
+    'sd.sdlib',
     'deviserLayout.services',
     'deviser.config'
     ]);
 
-    app.controller('LayoutCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'layoutService', 'pageService',
-        'contentTypeService', 'pageContentService', 'moduleService', 'pageModuleService', layoutCtrl]);
+    app.controller('LayoutCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'sdUtil', 'layoutService', 'pageService',
+        'layoutTypeService', 'pageContentService', 'moduleService', 'pageModuleService', layoutCtrl]);
 
 
     ////////////////////////////////
     /*Function declarations only*/
 
-    function layoutCtrl($scope, $timeout, $filter, $q, globals, layoutService, pageService, contentTypeService,
-        pageContentService, moduleService, pageModuleService) {
+    function layoutCtrl($scope, $timeout, $filter, $q, globals, sdUtil, layoutService, pageService,
+        layoutTypeService, pageContentService, moduleService, pageModuleService) {
         var vm = this;
 
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
         vm.pageLayout = {};
-        vm.newGuid = getGuid;
+        vm.newGuid = sdUtil.getGuid;
         vm.dragoverCallback = dragoverCallback;
         vm.dropCallback = dropCallback;
         vm.logListEvent = logListEvent;
@@ -36,27 +37,42 @@
         vm.deleteElement = deleteElement;
         vm.selectedItem = {}
         vm.deletedElements = [];
+        vm.layoutAllowedTypes = ["container"];
 
+        vm.testItems = [{
+            "id": "52d5fb5a-b375-5f6c-b9c7-57c2f478f3b4",
+            "type": "row",
+            "layoutTemplate": "item",
+            "index": 1,
+            "module": null,
+            "properties": [
+              {
+                  "propertyName": "cssClass",
+                  "propertyValue": ""
+              }
+            ],
+            "contentItems": null
+        }];
+        
         //vm.models = {
         //    templates: [
-        //        { type: "text", id: getGuid() },
-        //        { type: "container", id: getGuid(), contentItems: [] },
-        //        { type: "column", id: getGuid(), contentItems: [] }
+        //        { type: "text", id: sdUtil.getGuid() },
+        //        { type: "container", id: sdUtil.getGuid(), contentItems: [] },
+        //        { type: "column", id: sdUtil.getGuid(), contentItems: [] }
         //    ]
         //};
 
         $q.all([
             getCurrentPage(),
             getLayouts(),
-            getContentTypes(),
-            getModules()
+            getLayoutTypes()
         ]).then(function () {
             if (vm.currentPage.layoutId) {
                 vm.pageLayout = _.find(vm.layouts, function (layout) {
                     return layout.id === vm.currentPage.layoutId;
                 });
             }
-            processContentTypes(vm.contentTypes);
+            processContentTypes(vm.layoutTypes);
         });
 
         //$scope.$watch('models.dropzones', function (model) {
@@ -99,11 +115,11 @@
             return defer.promise;
         }
 
-        function getContentTypes() {
+        function getLayoutTypes() {
             var defer = $q.defer();
-            contentTypeService.get()
+            layoutTypeService.get()
             .then(function (data) {
-                vm.contentTypes = data;
+                vm.layoutTypes = data;
                 defer.resolve('data received!');
             }, function (error) {
                 showMessage("error", SYS_ERROR_MSG);
@@ -111,44 +127,23 @@
             });
             return defer.promise;
         }
-
-        function getModules() {
-            var defer = $q.defer();
-            moduleService.get()
-            .then(function (data) {
-                var modules = data;
-                vm.modules = [];
-                _.each(modules, function (module) {
-                    vm.modules.push({
-                        id: getGuid(),
-                        layoutTemplate: "module",
-                        type: "module",
-                        module: module
-                    });
-                });
-                defer.resolve('data received!');
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-                defer.reject(SYS_ERROR_MSG);
-            });
-            return defer.promise;
-        }
-
+        
         function processContentTypes(contentTypes) {
             if (contentTypes) {
                 _.each(contentTypes, function (contentType) {
-                    contentType.id = getGuid();
-                    if (contentType.isRepeater) {
-                        contentType.contentItems = [];
-                        if (contentType.type === "column") {
-                            contentType.layoutTemplate = "column";
-                        }
-                        else {
-                            contentType.layoutTemplate = "repeater";
-                        }
+                    contentType.id = sdUtil.getGuid();
+                    contentType.contentItems = [];
+                    if (contentType.type === "column") {
+                        contentType.layoutTemplate = "column";
+                    }
+                    else if (contentType.type === "container") {
+                        contentType.layoutTemplate = "container";
+                    }
+                    else if (contentType.type === "row") {
+                        contentType.layoutTemplate = "row";
                     }
                     else {
-                        contentType.layoutTemplate = "item";
+                        contentType.layoutTemplate = "repeater";
                     }
                 });
             }
@@ -176,49 +171,6 @@
         function saveLayout() {
             processContentItems(vm.pageLayout.contentItems);
 
-            /*TODO:
-            Do all the following tasks in server side, this improves the efficienty and reduce number of calls between server and client.
-            1) Modify the Layout service so that it can accept layoutDTO object which contains:
-                - pageLayoutId
-                - pageLayoutName
-                - contentItems - recursive object instead of config string
-                - pageId - currentPageId
-                - isCopy flag - set true if the layout is being copied
-
-            2) Detect whether the layout is new/copy/update - check for the isCopy flag to identify the state
-                - If layout is new/update, jsut update the layout
-                - If layout is copy, delete all contents and modules and create newone. 
-            
-            3) Loop entire contentItems tree, create newone.
-
-            ------------------------------------------------
-
-            1) Get content and modules of the current page and display it in the layout view
-            2) After creating a content/module, display it in layout view.
-            3) Display the deleted contents/modules in separate dnd-list (unassigned lsit)
-            4) While changing/copying/creating new layout do not delete all content/modules, instead move all the old modules/content into unassigned list.
-            5) If items can be moved from unassigned list to page container.
-
-
-            Issue:
-            
-            1) What happens if a container has more than one content/module? How the contents/modules are displayed in layout module?
-
-            -------------------------------------------------
-            Layout Design Decisions
-            -------------------------------------------------
-            1) Layout should have only containers, rows and columns (i.e repeater elements). It can have properties such as css class and other HTML attributes.
-            2) In database, table PageContent should be renamed to PageElement, all elements should be translatable.
-            3) PageElement has all the information about the element such as element type, properties, element data, page module id (if element is a module).
-            4) Do not separate layout view and element view. However, layout and element information should be stored in different entity. This shows clear separation of page layout and page elements.
-            5) Load the layout information, after that load the page elements. 
-
-            
-
-
-
-            */
-
             //vm.pageLayout.config = JSON.stringify(vm.pageLayout.contentItems);
             vm.pageLayout.pageId = appContext.currentPageId;
             if (vm.pageLayout.id > 0) {
@@ -226,7 +178,7 @@
                 layoutService.put(vm.pageLayout)
                 .then(function (data) {
                     //console.log(data);
-                    vm.pageLayout.id = data.id;                    
+                    vm.pageLayout.id = data.id;
                     vm.pageLayout.contentItems = data.contentItems;
                     vm.pageLayout.isChanged = false;
                     updatePageLayoutPage(vm.pageLayout.id);
@@ -240,7 +192,7 @@
                 layoutService.post(vm.pageLayout)
                 .then(function (data) {
                     console.log(data);
-                    vm.pageLayout.id = data.id;                    
+                    vm.pageLayout.id = data.id;
                     vm.pageLayout.contentItems = data.contentItems;
                     vm.pageLayout.isChanged = false;
                     updatePageLayoutPage(vm.pageLayout.id);
@@ -283,18 +235,18 @@
             });
         }
 
-        function dragoverCallback(event, index, external, type) {
-            //console.log(index);
+        function dragoverCallback(event, index, item) {
+            console.log(item)
             return index > 0;
         }
 
         function dropCallback(event, index, item) {
-            createElement(item);
+            //createElement(item);
             return item;
         }
 
         function deleteElement(event, index, item) {
-            deleteItem(item);
+            //deleteItem(item);
             return item;
         }
 
@@ -302,66 +254,6 @@
             item.contentItems.splice(index, 1);
         }
 
-        function deleteItem(item) {            
-            if (item.type === "text") {
-                deleteContent(item.id);
-            }
-            else if (item.type === "module") {
-                deleteModule(item.id);
-            }
-        }
-
-        function createElement(item) {
-            if (item.type === "text") {
-                createContent(item.id);
-            }
-            else if (item.type === "module") {
-                createModule(item.module.id, item.id);
-            }
-        }
-
-        function createContent(containerId) {
-            var content = {
-                pageId: appContext.currentPageId,
-                containerId: containerId,
-                cultureCode: "en-US" //TODO: get this from appContext
-            }
-            pageContentService.post(content).then(function (data) {
-                console.log(data);
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-            });
-        }
-
-        function createModule(moduleId, containerId) {
-            var pageModule = {
-                pageId: appContext.currentPageId,
-                moduleId: moduleId,
-                containerId: containerId
-                //Modules are not multilingual
-            }
-            pageModuleService.post(pageModule).then(function (data) {
-                console.log(data);
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-            });
-        }
-
-        function deleteContent(contentId) {
-            pageContentService.remove(contentId).then(function (data) {
-                console.log(data);
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-            });
-        }
-
-        function deleteModule(moduleId) {
-            pageModuleService.remove(moduleId).then(function (data) {
-                console.log(data);
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-            });
-        }
 
         function logListEvent(action, event, index, external, type) {
             var message = external ? 'External ' : '';
@@ -388,15 +280,7 @@
             }, 3000);
         }
 
-        function getGuid() {
-            function s4() {
-                return Math.floor((1 + Math.random()) * 0x10000)
-                  .toString(16)
-                  .substring(1);
-            }
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-              s4() + '-' + s4() + s4() + s4();
-        }
+       
 
     }
 

@@ -3,6 +3,7 @@
     app.factory('layoutService', layoutService);
     app.factory('pageService', pageService);
     app.factory('contentTypeService', contentTypeService);
+    app.factory('layoutTypeService', layoutTypeService);
     app.factory('pageContentService', pageContentService);
     app.factory('moduleService', moduleService);
     app.factory('pageModuleService', pageModuleService);
@@ -33,6 +34,10 @@
         return baseService($http, $q, globals, '/contenttype');
     }
 
+    function layoutTypeService($http, $q, globals) {
+        return baseService($http, $q, globals, '/layouttype');
+    }
+    
     function pageContentService($http, $q, globals) {
         var serviceUrl = "/pagecontent";
         var service = baseService($http, $q, globals, serviceUrl);

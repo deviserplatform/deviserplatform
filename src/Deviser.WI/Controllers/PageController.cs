@@ -18,20 +18,25 @@ namespace Deviser.WI.Controllers
         IPageProvider pageProvider;
         IPageManager pageManager;
         IDeviserControllerFactory deviserControllerFactory;
+        ISiteBootstrapper siteBootstrapper;
 
-        public PageController(ILifetimeScope container)            
+        public PageController(ILifetimeScope container)
         {
             this.container = container;
-            this.pageProvider = container.Resolve<IPageProvider>();
-            this.pageManager = container.Resolve<IPageManager>();
-            this.deviserControllerFactory = container.Resolve<IDeviserControllerFactory>();
+            pageProvider = container.Resolve<IPageProvider>();
+            pageManager = container.Resolve<IPageManager>();
+            deviserControllerFactory = container.Resolve<IDeviserControllerFactory>();
+            siteBootstrapper = container.Resolve<ISiteBootstrapper>();
+            siteBootstrapper.UpdateSiteSettings();
         }
 
         public async Task<IActionResult> Index(string permalink)
-        {  
+        {
+            if (string.IsNullOrEmpty(permalink))
+                permalink = Globals.HomePage.PageTranslation.FirstOrDefault(t => t.Locale == CurrentCulture.ToString()).URL;
             Page currentPage = await GetPageModules(permalink);
             if (currentPage != null)
-            {   
+            {
                 return View(currentPage);
             }
             return null;
@@ -50,7 +55,7 @@ namespace Deviser.WI.Controllers
         }
 
         public IActionResult Edit(string permalink)
-        {  
+        {
             if (AppContext != null)
             {
                 ViewBag.Skin = Globals.AdminSkin;
@@ -62,7 +67,9 @@ namespace Deviser.WI.Controllers
 
         private async Task<Page> GetPageModules(string permalink)
         {
-            permalink = "/" + permalink;
+            if (!permalink.StartsWith("/"))
+                permalink = "/" + permalink;
+
             Page currentPage = pageManager.GetPageByUrl(permalink, CurrentCulture.ToString());
             AppContext appContext = new AppContext();
             if (currentPage != null)

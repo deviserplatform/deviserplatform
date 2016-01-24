@@ -19,21 +19,21 @@ using Microsoft.AspNet.Http;
 namespace DeviserWI.Controllers.API
 {
     [Route("api/[controller]")]
-    public class ContentTypeController : Controller
+    public class LayoutTypeController : Controller
     {
-        private readonly ILogger<ContentTypeController> logger;
+        private readonly ILogger<LayoutTypeController> logger;
 
         private JToken contentTypes;
 
-        public ContentTypeController(ILifetimeScope container)
+        public LayoutTypeController(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<ContentTypeController>>();
+            logger = container.Resolve<ILogger<LayoutTypeController>>();
             IApplicationEnvironment appEnv = container.Resolve<IApplicationEnvironment>();
             try
             {
                 var contentTypesfilePath = Path.Combine(appEnv.ApplicationBasePath, "appcontentcofig.json");                
                 JObject contentConfig = JObject.Parse(System.IO.File.ReadAllText(contentTypesfilePath));
-                contentTypes = (JArray)contentConfig.SelectToken("contentTypes");
+                contentTypes = (JArray)contentConfig.SelectToken("layoutTypes");
             }
             catch
             {

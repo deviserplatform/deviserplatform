@@ -81,7 +81,7 @@ namespace DeviserWI.Controllers.API
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             try

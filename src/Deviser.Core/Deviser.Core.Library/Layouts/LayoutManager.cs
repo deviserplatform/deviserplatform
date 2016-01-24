@@ -56,11 +56,12 @@ namespace Deviser.Core.Library.Layouts
         {
             try
             {
-                if (pageLayout.IsChanged)
-                {
-                    DeleteModulesAndContent(pageLayout);
-                    CreateElement(pageLayout.ContentItems, pageLayout.PageId);
-                }
+                //Not necessary, since layout and content has been seperated
+                //if (pageLayout.IsChanged)
+                //{
+                //    DeleteModulesAndContent(pageLayout);
+                //    CreateElement(pageLayout.ContentItems, pageLayout.PageId);
+                //}
                 var layout = ConvertToLayout(pageLayout);
                 var resultLayout = layoutProvider.CreateLayout(layout);
                 var result = ConvertToPageLayout(resultLayout);
@@ -77,11 +78,12 @@ namespace Deviser.Core.Library.Layouts
         {
             try
             {
-                if (pageLayout.IsChanged)
-                {
-                    DeleteModulesAndContent(pageLayout);
-                    CreateElement(pageLayout.ContentItems, pageLayout.PageId);
-                }
+                //Not necessary, since layout and content has been seperated
+                //if (pageLayout.IsChanged)
+                //{
+                //    DeleteModulesAndContent(pageLayout);
+                //    CreateElement(pageLayout.ContentItems, pageLayout.PageId);
+                //}
                 var layout = ConvertToLayout(pageLayout);
                 var resultLayout = layoutProvider.UpdateLayout(layout);
                 var result = ConvertToPageLayout(resultLayout);

@@ -1,0 +1,61 @@
+﻿{
+  "layoutTypes": [
+    {
+      "type": "container",
+      "allowedTypes": [ "row", "container" ],
+      "properties": [
+        {
+          "propertyName": "cssClass",
+          "propertyValue": ""
+        }
+      ]
+
+    },
+    {
+      "type": "column",
+      "allowedTypes": [ "row", "container" ],
+      "properties": [
+        {
+          "propertyName": "cssClass",
+          "propertyValue": ""
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "allowedTypes": [ "column" ],
+      "properties": [
+        {
+          "propertyName": "cssClass",
+          "propertyValue": ""
+        }
+      ]
+    }
+  ],
+  "contentTypes": [
+    {
+      "type": "text",
+      "isRepeater": false,
+      "properties": [
+        {
+          "propertyName": "cssClass",
+          "propertyValue": ""
+        }
+      ]
+
+    },
+    
+    {
+      "type": "testContainer",
+      "isRepeater": true,
+      "properties": [
+        {
+          "propertyName": "cssClass",
+          "propertyValue": ""
+        }
+      ]
+    }
+
+  ]
+
+}

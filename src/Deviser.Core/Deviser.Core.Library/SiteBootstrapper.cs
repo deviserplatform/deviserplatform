@@ -14,12 +14,12 @@ namespace Deviser.Core.Library
     {
         //Logger
         private readonly ILogger<LayoutProvider> logger;
-        private IContainer container;
+        private ILifetimeScope container;
 
         private ISiteSettingProvider siteSettingProvider;
         private IPageProvider pageProvider; 
 
-        public SiteBootstrapper(IContainer container)
+        public SiteBootstrapper(ILifetimeScope container)
         {
             this.container = container;
             siteSettingProvider = container.Resolve<ISiteSettingProvider>();
