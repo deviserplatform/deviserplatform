@@ -48,7 +48,7 @@ namespace DeviserWI.Controllers.API
         }
         
         [HttpPost]
-        public IActionResult Post(PageLayout layout)
+        public IActionResult Post([FromBody]PageLayout layout)
         {
             try
             {
@@ -59,13 +59,13 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating a page layout, LayoutName: ", layout.Name), ex);
+                logger.LogError(string.Format("Error occured while creating a page layout, LayoutName: "), ex);
                 return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpPut]
-        public IActionResult Put(PageLayout layout)
+        public IActionResult Put([FromBody]PageLayout layout)
         {
             try
             {               

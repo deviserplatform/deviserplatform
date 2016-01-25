@@ -39,21 +39,6 @@
         vm.deletedElements = [];
         vm.layoutAllowedTypes = ["container"];
 
-        vm.testItems = [{
-            "id": "52d5fb5a-b375-5f6c-b9c7-57c2f478f3b4",
-            "type": "row",
-            "layoutTemplate": "item",
-            "index": 1,
-            "module": null,
-            "properties": [
-              {
-                  "propertyName": "cssClass",
-                  "propertyValue": ""
-              }
-            ],
-            "contentItems": null
-        }];
-        
         //vm.models = {
         //    templates: [
         //        { type: "text", id: sdUtil.getGuid() },
@@ -68,9 +53,15 @@
             getLayoutTypes()
         ]).then(function () {
             if (vm.currentPage.layoutId) {
-                vm.pageLayout = _.find(vm.layouts, function (layout) {
+                var selectedLayout = _.find(vm.layouts, function (layout) {
                     return layout.id === vm.currentPage.layoutId;
                 });
+                if (selectedLayout) {
+                    vm.pageLayout = selectedLayout;
+                }
+                else {
+                    newLayout();
+                }
             }
             processContentTypes(vm.layoutTypes);
         });
@@ -150,7 +141,8 @@
         }
 
         function newLayout() {
-            vm.pageLayout.id = null;
+            vm.pageLayout = {};
+            vm.pageLayout.id = 0;
             vm.pageLayout.name = "";
             vm.pageLayout.isChanged = false;
             vm.pageLayout.contentItems = [];
@@ -163,7 +155,7 @@
         }
 
         function copyLayout() {
-            vm.pageLayout.id = null;
+            vm.pageLayout.id = 0;
             vm.pageLayout.name = "";
             vm.pageLayout.isChanged = true;
         }

@@ -49,7 +49,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpPost]
-        public IActionResult Post(PageContent pageContent)
+        public IActionResult Post([FromBody] PageContent pageContent)
         {
             try
             {
