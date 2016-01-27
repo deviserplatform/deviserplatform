@@ -172,8 +172,7 @@
                     //console.log(data);
                     vm.pageLayout.id = data.id;
                     vm.pageLayout.contentItems = data.contentItems;
-                    vm.pageLayout.isChanged = false;
-                    updatePageLayoutPage(vm.pageLayout.id);
+                    vm.pageLayout.isChanged = false;                    
                     showMessage("success", "Layout has been saved");
                 }, function (error) {
                     showMessage("error", SYS_ERROR_MSG);
@@ -187,8 +186,8 @@
                     vm.pageLayout.id = data.id;
                     vm.pageLayout.contentItems = data.contentItems;
                     vm.pageLayout.isChanged = false;
-                    updatePageLayoutPage(vm.pageLayout.id);
                     showMessage("success", "Layout has been saved");
+                    getLayouts();
                 }, function (error) {
                     showMessage("error", SYS_ERROR_MSG);
                 });
@@ -212,16 +211,6 @@
                 showMessage("success", "Layout has been removed");
                 getLayouts();
                 newLayout();
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-            });
-        }
-
-        function updatePageLayoutPage(layoutId) {
-            vm.currentPage.layoutId = layoutId;
-            pageService.put(vm.currentPage).then(function (data) {
-                console.log(data);
-                //vm.pageLayout = data;
             }, function (error) {
                 showMessage("error", SYS_ERROR_MSG);
             });
@@ -269,7 +258,7 @@
                     messageType: "",
                     content: ""
                 };
-            }, 3000);
+            }, globals.appSettings.alertLifeTime);
         }
 
        

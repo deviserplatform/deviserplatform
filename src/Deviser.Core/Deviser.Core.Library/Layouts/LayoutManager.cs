@@ -64,6 +64,7 @@ namespace Deviser.Core.Library.Layouts
                 //}
                 var layout = ConvertToLayout(pageLayout);
                 var resultLayout = layoutProvider.CreateLayout(layout);
+                UpdatePageLayout(pageLayout.PageId, resultLayout.Id);
                 var result = ConvertToPageLayout(resultLayout);
                 return result;
             }
@@ -83,9 +84,10 @@ namespace Deviser.Core.Library.Layouts
                 //{
                 //    DeleteModulesAndContent(pageLayout);
                 //    CreateElement(pageLayout.ContentItems, pageLayout.PageId);
-                //}
+                //}                
                 var layout = ConvertToLayout(pageLayout);
                 var resultLayout = layoutProvider.UpdateLayout(layout);
+                UpdatePageLayout(pageLayout.PageId, resultLayout.Id);
                 var result = ConvertToPageLayout(resultLayout);
                 return result;
             }
@@ -110,6 +112,13 @@ namespace Deviser.Core.Library.Layouts
             pageLayout.ContentItems = JsonConvert.DeserializeObject<List<ContentItem>>(layout.Config);
             return pageLayout;
 
+        }
+
+        private void UpdatePageLayout(int pageId, int layoutId)
+        {
+            var page = pageProvider.GetPage(pageId);
+            page.LayoutId = layoutId;
+            pageProvider.UpdatePage(page);
         }
 
         private void DeleteModulesAndContent(PageLayout pageLayout)

@@ -75,18 +75,10 @@ namespace Deviser.Core.Library.TagHelpers
                 foreach (var contentItem in contentItems)
                 {
                     if (contentItem != null)
-                    {
-                        string result = null;
+                    {                        
                         ControlData controlData = new ControlData();
-                        var contentType = contentItem.Type.ToLower();
-                        //ViewData["isEditMode"] = false;
-                        if (contentType == "column" || contentType == "container")
-                        {
-                            //List type                            
-                            controlData.HtmlResult = RenderContentItems(contentItem.ContentItems, moduleActionResults);
-                            var htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/ContentTypes/{0}.cshtml", contentType), controlData);
-                            sb.Append(GetString(htmlContent));
-                        }
+                        var contentType = contentItem.Type.ToLower();                        
+                        
                         if (contentType == "module" && moduleActionResults.ContainsKey(contentItem.Id.ToString()))
                         {
                             string moduleResult;
@@ -97,14 +89,20 @@ namespace Deviser.Core.Library.TagHelpers
                         }
                         else
                         {
-                            //Item type
-                            result = "This is text";
-                            controlData.ContentItem = contentItem;
-                            controlData.PageContents = CurrentPage.PageContent.Where(pc => pc.ContainerId == contentItem.Id).ToList();
                             controlData.HtmlResult = RenderContentItems(contentItem.ContentItems, moduleActionResults);
                             var htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/ContentTypes/{0}.cshtml", contentType), controlData);
                             sb.Append(GetString(htmlContent));
                         }
+                        //else
+                        //{
+                        //    //TODO: Get items and display it correspoinding placeholder
+                        //    result = "This is text";
+                        //    controlData.ContentItem = contentItem;
+                        //    controlData.PageContents = CurrentPage.PageContent.Where(pc => pc.ContainerId == contentItem.Id).ToList();
+                        //    controlData.HtmlResult = RenderContentItems(contentItem.ContentItems, moduleActionResults);
+                        //    var htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/ContentTypes/{0}.cshtml", contentType), controlData);
+                        //    sb.Append(GetString(htmlContent));
+                        //}
                     }
                 }
             }

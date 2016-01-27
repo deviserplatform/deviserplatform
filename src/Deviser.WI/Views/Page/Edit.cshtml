@@ -1,26 +1,212 @@
-﻿@model Deviser.Core.Data.Entities.Page
-
-@{
-    ViewBag.Title = "Index";
-    Layout = "~/Sites/Default/Themes/Skyline/Home.cshtml";
-    //if (ViewBag.Skin != null)
-    //{
-    //    Layout = ViewBag.Skin;
-    //}    
-    Dictionary<string, string> moduleActionResults = (Dictionary<string, string>)ViewBag.ModuleActionResults;
+﻿@{
+    if (ViewBag.Skin != null)
+    {
+        Layout = "~/Sites/Default/Themes/Skyline/LayoutDesigner.cshtml";
+    }
 }
-
 <script type="text/javascript">
     var appContext =  @Html.Raw(SDJsonConvert.SerializeObject(ViewBag.AppContext));
     console.log(appContext);
 </script>
 
+<div class="container-fluid body-content" ng-app="deviserEdit">
+    <div class="col-md-12" ng-controller="EditCtrl as editVM">
+        <script type="text/ng-template" id="contentItems.html">
+            <div ng-bind="parentItem = item" style="display:none"></div>
+            <div class="content-item"
+                 ng-repeat="item in parentItem.contentItems"
+                 dnd-draggable="item"
+                 dnd-type="item.type"
+                 dnd-disable-if="(item.layoutTemplate !== 'content'||item.layoutTemplate !== 'module')"
+                 dnd-effect-allowed="move"
+                 dnd-moved="editVM.itemMoved(parentItem, $index)"
+                 dnd-selected="editVM.selectedItem  = item"
+                 ng-class="{selected:editVM.selectedItem === item}"
+                 ng-include="item.layoutTemplate + '.html'">
+            </div>
 
+        </script>
+        <script type="text/ng-template" id="container.html">
+            <div class="container-element box box-blue">
+                <div ng-bind="item.index = $index+1" style="display:none"></div>
+                <h3>{{item.type}} {{item.index}} container</h3>
+                <div class="container-content">
+                    <div class="row dnd-list"
+                         dnd-list="item.contentItems"
+                         dnd-allowed-types="item.allowedTypes"
+                         dnd-drop="editVM.dropCallback(event, index, item)">
+                        <div ng-include="'contentItems.html'"></div>
+                    </div>
+                </div>
+            </div>
+        </script>
+        <script type="text/ng-template" id="row.html">
+            <div class="container-element box box-blue">
+                <div ng-bind="item.index = $index+1" style="display:none"></div>
+                <h3>{{item.type}} {{item.index}}</h3>
+                <div class="container-content">
+                    <div class="row dnd-list"
+                         dnd-list="item.contentItems"
+                         dnd-horizontal-list="true"
+                         dnd-allowed-types="item.allowedTypes"
+                         dnd-drop="editVM.dropCallback(event, index, item)">
+                        <div ng-include="'contentItems.html'"></div>
+                    </div>
+                </div>
+            </div>
+        </script>
+        <script type="text/ng-template" id="column.html">
+            <div class="col-md-3">
+                <div class="container-element box box-blue">
+                    <div ng-bind="item.index = $index+1" style="display:none"></div>
+                    <h3>{{item.type}} {{item.index}}</h3>
+                    <div class="container-content">
+                        <div class="row dnd-list"
+                             dnd-list="item.contentItems"
+                             dnd-allowed-types="item.allowedTypes"
+                             dnd-drop="editVM.dropCallback(event, index, item)">
+                            <div ng-include="'contentItems.html'"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </script>
+        <script type="text/ng-template" id="repeater.html">
+            <div class="container-element box box-blue">
+                <div ng-bind="item.index = $index+1" style="display:none"></div>
+                <h3>{{item.type}} {{item.index}} repeater</h3>
+                <div class="container-content">
+                    <div class="row dnd-list"
+                         dnd-list="item.contentItems"
+                         dnd-allowed-types="item.allowedTypes"
+                         dnd-drop="editVM.dropCallback(event, index, item)">
+                        <div ng-include="'contentItems.html'"></div>
+                    </div>
+                </div>
+            </div>
+        </script>
+        <script type="text/ng-template" id="content.html">
+            <div class="container-element box box-blue">
+                <div ng-bind="item.index = $index+1" style="display:none"></div>
+                <h3>{{item.type}} {{item.index}} content</h3>
+                <div class="container-content">
 
-<div ng-app="deviserEdit" ng-controller="editCtrl as editVM">
+                </div>
+            </div>
+        </script>
+        <script type="text/ng-template" id="module.html">
+            <div class="container-element box box-blue">
+                <div ng-bind="item.index = $index+1" style="display:none"></div>
+                <h3>{{item.type}} {{item.index}} module</h3>
+                <div class="container-content">
 
-    @Html.Partial("~/Views/Shared/ContentTypes/EditContent.cshtml")
-    <div sde-page="@Model" sde-module-results="@moduleActionResults">
+                </div>
+            </div>
+        </script>
+        <h3 class="page-title">
+            Page Editor
+            <small>edit the page</small>
+        </h3>
+        <div>
+            <div ng-class="{'alert alert-danger':editVM.message.messageType=='error',
+                     'alert alert-info':editVM.message.messageType=='info',
+                     'alert alert-success':editVM.message.messageType=='success',
+                     'alert alert-warning':editVM.message.messageType=='warning'}" role="alert">
+                {{editVM.message.content}}
+            </div>
+        </div>
+        <div class="layout-container nestedDemo">
+            <div class="col-md-2">
+                <div class="toolbox box box-grey box-padding">
+                    <h3>Layout Elements</h3>
+                    <div>
+                        <!-- The toolbox only allows to copy objects, not move it. After a new
+                        element was created, dnd-copied is invoked and we generate the next id -->
+                        <div ng-repeat="contentType in editVM.contentTypes track by $index"
+                             dnd-type="contentType.type"
+                             dnd-draggable="contentType"
+                             dnd-effect-allowed="copy"
+                             dnd-copied="contentType.id = editVM.newGuid()">
+                            <button type="button" class="btn btn-default">{{contentType.type}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="row">
+                            <h4>Layout Name:</h4>{{editVM.pageLayout.name}}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="dropzone box box-yellow">
+                            <!-- The dropzone also uses the list template -->
+                            <h3>Page Container</h3>
+                            <div class="row dnd-list"
+                                 dnd-list="editVM.pageLayout.contentItems"
+                                 dnd-allowed-types="editVM.layoutAllowedTypes"                                 
+                                 dnd-drop="editVM.dropCallback(event, index, item)">
+                                <div class="content-item"
+                                     ng-repeat="item in editVM.pageLayout.contentItems"
+                                     dnd-draggable="item"
+                                     dnd-type="item.type"
+                                     dnd-disable-if="(item.layoutTemplate !== 'content'||item.layoutTemplate !== 'module')"
+                                     dnd-effect-allowed="move"
+                                     dnd-moved="editVM.itemMoved(editVM.pageLayout, $index)"
+                                     dnd-selected="editVM.selectedItem  = item"
+                                     ng-class="{selected:editVM.selectedItem === item}"
+                                     ng-include="item.layoutTemplate + '.html'">
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                @*<div view-source="nested" highlight-lines="{markup: '1-18, 20-28, 40-42, 57-68, 78-82'}"></div>*@
+            </div>
+            <!-- Sidebar -->
+            <div class="col-md-2">
+                <div class="box box-grey box-padding">
+                    <h3>Selected</h3>
+                    <strong>Item Type: </strong> {{editVM.selectedItem.type}}
+                    <br>
+                    <br>
+                    <strong>Properties</strong>
+                    <table>
+                        <tbody>
+                            <tr ng-repeat="property in editVM.selectedItem.properties track by $index">
+                                <td>
+                                    {{property.propertyName}}:
+                                </td>
+                                <td>
+                                    <input type="text" ng-model="property.ropertyValue" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="trashcan box box-grey box-padding">
+                    <!-- If you use [] as referenced list, the dropped elements will be lost -->
+                    <h3>Trashcan</h3>
+                    <ul dnd-list="[]" dnd-drop="editVM.deleteElement(event, index, item)">
+                        <li><i class="fa fa-trash"></i></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <pre>{{editVM.pageLayout | json}}</pre>
+            </div>
+
+        </div>
 
     </div>
+
+
 </div>
