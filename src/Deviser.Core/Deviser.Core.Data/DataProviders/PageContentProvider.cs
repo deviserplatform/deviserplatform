@@ -43,6 +43,7 @@ namespace Deviser.Core.Data.DataProviders
             {
                 PageContent returnData = context.PageContent
                    .Where(e => e.Id == pageContentId && e.IsDeleted == false)
+                   .AsNoTracking()
                    .FirstOrDefault();
                 return returnData;
             }
@@ -87,7 +88,8 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 PageContent resultPageContent;
-                content.Id = Guid.NewGuid(); content.CreatedDate = DateTime.Now;
+                //content.Id = Guid.NewGuid();
+                content.CreatedDate = DateTime.Now;
                 resultPageContent = context.PageContent.Add(content, GraphBehavior.SingleObject).Entity;
                 context.SaveChanges();
                 return resultPageContent;
@@ -104,8 +106,7 @@ namespace Deviser.Core.Data.DataProviders
             {
                 PageContent resultPageContent;
                 content.LastModifiedDate = DateTime.Now;
-                resultPageContent = context.PageContent.Attach(content, GraphBehavior.SingleObject).Entity;
-                context.Entry(content).State = EntityState.Modified;
+                resultPageContent = context.PageContent.Update(content, GraphBehavior.SingleObject).Entity;
                 context.SaveChanges();
                 return resultPageContent;
             }

@@ -7,7 +7,16 @@
     box-shadow: 0 1px 2px rgba(0,0,0,.05);
 }
 
-    .box > h3 {
+.box-layout {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px dashed transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+
+    .box > h3, .box-layout > h3 {
         color: #333;
         border-color: #ddd;
         border-bottom: 1px solid transparent;
@@ -19,6 +28,10 @@
         padding: 10px 15px;
         margin-top: 0;
         margin-bottom: 0;
+    }
+
+    .box-layout > h3{
+        padding: 5px 10px;
     }
 
 .box-padding {
@@ -127,7 +140,7 @@
  */
 .nestedDemo .dropzone .dndPlaceholder {
     background-color: #ddd;
-    min-height: 42px;
+    min-height: 30px;
     display: block;
     position: relative;
 }

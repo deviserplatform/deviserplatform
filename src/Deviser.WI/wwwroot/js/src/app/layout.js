@@ -23,6 +23,11 @@
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
         vm.pageLayout = {};
+        vm.selectedItem = {}
+        vm.deletedElements = [];
+        vm.layoutAllowedTypes = ["container"];
+
+        //Function binding
         vm.newGuid = sdUtil.getGuid;
         vm.dragoverCallback = dragoverCallback;
         vm.dropCallback = dropCallback;
@@ -35,43 +40,33 @@
         vm.deleteLayout = deleteLayout;
         vm.itemMoved = itemMoved;
         vm.deleteElement = deleteElement;
-        vm.selectedItem = {}
-        vm.deletedElements = [];
-        vm.layoutAllowedTypes = ["container"];
 
-        //vm.models = {
-        //    templates: [
-        //        { type: "text", id: sdUtil.getGuid() },
-        //        { type: "container", id: sdUtil.getGuid(), contentItems: [] },
-        //        { type: "column", id: sdUtil.getGuid(), contentItems: [] }
-        //    ]
-        //};
-
-        $q.all([
-            getCurrentPage(),
-            getLayouts(),
-            getLayoutTypes()
-        ]).then(function () {
-            if (vm.currentPage.layoutId) {
-                var selectedLayout = _.find(vm.layouts, function (layout) {
-                    return layout.id === vm.currentPage.layoutId;
-                });
-                if (selectedLayout) {
-                    vm.pageLayout = selectedLayout;
-                }
-                else {
-                    newLayout();
-                }
-            }
-            processContentTypes(vm.layoutTypes);
-        });
-
-        //$scope.$watch('models.dropzones', function (model) {
-        //    vm.modelAsJson = angular.toJson(model, true);
-        //}, true);
+        //Init
+        init();
 
         /////////////////////////////////////////////
         /*Function declarations only*/
+        function init() {
+            $q.all([
+            getCurrentPage(),
+            getLayouts(),
+            getLayoutTypes()
+            ]).then(function () {
+                if (vm.currentPage.layoutId) {
+                    var selectedLayout = _.find(vm.layouts, function (layout) {
+                        return layout.id === vm.currentPage.layoutId;
+                    });
+                    if (selectedLayout) {
+                        vm.pageLayout = selectedLayout;
+                    }
+                    else {
+                        newLayout();
+                    }
+                }
+                processLayoutTypes(vm.layoutTypes);
+            });
+        }
+
         function getCurrentPage() {
             var defer = $q.defer();
             pageService.get(appContext.currentPageId)
@@ -93,8 +88,8 @@
                 //Processing the data
                 layouts = _.where(layouts, { isDeleted: false });
                 _.each(layouts, function (item) {
-                    if (item && !item.contentItems) {
-                        item.contentItems = [];
+                    if (item && !item.placeHolders) {
+                        item.placeHolders = [];
                     }
                 });
                 vm.layouts = layouts;
@@ -119,22 +114,22 @@
             return defer.promise;
         }
         
-        function processContentTypes(contentTypes) {
-            if (contentTypes) {
-                _.each(contentTypes, function (contentType) {
-                    contentType.id = sdUtil.getGuid();
-                    contentType.contentItems = [];
-                    if (contentType.type === "column") {
-                        contentType.layoutTemplate = "column";
+        function processLayoutTypes(layoutTypes) {
+            if (layoutTypes) {
+                _.each(layoutTypes, function (layoutType) {
+                    layoutType.id = sdUtil.getGuid();
+                    layoutType.placeHolders = [];
+                    if (layoutType.type === "column") {
+                        layoutType.layoutTemplate = "column";
                     }
-                    else if (contentType.type === "container") {
-                        contentType.layoutTemplate = "container";
+                    else if (layoutType.type === "container") {
+                        layoutType.layoutTemplate = "container";
                     }
-                    else if (contentType.type === "row") {
-                        contentType.layoutTemplate = "row";
+                    else if (layoutType.type === "row") {
+                        layoutType.layoutTemplate = "row";
                     }
                     else {
-                        contentType.layoutTemplate = "repeater";
+                        layoutType.layoutTemplate = "repeater";
                     }
                 });
             }
@@ -145,13 +140,13 @@
             vm.pageLayout.id = 0;
             vm.pageLayout.name = "";
             vm.pageLayout.isChanged = false;
-            vm.pageLayout.contentItems = [];
+            vm.pageLayout.placeHolders = [];
         }
 
         function selectLayout(layout) {
             vm.pageLayout = layout;
             vm.pageLayout.isChanged = true;
-            processContentItems(vm.pageLayout.contentItems);
+            processplaceHolders(vm.pageLayout.placeHolders);
         }
 
         function copyLayout() {
@@ -161,9 +156,9 @@
         }
 
         function saveLayout() {
-            processContentItems(vm.pageLayout.contentItems);
+            processplaceHolders(vm.pageLayout.placeHolders);
 
-            //vm.pageLayout.config = JSON.stringify(vm.pageLayout.contentItems);
+            //vm.pageLayout.config = JSON.stringify(vm.pageLayout.placeHolders);
             vm.pageLayout.pageId = appContext.currentPageId;
             if (vm.pageLayout.id > 0) {
                 //Update layout
@@ -171,7 +166,7 @@
                 .then(function (data) {
                     //console.log(data);
                     vm.pageLayout.id = data.id;
-                    vm.pageLayout.contentItems = data.contentItems;
+                    vm.pageLayout.placeHolders = data.placeHolders;
                     vm.pageLayout.isChanged = false;                    
                     showMessage("success", "Layout has been saved");
                 }, function (error) {
@@ -184,7 +179,7 @@
                 .then(function (data) {
                     console.log(data);
                     vm.pageLayout.id = data.id;
-                    vm.pageLayout.contentItems = data.contentItems;
+                    vm.pageLayout.placeHolders = data.placeHolders;
                     vm.pageLayout.isChanged = false;
                     showMessage("success", "Layout has been saved");
                     getLayouts();
@@ -194,12 +189,12 @@
             }
         }
 
-        function processContentItems(contentItems) {
-            if (contentItems) {
-                _.each(contentItems, function (item) {
+        function processplaceHolders(placeHolders) {
+            if (placeHolders) {
+                _.each(placeHolders, function (item) {
                     console.log(item)
-                    if (item.contentItems) {
-                        processContentItems(item.contentItems);
+                    if (item.placeHolders) {
+                        processplaceHolders(item.placeHolders);
                     }
                 });
             }
@@ -232,10 +227,9 @@
         }
 
         function itemMoved(item, index) {
-            item.contentItems.splice(index, 1);
+            item.placeHolders.splice(index, 1);
         }
-
-
+        
         function logListEvent(action, event, index, external, type) {
             var message = external ? 'External ' : '';
             message += type + ' element is ' + action + ' position ' + index;
@@ -260,8 +254,6 @@
                 };
             }, globals.appSettings.alertLifeTime);
         }
-
-       
 
     }
 

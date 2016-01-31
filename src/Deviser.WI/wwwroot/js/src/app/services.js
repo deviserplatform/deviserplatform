@@ -117,7 +117,6 @@
         }
     }
     
-
     function baseService($http, $q, globals, serviceUrl) {
         var service = {
             get: get,

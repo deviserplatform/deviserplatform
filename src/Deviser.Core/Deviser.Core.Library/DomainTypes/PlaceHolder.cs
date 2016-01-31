@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.DomainTypes
 {
-    public class ContentItem
+    public class PlaceHolder
     {
         public Guid Id { get; set; }
         public string Type { get; set; }
@@ -15,6 +15,6 @@ namespace Deviser.Core.Library.DomainTypes
         public int Index { get; set; }
         public Module Module { get; set; }
         public List<ItemProperty> Properties { get; set; }
-        public List<ContentItem> ContentItems { get; set; }
+        public List<PlaceHolder> PlaceHolders { get; set; }
     }
 }

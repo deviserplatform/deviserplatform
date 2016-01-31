@@ -8,9 +8,10 @@ using Deviser.Core.Data.Entities;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDBContext))]
-    partial class DeviserDBContextModelSnapshot : ModelSnapshot
+    [Migration("20160130102945_PlatformSchema_01.00.02")]
+    partial class PlatformSchema_010002
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")
@@ -175,8 +176,6 @@ namespace Deviser.WI.Migrations
                     b.Property<int>("PageId");
 
                     b.Property<int>("SortOrder");
-
-                    b.Property<string>("TypeInfo");
 
                     b.HasKey("Id");
                 });

@@ -40,7 +40,7 @@ namespace Deviser.Core.Library.TagHelpers
         public ViewContext ViewContext { get; set; }
 
         protected IHtmlGenerator Generator { get; }
-        
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (CurrentPage == null)
@@ -59,40 +59,61 @@ namespace Deviser.Core.Library.TagHelpers
 
             PageLayout pageLayout = new PageLayout();
             pageLayout.Name = CurrentPage.Layout.Name;
-            pageLayout.ContentItems = JsonConvert.DeserializeObject<List<ContentItem>>(CurrentPage.Layout.Config);
-            if (pageLayout.ContentItems != null && pageLayout.ContentItems.Count > 0)
+            pageLayout.PlaceHolders = JsonConvert.DeserializeObject<List<PlaceHolder>>(CurrentPage.Layout.Config);
+            if (pageLayout.PlaceHolders != null && pageLayout.PlaceHolders.Count > 0)
             {
-                string result = RenderContentItems(pageLayout.ContentItems, ModuleActionResults);
+                string result = RenderContentItems(pageLayout.PlaceHolders, ModuleActionResults);
                 output.Content.SetHtmlContent(result);
             }
         }
 
-        private string RenderContentItems(List<ContentItem> contentItems, Dictionary<string, string> moduleActionResults)
+        private string RenderContentItems(List<PlaceHolder> placeHolders, Dictionary<string, string> moduleActionResults)
         {
             StringBuilder sb = new StringBuilder();
-            if (contentItems != null)
+            if (placeHolders != null)
             {
-                foreach (var contentItem in contentItems)
+                foreach (var placeHolder in placeHolders)
                 {
-                    if (contentItem != null)
-                    {                        
+                    if (placeHolder != null)
+                    {
                         ControlData controlData = new ControlData();
-                        var contentType = contentItem.Type.ToLower();                        
-                        
-                        if (contentType == "module" && moduleActionResults.ContainsKey(contentItem.Id.ToString()))
+                        IHtmlContent htmlContent;
+                        string moduleResult = null, contentResult = null;
+                        var layoutType = placeHolder.Type.ToLower();
+                        ViewContext.ViewData["isEditMode"] = false;
+
+                        if (moduleActionResults.ContainsKey(placeHolder.Id.ToString()))
                         {
-                            string moduleResult;
-                            if (moduleActionResults.TryGetValue(contentItem.Id.ToString(), out moduleResult))
+                            //Modules                            
+                            if (moduleActionResults.TryGetValue(placeHolder.Id.ToString(), out moduleResult))
                             {
-                                sb.Append(moduleResult);
+                                //sb.Append(moduleResult);
                             }
                         }
-                        else
+
+                        if (CurrentPage.PageContent.Any(pc => pc.ContainerId == placeHolder.Id))
                         {
-                            controlData.HtmlResult = RenderContentItems(contentItem.ContentItems, moduleActionResults);
-                            var htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/ContentTypes/{0}.cshtml", contentType), controlData);
-                            sb.Append(GetString(htmlContent));
+                            //Page contents
+                            var pageContents = CurrentPage.PageContent
+                                .Where(pc => pc.ContainerId == placeHolder.Id)
+                                .OrderBy(pc => pc.SortOrder);
+                            foreach (var pageContent in pageContents)
+                            {
+                                dynamic typeInfo = JsonConvert.DeserializeObject<dynamic>(pageContent.TypeInfo);
+                                string typeName = (string)typeInfo.type;
+                                ViewContext.ViewData["contentType"] = typeName;
+                                htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/ContentTypes/{0}.cshtml", typeName), pageContent);
+                                contentResult = GetString(htmlContent);
+                            }
                         }
+
+                        //Repeaters (container/colum/row)
+                        controlData.HtmlResult+= (!string.IsNullOrEmpty(moduleResult))?moduleResult: "";
+                        controlData.HtmlResult += (!string.IsNullOrEmpty(contentResult))? contentResult : "";
+                        controlData.HtmlResult += RenderContentItems(placeHolder.PlaceHolders, moduleActionResults);
+                        htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/LayoutTypes/{0}.cshtml", layoutType), controlData);
+                        sb.Append(GetString(htmlContent));
+
                         //else
                         //{
                         //    //TODO: Get items and display it correspoinding placeholder

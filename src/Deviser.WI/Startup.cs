@@ -91,28 +91,14 @@ namespace Deviser.WI
                 //jsonOutputFormatter.SerializerSettings.DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore;
                 jsonOutputFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
                 jsonOutputFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-
-                //var jsonInputFormatter = new JsonInputFormatter();
-                //jsonInputFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                //jsonInputFormatter.SerializerSettings.DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore;
-                //jsonInputFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
-                //jsonInputFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-
+                
                 var jsonOutputFormatterOld = options.OutputFormatters.FirstOrDefault(formatter => formatter is JsonOutputFormatter);
                 if (jsonOutputFormatterOld != null)
                 {
                     options.OutputFormatters.Remove(jsonOutputFormatterOld);
                 }                
                 //options.OutputFormatters.RemoveAll(formatter => formatter.Instance.GetType() == typeof(JsonOutputFormatter));
-                options.OutputFormatters.Insert(0, jsonOutputFormatter);
-
-                //var jsonInputFormatterOld = options.InputFormatters.FirstOrDefault(formatter => formatter is JsonInputFormatter);
-                //if (jsonInputFormatterOld != null)
-                //{
-                //    options.InputFormatters.Remove(jsonInputFormatterOld);
-                //}                
-                //options.InputFormatters.Insert(0, jsonInputFormatter);
-
+                options.OutputFormatters.Insert(0, jsonOutputFormatter);                
             });
 
             services.AddCaching(); // Adds a default in-memory implementation of IDistributedCache

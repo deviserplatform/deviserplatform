@@ -1,4 +1,4 @@
-﻿@model Deviser.Core.Library.DomainTypes.ControlData
+﻿@model Deviser.Core.Data.Entities.PageContent
 
 @{
     bool isEditMode = false;
@@ -11,23 +11,25 @@
     {
         contentType = (string)ViewData["contentType"];
     }
-    var pageContent = Model.PageContents.FirstOrDefault();
-    string contentEditable = (isEditMode) ? "sd-edit" : "";
 
+    string contentEditable = (isEditMode) ? "sd-edit" : "";
+    dynamic typeInfo = JsonConvert.DeserializeObject<dynamic>(Model.TypeInfo);
+    string typeName = (string)typeInfo.type;
 }
 
-@if (pageContent != null)
+@if (Model != null)
 {
     if (isEditMode)
     {
-        <div @contentEditable content-id="@pageContent.Id" container-id="@Model.ContentItem.Id" content-type="@contentType" on-save="editVM.save" ng-model="editVM.pageContents">
+        <div @contentEditable content-id="@Model.Id" container-id="@Model.ContainerId" content-type="@contentType" on-save="editVM.save" ng-model="editVM.pageContents">
             
         </div>
     }
     else
     {
         <div>
-            @pageContent.ContentData
+            Here is the text module....
+            @Model.ContentData
         </div>
     }
 

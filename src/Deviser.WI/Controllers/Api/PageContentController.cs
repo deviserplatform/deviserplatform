@@ -26,12 +26,12 @@ namespace DeviserWI.Controllers.API
 
         public PageContentController(ILifetimeScope container)
         {
+            logger = container.Resolve<ILogger<PageContentController>>();
             pageContentProvider = container.Resolve<IPageContentProvider>();
             moduleManager = container.Resolve<IModuleManager>();
         }
 
-        [HttpGet]
-        [Route("api/pagecontent/{cultureCode}/{pageId:int}")]
+        [HttpGet("{cultureCode}/{pageId}")]
         public IActionResult Get(string cultureCode, int pageId)
         {
             try
@@ -66,7 +66,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpPut]
-        public IActionResult Put(PageContent pageContent)
+        public IActionResult Put([FromBody] PageContent pageContent)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace DeviserWI.Controllers.API
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
             try

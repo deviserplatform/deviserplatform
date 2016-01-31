@@ -11,6 +11,6 @@ namespace Deviser.Core.Library.DomainTypes
     {
         public string HtmlResult { get; set; }
         public List<PageContent> PageContents { get; set; }
-        public ContentItem ContentItem { get; set; }
+        public PlaceHolder ContentItem { get; set; }
     }
 }

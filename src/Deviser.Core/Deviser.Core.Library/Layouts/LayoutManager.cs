@@ -102,14 +102,14 @@ namespace Deviser.Core.Library.Layouts
         private Layout ConvertToLayout(PageLayout pageLayout)
         {
             Layout layout = Mapper.Map<Layout>(pageLayout);
-            layout.Config = JsonConvert.SerializeObject(pageLayout.ContentItems); //JsonConvert.DeserializeObject<List<ContentItem>>(Model.Layout.Config, new ContentItemConverter());
+            layout.Config = JsonConvert.SerializeObject(pageLayout.PlaceHolders); //JsonConvert.DeserializeObject<List<ContentItem>>(Model.Layout.Config, new ContentItemConverter());
             return layout;
         }
 
         private PageLayout ConvertToPageLayout(Layout layout)
         {
             var pageLayout = Mapper.Map<PageLayout>(layout);
-            pageLayout.ContentItems = JsonConvert.DeserializeObject<List<ContentItem>>(layout.Config);
+            pageLayout.PlaceHolders = JsonConvert.DeserializeObject<List<PlaceHolder>>(layout.Config);
             return pageLayout;
 
         }
@@ -145,37 +145,37 @@ namespace Deviser.Core.Library.Layouts
             }
         }
 
-        private void CreateElement(List<ContentItem> contentItems, int pageId)
+        private void CreateElement(List<PlaceHolder> placeHolders, int pageId)
         {
-            if (contentItems != null && contentItems.Count > 0)
+            if (placeHolders != null && placeHolders.Count > 0)
             {
-                foreach (var contentItem in contentItems)
+                foreach (var placeHolder in placeHolders)
                 {
-                    if (contentItem.Type == "text")
+                    if (placeHolder.Type == "text")
                     {
                         PageContent pageContent = new PageContent
                         {
                             PageId = pageId,
-                            ContainerId = contentItem.Id,
+                            ContainerId = placeHolder.Id,
                             CultureCode = Globals.FallbackLanguage
                         };
                         pageContentProvider.Create(pageContent);
 
                     }
-                    else if (contentItem.Type == "module")
+                    else if (placeHolder.Type == "module")
                     {
                         PageModule pageModule = new PageModule
                         {
                             PageId = pageId,
-                            ModuleId = contentItem.Module.Id,
-                            ContainerId = contentItem.Id
+                            ModuleId = placeHolder.Module.Id,
+                            ContainerId = placeHolder.Id
                         };
                         pageProvider.CreatePageModule(pageModule);
                     }
 
-                    if (contentItem.ContentItems != null)
+                    if (placeHolder.PlaceHolders != null)
                     {
-                        CreateElement(contentItem.ContentItems, pageId);
+                        CreateElement(placeHolder.PlaceHolders, pageId);
                     }
                 }
             }

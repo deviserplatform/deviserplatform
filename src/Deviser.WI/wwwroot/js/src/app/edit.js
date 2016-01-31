@@ -23,29 +23,30 @@
         vm.alerts = [];
         vm.pageLayout = {};
         vm.newGuid = sdUtil.getGuid;
-        vm.dragoverCallback = dragoverCallback;
+        //vm.dragoverCallback = dragoverCallback;
         vm.dropCallback = dropCallback;
-        vm.logListEvent = logListEvent;
-        vm.logEvent = logEvent;
-        vm.saveLayout = saveLayout;
         vm.itemMoved = itemMoved;
         vm.deleteElement = deleteElement;
+        vm.selectItem = selectItem;
+        vm.copyElement = copyElement;
         vm.selectedItem = {}
         vm.deletedElements = [];
         vm.layoutAllowedTypes = ["container"];
+        vm.currentLanguage = "en-US";
 
         //vm.models = {
         //    templates: [
         //        { type: "text", id: sdUtil.getGuid() },
-        //        { type: "container", id: sdUtil.getGuid(), contentItems: [] },
-        //        { type: "column", id: sdUtil.getGuid(), contentItems: [] }
+        //        { type: "container", id: sdUtil.getGuid(), placeHolders: [] },
+        //        { type: "column", id: sdUtil.getGuid(), placeHolders: [] }
         //    ]
         //};
 
         $q.all([
             getCurrentPage(),
             getLayouts(),
-            getContentTypes()
+            getContentTypes(),
+            getPageContents()
         ]).then(function () {
             if (vm.currentPage.layoutId) {
                 var selectedLayout = _.find(vm.layouts, function (layout) {
@@ -53,6 +54,7 @@
                 });
                 if (selectedLayout) {
                     vm.pageLayout = selectedLayout;
+                    loadPageContents();
                 }
             }
             processContentTypes(vm.contentTypes);
@@ -85,8 +87,8 @@
                 //Processing the data
                 layouts = _.where(layouts, { isDeleted: false });
                 _.each(layouts, function (item) {
-                    if (item && !item.contentItems) {
-                        item.contentItems = [];
+                    if (item && !item.placeHolders) {
+                        item.placeHolders = [];
                     }
                 });
                 vm.layouts = layouts;
@@ -111,68 +113,85 @@
             return defer.promise;
         }
 
+        function getModules() {
+            var defer = $q.defer();
+            moduleService.get()
+            .then(function (data) {
+                var modules = data;
+                vm.modules = [];
+                _.each(modules, function (module) {
+                    vm.modules.push({
+                        id: getGuid(),
+                        layoutTemplate: "module",
+                        type: "module",
+                        module: module
+                    });
+                });
+                defer.resolve('data received!');
+            }, function (error) {
+                showMessage("error", SYS_ERROR_MSG);
+                deferred.reject(SYS_ERROR_MSG);
+            });
+            return defer.promise;
+        }
+
+        function getPageContents() {
+            pageContentService.get(vm.currentLanguage, appContext.currentPageId)
+            .then(function (pageContents) {
+                vm.pageContents = pageContents;
+            }, function (error) {
+                showMessage("error", SYS_ERROR_MSG);
+                defer.reject(SYS_ERROR_MSG);
+            })
+        }
+
         function processContentTypes(contentTypes) {
             if (contentTypes) {
                 _.each(contentTypes, function (contentType) {
                     contentType.id = sdUtil.getGuid();
-                    contentType.contentItems = [];
                     contentType.layoutTemplate = "content";
                 });
             }
         }
 
-        function saveLayout() {
-            processContentItems(vm.pageLayout.contentItems);
-
-            //vm.pageLayout.config = JSON.stringify(vm.pageLayout.contentItems);
-            vm.pageLayout.pageId = appContext.currentPageId;
-            if (vm.pageLayout.id > 0) {
-                //Update layout
-                layoutService.put(vm.pageLayout)
-                .then(function (data) {
-                    //console.log(data);
-                    vm.pageLayout.id = data.id;
-                    vm.pageLayout.contentItems = data.contentItems;
-                    vm.pageLayout.isChanged = false;
-                    showMessage("success", "Layout has been saved");
-                }, function (error) {
-                    showMessage("error", SYS_ERROR_MSG);
-                });
-            }
-            else {
-                //Create new layout
-                layoutService.post(vm.pageLayout)
-                .then(function (data) {
-                    console.log(data);
-                    vm.pageLayout.id = data.id;
-                    vm.pageLayout.contentItems = data.contentItems;
-                    vm.pageLayout.isChanged = false;
-                    showMessage("success", "Layout has been saved");
-                    getLayouts();
-                }, function (error) {
-                    showMessage("error", SYS_ERROR_MSG);
-                });
-            }
+        function loadPageContents() {
+            iterateLayout(vm.pageLayout.placeHolders);
         }
 
-        function processContentItems(contentItems) {
-            if (contentItems) {
-                _.each(contentItems, function (item) {
-                    console.log(item)
-                    if (item.contentItems) {
-                        processContentItems(item.contentItems);
+        function iterateLayout(placeHolders) {
+            if (placeHolders) {
+                _.each(placeHolders, function (item) {
+                    //console.log(item)
+
+                    //Load content items if found
+                    var placeHolderInfos = _.where(vm.pageContents, { containerId: item.id });
+                    if (placeHolderInfos) {
+                        _.each(placeHolderInfos, function (placeHolderInfo) {
+                            var index = placeHolderInfo.sortOrder - 1;
+                            var placeHolder = JSON.parse(placeHolderInfo.typeInfo);
+                            item.placeHolders.splice(index, 0, placeHolder); //Insert placeHolder into specified index
+                        });
+                    }
+
+                    if (item.placeHolders) {
+                        iterateLayout(item.placeHolders);
                     }
                 });
             }
         }
 
-        function dragoverCallback(event, index, item) {
-            console.log(item)
-            return index > 0;
+        //function dragoverCallback(event, index, item) {
+        //    console.log(item)
+        //    return index > 0;
+        //}
+
+        function copyElement(contentType) {
+            contentType.id = vm.newGuid();
         }
 
         function dropCallback(event, index, item) {
-            //createElement(item);
+            var parentScope = $(event.currentTarget).scope().$parent;
+            createElement(item, parentScope.item.id);
             return item;
         }
 
@@ -181,10 +200,79 @@
             return item;
         }
 
-        function itemMoved(item, index) {
-            item.contentItems.splice(index, 1);
+        function selectItem(item) {
+            if (item.layoutTemplate === "content" || item.layoutTemplate === "module") {
+                vm.selectedItem = item;
+            }
         }
 
+        function itemMoved(item, index) {
+            item.placeHolders.splice(index, 1);
+        }
+
+        function deleteItem(item) {
+            if (item.layoutTemplate === "content") {
+                deleteContent(item.id);
+            }
+            else if (item.layoutTemplate === "module") {
+                deleteModule(item.id);
+            }
+        }
+
+        function createElement(item, containerId) {
+            if (item.layoutTemplate === "content") {
+                createContent(item, containerId);
+            }
+            else if (item.layoutTemplate === "module") {
+                createModule(item.module.id, containerId);
+            }
+        }
+
+        function createContent(item, containerId) {
+            var content = {
+                id: item.id,
+                pageId: appContext.currentPageId,
+                typeInfo: JSON.stringify(item),
+                containerId: containerId,
+                sortOrder : item.index,
+                cultureCode: vm.currentLanguage //TODO: get this from appContext
+            }
+            pageContentService.post(content).then(function (data) {
+                console.log(data);
+            }, function (error) {
+                showMessage("error", SYS_ERROR_MSG);
+            });
+        }
+
+        function createModule(moduleId, containerId) {
+            var pageModule = {
+                pageId: appContext.currentPageId,
+                moduleId: moduleId,
+                containerId: containerId
+                //Modules are not multilingual
+            }
+            pageModuleService.post(pageModule).then(function (data) {
+                console.log(data);
+            }, function (error) {
+                showMessage("error", SYS_ERROR_MSG);
+            });
+        }
+
+        function deleteContent(contentId) {
+            pageContentService.remove(contentId).then(function (data) {
+                console.log(data);
+            }, function (error) {
+                showMessage("error", SYS_ERROR_MSG);
+            });
+        }
+
+        function deleteModule(moduleId) {
+            pageModuleService.remove(moduleId).then(function (data) {
+                console.log(data);
+            }, function (error) {
+                showMessage("error", SYS_ERROR_MSG);
+            });
+        }
 
         function logListEvent(action, event, index, external, type) {
             var message = external ? 'External ' : '';

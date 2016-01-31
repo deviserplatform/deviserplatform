@@ -11,10 +11,10 @@
 
 <div class="container-fluid body-content" ng-app="deviserLayout">
     <div class="col-md-12" ng-controller="LayoutCtrl as layoutVM">
-        <script type="text/ng-template" id="contentItems.html">
+        <script type="text/ng-template" id="placeHolders.html">
             <div ng-bind="parentItem = item" style="display:none"></div>
             <div class="content-item"
-                 ng-repeat="item in parentItem.contentItems"
+                 ng-repeat="item in parentItem.placeHolders"
                  dnd-draggable="item"
                  dnd-type="item.type"
                  dnd-effect-allowed="move"
@@ -31,10 +31,10 @@
                 <h3>{{item.type}} {{item.index}} container</h3>
                 <div class="container-content">
                     <div class="row dnd-list"
-                         dnd-list="item.contentItems"
+                         dnd-list="item.placeHolders"
                          dnd-allowed-types="item.allowedTypes"
                          dnd-drop="layoutVM.dropCallback(event, index, item)">
-                        <div ng-include="'contentItems.html'"></div>
+                        <div ng-include="'placeHolders.html'"></div>
                     </div>
                 </div>
             </div>
@@ -45,11 +45,11 @@
                 <h3>{{item.type}} {{item.index}}</h3>
                 <div class="container-content">
                     <div class="row dnd-list"
-                         dnd-list="item.contentItems"
+                         dnd-list="item.placeHolders"
                          dnd-horizontal-list="true"
                          dnd-allowed-types="item.allowedTypes"
                          dnd-drop="layoutVM.dropCallback(event, index, item)">
-                        <div ng-include="'contentItems.html'"></div>
+                        <div ng-include="'placeHolders.html'"></div>
                     </div>
                 </div>
             </div>
@@ -61,10 +61,10 @@
                     <h3>{{item.type}} {{item.index}}</h3>
                     <div class="container-content">
                         <div class="row dnd-list"
-                             dnd-list="item.contentItems"
+                             dnd-list="item.placeHolders"
                              dnd-allowed-types="item.allowedTypes"
                              dnd-drop="layoutVM.dropCallback(event, index, item)">
-                            <div ng-include="'contentItems.html'"></div>
+                            <div ng-include="'placeHolders.html'"></div>
                         </div>
                     </div>
                 </div>
@@ -76,10 +76,10 @@
                 <h3>{{item.type}} {{item.index}} repeater</h3>
                 <div class="container-content">
                     <div class="row dnd-list"
-                         dnd-list="item.contentItems"
+                         dnd-list="item.placeHolders"
                          dnd-allowed-types="item.allowedTypes"
                          dnd-drop="layoutVM.dropCallback(event, index, item)">
-                        <div ng-include="'contentItems.html'"></div>
+                        <div ng-include="'placeHolders.html'"></div>
                     </div>
                 </div>
             </div>
@@ -144,11 +144,11 @@
                             <!-- The dropzone also uses the list template -->
                             <h3>Page Container</h3>
                             <div class="row dnd-list"
-                                 dnd-list="layoutVM.pageLayout.contentItems"
+                                 dnd-list="layoutVM.pageLayout.placeHolders"
                                  dnd-allowed-types="layoutVM.layoutAllowedTypes"
                                  dnd-drop="layoutVM.dropCallback(event, index, item)">
                                 <div class="content-item"
-                                     ng-repeat="item in layoutVM.pageLayout.contentItems"
+                                     ng-repeat="item in layoutVM.pageLayout.placeHolders"
                                      dnd-draggable="item"
                                      dnd-type="item.type"
                                      dnd-effect-allowed="move"

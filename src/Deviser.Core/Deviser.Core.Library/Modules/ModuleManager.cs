@@ -17,9 +17,11 @@ namespace Deviser.Core.Library.Modules
 
         IPageProvider pageProvider;
         IPageContentProvider pageContentProvider;
+        ILifetimeScope container;
 
         public ModuleManager(ILifetimeScope container)
         {
+            this.container = container;
             logger = container.Resolve<ILogger<ModuleManager>>();
             pageProvider = container.Resolve<IPageProvider>();
             pageContentProvider = container.Resolve<IPageContentProvider>();
@@ -56,10 +58,10 @@ namespace Deviser.Core.Library.Modules
                 PageContent result = pageContentProvider.Get(pageContent.Id);
                 if (result == null)
                     result = pageContentProvider.Create(pageContent);
-                else if (result.IsDeleted)
-                {
-                    result.IsDeleted = false;
-                    result = pageContentProvider.Update(result);
+                else
+                {                    
+                    pageContent.IsDeleted = false;
+                    result = pageContentProvider.Update(pageContent);
                 }
                 return result;
             }
