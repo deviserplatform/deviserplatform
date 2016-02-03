@@ -67,11 +67,11 @@ namespace Deviser.Core.Library.Controllers
             return actionResults;
         }
 
-        public async Task<string> ExecuteModuleController(ActionContext actionContext, string moduleName, int pageModuleId, string controllerName, string actionName)
+        public async Task<string> ExecuteModuleController(ActionContext actionContext, string moduleName, Guid pageModuleId, string controllerName, string actionName)
         {
             string actionResult = null;
             Module module = moduleProvider.Get(moduleName);
-            if (module == null || pageModuleId == 0)
+            if (module == null || pageModuleId == Guid.Empty)
                 return "Invalid module or module context";
 
             ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.ModuleActionType.ControlType == "VIEW");

@@ -33,7 +33,7 @@ namespace Deviser.Core.Library.Modules
             {
                 if (pageModule != null)
                 {
-                    PageModule result = pageProvider.GetPageModule(pageModule.ContainerId);                    
+                    PageModule result = pageProvider.GetPageModuleByContainer(pageModule.ContainerId);                    
                     if (result == null)
                         result = pageProvider.CreatePageModule(pageModule);
                     else if(result.IsDeleted)

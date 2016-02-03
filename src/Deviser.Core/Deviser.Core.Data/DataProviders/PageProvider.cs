@@ -20,8 +20,8 @@ namespace Deviser.Core.Data.DataProviders
         Page UpdatePageTree(Page page);
         List<PageTranslation> GetPageTranslations(string locale);
         List<PageModule> GetPageModules(int pageId);
-        PageModule GetPageModule(int pageModuleId);
-        PageModule GetPageModule(Guid containerId);
+        PageModule GetPageModule(Guid pageModuleId);
+        PageModule GetPageModuleByContainer(Guid containerId);
         PageModule CreatePageModule(PageModule pageModule);
         PageModule UpdatePageModule(PageModule pageModule);
 
@@ -225,7 +225,7 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
-        public PageModule GetPageModule(int pageModuleId)
+        public PageModule GetPageModule(Guid pageModuleId)
         {
             try
             {
@@ -243,7 +243,7 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
-        public PageModule GetPageModule(Guid containerId)
+        public PageModule GetPageModuleByContainer(Guid containerId)
         {
             try
             {

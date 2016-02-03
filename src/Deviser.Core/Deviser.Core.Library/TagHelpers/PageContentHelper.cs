@@ -106,24 +106,14 @@ namespace Deviser.Core.Library.TagHelpers
                                 contentResult = GetString(htmlContent);
                             }
                         }
-
+                        //TODO: Sort order (1. within module, 2.within contents, 3. mix of modules, contents and placeholders) will not work, later it should be implemented
                         //Repeaters (container/colum/row)
                         controlData.HtmlResult+= (!string.IsNullOrEmpty(moduleResult))?moduleResult: "";
                         controlData.HtmlResult += (!string.IsNullOrEmpty(contentResult))? contentResult : "";
                         controlData.HtmlResult += RenderContentItems(placeHolder.PlaceHolders, moduleActionResults);
                         htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/LayoutTypes/{0}.cshtml", layoutType), controlData);
                         sb.Append(GetString(htmlContent));
-
-                        //else
-                        //{
-                        //    //TODO: Get items and display it correspoinding placeholder
-                        //    result = "This is text";
-                        //    controlData.ContentItem = contentItem;
-                        //    controlData.PageContents = CurrentPage.PageContent.Where(pc => pc.ContainerId == contentItem.Id).ToList();
-                        //    controlData.HtmlResult = RenderContentItems(contentItem.ContentItems, moduleActionResults);
-                        //    var htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/ContentTypes/{0}.cshtml", contentType), controlData);
-                        //    sb.Append(GetString(htmlContent));
-                        //}
+                        
                     }
                 }
             }

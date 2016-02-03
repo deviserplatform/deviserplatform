@@ -10,6 +10,6 @@ namespace Deviser.Core.Library.DomainTypes
     public class ModuleContext
     {
         public Module ModuleInfo { get; set; }
-        public int PageModuleId { get; set; }
+        public Guid PageModuleId { get; set; }
     }
 }

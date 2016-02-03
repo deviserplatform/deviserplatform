@@ -18,12 +18,13 @@ namespace DeviserWI.Controllers.API
     [Route("api/[controller]")]
     public class ModuleController : Controller
     {
-        private readonly ILogger<LayoutController> logger;
+        private ILogger<LayoutController> logger;
 
         IModuleProvider moduleProvider;
 
         public ModuleController(ILifetimeScope container)
         {
+            logger = container.Resolve<ILogger<LayoutController>>();
             moduleProvider = container.Resolve<IModuleProvider>();
         }
 

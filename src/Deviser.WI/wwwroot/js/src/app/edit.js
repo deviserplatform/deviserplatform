@@ -46,6 +46,7 @@
             getCurrentPage(),
             getLayouts(),
             getContentTypes(),
+            getModules(),
             getPageContents()
         ]).then(function () {
             if (vm.currentPage.layoutId) {
@@ -121,7 +122,7 @@
                 vm.modules = [];
                 _.each(modules, function (module) {
                     vm.modules.push({
-                        id: getGuid(),
+                        id: sdUtil.getGuid(),
                         layoutTemplate: "module",
                         type: "module",
                         module: module
@@ -164,13 +165,28 @@
                     //console.log(item)
 
                     //Load content items if found
-                    var placeHolderInfos = _.where(vm.pageContents, { containerId: item.id });
-                    if (placeHolderInfos) {
-                        _.each(placeHolderInfos, function (placeHolderInfo) {
-                            var index = placeHolderInfo.sortOrder - 1;
-                            var placeHolder = JSON.parse(placeHolderInfo.typeInfo);
-                            item.placeHolders.splice(index, 0, placeHolder); //Insert placeHolder into specified index
+                    var pageContents = _.where(vm.pageContents, { containerId: item.id });
+                    if (pageContents) {
+                        _.each(pageContents, function (content) {
+                            var index = content.sortOrder - 1;
+                            var contentTypeInfo = JSON.parse(content.typeInfo);
+                            item.placeHolders.splice(index, 0, contentTypeInfo); //Insert placeHolder into specified index
                         });
+                    }
+
+                    //Load modules if found
+                    var pageModules = _.where(vm.currentPage.pageModule, { containerId: item.id });
+                    if (pageModules) {
+                        _.each(pageModules, function (pageModule) {
+                            var index = pageModule.sortOrder - 1;
+                            var module = {
+                                id:pageModule.id,
+                                layoutTemplate: "module",
+                                type: "module",
+                                module: pageModule.module
+                            };//JSON.parse(pageModule.module);
+                            item.placeHolders.splice(index, 0, module); //Insert placeHolder into specified index
+                        })
                     }
 
                     if (item.placeHolders) {
@@ -196,7 +212,7 @@
         }
 
         function deleteElement(event, index, item) {
-            //deleteItem(item);
+            deleteItem(item);
             return item;
         }
 
@@ -224,7 +240,7 @@
                 createContent(item, containerId);
             }
             else if (item.layoutTemplate === "module") {
-                createModule(item.module.id, containerId);
+                createModule(item, containerId);
             }
         }
 
@@ -244,11 +260,13 @@
             });
         }
 
-        function createModule(moduleId, containerId) {
+        function createModule(item, containerId) {
             var pageModule = {
+                id: item.id,
                 pageId: appContext.currentPageId,
-                moduleId: moduleId,
-                containerId: containerId
+                moduleId: item.module.id,
+                containerId: containerId,
+                sortOrder: item.index
                 //Modules are not multilingual
             }
             pageModuleService.post(pageModule).then(function (data) {

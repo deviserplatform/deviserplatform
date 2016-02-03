@@ -34,7 +34,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpPost]
-        public IActionResult Post(PageModule pageModule)
+        public IActionResult Post([FromBody]PageModule pageModule)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace DeviserWI.Controllers.API
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
             try

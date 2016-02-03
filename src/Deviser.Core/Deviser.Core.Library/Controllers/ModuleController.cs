@@ -39,7 +39,7 @@ namespace Deviser.Core.Library.Controllers
 
             if(ActionContext.RouteData.Values.TryGetValue("pageModuleId", out pageModuleId))
             {
-                ModuleContext.PageModuleId = (int)pageModuleId;
+                ModuleContext.PageModuleId = (Guid)pageModuleId;
             }
         }
     }

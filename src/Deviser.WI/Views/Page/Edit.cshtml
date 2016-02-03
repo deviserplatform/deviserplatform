@@ -74,7 +74,7 @@
         <script type="text/ng-template" id="repeater.html">
             <div class="container-element box-layout box-grey">
                 <div ng-bind="item.index = $index+1" style="display:none"></div>
-                <h3>{{item.type}} {{item.index}} repeater</h3>
+                <h3>{{item.type}} {{item.index}}</h3>
                 <div class="container-content">
                     <div class="row dnd-list"
                          dnd-list="item.placeHolders"
@@ -88,7 +88,7 @@
         <script type="text/ng-template" id="content.html">
             <div class="container-element box box-blue">
                 <div ng-bind="item.index = $index+1" style="display:none"></div>
-                <h3>{{item.type}} {{item.index}} content</h3>
+                <h3>{{item.type}} {{item.index}}</h3>
                 <div class="container-content">
 
                 </div>
@@ -97,7 +97,7 @@
         <script type="text/ng-template" id="module.html">
             <div class="container-element box box-blue">
                 <div ng-bind="item.index = $index+1" style="display:none"></div>
-                <h3>{{item.type}} {{item.index}} module</h3>
+                <h3>{{item.module.name}} {{item.index}}</h3>
                 <div class="container-content">
 
                 </div>
@@ -128,6 +128,20 @@
                              dnd-effect-allowed="copy"
                              dnd-copied="editVM.copyElement(contentType)">
                             <button type="button" class="btn btn-default">{{contentType.type}}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbox box box-grey box-padding">
+                    <h3>Modules</h3>
+                    <div>
+                        <!-- The toolbox only allows to copy objects, not move it. After a new
+            element was created, dnd-copied is invoked and we generate the next id -->
+                        <div ng-repeat="module in editVM.modules track by $index"
+                             dnd-type="module.type"
+                             dnd-draggable="module"
+                             dnd-effect-allowed="copy"
+                             dnd-copied="editVM.copyElement(module)">
+                            <button type="button" class="btn btn-default">{{module.module.name}}</button>
                         </div>
                     </div>
                 </div>
