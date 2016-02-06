@@ -1,0 +1,17 @@
+﻿@model Deviser.Core.Data.Entities.PageContent
+
+@{
+    bool isEditMode = false;    
+    if (ViewData["isEditMode"] != null)
+    {
+        isEditMode = (bool)ViewData["isEditMode"];
+    }
+    dynamic typeInfo = JsonConvert.DeserializeObject<dynamic>(Model.TypeInfo);
+}
+
+@if (Model != null)
+{
+    <div>            
+        @Model.ContentData
+    </div>
+}

@@ -48,10 +48,17 @@
         ////////////////////////////////
         /*Function declarations only*/
 
-        function get(cultureCode, id) {
+        function get() {
             var getUrl = url;
-            if (id) {
-                getUrl = url + '/' + cultureCode + '/' + id;
+
+            if (arguments[0] && arguments[1]) {
+                var cultureCode = arguments[1],
+                    pageId = arguments[0];
+                getUrl = url + '/' + cultureCode + '/' + pageId;
+            }
+            else if (arguments[0]) {
+                var pageContentId = arguments[0];
+                getUrl = url + '/' + pageContentId;
             }
 
             var request = $http({

@@ -31,6 +31,23 @@ namespace DeviserWI.Controllers.API
             moduleManager = container.Resolve<IModuleManager>();
         }
 
+        [HttpGet("{contentId}")]
+        public IActionResult Get(Guid contentId)
+        {
+            try
+            {
+                var result = pageContentProvider.Get(contentId);
+                if (result != null)
+                    return Ok(result);
+                return HttpNotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting page content, contentId: {0}", contentId), ex);
+                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpGet("{cultureCode}/{pageId}")]
         public IActionResult Get(string cultureCode, int pageId)
         {

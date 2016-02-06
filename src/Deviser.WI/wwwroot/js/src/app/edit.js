@@ -9,19 +9,26 @@
     'deviser.config'
     ]);
 
-    app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'sdUtil', 'layoutService', 'pageService',
+    app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$modal', 'globals', 'sdUtil', 'layoutService', 'pageService',
         'contentTypeService', 'pageContentService', 'moduleService', 'pageModuleService', editCtrl]);
 
+    app.controller('EditContentCtrl', ['$scope', '$modalInstance', 'pageContentService', 'contentInfo', editContentCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
-    function editCtrl($scope, $timeout, $filter, $q, globals, sdUtil, layoutService, pageService,
+    function editCtrl($scope, $timeout, $filter, $q, $modal, globals, sdUtil, layoutService, pageService,
         contentTypeService, pageContentService, moduleService, pageModuleService) {
         var vm = this;
 
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
         vm.pageLayout = {};
+        vm.selectedItem = {}
+        vm.deletedElements = [];
+        vm.layoutAllowedTypes = ["container"];
+        vm.currentLanguage = "en-US";
+
+        //Method binding
         vm.newGuid = sdUtil.getGuid;
         //vm.dragoverCallback = dragoverCallback;
         vm.dropCallback = dropCallback;
@@ -29,44 +36,86 @@
         vm.deleteElement = deleteElement;
         vm.selectItem = selectItem;
         vm.copyElement = copyElement;
-        vm.selectedItem = {}
-        vm.deletedElements = [];
-        vm.layoutAllowedTypes = ["container"];
-        vm.currentLanguage = "en-US";
+        vm.editContent = editContent;
+        
+        init();
 
-        //vm.models = {
-        //    templates: [
-        //        { type: "text", id: sdUtil.getGuid() },
-        //        { type: "container", id: sdUtil.getGuid(), placeHolders: [] },
-        //        { type: "column", id: sdUtil.getGuid(), placeHolders: [] }
-        //    ]
-        //};
+        /////////////////////////////////////////////
+        /*Function declarations only*/
 
-        $q.all([
+        //Event handlers
+        function dropCallback(event, index, item) {
+            var parentScope = $(event.currentTarget).scope().$parent;
+            createElement(item, parentScope.item.id);
+            return item;
+        }
+
+        function itemMoved(item, index) {
+            item.placeHolders.splice(index, 1);
+        }
+
+        function deleteElement(event, index, item) {
+            deleteItem(item);
+            return item;
+        }
+
+        function selectItem(item) {
+            if (item.layoutTemplate === "content" || item.layoutTemplate === "module") {
+                vm.selectedItem = item;
+            }
+        }
+
+        function copyElement(contentType) {
+            contentType.id = vm.newGuid();
+        }
+
+        function editContent(content) {
+            var defer = $q.defer();
+            var modalInstance = $modal.open({
+                animation: true,
+                templateUrl: 'contenttypes/' + content.type + '.html',
+                controller: 'EditContentCtrl as ecVM',
+                resolve: {
+                    contentInfo: function () {
+                        var returnObject = content;
+
+                        return returnObject;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selectedItem) {
+                //$log.info('Modal Oked at: ' + new Date());
+                defer.resolve('data received!');
+            }, function () {
+                //$log.info('Modal dismissed at: ' + new Date());
+                defer.reject(SYS_ERROR_MSG);
+            });
+            return defer.promise;
+        }
+
+        //Private functions
+        function init() {
+            $q.all([
             getCurrentPage(),
             getLayouts(),
             getContentTypes(),
             getModules(),
             getPageContents()
-        ]).then(function () {
-            if (vm.currentPage.layoutId) {
-                var selectedLayout = _.find(vm.layouts, function (layout) {
-                    return layout.id === vm.currentPage.layoutId;
-                });
-                if (selectedLayout) {
-                    vm.pageLayout = selectedLayout;
-                    loadPageContents();
+            ]).then(function () {
+                if (vm.currentPage.layoutId) {
+                    var selectedLayout = _.find(vm.layouts, function (layout) {
+                        return layout.id === vm.currentPage.layoutId;
+                    });
+                    if (selectedLayout) {
+                        vm.pageLayout = selectedLayout;
+                        loadPageContents();
+                    }
                 }
-            }
-            processContentTypes(vm.contentTypes);
-        });
+                processContentTypes(vm.contentTypes);
+            });
+        }
 
-        //$scope.$watch('models.dropzones', function (model) {
-        //    vm.modelAsJson = angular.toJson(model, true);
-        //}, true);
-
-        /////////////////////////////////////////////
-        /*Function declarations only*/
         function getCurrentPage() {
             var defer = $q.defer();
             pageService.get(appContext.currentPageId)
@@ -137,7 +186,7 @@
         }
 
         function getPageContents() {
-            pageContentService.get(vm.currentLanguage, appContext.currentPageId)
+            pageContentService.get(appContext.currentPageId, vm.currentLanguage)
             .then(function (pageContents) {
                 vm.pageContents = pageContents;
             }, function (error) {
@@ -195,37 +244,7 @@
                 });
             }
         }
-
-        //function dragoverCallback(event, index, item) {
-        //    console.log(item)
-        //    return index > 0;
-        //}
-
-        function copyElement(contentType) {
-            contentType.id = vm.newGuid();
-        }
-
-        function dropCallback(event, index, item) {
-            var parentScope = $(event.currentTarget).scope().$parent;
-            createElement(item, parentScope.item.id);
-            return item;
-        }
-
-        function deleteElement(event, index, item) {
-            deleteItem(item);
-            return item;
-        }
-
-        function selectItem(item) {
-            if (item.layoutTemplate === "content" || item.layoutTemplate === "module") {
-                vm.selectedItem = item;
-            }
-        }
-
-        function itemMoved(item, index) {
-            item.placeHolders.splice(index, 1);
-        }
-
+        
         function deleteItem(item) {
             if (item.layoutTemplate === "content") {
                 deleteContent(item.id);
@@ -290,18 +309,7 @@
             }, function (error) {
                 showMessage("error", SYS_ERROR_MSG);
             });
-        }
-
-        function logListEvent(action, event, index, external, type) {
-            var message = external ? 'External ' : '';
-            message += type + ' element is ' + action + ' position ' + index;
-            vm.logEvent(message, event);
-        }
-
-        function logEvent(message, event) {
-            console.log(message, '(triggered by the following', event.type, 'event)');
-            console.log(event);
-        }
+        }        
 
         function showMessage(messageType, messageContent) {
             vm.message = {
@@ -316,7 +324,50 @@
                 };
             }, globals.appSettings.alertLifeTime);
         }
-
     }
+
+    function editContentCtrl($scope, $modalInstance, pageContentService, contentInfo) {
+        var vm = this;
+
+        vm.contentId = contentInfo.id;
+        vm.save = save;
+        vm.cancel = cancel;
+
+        init();
+
+        /////////////////////////////////////////////
+        /*Function declarations only*/
+        //Event handlers
+        function save() {            
+            pageContentService.put(vm.pageContent).then(
+                function (data) {
+                    console.log(data);
+                    $modalInstance.close('ok');
+                }, function (error) {
+                    showMessage("error", SYS_ERROR_MSG);
+                });
+        }
+
+        function cancel() {
+            $modalInstance.dismiss('cancel');
+        }
+
+        //Private functions
+        function init() {
+            getPageContents();
+        }
+
+        function getPageContents() {
+            pageContentService.get(vm.contentId).then(
+                function (data) {
+                    console.log(data);
+                    vm.pageContent = data;
+                    vm.typeInfo = JSON.parse(vm.pageContent.typeInfo);
+                }, function (error) {
+                    showMessage("error", SYS_ERROR_MSG);
+                });
+        }
+
+    };
 
 }());

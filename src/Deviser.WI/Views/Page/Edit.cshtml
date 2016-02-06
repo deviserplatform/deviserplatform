@@ -88,7 +88,17 @@
         <script type="text/ng-template" id="content.html">
             <div class="container-element box box-blue">
                 <div ng-bind="item.index = $index+1" style="display:none"></div>
-                <h3>{{item.type}} {{item.index}}</h3>
+                <div class="content-header clearfix">
+                    <div class="content-title">
+                        {{item.type}} {{item.index}}
+                    </div>                    
+                    <div class="content-controls" dnd-nodrag>
+                        <a class="btn blue-hoki" ng-click="editVM.editContent(item)">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                    </div>
+                </div>
+                
                 <div class="container-content">
 
                 </div>
@@ -103,6 +113,10 @@
                 </div>
             </div>
         </script>
+
+        @Html.Partial("/views/shared/contenttypes/edit/text.cshtml")
+
+
         <h3 class="page-title">
             Page Editor
             <small>edit the page</small>
@@ -135,7 +149,7 @@
                     <h3>Modules</h3>
                     <div>
                         <!-- The toolbox only allows to copy objects, not move it. After a new
-            element was created, dnd-copied is invoked and we generate the next id -->
+                        element was created, dnd-copied is invoked and we generate the next id -->
                         <div ng-repeat="module in editVM.modules track by $index"
                              dnd-type="module.type"
                              dnd-draggable="module"
@@ -161,7 +175,7 @@
                             <h3>Page Container</h3>
                             <div class="row dnd-list"
                                  dnd-list="editVM.pageLayout.placeHolders"
-                                 dnd-allowed-types="editVM.layoutAllowedTypes"                                 
+                                 dnd-allowed-types="editVM.layoutAllowedTypes"
                                  dnd-drop="editVM.dropCallback(event, index, item)">
                                 <div class="content-item"
                                      ng-repeat="item in editVM.pageLayout.placeHolders"

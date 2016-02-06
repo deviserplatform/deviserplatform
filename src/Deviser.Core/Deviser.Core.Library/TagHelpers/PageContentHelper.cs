@@ -102,7 +102,7 @@ namespace Deviser.Core.Library.TagHelpers
                                 dynamic typeInfo = JsonConvert.DeserializeObject<dynamic>(pageContent.TypeInfo);
                                 string typeName = (string)typeInfo.type;
                                 ViewContext.ViewData["contentType"] = typeName;
-                                htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/ContentTypes/{0}.cshtml", typeName), pageContent);
+                                htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/ContentTypes/View/{0}.cshtml", typeName), pageContent);
                                 contentResult = GetString(htmlContent);
                             }
                         }
