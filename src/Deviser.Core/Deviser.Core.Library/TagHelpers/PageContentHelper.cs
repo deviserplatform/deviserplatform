@@ -33,7 +33,7 @@ namespace Deviser.Core.Library.TagHelpers
         public Page CurrentPage { get; set; }
 
         [HtmlAttributeName(ModuleResultAttributeName)]
-        public Dictionary<string, string> ModuleActionResults { get; set; }
+        public Dictionary<string, List<ContentResult>> ModuleActionResults { get; set; }
 
         [HtmlAttributeNotBound]
         [ViewContext]
@@ -67,7 +67,7 @@ namespace Deviser.Core.Library.TagHelpers
             }
         }
 
-        private string RenderContentItems(List<PlaceHolder> placeHolders, Dictionary<string, string> moduleActionResults)
+        private string RenderContentItems(List<PlaceHolder> placeHolders, Dictionary<string, List<ContentResult>> moduleActionResults)
         {
             StringBuilder sb = new StringBuilder();
             if (placeHolders != null)
@@ -76,9 +76,11 @@ namespace Deviser.Core.Library.TagHelpers
                 {
                     if (placeHolder != null)
                     {
-                        ControlData controlData = new ControlData();
-                        IHtmlContent htmlContent;
-                        string moduleResult = null, contentResult = null;
+                        //ControlData controlData = new ControlData();
+                        string currentResult="";
+                        List<ContentResult> currentResults = new List<ContentResult>();
+                        IHtmlContent htmlContent;                        
+                        List<ContentResult> moduleResult = null;
                         var layoutType = placeHolder.Type.ToLower();
                         ViewContext.ViewData["isEditMode"] = false;
 
@@ -88,12 +90,13 @@ namespace Deviser.Core.Library.TagHelpers
                             if (moduleActionResults.TryGetValue(placeHolder.Id.ToString(), out moduleResult))
                             {
                                 //sb.Append(moduleResult);
+                                currentResults.AddRange(moduleResult);
                             }
                         }
 
                         if (CurrentPage.PageContent.Any(pc => pc.ContainerId == placeHolder.Id))
                         {
-                            //Page contents
+                            //Page contents                            
                             var pageContents = CurrentPage.PageContent
                                 .Where(pc => pc.ContainerId == placeHolder.Id)
                                 .OrderBy(pc => pc.SortOrder);
@@ -103,16 +106,40 @@ namespace Deviser.Core.Library.TagHelpers
                                 string typeName = (string)typeInfo.type;
                                 ViewContext.ViewData["contentType"] = typeName;
                                 htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/ContentTypes/View/{0}.cshtml", typeName), pageContent);
-                                contentResult = GetString(htmlContent);
+                                var contentResult = GetString(htmlContent);
+                                currentResults.Add(new ContentResult
+                                {
+                                    Result = contentResult,
+                                    SortOrder = pageContent.SortOrder
+                                });
                             }
                         }
+
+
+                        var placeHolderResult = RenderContentItems(placeHolder.PlaceHolders, moduleActionResults);
+                        currentResults.Add(new ContentResult
+                        {
+                            Result = placeHolderResult,
+                            SortOrder = placeHolder.Index
+                        });
+
+                        var sortedResult = currentResults.OrderBy(r => r.SortOrder).ToList();
+                        foreach(var contentResult in sortedResult)
+                        {
+                            currentResult += contentResult.Result;
+                        }
+
                         //TODO: Sort order (1. within module, 2.within contents, 3. mix of modules, contents and placeholders) will not work, later it should be implemented
                         //Repeaters (container/colum/row)
-                        controlData.HtmlResult+= (!string.IsNullOrEmpty(moduleResult))?moduleResult: "";
-                        controlData.HtmlResult += (!string.IsNullOrEmpty(contentResult))? contentResult : "";
-                        controlData.HtmlResult += RenderContentItems(placeHolder.PlaceHolders, moduleActionResults);
-                        htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/LayoutTypes/{0}.cshtml", layoutType), controlData);
-                        sb.Append(GetString(htmlContent));
+                        //currentResult += (!string.IsNullOrEmpty(moduleResult.Result))?moduleResult.Result: "";
+                        //currentResult += (!string.IsNullOrEmpty(contentResult))? contentResult : "";
+                        //currentResult += RenderContentItems(placeHolder.PlaceHolders, moduleActionResults);
+
+
+
+                        htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/LayoutTypes/{0}.cshtml", layoutType), currentResult);
+                        var layoutResult = GetString(htmlContent);
+                        sb.Append(layoutResult);
                         
                     }
                 }

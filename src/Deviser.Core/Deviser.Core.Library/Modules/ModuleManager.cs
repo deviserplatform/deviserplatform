@@ -33,12 +33,14 @@ namespace Deviser.Core.Library.Modules
             {
                 if (pageModule != null)
                 {
-                    PageModule result = pageProvider.GetPageModuleByContainer(pageModule.ContainerId);                    
+                    PageModule result = pageProvider.GetPageModule(pageModule.Id);                    
                     if (result == null)
                         result = pageProvider.CreatePageModule(pageModule);
-                    else if(result.IsDeleted)
+                    else 
                     {
                         result.IsDeleted = false;
+                        result.ContainerId = pageModule.ContainerId;
+                        result.SortOrder = pageModule.SortOrder;                        
                         result = pageProvider.UpdatePageModule(result);
                     }                        
                     return result;
@@ -61,7 +63,10 @@ namespace Deviser.Core.Library.Modules
                 else
                 {                    
                     pageContent.IsDeleted = false;
-                    result = pageContentProvider.Update(pageContent);
+                    result.ContainerId = pageContent.ContainerId;
+                    result.SortOrder = pageContent.SortOrder;
+                    result.LastModifiedDate = DateTime.Now;
+                    result = pageContentProvider.Update(result);
                 }
                 return result;
             }

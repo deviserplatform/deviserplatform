@@ -20,6 +20,8 @@
         contentTypeService, pageContentService, moduleService, pageModuleService) {
         var vm = this;
 
+        var containerIds = [];
+
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
         vm.pageLayout = {};
@@ -37,7 +39,9 @@
         vm.selectItem = selectItem;
         vm.copyElement = copyElement;
         vm.editContent = editContent;
+
         
+
         init();
 
         /////////////////////////////////////////////
@@ -46,12 +50,15 @@
         //Event handlers
         function dropCallback(event, index, item) {
             var parentScope = $(event.currentTarget).scope().$parent;
-            createElement(item, parentScope.item.id);
+            var containerId = parentScope.item.id;
+            //createElement(item, containerId);            
             return item;
         }
 
         function itemMoved(item, index) {
             item.placeHolders.splice(index, 1);
+            //sorting elements after old element has been moved
+            sortElements();
         }
 
         function deleteElement(event, index, item) {
@@ -109,6 +116,7 @@
                     });
                     if (selectedLayout) {
                         vm.pageLayout = selectedLayout;
+                        vm.pageLayout.pageId = vm.currentPage.id;
                         loadPageContents();
                     }
                 }
@@ -205,13 +213,53 @@
         }
 
         function loadPageContents() {
-            iterateLayout(vm.pageLayout.placeHolders);
+            
+            var unAssignedContents = [],
+                unAssignedModules = [];
+
+            var containerIds = [];
+
+            positionPageContents(vm.pageLayout.placeHolders);
+
+            var unAssignedSrcConents = _.reject(vm.pageContents, function (content) {
+                return _.contains(containerIds, content.containerId);
+            });
+
+            var unAssignedSrcModules = _.reject(vm.currentPage.pageModule, function (module) {
+                return _.contains(containerIds, module.containerId);
+            });
+
+            _.each(unAssignedSrcConents, function (content) {
+                var index = content.sortOrder - 1;
+                var contentTypeInfo = JSON.parse(content.typeInfo);
+                unAssignedContents.push(contentTypeInfo);
+            });
+
+            _.each(unAssignedSrcModules, function (pageModule) {
+                var index = pageModule.sortOrder - 1;
+                var module = {
+                    id: pageModule.id,
+                    layoutTemplate: "module",
+                    type: "module",
+                    module: pageModule.module
+                };//JSON.parse(pageModule.module);
+                unAssignedModules.push(module);
+            })
+
+            vm.unassignedElements = [];
+
+            vm.unassignedElements = vm.unassignedElements.concat(unAssignedContents);
+            vm.unassignedElements = vm.unassignedElements.concat(unAssignedModules);
+
         }
 
-        function iterateLayout(placeHolders) {
+        function positionPageContents(placeHolders) {
             if (placeHolders) {
                 _.each(placeHolders, function (item) {
                     //console.log(item)
+
+                    //adding containerId to filter unallocated items in a separate dndlist
+                    containerIds.push(item.id);
 
                     //Load content items if found
                     var pageContents = _.where(vm.pageContents, { containerId: item.id });
@@ -229,7 +277,7 @@
                         _.each(pageModules, function (pageModule) {
                             var index = pageModule.sortOrder - 1;
                             var module = {
-                                id:pageModule.id,
+                                id: pageModule.id,
                                 layoutTemplate: "module",
                                 type: "module",
                                 module: pageModule.module
@@ -239,12 +287,67 @@
                     }
 
                     if (item.placeHolders) {
-                        iterateLayout(item.placeHolders);
+                        positionPageContents(item.placeHolders);
                     }
                 });
             }
         }
-        
+
+        function sortElements() {
+
+            
+            //Sorting entire tree is not working propertly, because tree is being modified while sorting. 
+            //Therefore, sort only source and destination level
+            sortElementsInTree(vm.pageLayout.placeHolders, null);
+
+            var layoutOnly = jQuery.extend(true, {}, vm.pageLayout);
+            getLayoutOnly(layoutOnly);
+
+            console.log("--------------------------");
+            console.log("Layout only");
+            console.log(layoutOnly)
+
+            //update layout only
+            layoutService.put(layoutOnly)
+                .then(function (data) {
+                    //console.log(data);
+                    init();
+                    showMessage("success", "Layout has been saved");
+                }, function (error) {
+                    showMessage("error", SYS_ERROR_MSG);
+                });
+        }
+
+        function sortElementsInTree(placeHolders, containerId) {
+            _.forEach(placeHolders, function (item) {
+
+                createElement(item, containerId); //Update sort info
+
+                if (item.placeHolders) {
+                    sortElementsInTree(item.placeHolders, item.id);
+                }
+            });
+        }
+
+        function getLayoutOnly(item) {
+
+            item.placeHolders = _.reject(item.placeHolders, function (item) {
+                return (item.layoutTemplate === "content" || item.layoutTemplate === "module");
+            })
+
+            _.forEach(item.placeHolders, function (item) {
+                if (item.placeHolders) {
+                    getLayoutOnly(item);
+                }
+            });
+        }
+
+        function sortLayout(placeholders) {
+            _.each(placeholders, function (item) {
+
+            });
+        }
+
         function deleteItem(item) {
             if (item.layoutTemplate === "content") {
                 deleteContent(item.id);
@@ -269,7 +372,7 @@
                 pageId: appContext.currentPageId,
                 typeInfo: JSON.stringify(item),
                 containerId: containerId,
-                sortOrder : item.index,
+                sortOrder: item.index,
                 cultureCode: vm.currentLanguage //TODO: get this from appContext
             }
             pageContentService.post(content).then(function (data) {
@@ -309,7 +412,7 @@
             }, function (error) {
                 showMessage("error", SYS_ERROR_MSG);
             });
-        }        
+        }
 
         function showMessage(messageType, messageContent) {
             vm.message = {
@@ -338,7 +441,7 @@
         /////////////////////////////////////////////
         /*Function declarations only*/
         //Event handlers
-        function save() {            
+        function save() {
             pageContentService.put(vm.pageContent).then(
                 function (data) {
                     console.log(data);

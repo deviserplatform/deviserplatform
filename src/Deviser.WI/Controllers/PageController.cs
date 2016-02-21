@@ -3,8 +3,10 @@ using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library;
 using Deviser.Core.Library.Controllers;
+using Deviser.Core.Library.DomainTypes;
 using Deviser.Core.Library.Sites;
 using Microsoft.AspNet.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,8 @@ namespace Deviser.WI.Controllers
 {
     public class PageController : DeviserController
     {
+        private readonly ILogger<PageController> logger;
+
         ILifetimeScope container;
         IPageProvider pageProvider;
         IPageManager pageManager;
@@ -23,6 +27,7 @@ namespace Deviser.WI.Controllers
         public PageController(ILifetimeScope container)
         {
             this.container = container;
+            logger = container.Resolve<ILogger<PageController>>();
             pageProvider = container.Resolve<IPageProvider>();
             pageManager = container.Resolve<IPageManager>();
             deviserControllerFactory = container.Resolve<IDeviserControllerFactory>();
@@ -34,11 +39,18 @@ namespace Deviser.WI.Controllers
         {
             if (string.IsNullOrEmpty(permalink))
                 permalink = Globals.HomePage.PageTranslation.FirstOrDefault(t => t.Locale == CurrentCulture.ToString()).URL;
-            Page currentPage = await GetPageModules(permalink);
-            if (currentPage != null)
+            try
             {
-                return View(currentPage);
+                Page currentPage = await GetPageModules(permalink);
+                if (currentPage != null)
+                {
+                    return View(currentPage);
+                }
             }
+            catch (Exception ex)
+            {
+                logger.LogError("Page load exception has been occured", ex);
+            }            
             return null;
         }
 
@@ -77,7 +89,7 @@ namespace Deviser.WI.Controllers
                 appContext.CurrentPageId = currentPage.Id;
                 appContext.CurrentLink = permalink;
                 appContext.CurrentPage = currentPage;
-                Dictionary<string, string> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(ActionContext, currentPage.Id);
+                Dictionary<string, List<Core.Library.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(ActionContext, currentPage.Id);
                 //Skins are not used for sometime period
                 string skin = "";
                 if (!string.IsNullOrEmpty(currentPage.SkinSrc))

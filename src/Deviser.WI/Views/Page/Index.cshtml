@@ -7,7 +7,8 @@
     }
 
     ViewBag.Title = "Index";
-    Dictionary<string, string> moduleActionResults = (Dictionary<string, string>)ViewBag.ModuleActionResults;
+    Dictionary<string, List<Deviser.Core.Library.DomainTypes.ContentResult>> moduleActionResults = 
+        (Dictionary<string, List<Deviser.Core.Library.DomainTypes.ContentResult>>)ViewBag.ModuleActionResults;
 }
 <script type="text/javascript">
     var appContext =  @Html.Raw(SDJsonConvert.SerializeObject(ViewBag.AppContext));

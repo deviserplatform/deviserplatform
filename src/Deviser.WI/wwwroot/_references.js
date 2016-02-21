@@ -11,6 +11,7 @@
 /// <reference path="js/src/app/sdlib.js" />
 /// <reference path="js/src/app/security-roles/app.js" />
 /// <reference path="js/src/app/services.js" />
+/// <reference path="js/src/app/underscoreext.js" />
 /// <reference path="js/src/app/user-management/app.js" />
 /// <reference path="lib/angular/angular.js" />
 /// <reference path="lib/angular-bootstrap/ui-bootstrap-tpls.js" />

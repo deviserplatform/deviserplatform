@@ -5,6 +5,7 @@ using Deviser.Core.Library.DomainTypes;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Infrastructure;
 using Microsoft.AspNet.Routing;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace Deviser.Core.Library.Controllers
 {
     public class DeviserControllerFactory : IDeviserControllerFactory
     {
+        private readonly ILogger<DeviserControllerFactory> logger;
+
         private IPageProvider pageProvider;
         private IModuleProvider moduleProvider;
         private IActionSelector actionSelector;
@@ -22,6 +25,7 @@ namespace Deviser.Core.Library.Controllers
 
         public DeviserControllerFactory(ILifetimeScope container)
         {
+            logger = container.Resolve<ILogger<DeviserControllerFactory>>();
             actionSelector = container.Resolve<IActionSelector>();
             moduleInvokerProvider = container.Resolve<IModuleInvokerProvider>();
             pageProvider = container.Resolve<IPageProvider>();
@@ -33,9 +37,9 @@ namespace Deviser.Core.Library.Controllers
         /// </summary>
         /// <param name="pageId"></param>
         /// <returns></returns>
-        public async Task<Dictionary<string, string>> GetPageModuleResults(ActionContext actionContext, int pageId)
+        public async Task<Dictionary<string, List<DomainTypes.ContentResult>>> GetPageModuleResults(ActionContext actionContext, int pageId)
         {
-            Dictionary<string, string> actionResults = new Dictionary<string, string>();
+            Dictionary<string, List<DomainTypes.ContentResult>> actionResults = new Dictionary<string, List<DomainTypes.ContentResult>>();
             Page currentPage = pageProvider.GetPage(pageId);
             if (currentPage.PageModule != null && currentPage.PageModule.Count > 0)
             {
@@ -49,16 +53,37 @@ namespace Deviser.Core.Library.Controllers
                     moduleContext.PageModuleId = pageModule.Id;
                     if (module != null && moduleAction != null)
                     {
+                        List<DomainTypes.ContentResult> contentResults;
+                        string containerId = pageModule.ContainerId.ToString();
+                        //Prepare the result object
+                        if (actionResults.ContainsKey(containerId))
+                        {
+                            contentResults = actionResults[containerId];
+                        }
+                        else
+                        {
+                            contentResults = new List<DomainTypes.ContentResult>();
+                            actionResults.Add(containerId, contentResults);
+                        }
+
                         try
                         {
                             string moduleStringResult = await ExecuteModuleController(actionContext, moduleContext, moduleAction);
-                            actionResults.Add(pageModule.ContainerId.ToString(), moduleStringResult);
+                            contentResults.Add(new DomainTypes.ContentResult
+                            {
+                                Result = moduleStringResult,
+                                SortOrder = pageModule.SortOrder
+                            });
                         }
                         catch (Exception ex)
                         {
-                            var actionResult = "Module Load exception occured";
-                            actionResults.Add(pageModule.ContainerId.ToString(), actionResult);
-                            //TODO: Log exception
+                            var actionResult = "Module load exception has been occured";
+                            contentResults.Add(new DomainTypes.ContentResult
+                            {
+                                Result = actionResult,
+                                SortOrder = pageModule.SortOrder
+                            });
+                            logger.LogError("Module load exception has been occured", ex);
                         }
                     }
                 }
