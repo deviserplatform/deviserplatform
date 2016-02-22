@@ -52,6 +52,21 @@ namespace Deviser.Core.Library.Layouts
             return null;
         }
 
+        public PageLayout GetPageLayout(int layoutId)
+        {
+            try
+            {
+                var resultLayout = layoutProvider.GetLayout(layoutId);
+                PageLayout result = ConvertToPageLayout(resultLayout);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting oage layout: {0}", layoutId), ex);
+            }
+            return null;
+        }
+
         public PageLayout CreatePageLayout(PageLayout pageLayout)
         {
             try

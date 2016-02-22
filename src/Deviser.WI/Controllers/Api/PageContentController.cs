@@ -99,6 +99,25 @@ namespace DeviserWI.Controllers.API
             }
         }
 
+        [HttpPut]
+        [Route("list/")]
+        public IActionResult Put([FromBody] IEnumerable<PageContent> pageContents)
+        {
+            try
+            {
+                if(pageContents==null || pageContents.Count()==0)
+                    return HttpBadRequest();
+
+                pageContentProvider.Update(new List<PageContent>(pageContents));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while updating page contents"), ex);
+                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {

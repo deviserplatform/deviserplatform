@@ -50,6 +50,25 @@ namespace DeviserWI.Controllers.API
             }
         }
 
+        [HttpPut]
+        [Route("list/")]
+        public IActionResult Put([FromBody]List<PageModule> pageModules)
+        {
+            try
+            {                
+                if (pageModules== null || pageModules.Count==0)
+                    return HttpBadRequest();
+                moduleManager.UpdatePageModules(pageModules);
+                return Ok();
+                
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while updating pageModules"), ex);
+                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {

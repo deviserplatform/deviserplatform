@@ -178,7 +178,7 @@
                                  dnd-allowed-types="editVM.layoutAllowedTypes"
                                  dnd-inserted="editVM.dropCallback(event, index, item)">
                                 <div class="content-item"
-                                     ng-repeat="item in editVM.pageLayout.placeHolders"
+                                     ng-repeat="item in editVM.pageLayout.placeHolders track by $index"
                                      dnd-draggable="item"
                                      dnd-type="item.type"
                                      dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"
@@ -201,7 +201,7 @@
                                  dnd-allowed-types="editVM.layoutAllowedTypes"
                                  dnd-inserted="editVM.dropCallback(event, index, item)">
                                 <div class="content-item"
-                                     ng-repeat="item in editVM.unassignedElements"
+                                     ng-repeat="item in editVM.unassignedElements track by $index"
                                      dnd-draggable="item"
                                      dnd-type="item.type"
                                      dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"

@@ -16,6 +16,7 @@ namespace Deviser.Core.Data.DataProviders
         List<PageContent> Get(int pageId, string cultureCode);
         PageContent Create(PageContent content);
         PageContent Update(PageContent content);
+        void Update(List<PageContent> contents);
 
     }
 
@@ -105,7 +106,7 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 PageContent resultPageContent;
-                content.LastModifiedDate = DateTime.Now;
+                content.LastModifiedDate = DateTime.Now;                
                 resultPageContent = context.PageContent.Update(content, GraphBehavior.SingleObject).Entity;
                 context.SaveChanges();
                 return resultPageContent;
@@ -115,6 +116,20 @@ namespace Deviser.Core.Data.DataProviders
                 logger.LogError("Error occured while calling Update", ex);
             }
             return null;
+        }
+
+        public void Update(List<PageContent> contents)
+        {
+            try
+            {
+                contents.ForEach(c => c.LastModifiedDate = DateTime.Now);
+                context.PageContent.UpdateRange(contents, GraphBehavior.SingleObject);
+                context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while updating contents", ex);
+            }
         }
 
     }

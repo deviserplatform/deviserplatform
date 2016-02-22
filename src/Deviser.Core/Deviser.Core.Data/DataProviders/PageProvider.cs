@@ -24,6 +24,7 @@ namespace Deviser.Core.Data.DataProviders
         PageModule GetPageModuleByContainer(Guid containerId);
         PageModule CreatePageModule(PageModule pageModule);
         PageModule UpdatePageModule(PageModule pageModule);
+        void UpdatePageModules(List<PageModule> pageModules);
 
     }
 
@@ -292,5 +293,17 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
+        public void UpdatePageModules(List<PageModule> pageModules)
+        {
+            try
+            {
+                context.PageModule.UpdateRange(pageModules, GraphBehavior.SingleObject);
+                context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while calling UpdatePageModules", ex);
+            }
+        }        
     }
 }

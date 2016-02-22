@@ -46,7 +46,24 @@ namespace DeviserWI.Controllers.API
                 return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-        
+
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            try
+            {
+                var result = layoutManager.GetPageLayout(id);
+                if (result != null)
+                    return Ok(result);
+                return HttpNotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting page layout: {0}", id), ex);
+                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpPost]
         public IActionResult Post([FromBody]PageLayout layout)
         {

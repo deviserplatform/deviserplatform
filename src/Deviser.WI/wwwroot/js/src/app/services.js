@@ -43,6 +43,7 @@
         var service = baseService($http, $q, globals, serviceUrl);
         var url = globals.appSettings.serviceBaseUrl + serviceUrl;
         service.get = get;
+        service.putContents = putContents;
         return service;
 
         ////////////////////////////////
@@ -69,6 +70,19 @@
                 return handleError(handleError, $q)
             });
         }
+
+        function putContents(data) {
+            var putUrl = url + '/list';
+            var request = $http({
+                method: 'PUT',
+                url: putUrl,
+                data: JSON.stringify(data)
+            });
+
+            return request.then(handleSuccess, function (response) {
+                return handleError(handleError, $q)
+            });
+        }
     }
 
     function moduleService($http, $q, globals) {
@@ -80,10 +94,26 @@
     }
 
     function pageModuleService($http, $q, globals) {
-        var service = baseService($http, $q, globals, '/pagemodule');
+        var serviceUrl = "/pagemodule";
+        var url = globals.appSettings.serviceBaseUrl + serviceUrl;
+        var service = baseService($http, $q, globals, serviceUrl);
         service.get = null;
         service.put = null;
+        service.putModules = putModules;
         return service;
+
+        function putModules(data) {
+            var putUrl = url + '/list';
+            var request = $http({
+                method: 'PUT',
+                url: putUrl,
+                data: JSON.stringify(data)
+            });
+
+            return request.then(handleSuccess, function (response) {
+                return handleError(handleError, $q)
+            });
+        }
     }
 
     function userService($http, $q, globals) {

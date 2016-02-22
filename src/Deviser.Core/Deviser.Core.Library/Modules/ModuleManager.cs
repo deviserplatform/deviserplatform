@@ -53,6 +53,21 @@ namespace Deviser.Core.Library.Modules
             return null;
         }
 
+        public void UpdatePageModules(List<PageModule> pageModules)
+        {
+            try
+            {
+                if (pageModules != null)
+                {
+                    pageProvider.UpdatePageModules(pageModules);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while updating pageModules"), ex);
+            }
+        }
+
         public PageContent CreatePageContent(PageContent pageContent)
         {
             try

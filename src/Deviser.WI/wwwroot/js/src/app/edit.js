@@ -40,7 +40,7 @@
         vm.copyElement = copyElement;
         vm.editContent = editContent;
 
-        
+
 
         init();
 
@@ -103,24 +103,19 @@
 
         //Private functions
         function init() {
-            $q.all([
-            getCurrentPage(),
-            getLayouts(),
-            getContentTypes(),
-            getModules(),
-            getPageContents()
-            ]).then(function () {
-                if (vm.currentPage.layoutId) {
-                    var selectedLayout = _.find(vm.layouts, function (layout) {
-                        return layout.id === vm.currentPage.layoutId;
-                    });
-                    if (selectedLayout) {
-                        vm.pageLayout = selectedLayout;
-                        vm.pageLayout.pageId = vm.currentPage.id;
-                        loadPageContents();
-                    }
-                }
-                processContentTypes(vm.contentTypes);
+
+            getCurrentPage().then(function () {
+
+                $q.all([
+                    getLayout(),
+                    getContentTypes(),
+                    getModules(),
+                    getPageContents()
+                ]).then(function () {
+                    loadPageContents();
+                    processContentTypes(vm.contentTypes);
+                });
+
             });
         }
 
@@ -129,7 +124,7 @@
             pageService.get(appContext.currentPageId)
             .then(function (data) {
                 vm.currentPage = data;
-                defer.resolve('data received!');
+                defer.resolve(data);
             }, function (error) {
                 showMessage("error", SYS_ERROR_MSG);
                 defer.reject(SYS_ERROR_MSG);
@@ -137,20 +132,14 @@
             return defer.promise;
         }
 
-        function getLayouts() {
+        function getLayout() {
             var defer = $q.defer();
-            layoutService.get()
-            .then(function (layouts) {
-                console.log(layouts);
-                //Processing the data
-                layouts = _.where(layouts, { isDeleted: false });
-                _.each(layouts, function (item) {
-                    if (item && !item.placeHolders) {
-                        item.placeHolders = [];
-                    }
-                });
-                vm.layouts = layouts;
-                defer.resolve('data received!');
+            layoutService.get(vm.currentPage.layoutId)
+            .then(function (layout) {
+                //console.log(layout);
+                vm.pageLayout = layout;
+                vm.pageLayout.pageId = vm.currentPage.id;
+                defer.resolve(layout);
             }, function (error) {
                 showMessage("error", SYS_ERROR_MSG);
                 defer.reject(SYS_ERROR_MSG);
@@ -194,13 +183,16 @@
         }
 
         function getPageContents() {
+            var defer = $q.defer();
             pageContentService.get(appContext.currentPageId, vm.currentLanguage)
             .then(function (pageContents) {
                 vm.pageContents = pageContents;
+                defer.resolve(pageContents);
             }, function (error) {
                 showMessage("error", SYS_ERROR_MSG);
                 defer.reject(SYS_ERROR_MSG);
-            })
+            });
+            return defer.promise;
         }
 
         function processContentTypes(contentTypes) {
@@ -213,7 +205,7 @@
         }
 
         function loadPageContents() {
-            
+
             var unAssignedContents = [],
                 unAssignedModules = [];
 
@@ -295,41 +287,55 @@
 
         function sortElements() {
 
-            
-            //Sorting entire tree is not working propertly, because tree is being modified while sorting. 
-            //Therefore, sort only source and destination level
-            sortElementsInTree(vm.pageLayout.placeHolders, null);
+            var elementsToSort = {
+                contents: [],
+                modules: []
+            };
 
-            var layoutOnly = jQuery.extend(true, {}, vm.pageLayout);
-            getLayoutOnly(layoutOnly);
+            sortElementsInTree(vm.pageLayout.placeHolders, null, elementsToSort);
 
+            updatePageContents(elementsToSort);
+
+            //Clone current layout and get layout only (without contents and modules)
+            var layoutOnly = jQuery.extend(true, {}, vm.pageLayout);            
+            filterLayout(layoutOnly);
             console.log("--------------------------");
             console.log("Layout only");
             console.log(layoutOnly)
 
-            //update layout only
-            layoutService.put(layoutOnly)
-                .then(function (data) {
-                    //console.log(data);
-                    init();
-                    showMessage("success", "Layout has been saved");
-                }, function (error) {
-                    showMessage("error", SYS_ERROR_MSG);
-                });
+            $q.all([
+                updatePageContents(elementsToSort),
+                updateModules(elementsToSort),
+                updateLayoutOnly(layoutOnly)
+            ]).then(function () {
+                init();
+                showMessage("success", "Layout has been saved");
+            });
         }
 
-        function sortElementsInTree(placeHolders, containerId) {
+        function sortElementsInTree(placeHolders, containerId, elements) {
             _.forEach(placeHolders, function (item) {
 
-                createElement(item, containerId); //Update sort info
+                if (item.layoutTemplate === "content") {
+                    elements.contents.push({
+                        element: item,
+                        containerId: containerId
+                    });
+                }
+                else if (item.layoutTemplate === "module") {
+                    elements.modules.push({
+                        element: item,
+                        containerId: containerId
+                    });
+                }
 
                 if (item.placeHolders) {
-                    sortElementsInTree(item.placeHolders, item.id);
+                    sortElementsInTree(item.placeHolders, item.id, elements);
                 }
             });
         }
 
-        function getLayoutOnly(item) {
+        function filterLayout(item) {
 
             item.placeHolders = _.reject(item.placeHolders, function (item) {
                 return (item.layoutTemplate === "content" || item.layoutTemplate === "module");
@@ -337,15 +343,69 @@
 
             _.forEach(item.placeHolders, function (item) {
                 if (item.placeHolders) {
-                    getLayoutOnly(item);
+                    filterLayout(item);
                 }
             });
         }
 
-        function sortLayout(placeholders) {
-            _.each(placeholders, function (item) {
-
+        function updatePageContents(elementsToSort) {
+            var defer = $q.defer();
+            var contents = [];
+            _.each(elementsToSort.contents, function (item) {
+                contents.push({
+                    id: item.element.id,
+                    pageId: appContext.currentPageId,
+                    typeInfo: JSON.stringify(item.element),
+                    containerId: item.containerId,
+                    sortOrder: item.element.index,
+                    cultureCode: vm.currentLanguage //TODO: get this from appContext
+                });
             });
+
+            pageContentService.putContents(contents).then(function (response) {
+                console.log(response);
+                defer.resolve('page content updated');
+            }, function (response) {
+                console.log(response);
+                defer.reject(SYS_ERROR_MSG);
+            });
+            return defer.promise;
+        }
+
+        function updateModules(elementsToSort) {
+            var defer = $q.defer();
+            var modules = [];
+            _.each(elementsToSort.modules, function (item) {
+                modules.push({
+                    id: item.element.id,
+                    pageId: appContext.currentPageId,
+                    moduleId: item.element.module.id,
+                    containerId: item.containerId,
+                    sortOrder: item.element.index
+                    //Modules are not multilingual
+                });
+            });
+
+            pageModuleService.putModules(modules).then(function (data) {
+                console.log(data);
+                defer.resolve('page content updated');
+            }, function (error) {
+                defer.reject(SYS_ERROR_MSG);
+            });
+            return defer.promise;
+        }
+
+        function updateLayoutOnly(layoutOnly) {
+            var defer = $q.defer();
+            layoutService.put(layoutOnly)
+                .then(function (data) {
+                    //console.log(data);                    
+                    defer.resolve('layout only updated');
+                }, function (error) {
+                    showMessage("error", SYS_ERROR_MSG);
+                    defer.reject(SYS_ERROR_MSG);
+                });
+            return defer.promise;
         }
 
         function deleteItem(item) {

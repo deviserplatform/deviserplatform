@@ -5,8 +5,9 @@ namespace Deviser.Core.Library.Layouts
 {
     public interface ILayoutManager
     {
-        PageLayout CreatePageLayout(PageLayout pageLayout);
         List<PageLayout> GetPageLayouts();
+        PageLayout GetPageLayout(int layoutId);
+        PageLayout CreatePageLayout(PageLayout pageLayout);        
         PageLayout UpdatePageLayout(PageLayout pageLayout);
     }
 }
