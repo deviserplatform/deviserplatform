@@ -27,8 +27,8 @@
         </script>
         <script type="text/ng-template" id="container.html">
             <div class="container-element box box-blue">
-                <div ng-bind="item.index = $index+1" style="display:none"></div>
-                <h3>{{item.type}} {{item.index}} container</h3>
+                @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
+                <h3>{{item.type}} {{$index+1}} container</h3>
                 <div class="container-content">
                     <div class="row dnd-list"
                          dnd-list="item.placeHolders"
@@ -41,8 +41,8 @@
         </script>
         <script type="text/ng-template" id="row.html">
             <div class="container-element box box-blue">
-                <div ng-bind="item.index = $index+1" style="display:none"></div>
-                <h3>{{item.type}} {{item.index}}</h3>
+                @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
+                <h3>{{item.type}} {{$index+1}}</h3>
                 <div class="container-content">
                     <div class="row dnd-list"
                          dnd-list="item.placeHolders"
@@ -57,8 +57,8 @@
         <script type="text/ng-template" id="column.html">
             <div class="col-md-3">
                 <div class="container-element box box-blue">
-                    <div ng-bind="item.index = $index+1" style="display:none"></div>
-                    <h3>{{item.type}} {{item.index}}</h3>
+                    @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
+                    <h3>{{item.type}} {{$index+1}}</h3>
                     <div class="container-content">
                         <div class="row dnd-list"
                              dnd-list="item.placeHolders"
@@ -72,8 +72,8 @@
         </script>
         <script type="text/ng-template" id="repeater.html">
             <div class="container-element box box-blue">
-                <div ng-bind="item.index = $index+1" style="display:none"></div>
-                <h3>{{item.type}} {{item.index}} repeater</h3>
+                @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
+                <h3>{{item.type}} {{$index+1}} repeater</h3>
                 <div class="container-content">
                     <div class="row dnd-list"
                          dnd-list="item.placeHolders"

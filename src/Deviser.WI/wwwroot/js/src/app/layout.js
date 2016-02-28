@@ -191,8 +191,9 @@
 
         function processplaceHolders(placeHolders) {
             if (placeHolders) {
-                _.each(placeHolders, function (item) {
+                _.each(placeHolders, function (item, index) {
                     console.log(item)
+                    item.sortOrder = index + 1;
                     if (item.placeHolders) {
                         processplaceHolders(item.placeHolders);
                     }

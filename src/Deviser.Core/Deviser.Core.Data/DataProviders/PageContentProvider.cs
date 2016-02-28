@@ -43,6 +43,7 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 PageContent returnData = context.PageContent
+                    .AsNoTracking()
                    .Where(e => e.Id == pageContentId && e.IsDeleted == false)
                    .AsNoTracking()
                    .FirstOrDefault();
@@ -59,6 +60,7 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 IEnumerable<PageContent> returnData = context.PageContent
+                    .AsNoTracking()
                     .Where(e => e.ContainerId == containerId && e.IsDeleted == false)
                     .ToList();
                 return new List<PageContent>(returnData);
@@ -74,6 +76,7 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 IEnumerable<PageContent> returnData = context.PageContent
+                    .AsNoTracking()
                     .Where(e => e.PageId == pageId && e.CultureCode == cultureCode)
                     .ToList();
                 return new List<PageContent>(returnData);
@@ -122,8 +125,19 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                contents.ForEach(c => c.LastModifiedDate = DateTime.Now);
-                context.PageContent.UpdateRange(contents, GraphBehavior.SingleObject);
+                foreach(var content in contents)
+                {
+                    content.LastModifiedDate = DateTime.Now;
+                    if(context.PageContent.Any(pc=>pc.Id == content.Id))
+                    {
+                        //content exist, therefore update the content 
+                        context.PageContent.Update(content, GraphBehavior.SingleObject);
+                    }
+                    else
+                    {
+                        context.PageContent.Add(content, GraphBehavior.SingleObject);
+                    }
+                }
                 context.SaveChanges();
             }
             catch (Exception ex)

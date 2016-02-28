@@ -297,7 +297,18 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                context.PageModule.UpdateRange(pageModules, GraphBehavior.SingleObject);
+                foreach(var module in pageModules)
+                {
+                    if(context.PageModule.Any(pm=>pm.Id == module.Id))
+                    {
+                        //page module exist, therefore update it
+                        context.PageModule.Update(module, GraphBehavior.SingleObject);
+                    }
+                    else
+                    {
+                        context.PageModule.Add(module);
+                    }
+                }
                 context.SaveChanges();
             }
             catch (Exception ex)

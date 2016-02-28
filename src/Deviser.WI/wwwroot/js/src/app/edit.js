@@ -34,13 +34,15 @@
         vm.newGuid = sdUtil.getGuid;
         //vm.dragoverCallback = dragoverCallback;
         vm.dropCallback = dropCallback;
+        vm.insertedCallback = insertedCallback;
         vm.itemMoved = itemMoved;
         vm.deleteElement = deleteElement;
         vm.selectItem = selectItem;
         vm.copyElement = copyElement;
         vm.editContent = editContent;
+        vm.uaLayout = {};
 
-
+        var pageLayout = {};
 
         init();
 
@@ -48,10 +50,16 @@
         /*Function declarations only*/
 
         //Event handlers
-        function dropCallback(event, index, item) {
+        function insertedCallback(event, index) {
             var parentScope = $(event.currentTarget).scope().$parent;
             var containerId = parentScope.item.id;
+            //item.sortOrder = index + 1;
             //createElement(item, containerId);            
+            //return item;
+        }
+
+        function dropCallback(event, index, item) {
+            item.sortOrder = index + 1;
             return item;
         }
 
@@ -137,9 +145,9 @@
             layoutService.get(vm.currentPage.layoutId)
             .then(function (layout) {
                 //console.log(layout);
-                vm.pageLayout = layout;
-                vm.pageLayout.pageId = vm.currentPage.id;
-                defer.resolve(layout);
+                //vm.pageLayout = layout;
+                pageLayout = layout;
+                defer.resolve('data received');
             }, function (error) {
                 showMessage("error", SYS_ERROR_MSG);
                 defer.reject(SYS_ERROR_MSG);
@@ -209,9 +217,10 @@
             var unAssignedContents = [],
                 unAssignedModules = [];
 
-            var containerIds = [];
-
-            positionPageContents(vm.pageLayout.placeHolders);
+            //First, position elements in correct order and then assign the pageLayout to VM.
+            positionPageContents(pageLayout.placeHolders);
+            vm.pageLayout = pageLayout;
+            vm.pageLayout.pageId = vm.currentPage.id;
 
             var unAssignedSrcConents = _.reject(vm.pageContents, function (content) {
                 return _.contains(containerIds, content.containerId);
@@ -238,10 +247,10 @@
                 unAssignedModules.push(module);
             })
 
-            vm.unassignedElements = [];
+            vm.uaLayout.placeHolders = [];
 
-            vm.unassignedElements = vm.unassignedElements.concat(unAssignedContents);
-            vm.unassignedElements = vm.unassignedElements.concat(unAssignedModules);
+            vm.uaLayout.placeHolders = vm.uaLayout.placeHolders.concat(unAssignedContents);
+            vm.uaLayout.placeHolders = vm.uaLayout.placeHolders.concat(unAssignedModules);
 
         }
 
@@ -259,6 +268,7 @@
                         _.each(pageContents, function (content) {
                             var index = content.sortOrder - 1;
                             var contentTypeInfo = JSON.parse(content.typeInfo);
+                            contentTypeInfo.sortOrder = content.sortOrder;
                             item.placeHolders.splice(index, 0, contentTypeInfo); //Insert placeHolder into specified index
                         });
                     }
@@ -272,7 +282,8 @@
                                 id: pageModule.id,
                                 layoutTemplate: "module",
                                 type: "module",
-                                module: pageModule.module
+                                module: pageModule.module,
+                                sortOrder: pageModule.sortOrder
                             };//JSON.parse(pageModule.module);
                             item.placeHolders.splice(index, 0, module); //Insert placeHolder into specified index
                         })
@@ -288,34 +299,34 @@
         function sortElements() {
 
             var elementsToSort = {
-                contents: [],
-                modules: []
-            };
-
-            sortElementsInTree(vm.pageLayout.placeHolders, null, elementsToSort);
-
-            updatePageContents(elementsToSort);
-
-            //Clone current layout and get layout only (without contents and modules)
-            var layoutOnly = jQuery.extend(true, {}, vm.pageLayout);            
-            filterLayout(layoutOnly);
-            console.log("--------------------------");
-            console.log("Layout only");
-            console.log(layoutOnly)
-
-            $q.all([
-                updatePageContents(elementsToSort),
-                updateModules(elementsToSort),
-                updateLayoutOnly(layoutOnly)
-            ]).then(function () {
-                init();
-                showMessage("success", "Layout has been saved");
-            });
+                 contents: [],
+                 modules: []
+             };
+ 
+             sortElementsInTree(vm.pageLayout.placeHolders, null, elementsToSort);
+ 
+             //updatePageContents(elementsToSort);
+ 
+             //Clone current layout and get layout only (without contents and modules)
+             var layoutOnly = jQuery.extend(true, {}, vm.pageLayout);            
+             filterLayout(layoutOnly);
+             console.log("--------------------------");
+             console.log("Layout only");
+             console.log(layoutOnly)
+ 
+             $q.all([
+                 updatePageContents(elementsToSort),
+                 updateModules(elementsToSort),
+                 updateLayoutOnly(layoutOnly)
+             ]).then(function () {
+                 //init();
+                 showMessage("success", "Layout has been saved");
+             });
         }
 
         function sortElementsInTree(placeHolders, containerId, elements) {
-            _.forEach(placeHolders, function (item) {
-
+            _.forEach(placeHolders, function (item, index) {
+                item.sortOrder = index + 1;
                 if (item.layoutTemplate === "content") {
                     elements.contents.push({
                         element: item,
@@ -357,7 +368,7 @@
                     pageId: appContext.currentPageId,
                     typeInfo: JSON.stringify(item.element),
                     containerId: item.containerId,
-                    sortOrder: item.element.index,
+                    sortOrder: item.element.sortOrder,
                     cultureCode: vm.currentLanguage //TODO: get this from appContext
                 });
             });
@@ -381,7 +392,7 @@
                     pageId: appContext.currentPageId,
                     moduleId: item.element.module.id,
                     containerId: item.containerId,
-                    sortOrder: item.element.index
+                    sortOrder: item.element.sortOrder
                     //Modules are not multilingual
                 });
             });
@@ -432,7 +443,7 @@
                 pageId: appContext.currentPageId,
                 typeInfo: JSON.stringify(item),
                 containerId: containerId,
-                sortOrder: item.index,
+                sortOrder: item.sortOrder,
                 cultureCode: vm.currentLanguage //TODO: get this from appContext
             }
             pageContentService.post(content).then(function (data) {
@@ -448,7 +459,7 @@
                 pageId: appContext.currentPageId,
                 moduleId: item.module.id,
                 containerId: containerId,
-                sortOrder: item.index
+                sortOrder: item.sortOrder
                 //Modules are not multilingual
             }
             pageModuleService.post(pageModule).then(function (data) {

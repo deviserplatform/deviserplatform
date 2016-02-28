@@ -14,7 +14,7 @@
         <script type="text/ng-template" id="placeHolders.html">
             <div ng-bind="parentItem = item" style="display:none"></div>
             <div class="content-item"
-                 ng-repeat="item in parentItem.placeHolders"
+                 ng-repeat="item in parentItem.placeHolders" 
                  dnd-draggable="item"
                  dnd-type="item.type"
                  dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"
@@ -28,13 +28,14 @@
         </script>
         <script type="text/ng-template" id="container.html">
             <div class="container-element box-layout box-grey">
-                <div ng-bind="item.index = $index+1" style="display:none"></div>
-                <h3>{{item.type}} {{item.index}}</h3>
+                @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
+                <h3>{{item.type}} {{$index+1}}</h3>
                 <div class="container-content">
                     <div class="row dnd-list"
                          dnd-list="item.placeHolders"
                          dnd-allowed-types="item.allowedTypes"
-                         dnd-inserted="editVM.dropCallback(event, index,item)">
+                         dnd-drop="editVM.dropCallback(event, index, item)"
+                         dnd-inserted="editVM.insertedCallback(event, index)">
                         <div ng-include="'placeHolders.html'"></div>
                     </div>
                 </div>
@@ -42,14 +43,15 @@
         </script>
         <script type="text/ng-template" id="row.html">
             <div class="container-element box-layout box-grey">
-                <div ng-bind="item.index = $index+1" style="display:none"></div>
-                <h3>{{item.type}} {{item.index}}</h3>
+                @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
+                <h3>{{item.type}} {{$index+1}}</h3>
                 <div class="container-content">
                     <div class="row dnd-list"
                          dnd-list="item.placeHolders"
                          dnd-horizontal-list="true"
                          dnd-allowed-types="item.allowedTypes"
-                         dnd-inserted="editVM.dropCallback(event, index,item)">
+                         dnd-drop="editVM.dropCallback(event, index, item)"
+                         dnd-inserted="editVM.insertedCallback(event, index)">
                         <div ng-include="'placeHolders.html'"></div>
                     </div>
                 </div>
@@ -58,13 +60,14 @@
         <script type="text/ng-template" id="column.html">
             <div class="col-md-3">
                 <div class="container-element box-layout box-grey">
-                    <div ng-bind="item.index = $index+1" style="display:none"></div>
-                    <h3>{{item.type}} {{item.index}}</h3>
+                    @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
+                    <h3>{{item.type}} {{$index+1}}</h3>
                     <div class="container-content">
                         <div class="row dnd-list"
                              dnd-list="item.placeHolders"
                              dnd-allowed-types="item.allowedTypes"
-                             dnd-inserted="editVM.dropCallback(event, index,item)">
+                             dnd-drop="editVM.dropCallback(event, index, item)"
+                             dnd-inserted="editVM.insertedCallback(event, index)">
                             <div ng-include="'placeHolders.html'"></div>
                         </div>
                     </div>
@@ -73,13 +76,14 @@
         </script>
         <script type="text/ng-template" id="repeater.html">
             <div class="container-element box-layout box-grey">
-                <div ng-bind="item.index = $index+1" style="display:none"></div>
-                <h3>{{item.type}} {{item.index}}</h3>
+                @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
+                <h3>{{item.type}} {{$index+1}}</h3>
                 <div class="container-content">
                     <div class="row dnd-list"
                          dnd-list="item.placeHolders"
                          dnd-allowed-types="item.allowedTypes"
-                         dnd-inserted="editVM.dropCallback(event, index,item)">
+                         dnd-drop="editVM.dropCallback(event, index, item)"
+                         dnd-inserted="editVM.insertedCallback(event, index)">
                         <div ng-include="'placeHolders.html'"></div>
                     </div>
                 </div>
@@ -87,10 +91,10 @@
         </script>
         <script type="text/ng-template" id="content.html">
             <div class="container-element box box-blue">
-                <div ng-bind="item.index = $index+1" style="display:none"></div>
+                @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
                 <div class="content-header clearfix">
                     <div class="content-title">
-                        {{item.type}} {{item.index}}
+                        {{item.type}} {{$index+1}}
                     </div>                    
                     <div class="content-controls" dnd-nodrag>
                         <a class="btn blue-hoki" ng-click="editVM.editContent(item)">
@@ -106,8 +110,8 @@
         </script>
         <script type="text/ng-template" id="module.html">
             <div class="container-element box box-blue">
-                <div ng-bind="item.index = $index+1" style="display:none"></div>
-                <h3>{{item.module.name}} {{item.index}}</h3>
+                @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
+                <h3>{{item.module.name}} {{$index+1}}</h3>
                 <div class="container-content">
 
                 </div>
@@ -136,7 +140,7 @@
                     <div>
                         <!-- The toolbox only allows to copy objects, not move it. After a new
                         element was created, dnd-copied is invoked and we generate the next id -->
-                        <div ng-repeat="contentType in editVM.contentTypes track by $index"
+                        <div ng-repeat="contentType in editVM.contentTypes"
                              dnd-type="contentType.type"
                              dnd-draggable="contentType"
                              dnd-effect-allowed="copy"
@@ -150,7 +154,7 @@
                     <div>
                         <!-- The toolbox only allows to copy objects, not move it. After a new
                         element was created, dnd-copied is invoked and we generate the next id -->
-                        <div ng-repeat="module in editVM.modules track by $index"
+                        <div ng-repeat="module in editVM.modules"
                              dnd-type="module.type"
                              dnd-draggable="module"
                              dnd-effect-allowed="copy"
@@ -176,9 +180,10 @@
                             <div class="row dnd-list"
                                  dnd-list="editVM.pageLayout.placeHolders"
                                  dnd-allowed-types="editVM.layoutAllowedTypes"
-                                 dnd-inserted="editVM.dropCallback(event, index, item)">
+                                 dnd-drop="editVM.dropCallback(event, index, item)"
+                                 dnd-inserted="editVM.insertedCallback(event, index)">
                                 <div class="content-item"
-                                     ng-repeat="item in editVM.pageLayout.placeHolders track by $index"
+                                     ng-repeat="item in editVM.pageLayout.placeHolders" 
                                      dnd-draggable="item"
                                      dnd-type="item.type"
                                      dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"
@@ -197,16 +202,16 @@
                             <!-- The dropzone also uses the list template -->
                             <h3>Unassigned Elements</h3>
                             <div class="row dnd-list"
-                                 dnd-list="editVM.unassignedElements"
+                                 dnd-list="editVM.uaLayout.placeHolders"
                                  dnd-allowed-types="editVM.layoutAllowedTypes"
-                                 dnd-inserted="editVM.dropCallback(event, index, item)">
+                                 dnd-inserted="editVM.insertedCallback(event, index)">
                                 <div class="content-item"
-                                     ng-repeat="item in editVM.unassignedElements track by $index"
+                                     ng-repeat="item in editVM.uaLayout.placeHolders"
                                      dnd-draggable="item"
                                      dnd-type="item.type"
                                      dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"
                                      dnd-effect-allowed="move"
-                                     dnd-moved="editVM.itemMoved(editVM.pageLayout, $index)"
+                                     dnd-moved="editVM.itemMoved(editVM.uaLayout, $index)"
                                      dnd-selected="editVM.selectItem(item)"
                                      ng-class="{selected:editVM.selectedItem === item}"
                                      ng-include="item.layoutTemplate + '.html'">

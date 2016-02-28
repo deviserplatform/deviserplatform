@@ -120,7 +120,7 @@ namespace Deviser.Core.Library.TagHelpers
                         currentResults.Add(new ContentResult
                         {
                             Result = placeHolderResult,
-                            SortOrder = placeHolder.Index
+                            SortOrder = placeHolder.SortOrder
                         });
 
                         var sortedResult = currentResults.OrderBy(r => r.SortOrder).ToList();

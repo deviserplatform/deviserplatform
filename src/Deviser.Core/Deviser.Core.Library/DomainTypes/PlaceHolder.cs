@@ -12,7 +12,7 @@ namespace Deviser.Core.Library.DomainTypes
         public Guid Id { get; set; }
         public string Type { get; set; }
         public string LayoutTemplate { get; set; }
-        public int Index { get; set; }
+        public int SortOrder { get; set; }
         public Module Module { get; set; }
         public List<ItemProperty> Properties { get; set; }
         public List<PlaceHolder> PlaceHolders { get; set; }
