@@ -75,10 +75,17 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                IEnumerable<PageContent> returnData = context.PageContent
-                    .AsNoTracking()
-                    .Where(e => e.PageId == pageId && e.CultureCode == cultureCode)
+                List<PageContent> returnData = context.PageContent
+                    .Include(pc => pc.PageContentTranslation)
+                    .Where(e => e.PageId == pageId)
                     .ToList();
+                foreach(var pageContent in returnData)
+                {
+                    if (pageContent.PageContentTranslation != null)
+                    {
+                        pageContent.PageContentTranslation = pageContent.PageContentTranslation.Where(t => t.CultureCode == cultureCode).ToList();
+                    }
+                }
                 return new List<PageContent>(returnData);
             }
             catch (Exception ex)
@@ -109,7 +116,7 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 PageContent resultPageContent;
-                content.LastModifiedDate = DateTime.Now;                
+                content.LastModifiedDate = DateTime.Now;
                 resultPageContent = context.PageContent.Update(content, GraphBehavior.SingleObject).Entity;
                 context.SaveChanges();
                 return resultPageContent;
@@ -125,10 +132,10 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                foreach(var content in contents)
+                foreach (var content in contents)
                 {
                     content.LastModifiedDate = DateTime.Now;
-                    if(context.PageContent.Any(pc=>pc.Id == content.Id))
+                    if (context.PageContent.Any(pc => pc.Id == content.Id))
                     {
                         //content exist, therefore update the content 
                         context.PageContent.Update(content, GraphBehavior.SingleObject);

@@ -9,12 +9,12 @@
     console.log(appContext);
 </script>
 
-<div class="container-fluid body-content" ng-app="deviserEdit">
+<div class="container-fluid body-content page-edit" ng-app="deviserEdit">
     <div class="col-md-12" ng-controller="EditCtrl as editVM">
         <script type="text/ng-template" id="placeHolders.html">
             <div ng-bind="parentItem = item" style="display:none"></div>
             <div class="content-item"
-                 ng-repeat="item in parentItem.placeHolders" 
+                 ng-repeat="item in parentItem.placeHolders"
                  dnd-draggable="item"
                  dnd-type="item.type"
                  dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"
@@ -95,14 +95,14 @@
                 <div class="content-header clearfix">
                     <div class="content-title">
                         {{item.type}} {{$index+1}}
-                    </div>                    
+                    </div>
                     <div class="content-controls" dnd-nodrag>
                         <a class="btn blue-hoki" ng-click="editVM.editContent(item)">
                             <i class="fa fa-pencil"></i>
                         </a>
                     </div>
                 </div>
-                
+
                 <div class="container-content">
 
                 </div>
@@ -121,11 +121,13 @@
         @Html.Partial("/views/shared/contenttypes/edit/text.cshtml")
 
 
-        <h3 class="page-title">
-            Page Editor
-            <small>edit the page</small>
-        </h3>
-        <div>
+        <div class="row">
+            <h3 class="page-title">
+                Page Editor
+                <small>edit the page</small>
+            </h3>
+        </div>
+        <div class="row">
             <div ng-class="{'alert alert-danger':editVM.message.messageType=='error',
                      'alert alert-info':editVM.message.messageType=='info',
                      'alert alert-success':editVM.message.messageType=='success',
@@ -165,13 +167,9 @@
                 </div>
             </div>
             <div class="col-md-8">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="row">
-                            <span>Layout Name: {{editVM.pageLayout.name}}</span> 
-                        </div>
-                    </div>
-                </div>
+
+                <h3>Layout Name: {{editVM.pageLayout.name}}</h3>
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="dropzone box box-yellow">
@@ -183,7 +181,7 @@
                                  dnd-drop="editVM.dropCallback(event, index, item)"
                                  dnd-inserted="editVM.insertedCallback(event, index)">
                                 <div class="content-item"
-                                     ng-repeat="item in editVM.pageLayout.placeHolders" 
+                                     ng-repeat="item in editVM.pageLayout.placeHolders"
                                      dnd-draggable="item"
                                      dnd-type="item.type"
                                      dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"

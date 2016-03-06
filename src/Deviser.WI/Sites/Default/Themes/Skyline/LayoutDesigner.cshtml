@@ -4,35 +4,36 @@
     Deviser.Core.Data.Entities.Page currentPage = (Deviser.Core.Data.Entities.Page)ViewBag.AppContext.CurrentPage;
 }
 
-@Component.Invoke("ControlBar")
 
+@Component.Invoke("ControlBar")
 <div class="clearfix"></div>
 
-<!-- BEGIN CONTAINER -->
-<div class="page-container page-full-width">    
-    <!-- BEGIN CONTENT -->
-    <div class="page-content-wrapper">
-        <div class="page-content">            
-            <!-- BEGIN PAGE HEADER-->
-            <div class="page-bar">
-                     
-            </div>            
-            <!-- END PAGE HEADER-->
-           @RenderBody()
+<div class="page-content-white logged-in">  
+   
+    <!-- BEGIN CONTAINER -->
+    <div class="page-container page-full-width">
+        <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN PAGE HEADER-->
+                <div class="page-bar">
+
+                </div>
+                <!-- END PAGE HEADER-->
+                @RenderBody()
+            </div>
+        </div>
+        <!-- END CONTENT -->
+    </div>
+    <!-- END CONTAINER -->
+    <!-- BEGIN FOOTER -->
+    <div class="page-footer">
+        <div class="page-footer-inner">
+            @DateTime.Now.Year &copy; Deviser CMS <a href="http://skydevise.com" title="SKY Devise" target="_blank">SKY Devise</a>
+        </div>
+        <div class="scroll-to-top">
+            <i class="icon-arrow-up"></i>
         </div>
     </div>
-    <!-- END CONTENT -->    
+    <!-- END FOOTER -->
 </div>
-<!-- END CONTAINER -->
-<!-- BEGIN FOOTER -->
-<div class="page-footer">
-    <div class="page-footer-inner">
-        @DateTime.Now.Year &copy; Deviser CMS <a href="http://skydevise.com" title="SKY Devise" target="_blank">SKY Devise</a>
-    </div>
-    <div class="scroll-to-top">
-        <i class="icon-arrow-up"></i>
-    </div>
-</div>
-<!-- END FOOTER -->
-
-

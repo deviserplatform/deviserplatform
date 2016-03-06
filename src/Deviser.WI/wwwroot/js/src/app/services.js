@@ -76,7 +76,7 @@
             var request = $http({
                 method: 'PUT',
                 url: putUrl,
-                data: JSON.stringify(data)
+                data: angular.toJson(data)
             });
 
             return request.then(handleSuccess, function (response) {
@@ -107,7 +107,7 @@
             var request = $http({
                 method: 'PUT',
                 url: putUrl,
-                data: JSON.stringify(data)
+                data: angular.toJson(data)
             });
 
             return request.then(handleSuccess, function (response) {
@@ -189,7 +189,7 @@
             var request = $http({
                 method: 'POST',
                 url: url,
-                data: JSON.stringify(post)
+                data: angular.toJson(post)
             });
             return request.then(handleSuccess, function (response) {
                 return handleError(handleError, $q)
@@ -205,7 +205,7 @@
             var request = $http({
                 method: 'PUT',
                 url: putUrl /*+ '/' + data.id*/,
-                data: JSON.stringify(data)
+                data: angular.toJson(data)
             });
 
             return request.then(handleSuccess, function (response) {

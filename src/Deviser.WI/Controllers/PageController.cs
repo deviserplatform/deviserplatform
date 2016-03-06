@@ -115,6 +115,7 @@ namespace Deviser.WI.Controllers
                 ViewBag.AppContext = appContext;
                 ViewBag.ModuleActionResults = moduleActionResults;
                 ViewBag.Skin = skin;
+                ViewBag.CurrentCulture = CurrentCulture;
             }
             return currentPage;
         }

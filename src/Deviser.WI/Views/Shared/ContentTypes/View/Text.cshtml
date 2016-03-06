@@ -1,17 +1,29 @@
 ﻿@model Deviser.Core.Data.Entities.PageContent
 
 @{
-    bool isEditMode = false;    
+    bool isEditMode = false;
     if (ViewData["isEditMode"] != null)
     {
         isEditMode = (bool)ViewData["isEditMode"];
     }
     dynamic typeInfo = JsonConvert.DeserializeObject<dynamic>(Model.TypeInfo);
+    var currentCulture = ViewData["CurrentCulture"].ToString();
+    PageContentTranslation contentTranslation = null;
+    if (Model.PageContentTranslation != null)
+    {
+        contentTranslation = Model.PageContentTranslation.FirstOrDefault(t => t.CultureCode == currentCulture);
+    }
+
 }
 
-@if (Model != null)
+@if (contentTranslation != null)
 {
     <div>            
-        @Model.ContentData
+        @contentTranslation.ContentData
+    </div>
+}
+else{
+    <div>
+        Please enter the content
     </div>
 }

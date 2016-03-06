@@ -168,11 +168,18 @@ namespace Deviser.Core.Library.Layouts
                 {
                     if (placeHolder.Type == "text")
                     {
+                        var translations = new List<PageContentTranslation>();
+                        translations.Add(new PageContentTranslation
+                        {
+                            CultureCode = Globals.FallbackLanguage
+                        });
+
                         PageContent pageContent = new PageContent
                         {
                             PageId = pageId,
                             ContainerId = placeHolder.Id,
-                            CultureCode = Globals.FallbackLanguage
+                            PageContentTranslation = translations
+                            //CultureCode = Globals.FallbackLanguage
                         };
                         pageContentProvider.Create(pageContent);
 
