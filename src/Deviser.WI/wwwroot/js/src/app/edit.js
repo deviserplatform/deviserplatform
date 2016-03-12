@@ -28,7 +28,6 @@
         vm.selectedItem = {}
         vm.deletedElements = [];
         vm.layoutAllowedTypes = ["container"];
-        vm.currentLanguage = "en-US";
 
         //Method binding
         vm.newGuid = sdUtil.getGuid;
@@ -196,7 +195,7 @@
 
         function getPageContents() {
             var defer = $q.defer();
-            pageContentService.get(appContext.currentPageId, vm.currentLanguage)
+            pageContentService.get(appContext.currentPageId, appContext.currentCulture)
             .then(function (pageContents) {
                 vm.pageContents = pageContents;
                 defer.resolve(pageContents);
@@ -420,7 +419,7 @@
                     typeInfo: angular.toJson(item.element),
                     containerId: item.containerId,
                     sortOrder: item.element.sortOrder
-                    //cultureCode: vm.currentLanguage //TODO: get this from appContext
+                    //cultureCode: appContext.currentCulture //TODO: get this from appContext
                 });
             });
 
@@ -495,7 +494,7 @@
                 typeInfo: angular.toJson(item),
                 containerId: containerId,
                 sortOrder: item.sortOrder,
-                cultureCode: vm.currentLanguage //TODO: get this from appContext
+                cultureCode: appContext.currentCulture //TODO: get this from appContext
             }
             pageContentService.post(content).then(function (data) {
                 console.log(data);

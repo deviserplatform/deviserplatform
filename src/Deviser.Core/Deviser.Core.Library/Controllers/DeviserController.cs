@@ -33,6 +33,7 @@ namespace Deviser.Core.Library.Controllers
                     returnValue = new AppContext();
                     Session.SetObjectAsJson("AppContext", returnValue);
                 }
+                returnValue.CurrentCulture = CurrentCulture;
                 return returnValue;
             }
             set

@@ -14,7 +14,9 @@ namespace Deviser.Core.Data.DataProviders
         PageContent Get(Guid pageContentId);
         List<PageContent> GetByContainer(Guid containerId);
         List<PageContent> Get(int pageId, string cultureCode);
+        List<PageContentTranslation> GetTranslations(Guid pageConentId, string cultureCode);
         PageContent Create(PageContent content);
+        PageContentTranslation CreateUpdateTranslation(PageContentTranslation contentTranslation);
         PageContent Update(PageContent content);
         void Update(List<PageContent> contents);
 
@@ -94,6 +96,23 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
+        public List<PageContentTranslation> GetTranslations(Guid pageConentId, string cultureCode)
+        {
+            try
+            {
+                List<PageContentTranslation> returnData = context.PageContentTranslation
+                    .Where(t => t.PageContentId == pageConentId && t.CultureCode == cultureCode)
+                    .ToList();
+
+                return returnData;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting Get", ex);
+            }
+            return null;
+        }
+
         public PageContent Create(PageContent content)
         {
             try
@@ -111,6 +130,33 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
+        public PageContentTranslation CreateUpdateTranslation(PageContentTranslation contentTranslation)
+        {
+            try
+            {
+                PageContentTranslation result;
+                if (context.PageContentTranslation.Any(t => t.Id == contentTranslation.Id))
+                {
+                    contentTranslation.LastModifiedDate = DateTime.Now;
+                    result = context.PageContentTranslation.Update(contentTranslation, GraphBehavior.SingleObject).Entity;
+                    context.SaveChanges();
+                    return contentTranslation;
+                }
+                else
+                {
+                    contentTranslation.CreatedDate = contentTranslation.LastModifiedDate = DateTime.Now;
+                    result = context.PageContentTranslation.Add(contentTranslation, GraphBehavior.SingleObject).Entity;
+                    context.SaveChanges();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while Creating/Updating page content translation", ex);
+            }
+            return null;
+        }
+
         public PageContent Update(PageContent content)
         {
             try

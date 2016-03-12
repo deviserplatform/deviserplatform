@@ -41,7 +41,7 @@ namespace Deviser.Core.Data.Entities
             });
 
             modelBuilder.Entity<IdentityUserLogin<string>>(b =>
-            {                
+            {
                 b.ToTable("UserLogin");
             });
 
@@ -87,9 +87,9 @@ namespace Deviser.Core.Data.Entities
 
                 entity.Property(e => e.ControllerNamespace).HasMaxLength(200);
 
-                entity.Property(e => e.DisplayName).HasMaxLength(50); 
+                entity.Property(e => e.DisplayName).HasMaxLength(50);
 
-                entity.Property(e=>e.IsDefault).IsRequired().HasDefaultValue(false);
+                entity.Property(e => e.IsDefault).IsRequired().HasDefaultValue(false);
 
                 entity.HasOne(d => d.ModuleActionType).WithMany(p => p.ModuleAction).HasForeignKey(d => d.ModuleActionTypeId).OnDelete(DeleteBehavior.Restrict);
 
@@ -128,7 +128,7 @@ namespace Deviser.Core.Data.Entities
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");                
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.IsDeleted).HasDefaultValue(false);
 
@@ -207,6 +207,7 @@ namespace Deviser.Core.Data.Entities
         public virtual DbSet<PageContent> PageContent { get; set; }
         public virtual DbSet<PageModule> PageModule { get; set; }
         public virtual DbSet<PageTranslation> PageTranslation { get; set; }
+        public virtual DbSet<PageContentTranslation> PageContentTranslation { get; set; }
         public virtual DbSet<SiteSetting> SiteSetting { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         //public DbSet<ApplicationUser> ApplicationUser { get; set; }
