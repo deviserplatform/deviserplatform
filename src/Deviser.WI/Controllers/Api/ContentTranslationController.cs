@@ -44,7 +44,7 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var result = pageContentProvider.CreateUpdateTranslation(contentTranslation);
+                var result = pageContentProvider.CreateTranslation(contentTranslation);
                 if (result != null)
                     return Ok(result);
                 return HttpBadRequest();
@@ -61,7 +61,7 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var result = pageContentProvider.CreateUpdateTranslation(contentTranslation);
+                var result = pageContentProvider.UpdateTranslation(contentTranslation);
                 if (result != null)
                     return Ok(result);
                 return HttpBadRequest();
@@ -78,21 +78,18 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var contents = pageContentProvider.GetByContainer(id);
-                if (contents != null)
+                var translation = pageContentProvider.GetTranslation(id);
+                if (translation != null)
                 {
-                    foreach (var content in contents)
-                    {
-                        content.IsDeleted = true;
-                        pageContentProvider.Update(content);
-                    }
+                    translation.IsDeleted = true;
+                    pageContentProvider.UpdateTranslation(translation);
                     return Ok();
                 }
                 return HttpBadRequest();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while deleting page content"), ex);
+                logger.LogError(string.Format("Error occured while deleting page content translation"), ex);
                 return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

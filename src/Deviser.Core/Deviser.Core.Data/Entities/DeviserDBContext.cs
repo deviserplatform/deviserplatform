@@ -139,7 +139,7 @@ namespace Deviser.Core.Data.Entities
 
             modelBuilder.Entity<PageContentTranslation>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id);
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 

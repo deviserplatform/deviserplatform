@@ -12,7 +12,7 @@
     app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$modal', 'globals', 'sdUtil', 'layoutService', 'pageService',
         'contentTypeService', 'pageContentService', 'moduleService', 'pageModuleService', editCtrl]);
 
-    app.controller('EditContentCtrl', ['$scope', '$modalInstance', 'pageContentService', 'contentInfo', editContentCtrl]);
+    app.controller('EditContentCtrl', ['$scope', '$modalInstance', 'pageContentService', 'contentTranslationService', 'contentInfo', editContentCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
@@ -303,35 +303,6 @@
             }
         }
 
-        function sortElements() {
-
-            var elementsToSort = {
-                contents: [],
-                modules: []
-            };
-
-            sortElementsInTree(vm.pageLayout.placeHolders, null, elementsToSort);
-
-            //updatePageContents(elementsToSort);
-
-            //Clone current layout and get layout only (without contents and modules)
-            var layoutOnly = jQuery.extend(true, {}, vm.pageLayout);
-            filterLayout(layoutOnly);
-            console.log("--------------------------");
-            console.log("Layout only");
-            console.log(layoutOnly)
-
-            $q.all([
-                updatePageContents(elementsToSort),
-                updateModules(elementsToSort),
-                updateLayoutOnly(layoutOnly)
-            ]).then(function () {
-                //init();
-                showMessage("success", "Layout has been saved");
-            });
-        }
-
-
         function updateElements(container) {
 
             var elementsToSort = {
@@ -371,28 +342,6 @@
             ]).then(function () {
                 //init();
                 showMessage("success", "Layout has been saved");
-            });
-        }
-
-        function sortElementsInTree(placeHolders, containerId, elements) {
-            _.forEach(placeHolders, function (item, index) {
-                item.sortOrder = index + 1;
-                if (item.layoutTemplate === "content") {
-                    elements.contents.push({
-                        element: item,
-                        containerId: containerId
-                    });
-                }
-                else if (item.layoutTemplate === "module") {
-                    elements.modules.push({
-                        element: item,
-                        containerId: containerId
-                    });
-                }
-
-                if (item.placeHolders) {
-                    sortElementsInTree(item.placeHolders, item.id, elements);
-                }
             });
         }
 
@@ -550,7 +499,7 @@
         }
     }
 
-    function editContentCtrl($scope, $modalInstance, pageContentService, contentInfo) {
+    function editContentCtrl($scope, $modalInstance, pageContentService, contentTranslationService, contentInfo) {
         var vm = this;
 
         vm.contentId = contentInfo.id;
@@ -563,13 +512,28 @@
         /*Function declarations only*/
         //Event handlers
         function save() {
-            pageContentService.put(vm.pageContent).then(
-                function (data) {
-                    console.log(data);
-                    $modalInstance.close('ok');
-                }, function (error) {
-                    showMessage("error", SYS_ERROR_MSG);
-                });
+            if (vm.contentTranslation.id) {                
+                vm.contentTranslation.cultureCode = appContext.currentCulture;
+                contentTranslationService.put(vm.contentTranslation).then(
+                    function (data) {
+                        console.log(data);
+                        $modalInstance.close('ok');
+                    }, function (error) {
+                        showMessage("error", SYS_ERROR_MSG);
+                    });
+            }
+            else {
+                vm.contentTranslation.pageContentId = vm.contentId;
+                vm.contentTranslation.cultureCode = appContext.currentCulture;
+                contentTranslationService.post(vm.contentTranslation).then(
+                    function (data) {
+                        console.log(data);
+                        $modalInstance.close('ok');
+                    }, function (error) {
+                        showMessage("error", SYS_ERROR_MSG);
+                    });
+            }
+            
         }
 
         function cancel() {
@@ -583,10 +547,16 @@
 
         function getPageContents() {
             pageContentService.get(vm.contentId).then(
-                function (data) {
-                    console.log(data);
-                    vm.pageContent = data;
-                    vm.typeInfo = JSON.parse(vm.pageContent.typeInfo);
+                function (pageContent) {
+                    console.log(pageContent);
+                    var contentTranslation = _.findWhere(pageContent.pageContentTranslation, { cultureCode: appContext.currentCulture });
+                    if(contentTranslation){
+                        vm.contentTranslation = contentTranslation;
+                    }
+                    else {
+                        vm.contentTranslation = {};
+                    }
+                    vm.typeInfo = JSON.parse(pageContent.typeInfo);
                 }, function (error) {
                     showMessage("error", SYS_ERROR_MSG);
                 });

@@ -14,11 +14,13 @@ namespace Deviser.Core.Data.DataProviders
         PageContent Get(Guid pageContentId);
         List<PageContent> GetByContainer(Guid containerId);
         List<PageContent> Get(int pageId, string cultureCode);
-        List<PageContentTranslation> GetTranslations(Guid pageConentId, string cultureCode);
+        PageContentTranslation GetTranslation(Guid pageConentId);
+        PageContentTranslation GetTranslations(Guid pageConentId, string cultureCode);
         PageContent Create(PageContent content);
-        PageContentTranslation CreateUpdateTranslation(PageContentTranslation contentTranslation);
+        PageContentTranslation CreateTranslation(PageContentTranslation contentTranslation);
         PageContent Update(PageContent content);
         void Update(List<PageContent> contents);
+        PageContentTranslation UpdateTranslation(PageContentTranslation contentTranslation);
 
     }
 
@@ -46,6 +48,7 @@ namespace Deviser.Core.Data.DataProviders
             {
                 PageContent returnData = context.PageContent
                     .AsNoTracking()
+                    .Include(pc=>pc.PageContentTranslation)
                    .Where(e => e.Id == pageContentId && e.IsDeleted == false)
                    .AsNoTracking()
                    .FirstOrDefault();
@@ -81,7 +84,7 @@ namespace Deviser.Core.Data.DataProviders
                     .Include(pc => pc.PageContentTranslation)
                     .Where(e => e.PageId == pageId)
                     .ToList();
-                foreach(var pageContent in returnData)
+                foreach (var pageContent in returnData)
                 {
                     if (pageContent.PageContentTranslation != null)
                     {
@@ -96,14 +99,13 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-        public List<PageContentTranslation> GetTranslations(Guid pageConentId, string cultureCode)
+        public PageContentTranslation GetTranslations(Guid pageConentId, string cultureCode)
         {
             try
             {
-                List<PageContentTranslation> returnData = context.PageContentTranslation
+                var returnData = context.PageContentTranslation
                     .Where(t => t.PageContentId == pageConentId && t.CultureCode == cultureCode)
-                    .ToList();
-
+                    .FirstOrDefault();
                 return returnData;
             }
             catch (Exception ex)
@@ -112,7 +114,21 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-
+        public PageContentTranslation GetTranslation(Guid translationId)
+        {
+            try
+            {
+                PageContentTranslation returnData = context.PageContentTranslation
+                    .Where(t => t.Id== translationId)
+                    .FirstOrDefault();
+                return returnData;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting translation", ex);
+            }
+            return null;
+        }
         public PageContent Create(PageContent content)
         {
             try
@@ -130,24 +146,14 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-        public PageContentTranslation CreateUpdateTranslation(PageContentTranslation contentTranslation)
+        public PageContentTranslation CreateTranslation(PageContentTranslation contentTranslation)
         {
             try
             {
                 PageContentTranslation result;
-                if (context.PageContentTranslation.Any(t => t.Id == contentTranslation.Id))
-                {
-                    contentTranslation.LastModifiedDate = DateTime.Now;
-                    result = context.PageContentTranslation.Update(contentTranslation, GraphBehavior.SingleObject).Entity;
-                    context.SaveChanges();
-                    return contentTranslation;
-                }
-                else
-                {
-                    contentTranslation.CreatedDate = contentTranslation.LastModifiedDate = DateTime.Now;
-                    result = context.PageContentTranslation.Add(contentTranslation, GraphBehavior.SingleObject).Entity;
-                    context.SaveChanges();
-                }
+                contentTranslation.CreatedDate = contentTranslation.LastModifiedDate = DateTime.Now;
+                result = context.PageContentTranslation.Add(contentTranslation, GraphBehavior.SingleObject).Entity;
+                context.SaveChanges();
                 return result;
             }
             catch (Exception ex)
@@ -156,7 +162,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-
+               
         public PageContent Update(PageContent content)
         {
             try
@@ -197,6 +203,25 @@ namespace Deviser.Core.Data.DataProviders
             {
                 logger.LogError("Error occured while updating contents", ex);
             }
+        }
+        public PageContentTranslation UpdateTranslation(PageContentTranslation contentTranslation)
+        {
+            try
+            {
+                PageContentTranslation result;
+                if (context.PageContentTranslation.Any(t => t.Id == contentTranslation.Id))
+                {
+                    contentTranslation.LastModifiedDate = DateTime.Now;
+                    result = context.PageContentTranslation.Update(contentTranslation, GraphBehavior.SingleObject).Entity;
+                    context.SaveChanges();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while Creating/Updating page content translation", ex);
+            }
+            return null;
         }
 
     }

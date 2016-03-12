@@ -5,6 +5,7 @@
     app.factory('contentTypeService', contentTypeService);
     app.factory('layoutTypeService', layoutTypeService);
     app.factory('pageContentService', pageContentService);
+    app.factory('contentTranslationService', contentTranslationService);
     app.factory('moduleService', moduleService);
     app.factory('pageModuleService', pageModuleService);
     app.factory('skinService', skinService);
@@ -79,6 +80,36 @@
                 data: angular.toJson(data)
             });
 
+            return request.then(handleSuccess, function (response) {
+                return handleError(handleError, $q)
+            });
+        }
+    }
+
+    function contentTranslationService($http, $q, globals) {
+        var serviceUrl = "/contenttranslation";
+        var service = baseService($http, $q, globals, serviceUrl);
+        var url = globals.appSettings.serviceBaseUrl + serviceUrl;
+        service.get = get;
+        return service;
+
+        function get() {
+            var getUrl = url;
+
+            if (arguments[0] && arguments[1]) {
+                var cultureCode = arguments[1],
+                    translationId = arguments[0];
+                getUrl = url + '/' + cultureCode + '/' + translationId;
+            }
+            else if (arguments[0]) {
+                var id = arguments[0];
+                getUrl = url + '/' + id;
+            }
+
+            var request = $http({
+                method: 'GET',
+                url: getUrl
+            });
             return request.then(handleSuccess, function (response) {
                 return handleError(handleError, $q)
             });
