@@ -43,12 +43,7 @@ namespace Deviser.Core.Library
 
         public static CultureInfo CurrentCulture
         {
-            get
-            {
-                //return System.Threading.Thread.CurrentThread.CurrentCulture;
-                return null;
-            }
-
+            get; set;
         }
 
         public static string FallbackLanguage

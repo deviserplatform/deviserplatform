@@ -22,10 +22,8 @@ namespace Deviser.Core.Library.TagHelpers
         public string Title { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
-        {
-            
-            
-            output.Content.SetHtmlContent("This is from Taghelper" + Title);
+        {   
+            output.PostContent.Append("This is from Taghelper" + Title);
         }
 
     }

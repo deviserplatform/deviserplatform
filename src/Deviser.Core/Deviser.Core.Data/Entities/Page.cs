@@ -31,5 +31,9 @@ namespace Deviser.Core.Data.Entities
         public virtual Layout Layout { get; set; }
         public virtual Page Parent { get; set; }
         public virtual ICollection<Page> ChildPage { get; set; }
+
+        //Non DB Properties
+        public bool IsActive { get; set; }
+        public bool IsBreadCrumb { get; set; }
     }
 }

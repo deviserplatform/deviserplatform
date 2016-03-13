@@ -1,0 +1,22 @@
+﻿@model List<Deviser.Core.Data.Entities.Page>
+
+@using System.Security.Claims
+@using Deviser.Core.Library
+@{
+    Layout = null;
+    AppContext deviserContext = (AppContext)ViewBag.AppContext;  //HttpContext.Current.Session["AppContext"];
+}
+
+
+<ul class="nav navbar-nav">
+    @foreach (var page in Model)
+    {
+        var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
+        if (translation != null)
+        {
+            <li>
+                <a href="@translation.URL">@translation.Name</a>
+            </li>
+        }
+    }
+</ul>

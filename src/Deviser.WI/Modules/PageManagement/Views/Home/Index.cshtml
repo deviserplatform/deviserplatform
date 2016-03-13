@@ -3,20 +3,8 @@
     //Layout = "~/_Layout.cshtml";
 }
 
-<h2>Page management Home controller</h2>
-
 <div ng-app="deviser.pageMangement" ng-controller="PageManagementCtrl as pmVM">
-
-    <!-- Page Heading -->
-    <div class="row">
-        <div class="col-lg-12">
-            <h3 class="page-title">
-                Page Management
-            </h3>
-        </div>
-    </div>
-    <!-- /.row -->
-
+    
     <div class="row">
         <div ng-class="{'alert alert-danger':pmVM.message.messageType=='error',
                      'alert alert-info':pmVM.message.messageType=='info',
@@ -43,7 +31,7 @@
                             <i class="fa" ng-class="{'fa-angle-up' : !collapsed, 'fa-angle-down': collapsed}"></i>
                         </a>
 
-                        <span ng-repeat="translation in page.pageTranslations | selectLanguage:pmVM.currentLocale">
+                        <span ng-repeat="translation in page.pageTranslation | selectLanguage:pmVM.currentLocale">
                             {{translation.name}}
                         </span>
 
@@ -57,8 +45,8 @@
                         </a>
                     </div>
                 </div>
-                <ol ui-tree-nodes="pmVM.options" ng-model="page.childPages" ng-class="{hidden: collapsed}">
-                    <li ng-repeat="page in page.childPages" ui-tree-node ng-include="'items_renderer.html'" ng-show="!page.isDeleted">
+                <ol ui-tree-nodes="pmVM.options" ng-model="page.childPage" ng-class="{hidden: collapsed}">
+                    <li ng-repeat="page in page.childPage" ui-tree-node ng-include="'items_renderer.html'" ng-show="!page.isDeleted">
                     </li>
                 </ol>
             </script>
@@ -72,7 +60,7 @@
             </div>
         </div>
         <div class="col-lg-8" ng-show="pmVM.selectedItem.pageLevel && pmVM.selectedItem.pageLevel!=0">
-            <div class="form-horizontal edit-page" ng-repeat="translation in pmVM.selectedItem.pageTranslations | selectLanguage:pmVM.currentLocale">
+            <div class="form-horizontal edit-page" ng-repeat="translation in pmVM.selectedItem.pageTranslation | selectLanguage:pmVM.currentLocale">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-6">

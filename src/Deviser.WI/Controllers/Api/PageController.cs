@@ -69,7 +69,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpPost]
-        public IActionResult Post(Page page)
+        public IActionResult Post([FromBody] Page page)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace DeviserWI.Controllers.API
         }
                
         [HttpPut]
-        public IActionResult Put(Page page)
+        public IActionResult Put([FromBody] Page page)
         {
             try
             {
@@ -105,9 +105,8 @@ namespace DeviserWI.Controllers.API
                 return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-
-        [Route("api/page/{id:int}")]
-        [HttpPut]
+                
+        [HttpPut("{id}")]
         public IActionResult PutPage(int id, [FromBody] Page page)
         {
             try
@@ -128,8 +127,7 @@ namespace DeviserWI.Controllers.API
             }
         }
 
-        [HttpDelete]
-        [Route("api/page/{id:int}")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             try

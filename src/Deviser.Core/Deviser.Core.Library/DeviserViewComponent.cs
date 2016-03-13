@@ -26,11 +26,14 @@ namespace Deviser.Core.Library
         {
             get
             {
-                if (Session.GetObjectFromJson<AppContext>("AppContext") == null)
+                AppContext returnValue = Session.GetObjectFromJson<AppContext>("AppContext");
+                if (returnValue == null)
                 {
-                    Session.SetObjectAsJson("AppContext", new AppContext());
+                    returnValue = new AppContext();
+                    Session.SetObjectAsJson("AppContext", returnValue);
                 }
-                return Session.GetObjectFromJson<AppContext>("AppContext");
+                returnValue.CurrentCulture = CurrentCulture;
+                return returnValue;
             }
         }
 

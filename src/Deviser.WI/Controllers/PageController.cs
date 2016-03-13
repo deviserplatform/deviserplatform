@@ -112,10 +112,9 @@ namespace Deviser.WI.Controllers
 
                 //return View(skin, skinModel);
                 AppContext = appContext;
-                ViewBag.AppContext = appContext;
+                ViewBag.AppContext = AppContext;
                 ViewBag.ModuleActionResults = moduleActionResults;
                 ViewBag.Skin = skin;
-                ViewBag.CurrentCulture = CurrentCulture;
             }
             return currentPage;
         }

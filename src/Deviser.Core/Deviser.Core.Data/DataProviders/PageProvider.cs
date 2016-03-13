@@ -123,7 +123,7 @@ namespace Deviser.Core.Data.DataProviders
             {
                 Page resultPage;
                 page.CreatedDate = DateTime.Now; page.LastModifiedDate = DateTime.Now;
-                resultPage = context.Page.Add(page, GraphBehavior.SingleObject).Entity;
+                resultPage = context.Page.Add(page, GraphBehavior.IncludeDependents).Entity;
                 context.SaveChanges();
                 return resultPage;
             }

@@ -52,6 +52,7 @@ namespace Deviser.Core.Library.Controllers
             {
                 var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
                 var requestCulture = requestCultureFeature.RequestCulture.UICulture;
+                Globals.CurrentCulture = requestCulture;
                 return requestCulture;
             }
         }

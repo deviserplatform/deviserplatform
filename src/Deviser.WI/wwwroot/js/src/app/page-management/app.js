@@ -134,8 +134,9 @@
         function newSubPage(parentPage) {
             var newPage = {
                 parentId: parentPage.id,
-                childPages: [],
-                pageTranslations: [
+                childPage: [],
+                pageLevel: parentPage.pageLevel + 1,
+                pageTranslation: [
                       {
                           locale: vm.currentLocale,
                           name: "",
@@ -148,7 +149,10 @@
             };
 
             pageService.post(newPage).then(function (data) {
-                parentPage.childPages.push(data);
+                if (!parentPage.childPage) {
+                    parentPage.childPage = [];
+                }
+                parentPage.childPage.push(data);
                 showMessage("success", "Page created successfully");
             }, function (error) {
                 showMessage("error", "'Cannot update page, please contact administrator");
@@ -180,8 +184,8 @@
         }
 
         function reSortPages(page) {
-            if (page && page.childPages) {
-                _.each(page.childPages, function (child, index) {
+            if (page && page.childPage) {
+                _.each(page.childPage, function (child, index) {
                     child.pageOrder = index + 1;
                     reSortPages(child);
                 });
@@ -189,16 +193,19 @@
         }
 
         function sortPages(page) {
+            if (page) {
+                if (page.childPage) {
+                    page.childPage = _.sortBy(page.childPage, function (page) {
+                        return page.pageOrder;
+                    });
 
-            if (page && page.childPages) {
-
-                page.childPages = _.sortBy(page.childPages, function (page) {
-                    return page.pageOrder;
-                });
-
-                _.each(page.childPages, function (child, index) {
-                    sortPages(child);
-                });
+                    _.each(page.childPage, function (child, index) {
+                        sortPages(child);
+                    });
+                }
+                else {
+                    page.childPage = [];
+                }
             }
         }
 
