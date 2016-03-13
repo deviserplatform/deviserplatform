@@ -105,7 +105,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                if(pageContents==null || pageContents.Count()==0)
+                if (pageContents == null || pageContents.Count() == 0)
                     return HttpBadRequest();
 
                 pageContentProvider.Update(new List<PageContent>(pageContents));
@@ -123,14 +123,11 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var contents = pageContentProvider.GetByContainer(id);
-                if (contents != null)
+                var content = pageContentProvider.Get(id);
+                if (content != null)
                 {
-                    foreach (var content in contents)
-                    {
-                        content.IsDeleted = true;
-                        pageContentProvider.Update(content);
-                    }
+                    content.IsDeleted = true;
+                    pageContentProvider.Update(content);
                     return Ok();
                 }
                 return HttpBadRequest();

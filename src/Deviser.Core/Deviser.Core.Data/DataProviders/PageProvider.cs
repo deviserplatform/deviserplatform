@@ -91,14 +91,23 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 Page returnData = context.Page
-                   .Where(e => e.Id == pageId)
-                   //.Include("PageTranslations").Include("Layout").Include("PageContents").Include("PageModules")
+                   .Where(e => e.Id == pageId)                   
                    .Include(p => p.PageTranslation)
                    .Include(p => p.Layout)
                    .Include(p => p.PageContent).ThenInclude(pc=>pc.PageContentTranslation)
                    .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
                    .OrderBy(p => p.Id)
                    .FirstOrDefault();
+
+                if (returnData.PageModule != null)
+                {
+                    returnData.PageModule = returnData.PageModule.Where(pm => !pm.IsDeleted).ToList();
+                }
+
+                if (returnData.PageContent != null)
+                {
+                    returnData.PageContent = returnData.PageContent.Where(pc => !pc.IsDeleted).ToList();
+                }
 
                 return returnData;
             }
@@ -213,7 +222,7 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 IEnumerable<PageModule> returnData = context.PageModule
-                    .Where(e => e.PageId == pageId)
+                    .Where(e => e.PageId == pageId && !e.IsDeleted)
                     .OrderBy(p => p.Id)
                     .ToList();
 
@@ -231,7 +240,7 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 PageModule returnData = context.PageModule
-                   .Where(e => e.Id == pageModuleId)
+                   .Where(e => e.Id == pageModuleId && !e.IsDeleted)
                    .OrderBy(p => p.Id)
                    .FirstOrDefault();
 
@@ -249,7 +258,7 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 PageModule returnData = context.PageModule
-                   .Where(e => e.ContainerId == containerId)
+                   .Where(e => e.ContainerId == containerId && !e.IsDeleted)
                    .OrderBy(p => p.Id)
                    .FirstOrDefault();
 

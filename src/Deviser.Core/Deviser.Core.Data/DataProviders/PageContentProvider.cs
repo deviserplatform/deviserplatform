@@ -49,7 +49,7 @@ namespace Deviser.Core.Data.DataProviders
                 PageContent returnData = context.PageContent
                     .AsNoTracking()
                     .Include(pc=>pc.PageContentTranslation)
-                   .Where(e => e.Id == pageContentId && e.IsDeleted == false)
+                   .Where(e => e.Id == pageContentId && !e.IsDeleted)
                    .AsNoTracking()
                    .FirstOrDefault();
                 return returnData;
@@ -66,7 +66,7 @@ namespace Deviser.Core.Data.DataProviders
             {
                 IEnumerable<PageContent> returnData = context.PageContent
                     .AsNoTracking()
-                    .Where(e => e.ContainerId == containerId && e.IsDeleted == false)
+                    .Where(e => e.ContainerId == containerId && !e.IsDeleted)
                     .ToList();
                 return new List<PageContent>(returnData);
             }
@@ -82,7 +82,7 @@ namespace Deviser.Core.Data.DataProviders
             {
                 List<PageContent> returnData = context.PageContent
                     .Include(pc => pc.PageContentTranslation)
-                    .Where(e => e.PageId == pageId)
+                    .Where(e => e.PageId == pageId && !e.IsDeleted)
                     .ToList();
                 foreach (var pageContent in returnData)
                 {
@@ -104,7 +104,7 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 var returnData = context.PageContentTranslation
-                    .Where(t => t.PageContentId == pageConentId && t.CultureCode == cultureCode)
+                    .Where(t => t.PageContentId == pageConentId && t.CultureCode == cultureCode && !t.IsDeleted)
                     .FirstOrDefault();
                 return returnData;
             }
@@ -119,7 +119,7 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 PageContentTranslation returnData = context.PageContentTranslation
-                    .Where(t => t.Id== translationId)
+                    .Where(t => t.Id== translationId && !t.IsDeleted)
                     .FirstOrDefault();
                 return returnData;
             }
