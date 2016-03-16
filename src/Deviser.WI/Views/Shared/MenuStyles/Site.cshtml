@@ -1,0 +1,28 @@
+﻿@model ICollection<Deviser.Core.Data.Entities.Page>
+
+@using System.Security.Claims
+@using Deviser.Core.Library
+@{
+    Layout = null;
+    AppContext deviserContext = (AppContext)ViewBag.AppContext;  //HttpContext.Current.Session["AppContext"];
+}
+
+
+
+@foreach (var page in Model)
+{
+    var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
+    if (translation != null)
+    {
+        <li class="dropdown">
+            <a href="@translation.URL">@translation.Name</a>
+            @if (page.ChildPage != null && page.ChildPage.Count > 0)
+            {
+                <ul class="dropdown-menu">
+                    @Html.Partial(string.Format(Globals.MenuStylePath, "Site"), page.ChildPage)
+                </ul>
+            }
+        </li>
+    }
+}
+

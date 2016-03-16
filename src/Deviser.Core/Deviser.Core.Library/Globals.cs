@@ -41,6 +41,30 @@ namespace Deviser.Core.Library
             }
         }
 
+        public static string LayoutTypesPath
+        {
+            get
+            {
+                return "~/Views/Shared/LayoutTypes/{0}.cshtml";
+            }
+        }
+
+        public static string ContentTypesPath
+        {
+            get
+            {
+                return "~/Views/Shared/ContentTypes/View/{0}.cshtml";
+            }
+        }
+
+        public static string MenuStylePath
+        {
+            get
+            {
+                return "~/Views/Shared/MenuStyles/{0}.cshtml";
+            }
+        }
+
         public static CultureInfo CurrentCulture
         {
             get; set;

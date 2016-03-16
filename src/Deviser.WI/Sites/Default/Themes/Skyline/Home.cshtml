@@ -20,18 +20,20 @@
         </div>
         <div class="navbar-collapse collapse">
             @*<ul class="nav navbar-nav">
-                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                <li><a asp-controller="Home" asp-action="About">About</a></li>
-                <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-            </ul>*@
-            @Component.Invoke("Navigation",false);
+                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-controller="Home" asp-action="About">About</a></li>
+                    <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                </ul>*@
+            @*@Component.Invoke("Navigation",false);*@
+            <ul sde-nav="Site" class="nav navbar-nav"></ul>
+
             @await Html.PartialAsync("_LoginPartial")
         </div>
     </div>
 </div>
 
-<div class="container body-content">    
-    @RenderBody()    
+<div class="container body-content">
+    @RenderBody()
     <hr />
     <footer>
         <p>&copy; 2015 - Deviser.WI</p>

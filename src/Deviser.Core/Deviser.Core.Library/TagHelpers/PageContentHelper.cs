@@ -105,7 +105,7 @@ namespace Deviser.Core.Library.TagHelpers
                                 dynamic typeInfo = JsonConvert.DeserializeObject<dynamic>(pageContent.TypeInfo);
                                 string typeName = (string)typeInfo.type;
                                 ViewContext.ViewData["contentType"] = typeName;
-                                htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/ContentTypes/View/{0}.cshtml", typeName), pageContent);
+                                htmlContent = htmlHelper.Partial(string.Format(Globals.ContentTypesPath, typeName), pageContent);
                                 var contentResult = GetString(htmlContent);
                                 currentResults.Add(new ContentResult
                                 {
@@ -137,7 +137,7 @@ namespace Deviser.Core.Library.TagHelpers
 
 
 
-                        htmlContent = htmlHelper.Partial(string.Format("~/Views/Shared/LayoutTypes/{0}.cshtml", layoutType), currentResult);
+                        htmlContent = htmlHelper.Partial(string.Format(Globals.LayoutTypesPath, layoutType), currentResult);
                         var layoutResult = GetString(htmlContent);
                         sb.Append(layoutResult);
                         

@@ -1,0 +1,33 @@
+﻿@model ICollection<Deviser.Core.Data.Entities.Page>
+
+@using System.Security.Claims
+@using Deviser.Core.Library
+@{
+    Layout = null;
+    AppContext deviserContext = (AppContext)ViewBag.AppContext;  //HttpContext.Current.Session["AppContext"];
+}
+
+<a href="javascript:;" class="nav-link nav-toggle">
+    <i class="icon-home"></i>
+    <span class="title">Dashboard</span>
+    <span class="selected"></span>
+    <span class="arrow open"></span>
+</a>
+<ul class="sub-menu">
+    @foreach (var page in Model)
+    {
+        var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
+        if (translation != null)
+        {
+            <li class="nav-item start ">
+                <a href="@translation.URL" class="nav-link ">
+                    <span class="title">@translation.Name</span>
+                </a>
+                @*@if (page.ChildPage != null && page.ChildPage.Count > 0)
+                {
+                    @Html.Partial(string.Format(Globals.MenuStylePath, "Site"), page.ChildPage)
+                }*@
+            </li>
+        }
+    }
+</ul>

@@ -348,3 +348,10 @@ div.edit-page.form-horizontal .control-label {
 .logged-in {
     margin-top: 46px;
 }
+
+
+/*Site CSS*/
+
+.dropdown:hover .dropdown-menu {
+display: block;
+}
