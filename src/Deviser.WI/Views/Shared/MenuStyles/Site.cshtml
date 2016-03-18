@@ -1,4 +1,4 @@
-﻿@model ICollection<Deviser.Core.Data.Entities.Page>
+﻿@model Deviser.Core.Data.Entities.Page
 
 @using System.Security.Claims
 @using Deviser.Core.Library
@@ -9,7 +9,7 @@
 
 
 
-@foreach (var page in Model)
+@foreach (var page in Model.ChildPage)
 {
     var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
     if (translation != null)
@@ -19,7 +19,7 @@
             @if (page.ChildPage != null && page.ChildPage.Count > 0)
             {
                 <ul class="dropdown-menu">
-                    @Html.Partial(string.Format(Globals.MenuStylePath, "Site"), page.ChildPage)
+                    @Html.Partial(string.Format(Globals.MenuStylePath, "Site"), page)
                 </ul>
             }
         </li>

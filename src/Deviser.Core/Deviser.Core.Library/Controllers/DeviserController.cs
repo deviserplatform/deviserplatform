@@ -57,27 +57,31 @@ namespace Deviser.Core.Library.Controllers
             }
         }
 
-        //public override void OnActionExecuting(ActionExecutingContext context)
-        //{
-        //    base.OnActionExecuting(context);
-        //    AppContext returnValue = Session.GetObjectFromJson<AppContext>("AppContext");
-        //    if (returnValue == null)
-        //    {
-        //        returnValue = new AppContext();
-        //        Session.SetObjectAsJson("AppContext", returnValue);
-        //    }
-        //    AppContext = returnValue;
-        //}
+        
+        public override ViewResult View()
+        {
+            ViewBag.AppContext = AppContext;
+            return base.View();
+        }
+        
+        public override ViewResult View(object model)
+        {
+            ViewBag.AppContext = AppContext;
+            return base.View(model);
+        }
+        
+        public override ViewResult View(string viewName)
+        {
+            ViewBag.AppContext = AppContext;
+            return base.View(viewName);
+        }
+        
+        public override ViewResult View(string viewName, object model)
+        {
+            ViewBag.AppContext = AppContext;
+            return base.View(viewName, model);
+        }
 
-        //public override void OnActionExecuted(ActionExecutedContext context)
-        //{
-        //    base.OnActionExecuted(context);
-            
-        //    if (AppContext == null)
-        //    {
-        //        AppContext = new AppContext();                
-        //    }
-        //    Session.SetObjectAsJson("AppContext", AppContext);
-        //}
+
     }
 }

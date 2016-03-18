@@ -15,21 +15,25 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.TagHelpers
 {
-    [HtmlTargetElement("*", Attributes = NavAttributeName)]
-    [HtmlTargetElement("*", Attributes = ShowAdminAttributeName)]
+    [HtmlTargetElement("*", Attributes = NavAttributeName)]    
     public class NavigationHelper : DeviserTagHelper
     {
-        private const string NavAttributeName = "sde-nav";
-        private const string ShowAdminAttributeName = "sde-nav-showadmin";
+        private const string NavAttributeName = "sd-nav";
+        private const string PageAttributeName = "sd-nav-page";
+        private const string ParentAttributeName = "sd-nav-parent";
 
         private IPageProvider pageProvider;
+        private INavigation navigation;
         private IHtmlHelper htmlHelper;
 
         [HtmlAttributeName(NavAttributeName)]
         public string MenuStyle { get; set; }
 
-        [HtmlAttributeName(NavAttributeName)]
-        public bool ShowAdmin { get; set; }
+        [HtmlAttributeName(PageAttributeName)]
+        public SystemPageFilter SystemFilter { get; set; }
+
+        [HtmlAttributeName(ParentAttributeName)]
+        public int parent { get; set; }
 
         [HtmlAttributeNotBound]
         [ViewContext]
@@ -40,6 +44,7 @@ namespace Deviser.Core.Library.TagHelpers
         {
             pageProvider = container.Resolve<IPageProvider>();
             this.htmlHelper = container.Resolve<IHtmlHelper>();
+            this.navigation = container.Resolve<INavigation>();
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -51,28 +56,27 @@ namespace Deviser.Core.Library.TagHelpers
             }
 
             ((HtmlHelper)htmlHelper).Contextualize(ViewContext);
-
-            var root = pageProvider.GetPageTree();
-            var pages = root.ChildPage.ToList();
-
-            //Filter admin pages
-            if (pages != null && !ShowAdmin)
-                pages = pages.Where(p => !p.IsSystem).ToList();
-
-            foreach (var page in pages)
+            Page root = null;
+            if(parent>0)
             {
-                FilterPage(page, ShowAdmin);
+                root = navigation.GetPageTree(parent);
             }
+            else
+            {
+                root = pageProvider.GetPageTree();
+            }
+            
 
+            FilterPage(root, SystemFilter);
 
-            var htmlContent = htmlHelper.Partial(string.Format(Globals.MenuStylePath, MenuStyle), pages);
+            var htmlContent = htmlHelper.Partial(string.Format(Globals.MenuStylePath, MenuStyle), root);
             var contentResult = GetString(htmlContent);
             output.Content.SetHtmlContent(contentResult);
             //output.PostContent.Append("MenuStyle: " + MenuStyle);
 
         }
 
-        private void FilterPage(Page page, bool isAdmin)
+        private void FilterPage(Page page, SystemPageFilter systemFilter)
         {
             if (page != null)
             {
@@ -81,9 +85,20 @@ namespace Deviser.Core.Library.TagHelpers
                     page.IsActive = true;
                 }
 
-                //Filter admin pages
-                if (page.ChildPage != null && !isAdmin)
-                    page.ChildPage = page.ChildPage.Where(p => !p.IsSystem).ToList();
+                //Page filter
+                if (page.ChildPage != null)
+                {
+                    //system page filter
+                    if(systemFilter == SystemPageFilter.PublicOnly)
+                    {
+                        page.ChildPage = page.ChildPage.Where(p => !p.IsSystem).ToList();
+                    }
+                    else if(systemFilter== SystemPageFilter.SystemOnly)
+                    {
+                        page.ChildPage = page.ChildPage.Where(p => p.IsSystem).ToList();
+                    }
+                }
+                    
 
                 if (page.ChildPage != null && page.ChildPage.Count > 0)
                 {
@@ -94,7 +109,7 @@ namespace Deviser.Core.Library.TagHelpers
                             page.IsBreadCrumb = true;
                         }
 
-                        FilterPage(child, isAdmin);
+                        FilterPage(child, systemFilter);
                     }
                 }
             }
@@ -106,5 +121,12 @@ namespace Deviser.Core.Library.TagHelpers
             content.WriteTo(writer, new HtmlEncoder());
             return writer.ToString();
         }
+    }
+
+    public enum SystemPageFilter
+    {
+        All,
+        PublicOnly,
+        SystemOnly                
     }
 }

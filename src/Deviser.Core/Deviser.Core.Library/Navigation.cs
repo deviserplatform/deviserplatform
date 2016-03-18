@@ -23,6 +23,12 @@ namespace Deviser.Core.Library
             pageProvider = container.Resolve<IPageProvider>();
         }
 
+        public Page GetPageTree(int pageId)
+        {
+            var root = pageProvider.GetPageTree();
+            return GetPageTree(root, pageId);
+        }
+
         public Page UpdatePageTree(Page page)
         {
             try
@@ -84,6 +90,26 @@ namespace Deviser.Core.Library
                 logger.LogError(errorMessage, ex);
             }
             return false;
+        }
+
+        private Page GetPageTree(Page page, int pageId)
+        {
+            Page resultPage = null;
+            if (page.Id == pageId)
+                resultPage = page;
+
+            if (page.ChildPage!=null)
+            {
+                foreach(var child in page.ChildPage)
+                {
+                    var childResult = GetPageTree(child, pageId);
+                    if(childResult!=null)
+                    {
+                        resultPage = childResult;
+                    }
+                }
+            }
+            return resultPage;
         }
 
         private void UpdateChildPages(ICollection<Page> pages)

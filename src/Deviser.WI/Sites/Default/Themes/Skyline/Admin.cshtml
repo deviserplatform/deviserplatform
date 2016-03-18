@@ -1,4 +1,4 @@
-﻿
+﻿@using Deviser.Core.Library.TagHelpers;
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     Deviser.Core.Data.Entities.Page currentPage = (Deviser.Core.Data.Entities.Page)ViewBag.AppContext.CurrentPage;
@@ -51,7 +51,7 @@
                         </form>
                         <!-- END RESPONSIVE QUICK SEARCH FORM -->
                     </li>
-                    <li sde-nav="Admin" sde-nav-showadmin="true" class="nav-item start"></li>
+                    <li sd-nav="Admin" sd-nav-page="SystemPageFilter.SystemOnly" sd-nav-parent="3" class="nav-item start"></li>
 
                     <li class="nav-item start active open">
                         <a href="javascript:;" class="nav-link nav-toggle">

@@ -12,11 +12,12 @@ using Microsoft.Extensions.Logging;
 using Deviser.WI.Services;
 using Deviser.WI.ViewModels.Account;
 using Deviser.Core.Data.Entities;
+using Deviser.Core.Library.Controllers;
 
 namespace Deviser.WI.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : DeviserController
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;

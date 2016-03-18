@@ -1,4 +1,5 @@
 ﻿@using System.Security.Claims
+@using Deviser.Core.Library.TagHelpers;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     string loggedInClass = User.IsSignedIn() ? "logged-in" : "";
@@ -25,7 +26,7 @@
                     <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
                 </ul>*@
             @*@Component.Invoke("Navigation",false);*@
-            <ul sde-nav="Site" class="nav navbar-nav"></ul>
+            <ul sd-nav="Site" sd-nav-page="SystemPageFilter.PublicOnly" class="nav navbar-nav"></ul>
 
             @await Html.PartialAsync("_LoginPartial")
         </div>
