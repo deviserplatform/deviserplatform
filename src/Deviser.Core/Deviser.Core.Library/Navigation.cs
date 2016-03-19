@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
+using Deviser.Core.Library.DomainTypes;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace Deviser.Core.Library
         private readonly ILogger<LayoutProvider> logger;
 
         IPageProvider pageProvider;
+        Page activePage = null;
+        List<Page> breadcrumbs = null;
 
         public Navigation(ILifetimeScope container)
         {
@@ -23,10 +26,51 @@ namespace Deviser.Core.Library
             pageProvider = container.Resolve<IPageProvider>();
         }
 
-        public Page GetPageTree(int pageId)
+        public Page GetPageTree(int parentId)
         {
             var root = pageProvider.GetPageTree();
-            return GetPageTree(root, pageId);
+            return GetPageTree(root, parentId);
+        }
+
+        public Page GetPageTree(int currentPageId, SystemPageFilter systemFilter, int parentId = 0)
+        {
+            Page root;
+            if (parentId > 0)
+            {
+                root = GetPageTree(parentId);
+            }
+            else
+            {
+                root = pageProvider.GetPageTree();
+            }
+
+            Func<Page, bool> predicate = null;
+
+            //system page filter
+            if (systemFilter == SystemPageFilter.PublicOnly)
+            {
+                //page.ChildPage = page.ChildPage.Where(p => !p.IsSystem).ToList();
+                predicate = p => !p.IsSystem;
+            }
+            else if (systemFilter == SystemPageFilter.SystemOnly)
+            {
+                //page.ChildPage = page.ChildPage.Where(p => p.IsSystem).ToList();
+                predicate = p => p.IsSystem;
+            }
+
+
+            FilterPage(root, currentPageId, predicate);
+            SetBreadCrumb(activePage);
+            return root;
+        }
+
+        public List<Page> GetBreadCrumbs(int currentPageId)
+        {
+            Page root = pageProvider.GetPageTree();
+            FilterPage(root, currentPageId);
+            breadcrumbs = new List<Page>();
+            SetBreadCrumb(activePage);
+            return breadcrumbs.OrderBy(p=>p.PageLevel).ToList();
         }
 
         public Page UpdatePageTree(Page page)
@@ -98,12 +142,12 @@ namespace Deviser.Core.Library
             if (page.Id == pageId)
                 resultPage = page;
 
-            if (page.ChildPage!=null)
+            if (page.ChildPage != null)
             {
-                foreach(var child in page.ChildPage)
+                foreach (var child in page.ChildPage)
                 {
                     var childResult = GetPageTree(child, pageId);
-                    if(childResult!=null)
+                    if (childResult != null)
                     {
                         resultPage = childResult;
                     }
@@ -197,6 +241,52 @@ namespace Deviser.Core.Library
                 return currentPageTranslation;
             }
             return null;
+        }
+
+        private void FilterPage(Page page, int currentPageId, Func<Page, bool> predicate = null)
+        {
+            if (page != null)
+            {
+                if (page.Id == currentPageId)
+                {
+                    page.IsActive = true;
+                    activePage = page;
+                }
+
+                //Page filter
+                if (page.ChildPage != null)
+                {
+                    if (predicate != null)
+                        page.ChildPage = page.ChildPage.Where(predicate).ToList();
+
+                    page.ChildPage = page.ChildPage.OrderBy(p => p.PageOrder).ToList();
+                }
+
+                if (page.ChildPage != null && page.ChildPage.Count > 0)
+                {
+                    foreach (var child in page.ChildPage)
+                    {
+                        FilterPage(child, currentPageId, predicate);
+                    }
+                }
+            }
+        }
+
+        private void SetBreadCrumb(Page activePage)
+        {
+            if (activePage != null)
+            {
+                activePage.IsBreadCrumb = true;
+                if(breadcrumbs!=null)
+                {
+                    breadcrumbs.Add(activePage);
+                }
+
+                if (activePage.Parent != null)
+                {
+                    SetBreadCrumb(activePage.Parent);
+                }
+            }
         }
     }
 }

@@ -16,31 +16,23 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.TagHelpers
 {
-    [HtmlTargetElement("*", Attributes = NavAttributeName)]    
-    public class NavigationHelper : DeviserTagHelper
+    [HtmlTargetElement("*", Attributes = BcAttributeName)]
+    public class BreadCrumbHelper : DeviserTagHelper
     {
-        private const string NavAttributeName = "sd-nav";
-        private const string PageAttributeName = "sd-nav-page";
-        private const string ParentAttributeName = "sd-nav-parent";
+        private const string BcAttributeName = "sd-breadcrumb";
 
         private IPageProvider pageProvider;
         private INavigation navigation;
         private IHtmlHelper htmlHelper;
 
-        [HtmlAttributeName(NavAttributeName)]
-        public string MenuStyle { get; set; }
-
-        [HtmlAttributeName(PageAttributeName)]
-        public SystemPageFilter SystemFilter { get; set; }
-
-        [HtmlAttributeName(ParentAttributeName)]
-        public int ParentId { get; set; }
+        [HtmlAttributeName(BcAttributeName)]
+        public string BreadCrumbStyle { get; set; }
 
         [HtmlAttributeNotBound]
         [ViewContext]
         public ViewContext ViewContext { get; set; }
 
-        public NavigationHelper(ILifetimeScope container, IHttpContextAccessor httpContextAccessor)
+        public BreadCrumbHelper(ILifetimeScope container, IHttpContextAccessor httpContextAccessor)
              : base(httpContextAccessor)
         {
             pageProvider = container.Resolve<IPageProvider>();
@@ -50,21 +42,21 @@ namespace Deviser.Core.Library.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (string.IsNullOrEmpty(MenuStyle))
+            if (string.IsNullOrEmpty(BreadCrumbStyle))
             {
-                output.Content.SetHtmlContent("Navigation style (sd-nav) cannot be null");
+                output.Content.SetHtmlContent("BreadCrumb style (sd-breadcrumb) cannot be null");
                 return;
             }
 
             ((HtmlHelper)htmlHelper).Contextualize(ViewContext);
-            Page root = navigation.GetPageTree(AppContext.CurrentPageId, SystemFilter, ParentId);
+            List<Page> pages = navigation.GetBreadCrumbs(AppContext.CurrentPageId);
 
-            var htmlContent = htmlHelper.Partial(string.Format(Globals.MenuStylePath, MenuStyle), root);
+            var htmlContent = htmlHelper.Partial(string.Format(Globals.BreadCrumbStylePath, BreadCrumbStyle), pages);
             var contentResult = GetString(htmlContent);
             output.Content.SetHtmlContent(contentResult);
             //output.PostContent.Append("MenuStyle: " + MenuStyle);
 
-        }        
+        }
 
         private static string GetString(IHtmlContent content)
         {
@@ -73,6 +65,4 @@ namespace Deviser.Core.Library.TagHelpers
             return writer.ToString();
         }
     }
-
-   
 }

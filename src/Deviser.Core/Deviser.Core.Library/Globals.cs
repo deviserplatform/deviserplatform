@@ -65,6 +65,14 @@ namespace Deviser.Core.Library
             }
         }
 
+        public static string BreadCrumbStylePath
+        {
+            get
+            {
+                return "~/Views/Shared/BreadCrumbStyles/{0}.cshtml";
+            }
+        }
+
         public static CultureInfo CurrentCulture
         {
             get; set;

@@ -24,36 +24,13 @@
                 <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
                 <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
                 @*@Html.Action("Admin", "Menu")*@
-                <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px">
+                <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px"
+                    sd-nav="Admin" sd-nav-page="SystemPageFilter.SystemOnly">
                     <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
-                    <li class="sidebar-toggler-wrapper hide">
-                        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
-                        <div class="sidebar-toggler"> </div>
-                        <!-- END SIDEBAR TOGGLER BUTTON -->
-                    </li>
-                    <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-                    <li class="sidebar-search-wrapper">
-                        <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-                        <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-                        <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-                        <form class="sidebar-search  " action="page_general_search_3.html" method="POST">
-                            <a href="javascript:;" class="remove">
-                                <i class="icon-close"></i>
-                            </a>
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search...">
-                                <span class="input-group-btn">
-                                    <a href="javascript:;" class="btn submit">
-                                        <i class="icon-magnifier"></i>
-                                    </a>
-                                </span>
-                            </div>
-                        </form>
-                        <!-- END RESPONSIVE QUICK SEARCH FORM -->
-                    </li>
-                    <li sd-nav="Admin" sd-nav-page="SystemPageFilter.SystemOnly" sd-nav-parent="3" class="nav-item start"></li>
+                    
+                    
 
-                    <li class="nav-item start active open">
+                    @*<li class="nav-item start active open">
                         <a href="javascript:;" class="nav-link nav-toggle">
                             <i class="icon-home"></i>
                             <span class="title">Dashboard</span>
@@ -83,10 +60,8 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
-                    <li class="heading">
-                        <h3 class="uppercase">Features</h3>
-                    </li>
+                    </li>*@
+                   
                 </ul>
                 <!-- END SIDEBAR MENU -->
             </div>
@@ -95,8 +70,9 @@
         <!-- BEGIN CONTENT -->
         <div class="page-content-wrapper">
             <div class="page-content">
-                <div class="page-bar">
-                    <ul class="page-breadcrumb">
+                <div class="page-bar"
+                     sd-breadcrumb="Admin">
+                    @*<ul class="page-breadcrumb">
                         <li>
                             <i class="fa fa-home"></i>
                             <a href="index.html">Admin</a>
@@ -105,7 +81,7 @@
                         <li>
                             <a href="@currentPage.PageTranslation.First().URL">@currentPage.PageTranslation.First().Name</a>
                         </li>
-                    </ul>
+                    </ul>*@
                 </div>
 
                 <!-- BEGIN PAGE HEADER-->
