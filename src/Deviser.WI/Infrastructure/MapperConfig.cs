@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using User = Deviser.Core.Data.Entities.User;
 
 namespace Deviser.WI.Infrastructure
 {
@@ -13,8 +14,8 @@ namespace Deviser.WI.Infrastructure
     {
         public static void CreateMaps()
         {
-            Mapper.CreateMap<User, UserDTO>();
-            Mapper.CreateMap<UserDTO, User>();
+            Mapper.CreateMap<DTO.User, User>();
+            Mapper.CreateMap<User, DTO.User>();
             Mapper.CreateMap<PageLayout, Layout>();
             Mapper.CreateMap<Layout, PageLayout> ();
         }

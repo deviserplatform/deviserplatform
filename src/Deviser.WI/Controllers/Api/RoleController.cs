@@ -51,25 +51,25 @@ namespace DeviserWI.Controllers.API
             }
         }
 
-        [HttpGet]
-        public IActionResult Get(string roleId)
+        [HttpGet("{id}")]
+        public IActionResult Get(string id)
         {
             try
             {
-                var result = roleProvider.GetRole(roleId);
+                var result = roleProvider.GetRole(id);
                 if (result != null)
                     return Ok(result);
                 return HttpNotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting a role, roleId: {0}", roleId), ex);
+                logger.LogError(string.Format("Error occured while getting a role, roleId: {0}", id), ex);
                 return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpPost]
-        public IActionResult Post(Role role)
+        public IActionResult Post([FromBody]Role role)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpPut]
-        public IActionResult Put(Role role)
+        public IActionResult Put([FromBody]Role role)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace DeviserWI.Controllers.API
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
             try

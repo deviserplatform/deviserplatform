@@ -8,9 +8,10 @@ using Deviser.Core.Data.Entities;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDBContext))]
-    partial class DeviserDBContextModelSnapshot : ModelSnapshot
+    [Migration("20160320210321_PlatformSchema_01.00.09")]
+    partial class PlatformSchema_010009
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")
@@ -314,12 +315,6 @@ namespace Deviser.WI.Migrations
                         .HasAnnotation("MaxLength", 256);
 
                     b.Property<bool>("EmailConfirmed");
-
-                    b.Property<string>("FirstName")
-                        .HasAnnotation("MaxLength", 100);
-
-                    b.Property<string>("LastName")
-                        .HasAnnotation("MaxLength", 100);
 
                     b.Property<bool>("LockoutEnabled");
 

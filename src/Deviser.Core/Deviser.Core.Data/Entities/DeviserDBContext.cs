@@ -15,34 +15,36 @@ namespace Deviser.Core.Data.Entities
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>(b =>
+            modelBuilder.Entity<User>(entity =>
             {
-                b.ToTable("User");
+                entity.Property(e => e.FirstName).HasMaxLength(100);
+                entity.Property(e => e.LastName).HasMaxLength(100);
+                entity.ToTable("User");
             });
 
-            modelBuilder.Entity<Role>(b =>
+            modelBuilder.Entity<Role>(entity =>
             {
-                b.ToTable("Role");
+                entity.ToTable("Role");
             });
 
-            modelBuilder.Entity<IdentityUserClaim<string>>(b =>
+            modelBuilder.Entity<IdentityUserClaim<string>>(entity =>
             {
-                b.ToTable("UserClaim");
+                entity.ToTable("UserClaim");
             });
 
-            modelBuilder.Entity<IdentityRoleClaim<string>>(b =>
+            modelBuilder.Entity<IdentityRoleClaim<string>>(entity =>
             {
-                b.ToTable("RoleClaim");
+                entity.ToTable("RoleClaim");
             });
 
-            modelBuilder.Entity<IdentityUserRole<string>>(b =>
+            modelBuilder.Entity<IdentityUserRole<string>>(entity =>
             {
-                b.ToTable("UserRole");
+                entity.ToTable("UserRole");
             });
 
-            modelBuilder.Entity<IdentityUserLogin<string>>(b =>
+            modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
             {
-                b.ToTable("UserLogin");
+                entity.ToTable("UserLogin");
             });
 
 

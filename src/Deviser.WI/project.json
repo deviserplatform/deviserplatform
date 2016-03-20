@@ -31,7 +31,9 @@
     "Microsoft.Framework.Runtime": "1.0.0-*",
     "Deviser.Core.Data": "1.0.0-*",
     "Deviser.Core.Library": "1.0.0-*",
-    "Deviser.Modules.PageManagement": "1.0.0-*"
+    "Deviser.Modules.PageManagement": "1.0.0-*",
+    "Deviser.Modules.UserManagement": "1.0.0-*",
+    "AutoMapper": "4.2.1"
   },
 
   "commands": {
