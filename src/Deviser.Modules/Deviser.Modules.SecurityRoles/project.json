@@ -1,6 +1,6 @@
 ﻿{
   "version": "1.0.0-*",
-  "description": "Deviser.Modules.PageManagement Module",
+  "description": "Deviser.Modules.SecurityRoles Module",
   "authors": [ "Karthick Sundararajan" ],
   "tags": [ "" ],
   "projectUrl": "",
@@ -16,3 +16,4 @@
     "Deviser.Core.Library": "1.0.0-*"
   }
 }
+

@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
+using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.WI.DTO;
 using DeviserWI.Controllers.API;
@@ -20,10 +21,14 @@ namespace Deviser.WI.Controllers.Api
         //Logger
         private readonly ILogger<UserController> logger;
         private readonly UserManager<Core.Data.Entities.User> userManager;
+        private IUserProvider userProvider;
+        private IRoleProvider roleProvider;
 
         public UserController(ILifetimeScope container, UserManager<Core.Data.Entities.User> userManager)
         {
             logger = container.Resolve<ILogger<UserController>>();
+            userProvider = container.Resolve<IUserProvider>();
+            roleProvider = container.Resolve<IRoleProvider>();
             this.userManager = userManager;
         }
 
@@ -32,10 +37,28 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var users = userManager.Users.ToList();
+                var users = userProvider.GetUsers();
                 if (users != null)
                 {
                     List<DTO.User> result = Mapper.Map<List<DTO.User>>(users);
+                    //Roles workarround
+                    foreach(var user in users)
+                    {
+                        if(user.Roles!=null && user.Roles.Count > 0)
+                        {
+                            var targetUser = result.First(u => u.Id == user.Id);
+                            targetUser.Roles = new List<Role>();
+                            foreach (var userRole in user.Roles)
+                            {
+                                if (userRole != null)
+                                {
+                                    var role = roleProvider.GetRole(userRole.RoleId);
+                                    targetUser.Roles.Add(role);
+                                }
+                            }
+                            
+                        }
+                    }
                     return Ok(result);
                 }
                 return HttpNotFound();
@@ -158,8 +181,9 @@ namespace Deviser.WI.Controllers.Api
                 return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-                
-        [HttpPost("/role")]
+
+        [Route("role")]
+        [HttpPost]
         public IActionResult AddRole([FromBody] dynamic userRoleObj)
         {
             try
@@ -172,8 +196,8 @@ namespace Deviser.WI.Controllers.Api
                     var result = userManager.AddToRoleAsync(user, roleName).Result;
                     if (result.Succeeded)
                     {
-                        var resultUser = userManager.Users.FirstOrDefault(u => u.Id == userId);
-                        var userDTO = Mapper.Map<DTO.User>(resultUser);
+                        var resultUser = userProvider.GetUser(userId); //userManager.Users.FirstOrDefault(u => u.Id == userId);
+                        var userDTO = ConvertToUserDTO(resultUser); 
                         return Ok(userDTO);
                     }
                 }
@@ -186,7 +210,7 @@ namespace Deviser.WI.Controllers.Api
             }
         }
                 
-        [HttpDelete("/role/{userId}/{roleName}")]
+        [HttpDelete("role/{userId}/{roleName}")]
         public IActionResult RemoveRole(string userId, string roleName)
         {
             try
@@ -197,8 +221,8 @@ namespace Deviser.WI.Controllers.Api
                     var result = userManager.RemoveFromRoleAsync(user, roleName).Result;
                     if (result.Succeeded)
                     {
-                        var resultUser = userManager.Users.FirstOrDefault(u => u.Id == userId);
-                        var userDTO = Mapper.Map<DTO.User>(resultUser);
+                        var resultUser = userProvider.GetUser(userId);
+                        var userDTO = ConvertToUserDTO(resultUser);
                         return Ok(userDTO);
                     }
                 }
@@ -210,6 +234,25 @@ namespace Deviser.WI.Controllers.Api
                 logger.LogError(string.Format("Error occured while creating a new user"), ex);
                 return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private DTO.User ConvertToUserDTO(Core.Data.Entities.User user)
+        {
+            var userDTO = Mapper.Map<DTO.User>(user);
+            if (user.Roles != null && user.Roles.Count > 0)
+            {
+                userDTO.Roles = new List<Role>();
+                foreach (var userRole in user.Roles)
+                {
+                    if (userRole != null)
+                    {
+                        var role = roleProvider.GetRole(userRole.RoleId);
+                        userDTO.Roles.Add(role);
+                    }
+
+                }
+            }
+            return userDTO;
         }
     }
 }

@@ -14,10 +14,10 @@ namespace Deviser.WI.Infrastructure
     {
         public static void CreateMaps()
         {
-            Mapper.CreateMap<DTO.User, User>();
-            Mapper.CreateMap<User, DTO.User>();
+            Mapper.CreateMap<DTO.User, User>().ForMember(m => m.Roles, opt => opt.Ignore());
+            Mapper.CreateMap<User, DTO.User>().ForMember(m => m.Roles, opt => opt.Ignore());
             Mapper.CreateMap<PageLayout, Layout>();
-            Mapper.CreateMap<Layout, PageLayout> ();
+            Mapper.CreateMap<Layout, PageLayout>();
         }
     }
 }
