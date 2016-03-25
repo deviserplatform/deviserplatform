@@ -6,7 +6,6 @@
     'ui.tree',
     'ui.select',
     'ngSanitize',
-    'ngPasswordStrength',
     'sd.sdlib',
     'deviserLayout.services',
     'deviser.config'
@@ -20,6 +19,7 @@
     function editCtrl($scope, $timeout, $filter, $q, globals, userService, userExistService,
         passwordResetService, roleService, userRoleService) {
         var vm = this;
+        var allRoles;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
         vm.add = add;
@@ -58,7 +58,7 @@
 
         function getRoles() {
             roleService.get().then(function (roles) {
-                vm.roles = roles;
+                vm.roles = allRoles = roles;
             }, function (error) {
                 showMessage("error", "Cannot get roles, please contact administrator");
             });
@@ -70,6 +70,7 @@
 
         function edit(user) {
             vm.selectedUser = user;
+            filterRoles();
             vm.currentViewState = vm.viewStates.EDIT;
         }
 
@@ -90,6 +91,7 @@
             };
             userRoleService.post(userRoleObj).then(function (user) {
                 vm.selectedUser = user;
+                filterRoles();
             }, function (error) {
                 showMessage("error", "Cannot add role, please contact administrator");
             });
@@ -102,9 +104,20 @@
             };
             userRoleService.remove(userRoleObj.userId, userRoleObj.roleName).then(function (user) {
                 vm.selectedUser = user;
+                filterRoles();
             }, function (error) {
                 showMessage("error", "Cannot remove role, please contact administrator");
             });
+        }
+
+        function filterRoles() {
+            if (vm.selectedUser) {
+                vm.roles = _.reject(allRoles, function (role) {
+                    return _.findWhere(vm.selectedUser.roles, { id: role.id });
+                });
+            }
+
+
         }
 
         function save() {
@@ -130,7 +143,16 @@
                         getUsers();
                         showMessage("success", "New user has been created");
                     }, function (error) {
-                        showMessage("error", "Cannot update user, please contact administrator");
+                        if (error.errors) {
+                            var validationError = '';
+                            _.each(error.errors, function (er) {
+                                validationError += er.description;
+                            });
+                            showMessage("error", validationError);
+                        }
+                        else {
+                            showMessage("error", "Cannot update user, please contact administrator");
+                        }
                     });
                 }
             }
@@ -149,7 +171,16 @@
                         showMessage("success", "Password has been reset");
                     }
                     else {
-                        showMessage("error", result.errors[0]);
+                        if (result.errors) {
+                            var validationError = '';
+                            _.each(result.errors, function (er) {
+                                validationError += er.description;
+                            });
+                            showMessage("error", validationError);
+                        }
+                        else {
+                            showMessage("error", "Cannot reset password, please contact administrator");
+                        }
                     }
 
                 }, function (error) {

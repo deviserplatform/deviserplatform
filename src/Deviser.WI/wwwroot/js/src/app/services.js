@@ -68,7 +68,7 @@
                 url: getUrl
             });
             return request.then(handleSuccess, function (response) {
-                return handleError(handleError, $q)
+                return handleError(response, $q)
             });
         }
 
@@ -81,7 +81,7 @@
             });
 
             return request.then(handleSuccess, function (response) {
-                return handleError(handleError, $q)
+                return handleError(response, $q)
             });
         }
     }
@@ -111,7 +111,7 @@
                 url: getUrl
             });
             return request.then(handleSuccess, function (response) {
-                return handleError(handleError, $q)
+                return handleError(response, $q)
             });
         }
     }
@@ -142,7 +142,7 @@
             });
 
             return request.then(handleSuccess, function (response) {
-                return handleError(handleError, $q)
+                return handleError(response, $q)
             });
         }
     }
@@ -180,7 +180,7 @@
                     url: url + '/' + userId + '/' + roleName
                 });
             return request.then(handleSuccess, function (response) {
-                return handleError(handleError, $q)
+                return handleError(response, $q)
             });
         }
     }
@@ -212,7 +212,7 @@
                 url: getUrl
             });
             return request.then(handleSuccess, function (response) {
-                return handleError(handleError, $q)
+                return handleError(response, $q)
             });
         }
 
@@ -223,7 +223,7 @@
                 data: angular.toJson(post)
             });
             return request.then(handleSuccess, function (response) {
-                return handleError(handleError, $q)
+                return handleError(response, $q)
             });
         }
 
@@ -240,7 +240,7 @@
             });
 
             return request.then(handleSuccess, function (response) {
-                return handleError(handleError, $q)
+                return handleError(response, $q)
             });
         }
 
@@ -251,7 +251,7 @@
                 url: url + '/' + id
             });
             return request.then(handleSuccess, function (response) {
-                return handleError(handleError, $q)
+                return handleError(response, $q)
             });
         }
     }
@@ -263,12 +263,12 @@
         // may have to normalize it on our end, as best we can.
         if (
             !angular.isObject(response.data) ||
-            !response.data.message
+            !response.data
             ) {
             return ($q.reject("An unknown error occurred."));
         }
         // Otherwise, use expected error message.
-        return ($q.reject(response.data.message));
+        return ($q.reject(response.data));
     }
 
 

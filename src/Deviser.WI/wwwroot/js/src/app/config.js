@@ -18,7 +18,7 @@
         provider.appSettings = {
             serviceBaseUrl: "",
             systemErrorMsg: "",
-            alertLifeTime: 5000,
+            alertLifeTime: 10000,
         };
     });
 }());

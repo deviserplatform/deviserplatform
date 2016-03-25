@@ -211,7 +211,7 @@
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Roles</label>
                                         <div class="col-md-6">
-                                            <ui-select ng-model="umVM.selectedRole" theme="bootstrap">
+                                            <ui-select ng-model="umVM.selectedRole" theme="bootstrap" ng-disabled="umVM.roles.length<=0">
                                                 <ui-select-match placeholder="Select role">{{$select.selected.name}}</ui-select-match>
                                                 <ui-select-choices repeat="role in umVM.roles | filter: $select.search">
                                                     <div ng-bind-html="role.name | highlight: $select.search"></div>
@@ -219,7 +219,7 @@
                                             </ui-select>
                                         </div>
                                         <div class="col-md-3">
-                                            <a class="btn btn-primary" ng-click="umVM.addRole()">Add Role</a>
+                                            <a class="btn btn-primary" ng-click="umVM.addRole()" ng-disabled="(umVM.roles.length<=0 || !umVM.selectedRole)">Add Role</a>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -333,10 +333,10 @@
                                         </span>
                                         <input type="password" class="form-control" placeholder="Enter password" name="password" ng-model="umVM.newUser.password" required>
                                     </div>
-                                    <div ng-password-strength="umVM.newUser.password" strength="passStrength" mode="bootstrap"
+                                    @*<div ng-password-strength="umVM.newUser.password" strength="passStrength" mode="bootstrap"
                                          inner-class="progress-bar"
                                          inner-class-prefix="progress-bar-"
-                                         outter-class-prefix="progress-bar-"></div>
+                                         outter-class-prefix="progress-bar-"></div>*@
                                     <p class="help-block" ng-show="umVM.hasError(userForm, 'password', 'required')">
                                         Password is required.
                                     </p>

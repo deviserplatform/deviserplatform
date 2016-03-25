@@ -71,19 +71,32 @@ namespace Deviser.WI.Controllers.Api
         }
 
         [HttpPost]
-        public IActionResult PasswordReset([FromBody] DTO.User userDTO)
+        public async Task<IActionResult> CreateUser([FromBody] DTO.User userDTO)
         {
             try
             {
-                var user = new Core.Data.Entities.User();
-                Mapper.Map(userDTO, user, typeof(DTO.User), typeof(Core.Data.Entities.User));
-                user.UserName = userDTO.Email;
-                var result = userManager.CreateAsync(user, userDTO.password).Result;
-                if (result.Succeeded)
+                if(userDTO!=null)
                 {
-                    return Ok(result);
+                    var user = new Core.Data.Entities.User();
+                    Mapper.Map(userDTO, user, typeof(DTO.User), typeof(Core.Data.Entities.User));
+                    user.Id = Guid.NewGuid().ToString();
+                    user.UserName = userDTO.Email;
+                    var result = await userManager.CreateAsync(user, userDTO.password);
+                    if (result.Succeeded)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return HttpBadRequest(result);
+                    }
                 }
-                return HttpBadRequest();
+                else
+                {
+                    return HttpBadRequest();
+                }
+
+                
             }
             catch (Exception ex)
             {
@@ -134,7 +147,7 @@ namespace Deviser.WI.Controllers.Api
             }
         }
 
-        [HttpPost("/isexist")]
+        [HttpPost("isexist")]
         public IActionResult IsUserExist([FromBody]dynamic userObj)
         {
             try
@@ -154,7 +167,7 @@ namespace Deviser.WI.Controllers.Api
             }
         }
 
-        [HttpPost("/passwordreset")]
+        [HttpPost("passwordreset")]
         public IActionResult PasswordReset([FromBody]dynamic passwordObj)
         {
             try
@@ -169,7 +182,7 @@ namespace Deviser.WI.Controllers.Api
                         !string.IsNullOrEmpty(newPassword))
                     {
                         var user = userManager.Users.FirstOrDefault(u => u.Id == userId);
-                        var result = userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+                        var result = userManager.ChangePasswordAsync(user, currentPassword, newPassword).Result;
                         return Ok(result);
                     }
                 }
