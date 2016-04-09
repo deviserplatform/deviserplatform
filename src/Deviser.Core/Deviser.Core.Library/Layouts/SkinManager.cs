@@ -3,22 +3,25 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.Layouts
 {
-    public class SkinHelper
+    public class SkinManager : ISkinManager
     {
+        private readonly IApplicationEnvironment appEnvironment;
 
-        
+        public SkinManager(IApplicationEnvironment appEnvironment)
+        {
+            this.appEnvironment = appEnvironment;
+        }
 
-        public static List<KeyValuePair<string, string>> GetHostSkins()
+        public List<KeyValuePair<string, string>> GetHostSkins()
         {
             string skinRoot = "Skins";
             var skins = new List<KeyValuePair<string, string>>();
 
-            string root = Globals.HostMapPath + skinRoot;
+            string root = appEnvironment.ApplicationBasePath + "\\" + Globals.HostMapPath + skinRoot;
             if (Directory.Exists(root))
             {
                 foreach (string skinFolder in Directory.GetDirectories(root))
@@ -31,13 +34,13 @@ namespace Deviser.Core.Library.Layouts
             }
             return skins;
         }
-        
-        private static void AddSkinFiles(List<KeyValuePair<string, string>> skins, string skinRoot, string skinFolder, bool isPortal)
+
+        private void AddSkinFiles(List<KeyValuePair<string, string>> skins, string skinRoot, string skinFolder, bool isPortal)
         {
             foreach (string skinFile in Directory.GetFiles(skinFolder, "*.cshtml"))
             {
                 string fileName = Path.GetFileNameWithoutExtension(skinFile);
-                if(!fileName.StartsWith("_"))
+                if (!fileName.StartsWith("_"))
                 {
                     string folder = skinFolder.Substring(skinFolder.LastIndexOf("\\") + 1);
                     string key = ((isPortal) ? "Site: " : "Host: ") + FormatSkinName(folder, Path.GetFileNameWithoutExtension(skinFile));
@@ -48,7 +51,7 @@ namespace Deviser.Core.Library.Layouts
             }
         }
 
-        private static string FormatSkinName(string skinFolder, string skinFile)
+        private string FormatSkinName(string skinFolder, string skinFile)
         {
             if (skinFolder.ToLower() == "_default")
             {

@@ -95,7 +95,7 @@ namespace Deviser.WI.Controllers
                 if (!string.IsNullOrEmpty(currentPage.SkinSrc))
                     skin = currentPage.SkinSrc;
                 else
-                    skin = "[G]Themes/Skyline/Home.cshtml";
+                    skin = "[G]Skins/Skyline/Home.cshtml";
 
                 skin = skin.Replace("[G]", "~/Sites/Default/");
 

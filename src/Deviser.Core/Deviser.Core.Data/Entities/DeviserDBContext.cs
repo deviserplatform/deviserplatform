@@ -196,6 +196,18 @@ namespace Deviser.Core.Data.Entities
                 entity.Property(e => e.SettingName).HasMaxLength(50);
             });
 
+            modelBuilder.Entity<Language>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+
+                entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
+                
+            });
+
             modelBuilder.Entity<sysdiagrams>(entity =>
             {
                 entity.HasKey(e => e.diagram_id);
@@ -214,6 +226,7 @@ namespace Deviser.Core.Data.Entities
         public virtual DbSet<PageTranslation> PageTranslation { get; set; }
         public virtual DbSet<PageContentTranslation> PageContentTranslation { get; set; }
         public virtual DbSet<SiteSetting> SiteSetting { get; set; }
+        public virtual DbSet<Language> Language { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         //public DbSet<ApplicationUser> ApplicationUser { get; set; }
         //public DbSet<ApplicationUser> ApplicationUser { get; set; }

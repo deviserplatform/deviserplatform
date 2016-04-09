@@ -92,7 +92,7 @@ namespace Deviser.Core.Library
         {
             get
             {
-                return "~/Sites/Default/Themes/Skyline/Admin.cshtml";
+                return "~/Sites/Default/Skins/Skyline/Admin.cshtml";
             }
         }
 

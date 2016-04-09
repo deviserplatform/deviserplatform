@@ -14,7 +14,7 @@
     app.factory('passwordResetService', passwordResetService);
     app.factory('roleService', roleService);
     app.factory('userRoleService', userRoleService);
-    
+    app.factory('languageService', languageService);    
 
     ////////////////////////////////
     /*Function declarations only*/
@@ -38,6 +38,7 @@
     function layoutTypeService($http, $q, globals) {
         return baseService($http, $q, globals, '/layouttype');
     }
+       
     
     function pageContentService($http, $q, globals) {
         var serviceUrl = "/pagecontent";
@@ -184,6 +185,10 @@
             });
         }
     }
+
+    function languageService($http, $q, globals) {
+        return baseService($http, $q, globals, '/language');
+    }
     
     function baseService($http, $q, globals, serviceUrl) {
         var service = {
@@ -270,8 +275,7 @@
         // Otherwise, use expected error message.
         return ($q.reject(response.data));
     }
-
-
+    
     // I transform the successful response, unwrapping the application data
     // from the API response payload.
     function handleSuccess(response) {

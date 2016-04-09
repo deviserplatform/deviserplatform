@@ -55,6 +55,12 @@ namespace Deviser.Core.Library.TagHelpers
                 return;
             }
 
+            if (CurrentPage.Layout == null)
+            {
+                output.Content.SetHtmlContent("Layout is not configured, choose a layout");
+                return;
+            }
+
             ((HtmlHelper)htmlHelper).Contextualize(ViewContext);
 
             PageLayout pageLayout = new PageLayout();

@@ -4,7 +4,7 @@
 }
 
 <div ng-app="deviser.pageMangement" ng-controller="PageManagementCtrl as pmVM">
-    
+
     <div class="row">
         <div ng-class="{'alert alert-danger':pmVM.message.messageType=='error',
                      'alert alert-info':pmVM.message.messageType=='info',
@@ -93,6 +93,14 @@
                 </div>
             </div>
             <div class="form-horizontal edit-page">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Is System</label>
+                    <div class="col-sm-6">
+                        <div class="checkbox-list">
+                            <input type="checkbox" ng-model="pmVM.selectedItem.isSystem">
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Skin</label>
                     <div class="col-sm-6">

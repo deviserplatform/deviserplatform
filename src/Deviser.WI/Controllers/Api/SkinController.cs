@@ -22,10 +22,12 @@ namespace DeviserWI.Controllers.API
     {
         //Logger
         private readonly ILogger<SkinController> logger;
+        private ISkinManager skinManager;
 
         public SkinController(ILifetimeScope container)
         {
             logger = container.Resolve<ILogger<SkinController>>();
+            skinManager = container.Resolve<ISkinManager>();
         }
         
         [HttpGet]
@@ -33,7 +35,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var page = SkinHelper.GetHostSkins();
+                var page = skinManager.GetHostSkins();
                 if (page != null)
                     return Ok(page);
                 return HttpNotFound();

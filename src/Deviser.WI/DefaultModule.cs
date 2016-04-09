@@ -31,11 +31,13 @@ namespace Deviser.WI
             builder.RegisterType<RoleProvider>().As<IRoleProvider>();
             builder.RegisterType<SiteSettingProvider>().As<ISiteSettingProvider>();
             builder.RegisterType<UserProvider>().As<IUserProvider>();
+            builder.RegisterType<LanguageProvider>().As<ILanguageProvider>(); 
 
             builder.RegisterType<SiteBootstrapper>().As<ISiteBootstrapper>(); 
             builder.RegisterType<PageManager>().As<IPageManager>();
             builder.RegisterType<ModuleManager>().As<IModuleManager>();
             builder.RegisterType<LayoutManager>().As<ILayoutManager>();
+            builder.RegisterType<SkinManager>().As<ISkinManager>();
             builder.RegisterType<Navigation>().As<INavigation>();
             
 
