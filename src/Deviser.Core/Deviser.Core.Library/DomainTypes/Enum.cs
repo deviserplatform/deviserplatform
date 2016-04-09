@@ -11,4 +11,10 @@ namespace Deviser.Core.Library.DomainTypes
         PublicOnly,
         SystemOnly
     }
+
+    public enum FileItemType
+    {
+        Folder = 1,
+        File = 2
+    }
 }

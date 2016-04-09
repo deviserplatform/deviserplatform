@@ -3,6 +3,7 @@ using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library;
 using Deviser.Core.Library.Controllers;
+using Deviser.Core.Library.FileManagement;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Modules;
 using Deviser.Core.Library.Sites;
@@ -39,7 +40,9 @@ namespace Deviser.WI
             builder.RegisterType<LayoutManager>().As<ILayoutManager>();
             builder.RegisterType<SkinManager>().As<ISkinManager>();
             builder.RegisterType<Navigation>().As<INavigation>();
+            builder.RegisterType<FileManagement>().As<IFileManagement>();
             
+
 
 
             //Autofac Property injection is not working
