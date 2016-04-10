@@ -3,37 +3,40 @@
     var app = angular.module('deviser.language', [
     'ui.router',
     'ui.bootstrap',
+    'ui.select',
     'sd.sdlib',
     'deviserLayout.services',
     'deviser.config'
     ]);
 
     app.controller('LanguageCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals',
-        'roleService', 'languageService', editCtrl]);
+        'languageService', languageCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
-    function editCtrl($scope, $timeout, $filter, $q, globals, roleService) {
+    function languageCtrl($scope, $timeout, $filter, $q, globals, languageService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
         vm.add = add;
-        vm.edit = edit;
-        vm.remove = remove;
         vm.save = save;
-        vm.cancel = cancel;        
-        vm.hasError = hasError;
+        vm.activate = activate;
+        vm.cancel = cancel;
         vm.viewStates = {
             NEW: "NEW",
-            LIST: "LIST",
-            EDIT: "EDIT"
+            LIST: "LIST"
         };
         vm.currentViewState = vm.viewStates.LIST;
 
-        getLanguages();
+        init();
 
         //////////////////////////////////
         ///*Function declarations only*/       
+        function init() {
+            getLanguages();
+            getSiteLanguages();
+        }
+
         function getLanguages() {
             languageService.get().then(function (languages) {
                 vm.languages = languages;
@@ -42,61 +45,39 @@
             });
         }
 
+        function getSiteLanguages() {
+            languageService.getSiteLanguages().then(function (languages) {
+                vm.siteLanguages = languages;
+            }, function (error) {
+                showMessage("error", "Cannot get site languages, please contact administrator");
+            });
+
+        }
+
         function add() {
             vm.currentViewState = vm.viewStates.NEW;
         }
 
-        function edit(lang) {
-            vm.selectedLanguage = lang;
-            vm.currentViewState = vm.viewStates.EDIT;
-        }
-
-        function remove(role) {
-            roleService.remove(role.id).then(function (result) {
+        function save() {
+            languageService.post(vm.selectedLanguage).then(function (result) {
                 console.log(result);
-                getRoles();
                 vm.currentViewState = vm.viewStates.LIST;
-                showMessage("success", "Role has been removed");
+                vm.selectedLanguage = {};
+                getSiteLanguages();
+                showMessage("success", "New language has been added");
             }, function (error) {
-                showMessage("error", "Cannot remove role, please contact administrator");
+                showMessage("error", "Cannot add language, please contact administrator");
             });
         }
 
-        function save() {
-            $scope.roleForm.submitted = true;
-
-            if (vm.currentViewState == vm.viewStates.EDIT) {
-                if ($scope.editRoleForm.$valid) {
-                    roleService.put(vm.selectedRole).then(function (result) {
-                        console.log(result);
-                        getRoles();
-                        vm.currentViewState = vm.viewStates.LIST;
-                        showMessage("success", "Role has been updated");
-                    }, function (error) {
-                        showMessage("error", "Cannot update role, please contact administrator");
-                    });
-                }
-            }
-            else if (vm.currentViewState == vm.viewStates.NEW) {
-                if ($scope.roleForm.$valid) {
-                    roleService.post(vm.newRole).then(function (result) {
-                        console.log(result);
-                        vm.currentViewState = vm.viewStates.LIST;
-                        vm.newRole = {};
-                        getRoles();
-                        showMessage("success", "New role has been created");
-                    }, function (error) {
-                        showMessage("error", "Cannot create role, please contact administrator");
-                    });
-                }
-            }
-        }
-
-        function hasError(form, field, validation) {
-            if (form && validation) {
-                return (form[field].$dirty && form[field].$error[validation]) || (form.submitted && form[field].$error[validation]);
-            }
-            return (form[field].$dirty && form[field].$invalid) || (form.submitted && form[field].$invalid);
+        function activate(language) {
+            languageService.put(language).then(function (result) {
+                console.log(result);
+                getSiteLanguages();
+                showMessage("success", "Role has been updated");
+            }, function (error) {
+                showMessage("error", "Cannot update role, please contact administrator");
+            });
         }
 
         function cancel() {

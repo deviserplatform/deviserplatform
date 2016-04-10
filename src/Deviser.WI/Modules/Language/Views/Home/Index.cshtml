@@ -17,7 +17,7 @@
             <div class="portlet box blue" id="form_wizard_1">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-users"></i> Security Roles
+                        <i class="fa fa-language"></i> Languages
                     </div>
                 </div>
                 <div class="portlet-body form">
@@ -28,7 +28,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="btn-group">
-                                            <a class="btn green" ng-click="lVM.add()"> New role <i class="fa fa-plus"></i></a>
+                                            <a class="btn green" ng-click="lVM.add()"><i class="fa fa-plus"></i> Add Language </a>
                                         </div>
                                     </div>
                                 </div>
@@ -38,28 +38,26 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                Role Name
+                                                English Name
                                             </th>
                                             <th>
+                                                Native Name
                                             </th>
                                             <th>
+                                                Is Active
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="role in lVM.roles">
+                                        <tr ng-repeat="language in lVM.siteLanguages">
                                             <td>
-                                                {{role.name}}
+                                                {{language.englishName}}
                                             </td>
                                             <td>
-                                                <a href="" class="btn default btn-xs purple" ng-click="lVM.edit(role)">
-                                                    <i class="fa fa-edit"></i> Edit
-                                                </a>
+                                                {{language.nativeName}}
                                             </td>
                                             <td>
-                                                <a href="" class="btn default btn-xs black" ng-click="lVM.remove(role)">
-                                                    <i class="fa fa-trash-o"></i> Delete
-                                                </a>
+                                                <input type="checkbox" ng-model="language.isActive" ng-click="lVM.activate(language)" />
                                             </td>
                                         </tr>
                                     </tbody>
@@ -74,71 +72,36 @@
         </div>
     </div>
 
-    <div class="row" ng-show="lVM.currentViewState == lVM.viewStates.EDIT">
-        <div class="col-md-12">
-            <div class="portlet box blue" id="form_wizard_1">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-users"></i> Edit role
-                    </div>
-                </div>
-                <div class="portlet-body form">
-                    <form class="form-horizontal" name="editRoleForm">
-                        <div class="form-body">
-                            <div class="form-group" ng-class="{'has-error':lVM.hasError(editRoleForm, 'name', 'required')}">
-                                <label class="col-md-3 control-label">Role Name<span class="required" aria-required="true">*</span></label>
-                                <div class="col-md-4">
-                                    <input type="text" class="form-control" placeholder="Enter role name" name="name" ng-model="lVM.selectedRole.name" required>
-                                    <p class="help-block" ng-show="lVM.hasError(editRoleForm, 'name', 'required')">
-                                        Role name is required.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-actions">
-                            <div class="row">
-                                <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn green" ng-click="lVM.save()">Submit</button>
-                                    <button type="button" class="btn default" ng-click="lVM.cancel()">Cancel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="row" ng-show="lVM.currentViewState == lVM.viewStates.NEW">
         <div class="col-md-12">
             <div class="portlet box blue" id="form_wizard_1">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-user"></i> Add new role
+                        <i class="fa fa-language"></i> Add new language
                     </div>
                 </div>
                 <div class="portlet-body form">
                     <form class="form-horizontal" name="roleForm" novalidate>
                         <div class="form-body">
                             <div class="form-group">
-                                <label class="col-md-3 control-label">Roles</label>
+                                <label class="col-md-3 control-label">Languages</label>
                                 <div class="col-md-6">
+                                    
                                     <ui-select ng-model="lVM.selectedLanguage" theme="bootstrap" ng-disabled="lVM.languages.length<=0">
-                                        <ui-select-match placeholder="Select role">{{$select.selected.name}}</ui-select-match>
+                                        <ui-select-match placeholder="Select language">{{$select.selected.englishName}}</ui-select-match>
                                         <ui-select-choices repeat="language in lVM.languages | filter: $select.search">
                                             <div ng-bind-html="language.englishName | highlight: $select.search"></div>
+                                            <small ng-bind-html="language.nativeName | highlight: $select.search"></small>
                                         </ui-select-choices>
                                     </ui-select>
-                                </div>
-                                <div class="col-md-3">
-                                    <a class="btn btn-primary" ng-click="lVM.addRole()" ng-disabled="(lVM.languages.length<=0 || !lVM.selectedLanguage)">Add Role</a>
-                                </div>
+
+                                </div>                               
                             </div>
                         </div>
                         <div class="form-actions">
                             <div class="row">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn green" ng-click="lVM.save()">Submit</button>
+                                    <button type="submit" class="btn green" ng-click="lVM.save()" ng-disabled="(lVM.languages.length<=0 || !lVM.selectedLanguage)">Add Language</button>
                                     <button type="button" class="btn default" ng-click="lVM.cancel()">Cancel</button>
                                 </div>
                             </div>

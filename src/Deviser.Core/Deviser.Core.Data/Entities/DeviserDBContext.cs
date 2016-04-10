@@ -198,7 +198,7 @@ namespace Deviser.Core.Data.Entities
 
             modelBuilder.Entity<Language>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 

@@ -6,6 +6,7 @@ using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.FileManagement;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Modules;
+using Deviser.Core.Library.Multilingual;
 using Deviser.Core.Library.Sites;
 using Deviser.WI.Infrastructure;
 using Microsoft.AspNet.Routing;
@@ -41,6 +42,7 @@ namespace Deviser.WI
             builder.RegisterType<SkinManager>().As<ISkinManager>();
             builder.RegisterType<Navigation>().As<INavigation>();
             builder.RegisterType<FileManagement>().As<IFileManagement>();
+            builder.RegisterType<LanguageManager>().As<ILanguageManager>();
             
 
 

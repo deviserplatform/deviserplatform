@@ -17,6 +17,7 @@
     "Autofac.Extensions.DependencyInjection": "4.0.0-rc1-*",
     "Microsoft.Extensions.Logging": "1.0.0-rc1-final",
     "Deviser.Core.Data": "1.0.0-*",
+    
     "AutoMapper": "4.1.1"
   }
 }

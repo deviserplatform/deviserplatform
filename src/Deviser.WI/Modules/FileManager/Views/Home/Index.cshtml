@@ -1,0 +1,19 @@
+@{
+    ViewData["Title"] = "Index";
+    //Layout = "~/_Layout.cshtml";
+}
+
+<div ng-app="deviser.filemanger" ng-controller="FileManagerCtrl as fVM">
+
+    <div class="alert alert-dismissable" ng-class="{'alert-danger':fVM.message.messageType=='error',
+                              'alert-info':fVM.message.messageType=='info',
+                              'alert-success':fVM.message.messageType=='success',
+                              'alert-warning':fVM.message.messageType=='warning'}" role="alert" ng-show="fVM.message.messageType">
+        {{fVM.message.content}}
+    </div>
+
+    
+
+    <h2>Add File Manager here...</h2>
+
+</div>

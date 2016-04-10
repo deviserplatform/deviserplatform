@@ -14,8 +14,9 @@
     app.factory('passwordResetService', passwordResetService);
     app.factory('roleService', roleService);
     app.factory('userRoleService', userRoleService);
-    app.factory('languageService', languageService);    
-
+    app.factory('languageService', languageService);
+    app.factory('fileService', fileService);
+    
     ////////////////////////////////
     /*Function declarations only*/
 
@@ -187,7 +188,27 @@
     }
 
     function languageService($http, $q, globals) {
-        return baseService($http, $q, globals, '/language');
+        var serviceUrl = "/language";
+        var url = globals.appSettings.serviceBaseUrl + serviceUrl;
+        var service = baseService($http, $q, globals, serviceUrl);
+        service.getSiteLanguages = getSiteLanguages;
+        return service;
+
+        function getSiteLanguages() {
+            var getUrl = url + '/site';
+            var request = $http({
+                method: 'GET',
+                url: getUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
+
+    }
+
+    function fileService($http, $q, globals) {
+        return baseService($http, $q, globals, '/file');
     }
     
     function baseService($http, $q, globals, serviceUrl) {

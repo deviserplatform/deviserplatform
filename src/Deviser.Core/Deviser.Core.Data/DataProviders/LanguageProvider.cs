@@ -73,6 +73,9 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 Language resultLayout;
+                language.CreatedDate = language.LastModifiedDate = DateTime.Now;
+                language.IsActive = true;
+                
                 resultLayout = context.Language.Add(language, GraphBehavior.SingleObject).Entity;
                 context.SaveChanges();
                 return resultLayout;

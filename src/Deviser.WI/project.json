@@ -35,6 +35,7 @@
     "Deviser.Modules.UserManagement": "1.0.0-*",
     "Deviser.Modules.SecurityRoles": "1.0.0-*",
     "Deviser.Modules.Language": "1.0.0-*",
+    "Deviser.Modules.FileManager": "1.0.0-*",
     "AutoMapper": "4.2.1"
   },
 

@@ -6,6 +6,7 @@
 /// <reference path="js/site.js" />
 /// <reference path="js/src/app/config.js" />
 /// <reference path="js/src/app/edit.js" />
+/// <reference path="js/src/app/file-manager/app.js" />
 /// <reference path="js/src/app/language/app.js" />
 /// <reference path="js/src/app/layout.js" />
 /// <reference path="js/src/app/page-management/app.js" />

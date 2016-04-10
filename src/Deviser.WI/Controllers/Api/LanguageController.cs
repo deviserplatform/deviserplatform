@@ -5,6 +5,7 @@ using Deviser.Core.Library;
 using Deviser.Core.Library.DomainTypes;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Modules;
+using Deviser.Core.Library.Multilingual;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Logging;
@@ -24,11 +25,13 @@ namespace Deviser.WI.Controllers.Api
         //Logger
         private readonly ILogger<LanguageController> logger;
         private ILanguageProvider languageProvider;
+        private ILanguageManager languageManager;
 
         public LanguageController(ILifetimeScope container)
         {
             logger = container.Resolve<ILogger<LanguageController>>();
             languageProvider = container.Resolve<ILanguageProvider>();
+            languageManager = container.Resolve<ILanguageManager>();
         }
 
         [HttpGet]
@@ -36,14 +39,20 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var result = CultureInfo.GetCultures(CultureTypes.SpecificCultures).OrderBy(c => c.NativeName)
-                    .Select(c => new
-                    {
-                        EnglishName = c.EnglishName,
-                        NativeName = c.NativeName,
-                        CultureCode = c.Name
-                    })
-                    .ToList();
+                //var result = CultureInfo.GetCultures(System.Globalization.CultureTypes.SpecificCultures).OrderBy(c => c.NativeName)
+                //           .Select(c => new Language
+                //           {
+                //               EnglishName = c.EnglishName,
+                //               NativeName = c.NativeName,
+                //               CultureCode = c.Name,
+                //               FallbackCulture = Globals.FallbackLanguage
+                //           })
+                //           .ToList();
+
+                var result = languageManager.GetAllLanguages(true);
+
+                
+
                 if (result != null)
                     return Ok(result);
                 return HttpNotFound();
@@ -55,7 +64,7 @@ namespace Deviser.WI.Controllers.Api
             }
         }
 
-        [HttpGet("/active")]
+        [HttpGet("site")]
         public IActionResult GetActiveLanguage()
         {
             try
