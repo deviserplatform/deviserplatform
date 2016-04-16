@@ -4,12 +4,14 @@
     'ui.router',
     'ui.bootstrap',
     'ui.tree',
+    'ui.select',
     'sd.sdlib',
     'deviserLayout.services',
     'deviser.config'
     ]);
 
-    app.controller('PageManagementCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'pageService', 'skinService', editCtrl]);
+    app.controller('PageManagementCtrl', ['$scope', '$timeout', '$filter', '$q',
+        'globals', 'pageService', 'skinService', 'languageService', editCtrl]);
 
     app.filter('selectLanguage', function () {
 
@@ -30,7 +32,8 @@
 
     ////////////////////////////////
     /*Function declarations only*/
-    function editCtrl($scope, $timeout, $filter, $q, globals, pageService, skinService) {
+    function editCtrl($scope, $timeout, $filter, $q,
+    globals, pageService, skinService, languageService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
@@ -38,11 +41,9 @@
         vm.selectedItem = {};
         vm.liveTill = {};
         vm.liveFrom = {};
-        vm.delete = remove;
-        vm.toggle = toggle;
-        vm.selectCurrent = selectCurrent;
-        vm.newSubPage = newSubPage;
-        vm.save = save;
+
+
+
         vm.options = {
             accept: accept,
             dropped: dropped
@@ -63,12 +64,26 @@
             vm.isChanged = true;
         }, true);
 
-        vm.currentLocale = appContext.currentCulture; //to be replaced as language feature in future
-        getPages();
-        getSkins();
+        /*Function binding*/
+        vm.delete = remove;
+        vm.toggle = toggle;
+        vm.selectCurrent = selectCurrent;
+        vm.newSubPage = newSubPage;
+        vm.changeLanguage = changeLanguage;
+        vm.save = save;
+        vm.siteLanguage = "en-US";
+
+        init();
 
         //////////////////////////////////
         ///*Function declarations only*/
+        function init() {
+            vm.currentLocale = appContext.currentCulture; //to be replaced as language feature in future
+            getPages();
+            getSkins();
+            getLanguages();
+        }
+
         function getPages() {
             pageService.get().then(function (data) {
                 vm.pages = [];
@@ -86,6 +101,25 @@
             }, function (error) {
                 showMessage("error", "Cannot load skin, please contact administrator");
             });
+        }
+
+        function getLanguages() {
+            languageService.getSiteLanguages().then(function (languages) {
+                vm.languages = languages;
+            }, function (error) {
+                showMessage("error", "Cannot get all languages, please contact administrator");
+            });
+        }
+
+        function changeLanguage() {
+            var currentPageTranslation = _.findWhere(vm.selectedItem.pageTranslation, { locale: vm.currentLocale });
+            var defaultPageTranslation = _.findWhere(vm.selectedItem.pageTranslation, { locale: vm.siteLanguage });
+            defaultPageTranslation = JSON.parse(angular.toJson(defaultPageTranslation));
+            if (!currentPageTranslation) {
+                defaultPageTranslation.locale = vm.currentLocale;
+                defaultPageTranslation.name += vm.currentLocale.replace('-', '').toLowerCase();
+                vm.selectedItem.pageTranslation.push(defaultPageTranslation);
+            }
         }
 
         function openDatePicker($event, dateObj) {
@@ -128,6 +162,7 @@
         }
 
         function selectCurrent(selected) {
+            vm.currentLocale = vm.siteLanguage;
             vm.selectedItem = selected;
         }
 

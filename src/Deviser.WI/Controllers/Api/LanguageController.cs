@@ -65,7 +65,7 @@ namespace Deviser.WI.Controllers.Api
         }
 
         [HttpGet("site")]
-        public IActionResult GetActiveLanguage()
+        public IActionResult GetSiteLanguage()
         {
             try
             {

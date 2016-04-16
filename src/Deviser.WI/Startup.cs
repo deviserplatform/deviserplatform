@@ -196,7 +196,7 @@ namespace Deviser.WI
 
                 routes.MapRoute(
                 name: "CmsRoute",
-                template: "{*permalink}",
+                template: "{culture}/{*permalink}",
                 defaults: new { controller = "Page", action = "Index" },
                 constraints: new { permalink = container.Resolve<IRouteConstraint>() });
             });

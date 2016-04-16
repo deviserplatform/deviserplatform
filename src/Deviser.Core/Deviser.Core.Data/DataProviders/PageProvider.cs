@@ -140,7 +140,20 @@ namespace Deviser.Core.Data.DataProviders
                 Page resultPage;
                 page.LastModifiedDate = DateTime.Now;
                 //resultPage = context.UpdateGraph<Page>(page, map => map.OwnedCollection(p => p.PageTranslations));
-                resultPage = context.Page.Update(page, GraphBehavior.IncludeDependents).Entity;
+                resultPage = context.Page.Update(page, GraphBehavior.SingleObject).Entity;
+                foreach(var translation in page.PageTranslation)
+                {
+                    if(context.PageTranslation.Any(pt=> pt.Locale == translation.Locale && pt.PageId == translation.PageId))
+                    {
+                        //translation exist
+                        context.PageTranslation.Update(translation);
+                    }
+                    else
+                    {
+                        context.PageTranslation.Add(translation);
+                    }
+                }
+                //context.PageTranslation.UpdateRange(page.PageTranslation);
                 context.SaveChanges();
                 return resultPage;
             }

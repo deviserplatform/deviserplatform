@@ -21,9 +21,19 @@ namespace Deviser.WI.Infrastructure
         }
         public bool Match(HttpContext httpContext, IRouter route, string routeKey, IDictionary<string, object> values, RouteDirection routeDirection)
         {
+            string requestCulture = "";
+            string cultureKey = "culture";
             var requestCultureFeature = httpContext.Features.Get<IRequestCultureFeature>();
-            var requestCulture = requestCultureFeature.RequestCulture;
-            var pages = pageProvider.GetPageTranslations(requestCulture.Culture.ToString());
+            if (values.ContainsKey(cultureKey) && !string.IsNullOrEmpty(values[cultureKey].ToString()))
+            {
+                requestCulture = values[cultureKey].ToString();
+            }
+            else
+            {
+                requestCulture = requestCultureFeature.RequestCulture.Culture.ToString();
+            }
+
+            var pages = pageProvider.GetPageTranslations(requestCulture);
             if (values[routeKey] != null && pages != null && pages.Count > 0)
             {
                 var permalink = "/" + values[routeKey].ToString();

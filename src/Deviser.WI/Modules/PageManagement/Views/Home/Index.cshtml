@@ -31,7 +31,7 @@
                             <i class="fa" ng-class="{'fa-angle-up' : !collapsed, 'fa-angle-down': collapsed}"></i>
                         </a>
 
-                        <span ng-repeat="translation in page.pageTranslation | selectLanguage:pmVM.currentLocale">
+                        <span ng-repeat="translation in page.pageTranslation | selectLanguage:pmVM.siteLanguage">
                             {{translation.name}}
                         </span>
 
@@ -60,6 +60,24 @@
             </div>
         </div>
         <div class="col-lg-8" ng-show="pmVM.selectedItem.pageLevel && pmVM.selectedItem.pageLevel!=0">
+            <div class="form-horizontal edit-page">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Locale</label>
+                    <div class="col-sm-6">
+                        @*<input type="text" class="form-control" placeholder="Enter page title" value="{{currentLocale}}" ng-model="translation.locale" readonly>*@
+                        @*<select ng-model="pmVM.currentLocale" ng-options="language.cultureCode as language.englishName for language in pmVM.languages" class="form-control" ng-change="pmVM.changeLanguage()">
+                            <option value="">-- Coose a language --</option>
+                        </select>*@
+                        <ui-select ng-model="pmVM.currentLocale" theme="bootstrap" ng-disabled="lVM.languages.length<=0" ng-change="pmVM.changeLanguage()">
+                            <ui-select-match placeholder="Coose a language">{{$select.selected.englishName}}</ui-select-match>
+                            <ui-select-choices repeat="language.cultureCode as language in pmVM.languages | filter: $select.search">
+                                <div ng-bind-html="language.englishName | highlight: $select.search"></div>
+                                <small ng-bind-html="language.nativeName | highlight: $select.search"></small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+            </div>
             <div class="form-horizontal edit-page" ng-repeat="translation in pmVM.selectedItem.pageTranslation | selectLanguage:pmVM.currentLocale">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Name</label>
@@ -73,12 +91,12 @@
                         <input type="text" class="form-control" placeholder="Enter page title" ng-model="translation.title">
                     </div>
                 </div>
-                <div class="form-group">
+                @*<div class="form-group">
                     <label class="col-sm-2 control-label">Locale</label>
                     <div class="col-sm-6">
                         <input type="text" class="form-control" placeholder="Enter page title" value="{{currentLocale}}" ng-model="translation.locale" readonly>
                     </div>
-                </div>
+                </div>*@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Description</label>
                     <div class="col-sm-6">

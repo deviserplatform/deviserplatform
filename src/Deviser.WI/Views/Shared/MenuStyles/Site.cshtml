@@ -5,15 +5,21 @@
 @{
     Layout = null;
     AppContext deviserContext = (AppContext)ViewBag.AppContext;  //HttpContext.Current.Session["AppContext"];
+    string currentCulture = deviserContext.CurrentCulture.ToString();
 }
 
 
 
 @foreach (var page in Model.ChildPage)
 {
-    var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
+    var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == currentCulture);
+    //if(translation==null && currentCulture != Globals.FallbackLanguage)
+    //{
+    //    translation = page.PageTranslation.FirstOrDefault(t => t.Locale == Globals.FallbackLanguage);
+    //}
     if (translation != null)
     {
+        translation.URL = "/" + translation.Locale.ToLower() + translation.URL;
         <li class="dropdown">
             <a href="@translation.URL">@translation.Name</a>
             @if (page.ChildPage != null && page.ChildPage.Count > 0)
