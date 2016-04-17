@@ -1,0 +1,15 @@
+﻿@model List<LanguageViewModel>
+@using System.Security.Claims
+@using Deviser.Core.Library
+@using Deviser.WI.ViewModels.Components
+@{
+    Layout = null;
+    AppContext deviserContext = (AppContext)ViewBag.AppContext;  //HttpContext.Current.Session["AppContext"];
+}
+
+<div class="language-selector">
+@foreach (var lang in Model)
+{
+    <a href="@lang.Url" title="@lang.EnglishName" class="@(lang.IsActive )">@lang.Culture.TwoLetterISOLanguageName.ToUpper()</a>
+}
+</div>

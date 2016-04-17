@@ -42,7 +42,18 @@ namespace Deviser.Core.Library
             get
             {
                 var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
-                var requestCulture = requestCultureFeature.RequestCulture.UICulture;
+                CultureInfo requestCulture = null;
+                string cultureKey = "culture";
+                if (RouteData.Values.ContainsKey(cultureKey) && !string.IsNullOrEmpty(RouteData.Values[cultureKey].ToString()))
+                {
+                    requestCulture = new CultureInfo(RouteData.Values[cultureKey].ToString());
+                }
+                else
+                {
+                    requestCulture = requestCultureFeature.RequestCulture.UICulture;
+                }
+
+                Globals.CurrentCulture = requestCulture;
                 return requestCulture;
             }
         }
