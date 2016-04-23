@@ -17,23 +17,32 @@ using Microsoft.Data.Entity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json.Serialization;
+using Serilog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 namespace Deviser.WI
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
             // Set up configuration sources.
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+
+            Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.RollingFile(Path.Combine(
+                appEnv.ApplicationBasePath, "log-{Date}.txt"))
+            .CreateLogger();
 
             if (env.IsDevelopment())
             {
@@ -91,14 +100,14 @@ namespace Deviser.WI
                 //jsonOutputFormatter.SerializerSettings.DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore;
                 jsonOutputFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
                 jsonOutputFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                
+
                 var jsonOutputFormatterOld = options.OutputFormatters.FirstOrDefault(formatter => formatter is JsonOutputFormatter);
                 if (jsonOutputFormatterOld != null)
                 {
                     options.OutputFormatters.Remove(jsonOutputFormatterOld);
-                }                
+                }
                 //options.OutputFormatters.RemoveAll(formatter => formatter.Instance.GetType() == typeof(JsonOutputFormatter));
-                options.OutputFormatters.Insert(0, jsonOutputFormatter);                
+                options.OutputFormatters.Insert(0, jsonOutputFormatter);
             });
 
             services.AddCaching(); // Adds a default in-memory implementation of IDistributedCache
@@ -129,6 +138,8 @@ namespace Deviser.WI
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            loggerFactory.AddSerilog();
+
 
             if (env.IsDevelopment())
             {
@@ -200,6 +211,8 @@ namespace Deviser.WI
                 defaults: new { controller = "Page", action = "Index" },
                 constraints: new { permalink = container.Resolve<IRouteConstraint>() });
             });
+
+            
         }
 
         // Entry point for the application.

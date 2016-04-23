@@ -36,7 +36,9 @@
     "Deviser.Modules.SecurityRoles": "1.0.0-*",
     "Deviser.Modules.Language": "1.0.0-*",
     "Deviser.Modules.FileManager": "1.0.0-*",
-    "AutoMapper": "4.2.1"
+    "AutoMapper": "4.2.1",
+    "Serilog.Framework.Logging": "1.0.0-rc1-final-10083",
+    "Serilog.Sinks.Literate": "1.2.0"
   },
 
   "commands": {

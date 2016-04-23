@@ -158,6 +158,16 @@ namespace Deviser.Core.Library
             return parentURLs;
         }
 
+        private Dictionary<string, string> CopyParentUrls(Dictionary<string, string> parentUrls)
+        {
+            var result = InitParentUrls();
+            foreach(var kv in parentUrls)
+            {
+                result[kv.Key] = kv.Value;
+            }
+            return result;
+        }
+
         private Page GetPageTree(Page page, int pageId)
         {
             Page resultPage = null;
@@ -254,7 +264,7 @@ namespace Deviser.Core.Library
                             parentURLs[pageTranslation.Locale] = fallbackParentURL + "/" + pageTranslation.Name.Replace(" ", "");
                             pageTranslation.URL = parentURLs[pageTranslation.Locale];
                         }
-                        
+
                     }
                 }
 
@@ -276,7 +286,10 @@ namespace Deviser.Core.Library
 
                     foreach (var child in page.ChildPage)
                     {
-                        UpdatePageTreeURL(child, parentURLs);
+                        //if (page.PageLevel == 0)
+                        var pUrl = CopyParentUrls(parentURLs);
+
+                        UpdatePageTreeURL(child, pUrl);
                     }
                 }
             }
