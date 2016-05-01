@@ -13,6 +13,7 @@ using Deviser.WI.Services;
 using Deviser.WI.ViewModels.Account;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.Controllers;
+using Deviser.Core.Library;
 
 namespace Deviser.WI.Controllers
 {
@@ -459,7 +460,7 @@ namespace Deviser.WI.Controllers
             }
             else
             {
-                return Redirect("/Home");
+                return Redirect(Globals.HomePageUrl);
                 //return RedirectToAction("Index", "Page", new { permalink = "Home" });
             }
         }
