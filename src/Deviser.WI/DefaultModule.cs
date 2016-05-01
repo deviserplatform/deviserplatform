@@ -51,8 +51,7 @@ namespace Deviser.WI
             //ref: https://github.com/autofac/Autofac.Mvc/issues/1
             builder.RegisterType<ModuleController>().PropertiesAutowired();
 
-            //builder.RegisterType<DeviserDBContext>().As<DeviserDBContext>();
-            
+            builder.RegisterType<DeviserDBContext>().As<DeviserDBContext>();
         }
     }
 }

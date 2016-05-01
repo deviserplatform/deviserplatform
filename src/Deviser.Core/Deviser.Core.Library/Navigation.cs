@@ -52,12 +52,12 @@ namespace Deviser.Core.Library
             if (systemFilter == SystemPageFilter.PublicOnly)
             {
                 //page.ChildPage = page.ChildPage.Where(p => !p.IsSystem).ToList();
-                predicate = p => !p.IsSystem;
+                predicate = p => !p.IsSystem && !p.IsDeleted;
             }
             else if (systemFilter == SystemPageFilter.SystemOnly)
             {
                 //page.ChildPage = page.ChildPage.Where(p => p.IsSystem).ToList();
-                predicate = p => p.IsSystem;
+                predicate = p => p.IsSystem && !p.IsDeleted;
             }
 
 
@@ -219,11 +219,11 @@ namespace Deviser.Core.Library
                         if (parentURLs.ContainsKey(pageTranslation.Locale) && !string.IsNullOrEmpty(parentURLs[pageTranslation.Locale]))
                         {
                             //parent page has translation for current locale/culturecode
-                            URLs[pageTranslation.Locale] = parentURLs[pageTranslation.Locale] + "/" + pageTranslation.Name.Replace(" ", "");
+                            URLs[pageTranslation.Locale] = pageTranslation.Locale.ToLower() + parentURLs[pageTranslation.Locale] + "/" + pageTranslation.Name.Replace(" ", "");
                         }
                         else
                         {
-                            URLs[pageTranslation.Locale] = parentURLs[Globals.FallbackLanguage] + "/" + pageTranslation.Name.Replace(" ", "");
+                            URLs[pageTranslation.Locale] = pageTranslation.Locale.ToLower() + parentURLs[Globals.FallbackLanguage] + "/" + pageTranslation.Name.Replace(" ", "");
                         }
                     }
                 }
@@ -256,13 +256,13 @@ namespace Deviser.Core.Library
                         if (!string.IsNullOrEmpty(parentURLs[pageTranslation.Locale]))
                         {
                             parentURLs[pageTranslation.Locale] += "/" + pageTranslation.Name.Replace(" ", "");
-                            pageTranslation.URL = parentURLs[pageTranslation.Locale];
+                            pageTranslation.URL = pageTranslation.Locale.ToLower() + parentURLs[pageTranslation.Locale];
                         }
                         else
                         {
                             //Parent page is not yet translated, therefore taking parent url from fallbacklanguage
                             parentURLs[pageTranslation.Locale] = fallbackParentURL + "/" + pageTranslation.Name.Replace(" ", "");
-                            pageTranslation.URL = parentURLs[pageTranslation.Locale];
+                            pageTranslation.URL = pageTranslation.Locale.ToLower() + parentURLs[pageTranslation.Locale];
                         }
 
                     }

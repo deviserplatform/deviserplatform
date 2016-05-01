@@ -7,24 +7,25 @@
     AppContext deviserContext = (AppContext)ViewBag.AppContext;  //HttpContext.Current.Session["AppContext"];
 }
 
-<ul class="page-breadcrumb">    
+<ul class="page-breadcrumb">
     @foreach (var page in Model)
     {
-        var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
-        if (translation != null)
+    var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
+    if (translation != null)
+    {
+    <li>
+        @if (Model.First() == page)
         {
-            <li>
-                @if (Model.First() == page)
-                {
-                    <i class="fa fa-home"></i>
-                }
-
-                <a href="@translation.URL">@translation.Name</a>
-                @if (Model.Last() != page)
-                {
-                    <i class="fa fa-angle-right"></i>
-                }
-            </li>
+        <i class="fa fa-home"></i>
         }
+
+        <a href="@translation.URL">@translation.Name</a>
+
+        @if (Model.Last() != page)
+        {
+        <i class="fa fa-angle-right"></i>
+        }
+    </li>
+    }
     }
 </ul>

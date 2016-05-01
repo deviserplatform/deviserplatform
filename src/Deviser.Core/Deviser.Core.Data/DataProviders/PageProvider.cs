@@ -5,7 +5,7 @@ using Deviser.Core.Data.Entities;
 using Microsoft.Extensions.Logging;
 using Autofac;
 using Microsoft.Data.Entity;
-
+using Microsoft.Data.Entity.Infrastructure;
 
 namespace Deviser.Core.Data.DataProviders
 {
@@ -32,16 +32,13 @@ namespace Deviser.Core.Data.DataProviders
     {
         //Logger
         private readonly ILogger<LayoutProvider> logger;
-        private ILifetimeScope container;
-
-        DeviserDBContext context;
-
+        
         //Constructor
         public PageProvider(ILifetimeScope container)
+            :base(container)
         {
             this.container = container;
             logger = container.Resolve<ILogger<LayoutProvider>>();
-            context = container.Resolve<DeviserDBContext>();
         }
 
         //Custom Field Declaration
@@ -54,10 +51,13 @@ namespace Deviser.Core.Data.DataProviders
                                                                     .Where(.Where(e=>e.ParentId==null&&e.IsDeleted==false));*/
                 /*List<> returnData = new List<>();
                 returnData.Add(context.Pages.ToList().First());*/
-
-                return context.Page
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    return context.Page
                     .Include(p => p.PageTranslation) //("PageTranslations")  
                     .ToList().First();
+                }
+                    
             }
             catch (Exception ex)
             {
@@ -69,15 +69,18 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                IEnumerable<Page> returnData = context.Page
-                    .Where(e => e.ParentId == null)
-                    //.Include("PageTranslations").Include("ChildPages").Include("PageModules").Include("PageModules.Module")
-                    .Include(p => p.PageTranslation).Include(p => p.ChildPage)
-                    .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
-                    .OrderBy(p => p.Id)
-                    .ToList();
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    IEnumerable<Page> returnData = context.Page
+                                .Where(e => e.ParentId == null)
+                                //.Include("PageTranslations").Include("ChildPages").Include("PageModules").Include("PageModules.Module")
+                                .Include(p => p.PageTranslation).Include(p => p.ChildPage)
+                                .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
+                                .OrderBy(p => p.Id)
+                                .ToList();
 
-                return new List<Page>(returnData);
+                    return new List<Page>(returnData); 
+                }
             }
             catch (Exception ex)
             {
@@ -90,26 +93,29 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Page returnData = context.Page
-                   .Where(e => e.Id == pageId)                   
-                   .Include(p => p.PageTranslation)
-                   .Include(p => p.Layout)
-                   .Include(p => p.PageContent).ThenInclude(pc=>pc.PageContentTranslation)
-                   .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
-                   .OrderBy(p => p.Id)
-                   .FirstOrDefault();
-
-                if (returnData.PageModule != null)
+                using (var context = new DeviserDBContext(dbOptions))
                 {
-                    returnData.PageModule = returnData.PageModule.Where(pm => !pm.IsDeleted).ToList();
-                }
+                    Page returnData = context.Page
+                               .Where(e => e.Id == pageId)
+                               .Include(p => p.PageTranslation)
+                               .Include(p => p.Layout)
+                               .Include(p => p.PageContent).ThenInclude(pc => pc.PageContentTranslation)
+                               .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
+                               .OrderBy(p => p.Id)
+                               .FirstOrDefault();
 
-                if (returnData.PageContent != null)
-                {
-                    returnData.PageContent = returnData.PageContent.Where(pc => !pc.IsDeleted).ToList();
-                }
+                    if (returnData.PageModule != null)
+                    {
+                        returnData.PageModule = returnData.PageModule.Where(pm => !pm.IsDeleted).ToList();
+                    }
 
-                return returnData;
+                    if (returnData.PageContent != null)
+                    {
+                        returnData.PageContent = returnData.PageContent.Where(pc => !pc.IsDeleted).ToList();
+                    }
+
+                    return returnData; 
+                }
             }
             catch (Exception ex)
             {
@@ -121,11 +127,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Page resultPage;
-                page.CreatedDate = DateTime.Now; page.LastModifiedDate = DateTime.Now;
-                resultPage = context.Page.Add(page, GraphBehavior.IncludeDependents).Entity;
-                context.SaveChanges();
-                return resultPage;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Page resultPage;
+                    page.CreatedDate = DateTime.Now; page.LastModifiedDate = DateTime.Now;
+                    resultPage = context.Page.Add(page, GraphBehavior.IncludeDependents).Entity;
+                    context.SaveChanges();
+                    return resultPage; 
+                }
             }
             catch (Exception ex)
             {
@@ -137,25 +146,28 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Page resultPage;
-                page.LastModifiedDate = DateTime.Now;
-                //resultPage = context.UpdateGraph<Page>(page, map => map.OwnedCollection(p => p.PageTranslations));
-                resultPage = context.Page.Update(page, GraphBehavior.SingleObject).Entity;
-                foreach(var translation in page.PageTranslation)
+                using (var context = new DeviserDBContext(dbOptions))
                 {
-                    if(context.PageTranslation.Any(pt=> pt.Locale == translation.Locale && pt.PageId == translation.PageId))
+                    Page resultPage;
+                    page.LastModifiedDate = DateTime.Now;
+                    //resultPage = context.UpdateGraph<Page>(page, map => map.OwnedCollection(p => p.PageTranslations));
+                    resultPage = context.Page.Update(page, GraphBehavior.SingleObject).Entity;
+                    foreach (var translation in page.PageTranslation)
                     {
-                        //translation exist
-                        context.PageTranslation.Update(translation);
+                        if (context.PageTranslation.Any(pt => pt.Locale == translation.Locale && pt.PageId == translation.PageId))
+                        {
+                            //translation exist
+                            context.PageTranslation.Update(translation);
+                        }
+                        else
+                        {
+                            context.PageTranslation.Add(translation);
+                        }
                     }
-                    else
-                    {
-                        context.PageTranslation.Add(translation);
-                    }
+                    //context.PageTranslation.UpdateRange(page.PageTranslation);
+                    context.SaveChanges();
+                    return resultPage; 
                 }
-                //context.PageTranslation.UpdateRange(page.PageTranslation);
-                context.SaveChanges();
-                return resultPage;
             }
             catch (Exception ex)
             {
@@ -167,12 +179,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Page resultPage = null;
-                page.LastModifiedDate = DateTime.Now;
-                UpdatePageTreeTree(context, page);
-                context.SaveChanges();
-                resultPage = context.Page.ToList().First();
-                return resultPage;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Page resultPage = null;
+                    page.LastModifiedDate = DateTime.Now;
+                    UpdatePageTreeTree(context, page);
+                    context.SaveChanges();
+                    resultPage = context.Page.ToList().First();
+                    return resultPage; 
+                }
             }
             catch (Exception ex)
             {
@@ -218,11 +233,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                IEnumerable<PageTranslation> returnData = context.PageTranslation
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    IEnumerable<PageTranslation> returnData = context.PageTranslation
                     .Where(e => e.Locale.ToLower() == locale.ToLower())
                     .OrderBy(p => p.PageId)
                     .ToList();
-                return new List<PageTranslation>(returnData);
+                    return new List<PageTranslation>(returnData);
+                }                
             }
             catch (Exception ex)
             {
@@ -234,12 +252,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                IEnumerable<PageModule> returnData = context.PageModule
-                    .Where(e => e.PageId == pageId && !e.IsDeleted)
-                    .OrderBy(p => p.Id)
-                    .ToList();
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    IEnumerable<PageModule> returnData = context.PageModule
+                                .Where(e => e.PageId == pageId && !e.IsDeleted)
+                                .OrderBy(p => p.Id)
+                                .ToList();
 
-                return new List<PageModule>(returnData);
+                    return new List<PageModule>(returnData); 
+                }
             }
             catch (Exception ex)
             {
@@ -252,12 +273,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                PageModule returnData = context.PageModule
-                   .Where(e => e.Id == pageModuleId && !e.IsDeleted)
-                   .OrderBy(p => p.Id)
-                   .FirstOrDefault();
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    PageModule returnData = context.PageModule
+                               .Where(e => e.Id == pageModuleId && !e.IsDeleted)
+                               .OrderBy(p => p.Id)
+                               .FirstOrDefault();
 
-                return returnData;
+                    return returnData; 
+                }
             }
             catch (Exception ex)
             {
@@ -270,12 +294,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                PageModule returnData = context.PageModule
-                   .Where(e => e.ContainerId == containerId && !e.IsDeleted)
-                   .OrderBy(p => p.Id)
-                   .FirstOrDefault();
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    PageModule returnData = context.PageModule
+                               .Where(e => e.ContainerId == containerId && !e.IsDeleted)
+                               .OrderBy(p => p.Id)
+                               .FirstOrDefault();
 
-                return returnData;
+                    return returnData; 
+                }
             }
             catch (Exception ex)
             {
@@ -287,10 +314,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                PageModule resultPageModule;
-                resultPageModule = context.PageModule.Add(pageModule, GraphBehavior.SingleObject).Entity;
-                context.SaveChanges();
-                return resultPageModule;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    PageModule resultPageModule;
+                    resultPageModule = context.PageModule.Add(pageModule, GraphBehavior.SingleObject).Entity;
+                    context.SaveChanges();
+                    return resultPageModule; 
+                }
             }
             catch (Exception ex)
             {
@@ -302,11 +332,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                PageModule resultPageModule;
-                resultPageModule = context.PageModule.Attach(pageModule, GraphBehavior.SingleObject).Entity;
-                context.Entry(pageModule).State = EntityState.Modified;
-                context.SaveChanges();
-                return resultPageModule;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    PageModule resultPageModule;
+                    resultPageModule = context.PageModule.Attach(pageModule, GraphBehavior.SingleObject).Entity;
+                    context.Entry(pageModule).State = EntityState.Modified;
+                    context.SaveChanges();
+                    return resultPageModule; 
+                }
             }
             catch (Exception ex)
             {
@@ -319,19 +352,22 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                foreach(var module in pageModules)
+                using (var context = new DeviserDBContext(dbOptions))
                 {
-                    if(context.PageModule.Any(pm=>pm.Id == module.Id))
+                    foreach (var module in pageModules)
                     {
-                        //page module exist, therefore update it
-                        context.PageModule.Update(module, GraphBehavior.SingleObject);
+                        if (context.PageModule.Any(pm => pm.Id == module.Id))
+                        {
+                            //page module exist, therefore update it
+                            context.PageModule.Update(module, GraphBehavior.SingleObject);
+                        }
+                        else
+                        {
+                            context.PageModule.Add(module);
+                        }
                     }
-                    else
-                    {
-                        context.PageModule.Add(module);
-                    }
+                    context.SaveChanges(); 
                 }
-                context.SaveChanges();
             }
             catch (Exception ex)
             {

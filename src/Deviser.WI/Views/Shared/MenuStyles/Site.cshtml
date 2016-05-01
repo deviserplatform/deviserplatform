@@ -10,7 +10,7 @@
 
 
 
-@foreach (var page in Model.ChildPage)
+@foreach (var page in Model.ChildPage.OrderBy(p=>p.PageOrder))
 {
     var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == currentCulture);
     //if(translation==null && currentCulture != Globals.FallbackLanguage)
@@ -19,7 +19,7 @@
     //}
     if (translation != null)
     {
-        translation.URL = "/" + translation.Locale.ToLower() + translation.URL;
+        translation.URL = "/" + translation.URL;
         <li class="dropdown">
             <a href="@translation.URL">@translation.Name</a>
             @if (page.ChildPage != null && page.ChildPage.Count > 0)

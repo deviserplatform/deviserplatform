@@ -24,16 +24,12 @@ namespace Deviser.Core.Data.DataProviders
     {
         ///Logger
         private readonly ILogger<LayoutProvider> logger;
-        private ILifetimeScope container;
-
-        DeviserDBContext context;
 
         //Constructor
         public RoleProvider(ILifetimeScope container)
+            :base(container)
         {
-            this.container = container;
             logger = container.Resolve<ILogger<LayoutProvider>>();
-            context = container.Resolve<DeviserDBContext>();
         }
 
         //Custom Field Declaration
@@ -41,8 +37,11 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                IEnumerable<Role> returnData = context.Roles.ToList();
-                return new List<Role>(returnData);
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    IEnumerable<Role> returnData = context.Roles.ToList();
+                    return new List<Role>(returnData); 
+                }
             }
             catch (Exception ex)
             {
@@ -55,11 +54,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Role returnData = context.Roles
-                   .Where(e => e.Id == roleId)
-                   .FirstOrDefault();
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Role returnData = context.Roles
+                              .Where(e => e.Id == roleId)
+                              .FirstOrDefault();
 
-                return returnData;
+                    return returnData; 
+                }
             }
             catch (Exception ex)
             {
@@ -72,11 +74,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-
-                Role returnData = context.Roles
-                   .Where(e => e.Name == roleName)
-                   .FirstOrDefault();
-                return returnData;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Role returnData = context.Roles
+                              .Where(e => e.Name == roleName)
+                              .FirstOrDefault();
+                    return returnData; 
+                }
             }
             catch (Exception ex)
             {
@@ -88,11 +92,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Role resultRole;
-                role.Id = Guid.NewGuid().ToString();
-                resultRole = context.Roles.Add(role, GraphBehavior.SingleObject).Entity;
-                context.SaveChanges();
-                return resultRole;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Role resultRole;
+                    role.Id = Guid.NewGuid().ToString();
+                    resultRole = context.Roles.Add(role, GraphBehavior.SingleObject).Entity;
+                    context.SaveChanges();
+                    return resultRole; 
+                }
             }
             catch (Exception ex)
             {
@@ -104,12 +111,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Role resultRole;
-                resultRole = context.Roles.Attach(role, GraphBehavior.SingleObject).Entity;
-                context.Entry(role).State = EntityState.Modified;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Role resultRole;
+                    resultRole = context.Roles.Attach(role, GraphBehavior.SingleObject).Entity;
+                    context.Entry(role).State = EntityState.Modified;
 
-                context.SaveChanges();
-                return resultRole;
+                    context.SaveChanges();
+                    return resultRole; 
+                }
             }
             catch (Exception ex)
             {
@@ -121,14 +131,17 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Role resultRole;
-                var deleteObj = context.Roles
-                .Where(e => e.Id == roleId)
-                    .FirstOrDefault();
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Role resultRole;
+                    var deleteObj = context.Roles
+                    .Where(e => e.Id == roleId)
+                        .FirstOrDefault();
 
-                resultRole = context.Roles.Remove(deleteObj).Entity;
-                context.SaveChanges();
-                return resultRole;
+                    resultRole = context.Roles.Remove(deleteObj).Entity;
+                    context.SaveChanges();
+                    return resultRole; 
+                }
             }
             catch (Exception ex)
             {

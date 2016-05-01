@@ -38,7 +38,12 @@ namespace Deviser.WI.Controllers
         public async Task<IActionResult> Index(string permalink)
         {
             if (string.IsNullOrEmpty(permalink))
-                permalink =  Globals.HomePage.PageTranslation.FirstOrDefault(t => t.Locale == CurrentCulture.ToString()).URL;
+                permalink = Globals.HomePageUrl;
+            else
+            {
+                string requestCulture = (RouteData.Values["culture"] != null) ? RouteData.Values["culture"].ToString() : CurrentCulture.ToString().ToLower();
+                permalink = $"{requestCulture}/{permalink}";
+            }
             try
             {
                 Page currentPage = await GetPageModules(permalink);
@@ -50,7 +55,7 @@ namespace Deviser.WI.Controllers
             catch (Exception ex)
             {
                 logger.LogError("Page load exception has been occured", ex);
-            }            
+            }
             return null;
         }
 
@@ -79,8 +84,8 @@ namespace Deviser.WI.Controllers
 
         private async Task<Page> GetPageModules(string permalink)
         {
-            if (!permalink.StartsWith("/"))
-                permalink = "/" + permalink;
+            //if (!permalink.StartsWith("/"))
+            //    permalink = "/" + permalink;
 
             Page currentPage = pageManager.GetPageByUrl(permalink, CurrentCulture.ToString());
             AppContext appContext = new AppContext();
@@ -88,7 +93,7 @@ namespace Deviser.WI.Controllers
             {
                 appContext.CurrentPageId = currentPage.Id;
                 appContext.CurrentLink = permalink;
-                currentPage.PageModule = null;                
+                currentPage.PageModule = null;
                 appContext.CurrentPage = currentPage;
                 Dictionary<string, List<Core.Library.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(ActionContext, currentPage.Id);
                 //Skins are not used for sometime period

@@ -36,7 +36,7 @@ namespace Deviser.WI.Infrastructure
             var pages = pageProvider.GetPageTranslations(requestCulture);
             if (values[routeKey] != null && pages != null && pages.Count > 0)
             {
-                var permalink = "/" + values[routeKey].ToString();
+                var permalink = requestCulture + "/" + values[routeKey];
                 var result = pages.Any(p => (p != null && p.URL.ToLower() == permalink.ToLower()));
                 return result;
             }

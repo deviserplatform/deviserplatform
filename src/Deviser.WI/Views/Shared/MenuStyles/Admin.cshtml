@@ -16,13 +16,19 @@
         <div class="sidebar-toggler"> </div>
         <!-- END SIDEBAR TOGGLER BUTTON -->
     </li>
+    <li class="nav-item">
+        <a href="/@Globals.HomePageUrl">
+            <i class="icon-home"></i>
+            <span class="title">Back to Home</span>            
+        </a>       
+    </li>
     @foreach (var page in Model.ChildPage)
     {
         translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
         string activeClass = (page.IsActive || page.IsBreadCrumb) ? "active open" : "";
         if (translation != null)
         {
-            translation.URL = "/" + translation.Locale.ToLower() + translation.URL;
+            translation.URL = "/" + translation.URL;
             <li class="nav-item start  @activeClass">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="icon-home"></i>
@@ -47,7 +53,7 @@ else if (Model.PageLevel == 1)
             translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
             if (translation != null)
             {
-                translation.URL = "/" + translation.Locale.ToLower() + translation.URL;
+                translation.URL = "/" + translation.URL;
                 <li class="nav-item start  @activeClass">
                     <a href="@translation.URL" class="nav-link ">
                         <span class="title">@translation.Name</span>

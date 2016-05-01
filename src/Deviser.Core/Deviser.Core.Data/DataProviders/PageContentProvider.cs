@@ -28,16 +28,12 @@ namespace Deviser.Core.Data.DataProviders
     {
         //Logger
         private readonly ILogger<LayoutProvider> logger;
-        private ILifetimeScope container;
-
-        DeviserDBContext context;
 
         //Constructor
         public PageContentProvider(ILifetimeScope container)
-        {
-            this.container = container;
+            :base(container)
+        {            
             logger = container.Resolve<ILogger<LayoutProvider>>();
-            context = container.Resolve<DeviserDBContext>();
         }
 
         //Custom Field Declaration
@@ -46,13 +42,16 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                PageContent returnData = context.PageContent
-                    .AsNoTracking()
-                    .Include(pc=>pc.PageContentTranslation)
-                   .Where(e => e.Id == pageContentId && !e.IsDeleted)
-                   .AsNoTracking()
-                   .FirstOrDefault();
-                return returnData;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    PageContent returnData = context.PageContent
+                                .AsNoTracking()
+                                .Include(pc => pc.PageContentTranslation)
+                               .Where(e => e.Id == pageContentId && !e.IsDeleted)
+                               .AsNoTracking()
+                               .FirstOrDefault();
+                    return returnData; 
+                }
             }
             catch (Exception ex)
             {
@@ -64,11 +63,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                IEnumerable<PageContent> returnData = context.PageContent
-                    .AsNoTracking()
-                    .Where(e => e.ContainerId == containerId && !e.IsDeleted)
-                    .ToList();
-                return new List<PageContent>(returnData);
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    IEnumerable<PageContent> returnData = context.PageContent
+                               .AsNoTracking()
+                               .Where(e => e.ContainerId == containerId && !e.IsDeleted)
+                               .ToList();
+                    return new List<PageContent>(returnData); 
+                }
             }
             catch (Exception ex)
             {
@@ -80,18 +82,21 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                List<PageContent> returnData = context.PageContent
-                    .Include(pc => pc.PageContentTranslation)
-                    .Where(e => e.PageId == pageId && !e.IsDeleted)
-                    .ToList();
-                foreach (var pageContent in returnData)
+                using (var context = new DeviserDBContext(dbOptions))
                 {
-                    if (pageContent.PageContentTranslation != null)
+                    List<PageContent> returnData = context.PageContent
+                               .Include(pc => pc.PageContentTranslation)
+                               .Where(e => e.PageId == pageId && !e.IsDeleted)
+                               .ToList();
+                    foreach (var pageContent in returnData)
                     {
-                        pageContent.PageContentTranslation = pageContent.PageContentTranslation.Where(t => t.CultureCode == cultureCode).ToList();
+                        if (pageContent.PageContentTranslation != null)
+                        {
+                            pageContent.PageContentTranslation = pageContent.PageContentTranslation.Where(t => t.CultureCode == cultureCode).ToList();
+                        }
                     }
+                    return new List<PageContent>(returnData); 
                 }
-                return new List<PageContent>(returnData);
             }
             catch (Exception ex)
             {
@@ -103,10 +108,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                var returnData = context.PageContentTranslation
-                    .Where(t => t.PageContentId == pageConentId && t.CultureCode == cultureCode && !t.IsDeleted)
-                    .FirstOrDefault();
-                return returnData;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    var returnData = context.PageContentTranslation
+                                .Where(t => t.PageContentId == pageConentId && t.CultureCode == cultureCode && !t.IsDeleted)
+                                .FirstOrDefault();
+                    return returnData; 
+                }
             }
             catch (Exception ex)
             {
@@ -118,10 +126,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                PageContentTranslation returnData = context.PageContentTranslation
-                    .Where(t => t.Id== translationId && !t.IsDeleted)
-                    .FirstOrDefault();
-                return returnData;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    PageContentTranslation returnData = context.PageContentTranslation
+                               .Where(t => t.Id == translationId && !t.IsDeleted)
+                               .FirstOrDefault();
+                    return returnData; 
+                }
             }
             catch (Exception ex)
             {
@@ -133,12 +144,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                PageContent resultPageContent;
-                //content.Id = Guid.NewGuid();
-                content.CreatedDate = DateTime.Now;
-                resultPageContent = context.PageContent.Add(content, GraphBehavior.SingleObject).Entity;
-                context.SaveChanges();
-                return resultPageContent;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    PageContent resultPageContent;
+                    //content.Id = Guid.NewGuid();
+                    content.CreatedDate = DateTime.Now;
+                    resultPageContent = context.PageContent.Add(content, GraphBehavior.SingleObject).Entity;
+                    context.SaveChanges();
+                    return resultPageContent; 
+                }
             }
             catch (Exception ex)
             {
@@ -150,11 +164,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                PageContentTranslation result;
-                contentTranslation.CreatedDate = contentTranslation.LastModifiedDate = DateTime.Now;
-                result = context.PageContentTranslation.Add(contentTranslation, GraphBehavior.SingleObject).Entity;
-                context.SaveChanges();
-                return result;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    PageContentTranslation result;
+                    contentTranslation.CreatedDate = contentTranslation.LastModifiedDate = DateTime.Now;
+                    result = context.PageContentTranslation.Add(contentTranslation, GraphBehavior.SingleObject).Entity;
+                    context.SaveChanges();
+                    return result; 
+                }
             }
             catch (Exception ex)
             {
@@ -167,11 +184,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                PageContent resultPageContent;
-                content.LastModifiedDate = DateTime.Now;
-                resultPageContent = context.PageContent.Update(content, GraphBehavior.SingleObject).Entity;
-                context.SaveChanges();
-                return resultPageContent;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    PageContent resultPageContent;
+                    content.LastModifiedDate = DateTime.Now;
+                    resultPageContent = context.PageContent.Update(content, GraphBehavior.SingleObject).Entity;
+                    context.SaveChanges();
+                    return resultPageContent; 
+                }
             }
             catch (Exception ex)
             {
@@ -184,20 +204,23 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                foreach (var content in contents)
+                using (var context = new DeviserDBContext(dbOptions))
                 {
-                    content.LastModifiedDate = DateTime.Now;
-                    if (context.PageContent.Any(pc => pc.Id == content.Id))
+                    foreach (var content in contents)
                     {
-                        //content exist, therefore update the content 
-                        context.PageContent.Update(content, GraphBehavior.SingleObject);
+                        content.LastModifiedDate = DateTime.Now;
+                        if (context.PageContent.Any(pc => pc.Id == content.Id))
+                        {
+                            //content exist, therefore update the content 
+                            context.PageContent.Update(content, GraphBehavior.SingleObject);
+                        }
+                        else
+                        {
+                            context.PageContent.Add(content, GraphBehavior.SingleObject);
+                        }
                     }
-                    else
-                    {
-                        context.PageContent.Add(content, GraphBehavior.SingleObject);
-                    }
+                    context.SaveChanges(); 
                 }
-                context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -208,13 +231,16 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                PageContentTranslation result;
-                if (context.PageContentTranslation.Any(t => t.Id == contentTranslation.Id))
+                using (var context = new DeviserDBContext(dbOptions))
                 {
-                    contentTranslation.LastModifiedDate = DateTime.Now;
-                    result = context.PageContentTranslation.Update(contentTranslation, GraphBehavior.SingleObject).Entity;
-                    context.SaveChanges();
-                    return result;
+                    PageContentTranslation result;
+                    if (context.PageContentTranslation.Any(t => t.Id == contentTranslation.Id))
+                    {
+                        contentTranslation.LastModifiedDate = DateTime.Now;
+                        result = context.PageContentTranslation.Update(contentTranslation, GraphBehavior.SingleObject).Entity;
+                        context.SaveChanges();
+                        return result;
+                    } 
                 }
             }
             catch (Exception ex)

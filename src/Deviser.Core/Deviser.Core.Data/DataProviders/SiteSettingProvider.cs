@@ -19,16 +19,12 @@ namespace Deviser.Core.Data.DataProviders
     {
         //Logger
         private readonly ILogger<LayoutProvider> logger;
-        private ILifetimeScope container;
-
-        DeviserDBContext context;
 
         //Constructor
         public SiteSettingProvider(ILifetimeScope container)
+            :base(container)
         {
-            this.container = container;
             logger = container.Resolve<ILogger<LayoutProvider>>();
-            context = container.Resolve<DeviserDBContext>();
         }
 
         //Custom Field Declaration
@@ -36,8 +32,11 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                IEnumerable<SiteSetting> returnData = context.SiteSetting.ToList();
-                return new List<SiteSetting>(returnData);
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    IEnumerable<SiteSetting> returnData = context.SiteSetting.ToList();
+                    return new List<SiteSetting>(returnData); 
+                }
             }
             catch (Exception ex)
             {

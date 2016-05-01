@@ -20,16 +20,12 @@ namespace Deviser.Core.Data.DataProviders
     {
         //Logger
         private readonly ILogger<LayoutProvider> logger;
-        private ILifetimeScope container;
-
-        DeviserDBContext context;
 
         //Constructor
         public UserProvider(ILifetimeScope container)
+            :base(container)
         {
-            this.container = container;
             logger = container.Resolve<ILogger<LayoutProvider>>();
-            context = container.Resolve<DeviserDBContext>();
         }
 
         //Custom Field Declaration
@@ -37,10 +33,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                IEnumerable<User> returnData = context.Users
-                    .Include(u => u.Roles)
-                    .ToList();
-                return new List<User>(returnData);
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    IEnumerable<User> returnData = context.Users
+                                .Include(u => u.Roles)
+                                .ToList();
+                    return new List<User>(returnData); 
+                }
             }
             catch (Exception ex)
             {
@@ -53,11 +52,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                User returnData = context.Users
-                   .Where(e => e.Id == userId)
-                   .Include(u => u.Roles)
-                   .FirstOrDefault();
-                return returnData;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    User returnData = context.Users
+                               .Where(e => e.Id == userId)
+                               .Include(u => u.Roles)
+                               .FirstOrDefault();
+                    return returnData; 
+                }
             }
             catch (Exception ex)
             {

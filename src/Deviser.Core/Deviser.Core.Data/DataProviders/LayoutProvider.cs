@@ -21,16 +21,12 @@ namespace Deviser.Core.Data.DataProviders
     {
         //Logger
         private readonly ILogger<LayoutProvider> logger;
-        private ILifetimeScope container;
-
-        DeviserDBContext context;
 
         //Constructor
         public LayoutProvider(ILifetimeScope container)
+            :base(container)
         {
-            this.container = container;
             logger = container.Resolve<ILogger<LayoutProvider>>();
-            context = container.Resolve<DeviserDBContext>();
         }
 
         //Custom Field Declaration
@@ -38,10 +34,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                IEnumerable<Layout> returnData = context.Layout
-                    .ToList();
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    IEnumerable<Layout> returnData = context.Layout
+                               .ToList();
 
-                return new List<Layout>(returnData);
+                    return new List<Layout>(returnData); 
+                }
             }
             catch (Exception ex)
             {
@@ -55,12 +54,15 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
 
-                Layout returnData = context.Layout
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Layout returnData = context.Layout
 
-                   .Where(e => e.Id == layoutId)
-                   .FirstOrDefault();
+                               .Where(e => e.Id == layoutId)
+                               .FirstOrDefault();
 
-                return returnData;
+                    return returnData; 
+                }
             }
             catch (Exception ex)
             {
@@ -73,10 +75,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Layout resultLayout;
-                resultLayout = context.Layout.Add(layout, GraphBehavior.SingleObject).Entity;
-                context.SaveChanges();
-                return resultLayout;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Layout resultLayout;
+                    resultLayout = context.Layout.Add(layout, GraphBehavior.SingleObject).Entity;
+                    context.SaveChanges();
+                    return resultLayout; 
+                }
             }
             catch (Exception ex)
             {
@@ -88,12 +93,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Layout resultLayout;
-                resultLayout = context.Layout.Attach(layout, GraphBehavior.SingleObject).Entity;
-                context.Entry(layout).State = EntityState.Modified;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Layout resultLayout;
+                    resultLayout = context.Layout.Attach(layout, GraphBehavior.SingleObject).Entity;
+                    context.Entry(layout).State = EntityState.Modified;
 
-                context.SaveChanges();
-                return resultLayout;
+                    context.SaveChanges();
+                    return resultLayout; 
+                }
             }
             catch (Exception ex)
             {

@@ -48,7 +48,7 @@ namespace Deviser.WI.ViewComponents
                 if (AppContext.CurrentPage.PageTranslation.Any(t => t.Locale.ToLower() == cultureCode.ToLower()))
                 {
                     translation = AppContext.CurrentPage.PageTranslation.First(t => t.Locale.ToLower() == cultureCode.ToLower());
-                    return "/" + cultureCode.ToLower() + translation.URL;
+                    return "/" + translation.URL;
                 }
             }
             return "";

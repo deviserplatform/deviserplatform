@@ -17,20 +17,16 @@ namespace Deviser.Core.Data.DataProviders
 
     }
 
-    public class LanguageProvider : ILanguageProvider
+    public class LanguageProvider : DataProviderBase, ILanguageProvider
     {
         //Logger
         private readonly ILogger<LanguageProvider> logger;
-        private ILifetimeScope container;
-
-        DeviserDBContext context;
 
         //Constructor
         public LanguageProvider(ILifetimeScope container)
-        {
-            this.container = container;
+            :base(container)
+        {            
             logger = container.Resolve<ILogger<LanguageProvider>>();
-            context = container.Resolve<DeviserDBContext>();
         }
 
         //Custom Field Declaration
@@ -38,10 +34,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                IEnumerable<Language> returnData = context.Language
-                    .ToList();
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    IEnumerable<Language> returnData = context.Language
+                                .ToList();
 
-                return new List<Language>(returnData);
+                    return new List<Language>(returnData); 
+                }
             }
             catch (Exception ex)
             {
@@ -54,12 +53,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Language returnData = context.Language
+                              .Where(e => e.Id == languageId)
+                              .FirstOrDefault();
 
-                Language returnData = context.Language
-                   .Where(e => e.Id == languageId)
-                   .FirstOrDefault();
-
-                return returnData;
+                    return returnData; 
+                }
             }
             catch (Exception ex)
             {
@@ -72,13 +73,16 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Language resultLayout;
-                language.CreatedDate = language.LastModifiedDate = DateTime.Now;
-                language.IsActive = true;
-                
-                resultLayout = context.Language.Add(language, GraphBehavior.SingleObject).Entity;
-                context.SaveChanges();
-                return resultLayout;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Language resultLayout;
+                    language.CreatedDate = language.LastModifiedDate = DateTime.Now;
+                    language.IsActive = true;
+
+                    resultLayout = context.Language.Add(language, GraphBehavior.SingleObject).Entity;
+                    context.SaveChanges();
+                    return resultLayout; 
+                }
             }
             catch (Exception ex)
             {
@@ -90,11 +94,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Language resultLayout;
-                resultLayout = context.Language.Attach(language, GraphBehavior.SingleObject).Entity;
-                context.Entry(language).State = EntityState.Modified;
-                context.SaveChanges();
-                return resultLayout;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Language resultLayout;
+                    resultLayout = context.Language.Attach(language, GraphBehavior.SingleObject).Entity;
+                    context.Entry(language).State = EntityState.Modified;
+                    context.SaveChanges();
+                    return resultLayout; 
+                }
             }
             catch (Exception ex)
             {

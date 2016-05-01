@@ -88,6 +88,15 @@ namespace Deviser.Core.Library
 
         public static Page HomePage { get; set; }
 
+        public static string HomePageUrl
+        {
+            get
+            {
+                var homePageTranslation = HomePage.PageTranslation.FirstOrDefault(t => t.Locale == CurrentCulture.ToString());
+                return (homePageTranslation != null) ? homePageTranslation.URL : "";
+            }
+        }
+
         public static string AdminSkin
         {
             get

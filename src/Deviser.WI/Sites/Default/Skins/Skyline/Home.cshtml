@@ -1,5 +1,6 @@
 ﻿@using System.Security.Claims
 @using Deviser.Core.Library.TagHelpers;
+@using Deviser.Core.Library;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     string loggedInClass = User.IsSignedIn() ? "logged-in" : "";
@@ -17,7 +18,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a asp-controller="Home" asp-action="Index" class="navbar-brand">Deviser.WI</a>
+            <a href="/@Globals.HomePageUrl" class="navbar-brand">Deviser.WI</a>
         </div>
         <div class="navbar-collapse collapse">
             @*<ul class="nav navbar-nav">

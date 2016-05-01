@@ -23,16 +23,12 @@ namespace Deviser.Core.Data.DataProviders
     {
         //Logger
         private readonly ILogger<LayoutProvider> logger;
-        private ILifetimeScope container;
-
-        DeviserDBContext context;
 
         //Constructor
         public ModuleProvider(ILifetimeScope container)
+            :base(container)
         {
-            this.container = container;
             logger = container.Resolve<ILogger<LayoutProvider>>();
-            context = container.Resolve<DeviserDBContext>();
         }
 
         //Custom Field Declaration
@@ -40,10 +36,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                IEnumerable<Module> returnData = context.Module
-                        .ToList();
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    IEnumerable<Module> returnData = context.Module
+                                    .ToList();
 
-                return new List<Module>(returnData);
+                    return new List<Module>(returnData); 
+                }
             }
             catch (Exception ex)
             {
@@ -56,11 +55,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Module returnData = context.Module
-                   .Where(e => e.Id == moduleId)
-                   .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) // ("ModuleActions.ModuleActionType")
-                   .FirstOrDefault();
-                return returnData;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Module returnData = context.Module
+                              .Where(e => e.Id == moduleId)
+                              .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) // ("ModuleActions.ModuleActionType")
+                              .FirstOrDefault();
+                    return returnData; 
+                }
             }
             catch (Exception ex)
             {
@@ -73,13 +75,16 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Module returnData = context.Module
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Module returnData = context.Module
 
-                   .Where(e => e.Name == moduleName)
-                   .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
-                   .FirstOrDefault();
+                              .Where(e => e.Name == moduleName)
+                              .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
+                              .FirstOrDefault();
 
-                return returnData;
+                    return returnData; 
+                }
             }
             catch (Exception ex)
             {
@@ -91,10 +96,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Module resultModule;
-                resultModule = context.Module.Add(module, GraphBehavior.SingleObject).Entity;
-                context.SaveChanges();
-                return resultModule;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Module resultModule;
+                    resultModule = context.Module.Add(module, GraphBehavior.SingleObject).Entity;
+                    context.SaveChanges();
+                    return resultModule; 
+                }
             }
             catch (Exception ex)
             {
@@ -106,11 +114,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                Module resultModule;
-                resultModule = context.Module.Attach(module, GraphBehavior.SingleObject).Entity;
-                context.Entry(module).State = EntityState.Modified;
-                context.SaveChanges();
-                return resultModule;
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Module resultModule;
+                    resultModule = context.Module.Attach(module, GraphBehavior.SingleObject).Entity;
+                    context.Entry(module).State = EntityState.Modified;
+                    context.SaveChanges();
+                    return resultModule; 
+                }
             }
             catch (Exception ex)
             {

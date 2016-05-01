@@ -1,11 +1,20 @@
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Data.Entity;
+using Microsoft.Data.Entity.Infrastructure;
 using Microsoft.Data.Entity.Metadata;
 
 namespace Deviser.Core.Data.Entities
 {
     public partial class DeviserDBContext : IdentityDbContext<User, Role, string>
     {
+
+        
+        public DeviserDBContext(DbContextOptions<DeviserDBContext> options)
+            : base(options)
+        {
+
+        }
+
         //protected override void OnConfiguring(DbContextOptionsBuilder options)
         //{
         //    options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=DeviserWI;Trusted_Connection=True;MultipleActiveResultSets=true");
