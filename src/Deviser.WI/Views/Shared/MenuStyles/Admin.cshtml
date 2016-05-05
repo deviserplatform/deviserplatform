@@ -28,7 +28,7 @@
         string activeClass = (page.IsActive || page.IsBreadCrumb) ? "active open" : "";
         if (translation != null)
         {
-            translation.URL = "/" + translation.URL;
+            translation.URL = Globals.SiteRoot + translation.URL;
             <li class="nav-item start  @activeClass">
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <i class="icon-home"></i>
@@ -53,7 +53,7 @@ else if (Model.PageLevel == 1)
             translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
             if (translation != null)
             {
-                translation.URL = "/" + translation.URL;
+                translation.URL = Globals.SiteRoot + translation.URL;
                 <li class="nav-item start  @activeClass">
                     <a href="@translation.URL" class="nav-link ">
                         <span class="title">@translation.Name</span>

@@ -13,29 +13,33 @@ namespace Deviser.Core.Library
     public class SiteBootstrapper : ISiteBootstrapper
     {
         //Logger
-        private readonly ILogger<LayoutProvider> logger;
+        private readonly ILogger<SiteBootstrapper> logger;
         private ILifetimeScope container;
 
         private ISiteSettingProvider siteSettingProvider;
-        private IPageProvider pageProvider; 
+        private IPageProvider pageProvider;
 
         public SiteBootstrapper(ILifetimeScope container)
         {
             this.container = container;
+            logger = container.Resolve<ILogger<SiteBootstrapper>>();
             siteSettingProvider = container.Resolve<ISiteSettingProvider>();
             pageProvider = container.Resolve<IPageProvider>();
         }
 
-        public void UpdateSiteSettings()
+        public void InitializeSite()
         {
             try
             {
                 List<SiteSetting> siteSetting = siteSettingProvider.GetSettings();
                 int homeTabId;
-                var homeTabIdSetting = siteSetting.FirstOrDefault(s => s.SettingName == "HomePageId");
-                if (homeTabIdSetting != null && !string.IsNullOrEmpty(homeTabIdSetting.SettingValue) && int.TryParse(homeTabIdSetting.SettingValue,out homeTabId))
+                string strHomeTabId = siteSettingProvider.GetSettingValue("HomePageId");
+                string siteRoot = siteSettingProvider.GetSettingValue("SiteRoot");
+
+                if (!string.IsNullOrEmpty(strHomeTabId) && int.TryParse(strHomeTabId, out homeTabId))
                 {
                     Globals.HomePage = pageProvider.GetPage(homeTabId);
+                    Globals.SiteRoot = siteRoot;
                 }
             }
             catch (Exception ex)

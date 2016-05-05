@@ -10,22 +10,23 @@
 <ul class="page-breadcrumb">
     @foreach (var page in Model)
     {
-    var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
-    if (translation != null)
-    {
-    <li>
-        @if (Model.First() == page)
+        var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
+        if (translation != null)
         {
-        <i class="fa fa-home"></i>
-        }
+            translation.URL = Globals.SiteRoot + translation.URL;
+            <li>
+                @if (Model.First() == page)
+                {
+                    <i class="fa fa-home"></i>
+                }
 
-        <a href="@translation.URL">@translation.Name</a>
+                <a href="@translation.URL">@translation.Name</a>
 
-        @if (Model.Last() != page)
-        {
-        <i class="fa fa-angle-right"></i>
+                @if (Model.Last() != page)
+                {
+                    <i class="fa fa-angle-right"></i>
+                }
+            </li>
         }
-    </li>
-    }
     }
 </ul>

@@ -32,18 +32,11 @@ namespace Deviser.WI.Controllers
             pageManager = container.Resolve<IPageManager>();
             deviserControllerFactory = container.Resolve<IDeviserControllerFactory>();
             siteBootstrapper = container.Resolve<ISiteBootstrapper>();
-            siteBootstrapper.UpdateSiteSettings();
+            siteBootstrapper.InitializeSite();
         }
 
         public async Task<IActionResult> Index(string permalink)
-        {
-            if (string.IsNullOrEmpty(permalink))
-                permalink = Globals.HomePageUrl;
-            else
-            {
-                string requestCulture = (RouteData.Values["culture"] != null) ? RouteData.Values["culture"].ToString() : CurrentCulture.ToString().ToLower();
-                permalink = $"{requestCulture}/{permalink}";
-            }
+        {            
             try
             {
                 Page currentPage = await GetPageModules(permalink);
@@ -56,7 +49,7 @@ namespace Deviser.WI.Controllers
             {
                 logger.LogError("Page load exception has been occured", ex);
             }
-            return null;
+            return View("NotFound");
         }
 
         public IActionResult Layout(string permalink)
@@ -84,10 +77,21 @@ namespace Deviser.WI.Controllers
 
         private async Task<Page> GetPageModules(string permalink)
         {
-            //if (!permalink.StartsWith("/"))
-            //    permalink = "/" + permalink;
+            Page currentPage = null;
 
-            Page currentPage = pageManager.GetPageByUrl(permalink, CurrentCulture.ToString());
+            if (string.IsNullOrEmpty(permalink))
+            {
+                permalink = Globals.HomePageUrl;
+                currentPage = Globals.HomePage;
+            }   
+            else
+            {
+                string requestCulture = (RouteData.Values["culture"] != null) ? RouteData.Values["culture"].ToString() : CurrentCulture.ToString().ToLower();
+                permalink = $"{requestCulture}/{permalink}";
+                currentPage = pageManager.GetPageByUrl(permalink, CurrentCulture.ToString());
+            }
+
+            
             AppContext appContext = new AppContext();
             if (currentPage != null)
             {

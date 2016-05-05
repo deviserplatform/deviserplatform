@@ -19,7 +19,7 @@
     //}
     if (translation != null)
     {
-        translation.URL = "/" + translation.URL;
+        translation.URL = Globals.SiteRoot + translation.URL;
         <li class="dropdown">
             <a href="@translation.URL">@translation.Name</a>
             @if (page.ChildPage != null && page.ChildPage.Count > 0)

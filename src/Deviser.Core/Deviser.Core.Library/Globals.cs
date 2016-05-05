@@ -105,6 +105,8 @@ namespace Deviser.Core.Library
             }
         }
 
+        public static string SiteRoot { get; set; }
+
         private static string GetCurrentDomainDirectory()
         {
             //var dir = AppDomain.CurrentDomain.BaseDirectory.Replace("/", "\\");

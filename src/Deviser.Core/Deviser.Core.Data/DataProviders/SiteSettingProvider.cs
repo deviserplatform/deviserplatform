@@ -12,7 +12,7 @@ namespace Deviser.Core.Data.DataProviders
     public interface ISiteSettingProvider
     {
         List<SiteSetting> GetSettings();
-
+        string GetSettingValue(string settingName);
     }
 
     public class SiteSettingProvider : DataProviderBase, ISiteSettingProvider
@@ -36,6 +36,24 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     IEnumerable<SiteSetting> returnData = context.SiteSetting.ToList();
                     return new List<SiteSetting>(returnData); 
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting GetSettings", ex);
+            }
+            return null;
+        }
+
+        public string GetSettingValue(string settingName)
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    var setting = context.SiteSetting.FirstOrDefault(s=>s.SettingName==settingName);
+                    if (setting != null)
+                        return setting.SettingValue;
                 }
             }
             catch (Exception ex)

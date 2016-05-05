@@ -3,6 +3,7 @@
     var app = angular.module('deviserEdit', [
     'ui.router',
     'ui.bootstrap',
+    'ui.select',
     'dndLists',
     'sd.sdlib',
     'deviserLayout.services',
@@ -12,7 +13,8 @@
     app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$modal', 'globals', 'sdUtil', 'layoutService', 'pageService',
         'contentTypeService', 'pageContentService', 'moduleService', 'pageModuleService', editCtrl]);
 
-    app.controller('EditContentCtrl', ['$scope', '$modalInstance', 'pageContentService', 'contentTranslationService', 'contentInfo', editContentCtrl]);
+    app.controller('EditContentCtrl', ['$scope', '$modalInstance', '$q', 'languageService',
+        'pageContentService', 'contentTranslationService', 'contentInfo', editContentCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
@@ -499,24 +501,35 @@
         }
     }
 
-    function editContentCtrl($scope, $modalInstance, pageContentService, contentTranslationService, contentInfo) {
+    function editContentCtrl($scope, $modalInstance, $q, languageService, pageContentService, contentTranslationService, contentInfo) {
         var vm = this;
 
         vm.contentId = contentInfo.id;
+        vm.changeLanguage = changeLanguage;
         vm.save = save;
         vm.cancel = cancel;
+
 
         init();
 
         /////////////////////////////////////////////
         /*Function declarations only*/
         //Event handlers
+        function changeLanguage() {
+            var translation = _.findWhere(vm.contentTranslations, { cultureCode: vm.selectedLocale });
+            if (!translation) {
+                translation = {
+                    cultureCode: vm.selectedLocale
+                };
+            }
+            vm.contentTranslation = translation;
+        }
+
         function save() {
-            if (vm.contentTranslation.id) {                
-                vm.contentTranslation.cultureCode = appContext.currentCulture;
+            if (vm.contentTranslation.id) {
                 contentTranslationService.put(vm.contentTranslation).then(
                     function (data) {
-                        console.log(data);
+                        console.log(data);                        
                         $modalInstance.close('ok');
                     }, function (error) {
                         showMessage("error", SYS_ERROR_MSG);
@@ -524,7 +537,7 @@
             }
             else {
                 vm.contentTranslation.pageContentId = vm.contentId;
-                vm.contentTranslation.cultureCode = appContext.currentCulture;
+                //vm.contentTranslation.cultureCode = appContext.currentCulture;
                 contentTranslationService.post(vm.contentTranslation).then(
                     function (data) {
                         console.log(data);
@@ -533,7 +546,7 @@
                         showMessage("error", SYS_ERROR_MSG);
                     });
             }
-            
+
         }
 
         function cancel() {
@@ -543,14 +556,30 @@
         //Private functions
         function init() {
             getPageContents();
+            getSiteLanguages().then(function () {
+                vm.selectedLocale = appContext.currentCulture;
+            });
+        }
+
+        function getSiteLanguages() {
+            var defer = $q.defer();
+            languageService.getSiteLanguages().then(function (languages) {
+                vm.languages = languages;
+                defer.resolve('data received!');
+            }, function (error) {
+                showMessage("error", "Cannot get all languages, please contact administrator");
+                defer.reject(SYS_ERROR_MSG);
+            });
+            return defer.promise;
         }
 
         function getPageContents() {
             pageContentService.get(vm.contentId).then(
                 function (pageContent) {
                     console.log(pageContent);
+                    vm.contentTranslations = pageContent.pageContentTranslation;
                     var contentTranslation = _.findWhere(pageContent.pageContentTranslation, { cultureCode: appContext.currentCulture });
-                    if(contentTranslation){
+                    if (contentTranslation) {
                         vm.contentTranslation = contentTranslation;
                     }
                     else {
