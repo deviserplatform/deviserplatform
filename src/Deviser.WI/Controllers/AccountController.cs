@@ -452,7 +452,7 @@ namespace Deviser.WI.Controllers
             return await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
         }
 
-        private IActionResult RedirectToLocal(string returnUrl=null)
+        private IActionResult RedirectToLocal(string returnUrl = null)
         {
             if (Url.IsLocalUrl(returnUrl))
             {
@@ -460,7 +460,7 @@ namespace Deviser.WI.Controllers
             }
             else
             {
-                return Redirect(Globals.HomePageUrl);
+                return Redirect("/" + Globals.HomePageUrl);
                 //return RedirectToAction("Index", "Page", new { permalink = "Home" });
             }
         }

@@ -72,3 +72,8 @@ Page Header
 .sd-controlbar.page-header .top-menu .dropdown-quick-sidebar-toggler > .dropdown-toggle i {
     top: 0;
 }
+
+
+.logged-in {
+    margin-top: 46px;
+}
