@@ -7,12 +7,11 @@
     AppContext deviserContext = (AppContext)ViewBag.AppContext;  //HttpContext.Current.Session["AppContext"];
 }
 
-<ul class="menu-icons-list">
+
 @foreach (var lang in Model)
 {
     string activeClass = lang.IsActive ? "active" : "";
-    <li class="menu-icons">
+    <li>
         <a href="@lang.Url" title="@lang.EnglishName" class="@activeClass"> @lang.Culture.TwoLetterISOLanguageName.ToUpper()</a>
     </li>
 }
-</ul>
