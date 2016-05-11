@@ -31,7 +31,7 @@ ul.loginbar > li {
 
 /* Form block */
 .form-block {
-    padding: 70px 159px;
+    padding: 60px;
     background: #fff;
 }
 
@@ -88,27 +88,6 @@ ul.loginbar > li {
         text-transform: uppercase;
     }
 
-/* Social buttons */
-.login-block .social-login {
-    color: rgba(0,0,0,.5);
-    padding-top: 60px;
-    border-top: 1px solid #eee;
-    position: relative;
-}
-
-.login-block .or {
-    position: absolute;
-    border: 1px solid #eee;
-    width: 70px;
-    height: 70px;
-    top: -35px;
-    left: 50%;
-    margin-left: -35px;
-    text-transform: uppercase;
-    background: #fff;
-    line-height: 70px;
-    padding: 0 24px;
-}
 
 .login-block .btn {
     padding: 12px 20px;
@@ -145,33 +124,6 @@ ul.loginbar > li {
         color: #fff;
     }
 
-/* Registration form */
-.reg-block .checkbox label {
-    display: list-item;
-    list-style: none;
-}
-
-.reg-block .checkbox label {
-    max-width: 230px;
-}
-
-/* Sticky-Footer */
-.sticky-footer {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    padding: 50px 15px 40px;
-    text-align: center;
-    border-top: 1px solid #eee;
-    background: #fff;
-}
-
-    /* Social links */
-    .sticky-footer .copyright-space {
-        margin: 0;
-    }
-
 @media (min-width: 992px) {
     .login-block,
     .reg-block {
@@ -197,36 +149,17 @@ ul.loginbar > li {
         }
 }
 
-@media (max-width: 1138px) {
-    .form-block {
-        padding-right: 85px;
-        padding-left: 85px;
-    }
+@media (max-width: 1138px) {    
 
     .login-block .social-login,
     .login-block .bottom {
         text-align: center;
-    }
-
-    .social-login ul li:first-child,
-    .bottom ul li:first-child {
-        margin-bottom: 20px;
     }
 }
 
 @media (max-width: 991px) {
     .form-block {
         padding: 70px 40px;
-    }
-}
-
-@media (max-width: 767px) {
-    body {
-        margin-bottom: 0;
-    }
-
-    .sticky-footer {
-        position: static;
     }
 }
 
@@ -246,4 +179,17 @@ ul.loginbar > li {
 
 #topcontrol:hover {
     background: #e74c3c;
+}
+
+.checkbox label{
+    color: #555;
+}
+
+.text-danger ul{
+    padding:0;
+}
+
+.text-danger ul li{
+    color:inherit;
+    list-style:none;
 }

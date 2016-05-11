@@ -7,32 +7,36 @@
 @{
     ViewData["Title"] = "Log in";
 }
-<div class="container-fluid">
+<div class="container">
     <div class="row equal-height-columns">
         <div class="col-md-6 col-sm-6 form-block equal-height-column">
             <h2 class="margin-bottom-30">Login To Your Account</h2>
             <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
                 <div class="login-block">
 
-                    <div asp-validation-summary="ValidationSummary.All" class="text-danger"></div>
-
-                    <div class="input-group margin-bottom-20">
-                        <span class="input-group-addon rounded-left"><i class="icon-user color-blue"></i></span>
-                        <input asp-for="Email" class="form-control rounded-right" placeholder="Username" />
+                    <div class="margin-bottom-20">
+                        <div class="input-group">
+                            <span class="input-group-addon rounded-left"><i class="icon-user color-orange"></i></span>
+                            <input asp-for="Email" class="form-control rounded-right" placeholder="Email" />
+                        </div>
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
 
-                    <div class="input-group margin-bottom-20">
-                        <span class="input-group-addon rounded-left"><i class="icon-lock color-blue"></i></span>
-                        <input asp-for="Password" class="form-control rounded-right" placeholder="Password" />
+                    <div class="margin-bottom-20">
+                        <div class="input-group">
+                            <span class="input-group-addon rounded-left"><i class="icon-lock color-orange"></i></span>
+                            <input asp-for="Password" class="form-control rounded-right" placeholder="Password" />
+                        </div>
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
 
                     <div class="checkbox">
                         <ul class="list-inline">
                             <li>
-                                <input asp-for="RememberMe" />
-                                <label asp-for="RememberMe"></label>
+                                <label>
+                                    <input asp-for="RememberMe" />
+                                    Remember me
+                                </label>
                             </li>
 
                             <li class="pull-right">
@@ -41,9 +45,11 @@
                         </ul>
                     </div>
 
-                    <div class="row margin-bottom-70">
+                    <div asp-validation-summary="ValidationSummary.All" class="text-danger"></div>
+
+                    <div class="row margin-bottom-20">
                         <div class="col-md-12">
-                            <button type="submit" class="btn-u btn-u-blue btn-block rounded">Sign In</button>
+                            <button type="submit" class="btn-u btn-u-orange btn-block rounded">Sign In</button>
                         </div>
                     </div>
                     <div>
