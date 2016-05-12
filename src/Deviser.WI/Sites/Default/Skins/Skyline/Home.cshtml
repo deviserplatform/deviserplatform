@@ -8,67 +8,51 @@
 
 @Component.Invoke("ControlBar")
 
+<nav class="navbar navbar-default navbar-fixed-top @loggedInClass">
+    <div class="container">
 
-<div class="wrapper @loggedInClass">
-    <!--=== Header v6 ===-->
-    <div class="header-v6 header-white-transparent header-sticky">
-        <!-- Navbar -->
-        <div class="navbar mega-menu" role="navigation">
-            <div class="container">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <div class="menu-container">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <!-- Navbar Brand -->
-                    <div class="navbar-brand">
-                        <a href="/@Globals.HomePageUrl">
-                            <img class="default-logo" src="/images/DeviserLogoDark.png" alt="Logo">
-                            <img class="shrink-logo" src="/images/DeviserLogoDark.png" alt="Logo">
-                        </a>
-                    </div>
-                    <!-- ENd Navbar Brand -->
-                    <!-- Header Inner Right -->
-                    <div class="header-inner-right">
-                        <ul class="loginbar pull-right">
-                            @await Html.PartialAsync("_LoginPartial")
-                            
-                        </ul>
-                        <ul class="loginbar pull-left">                            
-                            @Component.Invoke("LanguageSwitcher")
-                        </ul>
-                        
-                    </div>
-                    <!-- End Header Inner Right -->
-                </div>
+        <div class="header-top-container clearfix">
+            <div class="header-top pull-right clearfix">
+                <ul class="loginbar pull-right">
+                    @await Html.PartialAsync("_LoginPartial")
 
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse navbar-responsive-collapse">
-                    <div class="menu-container">                        
-                        <ul sd-nav="Site" sd-nav-page="SystemPageFilter.PublicOnly" class="nav navbar-nav"></ul>
-                    </div>
-                </div>
-
-
-
-            </div><!--/end container-->
+                </ul>
+                <ul class="loginbar pull-left">
+                    @Component.Invoke("LanguageSwitcher")
+                </ul>
+            </div>
         </div>
-    </div>
-    <!--=== End Header v6 ===-->
+        <!-- Header Inner Right -->
 
-    <!-- Interactive Slider v2 -->
-    <div class="interactive-slider-v2 img-v4">
-        <div class="container">
-            <h1>Welcome to Deviser</h1>
-            <p>Re-inventing Web Content Management.</p>
+
+
+        <div>
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/@Globals.HomePageUrl">
+                    <img src="/images/DeviserLogoDark.png" alt="DEVISER">
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul sd-nav="Site" sd-nav-page="SystemPageFilter.PublicOnly" class="nav navbar-nav navbar-right"></ul>
+            </div>
+            <!-- /.navbar-collapse -->
         </div>
+        
     </div>
-    <!-- End Interactive Slider v2 -->
+    <!-- /.container-fluid -->
+</nav>
 
-</div>
+
+
 
 @RenderBody()
 
