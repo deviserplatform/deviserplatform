@@ -10,22 +10,6 @@
 
 <nav class="navbar navbar-default navbar-fixed-top @loggedInClass">
     <div class="container">
-
-        <div class="header-top-container clearfix">
-            <div class="header-top pull-right clearfix">
-                <ul class="loginbar pull-right">
-                    @await Html.PartialAsync("_LoginPartial")
-
-                </ul>
-                <ul class="loginbar pull-left">
-                    @Component.Invoke("LanguageSwitcher")
-                </ul>
-            </div>
-        </div>
-        <!-- Header Inner Right -->
-
-
-
         <div>
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header page-scroll">
@@ -40,13 +24,23 @@
                 </a>
             </div>
 
+            <div class="header-top pull-right clearfix">
+                <ul class="login pull-right">
+                    @await Html.PartialAsync("_LoginPartial")
+
+                </ul>
+                <ul class="language-switcher pull-right">
+                    @Component.Invoke("LanguageSwitcher")
+                </ul>
+            </div>
+
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul sd-nav="Site" sd-nav-page="SystemPageFilter.PublicOnly" class="nav navbar-nav navbar-right"></ul>
             </div>
             <!-- /.navbar-collapse -->
         </div>
-        
+
     </div>
     <!-- /.container-fluid -->
 </nav>

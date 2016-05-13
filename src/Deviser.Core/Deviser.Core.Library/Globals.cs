@@ -41,6 +41,14 @@ namespace Deviser.Core.Library
             }
         }
 
+        public static string DefaultSitePath
+        {
+            get
+            {
+                return "~/Sites/Default/";
+            }
+        }
+
         public static string LayoutTypesPath
         {
             get
@@ -94,6 +102,14 @@ namespace Deviser.Core.Library
             {
                 var homePageTranslation = HomePage.PageTranslation.FirstOrDefault(t => t.Locale == CurrentCulture.ToString());
                 return (homePageTranslation != null) ? homePageTranslation.URL : "";
+            }
+        }
+
+        public static string DefaultSkin
+        {
+            get
+            {
+                return "~/Sites/Default/Skins/Skyline/Home.cshtml";
             }
         }
 

@@ -9,80 +9,72 @@
 @if (User.IsSignedIn())
 {
     <!-- BEGIN HEADER -->
-    <div class="sd-controlbar page-header navbar navbar-fixed-top">
-        <!-- BEGIN HEADER INNER -->
-        <div class="page-header-inner">
-            <!-- BEGIN LOGO -->
-            <div class="page-logo">
-                <a class="navbar-brand" href="/en-us/admin">Deviser CMS</a>
-                <div class="menu-toggler sidebar-toggler hide">
-                </div>
-            </div>
-            <!-- END LOGO -->
-            <!-- BEGIN RESPONSIVE MENU TOGGLER -->
-            <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+    <div class="sd-controlbar">
+        <!-- BEGIN LOGO -->
+        <div class="sd-logo">
+            <a class="sd-navbar-brand" href="/en-us/admin">
+                <img src="/images/DeviserLogoWhite.png" alt="DEVISER">
             </a>
-            <!-- END RESPONSIVE MENU TOGGLER -->
-            <!-- BEGIN TOP NAVIGATION MENU -->
-            <div class="top-menu">
-                <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm">
-                    <ul class="nav navbar-nav pull-right">
-                        <li class="dropdown dropdown-quick-sidebar-toggler">
-                            <a href="/@deviserContext.CurrentLink" class="dropdown-toggle">
-                                <i class="fa fa-desktop"></i>
-                                <span>View</span>
-                            </a>
-                        </li>
-                        <li class="dropdown dropdown-quick-sidebar-toggler">
-                            <a href="@Url.Action("Edit", "Page")" class="dropdown-toggle">
-                                <i class="fa fa-pencil-square-o"></i>
-                                <span>Edit</span>
-                            </a>
-                        </li>
-
-                        <li class="dropdown dropdown-quick-sidebar-toggler">
-                            <a href="@Url.Action("Layout", "Page")" class="dropdown-toggle">
-                                <i class="fa fa-columns"></i>
-                                <span>Layout</span>
-                            </a>
-                        </li>
-                        <li class="dropdown dropdown-user">
-                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                @*<img alt="" class="img-circle" src="../../assets/admin/layout/img/avatar3_small.jpg" />*@
-                                <span class="username username-hide-on-mobile">
-                                    @User.GetUserName()
-                                </span>
-                                <i class="fa fa-angle-down"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-default">
-                                <li>
-                                    <a asp-controller="Manage" asp-action="Index" title="Manage">
-                                        <i class="icon-user"></i> My Profile
-                                    </a>
-                                </li>
-                                <li class="divider">
-                                </li>
-                                <li>
-                                    <a href="javascript:document.getElementById('logoutForm').submit()">
-                                        <i class="icon-logout"></i> Log Out
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </form>
-                
-            </div>
-            <!-- END TOP NAVIGATION MENU -->
         </div>
-        <!-- END HEADER INNER -->
+        <!-- END LOGO -->
+        <!-- END RESPONSIVE MENU TOGGLER -->
+        <!-- BEGIN TOP NAVIGATION MENU -->
+        <div class="top-menu">
+            <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm">
+                <ul class="sd-navbar-nav">
+                    <li class="dropdown dropdown-quick-sidebar-toggler">
+                        <a href="/@deviserContext.CurrentLink" class="dropdown-toggle">
+                            <i class="fa fa-desktop"></i>
+                            <span>View</span>
+                        </a>
+                    </li>
+                    <li class="dropdown dropdown-quick-sidebar-toggler">
+                        <a href="@Url.Action("Edit", "Page")" class="dropdown-toggle">
+                            <i class="fa fa-pencil-square-o"></i>
+                            <span>Edit</span>
+                        </a>
+                    </li>
+
+                    <li class="dropdown dropdown-quick-sidebar-toggler">
+                        <a href="@Url.Action("Layout", "Page")" class="dropdown-toggle">
+                            <i class="fa fa-columns"></i>
+                            <span>Layout</span>
+                        </a>
+                    </li>
+                    <li class="dropdown dropdown-user">
+                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                            @*<img alt="" class="img-circle" src="../../assets/admin/layout/img/avatar3_small.jpg" />*@
+                            <span class="username username-hide-on-mobile">
+                                @User.GetUserName()
+                            </span>
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                        <ul class="sd-dropdown-menu dropdown-menu dropdown-menu-default">
+                            <li>
+                                <a asp-controller="Manage" asp-action="Index" title="Manage">
+                                    <i class="icon-user"></i> My Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:document.getElementById('logoutForm').submit()">
+                                    <i class="icon-logout"></i> Log Out
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </form>
+
+        </div>
+        <!-- END TOP NAVIGATION MENU -->
     </div>
-    <!-- END HEADER -->
+        <!-- END HEADER INNER -->
+
 }
 else
 {
     @*<ul class="nav navbar-nav navbar-right">
-        <li><a asp-controller="Account" asp-action="Register">Register</a></li>
-        <li><a asp-controller="Account" asp-action="Login">Log in</a></li>
-    </ul>*@
+            <li><a asp-controller="Account" asp-action="Register">Register</a></li>
+            <li><a asp-controller="Account" asp-action="Login">Log in</a></li>
+        </ul>*@
 }
