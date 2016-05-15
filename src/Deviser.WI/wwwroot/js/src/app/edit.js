@@ -10,15 +10,15 @@
     'deviser.config'
     ]);
 
-    app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$modal', 'globals', 'sdUtil', 'layoutService', 'pageService',
+    app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$uibModal', 'globals', 'sdUtil', 'layoutService', 'pageService',
         'contentTypeService', 'pageContentService', 'moduleService', 'pageModuleService', editCtrl]);
 
-    app.controller('EditContentCtrl', ['$scope', '$modalInstance', '$q', 'languageService',
+    app.controller('EditContentCtrl', ['$scope', '$uibModalInstance', '$q', 'languageService',
         'pageContentService', 'contentTranslationService', 'contentInfo', editContentCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
-    function editCtrl($scope, $timeout, $filter, $q, $modal, globals, sdUtil, layoutService, pageService,
+    function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, sdUtil, layoutService, pageService,
         contentTypeService, pageContentService, moduleService, pageModuleService) {
         var vm = this;
 
@@ -91,7 +91,7 @@
 
         function editContent(content) {
             var defer = $q.defer();
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'contenttypes/' + content.type + '.html',
                 controller: 'EditContentCtrl as ecVM',
@@ -501,7 +501,7 @@
         }
     }
 
-    function editContentCtrl($scope, $modalInstance, $q, languageService, pageContentService, contentTranslationService, contentInfo) {
+    function editContentCtrl($scope, $uibModalInstance, $q, languageService, pageContentService, contentTranslationService, contentInfo) {
         var vm = this;
 
         vm.contentId = contentInfo.id;
@@ -530,7 +530,7 @@
                 contentTranslationService.put(vm.contentTranslation).then(
                     function (data) {
                         console.log(data);                        
-                        $modalInstance.close('ok');
+                        $uibModalInstance.close('ok');
                     }, function (error) {
                         showMessage("error", SYS_ERROR_MSG);
                     });
@@ -541,7 +541,7 @@
                 contentTranslationService.post(vm.contentTranslation).then(
                     function (data) {
                         console.log(data);
-                        $modalInstance.close('ok');
+                        $uibModalInstance.close('ok');
                     }, function (error) {
                         showMessage("error", SYS_ERROR_MSG);
                     });
@@ -550,7 +550,7 @@
         }
 
         function cancel() {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         }
 
         //Private functions

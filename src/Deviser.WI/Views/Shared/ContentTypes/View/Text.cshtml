@@ -20,7 +20,7 @@
 @if (contentTranslation != null)
 {
     <div>            
-        @contentTranslation.ContentData
+         @Html.Raw(contentTranslation.ContentData)
     </div>
 }
 else{
