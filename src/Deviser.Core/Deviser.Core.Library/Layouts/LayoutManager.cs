@@ -133,6 +133,7 @@ namespace Deviser.Core.Library.Layouts
         {
             var page = pageProvider.GetPage(pageId);
             page.LayoutId = layoutId;
+            page.Layout = null;
             pageProvider.UpdatePage(page);
         }
 

@@ -17,9 +17,6 @@ a {
     font-family: 'Lato', sans-serif;
 }
 
-
-
-
 /*Nav*/
 .navbar-brand {
     height: 100px;
@@ -106,8 +103,11 @@ a {
     color: inherit;
 }
 
-
 /*Dropdown menu*/
 .dropdown:hover .dropdown-menu {
     display: block;
+}
+
+.page-content{
+    margin-top:120px;
 }
