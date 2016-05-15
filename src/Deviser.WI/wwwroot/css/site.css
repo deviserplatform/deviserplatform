@@ -65,11 +65,11 @@ a {
         color: #777;
     }
 
-    .navbar li a.active {
-        color: #333;
-        font-weight: 700;
-        text-decoration:underline;
-    }
+        .navbar li a.active {
+            color: #333;
+            font-weight: 700;
+            text-decoration: underline;
+        }
 
     .navbar a:focus {
         outline: none;
@@ -106,8 +106,16 @@ a {
     color: inherit;
 }
 
-
 /*Dropdown menu*/
 .dropdown:hover .dropdown-menu {
     display: block;
+}
+
+
+/*Form elements*/
+
+.btn, .input-group-addon, .form-control {
+    border-radius: unset;
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
