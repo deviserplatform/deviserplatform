@@ -28,7 +28,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="btn-group">
-                                            <a class="btn green" ng-click="umVM.add()"> New user <i class="fa fa-plus"></i></a>
+                                            <a class="btn btn-success" ng-click="umVM.add()"> New user <i class="fa fa-plus"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -64,12 +64,12 @@
                                                 {{user.email}}
                                             </td>
                                             <td>
-                                                <a href="" class="btn default btn-xs purple" ng-click="umVM.edit(user)">
+                                                <a href="" class="btn btn-default btn-xs" ng-click="umVM.edit(user)">
                                                     <i class="fa fa-edit"></i> Edit
                                                 </a>
                                             </td>
                                             <td>
-                                                <a href="" class="btn default btn-xs black" ng-click="umVM.remove(user)">
+                                                <a href="" class="btn btn-default btn-xs" ng-click="umVM.remove(user)">
                                                     <i class="fa fa-trash-o"></i> Delete
                                                 </a>
                                             </td>
@@ -149,8 +149,8 @@
                                 <div class="form-actions">
                                     <div class="row">
                                         <div class="col-md-offset-3 col-md-9">
-                                            <button type="submit" class="btn green" ng-click="umVM.save()">Submit</button>
-                                            <button type="button" class="btn default" ng-click="umVM.cancel()">Cancel</button>
+                                            <button type="submit" class="btn btn-success" ng-click="umVM.save()">Submit</button>
+                                            <button type="button" class="btn btn-default" ng-click="umVM.cancel()">Cancel</button>
                                         </div>
                                     </div>
                                 </div>
@@ -198,8 +198,8 @@
                                 <div class="form-actions">
                                     <div class="row">
                                         <div class="col-md-offset-3 col-md-9">
-                                            <button type="submit" class="btn green" ng-click="umVM.resetPassword()">Reset Password</button>
-                                            <button type="button" class="btn default" ng-click="umVM.cancel()">Cancel</button>
+                                            <button type="submit" class="btn btn-success" ng-click="umVM.resetPassword()">Reset Password</button>
+                                            <button type="button" class="btn btn-default" ng-click="umVM.cancel()">Cancel</button>
                                         </div>
                                     </div>
                                 </div>
@@ -242,7 +242,7 @@
                                                                 {{role.name}}
                                                             </td>
                                                             <td>
-                                                                <a href="" class="btn default btn-xs black" ng-click="umVM.removeRole(role)">
+                                                                <a href="" class="btn btn-default btn-xs" ng-click="umVM.removeRole(role)">
                                                                     <i class="fa fa-trash-o"></i> Delete
                                                                 </a>
                                                             </td>
@@ -305,12 +305,12 @@
                                         <input type="email" class="form-control" placeholder="Enter email address" name="email"
                                                ng-model="umVM.newUser.email" ng-blur="umVM.checkUserExist(umVM.newUser.email)" required>
                                         <span class="input-group-btn" ng-show="!umVM.isUserExist">
-                                            <a href="javascript:;" class="btn green" id="username1_checker">
+                                            <a href="javascript:;" class="btn btn-success" id="username1_checker">
                                                 <i class="fa fa-check"></i> Avaliable
                                             </a>
                                         </span>
                                         <span class="input-group-btn" ng-show="umVM.isUserExist">
-                                            <a href="javascript:;" class="btn red" id="username1_checker">
+                                            <a href="javascript:;" class="btn btn-danger" id="username1_checker">
                                                 <i class="fa fa-times"></i> Not available
                                             </a>
                                         </span>
@@ -367,8 +367,8 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn green" ng-click="umVM.save()">Submit</button>
-                                    <button type="button" class="btn default" ng-click="umVM.cancel()">Cancel</button>
+                                    <button type="submit" class="btn btn-success" ng-click="umVM.save()">Submit</button>
+                                    <button type="button" class="btn btn-default" ng-click="umVM.cancel()">Cancel</button>
                                 </div>
                             </div>
                         </div>

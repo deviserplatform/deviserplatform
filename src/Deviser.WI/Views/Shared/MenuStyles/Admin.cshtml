@@ -10,17 +10,11 @@
 
 @if (Model.PageLevel == 0)
 {
-    
-    <li class="sidebar-toggler-wrapper hide">
-        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
-        <div class="sidebar-toggler"> </div>
-        <!-- END SIDEBAR TOGGLER BUTTON -->
-    </li>
-    <li class="nav-item">
+    <li>
         <a href="/@Globals.HomePageUrl">
-            <i class="icon-home"></i>
+            <i class="fa fa-home"></i>
             <span class="title">Back to Home</span>            
-        </a>       
+        </a>
     </li>
     @foreach (var page in Model.ChildPage)
     {
@@ -29,13 +23,8 @@
         if (translation != null)
         {
             translation.URL = Globals.SiteRoot + translation.URL;
-            <li class="nav-item start  @activeClass">
-                <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="icon-home"></i>
-                    <span class="title">@translation.Name</span>
-                    <span class="selected"></span>
-                    <span class="arrow open"></span>
-                </a>
+            <li class=" @activeClass">
+                <a href="#"> @translation.Name<span class="fa arrow"></span></a>
                 @if (page.ChildPage != null && page.ChildPage.Count > 0)
                 {
                     @Html.Partial(string.Format(Globals.MenuStylePath, "Admin"), page)
@@ -46,7 +35,7 @@
 }
 else if (Model.PageLevel == 1)
 {
-    <ul class="sub-menu">
+    <ul class="nav nav-second-level collapse">
         @foreach (var page in Model.ChildPage)
         {
             string activeClass = (page.IsActive || page.IsBreadCrumb) ? "active open" : "";
@@ -54,9 +43,9 @@ else if (Model.PageLevel == 1)
             if (translation != null)
             {
                 translation.URL = Globals.SiteRoot + translation.URL;
-                <li class="nav-item start  @activeClass">
-                    <a href="@translation.URL" class="nav-link ">
-                        <span class="title">@translation.Name</span>
+                <li class="@activeClass">
+                    <a href="@translation.URL">
+                        @translation.Name
                     </a>
                 </li>
             }

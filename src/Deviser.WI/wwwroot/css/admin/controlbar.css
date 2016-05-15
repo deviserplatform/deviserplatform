@@ -8,16 +8,16 @@ Page Header
     border: 0;
     padding: 0;
     box-shadow: none;
-    height: 60px;
-    min-height: 60px;
+    height: 50px;
+    min-height: 50px;
     filter: none;
     background-image: none;
     background-color: #2b3643;
 }
 
     .sd-controlbar .sd-navbar-brand img {
-        margin: 5px 0 0 20px;
-        height: 50px;
+        margin: 10px;
+        height: 30px;
     }
 
 .sd-navbar-brand {
@@ -45,14 +45,13 @@ Page Header
 
         .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown {
             margin: 0;
-            padding: 0 4px;
-            height: 60px;
+            padding: 0 4px;            
             display: inline-block;
         }
 
             .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > .dropdown-toggle {
                 margin: 0;
-                padding: 20px;
+                padding: 15px;
             }
 
             .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > a {
@@ -67,6 +66,8 @@ Page Header
                     font-size: 13px;
                     font-weight: 300;
                     color: #c6cfda;
+                    padding-left: 8px;
+                    vertical-align: top;
                 }
 
             .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > .dropdown-toggle > i {
@@ -84,32 +85,32 @@ Page Header
                 background-color: #3f4f62;
             }
 
-            .sd-dropdown-menu.dropdown-menu{
-                 background-color: #2b3643;                 
-            }
+.sd-dropdown-menu.dropdown-menu {
+    background-color: #2b3643;
+}
 
-            .sd-dropdown-menu.dropdown-menu li > a{
-                 color: #c6cfda;
-                 padding:10px;
-            }
-
-            
-
-    .sd-controlbar .top-menu .dropdown-quick-sidebar-toggler > .dropdown-toggle i {
-        top: 0;
+    .sd-dropdown-menu.dropdown-menu li > a {
+        color: #c6cfda;
+        padding: 10px;
     }
+
+
+
+.sd-controlbar .top-menu .dropdown-quick-sidebar-toggler > .dropdown-toggle i {
+    top: 0;
+}
 
 .sd-dropdown-menu {
     z-index: 10000;
     width: calc(100% - 4px);
     border-radius: 0;
-    -webkit-box-shadow:none;
-    box-shadow:none;
-    padding:0;
-    margin:0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
 }
 
 
 .logged-in {
-    margin-top: 60px;
+    margin-top: 50px;
 }

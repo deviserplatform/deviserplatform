@@ -3,8 +3,7 @@
     var app = angular.module('deviser.securityRoles', [
     'ui.router',
     'ui.bootstrap',
-    'ui.tree',
-    'ngPasswordStrength',
+    'ui.tree',    
     'sd.sdlib',
     'deviserLayout.services',
     'deviser.config'

@@ -8,10 +8,65 @@
 
 
 /*Site CSS*/
-body {
-    font-family: 'Open Sans', sans-serif;
-}
+div,
+svg,
+input,
+select,
+textarea,
+span,
+img,
+table,
+label,
+td,
+th,
+p,
+a,
+button,
+ul,
+code,
+pre,
+li {
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important; }
 
+/* except below bootstrap elements */
+.img-circle {
+  border-radius: 50% !important; }
+
+.img-rounded {
+  border-radius: 6px !important; }
+
+/***
+General reset
+***/
+/* Set default body */
+body {  
+  font-family: "Open Sans", sans-serif;
+  padding: 0px !important;
+  margin: 0px !important;
+  direction: "ltr";
+  font-size: 14px; }
+
+/*
+ Internet Explorer 10 doesn't differentiate device width from viewport width, and thus doesn't 
+ properly apply the media queries in Bootstrap's CSS. To address this, 
+ you can optionally include the following CSS and JavaScript to work around this problem until Microsoft issues a fix.
+*/
+@-webkit-viewport {
+  width: device-width; }
+
+@-moz-viewport {
+  width: device-width; }
+
+@-ms-viewport {
+  width: device-width; }
+
+@-o-viewport {
+  width: device-width; }
+
+@viewport {
+  width: device-width; }
 
 a {
     font-family: 'Lato', sans-serif;

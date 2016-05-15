@@ -4,99 +4,34 @@
     Deviser.Core.Data.Entities.Page currentPage = (Deviser.Core.Data.Entities.Page)ViewBag.AppContext.CurrentPage;
 }
 
-<div class="page-header-fixed page-sidebar-closed-hide-logo page-content-white">
+<div id="wrapper">
     @Component.Invoke("ControlBar")
-
-    <div class="clearfix">
-    </div>
-    <!-- BEGIN CONTAINER -->
-    <div class="page-container">
-        <!-- BEGIN SIDEBAR -->
-        <div class="page-sidebar-wrapper">
-            <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-            <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-            <div class="page-sidebar navbar-collapse collapse">
-                <!-- BEGIN SIDEBAR MENU -->
-                <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
-                <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
-                <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
-                <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-                <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
-                <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-                @*@Html.Action("Admin", "Menu")*@
-                <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px"
-                    sd-nav="Admin" sd-nav-page="SystemPageFilter.SystemOnly">
-                    <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
-                    
-                    
-
-                    @*<li class="nav-item start active open">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-home"></i>
-                            <span class="title">Dashboard</span>
-                            <span class="selected"></span>
-                            <span class="arrow open"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li class="nav-item start active open">
-                                <a href="index.html" class="nav-link ">
-                                    <i class="icon-bar-chart"></i>
-                                    <span class="title">Dashboard 1</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
-                            <li class="nav-item start ">
-                                <a href="dashboard_2.html" class="nav-link ">
-                                    <i class="icon-bulb"></i>
-                                    <span class="title">Dashboard 2</span>
-                                    <span class="badge badge-success">1</span>
-                                </a>
-                            </li>
-                            <li class="nav-item start ">
-                                <a href="dashboard_3.html" class="nav-link ">
-                                    <i class="icon-graph"></i>
-                                    <span class="title">Dashboard 3</span>
-                                    <span class="badge badge-danger">5</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>*@
-                   
-                </ul>
-                <!-- END SIDEBAR MENU -->
-            </div>
+    <div class="navbar-default sidebar" role="navigation">
+        <div class="sidebar-nav navbar-collapse">
+            <ul class="nav" id="side-menu" sd-nav="Admin" sd-nav-page="SystemPageFilter.SystemOnly"></ul>            
         </div>
-        <!-- END SIDEBAR -->
-        <!-- BEGIN CONTENT -->
-        <div class="page-content-wrapper">
-            <div class="page-content">
-                <div class="page-bar"
-                     sd-breadcrumb="Admin">
-                    @*<ul class="page-breadcrumb">
-                        <li>
-                            <i class="fa fa-home"></i>
-                            <a href="index.html">Admin</a>
-                            <i class="fa fa-angle-right"></i>
-                        </li>
-                        <li>
-                            <a href="@currentPage.PageTranslation.First().URL">@currentPage.PageTranslation.First().Name</a>
-                        </li>
-                    </ul>*@
+        <!-- /.sidebar-collapse -->
+    </div>
+    <div id="page-wrapper" style="min-height: 1220px;">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-bar clearfix"
+                         sd-breadcrumb="Admin">
+                    </div>
                 </div>
-
-                <!-- BEGIN PAGE HEADER-->
-                <h3 class="page-title">
-                    @currentPage.PageTranslation.First().Title
-                </h3>
-                
-                <!-- END PAGE HEADER-->
-                @RenderBody()
             </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">@currentPage.PageTranslation.First().Title</h1>
+                    @RenderBody()
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
         </div>
-        <!-- END CONTENT -->
+        <!-- /.container-fluid -->        
     </div>
-    <!-- END CONTAINER -->
-    <!-- BEGIN FOOTER -->
     <div class="page-footer">
         <div class="page-footer-inner">
             @DateTime.Now.Year &copy; Deviser CMS <a href="http://skydevise.com" title="SKY Devise" target="_blank">SKY Devise</a>
@@ -105,7 +40,4 @@
             <i class="icon-arrow-up"></i>
         </div>
     </div>
-    <!-- END FOOTER -->
 </div>
-
-

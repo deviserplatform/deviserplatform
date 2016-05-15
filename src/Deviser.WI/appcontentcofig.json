@@ -9,7 +9,16 @@
           "propertyValue": ""
         }
       ]
-
+    },
+    {
+      "type": "wrapper",
+      "allowedTypes": [ "row", "container" ],
+      "properties": [
+        {
+          "propertyName": "cssClass",
+          "propertyValue": ""
+        }
+      ]
     },
     {
       "type": "column",

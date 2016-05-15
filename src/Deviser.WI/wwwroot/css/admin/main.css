@@ -1,4 +1,125 @@
-﻿.box {
+﻿/***********************************************************/
+/*Admin Layout Elements*/
+/***********************************************************/
+div,
+svg,
+input,
+select,
+textarea,
+span,
+img,
+table,
+label,
+td,
+th,
+p,
+a,
+button,
+ul,
+code,
+pre,
+li {
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
+}
+
+/* except below bootstrap elements */
+.img-circle {
+    border-radius: 50% !important;
+}
+
+.img-rounded {
+    border-radius: 6px !important;
+}
+
+/***
+General reset
+***/
+/* Set default body */
+body {
+    background-color: #364150;
+    color: #333333;
+    font-family: "Open Sans", sans-serif;
+    padding: 0px !important;
+    margin: 0px !important;
+    direction: "ltr";
+    font-size: 14px;
+}
+
+/*
+ Internet Explorer 10 doesn't differentiate device width from viewport width, and thus doesn't 
+ properly apply the media queries in Bootstrap's CSS. To address this, 
+ you can optionally include the following CSS and JavaScript to work around this problem until Microsoft issues a fix.
+*/
+@-webkit-viewport {
+    width: device-width;
+}
+
+@-moz-viewport {
+    width: device-width;
+}
+
+@-ms-viewport {
+    width: device-width;
+}
+
+@-o-viewport {
+    width: device-width;
+}
+
+@viewport {
+    width: device-width;
+}
+
+.page-footer {
+    color: #98a6ba;
+    padding: 8px 20px 5px;
+    font-size: 13px;
+    height: 33px;
+}
+
+/*Side Nav*/
+.navbar-default{
+    background-color:inherit;
+}
+
+.sidebar ul li a, .nav .open > a, .nav .open > a:hover, .nav .open > a:focus{
+    color:#b4bcc8;
+    border-top: 1px solid #3d4957;
+}
+
+.sidebar .nav > li > a:hover, 
+.sidebar .nav > li > a:focus,
+.sidebar .nav  ul.nav-second-level li.active > a{
+    background: #2C3542;    
+    border-color: transparent;
+}
+
+.sidebar .nav > li.active > a, 
+.sidebar .nav .open > a:focus{
+    background:#EF4A34;
+    color:#fff;
+}
+
+.sidebar ul li:last-child> a{
+    border-bottom: 1px solid transparent!important;
+}
+
+
+/***********************************************************/
+/*Form control*/
+/***********************************************************/
+.btn, .input-group-addon, .form-control {
+    border-radius: unset;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+/***********************************************************/
+/*Layout*/
+/***********************************************************/
+.box {
     margin-bottom: 20px;
     background-color: #fff;
     border: 1px solid transparent;
@@ -30,22 +151,22 @@
         margin-bottom: 0;
     }
 
-    .box-layout > h3{
+    .box-layout > h3 {
         padding: 5px 10px;
     }
 
-    .box .content-title {
-        float:left;
-        padding:6px 15px;
-    }
+.box .content-title {
+    float: left;
+    padding: 6px 15px;
+}
 
-    .box .content-controls{
-        float:right;
-    }
+.box .content-controls {
+    float: right;
+}
 
-    .modal-dialog{
-        margin: 100px auto;
-    }
+.modal-dialog {
+    margin: 100px auto;
+}
 
 .box-padding {
     padding: 15px;
@@ -89,8 +210,6 @@
         background-image: -webkit-linear-gradient(top,#fcf8e3 0,#faf2cc 100%);
         background-image: linear-gradient(to bottom,#fcf8e3 0,#faf2cc 100%);
     }
-
-
 
 /***************************** Required styles *****************************/
 
@@ -251,12 +370,14 @@
     text-align: center;
 }
 
+
+
+/***********************************************************/
 /*Angular Tree*/
+/***********************************************************/
+
 .tree-node {
-    /*background: #f8faff;*/
-    /*border: 1px solid #dae2ea;*/
     color: #7c9eb2;
-    /*padding: 10px 10px;*/
 }
 
 .angular-ui-tree-nodes .angular-ui-tree-nodes {
@@ -293,7 +414,6 @@
     text-decoration: none;
     font-weight: 400;
     border: 1px solid #ccc;
-    /*background: #fafafa;*/
     -webkit-border-radius: 3px;
     border-radius: 3px;
     box-sizing: border-box;
@@ -316,29 +436,6 @@
     -moz-box-sizing: border-box;
 }
 
-/*.tree-node:hover {
-  color: #438eb9;
-  background: #f4f6f7;
-  border-color: #dce2e8;
-}
-.ui-tree div.selected {
-  background: #337ab7;
-  color: #fff;
-}
-.angular-ui-tree-placeholder {
-  background: #f0f9ff;
-  border: 2px dashed #bed2db;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-.group-title {
-  background-color: #687074 !important;
-  color: #FFF !important;
-}
-.draggable-bar {
-  padding: 2px 10px 0px 0px;
-}*/
 
 /*Form elements*/
 div.edit-page.form-horizontal .control-label {

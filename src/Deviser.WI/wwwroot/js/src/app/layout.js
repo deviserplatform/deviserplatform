@@ -25,7 +25,7 @@
         vm.pageLayout = {};
         vm.selectedItem = {}
         vm.deletedElements = [];
-        vm.layoutAllowedTypes = ["container"];
+        vm.layoutAllowedTypes = ["container", "wrapper"];
 
         //Function binding
         vm.newGuid = sdUtil.getGuid;
