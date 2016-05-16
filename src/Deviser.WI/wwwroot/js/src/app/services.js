@@ -16,6 +16,7 @@
     app.factory('userRoleService', userRoleService);
     app.factory('languageService', languageService);
     app.factory('fileService', fileService);
+    app.factory('assetService', assetService);
     
     ////////////////////////////////
     /*Function declarations only*/
@@ -223,6 +224,11 @@
 
     function fileService($http, $q, globals) {
         return baseService($http, $q, globals, '/file');
+    }
+
+    function assetService($http, $q, globals) {
+        var imageService = baseService($http, $q, globals, '/upload/images');
+        return imageService;
     }
     
     function baseService($http, $q, globals, serviceUrl) {

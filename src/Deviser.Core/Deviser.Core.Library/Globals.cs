@@ -89,6 +89,30 @@ namespace Deviser.Core.Library
             }
         }
 
+        public static string SiteAssetsPath
+        {
+            get
+            {
+                return "~/assets/";
+            }
+        }
+
+        public static string ImagesFolder
+        {
+            get
+            {
+                return "images";
+            }
+        }
+
+        public static string UploadTempFolder
+        {
+            get
+            {
+                return "temp";
+            }
+        }
+
         public static CultureInfo CurrentCulture
         {
             get; set;

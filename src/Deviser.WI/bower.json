@@ -10,6 +10,8 @@
     "angular-ui-tree": "~2.15.0",
     "angular-ui-select": "~0.17.0",
     "angular-drag-and-drop-lists": "~1.4.0",
+    "ng-file-upload": "~12.0.4",
+    "angular-img-cropper": "~1.1.0",
     "bootstrap": "~3.3.6",
     "font-awesome": "^4.6.3",
     "jquery-validation": "1.14.0",

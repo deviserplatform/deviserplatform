@@ -8,7 +8,8 @@
     'dndLists',
     'sd.sdlib',
     'deviserLayout.services',
-    'deviser.config'
+    'deviser.config',
+    'modules.app.imageManager'
     ]);
 
     app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$uibModal', 'globals', 'sdUtil', 'layoutService', 'pageService',
@@ -95,6 +96,7 @@
             var modalInstance = $uibModal.open({
                 animation: true,
                 size: 'lg',
+                openedClass: 'edit-content-modal',
                 backdrop: 'static',                
                 templateUrl: 'contenttypes/' + content.type + '.html',
                 controller: 'EditContentCtrl as ecVM',

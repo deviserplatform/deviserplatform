@@ -9,6 +9,7 @@ namespace Deviser.Core.Library.DomainTypes
     {
         public string Name { get; set; }
         public string Path { get; set; }
+        public string Extension { get; set; }
         public FileItemType Type { get; set; }
     }
 }

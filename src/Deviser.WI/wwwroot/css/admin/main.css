@@ -448,6 +448,10 @@ div.edit-page.form-horizontal .control-label {
 
 /*Edit mode*/
 
-.modal-lg{
+.edit-content-modal .modal-lg{
     width:80%;
+}
+
+.image-manager-modal .modal-sm{
+    width:900px;
 }
