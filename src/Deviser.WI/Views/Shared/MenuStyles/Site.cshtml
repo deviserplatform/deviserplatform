@@ -10,9 +10,10 @@
 
 
 
-@foreach (var page in Model.ChildPage.OrderBy(p=>p.PageOrder))
+@foreach (var page in Model.ChildPage.OrderBy(p => p.PageOrder))
 {
     var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == currentCulture);
+    string activeClass = page.IsActive || page.IsBreadCrumb ? "active" : "";
     //if(translation==null && currentCulture != Globals.FallbackLanguage)
     //{
     //    translation = page.PageTranslation.FirstOrDefault(t => t.Locale == Globals.FallbackLanguage);
@@ -20,8 +21,8 @@
     if (translation != null)
     {
         translation.URL = Globals.SiteRoot + translation.URL;
-        <li class="dropdown">
-            <a href="@translation.URL" class="dropdown-toggle" data-toggle="dropdown">@translation.Name</a>
+        <li class="dropdown @activeClass">
+            <a href="@translation.URL">@translation.Name</a>
             @if (page.ChildPage != null && page.ChildPage.Count > 0)
             {
                 <ul class="dropdown-menu">

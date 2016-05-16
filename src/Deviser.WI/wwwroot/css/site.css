@@ -141,6 +141,7 @@ a {
 }
 
 .header-top {
+    margin-top: 6px;
     width: calc(100% - 300px);
 }
 
@@ -152,10 +153,27 @@ a {
             display: inline;
         }
 
+        .header-top ul li a{
+            font-size:0.9em;
+        }
+
 .login li, .language-switcher li {
     display: inline-block;
     padding: 0 0 0 10px;
     color: inherit;
+}
+
+.login li a {
+    text-transform:none;
+}
+
+.form-horizontal .form-group{
+    margin-left:0;
+    margin-right:0;
+}
+
+.input-validation-error {
+    border-color: #a94442;
 }
 
 /*Dropdown menu*/

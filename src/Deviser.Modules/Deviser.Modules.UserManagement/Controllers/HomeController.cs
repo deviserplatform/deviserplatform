@@ -4,7 +4,7 @@ using Deviser.Core.Library.Modules;
 using Microsoft.AspNet.Mvc;
 
 
-namespace Deviser.Modules.PageManagement.Controllers
+namespace Deviser.Modules.UserManagement.Controllers
 {
     [Module("UserManagement")]
     public class HomeController : ModuleController

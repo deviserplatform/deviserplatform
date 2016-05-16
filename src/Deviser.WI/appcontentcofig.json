@@ -1,4 +1,5 @@
 ﻿{
+  "rootLayoutTypes": [ "container", "wrapper" ],
   "layoutTypes": [
     {
       "type": "container",
@@ -51,19 +52,7 @@
           "propertyValue": ""
         }
       ]
-    },
-    
-    {
-      "type": "testContainer",
-      "isRepeater": true,
-      "properties": [
-        {
-          "propertyName": "cssClass",
-          "propertyValue": ""
-        }
-      ]
     }
-
   ]
 
 }
