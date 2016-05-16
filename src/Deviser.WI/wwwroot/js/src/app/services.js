@@ -37,7 +37,21 @@
     }
 
     function layoutTypeService($http, $q, globals) {
-        return baseService($http, $q, globals, '/layouttype');
+        var serviceUrl = '/layouttype';
+        var service = baseService($http, $q, globals, serviceUrl);
+        service.getAllowedRootTypes = getAllowedRootTypes;
+        return service;
+
+        function getAllowedRootTypes() {
+            var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/rootallowedtypes';
+            var request = $http({
+                method: 'GET',
+                url: getUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
     }
        
     

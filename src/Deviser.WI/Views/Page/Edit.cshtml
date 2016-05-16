@@ -97,7 +97,7 @@
                         {{item.type}} {{$index+1}}
                     </div>
                     <div class="content-controls" dnd-nodrag>
-                        <a class="btn blue-hoki" ng-click="editVM.editContent(item)">
+                        <a class="btn btn-primary" ng-click="editVM.editContent(item)">
                             <i class="fa fa-pencil"></i>
                         </a>
                     </div>
@@ -118,7 +118,9 @@
             </div>
         </script>
 
-        @Html.Partial("/views/shared/contenttypes/edit/text.cshtml")
+        @*@Html.Partial("/views/shared/contenttypes/edit/text.cshtml")*@
+
+        <div sd-content-edits="All"></div>
 
 
         <div class="row">
@@ -251,12 +253,12 @@
             </div>
 
         </div>
-        <div class="row">
+        @*<div class="row">
             <div class="col-lg-6">
                 <pre>{{editVM.pageLayout | json}}</pre>
             </div>
 
-        </div>
+        </div>*@
 
     </div>
 

@@ -441,3 +441,13 @@ body {
 div.edit-page.form-horizontal .control-label {
     text-align: left;
 }
+
+
+
+/*Layout Designer*/
+
+/*Edit mode*/
+
+.modal-lg{
+    width:80%;
+}

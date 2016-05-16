@@ -45,7 +45,17 @@
   "contentTypes": [
     {
       "type": "text",
-      "isRepeater": false,
+      "dataType": "string",
+      "properties": [
+        {
+          "propertyName": "cssClass",
+          "propertyValue": ""
+        }
+      ]
+    },
+    {
+      "type": "carousel",
+      "dataType": "array",
       "properties": [
         {
           "propertyName": "cssClass",
@@ -53,6 +63,7 @@
         }
       ]
     }
+
   ]
 
 }

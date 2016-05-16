@@ -25,7 +25,7 @@
         vm.pageLayout = {};
         vm.selectedItem = {}
         vm.deletedElements = [];
-        vm.layoutAllowedTypes = ["container", "wrapper"];
+        vm.layoutAllowedTypes = [];
 
         //Function binding
         vm.newGuid = sdUtil.getGuid;
@@ -50,7 +50,8 @@
             $q.all([
             getCurrentPage(),
             getLayouts(),
-            getLayoutTypes()
+            getLayoutTypes(),
+            getLayoutAllowedTypes()
             ]).then(function () {
                 if (vm.currentPage.layoutId) {
                     var selectedLayout = _.find(vm.layouts, function (layout) {
@@ -106,6 +107,19 @@
             layoutTypeService.get()
             .then(function (data) {
                 vm.layoutTypes = data;
+                defer.resolve('data received!');
+            }, function (error) {
+                showMessage("error", SYS_ERROR_MSG);
+                defer.reject(SYS_ERROR_MSG);
+            });
+            return defer.promise;
+        }
+
+        function getLayoutAllowedTypes() {
+            var defer = $q.defer();
+            layoutTypeService.getAllowedRootTypes()
+            .then(function (data) {
+                vm.layoutAllowedTypes = data;
                 defer.resolve('data received!');
             }, function (error) {
                 showMessage("error", SYS_ERROR_MSG);

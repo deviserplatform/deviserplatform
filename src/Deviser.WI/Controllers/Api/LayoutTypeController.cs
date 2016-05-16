@@ -24,7 +24,7 @@ namespace DeviserWI.Controllers.API
         private readonly ILogger<LayoutTypeController> logger;
 
         private JToken contentTypes;
-
+        private List<string> rootAllowedTypes;
         public LayoutTypeController(ILifetimeScope container)
         {
             logger = container.Resolve<ILogger<LayoutTypeController>>();
@@ -34,6 +34,7 @@ namespace DeviserWI.Controllers.API
                 var contentTypesfilePath = Path.Combine(appEnv.ApplicationBasePath, "appcontentcofig.json");                
                 JObject contentConfig = JObject.Parse(System.IO.File.ReadAllText(contentTypesfilePath));
                 contentTypes = (JArray)contentConfig.SelectToken("layoutTypes");
+                rootAllowedTypes = contentConfig.SelectToken("rootLayoutTypes").ToObject<List<string>>();
             }
             catch
             {
@@ -53,6 +54,23 @@ namespace DeviserWI.Controllers.API
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting content types"), ex);
+                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("rootallowedtypes")]
+        public IActionResult GetRootAllowedTypes()
+        {
+            try
+            {
+                if (rootAllowedTypes != null)
+                    return Ok(rootAllowedTypes);
+                return HttpNotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting root allowed types"), ex);
                 return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

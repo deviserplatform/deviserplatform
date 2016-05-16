@@ -111,7 +111,7 @@ namespace Deviser.Core.Library.TagHelpers
                                 dynamic typeInfo = JsonConvert.DeserializeObject<dynamic>(pageContent.TypeInfo);
                                 string typeName = (string)typeInfo.type;
                                 ViewContext.ViewData["contentType"] = typeName;
-                                htmlContent = htmlHelper.Partial(string.Format(Globals.ContentTypesPath, typeName), pageContent);
+                                htmlContent = htmlHelper.Partial(string.Format(Globals.ContentTypesViewPath, typeName), pageContent);
                                 var contentResult = GetString(htmlContent);
                                 currentResults.Add(new ContentResult
                                 {

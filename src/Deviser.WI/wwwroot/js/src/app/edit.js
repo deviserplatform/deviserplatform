@@ -2,6 +2,7 @@
 
     var app = angular.module('deviserEdit', [
     'ui.router',
+    'ui.sortable',
     'ui.bootstrap',
     'ui.select',
     'dndLists',
@@ -13,7 +14,7 @@
     app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$uibModal', 'globals', 'sdUtil', 'layoutService', 'pageService',
         'contentTypeService', 'pageContentService', 'moduleService', 'pageModuleService', editCtrl]);
 
-    app.controller('EditContentCtrl', ['$scope', '$uibModalInstance', '$q', 'languageService',
+    app.controller('EditContentCtrl', ['$scope', '$uibModalInstance', '$q', 'sdUtil', 'languageService',
         'pageContentService', 'contentTranslationService', 'contentInfo', editContentCtrl]);
 
     ////////////////////////////////
@@ -93,12 +94,13 @@
             var defer = $q.defer();
             var modalInstance = $uibModal.open({
                 animation: true,
+                size: 'lg',
+                backdrop: 'static',                
                 templateUrl: 'contenttypes/' + content.type + '.html',
                 controller: 'EditContentCtrl as ecVM',
                 resolve: {
                     contentInfo: function () {
                         var returnObject = content;
-
                         return returnObject;
                     }
                 }
@@ -501,14 +503,25 @@
         }
     }
 
-    function editContentCtrl($scope, $uibModalInstance, $q, languageService, pageContentService, contentTranslationService, contentInfo) {
+    function editContentCtrl($scope, $uibModalInstance, $q, sdUtil, languageService, pageContentService, contentTranslationService, contentInfo) {
         var vm = this;
 
         vm.contentId = contentInfo.id;
         vm.changeLanguage = changeLanguage;
         vm.save = save;
         vm.cancel = cancel;
-
+        vm.newItem = newItem;
+        vm.updateItem = updateItem;
+        vm.editItem = editItem;
+        vm.removeItem = removeItem;
+        vm.cancelDetailView = cancelDetailView;
+        vm.sortableOptions = {
+            stop: function (e, ui) {
+                _.each(vm.contentTranslation.contentData.items, function (item, index) {
+                    item.viewOrder = index + 1;
+                });
+            }
+        };
 
         init();
 
@@ -516,20 +529,17 @@
         /*Function declarations only*/
         //Event handlers
         function changeLanguage() {
-            var translation = _.findWhere(vm.contentTranslations, { cultureCode: vm.selectedLocale });
-            if (!translation) {
-                translation = {
-                    cultureCode: vm.selectedLocale
-                };
-            }
+            var translation = getTranslationForLocale(vm.selectedLocale);
             vm.contentTranslation = translation;
+            deserializeContentTranslation();
         }
 
         function save() {
             if (vm.contentTranslation.id) {
+                serializeContentTranslation();
                 contentTranslationService.put(vm.contentTranslation).then(
                     function (data) {
-                        console.log(data);                        
+                        console.log(data);
                         $uibModalInstance.close('ok');
                     }, function (error) {
                         showMessage("error", SYS_ERROR_MSG);
@@ -537,7 +547,7 @@
             }
             else {
                 vm.contentTranslation.pageContentId = vm.contentId;
-                //vm.contentTranslation.cultureCode = appContext.currentCulture;
+                serializeContentTranslation();
                 contentTranslationService.post(vm.contentTranslation).then(
                     function (data) {
                         console.log(data);
@@ -546,18 +556,52 @@
                         showMessage("error", SYS_ERROR_MSG);
                     });
             }
-
         }
 
         function cancel() {
             $uibModalInstance.dismiss('cancel');
         }
 
+        function newItem() {
+            vm.selectedItem = { };
+            vm.isDetailView = true;
+        }
+
+        function updateItem() {
+            if (!vm.selectedItem.id) {
+                vm.selectedItem.id = sdUtil.getGuid();
+                vm.selectedItem.viewOrder = vm.contentTranslation.contentData.items.length + 1;
+                vm.contentTranslation.contentData.items.push(vm.selectedItem);
+            }
+            vm.isDetailView = false;
+        }
+
+        function editItem(item) {
+            vm.selectedItem = item;
+            vm.isDetailView = true;
+        }
+
+        function removeItem(item) {
+            var index = vm.contentTranslation.contentData.items.indexOf(slideItem);
+            vm.contentTranslation.contentData.items.splice(index, 1);
+            vm.isChanged = true;
+        }
+
+        function cancelDetailView() {
+            vm.isDetailView = false;
+        }
+
         //Private functions
         function init() {
-            getPageContents();
-            getSiteLanguages().then(function () {
+            $q.all([
+                getPageContents(),
+                getSiteLanguages()
+            ]).then(function () {
                 vm.selectedLocale = appContext.currentCulture;
+                //load correct translation
+                var translation = getTranslationForLocale(vm.selectedLocale);
+                vm.contentTranslation = translation;
+                deserializeContentTranslation();
             });
         }
 
@@ -574,21 +618,50 @@
         }
 
         function getPageContents() {
+            var defer = $q.defer();
             pageContentService.get(vm.contentId).then(
                 function (pageContent) {
                     console.log(pageContent);
                     vm.contentTranslations = pageContent.pageContentTranslation;
-                    var contentTranslation = _.findWhere(pageContent.pageContentTranslation, { cultureCode: appContext.currentCulture });
-                    if (contentTranslation) {
-                        vm.contentTranslation = contentTranslation;
-                    }
-                    else {
-                        vm.contentTranslation = {};
-                    }
+                    //var contentTranslation = _.findWhere(pageContent.pageContentTranslation, { cultureCode: appContext.currentCulture });
+                    //if (contentTranslation) {
+                    //    vm.contentTranslation = contentTranslation;
+                    //}
+                    //else {
+                    //    vm.contentTranslation = {};
+                    //}
                     vm.typeInfo = JSON.parse(pageContent.typeInfo);
+                    defer.resolve('data received!');
                 }, function (error) {
                     showMessage("error", SYS_ERROR_MSG);
+                    defer.reject(SYS_ERROR_MSG);
                 });
+            return defer.promise;
+        }
+
+        function getTranslationForLocale(locale) {
+            var translation = _.findWhere(vm.contentTranslations, { cultureCode: locale });
+            if (!translation) {
+                translation = {
+                    cultureCode: locale,
+                    contentData: {
+                        items: []
+                    }
+                };
+            }
+            return translation;
+        }
+
+        function serializeContentTranslation() {
+            if (vm.typeInfo.dataType && (vm.typeInfo.dataType === 'array' || vm.typeInfo.dataType === 'object')) {
+                vm.contentTranslation.contentData = angular.toJson(vm.contentTranslation.contentData);
+            }
+        }
+
+        function deserializeContentTranslation() {
+            if (vm.typeInfo.dataType && (vm.typeInfo.dataType === 'array' || vm.typeInfo.dataType === 'object')) {
+                vm.contentTranslation.contentData = JSON.parse(vm.contentTranslation.contentData);
+            }
         }
 
     };

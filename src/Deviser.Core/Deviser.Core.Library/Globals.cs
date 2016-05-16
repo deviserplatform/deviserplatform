@@ -57,11 +57,19 @@ namespace Deviser.Core.Library
             }
         }
 
-        public static string ContentTypesPath
+        public static string ContentTypesViewPath
         {
             get
             {
                 return "~/Views/Shared/ContentTypes/View/{0}.cshtml";
+            }
+        }
+
+        public static string ContentTypesEditPath
+        {
+            get
+            {
+                return "~/Views/Shared/ContentTypes/Edit/";
             }
         }
 
