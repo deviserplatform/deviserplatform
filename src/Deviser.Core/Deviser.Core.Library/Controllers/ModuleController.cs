@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Autofac;
 using Deviser.Core.Data.DataProviders;
 
@@ -30,14 +30,14 @@ namespace Deviser.Core.Library.Controllers
 
             object moduleName;
             object pageModuleId;
-            
-            if (ActionContext.RouteData.Values.TryGetValue("area", out moduleName))
+
+            if (context.RouteData.Values.TryGetValue("area", out moduleName))
             {
                 ModuleContext = new ModuleContext();
                 ModuleContext.ModuleInfo = moduleProvider.Get((string)moduleName);
             }
 
-            if(ActionContext.RouteData.Values.TryGetValue("pageModuleId", out pageModuleId))
+            if (context.RouteData.Values.TryGetValue("pageModuleId", out pageModuleId))
             {
                 ModuleContext.PageModuleId = (Guid)pageModuleId;
             }

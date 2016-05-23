@@ -8,13 +8,13 @@ using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Web;
 using System.IO;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Autofac;
 using Microsoft.Extensions.PlatformAbstractions;
-using Microsoft.AspNet.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 
 namespace DeviserWI.Controllers.API
 {
@@ -28,10 +28,10 @@ namespace DeviserWI.Controllers.API
         public LayoutTypeController(ILifetimeScope container)
         {
             logger = container.Resolve<ILogger<LayoutTypeController>>();
-            IApplicationEnvironment appEnv = container.Resolve<IApplicationEnvironment>();
+            IHostingEnvironment hostingEnvironment = container.Resolve<IHostingEnvironment>();
             try
             {
-                var contentTypesfilePath = Path.Combine(appEnv.ApplicationBasePath, "appcontentcofig.json");                
+                var contentTypesfilePath = Path.Combine(hostingEnvironment.ContentRootPath, "appcontentcofig.json");                
                 JObject contentConfig = JObject.Parse(System.IO.File.ReadAllText(contentTypesfilePath));
                 contentTypes = (JArray)contentConfig.SelectToken("layoutTypes");
                 rootAllowedTypes = contentConfig.SelectToken("rootLayoutTypes").ToObject<List<string>>();
@@ -49,12 +49,12 @@ namespace DeviserWI.Controllers.API
             {
                 if (contentTypes != null)
                     return Ok(contentTypes);
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting content types"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -66,12 +66,12 @@ namespace DeviserWI.Controllers.API
             {
                 if (rootAllowedTypes != null)
                     return Ok(rootAllowedTypes);
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting root allowed types"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
     }

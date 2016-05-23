@@ -2,16 +2,18 @@
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.DomainTypes;
-using Microsoft.AspNet.Html.Abstractions;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc.Rendering;
-using Microsoft.AspNet.Mvc.ViewFeatures;
-using Microsoft.AspNet.Razor.TagHelpers;
+using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.WebEncoders;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.TagHelpers
@@ -26,6 +28,8 @@ namespace Deviser.Core.Library.TagHelpers
         private IPageProvider pageProvider;
         private INavigation navigation;
         private IHtmlHelper htmlHelper;
+
+        private readonly ILogger<NavigationHelper> logger;
 
         [HtmlAttributeName(NavAttributeName)]
         public string MenuStyle { get; set; }
@@ -44,8 +48,9 @@ namespace Deviser.Core.Library.TagHelpers
              : base(httpContextAccessor)
         {
             pageProvider = container.Resolve<IPageProvider>();
-            this.htmlHelper = container.Resolve<IHtmlHelper>();
-            this.navigation = container.Resolve<INavigation>();
+            htmlHelper = container.Resolve<IHtmlHelper>();
+            navigation = container.Resolve<INavigation>();
+            logger = container.Resolve<ILogger<NavigationHelper>>();
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -56,20 +61,26 @@ namespace Deviser.Core.Library.TagHelpers
                 return;
             }
 
-            ((HtmlHelper)htmlHelper).Contextualize(ViewContext);
-            Page root = navigation.GetPageTree(AppContext.CurrentPageId, SystemFilter, ParentId);
+            try
+            {
+                ((HtmlHelper)htmlHelper).Contextualize(ViewContext);
+                Page root = navigation.GetPageTree(AppContext.CurrentPageId, SystemFilter, ParentId);
 
-            var htmlContent = htmlHelper.Partial(string.Format(Globals.MenuStylePath, MenuStyle), root);
-            var contentResult = GetString(htmlContent);
-            output.Content.SetHtmlContent(contentResult);
-            //output.PostContent.Append("MenuStyle: " + MenuStyle);
-
-        }        
+                var htmlContent = htmlHelper.Partial(string.Format(Globals.MenuStylePath, MenuStyle), root);
+                var contentResult = GetString(htmlContent);
+                output.Content.SetHtmlContent(contentResult);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Page load exception has been occured", ex);
+                output.Content.SetHtmlContent("Error occured, in menu");
+            }
+        }
 
         private static string GetString(IHtmlContent content)
         {
             var writer = new System.IO.StringWriter();
-            content.WriteTo(writer, new HtmlEncoder());
+            content.WriteTo(writer, HtmlEncoder.Default);
             return writer.ToString();
         }
     }

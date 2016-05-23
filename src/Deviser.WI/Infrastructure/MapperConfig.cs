@@ -5,7 +5,6 @@ using Deviser.WI.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using User = Deviser.Core.Data.Entities.User;
 
 namespace Deviser.WI.Infrastructure
@@ -14,10 +13,14 @@ namespace Deviser.WI.Infrastructure
     {
         public static void CreateMaps()
         {
-            Mapper.CreateMap<DTO.User, User>().ForMember(m => m.Roles, opt => opt.Ignore());
-            Mapper.CreateMap<User, DTO.User>().ForMember(m => m.Roles, opt => opt.Ignore());
-            Mapper.CreateMap<PageLayout, Layout>();
-            Mapper.CreateMap<Layout, PageLayout>();
+            Mapper.Initialize(config =>
+            {
+                config.CreateMap<DTO.User, User>().ForMember(m => m.Roles, opt => opt.Ignore());
+                config.CreateMap<User, DTO.User>().ForMember(m => m.Roles, opt => opt.Ignore());
+                config.CreateMap<PageLayout, Layout>();
+                config.CreateMap<Layout, PageLayout>();
+            });
+           
         }
     }
 }

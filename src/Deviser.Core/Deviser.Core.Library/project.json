@@ -2,22 +2,23 @@
   "version": "1.0.0-*",
   "description": "Deviser.Core.Library Class Library",
   "authors": [ "karthick" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
 
-  "frameworks": {
-    "dnx451": { },
-    "dnxcore50": { }
+  "frameworks": {    
+    "netcoreapp1.0": {
+      "imports": [
+        "dotnet5.6",
+        "dnxcore50",
+        "portable-net45+win8"
+      ]
+    }
   },
 
   "dependencies": {
-    "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
-    "Autofac": "4.0.0-rc1-*",
-    "Autofac.Extensions.DependencyInjection": "4.0.0-rc1-*",
-    "Microsoft.Extensions.Logging": "1.0.0-rc1-final",
+    "Autofac": "4.0.0-rc2-240",
+    "Autofac.Extensions.DependencyInjection": "4.0.0-rc2-240",
+    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc2-final",
     "Deviser.Core.Data": "1.0.0-*",
-    
-    "AutoMapper": "4.1.1"
+    "AutoMapper": "5.0.0-beta-1"
   }
 }

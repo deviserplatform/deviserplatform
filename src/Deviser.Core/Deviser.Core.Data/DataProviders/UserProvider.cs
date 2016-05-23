@@ -4,7 +4,7 @@ using System.Linq;
 using Deviser.Core.Data.Entities;
 using Microsoft.Extensions.Logging;
 using Autofac;
-using Microsoft.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.DataProviders
 {

@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Library.DomainTypes;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using System;
@@ -13,11 +14,11 @@ namespace Deviser.Core.Library.FileManagement
     public class FileManagement : IFileManagement
     {
         private readonly ILogger<FileManagement> logger;
-        private IApplicationEnvironment applicationEnvironment;
+        private IHostingEnvironment hostingEnvironment;
         public FileManagement(ILifetimeScope container)
         {
             logger = container.Resolve<ILogger<FileManagement>>();
-            applicationEnvironment = container.Resolve<IApplicationEnvironment>();
+            hostingEnvironment = container.Resolve<IHostingEnvironment>();
         }
 
         public List<FileItem> GetFilesAndFolders()
@@ -25,7 +26,7 @@ namespace Deviser.Core.Library.FileManagement
             //Linq (Language Integrated Query) to Objects
             try
             {
-                string assetsPath = Path.Combine(applicationEnvironment.ApplicationBasePath + "\\wwwroot\\assets");
+                string assetsPath = Path.Combine(hostingEnvironment.ContentRootPath + "\\wwwroot\\assets");
                 List<FileItem> folders = Directory.GetDirectories(assetsPath).Select(folderPath => new FileItem
                 {
                     Name = folderPath.Replace(assetsPath, ""),

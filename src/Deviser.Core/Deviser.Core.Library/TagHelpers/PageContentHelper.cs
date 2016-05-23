@@ -1,15 +1,16 @@
 ﻿using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.DomainTypes;
-using Microsoft.AspNet.Html.Abstractions;
-using Microsoft.AspNet.Mvc.Rendering;
-using Microsoft.AspNet.Mvc.ViewFeatures;
-using Microsoft.AspNet.Razor.TagHelpers;
+using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.WebEncoders;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.TagHelpers
@@ -153,10 +154,10 @@ namespace Deviser.Core.Library.TagHelpers
             return sb.ToString();
         }
 
-        public static string GetString(IHtmlContent content)
+        private static string GetString(IHtmlContent content)
         {
             var writer = new System.IO.StringWriter();
-            content.WriteTo(writer, new HtmlEncoder());
+            content.WriteTo(writer, HtmlEncoder.Default);
             return writer.ToString();
         }
     }

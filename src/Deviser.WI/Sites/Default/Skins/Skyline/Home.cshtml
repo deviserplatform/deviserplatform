@@ -3,10 +3,10 @@
 @using Deviser.Core.Library;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    string loggedInClass = User.IsSignedIn() ? "logged-in" : "";
+    string loggedInClass = User.Identity.IsAuthenticated ? "logged-in" : "";
 }
 
-@Component.Invoke("ControlBar")
+@await Component.InvokeAsync("ControlBar")
 
 <nav class="navbar navbar-default navbar-fixed-top @loggedInClass">
     <div class="container">
@@ -30,13 +30,13 @@
 
                 </ul>
                 <ul class="language-switcher pull-right">
-                    @Component.Invoke("LanguageSwitcher")
+                    @*@Component.InvokeAsync("LanguageSwitcher")*@
                 </ul>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul sd-nav="Site" sd-nav-page="SystemPageFilter.PublicOnly" class="nav navbar-nav navbar-right"></ul>
+                <ul sd-nav="Site" sd-nav-page="PublicOnly" class="nav navbar-nav navbar-right"></ul>
             </div>
             <!-- /.navbar-collapse -->
         </div>
@@ -45,12 +45,7 @@
     <!-- /.container-fluid -->
 </nav>
 
-
-
-
 @RenderBody()
-
-
 
 @section Scripts{
     @RenderSection("scripts", required: false)

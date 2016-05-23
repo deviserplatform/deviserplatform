@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Deviser.Core.Library.FileManagement;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using System;
@@ -32,12 +32,12 @@ namespace Deviser.WI.Controllers.Api
                 var result = fileManagement.GetFilesAndFolders();
                 if (result != null)
                     return Ok(result);
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting all files and folders"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
     }

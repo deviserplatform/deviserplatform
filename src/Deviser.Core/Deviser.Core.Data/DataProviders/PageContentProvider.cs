@@ -4,7 +4,7 @@ using System.Linq;
 using Deviser.Core.Data.Entities;
 using Microsoft.Extensions.Logging;
 using Autofac;
-using Microsoft.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.DataProviders
 {
@@ -149,7 +149,7 @@ namespace Deviser.Core.Data.DataProviders
                     PageContent resultPageContent;
                     //content.Id = Guid.NewGuid();
                     content.CreatedDate = DateTime.Now;
-                    resultPageContent = context.PageContent.Add(content, GraphBehavior.SingleObject).Entity;
+                    resultPageContent = context.PageContent.Add(content).Entity;
                     context.SaveChanges();
                     return resultPageContent; 
                 }
@@ -168,7 +168,7 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     PageContentTranslation result;
                     contentTranslation.CreatedDate = contentTranslation.LastModifiedDate = DateTime.Now;
-                    result = context.PageContentTranslation.Add(contentTranslation, GraphBehavior.SingleObject).Entity;
+                    result = context.PageContentTranslation.Add(contentTranslation).Entity;
                     context.SaveChanges();
                     return result; 
                 }
@@ -188,7 +188,7 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     PageContent resultPageContent;
                     content.LastModifiedDate = DateTime.Now;
-                    resultPageContent = context.PageContent.Update(content, GraphBehavior.SingleObject).Entity;
+                    resultPageContent = context.PageContent.Update(content).Entity;
                     context.SaveChanges();
                     return resultPageContent; 
                 }
@@ -212,11 +212,11 @@ namespace Deviser.Core.Data.DataProviders
                         if (context.PageContent.Any(pc => pc.Id == content.Id))
                         {
                             //content exist, therefore update the content 
-                            context.PageContent.Update(content, GraphBehavior.SingleObject);
+                            context.PageContent.Update(content);
                         }
                         else
                         {
-                            context.PageContent.Add(content, GraphBehavior.SingleObject);
+                            context.PageContent.Add(content);
                         }
                     }
                     context.SaveChanges(); 
@@ -237,7 +237,7 @@ namespace Deviser.Core.Data.DataProviders
                     if (context.PageContentTranslation.Any(t => t.Id == contentTranslation.Id))
                     {
                         contentTranslation.LastModifiedDate = DateTime.Now;
-                        result = context.PageContentTranslation.Update(contentTranslation, GraphBehavior.SingleObject).Entity;
+                        result = context.PageContentTranslation.Update(contentTranslation).Entity;
                         context.SaveChanges();
                         return result;
                     } 

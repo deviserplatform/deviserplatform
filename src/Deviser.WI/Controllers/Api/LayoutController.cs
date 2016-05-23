@@ -3,8 +3,8 @@ using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.DomainTypes;
 using Deviser.Core.Library.Layouts;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -38,12 +38,12 @@ namespace DeviserWI.Controllers.API
                 var result = layoutManager.GetPageLayouts();
                 if (result!= null)
                     return Ok(result);
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting all page layouts"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -55,12 +55,12 @@ namespace DeviserWI.Controllers.API
                 var result = layoutManager.GetPageLayout(id);
                 if (result != null)
                     return Ok(result);
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting page layout: {0}", id), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -72,12 +72,12 @@ namespace DeviserWI.Controllers.API
                 var result = layoutManager.CreatePageLayout(layout);
                 if (result != null)
                     return Ok(result);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while creating a page layout, LayoutName: "), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -89,12 +89,12 @@ namespace DeviserWI.Controllers.API
                 var result = layoutManager.UpdatePageLayout(layout);
                 if (result != null)
                     return Ok(result);
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while updating page layout, LayoutName: ", layout.Name), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -113,12 +113,12 @@ namespace DeviserWI.Controllers.API
                         return Ok(result);
                     }
                 }   
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while deleting page layout"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
     }

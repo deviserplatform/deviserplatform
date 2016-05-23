@@ -1,25 +1,23 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Autofac.Features.ResolveAnything;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.Modules;
 using Deviser.WI.Infrastructure;
 using Deviser.WI.Services;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Formatters;
-using Microsoft.AspNet.Mvc.ModelBinding;
-using Microsoft.AspNet.Routing;
-using Microsoft.Data.Entity;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json.Serialization;
 using Serilog;
+using Serilog.Sinks.RollingFile;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,27 +25,40 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+
 namespace Deviser.WI
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
+        public Startup(IHostingEnvironment env)
         {
             // Set up configuration sources.
             var builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+             .SetBasePath(env.ContentRootPath)
+             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+             .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
-            Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .WriteTo.RollingFile(Path.Combine(
-                appEnv.ApplicationBasePath, "log-{Date}.txt"))
-            .CreateLogger();
+            // Log.Logger = new LoggerConfiguration()
+            //.MinimumLevel.Debug()
+            //.WriteTo.File
+            //.WriteTo.RollingFile(Path.Combine(
+            //    appEnv.ApplicationBasePath, "log-{Date}.txt"))
+            //.CreateLogger();
+
+            var log = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                //.WriteTo.ColoredConsole()                
+                .WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "log-{Date}.txt"))
+                .CreateLogger();
+
 
             if (env.IsDevelopment())
             {
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
                 builder.AddUserSecrets();
+
+                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
+                builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
             builder.AddEnvironmentVariables();
@@ -62,11 +73,8 @@ namespace Deviser.WI
             IContainer container = null;
 
             // Add framework services.
-            services.AddEntityFramework()
-                .AddSqlServer()
-                .AddDbContext<DeviserDBContext>(options =>
-                    options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"])
-                    .MigrationsAssembly("Deviser.WI"));
+            services.AddDbContext<DeviserDBContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<DeviserDBContext>()
@@ -110,11 +118,11 @@ namespace Deviser.WI
                 options.OutputFormatters.Insert(0, jsonOutputFormatter);
             });
 
-            services.AddCaching(); // Adds a default in-memory implementation of IDistributedCache
+
 
             services.AddSession();
 
-            MapperConfig.CreateMaps();
+            //MapperConfig.CreateMaps();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -137,7 +145,7 @@ namespace Deviser.WI
             ILifetimeScope container)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            loggerFactory.AddDebug();            
             loggerFactory.AddSerilog();
 
 
@@ -164,7 +172,7 @@ namespace Deviser.WI
                 catch { }
             }
 
-            var defaultRequestCulture = new RequestCulture(new CultureInfo("en-US"));
+            //var defaultRequestCulture = new RequestCulture(new CultureInfo("en-US"));
             var requestLocalizationOptions = new RequestLocalizationOptions
             {
                 SupportedCultures = new List<CultureInfo>
@@ -183,9 +191,7 @@ namespace Deviser.WI
                 }
             };
 
-            app.UseRequestLocalization(requestLocalizationOptions, defaultRequestCulture);
-
-            app.UseIISPlatformHandler(options => options.AuthenticationDescriptions.Clear());
+            app.UseRequestLocalization(requestLocalizationOptions);
 
             app.UseStaticFiles();
 
@@ -212,10 +218,7 @@ namespace Deviser.WI
                 constraints: new { permalink = container.Resolve<IRouteConstraint>() });
             });
 
-            
-        }
 
-        // Entry point for the application.
-        public static void Main(string[] args) => WebApplication.Run<Startup>(args);
+        }
     }
 }

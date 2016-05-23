@@ -3,7 +3,7 @@ using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library;
 using Deviser.WI.ViewModels.Components;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -21,7 +21,7 @@ namespace Deviser.WI.ViewComponents
             languageProvider = container.Resolve<ILanguageProvider>();
         }
 
-        public IViewComponentResult Invoke()
+        public override async Task<IViewComponentResult> InvokeAsync()
         {
             var languages = languageProvider.GetLanguages();
             languages = languages.Where(l => l.IsActive).ToList();

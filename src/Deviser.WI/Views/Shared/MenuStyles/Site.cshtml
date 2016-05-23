@@ -1,7 +1,7 @@
 ﻿@model Deviser.Core.Data.Entities.Page
-
 @using System.Security.Claims
 @using Deviser.Core.Library
+@using AppContext = Deviser.Core.Library.AppContext;
 @{
     Layout = null;
     AppContext deviserContext = (AppContext)ViewBag.AppContext;  //HttpContext.Current.Session["AppContext"];
@@ -10,25 +10,28 @@
 
 
 
-@foreach (var page in Model.ChildPage.OrderBy(p => p.PageOrder))
+@if (Model.ChildPage != null)
 {
-    var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == currentCulture);
-    string activeClass = page.IsActive || page.IsBreadCrumb ? "active" : "";
-    //if(translation==null && currentCulture != Globals.FallbackLanguage)
-    //{
-    //    translation = page.PageTranslation.FirstOrDefault(t => t.Locale == Globals.FallbackLanguage);
-    //}
-    if (translation != null)
+    foreach (var page in Model.ChildPage.OrderBy(p => p.PageOrder))
     {
-        translation.URL = Globals.SiteRoot + translation.URL;
-        <li class="dropdown @activeClass">
-            <a href="@translation.URL">@translation.Name</a>
-            @if (page.ChildPage != null && page.ChildPage.Count > 0)
-            {
-                <ul class="dropdown-menu">
-                    @Html.Partial(string.Format(Globals.MenuStylePath, "Site"), page)
-                </ul>
-            }
-        </li>
+        var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == currentCulture);
+        string activeClass = page.IsActive || page.IsBreadCrumb ? "active" : "";
+        //if(translation==null && currentCulture != Globals.FallbackLanguage)
+        //{
+        //    translation = page.PageTranslation.FirstOrDefault(t => t.Locale == Globals.FallbackLanguage);
+        //}
+        if (translation != null)
+        {
+            translation.URL = Globals.SiteRoot + translation.URL;
+            <li class="dropdown @activeClass">
+                <a href="@translation.URL">@translation.Name</a>
+                @if (page.ChildPage != null && page.ChildPage.Count > 0)
+                {
+                    <ul class="dropdown-menu">
+                        @Html.Partial(string.Format(Globals.MenuStylePath, "Site"), page)
+                    </ul>
+                }
+            </li>
+        }
     }
 }

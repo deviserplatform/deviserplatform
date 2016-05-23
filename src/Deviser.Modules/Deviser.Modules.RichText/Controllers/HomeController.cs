@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.Modules;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;

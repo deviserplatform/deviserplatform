@@ -1,9 +1,9 @@
 ﻿@using System.Security.Claims
 
-@if (User.IsSignedIn())
+@if (User.Identity.IsAuthenticated)
 {
     <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm">
-        <li><a asp-controller="Manage" asp-action="Index" title="Manage">Hello @User.GetUserName()!</a></li>        
+        <li><a asp-controller="Manage" asp-action="Index" title="Manage">Hello @User.Identity.Name!</a></li>        
         <li><button type="submit" class="btn-link navbar-link">Log off</button></li>
     </form>
 }

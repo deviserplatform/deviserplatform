@@ -5,8 +5,8 @@ using Deviser.Core.Library;
 using Deviser.Core.Library.DomainTypes;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Modules;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -38,12 +38,12 @@ namespace DeviserWI.Controllers.API
                 var page = skinManager.GetHostSkins();
                 if (page != null)
                     return Ok(page);
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting skins"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
             
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using Deviser.Core.Data.Entities;
 using Microsoft.Extensions.Logging;
 using Autofac;
-using Microsoft.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.DataProviders
 {
@@ -79,7 +79,7 @@ namespace Deviser.Core.Data.DataProviders
                     language.CreatedDate = language.LastModifiedDate = DateTime.Now;
                     language.IsActive = true;
 
-                    resultLayout = context.Language.Add(language, GraphBehavior.SingleObject).Entity;
+                    resultLayout = context.Language.Add(language).Entity;
                     context.SaveChanges();
                     return resultLayout; 
                 }
@@ -97,7 +97,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     Language resultLayout;
-                    resultLayout = context.Language.Attach(language, GraphBehavior.SingleObject).Entity;
+                    resultLayout = context.Language.Attach(language).Entity;
                     context.Entry(language).State = EntityState.Modified;
                     context.SaveChanges();
                     return resultLayout; 

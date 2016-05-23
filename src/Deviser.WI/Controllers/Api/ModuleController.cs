@@ -3,8 +3,8 @@ using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.DomainTypes;
 using Deviser.Core.Library.Layouts;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -36,12 +36,12 @@ namespace DeviserWI.Controllers.API
                 var result = moduleProvider.Get();
                 if (result != null)
                     return Ok(result);
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting all modules"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
     }

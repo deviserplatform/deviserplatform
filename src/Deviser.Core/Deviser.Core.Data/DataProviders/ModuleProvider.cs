@@ -4,8 +4,8 @@ using System.Linq;
 using Deviser.Core.Data.Entities;
 using Microsoft.Extensions.Logging;
 using Autofac;
-using Microsoft.Data.Entity;
 using Module = Deviser.Core.Data.Entities.Module;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.DataProviders
 {
@@ -78,7 +78,6 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     Module returnData = context.Module
-
                               .Where(e => e.Name == moduleName)
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
                               .FirstOrDefault();
@@ -99,7 +98,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     Module resultModule;
-                    resultModule = context.Module.Add(module, GraphBehavior.SingleObject).Entity;
+                    resultModule = context.Module.Add(module).Entity;
                     context.SaveChanges();
                     return resultModule; 
                 }
@@ -117,7 +116,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     Module resultModule;
-                    resultModule = context.Module.Attach(module, GraphBehavior.SingleObject).Entity;
+                    resultModule = context.Module.Attach(module).Entity;
                     context.Entry(module).State = EntityState.Modified;
                     context.SaveChanges();
                     return resultModule; 

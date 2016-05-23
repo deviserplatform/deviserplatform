@@ -1,8 +1,8 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -30,12 +30,12 @@ namespace Deviser.WI.Controllers.Api
                 var result = pageContentProvider.GetTranslations(contentId, cultureCode);
                 if (result != null)
                     return Ok(result);
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting page content translation, contentId: {0}, cultureCode: {1}", contentId, cultureCode), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -47,12 +47,12 @@ namespace Deviser.WI.Controllers.Api
                 var result = pageContentProvider.CreateTranslation(contentTranslation);
                 if (result != null)
                     return Ok(result);
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while creating/updating a page content translation"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -64,12 +64,12 @@ namespace Deviser.WI.Controllers.Api
                 var result = pageContentProvider.UpdateTranslation(contentTranslation);
                 if (result != null)
                     return Ok(result);
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while creating/updating a page content translation"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -85,12 +85,12 @@ namespace Deviser.WI.Controllers.Api
                     pageContentProvider.UpdateTranslation(translation);
                     return Ok();
                 }
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while deleting page content translation"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
     }

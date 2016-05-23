@@ -8,15 +8,14 @@ using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Web;
 using System.IO;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Autofac;
 using Microsoft.Extensions.PlatformAbstractions;
-using Microsoft.AspNet.Http;
+using Microsoft.AspNetCore.Http;
 using Deviser.Core.Library;
-using Microsoft.AspNet.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Net.Http.Headers;
 using System.Threading.Tasks;
 
@@ -71,12 +70,12 @@ namespace DeviserWI.Controllers.API
 
                 if (fileList.Count > 0)
                     return Ok(fileList);
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting images"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -89,23 +88,29 @@ namespace DeviserWI.Controllers.API
             {
                 if (HttpContext.Request.Form.Files != null && HttpContext.Request.Form.Files.Count > 0)
                 {
-                    foreach (var file in HttpContext.Request.Form.Files)
+                    foreach (IFormFile file in HttpContext.Request.Form.Files)
                     {
                         if (file.Length > 0)
                         {
                             var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                            await file.SaveAsAsync(Path.Combine(localImageUploadPath, fileName));
+                            var path = Path.Combine(localImageUploadPath, fileName);
+                            
+                            using (var fileStream = System.IO.File.Create(path))
+                            {
+                                await file.CopyToAsync(fileStream);
+                            }
+                                                            
                             fileList.Add(Globals.SiteAssetsPath.Replace("~", "") + "/" + Globals.ImagesFolder + "/" + fileName);
                         }
                     }
                     return Ok(fileList);
                 }
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while uploading images"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
     }

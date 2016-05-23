@@ -4,7 +4,7 @@ using System.Linq;
 using Deviser.Core.Data.Entities;
 using Microsoft.Extensions.Logging;
 using Autofac;
-using Microsoft.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.DataProviders
 {
@@ -78,7 +78,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     Layout resultLayout;
-                    resultLayout = context.Layout.Add(layout, GraphBehavior.SingleObject).Entity;
+                    resultLayout = context.Layout.Add(layout).Entity;
                     context.SaveChanges();
                     return resultLayout; 
                 }
@@ -96,7 +96,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     Layout resultLayout;
-                    resultLayout = context.Layout.Attach(layout, GraphBehavior.SingleObject).Entity;
+                    resultLayout = context.Layout.Attach(layout).Entity;
                     context.Entry(layout).State = EntityState.Modified;
 
                     context.SaveChanges();

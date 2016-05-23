@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.PlatformAbstractions;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,11 +10,11 @@ namespace Deviser.Core.Library.Layouts
 {
     public class SkinManager : ISkinManager
     {
-        private readonly IApplicationEnvironment appEnvironment;
+        private readonly IHostingEnvironment hostingEnvironment;
 
-        public SkinManager(IApplicationEnvironment appEnvironment)
+        public SkinManager(IHostingEnvironment appEnvironment)
         {
-            this.appEnvironment = appEnvironment;
+            this.hostingEnvironment = appEnvironment;
         }
 
         public List<KeyValuePair<string, string>> GetHostSkins()
@@ -21,7 +22,7 @@ namespace Deviser.Core.Library.Layouts
             string skinRoot = "Skins";
             var skins = new List<KeyValuePair<string, string>>();
 
-            string root = appEnvironment.ApplicationBasePath + "\\" + Globals.HostMapPath + skinRoot;
+            string root = hostingEnvironment.ContentRootPath + "\\" + Globals.HostMapPath + skinRoot;
             if (Directory.Exists(root))
             {
                 foreach (string skinFolder in Directory.GetDirectories(root))

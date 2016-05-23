@@ -4,7 +4,7 @@ using System.Linq;
 using Deviser.Core.Data.Entities;
 using Microsoft.Extensions.Logging;
 using Autofac;
-using Microsoft.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.DataProviders
 {
@@ -96,7 +96,7 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     Role resultRole;
                     role.Id = Guid.NewGuid().ToString();
-                    resultRole = context.Roles.Add(role, GraphBehavior.SingleObject).Entity;
+                    resultRole = context.Roles.Add(role).Entity;
                     context.SaveChanges();
                     return resultRole; 
                 }
@@ -114,7 +114,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     Role resultRole;
-                    resultRole = context.Roles.Attach(role, GraphBehavior.SingleObject).Entity;
+                    resultRole = context.Roles.Attach(role).Entity;
                     context.Entry(role).State = EntityState.Modified;
 
                     context.SaveChanges();

@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.Modules;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace Deviser.Modules.Language.Controllers

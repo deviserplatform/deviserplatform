@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using System;
@@ -16,20 +17,20 @@ namespace Deviser.Core.Library.Multilingual
         //Logger
         private readonly ILogger<LanguageManager> logger;
         private ILanguageProvider languageProvider;
-        private IApplicationEnvironment applicationEnvironment;
+        private IHostingEnvironment hostingEnvironment;
 
         public LanguageManager(ILifetimeScope container)
         {
             logger = container.Resolve<ILogger<LanguageManager>>();
             languageProvider = container.Resolve<ILanguageProvider>();
-            applicationEnvironment = container.Resolve<IApplicationEnvironment>();
+            hostingEnvironment = container.Resolve<IHostingEnvironment>();
         }
 
         public List<Language> GetAllLanguages(bool exceptEnabled = false)
         {
             try
             {
-                string culuresJsonPath = applicationEnvironment.ApplicationBasePath + "\\cultures.json";
+                string culuresJsonPath = hostingEnvironment.ContentRootPath + "\\cultures.json";
                 List<Language> cultures = SDJsonConvert.DeserializeObject<List<Language>>(File.ReadAllText(culuresJsonPath));
 
                 cultures.ForEach(c => c.FallbackCulture = Globals.FallbackLanguage);

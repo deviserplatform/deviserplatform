@@ -1,7 +1,6 @@
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Infrastructure;
-using Microsoft.Data.Entity.Metadata;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Deviser.Core.Data.Entities
 {
@@ -112,7 +111,7 @@ namespace Deviser.Core.Data.Entities
                 entity.Property(e => e.ControlType).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<Page>((System.Action<Microsoft.Data.Entity.Metadata.Builders.EntityTypeBuilder<Page>>)((Microsoft.Data.Entity.Metadata.Builders.EntityTypeBuilder<Page> entity) =>
+            modelBuilder.Entity<Page>((System.Action<Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Page>>)((Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Page> entity) =>
             {
                 entity.HasIndex(e => e.ParentId).HasName("IX_FK_Pages_Pages");
 
@@ -137,6 +136,7 @@ namespace Deviser.Core.Data.Entities
                 entity.Ignore(e => e.IsActive);
                 entity.Ignore(e => e.IsBreadCrumb);
             }));
+
 
             modelBuilder.Entity<PageContent>(entity =>
             {
@@ -219,9 +219,16 @@ namespace Deviser.Core.Data.Entities
 
             modelBuilder.Entity<sysdiagrams>(entity =>
             {
-                entity.HasKey(e => e.diagram_id);
+                entity.HasKey(e => e.diagram_id)
+                    .HasName("PK__sysdiagr__C2B05B617A77B34C");
 
-                entity.Property(e => e.definition).HasColumnType("varbinary");
+                entity.HasIndex(e => new { e.principal_id, e.name })
+                    .HasName("UK_principal_name")
+                    .IsUnique();
+
+                entity.Property(e => e.name)
+                    .IsRequired()
+                    .HasColumnType("sysname");
             });
         }
 

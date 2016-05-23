@@ -5,18 +5,23 @@ using Deviser.Core.Library;
 using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.DomainTypes;
 using Deviser.Core.Library.Sites;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AppContext = Deviser.Core.Library.AppContext;
 
 namespace Deviser.WI.Controllers
 {
     public class PageController : DeviserController
     {
         private readonly ILogger<PageController> logger;
+
+        [ActionContext]
+        public ActionContext Context { get; set; }
+
 
         ILifetimeScope container;
         IPageProvider pageProvider;
@@ -99,7 +104,7 @@ namespace Deviser.WI.Controllers
                 appContext.CurrentLink = permalink;
                 currentPage.PageModule = null;
                 appContext.CurrentPage = currentPage;
-                Dictionary<string, List<Core.Library.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(ActionContext, currentPage.Id);
+                Dictionary<string, List<Core.Library.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(Context, currentPage.Id);
                 //Skins are not used for sometime period
                 string skin = "";
                 if (!string.IsNullOrEmpty(currentPage.SkinSrc))

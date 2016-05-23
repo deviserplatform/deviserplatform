@@ -1,5 +1,5 @@
 ﻿using Deviser.Core.Library;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace Deviser.WI.ViewComponents
     [ViewComponent(Name = "ControlBar")]
     public class ControlBar : DeviserViewComponent
     {
-        public IViewComponentResult Invoke()
+        public override async Task<IViewComponentResult> InvokeAsync()
         {            
             return View();
         }

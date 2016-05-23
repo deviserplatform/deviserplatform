@@ -4,8 +4,7 @@ using System.Linq;
 using Deviser.Core.Data.Entities;
 using Microsoft.Extensions.Logging;
 using Autofac;
-using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.DataProviders
 {
@@ -53,9 +52,29 @@ namespace Deviser.Core.Data.DataProviders
                 returnData.Add(context.Pages.ToList().First());*/
                 using (var context = new DeviserDBContext(dbOptions))
                 {
-                    return context.Page
-                    .Include(p => p.PageTranslation) //("PageTranslations")  
-                    .ToList().First();
+                    //return context.Page
+                    //.Include(p => p.PageTranslation) //("PageTranslations")  
+                    //.ToList().First();
+
+                    //return context.Page                        
+                    //    .Include(p=>p.ChildPage)
+                    //    .ThenInclude(p=>p.ChildPage)
+                    //    .ThenInclude(p => p.ChildPage)
+                    //    .ThenInclude(p => p.ChildPage)
+                    //    .ThenInclude(p => p.ChildPage)
+                    //    .ThenInclude(p => p.ChildPage)
+                    //    .ThenInclude(p => p.ChildPage)
+                    //    .ThenInclude(p => p.ChildPage)
+                    //    .ThenInclude(p => p.ChildPage)
+                    //    .ThenInclude(p => p.ChildPage)
+                    //    .Include(p => p.PageTranslation)
+                    //    .Where(p => p.ParentId == null).First();
+
+                    var rootOnly =  context.Page
+                            .Where(p => p.ParentId == null)
+                            .First();
+                    GetPageTree(context, rootOnly);
+                    return rootOnly;
                 }
                     
             }
@@ -65,6 +84,26 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
+
+        private void GetPageTree(DeviserDBContext context, Page page)
+        {
+            //Page resultPage = null;
+
+            page.ChildPage = context.Page
+                .Include(p=>p.PageTranslation)
+                .Where(p => p.ParentId == page.Id).ToList();
+
+            if (page.ChildPage != null)
+            {
+                foreach (var child in page.ChildPage)
+                {
+                    GetPageTree(context, child);
+                }
+            }
+            //return resultPage;
+        }
+
+
         public List<Page> GetPages()
         {
             try
@@ -131,7 +170,7 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     Page resultPage;
                     page.CreatedDate = DateTime.Now; page.LastModifiedDate = DateTime.Now;
-                    resultPage = context.Page.Add(page, GraphBehavior.IncludeDependents).Entity;
+                    resultPage = context.Page.Add(page).Entity;
                     context.SaveChanges();
                     return resultPage; 
                 }
@@ -151,7 +190,7 @@ namespace Deviser.Core.Data.DataProviders
                     Page resultPage;
                     page.LastModifiedDate = DateTime.Now;
                     //resultPage = context.UpdateGraph<Page>(page, map => map.OwnedCollection(p => p.PageTranslations));
-                    resultPage = context.Page.Update(page, GraphBehavior.SingleObject).Entity;
+                    resultPage = context.Page.Update(page).Entity;
                     foreach (var translation in page.PageTranslation)
                     {
                         if (context.PageTranslation.Any(pt => pt.Locale == translation.Locale && pt.PageId == translation.PageId))
@@ -203,7 +242,7 @@ namespace Deviser.Core.Data.DataProviders
                 //context.UpdateGraph(page, map => map.AssociatedCollection(p => p.ChildPages)
                 //                                  .OwnedCollection(p => p.PageTranslations));
 
-                context.Page.Update(page, GraphBehavior.IncludeDependents);
+                context.Page.Update(page);
                 context.SaveChanges();
 
                 if (page.ChildPage.Count > 0)
@@ -220,7 +259,7 @@ namespace Deviser.Core.Data.DataProviders
                             {
                                 //context.UpdateGraph(child, map => map.AssociatedCollection(p => p.ChildPages)
                                 //                  .OwnedCollection(p => p.PageTranslations));
-                                context.Page.Update(page, GraphBehavior.IncludeDependents);
+                                context.Page.Update(page);
                                 context.SaveChanges();
                             }
                         }
@@ -317,7 +356,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     PageModule resultPageModule;
-                    resultPageModule = context.PageModule.Add(pageModule, GraphBehavior.SingleObject).Entity;
+                    resultPageModule = context.PageModule.Add(pageModule).Entity;
                     context.SaveChanges();
                     return resultPageModule; 
                 }
@@ -335,7 +374,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     PageModule resultPageModule;
-                    resultPageModule = context.PageModule.Attach(pageModule, GraphBehavior.SingleObject).Entity;
+                    resultPageModule = context.PageModule.Attach(pageModule).Entity;
                     context.Entry(pageModule).State = EntityState.Modified;
                     context.SaveChanges();
                     return resultPageModule; 
@@ -359,7 +398,7 @@ namespace Deviser.Core.Data.DataProviders
                         if (context.PageModule.Any(pm => pm.Id == module.Id))
                         {
                             //page module exist, therefore update it
-                            context.PageModule.Update(module, GraphBehavior.SingleObject);
+                            context.PageModule.Update(module);
                         }
                         else
                         {

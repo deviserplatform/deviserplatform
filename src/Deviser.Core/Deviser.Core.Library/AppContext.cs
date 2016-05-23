@@ -1,6 +1,4 @@
 ﻿using Deviser.Core.Data.Entities;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Localization;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

@@ -5,8 +5,8 @@ using Deviser.Core.Library;
 using Deviser.Core.Library.DomainTypes;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Modules;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -41,12 +41,12 @@ namespace DeviserWI.Controllers.API
                 var result = moduleManager.CreatePageModule(pageModule);
                 if (result != null)
                     return Ok(result);
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while creating a pageModule, moduleId: ", pageModule.ModuleId), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -57,7 +57,7 @@ namespace DeviserWI.Controllers.API
             try
             {                
                 if (pageModules== null || pageModules.Count==0)
-                    return HttpBadRequest();
+                    return BadRequest();
                 moduleManager.UpdatePageModules(pageModules);
                 return Ok();
                 
@@ -65,7 +65,7 @@ namespace DeviserWI.Controllers.API
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while updating pageModules"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -81,12 +81,12 @@ namespace DeviserWI.Controllers.API
                     pageProvider.UpdatePageModule(pageModule);
                     return Ok();
                 }
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while deleting page module"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 

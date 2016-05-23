@@ -5,8 +5,8 @@ using Deviser.Core.Library;
 using Deviser.Core.Library.DomainTypes;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Modules;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -42,12 +42,12 @@ namespace DeviserWI.Controllers.API
                 {
                     return Ok(result);
                 }
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting all roles"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -59,12 +59,12 @@ namespace DeviserWI.Controllers.API
                 var result = roleProvider.GetRole(id);
                 if (result != null)
                     return Ok(result);
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting a role, roleId: {0}", id), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -76,12 +76,12 @@ namespace DeviserWI.Controllers.API
                 var result = roleProvider.CreateRole(role);
                 if (result != null)
                     return Ok(result);
-                return HttpBadRequest("Invalid role");
+                return BadRequest("Invalid role");
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while creating a role, roleObj: ", JsonConvert.SerializeObject(role)), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -96,13 +96,13 @@ namespace DeviserWI.Controllers.API
                     if (result != null)
                         return Ok(result);
                 }
-                return HttpBadRequest("Invalid role");
+                return BadRequest("Invalid role");
             }
             catch (Exception ex)
             {
                 string errorMessage = string.Format("Error occured while updating role");
                 logger.LogError(errorMessage, ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -117,13 +117,13 @@ namespace DeviserWI.Controllers.API
                     if (result != null)
                         return Ok();
                 }
-                return HttpBadRequest("Invalid role id");
+                return BadRequest("Invalid role id");
             }
             catch (Exception ex)
             {
                 string errorMessage = string.Format("Error occured while deleting role, roleId: ", id);
                 logger.LogError(errorMessage, ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
     }

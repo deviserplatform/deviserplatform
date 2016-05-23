@@ -9,7 +9,7 @@ using Deviser.Core.Library.Modules;
 using Deviser.Core.Library.Multilingual;
 using Deviser.Core.Library.Sites;
 using Deviser.WI.Infrastructure;
-using Microsoft.AspNet.Routing;
+using Microsoft.AspNetCore.Routing;
 
 namespace Deviser.WI
 {

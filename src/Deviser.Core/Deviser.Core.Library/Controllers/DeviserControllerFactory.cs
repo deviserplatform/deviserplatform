@@ -2,9 +2,10 @@
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.DomainTypes;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Infrastructure;
-using Microsoft.AspNet.Routing;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -161,12 +162,12 @@ namespace Deviser.Core.Library.Controllers
             context.RouteData.Values.Add("action", moduleAction.ActionName);
 
 
-            var actionDescriptor = await actionSelector.SelectAsync(context);
+            var actionDescriptor = actionSelector.Select(context);
             if (actionDescriptor == null)
                 throw new NullReferenceException("Action cannot be located, please check whether module has been installed properly");
 
             var moduleActionContext = new ActionContext(actionContext.HttpContext, context.RouteData, actionDescriptor);
-            var invoker = moduleInvokerProvider.CreateInvoker(moduleActionContext);
+            var invoker = moduleInvokerProvider.CreateInvoker(moduleActionContext, actionDescriptor as ControllerActionDescriptor);
             var result = await invoker.InvokeAction() as ViewResult;
             string strResult = result.ExecuteResultToString(moduleActionContext);
             return strResult;

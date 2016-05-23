@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNet.Routing;
+﻿using Microsoft.AspNetCore.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Http;
+using Microsoft.AspNetCore.Http;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Library;
-using Microsoft.AspNet.Http.Features;
-using Microsoft.AspNet.Localization;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Localization;
 
 namespace Deviser.WI.Infrastructure
 {
@@ -19,7 +19,8 @@ namespace Deviser.WI.Infrastructure
         {
             this.pageProvider = pageProvider;
         }
-        public bool Match(HttpContext httpContext, IRouter route, string routeKey, IDictionary<string, object> values, RouteDirection routeDirection)
+
+        public bool Match(HttpContext httpContext, IRouter route, string routeKey, RouteValueDictionary values, RouteDirection routeDirection)
         {
             string requestCulture = "";
             string cultureKey = "culture";

@@ -2,16 +2,17 @@
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.DomainTypes;
-using Microsoft.AspNet.Html.Abstractions;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc.Rendering;
-using Microsoft.AspNet.Mvc.ViewFeatures;
-using Microsoft.AspNet.Razor.TagHelpers;
+using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.WebEncoders;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.TagHelpers
@@ -61,7 +62,7 @@ namespace Deviser.Core.Library.TagHelpers
         private static string GetString(IHtmlContent content)
         {
             var writer = new System.IO.StringWriter();
-            content.WriteTo(writer, new HtmlEncoder());
+            content.WriteTo(writer, HtmlEncoder.Default);
             return writer.ToString();
         }
     }

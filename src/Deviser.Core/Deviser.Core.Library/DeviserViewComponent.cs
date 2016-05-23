@@ -1,9 +1,9 @@
 ﻿using Deviser.Core.Library.Extensions;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Http.Features;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.ViewComponents;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -88,6 +88,11 @@ namespace Deviser.Core.Library
                 ViewBag.AppContet = AppContext;
             //else
                 //TODO:Redirect to home page
+        }
+
+        public virtual async Task<IViewComponentResult> InvokeAsync()
+        {           
+            return View();
         }
     }
 }

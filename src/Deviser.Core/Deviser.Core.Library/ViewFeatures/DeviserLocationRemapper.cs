@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNet.Mvc.Razor;
-using Microsoft.Extensions.OptionsModel;
+﻿using Microsoft.AspNetCore.Mvc.Razor;
 using System;
 using System.Collections.Generic;
 using System.Linq;

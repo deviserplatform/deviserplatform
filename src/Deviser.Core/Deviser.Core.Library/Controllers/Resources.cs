@@ -7,7 +7,7 @@ namespace Deviser.Core.Library.Controllers
     internal static class Resources
     {
         private static readonly ResourceManager _resourceManager
-            = new ResourceManager("Microsoft.AspNet.Mvc.Core.Resources", typeof(Resources).GetTypeInfo().Assembly);
+            = new ResourceManager("Microsoft.AspNetCore.Mvc.Core.Resources", typeof(Resources).GetTypeInfo().Assembly);
 
         /// <summary>
         /// The argument '{0}' is invalid. Media types which match all types or match all subtypes are not supported.

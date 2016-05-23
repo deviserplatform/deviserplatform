@@ -4,9 +4,9 @@ using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.WI.DTO;
 using DeviserWI.Controllers.API;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -61,12 +61,12 @@ namespace Deviser.WI.Controllers.Api
                     }
                     return Ok(result);
                 }
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting skins"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -88,12 +88,12 @@ namespace Deviser.WI.Controllers.Api
                     }
                     else
                     {
-                        return HttpBadRequest(result);
+                        return BadRequest(result);
                     }
                 }
                 else
                 {
-                    return HttpBadRequest();
+                    return BadRequest();
                 }
 
                 
@@ -101,7 +101,7 @@ namespace Deviser.WI.Controllers.Api
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured  while creating new user"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -115,12 +115,12 @@ namespace Deviser.WI.Controllers.Api
                 var result = userManager.UpdateAsync(user).Result;
                 if (result != null)
                     return Ok(result);
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {                
                 logger.LogError(string.Format("Error occured while updating user Id: {0}, {1}", userDTO.Id, ex));
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -138,12 +138,12 @@ namespace Deviser.WI.Controllers.Api
                         return Ok(result);
                     }
                 }
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while deleting user"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -158,12 +158,12 @@ namespace Deviser.WI.Controllers.Api
                     var result = userManager.Users.Any(u => u.UserName == userName);
                     return Ok(result);
                 }
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured  while checking user exist"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -186,12 +186,12 @@ namespace Deviser.WI.Controllers.Api
                         return Ok(result);
                     }
                 }
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured  while resetting password"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -214,12 +214,12 @@ namespace Deviser.WI.Controllers.Api
                         return Ok(userDTO);
                     }
                 }
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while creating a new user"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
                 
@@ -240,12 +240,12 @@ namespace Deviser.WI.Controllers.Api
                     }
                 }
 
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while creating a new user"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 

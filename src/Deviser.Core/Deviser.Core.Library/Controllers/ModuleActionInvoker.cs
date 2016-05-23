@@ -1,33 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
+
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Filters;
-using Microsoft.AspNet.Mvc.Formatters;
-using Microsoft.AspNet.Mvc.Infrastructure;
-using Microsoft.AspNet.Mvc.Logging;
-using Microsoft.AspNet.Mvc.ModelBinding;
-using Microsoft.AspNet.Mvc.ModelBinding.Validation;
-using Microsoft.Extensions.Internal;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Formatters;
+
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNet.Mvc.Controllers;
-using Microsoft.AspNet.Mvc.Abstractions;
-using Microsoft.AspNet.Mvc.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Controllers;
+
 using System.Runtime.ExceptionServices;
+using Microsoft.AspNetCore.Mvc.Internal;
 
 namespace Deviser.Core.Library.Controllers
 {
     public class ModuleActionInvoker : ControllerActionInvoker, IModuleActionInvoker
     {
-        private static readonly IFilterMetadata[] EmptyFilterArray = new IFilterMetadata[0];
-        private readonly IReadOnlyList<IFilterProvider> _filterProviders;
+        private static readonly IFilterMetadata[] EmptyFilterArray = new IFilterMetadata[0];        
+        //private readonly IReadOnlyList<IFilterProvider> _filterProviders;
+        ControllerActionInvokerCache _controllerActionInvokerCache;
         private ActionExecutingContext _actionExecutingContext;
         private ActionExecutedContext _actionExecutedContext;
-        private readonly IControllerActionArgumentBinder _argumentBinder;
+        //private readonly IControllerActionArgumentBinder _argumentBinder;
 
         private IFilterMetadata[] _filters;
+        private ObjectMethodExecutor _controllerActionMethodExecutor;
         private FilterCursor _cursor;
 
         DiagnosticSource _diagnosticSource;
@@ -39,52 +40,48 @@ namespace Deviser.Core.Library.Controllers
 
         public ModuleActionInvoker(
             ActionContext actionContext,
-            IReadOnlyList<IFilterProvider> filterProviders,
+            ControllerActionInvokerCache controllerActionInvokerCache,
             IControllerFactory controllerFactory,
             ControllerActionDescriptor descriptor,
             IReadOnlyList<IInputFormatter> inputFormatters,
-            IReadOnlyList<IOutputFormatter> outputFormatters,
-            IControllerActionArgumentBinder controllerActionArgumentBinder,
-            IReadOnlyList<IModelBinder> modelBinders,
+            IControllerActionArgumentBinder argumentBinder,
             IReadOnlyList<IModelValidatorProvider> modelValidatorProviders,
             IReadOnlyList<IValueProviderFactory> valueProviderFactories,
-            IActionBindingContextAccessor actionBindingContextAccessor,
             ILogger logger,
             DiagnosticSource diagnosticSource,
             int maxModelValidationErrors)
             : base(
                   actionContext,
-                  filterProviders,
-                  controllerFactory,
+                  controllerActionInvokerCache,
+                  controllerFactory,                  
                   descriptor,
                   inputFormatters,
-                  outputFormatters,
-                  controllerActionArgumentBinder,
-                  modelBinders,
+                  argumentBinder,
                   modelValidatorProviders,
                   valueProviderFactories,
-                  actionBindingContextAccessor,
                   logger,
                   diagnosticSource,
                   maxModelValidationErrors)
         {
-            _filterProviders = filterProviders;
-            _argumentBinder = controllerActionArgumentBinder;
+            //_filterProviders = filterProviders;
+            //_argumentBinder = controllerActionArgumentBinder;
+            _controllerActionInvokerCache = controllerActionInvokerCache;
             _diagnosticSource = diagnosticSource;
         }
 
         public async Task<IActionResult> InvokeAction()
         {
-            //_cursor.Reset();
-            _filters = GetFilters();
+            var controllerActionInvokerState = _controllerActionInvokerCache.GetState(Context);
+            _filters = controllerActionInvokerState.Filters;
+            _controllerActionMethodExecutor = controllerActionInvokerState.ActionMethodExecutor;
             _cursor = new FilterCursor(_filters);
 
             Instance = CreateInstance();
 
-            var arguments = await BindActionArgumentsAsync(ActionContext, ActionBindingContext);
+            var arguments = await BindActionArgumentsAsync();
 
             _actionExecutingContext = new ActionExecutingContext(
-                ActionContext,
+                Context,
                 _filters,
                 arguments,
                 Instance);
@@ -95,73 +92,9 @@ namespace Deviser.Core.Library.Controllers
             return _actionExecutedContext.Result;
         }
 
-        protected override Task<IDictionary<string, object>> BindActionArgumentsAsync(
-           ActionContext context,
-           ActionBindingContext bindingContext)
-        {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            if (bindingContext == null)
-            {
-                throw new ArgumentNullException(nameof(bindingContext));
-            }
-
-            return _argumentBinder.BindActionArgumentsAsync(context, bindingContext, Instance);
-        }
 
 
-        private IFilterMetadata[] GetFilters()
-        {
-            var filterDescriptors = ActionContext.ActionDescriptor.FilterDescriptors;
-            var items = new List<FilterItem>(filterDescriptors.Count);
-            for (var i = 0; i < filterDescriptors.Count; i++)
-            {
-                items.Add(new FilterItem(filterDescriptors[i]));
-            }
-
-            var context = new FilterProviderContext(ActionContext, items);
-            for (var i = 0; i < _filterProviders.Count; i++)
-            {
-                _filterProviders[i].OnProvidersExecuting(context);
-            }
-
-            for (var i = _filterProviders.Count - 1; i >= 0; i--)
-            {
-                _filterProviders[i].OnProvidersExecuted(context);
-            }
-
-            var count = 0;
-            for (var i = 0; i < items.Count; i++)
-            {
-                if (items[i].Filter != null)
-                {
-                    count++;
-                }
-            }
-
-            if (count == 0)
-            {
-                return EmptyFilterArray;
-            }
-            else
-            {
-                var filters = new IFilterMetadata[count];
-                for (int i = 0, j = 0; i < items.Count; i++)
-                {
-                    var filter = items[i].Filter;
-                    if (filter != null)
-                    {
-                        filters[j++] = filter;
-                    }
-                }
-
-                return filters;
-            }
-        }
-
+        //Copied from Microsoft.AspNetCore.Mvc.Internal.FilterActionInvoker.InvokeActionFilterAsync()
         private async Task<ActionExecutedContext> InvokeActionFilterAsync()
         {
             Debug.Assert(_actionExecutingContext != null);
@@ -196,8 +129,7 @@ namespace Deviser.Core.Library.Controllers
                     if (_actionExecutedContext == null)
                     {
                         // If we get here then the filter didn't call 'next' indicating a short circuit
-
-                        Logger.LogVerbose(ActionFilterShortCircuitLogMessage, item.FilterAsync.GetType().FullName);
+                        Logger.ActionFilterShortCircuited(item.FilterAsync);
 
                         _actionExecutedContext = new ActionExecutedContext(
                             _actionExecutingContext,
@@ -224,8 +156,7 @@ namespace Deviser.Core.Library.Controllers
                     if (_actionExecutingContext.Result != null)
                     {
                         // Short-circuited by setting a result.
-
-                        Logger.LogVerbose(ActionFilterShortCircuitLogMessage, item.Filter.GetType().FullName);
+                        Logger.ActionFilterShortCircuited(item.Filter);
 
                         _actionExecutedContext = new ActionExecutedContext(
                             _actionExecutingContext,
@@ -259,7 +190,7 @@ namespace Deviser.Core.Library.Controllers
                     try
                     {
                         _diagnosticSource.BeforeActionMethod(
-                            ActionContext,
+                            Context,
                             _actionExecutingContext.ActionArguments,
                             _actionExecutingContext.Controller);
 
@@ -268,7 +199,7 @@ namespace Deviser.Core.Library.Controllers
                     finally
                     {
                         _diagnosticSource.AfterActionMethod(
-                            ActionContext,
+                            Context,
                             _actionExecutingContext.ActionArguments,
                             _actionExecutingContext.Controller,
                             result);
@@ -353,7 +284,6 @@ namespace Deviser.Core.Library.Controllers
                 FilterAsync = filterAsync;
             }
         }
-
 
     }
 

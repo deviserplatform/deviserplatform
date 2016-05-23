@@ -5,8 +5,8 @@ using Deviser.Core.Library;
 using Deviser.Core.Library.DomainTypes;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Modules;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -42,12 +42,12 @@ namespace DeviserWI.Controllers.API
                 if (pages != null)
                     return Ok(pages);
 
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting all pages"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -59,12 +59,12 @@ namespace DeviserWI.Controllers.API
                 var result = pageProvider.GetPage(id);
                 if (result != null)
                     return Ok(result);
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting a page, PageId: {0}", id), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -76,12 +76,12 @@ namespace DeviserWI.Controllers.API
                 var result = pageProvider.CreatePage(page);
                 if (result != null)
                     return Ok(result);
-                return HttpBadRequest("Invalid page");
+                return BadRequest("Invalid page");
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while creating a page, PageId: ", page.Id), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
                
@@ -96,13 +96,13 @@ namespace DeviserWI.Controllers.API
                     if (result != null)
                         return Ok(result);
                 }
-                return HttpBadRequest("Invalid page");
+                return BadRequest("Invalid page");
             }
             catch (Exception ex)
             {
                 string errorMessage = string.Format("Error occured while updating page tree");
                 logger.LogError(errorMessage, ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
                 
@@ -117,13 +117,13 @@ namespace DeviserWI.Controllers.API
                     if (result != null)
                         return Ok(result);
                 }
-                return HttpBadRequest("Invalid page");
+                return BadRequest("Invalid page");
             }
             catch (Exception ex)
             {
                 string errorMessage = string.Format("Error occured while updating a page, PageId: ", page.Id);
                 logger.LogError(errorMessage, ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -138,13 +138,13 @@ namespace DeviserWI.Controllers.API
                     if (result)
                         return Ok(result);
                 }
-                return HttpBadRequest("Invalid page");
+                return BadRequest("Invalid page");
             }
             catch (Exception ex)
             {
                 string errorMessage = string.Format("Error occured while deleting page, PageId: ", id);
                 logger.LogError(errorMessage, ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
     }

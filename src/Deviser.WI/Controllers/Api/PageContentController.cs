@@ -4,8 +4,8 @@ using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.DomainTypes;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Modules;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -39,12 +39,12 @@ namespace DeviserWI.Controllers.API
                 var result = pageContentProvider.Get(contentId);
                 if (result != null)
                     return Ok(result);
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting page content, contentId: {0}", contentId), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -56,12 +56,12 @@ namespace DeviserWI.Controllers.API
                 var result = pageContentProvider.Get(pageId, cultureCode);
                 if (result != null)
                     return Ok(result);
-                return HttpNotFound();
+                return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting page content, pageId: {0}, cultureCode: {1}", pageId, cultureCode), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -73,12 +73,12 @@ namespace DeviserWI.Controllers.API
                 var result = moduleManager.CreatePageContent(pageContent);
                 if (result != null)
                     return Ok(result);
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while creating a page content"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -90,12 +90,12 @@ namespace DeviserWI.Controllers.API
                 var result = pageContentProvider.Update(pageContent);
                 if (result != null)
                     return Ok(result);
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while updating page content, pageContentId", pageContent.Id), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -106,7 +106,7 @@ namespace DeviserWI.Controllers.API
             try
             {
                 if (pageContents == null || pageContents.Count() == 0)
-                    return HttpBadRequest();
+                    return BadRequest();
 
                 pageContentProvider.Update(new List<PageContent>(pageContents));
                 return Ok();
@@ -114,7 +114,7 @@ namespace DeviserWI.Controllers.API
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while updating page contents"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -130,12 +130,12 @@ namespace DeviserWI.Controllers.API
                     pageContentProvider.Update(content);
                     return Ok();
                 }
-                return HttpBadRequest();
+                return BadRequest();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while deleting page content"), ex);
-                return new HttpStatusCodeResult(StatusCodes.Status500InternalServerError);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
     }
