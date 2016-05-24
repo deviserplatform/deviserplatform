@@ -53,6 +53,7 @@ namespace Deviser.WI.Controllers
             catch (Exception ex)
             {
                 logger.LogError("Page load exception has been occured", ex);
+                throw ex;
             }
             return View("NotFound");
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Deviser.WI.ViewModels.Account
+namespace Deviser.WI.Models.AccountViewModels
 {
     public class SendCodeViewModel
     {

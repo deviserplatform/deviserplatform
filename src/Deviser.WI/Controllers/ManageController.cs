@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Deviser.WI.Models;
+using Deviser.WI.Models.ManageViewModels;
 using Deviser.WI.Services;
-using Deviser.WI.ViewModels.Manage;
 using Deviser.Core.Data.Entities;
 
 namespace Deviser.WI.Controllers
@@ -174,8 +174,9 @@ namespace Deviser.WI.Controllers
         }
 
         //
-        // GET: /Manage/RemovePhoneNumber
-        [HttpGet]
+        // POST: /Manage/RemovePhoneNumber
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemovePhoneNumber()
         {
             var user = await GetCurrentUserAsync();

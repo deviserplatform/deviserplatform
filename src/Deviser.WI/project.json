@@ -1,19 +1,15 @@
-{
-  "userSecretsId": "aspnet5-Deviser.WI-4b6a9ffd-e909-4355-8f49-1e00c03fb55e",
-  "version": "1.0.0-*",
+﻿{
+  "userSecretsId": "aspnet-Deviser.WI-cc242608-e994-48c7-8978-e503b390704f",
 
   "dependencies": {
     "Microsoft.NETCore.App": {
       "version": "1.0.0-rc2-3002702",
       "type": "platform"
     },
+
     "Autofac": "4.0.0-rc2-240",
     "Autofac.Extensions.DependencyInjection": "4.0.0-rc2-240",
-    "Serilog": "2.0.0-rc-556",
-    "Serilog.Sinks.RollingFile": "2.0.0-rc-703",
-    "Serilog.Sinks.ColoredConsole": "2.0.0-beta-700",
     "AutoMapper": "5.0.0-beta-1",
-    "Microsoft.ApplicationInsights.AspNetCore": "1.0.0-rc2-final",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0-rc2-final",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0-rc2-final",
     "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.0.0-rc2-final",
@@ -23,6 +19,7 @@
       "version": "1.0.0-preview1-final",
       "type": "build"
     },
+    "Microsoft.AspNetCore.Session": "1.0.0-rc2-final",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-rc2-final",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final",
     "Microsoft.AspNetCore.StaticFiles": "1.0.0-rc2-final",

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Deviser.WI.ViewModels.Manage
+namespace Deviser.WI.Models.ManageViewModels
 {
     public class FactorViewModel
     {

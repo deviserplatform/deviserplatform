@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Deviser.WI.ViewModels.Account
+namespace Deviser.WI.Models.AccountViewModels
 {
     public class LoginViewModel
     {

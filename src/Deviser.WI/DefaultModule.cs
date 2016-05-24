@@ -19,7 +19,6 @@ namespace Deviser.WI
         {
             //In 6.0.0.rc1 Custom ViewEngine is not working. In future, we can change the implementation.
             //builder.RegisterType<DeviserViewEngine>().As<IRazorViewEngine>();
-
             builder.RegisterType<ModuleActionInvoker>().As<IModuleActionInvoker>();
             builder.RegisterType<ModuleInvokerProvider>().As<IModuleInvokerProvider>();
             builder.RegisterType<PageUrlConstraint>().As<IRouteConstraint>();
@@ -43,10 +42,6 @@ namespace Deviser.WI
             builder.RegisterType<Navigation>().As<INavigation>();
             builder.RegisterType<FileManagement>().As<IFileManagement>();
             builder.RegisterType<LanguageManager>().As<ILanguageManager>();
-            
-
-
-
             //Autofac Property injection is not working
             //ref: https://github.com/autofac/Autofac.Mvc/issues/1
             builder.RegisterType<ModuleController>().PropertiesAutowired();
