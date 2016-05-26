@@ -15,10 +15,10 @@ namespace Deviser.WI.Infrastructure
         {
             Mapper.Initialize(config =>
             {
-                config.CreateMap<DTO.User, User>().ForMember(m => m.Roles, opt => opt.Ignore());
-                config.CreateMap<User, DTO.User>().ForMember(m => m.Roles, opt => opt.Ignore());
-                config.CreateMap<PageLayout, Layout>();
-                config.CreateMap<Layout, PageLayout>();
+                config.CreateMap<DTO.User, User>().ForMember(m => m.Roles, opt => opt.Ignore()).ReverseMap();
+                //config.CreateMap<User, DTO.User>().ForMember(m => m.Roles, opt => opt.Ignore());
+                config.CreateMap<PageLayout, Layout>().ReverseMap();
+                //config.CreateMap<Layout, PageLayout>();
             });
            
         }

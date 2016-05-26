@@ -19,6 +19,7 @@ using Newtonsoft.Json.Serialization;
 using Deviser.Core.Library.Modules;
 using System.Globalization;
 using Microsoft.AspNetCore.Routing;
+using Deviser.WI.Infrastructure;
 
 namespace Deviser.WI
 {
@@ -76,6 +77,8 @@ namespace Deviser.WI
             });
 
             services.AddSession();
+
+            MapperConfig.CreateMaps();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();

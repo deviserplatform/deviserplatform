@@ -160,6 +160,7 @@ namespace Deviser.Core.Library.Controllers
             context.RouteData.Values.Add("pageModuleId", moduleContext.PageModuleId);
             context.RouteData.Values.Add("controller", moduleAction.ControllerName);
             context.RouteData.Values.Add("action", moduleAction.ActionName);
+            context.RouteData.PushState(actionContext.RouteData.Routers[0], null, null);
 
 
             var actionDescriptor = actionSelector.Select(context);
@@ -167,6 +168,7 @@ namespace Deviser.Core.Library.Controllers
                 throw new NullReferenceException("Action cannot be located, please check whether module has been installed properly");
 
             var moduleActionContext = new ActionContext(actionContext.HttpContext, context.RouteData, actionDescriptor);
+            
             var invoker = moduleInvokerProvider.CreateInvoker(moduleActionContext, actionDescriptor as ControllerActionDescriptor);
             var result = await invoker.InvokeAction() as ViewResult;
             string strResult = result.ExecuteResultToString(moduleActionContext);

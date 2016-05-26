@@ -19,7 +19,7 @@
     "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
     "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc2-final",
     "Deviser.Core.Data": "1.0.0-*",
-    "AutoMapper": "5.0.0-beta-1",
+    "AutoMapper": "4.2.1",
     "Microsoft.AspNetCore.Mvc.Core": "1.0.0-rc2-final"
   }
 }
