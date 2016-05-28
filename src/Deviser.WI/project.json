@@ -50,7 +50,9 @@
     "Deviser.Modules.SecurityRoles": "1.0.0-*",
     "Deviser.Modules.Language": "1.0.0-*",
     "Deviser.Modules.FileManager": "1.0.0-*",
-    "Microsoft.AspNetCore.Session": "1.0.0-rc2-final"
+    "Serilog.Extensions.Logging": "1.0.0-rc2-10108",
+    "Serilog.Sinks.Literate": "2.0.0-rc-25",
+    "Serilog.Sinks.RollingFile": "2.0.0-rc-703"
   },
 
   "tools": {

@@ -531,7 +531,7 @@
         /*Function declarations only*/
         //Event handlers
         function changeLanguage() {
-            var translation = getTranslationForLocale(vm.selectedLocale);
+            var translation = getTranslationForLocale(vm.selectedLocale.name);
             vm.contentTranslation = translation;
             deserializeContentTranslation();
         }
@@ -601,7 +601,7 @@
             ]).then(function () {
                 vm.selectedLocale = appContext.currentCulture;
                 //load correct translation
-                var translation = getTranslationForLocale(vm.selectedLocale);
+                var translation = getTranslationForLocale(vm.selectedLocale.name);
                 vm.contentTranslation = translation;
                 deserializeContentTranslation();
             });

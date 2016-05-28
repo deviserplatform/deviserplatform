@@ -20,6 +20,9 @@ using Deviser.Core.Library.Modules;
 using System.Globalization;
 using Microsoft.AspNetCore.Routing;
 using Deviser.WI.Infrastructure;
+using Serilog;
+using Serilog.Sinks.RollingFile;
+using System.IO;
 
 namespace Deviser.WI
 {
@@ -31,6 +34,13 @@ namespace Deviser.WI
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+
+            Log.Logger = new LoggerConfiguration()
+                //.Enrich.FromLogContext()
+                .MinimumLevel.Debug()
+                .WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "log-{Date}.txt"))
+                .CreateLogger();
+
 
             if (env.IsDevelopment())
             {
@@ -49,13 +59,13 @@ namespace Deviser.WI
         {
             // Add framework services.
             services.AddDbContext<DeviserDBContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Deviser.WI")));
 
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<DeviserDBContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc(option=>
+            services.AddMvc(option =>
             {
                 var jsonOutputFormatter = new JsonOutputFormatter();
                 jsonOutputFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -97,6 +107,7 @@ namespace Deviser.WI
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            loggerFactory.AddSerilog();
 
             if (env.IsDevelopment())
             {

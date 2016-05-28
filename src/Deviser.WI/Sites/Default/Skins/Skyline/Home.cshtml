@@ -5,9 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     string loggedInClass = User.Identity.IsAuthenticated ? "logged-in" : "";
 }
-
 @await Component.InvokeAsync("ControlBar")
-
 <nav class="navbar navbar-default navbar-fixed-top @loggedInClass">
     <div class="container">
         <div>
@@ -30,7 +28,7 @@
 
                 </ul>
                 <ul class="language-switcher pull-right">
-                    @*@Component.InvokeAsync("LanguageSwitcher")*@
+                    @await Component.InvokeAsync("LanguageSwitcher")
                 </ul>
             </div>
 

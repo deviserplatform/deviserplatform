@@ -5,6 +5,7 @@ using Deviser.Core.Data.Entities;
 using Microsoft.Extensions.Logging;
 using Autofac;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Deviser.Core.Data.DataProviders
 {
@@ -94,11 +95,14 @@ namespace Deviser.Core.Data.DataProviders
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
-                    Role resultRole;
-                    role.Id = Guid.NewGuid().ToString();
-                    resultRole = context.Roles.Add(role).Entity;
-                    context.SaveChanges();
-                    return resultRole; 
+                    RoleManager<Role> rm = container.Resolve<RoleManager<Role>>();
+                    var result = rm.CreateAsync(role).Result;
+
+                    //Role resultRole;
+                    //role.Id = Guid.NewGuid().ToString();
+                    //resultRole = context.Roles.Add(role).Entity;
+                    //context.SaveChanges();
+                    return role; 
                 }
             }
             catch (Exception ex)
@@ -113,12 +117,15 @@ namespace Deviser.Core.Data.DataProviders
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
-                    Role resultRole;
-                    resultRole = context.Roles.Attach(role).Entity;
-                    context.Entry(role).State = EntityState.Modified;
+                    RoleManager<Role> rm = container.Resolve<RoleManager<Role>>();
+                    var result = rm.UpdateAsync(role).Result;
 
-                    context.SaveChanges();
-                    return resultRole; 
+                    //Role resultRole;
+                    //resultRole = context.Roles.Attach(role).Entity;
+                    //context.Entry(role).State = EntityState.Modified;
+
+                    //context.SaveChanges();
+                    return role; 
                 }
             }
             catch (Exception ex)
@@ -133,14 +140,20 @@ namespace Deviser.Core.Data.DataProviders
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
-                    Role resultRole;
-                    var deleteObj = context.Roles
-                    .Where(e => e.Id == roleId)
+                    RoleManager<Role> rm = container.Resolve<RoleManager<Role>>();
+                    var role = rm.Roles.Where(e => e.Id == roleId)
                         .FirstOrDefault();
+                    var result = rm.DeleteAsync(role).Result;
 
-                    resultRole = context.Roles.Remove(deleteObj).Entity;
-                    context.SaveChanges();
-                    return resultRole; 
+
+                    //Role resultRole;
+                    //var deleteObj = context.Roles
+                    //.Where(e => e.Id == roleId)
+                    //    .FirstOrDefault();
+
+                    //resultRole = context.Roles.Remove(deleteObj).Entity;
+                    //context.SaveChanges();
+                    return role; 
                 }
             }
             catch (Exception ex)
