@@ -1,10 +1,12 @@
 ﻿<script type="text/ng-template" id="app/components/imageManager.tpl.html">
     <div>
         <div class="form-group">
-            <div class="preview">
+            <div class="image-preview">
                 <img src="{{locVM.src}}" alt="{{locVM.alt}}" ng-show="locVM.src" />
             </div>
-            <span ng-show="!locVM.src">Select a image</span>
+            <span ng-show="!locVM.src">Select a image</span>            
+        </div>
+        <div class="form-group">
             <button type="button" class="btn btn-primary" ng-click="locVM.showPopup()">Upload/Change Image</button>
         </div>
     </div>
@@ -15,28 +17,30 @@
         <h3 class="modal-title">Image Manager</h3>
     </div>
     <div class="modal-body">
-        <div class="row">
-            <label>Upload</label>
-            <div ng-class="{'alert alert-danger':imVM.message.messageType=='error',
+        <div class="row">   
+            <div class="col-md-12">
+                <label>Upload</label>
+                <div ng-class="{'alert alert-danger':imVM.message.messageType=='error',
                      'alert alert-info':imVM.message.messageType=='info',
                      'alert alert-success':imVM.message.messageType=='success',
                      'alert alert-warning':imVM.message.messageType=='warning'}" role="alert">
-                {{imVM.message.content}}
-            </div>
+                    {{imVM.message.content}}
+                </div>
 
-            <!--<input type="file" ng-file-select="imVM.onFileSelect($files)" file-select="uploadFile" multiple accept="image/*" class="form-control">-->
+                <!--<input type="file" ng-file-select="imVM.onFileSelect($files)" file-select="uploadFile" multiple accept="image/*" class="form-control">-->
 
-            <div ngf-drop="imVM.onFileSelect($files)" ngf-select="imVM.onFileSelect($files)" ng-model="files" class="drop-box"
-                 ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true"
-                 accept="image/*"
-                 ngf-pattern="'image/*,application/pdf'">Drop pdfs or images here or click to upload</div>
-            <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+                <div ngf-drop="imVM.onFileSelect($files)" ngf-select="imVM.onFileSelect($files)" ng-model="files" class="drop-box"
+                     ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true"
+                     accept="image/*"
+                     ngf-pattern="'image/*,application/pdf'">Drop images here or click to upload</div>
+                <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
 
 
-            <div class="checkbox" ng-show="!imVM.isNewContent">
-                <label>
-                    <input type="checkbox" ng-model="imVM.isReplace"> Replace Image?
-                </label>
+                <div class="checkbox" ng-show="!imVM.isNewContent">
+                    <label>
+                        <input type="checkbox" ng-model="imVM.isReplace"> Replace Image?
+                    </label>
+                </div>
             </div>
         </div>
 
@@ -49,7 +53,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-md-8 image-preview">
+            <div class="col-md-8 image-chooser">
                 <div class="row">
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">

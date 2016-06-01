@@ -34,7 +34,8 @@
             @foreach (var item in rootObj.items)
             {
                 <div class="item @(item.viewOrder == 1 ? "active" : "")">
-                    <img class="second-slide" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==">
+                    @*<img class="second-slide" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==">*@
+                    <img src="@item.imageUrl" alt="@item.imageAltText" />
                     <div class="container">
                         <div class="carousel-caption">
                             <h1>@item.title</h1>

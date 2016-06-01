@@ -452,6 +452,16 @@ div.edit-page.form-horizontal .control-label {
     width:80%;
 }
 
+/*Image manager*/
 .image-manager-modal .modal-sm{
     width:900px;
+}
+.image-preview img {
+    height: 20vh;
+}
+.drop-box {
+    background: #F8F8F8;
+    border: 5px dashed #DDD;    
+    text-align: center;
+    padding: 20px 10px;
 }
