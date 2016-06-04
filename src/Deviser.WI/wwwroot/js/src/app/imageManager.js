@@ -56,7 +56,7 @@
                     vm.src = selectedImage.imageSource;
                     vm.alt = selectedImage.imageAlt;
                     vm.focusPoint = selectedImage.focusPoint;
-                    setFocusPoint(vm.focusPoint);
+                    //setFocusPoint(vm.focusPoint);
                 }, function (response) {
                     console.log(response);
                 });
@@ -174,7 +174,7 @@
             // file is uploaded successfully
             init();
             console.log(data);
-            vm.imageSource = data.data.filePath;
+            vm.imageSource = data.data[0];
             showMessage("success", "File uploaded successfully!");
         }
 
@@ -227,7 +227,7 @@
 
         function cropImage() {
             var blobToUpload = Upload.dataUrltoBlob(vm.croppedImage);
-            blobToUpload.name = vm.selectedImage.Name;
+            blobToUpload.name = vm.selectedImage.name;
             var uploadObj = Upload.upload({
                 url: '/api/upload/images', //upload.php script, node.js route, or servlet url
                 method: 'POST',// or 'PUT',
