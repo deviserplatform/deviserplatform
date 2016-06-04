@@ -229,9 +229,9 @@
             var blobToUpload = Upload.dataUrltoBlob(vm.croppedImage);
             blobToUpload.name = vm.selectedImage.Name;
             var uploadObj = Upload.upload({
-                url: '/DesktopModules/IcontelContent/API/Upload', //upload.php script, node.js route, or servlet url
-                //method: 'POST' or 'PUT',
-                headers: { 'IsReplace': true },
+                url: '/api/upload/images', //upload.php script, node.js route, or servlet url
+                method: 'POST',// or 'PUT',
+                
                 //withCredentials: true,
                 file: blobToUpload // or list of files ($files) for html5 only
                 //fileName: 'doc.jpg' or ['1.jpg', '2.jpg', ...] // to modify the name of the file(s)

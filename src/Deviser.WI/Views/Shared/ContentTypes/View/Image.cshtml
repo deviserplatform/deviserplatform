@@ -1,0 +1,31 @@
+﻿@model Deviser.Core.Data.Entities.PageContent
+@using AppContext = Deviser.Core.Library.AppContext;
+
+@{
+    bool isEditMode = false;
+    if (ViewData["isEditMode"] != null)
+    {
+        isEditMode = (bool)ViewData["isEditMode"];
+    }
+    dynamic typeInfo = JsonConvert.DeserializeObject<dynamic>(Model.TypeInfo);
+    var appContext = (AppContext)ViewData["AppContext"];
+    var currentCulture = appContext.CurrentCulture.ToString();
+    PageContentTranslation contentTranslation = null;
+    if (Model.PageContentTranslation != null)
+    {
+        contentTranslation = Model.PageContentTranslation.FirstOrDefault(t => t.CultureCode == currentCulture);
+    }
+
+    var rootObj = JsonConvert.DeserializeObject<dynamic>(contentTranslation.ContentData);
+
+}
+
+@if (contentTranslation != null)
+{
+    <img src="@rootObj.imageUrl" alt="@rootObj.imageAltText" />
+}
+else{
+    <div>
+        Please enter the content
+    </div>
+}

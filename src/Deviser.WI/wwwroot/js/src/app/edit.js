@@ -27,6 +27,7 @@
         var containerIds = [];
 
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
+
         vm.alerts = [];
         vm.pageLayout = {};
         vm.selectedItem = {}
@@ -97,7 +98,7 @@
                 animation: true,
                 size: 'lg',
                 openedClass: 'edit-content-modal',
-                backdrop: 'static',                
+                backdrop: 'static',
                 templateUrl: 'contenttypes/' + content.type + '.html',
                 controller: 'EditContentCtrl as ecVM',
                 resolve: {
@@ -507,7 +508,6 @@
 
     function editContentCtrl($scope, $uibModalInstance, $q, sdUtil, languageService, pageContentService, contentTranslationService, contentInfo) {
         var vm = this;
-
         vm.contentId = contentInfo.id;
         vm.changeLanguage = changeLanguage;
         vm.save = save;
@@ -565,7 +565,7 @@
         }
 
         function newItem() {
-            vm.selectedItem = { };
+            vm.selectedItem = {};
             vm.isDetailView = true;
         }
 
@@ -644,12 +644,27 @@
         function getTranslationForLocale(locale) {
             var translation = _.findWhere(vm.contentTranslations, { cultureCode: locale });
             if (!translation) {
-                translation = {
-                    cultureCode: locale,
-                    contentData: {
-                        items: []
-                    }
-                };
+                if (vm.typeInfo.dataType === 'string') {
+                    translation = {
+                        cultureCode: locale,
+                        contentData: ''
+                    };
+                }
+                else if (vm.typeInfo.dataType === 'object') {
+                    translation = {
+                        cultureCode: locale,
+                        contentData: {}
+                    };
+                }
+                else {
+                    translation = {
+                        cultureCode: locale,
+                        contentData: {
+                            items:[]
+                        }
+                    };
+                }
+
             }
             return translation;
         }
