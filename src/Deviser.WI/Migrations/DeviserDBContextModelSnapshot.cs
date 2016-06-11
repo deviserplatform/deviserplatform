@@ -161,6 +161,8 @@ namespace Deviser.WI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);
 
+                    b.Property<bool>("IsIncludedInMenu");
+
                     b.Property<bool>("IsSystem")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);

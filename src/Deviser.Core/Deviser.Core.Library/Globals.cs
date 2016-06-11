@@ -21,6 +21,8 @@ namespace Deviser.Core.Library
 
         public const string glbHostSkinFolder = "_default";
 
+        public const string moduleRoute = "moduleRoute";
+
         public static string HostMapPath
         {
             get

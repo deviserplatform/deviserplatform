@@ -52,12 +52,12 @@ namespace Deviser.Core.Library
             if (systemFilter == SystemPageFilter.PublicOnly)
             {
                 //page.ChildPage = page.ChildPage.Where(p => !p.IsSystem).ToList();
-                predicate = p => !p.IsSystem && !p.IsDeleted;
+                predicate = p => !p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu;
             }
             else if (systemFilter == SystemPageFilter.SystemOnly)
             {
                 //page.ChildPage = page.ChildPage.Where(p => p.IsSystem).ToList();
-                predicate = p => p.IsSystem && !p.IsDeleted;
+                predicate = p => p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu;
             }
 
 

@@ -9,8 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Deviser.WI.Models;
-using Deviser.WI.Services;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Deviser.Core.Data.Entities;
@@ -23,6 +21,9 @@ using Deviser.WI.Infrastructure;
 using Serilog;
 using Serilog.Sinks.RollingFile;
 using System.IO;
+using Deviser.Modules.Security.Services;
+using Deviser.Core.Library;
+using Deviser.Modules.Security.Services;
 
 namespace Deviser.WI
 {
@@ -93,6 +94,7 @@ namespace Deviser.WI
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
 
             // Add Autofac
             var containerBuilder = new ContainerBuilder();
@@ -160,7 +162,7 @@ namespace Deviser.WI
                    name: "default",
                    template: "{controller=Page}/{action=Index}/{id?}");
 
-                routes.MapRoute(name: "areaRoute",
+                routes.MapRoute(name: Globals.moduleRoute,
                     template: "modules/{area:exists}/{controller=Home}/{action=Index}");
 
                 routes.MapRoute(

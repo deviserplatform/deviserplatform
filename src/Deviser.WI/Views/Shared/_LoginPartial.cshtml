@@ -2,13 +2,12 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm">
-        <li><a asp-controller="Manage" asp-action="Index" title="Manage">Hello @User.Identity.Name!</a></li>        
+    <form sd-module="Security" sd-controller="Account" sd-action="LogOff" method="post" id="logoutForm">
+        <li><a>Hello @User.Identity.Name!</a></li>        
         <li><button type="submit" class="btn-link navbar-link">Log off</button></li>
     </form>
 }
 else
-{
-    <li><a asp-controller="Account" asp-action="Register">Register</a></li>
-    <li><a asp-controller="Account" asp-action="Login">Log in</a></li>
+{    
+    <li><a href="/en-us/login">Log in</a></li>
 }
