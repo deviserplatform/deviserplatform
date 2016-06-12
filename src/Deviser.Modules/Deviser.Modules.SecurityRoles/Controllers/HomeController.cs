@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Deviser.Modules.SecurityRoles.Controllers
 {
-    [Module("TestMVC")]
+    [Module("SecurityRoles")]
     public class HomeController: ModuleController
     {
         public HomeController(ILifetimeScope container)

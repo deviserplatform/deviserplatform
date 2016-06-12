@@ -48,7 +48,7 @@ namespace Deviser.Core.Library.Controllers
                 foreach (var pageModule in currentPage.PageModule)
                 {
                     Module module = moduleProvider.Get(pageModule.ModuleId);
-                    ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.ModuleActionTypeId == (int)DomainTypes.ModuleActionType.View);
+                    ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == pageModule.ModuleActionId);
                     ModuleContext moduleContext = new ModuleContext();
                     moduleContext.ModuleInfo = module;
                     moduleContext.PageModuleId = pageModule.Id;

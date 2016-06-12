@@ -13,7 +13,7 @@
     ]);
 
     app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$uibModal', 'globals', 'sdUtil', 'layoutService', 'pageService',
-        'contentTypeService', 'pageContentService', 'moduleService', 'pageModuleService', editCtrl]);
+        'contentTypeService', 'pageContentService', 'moduleService', 'moduleActionService', 'pageModuleService', editCtrl]);
 
     app.controller('EditContentCtrl', ['$scope', '$uibModalInstance', '$q', 'sdUtil', 'languageService',
         'pageContentService', 'contentTranslationService', 'contentInfo', editContentCtrl]);
@@ -21,7 +21,7 @@
     ////////////////////////////////
     /*Function declarations only*/
     function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, sdUtil, layoutService, pageService,
-        contentTypeService, pageContentService, moduleService, pageModuleService) {
+        contentTypeService, pageContentService, moduleService, moduleActionService, pageModuleService) {
         var vm = this;
 
         var containerIds = [];
@@ -127,7 +127,7 @@
                 $q.all([
                     getLayout(),
                     getContentTypes(),
-                    getModules(),
+                    getModuleActions(),
                     getPageContents()
                 ]).then(function () {
                     loadPageContents();
@@ -178,18 +178,17 @@
             return defer.promise;
         }
 
-        function getModules() {
+        function getModuleActions() {
             var defer = $q.defer();
-            moduleService.get()
+            moduleActionService.get()
             .then(function (data) {
-                var modules = data;
+                var moduleActions = data;
                 vm.modules = [];
-                _.each(modules, function (module) {
+                _.each(moduleActions, function (moduleAction) {
                     vm.modules.push({
-                        id: sdUtil.getGuid(),
                         layoutTemplate: "module",
                         type: "module",
-                        module: module
+                        moduleAction: moduleAction
                     });
                 });
                 defer.resolve('data received!');
@@ -293,7 +292,7 @@
                                 id: pageModule.id,
                                 layoutTemplate: "module",
                                 type: "module",
-                                module: pageModule.module,
+                                pageModule: pageModule,
                                 sortOrder: pageModule.sortOrder
                             };//JSON.parse(pageModule.module);
                             //item.placeHolders.splice(index, 0, module); //Insert placeHolder into specified index
@@ -393,14 +392,31 @@
             var defer = $q.defer();
             var modules = [];
             _.each(elementsToSort.modules, function (item) {
-                modules.push({
-                    id: item.element.id,
-                    pageId: appContext.currentPageId,
-                    moduleId: item.element.module.id,
-                    containerId: item.containerId,
-                    sortOrder: item.element.sortOrder
-                    //Modules are not multilingual
-                });
+                if (item.element.id) {
+                    //Update
+                    modules.push({
+                        id: item.element.id,
+                        pageId: appContext.currentPageId,
+                        moduleId: item.element.pageModule.module.id,
+                        containerId: item.containerId,
+                        moduleActionId: item.element.pageModule.moduleActionId,
+                        sortOrder: item.element.sortOrder
+                        //Modules are not multilingual
+                    });
+                }
+                else {
+                    //New element
+                    modules.push({
+                        id: item.element.id,
+                        pageId: appContext.currentPageId,
+                        moduleId: item.element.moduleAction.module.id,
+                        containerId: item.containerId,
+                        moduleActionId: item.element.moduleAction.id,
+                        sortOrder: item.element.sortOrder
+                        //Modules are not multilingual
+                    });
+                }
+               
             });
 
             pageModuleService.putModules(modules).then(function (data) {
@@ -660,7 +676,7 @@
                     translation = {
                         cultureCode: locale,
                         contentData: {
-                            items:[]
+                            items: []
                         }
                     };
                 }
