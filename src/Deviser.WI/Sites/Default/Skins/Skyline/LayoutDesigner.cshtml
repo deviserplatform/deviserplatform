@@ -1,32 +1,18 @@
 ﻿
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    Deviser.Core.Data.Entities.Page currentPage = (Deviser.Core.Data.Entities.Page)ViewBag.AppContext.CurrentPage;
 }
 
 
-@await Component.InvokeAsync("ControlBar")
-<div class="clearfix"></div>
+<div id="wrapper">
+    @await Component.InvokeAsync("ControlBar")
+    <div class="clearfix"></div>
 
-<div class="page-content-white logged-in">  
-   
     <!-- BEGIN CONTAINER -->
-    <div class="page-container page-full-width">
-        <!-- BEGIN CONTENT -->
-        <div class="page-content-wrapper">
-            <div class="page-content">
-                <!-- BEGIN PAGE HEADER-->
-                <div class="page-bar">
-
-                </div>
-                <!-- END PAGE HEADER-->
-                @RenderBody()
-            </div>
-        </div>
-        <!-- END CONTENT -->
+    <div class="container-fluid layout-designer-container">             
+        @RenderBody()
     </div>
-    <!-- END CONTAINER -->
-    <!-- BEGIN FOOTER -->
+
     <div class="page-footer">
         <div class="page-footer-inner">
             @DateTime.Now.Year &copy; Deviser WCM <a href="http://skydevise.com" title="SKY Devise" target="_blank">SKY Devise</a>
@@ -35,5 +21,4 @@
             <i class="icon-arrow-up"></i>
         </div>
     </div>
-    <!-- END FOOTER -->
 </div>
