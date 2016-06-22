@@ -26,6 +26,8 @@ namespace Deviser.WI
             
 
             builder.RegisterType<LayoutProvider>().As<ILayoutProvider>();
+            builder.RegisterType<LayoutTypeProvider>().As<ILayoutTypeProvider>();
+            builder.RegisterType<ContentTypeProvider>().As<IContentTypeProvider>();
             builder.RegisterType<ModuleProvider>().As<IModuleProvider>();
             builder.RegisterType<PageContentProvider>().As<IPageContentProvider>();
             builder.RegisterType<PageProvider>().As<IPageProvider>();

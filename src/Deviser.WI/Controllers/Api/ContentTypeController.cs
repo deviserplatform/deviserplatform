@@ -23,11 +23,13 @@ namespace DeviserWI.Controllers.API
     {
         private readonly ILogger<ContentTypeController> logger;
 
+        private IContentTypeProvider contentTypeProvider;
         private JToken contentTypes;
 
         public ContentTypeController(ILifetimeScope container)
         {
             logger = container.Resolve<ILogger<ContentTypeController>>();
+            contentTypeProvider = container.Resolve<IContentTypeProvider>();
             IHostingEnvironment hostingEnvironment = container.Resolve<IHostingEnvironment>();
             try
             {
@@ -46,8 +48,13 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                if (contentTypes != null)
-                    return Ok(contentTypes);
+                //if (contentTypes != null)
+                //    return Ok(contentTypes);
+                //return NotFound();
+
+                var result = contentTypeProvider.GetContentTypes();
+                if (result != null)
+                    return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)

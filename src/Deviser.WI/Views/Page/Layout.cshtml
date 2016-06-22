@@ -191,18 +191,18 @@
                 <div class="col-md-2">
                     <div class="box box-grey box-padding">
                         <h3>Selected</h3>
-                        <strong>Item Type: </strong> {{layoutVM.selectedItem.type}}
+                        <strong>Item Type </strong> {{layoutVM.selectedItem.type}}
                         <br>
                         <br>
                         <strong>Properties</strong>
-                        <table>
+                        <table class="table">
                             <tbody>
                                 <tr ng-repeat="property in layoutVM.selectedItem.properties track by $index">
                                     <td>
-                                        {{property.propertyName}}:
+                                        {{property.propertyName}}
                                     </td>
                                     <td>
-                                        <input type="text" ng-model="property.ropertyValue" />
+                                        <input type="text" class="form-control" ng-model="property.ropertyValue" />
                                     </td>
                                 </tr>
                             </tbody>
@@ -218,12 +218,12 @@
                 </div>
 
             </div>
-            @*<div class="row">
+            <div class="row">
                     <div class="col-lg-6">
                         <pre>{{layoutVM.pageLayout | json}}</pre>
                     </div>
 
-                </div>*@
+                </div>
 
         </div>
 
