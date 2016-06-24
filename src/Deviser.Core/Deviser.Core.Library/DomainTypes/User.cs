@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace Deviser.WI.DTO
-{
-    public class User
+namespace Deviser.Core.Library.DomainTypes
+{    public class User
     {
         public string Id { get; set; }
         public string FirstName { get; set; }

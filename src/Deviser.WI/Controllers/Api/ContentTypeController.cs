@@ -15,6 +15,7 @@ using Autofac;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using AutoMapper;
 
 namespace DeviserWI.Controllers.API
 {
@@ -52,7 +53,10 @@ namespace DeviserWI.Controllers.API
                 //    return Ok(contentTypes);
                 //return NotFound();
 
-                var result = contentTypeProvider.GetContentTypes();
+                var contentTypes = contentTypeProvider.GetContentTypes();
+
+                var result = Mapper.Map<List<Deviser.Core.Library.DomainTypes.ContentType>>(contentTypes);
+
                 if (result != null)
                     return Ok(result);
                 return NotFound();

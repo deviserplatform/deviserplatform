@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using Deviser.Core.Data.Entities;
-using Deviser.Core.Library.DomainTypes;
-using Deviser.WI.DTO;
+using Deviser.Core.Library;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using User = Deviser.Core.Data.Entities.User;
 
 namespace Deviser.WI.Infrastructure
 {
@@ -15,12 +13,19 @@ namespace Deviser.WI.Infrastructure
         {
             Mapper.Initialize(config =>
             {
-                config.CreateMap<DTO.User, User>().ForMember(m => m.Roles, opt => opt.Ignore());
-                config.CreateMap<User, DTO.User>().ForMember(m => m.Roles, opt => opt.Ignore());
-                config.CreateMap<PageLayout, Layout>();
-                config.CreateMap<Layout, PageLayout>();
+                config.CreateMap<Core.Library.DomainTypes.User, User>().ForMember(m => m.Roles, opt => opt.Ignore());
+                config.CreateMap<User, Core.Library.DomainTypes.User>().ForMember(m => m.Roles, opt => opt.Ignore());
+                config.CreateMap<Core.Library.DomainTypes.PageLayout, Layout>();
+                config.CreateMap<Layout, Core.Library.DomainTypes.PageLayout>();
+                config.CreateMap<PropertyOptionList, Core.Library.DomainTypes.PropertyOptionList>().ReverseMap();
+                config.CreateMap<Property, Core.Library.DomainTypes.Property>().ReverseMap();
+                config.CreateMap<Core.Library.DomainTypes.ContentType, ContentType>().ReverseMap()
+                .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.ContentTypeProperties.Select(ctp=>ctp.Property)));
+                config.CreateMap<ContentDataType, Core.Library.DomainTypes.ContentDataType>().ReverseMap();
+                
+
             });
-           
+
         }
     }
 }
