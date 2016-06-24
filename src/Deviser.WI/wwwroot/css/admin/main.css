@@ -80,30 +80,30 @@ body {
 }
 
 /*Side Nav*/
-.navbar-default{
-    background-color:inherit;
+.navbar-default {
+    background-color: inherit;
 }
 
-.sidebar ul li a, .nav .open > a, .nav .open > a:hover, .nav .open > a:focus{
-    color:#b4bcc8;
+.sidebar ul li a, .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+    color: #b4bcc8;
     border-top: 1px solid #3d4957;
 }
 
-.sidebar .nav > li > a:hover, 
+.sidebar .nav > li > a:hover,
 .sidebar .nav > li > a:focus,
-.sidebar .nav  ul.nav-second-level li.active > a{
-    background: #2C3542;    
+.sidebar .nav ul.nav-second-level li.active > a {
+    background: #2C3542;
     border-color: transparent;
 }
 
-.sidebar .nav > li.active > a, 
-.sidebar .nav .open > a:focus{
-    background:#EF4A34;
-    color:#fff;
+.sidebar .nav > li.active > a,
+.sidebar .nav .open > a:focus {
+    background: #EF4A34;
+    color: #fff;
 }
 
-.sidebar ul li:last-child> a{
-    border-bottom: 1px solid transparent!important;
+.sidebar ul li:last-child > a {
+    border-bottom: 1px solid transparent !important;
 }
 
 
@@ -319,9 +319,10 @@ body {
 }
 
 .nestedDemo .toolbox button {
-    margin: 5px;
-    width: 123px;
+    margin: 5px 0 5px 0;
+    width: 100%;
     opacity: 1.0;
+    text-align: left;
 }
 
 .nestedDemo .toolbox .dndDragging {
@@ -445,23 +446,51 @@ div.edit-page.form-horizontal .control-label {
 
 
 /*Layout Designer*/
+.layout-designer-container {
+    background: #fff;
+    min-height: 90vh;
+}
+
+.layout-controls {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.layout-controls h3.layout-title{
+    margin:0;
+}
+
+.layout-controls .layout-dropdown .btn,
+.layout-controls .dropdown-menu{
+    width:200px;
+}
+
+.layout-controls .layout-name{
+    width:30%;
+}
+
+.layout-controls .layout-name input{
+    width:100%;
+}
 
 /*Edit mode*/
 
-.edit-content-modal .modal-lg{
-    width:80%;
+.edit-content-modal .modal-lg {
+    width: 80%;
 }
 
 /*Image manager*/
-.image-manager-modal .modal-sm{
-    width:900px;
+.image-manager-modal .modal-sm {
+    width: 900px;
 }
+
 .image-preview img {
     height: 20vh;
 }
+
 .drop-box {
     background: #F8F8F8;
-    border: 5px dashed #DDD;    
+    border: 5px dashed #DDD;
     text-align: center;
     padding: 20px 10px;
 }

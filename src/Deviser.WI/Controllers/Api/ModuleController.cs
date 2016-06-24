@@ -15,6 +15,7 @@ using System.Net.Http;
 
 namespace DeviserWI.Controllers.API
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     public class ModuleController : Controller
     {

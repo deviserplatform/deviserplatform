@@ -16,6 +16,60 @@ namespace Deviser.WI.Migrations
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20901")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ContentDataType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Label");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContentDataType");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ContentType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("ContentDataTypeId");
+
+                    b.Property<string>("IconClass");
+
+                    b.Property<string>("IconImage");
+
+                    b.Property<string>("Label");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContentDataTypeId");
+
+                    b.ToTable("ContentType");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeProperty", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("ConentTypeId");
+
+                    b.Property<Guid>("PropertyId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConentTypeId");
+
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("ContentTypeProperty");
+                });
+
             modelBuilder.Entity("Deviser.Core.Data.Entities.Language", b =>
                 {
                     b.Property<Guid>("Id")
@@ -61,6 +115,44 @@ namespace Deviser.WI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Layout");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.LayoutType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("IconClass");
+
+                    b.Property<string>("IconImage");
+
+                    b.Property<string>("Label");
+
+                    b.Property<string>("LayoutIds");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LayoutType");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.LayoutTypeProperty", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("LayoutTypeId");
+
+                    b.Property<Guid>("PropertyId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LayoutTypeId");
+
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("LayoutTypeProperty");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Module", b =>
@@ -160,6 +252,8 @@ namespace Deviser.WI.Migrations
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);
+
+                    b.Property<bool>("IsIncludedInMenu");
 
                     b.Property<bool>("IsSystem")
                         .ValueGeneratedOnAdd()
@@ -262,6 +356,8 @@ namespace Deviser.WI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);
 
+                    b.Property<int>("ModuleActionId");
+
                     b.Property<int>("ModuleId");
 
                     b.Property<int>("PageId");
@@ -306,6 +402,40 @@ namespace Deviser.WI.Migrations
                     b.HasIndex("PageId");
 
                     b.ToTable("PageTranslation");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Property", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Label");
+
+                    b.Property<string>("Name");
+
+                    b.Property<Guid?>("PropertyOptionListId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PropertyOptionListId");
+
+                    b.ToTable("Property");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.PropertyOptionList", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Label");
+
+                    b.Property<string>("List");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PropertyOptionList");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Role", b =>
@@ -509,6 +639,35 @@ namespace Deviser.WI.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ContentType", b =>
+                {
+                    b.HasOne("Deviser.Core.Data.Entities.ContentDataType")
+                        .WithMany()
+                        .HasForeignKey("ContentDataTypeId");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeProperty", b =>
+                {
+                    b.HasOne("Deviser.Core.Data.Entities.ContentType")
+                        .WithMany()
+                        .HasForeignKey("ConentTypeId");
+
+                    b.HasOne("Deviser.Core.Data.Entities.Property")
+                        .WithMany()
+                        .HasForeignKey("PropertyId");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.LayoutTypeProperty", b =>
+                {
+                    b.HasOne("Deviser.Core.Data.Entities.LayoutType")
+                        .WithMany()
+                        .HasForeignKey("LayoutTypeId");
+
+                    b.HasOne("Deviser.Core.Data.Entities.Property")
+                        .WithMany()
+                        .HasForeignKey("PropertyId");
+                });
+
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleAction", b =>
                 {
                     b.HasOne("Deviser.Core.Data.Entities.ModuleActionType")
@@ -561,6 +720,13 @@ namespace Deviser.WI.Migrations
                     b.HasOne("Deviser.Core.Data.Entities.Page")
                         .WithMany()
                         .HasForeignKey("PageId");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Property", b =>
+                {
+                    b.HasOne("Deviser.Core.Data.Entities.PropertyOptionList")
+                        .WithMany()
+                        .HasForeignKey("PropertyOptionListId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

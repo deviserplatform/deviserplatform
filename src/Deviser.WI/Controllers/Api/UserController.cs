@@ -2,7 +2,7 @@
 using AutoMapper;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
-using Deviser.WI.DTO;
+
 using DeviserWI.Controllers.API;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Deviser.Core.Library;
 
 namespace Deviser.WI.Controllers.Api
 {
@@ -40,7 +41,7 @@ namespace Deviser.WI.Controllers.Api
                 var users = userProvider.GetUsers();
                 if (users != null)
                 {
-                    List<DTO.User> result = Mapper.Map<List<DTO.User>>(users);
+                    List<Core.Library.DomainTypes.User> result = Mapper.Map<List<Core.Library.DomainTypes.User>>(users);
                     //Roles workarround
                     foreach(var user in users)
                     {
@@ -71,14 +72,14 @@ namespace Deviser.WI.Controllers.Api
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] DTO.User userDTO)
+        public async Task<IActionResult> CreateUser([FromBody] Core.Library.DomainTypes.User userDTO)
         {
             try
             {
                 if(userDTO!=null)
                 {
                     var user = new Core.Data.Entities.User();
-                    Mapper.Map(userDTO, user, typeof(DTO.User), typeof(Core.Data.Entities.User));
+                    Mapper.Map(userDTO, user, typeof(Core.Library.DomainTypes.User), typeof(Core.Data.Entities.User));
                     user.Id = Guid.NewGuid().ToString();
                     user.UserName = userDTO.Email;
                     var result = await userManager.CreateAsync(user, userDTO.password);
@@ -106,12 +107,12 @@ namespace Deviser.WI.Controllers.Api
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] DTO.User userDTO)
+        public IActionResult Put([FromBody] Core.Library.DomainTypes.User userDTO)
         {
             try
             {
                 var user = userManager.Users.FirstOrDefault(u => u.Id == userDTO.Id);
-                Mapper.Map(userDTO, user, typeof(DTO.User), typeof(Core.Data.Entities.User));
+                Mapper.Map(userDTO, user, typeof(Core.Library.DomainTypes.User), typeof(Core.Data.Entities.User));
                 var result = userManager.UpdateAsync(user).Result;
                 if (result != null)
                     return Ok(result);
@@ -249,9 +250,9 @@ namespace Deviser.WI.Controllers.Api
             }
         }
 
-        private DTO.User ConvertToUserDTO(Core.Data.Entities.User user)
+        private Core.Library.DomainTypes.User ConvertToUserDTO(Core.Data.Entities.User user)
         {
-            var userDTO = Mapper.Map<DTO.User>(user);
+            var userDTO = Mapper.Map<Core.Library.DomainTypes.User>(user);
             if (user.Roles != null && user.Roles.Count > 0)
             {
                 userDTO.Roles = new List<Role>();

@@ -7,6 +7,7 @@
     app.factory('pageContentService', pageContentService);
     app.factory('contentTranslationService', contentTranslationService);
     app.factory('moduleService', moduleService);
+    app.factory('moduleActionService', moduleActionService);
     app.factory('pageModuleService', pageModuleService);
     app.factory('skinService', skinService);
     app.factory('userService', userService);
@@ -135,6 +136,14 @@
 
     function moduleService($http, $q, globals) {
         var service = baseService($http, $q, globals, '/module');
+        service.put = null;
+        service.post = null;
+        service.remove = null;
+        return service;
+    }
+
+    function moduleActionService($http, $q, globals) {
+        var service = baseService($http, $q, globals, '/moduleaction');
         service.put = null;
         service.post = null;
         service.remove = null;

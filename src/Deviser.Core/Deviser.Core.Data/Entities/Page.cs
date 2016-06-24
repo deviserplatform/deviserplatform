@@ -17,6 +17,7 @@ namespace Deviser.Core.Data.Entities
         public DateTime? EndDate { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsSystem { get; set; }
+        public bool IsIncludedInMenu { get; set; }
         public DateTime? LastModifiedDate { get; set; }
         public int? LayoutId { get; set; }
         public int? PageLevel { get; set; }

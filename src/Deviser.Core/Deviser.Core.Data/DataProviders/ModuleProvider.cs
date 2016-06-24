@@ -13,6 +13,7 @@ namespace Deviser.Core.Data.DataProviders
     {
         List<Module> Get();
         Module Get(int moduleId);
+        List<ModuleAction> GetModuleActions();
         Module Get(string moduleName);
         Module Create(Module module);
         Module Update(Module module);
@@ -26,7 +27,7 @@ namespace Deviser.Core.Data.DataProviders
 
         //Constructor
         public ModuleProvider(ILifetimeScope container)
-            :base(container)
+            : base(container)
         {
             logger = container.Resolve<ILogger<LayoutProvider>>();
         }
@@ -39,14 +40,37 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     IEnumerable<Module> returnData = context.Module
-                                    .ToList();
+                        .Include(m => m.ModuleAction)//.ThenInclude(ma=>ma.ModuleActionType)
+                        .Where(m => m.ModuleAction.Any(ma => ma.ModuleActionTypeId == 1)) //Selecting View Actions Only
+                        .ToList();
 
-                    return new List<Module>(returnData); 
+                    return new List<Module>(returnData);
                 }
             }
             catch (Exception ex)
             {
                 logger.LogError("Error occured while getting Get", ex);
+            }
+            return null;
+        }
+
+        public List<ModuleAction> GetModuleActions()
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    IEnumerable<ModuleAction> returnData = context.ModuleAction
+                        .Include(ma => ma.Module)//.ThenInclude(ma=>ma.ModuleActionType)
+                        .Where(m => m.ModuleActionTypeId == 1) //Selecting View Actions Only
+                        .ToList();
+
+                    return new List<ModuleAction>(returnData);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting ModuleActions", ex);
             }
             return null;
         }
@@ -61,7 +85,7 @@ namespace Deviser.Core.Data.DataProviders
                               .Where(e => e.Id == moduleId)
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) // ("ModuleActions.ModuleActionType")
                               .FirstOrDefault();
-                    return returnData; 
+                    return returnData;
                 }
             }
             catch (Exception ex)
@@ -82,7 +106,7 @@ namespace Deviser.Core.Data.DataProviders
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
                               .FirstOrDefault();
 
-                    return returnData; 
+                    return returnData;
                 }
             }
             catch (Exception ex)
@@ -100,7 +124,7 @@ namespace Deviser.Core.Data.DataProviders
                     Module resultModule;
                     resultModule = context.Module.Add(module).Entity;
                     context.SaveChanges();
-                    return resultModule; 
+                    return resultModule;
                 }
             }
             catch (Exception ex)
@@ -119,7 +143,7 @@ namespace Deviser.Core.Data.DataProviders
                     resultModule = context.Module.Attach(module).Entity;
                     context.Entry(module).State = EntityState.Modified;
                     context.SaveChanges();
-                    return resultModule; 
+                    return resultModule;
                 }
             }
             catch (Exception ex)

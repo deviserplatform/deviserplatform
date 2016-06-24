@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Primitives;
 
 namespace Deviser.Core.Library.Controllers
 {
@@ -26,6 +27,20 @@ namespace Deviser.Core.Library.Controllers
             get
             {
                 return HttpContext.Session;
+            }
+        }
+
+        protected bool IsAjaxRequest
+        {
+            get
+            {
+                StringValues isAjaxRequest;
+                if(Request.Headers.TryGetValue("IsAjaxRequest", out isAjaxRequest))
+                {
+                    return bool.Parse(isAjaxRequest.ToString());
+                }
+                return false;
+                
             }
         }
 

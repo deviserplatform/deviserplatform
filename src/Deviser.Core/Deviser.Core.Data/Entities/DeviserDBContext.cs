@@ -7,7 +7,7 @@ namespace Deviser.Core.Data.Entities
     public partial class DeviserDBContext : IdentityDbContext<User, Role, string>
     {
 
-        
+
         public DeviserDBContext(DbContextOptions<DeviserDBContext> options)
             : base(options)
         {
@@ -214,7 +214,54 @@ namespace Deviser.Core.Data.Entities
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
 
                 entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
+
+            });
+
+            modelBuilder.Entity<LayoutType>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
                 
+                entity.Ignore(e => e.AllowedTypes);
+            });
+
+            modelBuilder.Entity<ContentType>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.HasOne(d => d.ContentDataType).WithMany(p => p.ContentTypes).HasForeignKey(d => d.ContentDataTypeId).OnDelete(DeleteBehavior.Restrict);
+
+            });
+            modelBuilder.Entity<Property>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Ignore(e => e.Value);
+
+                entity.HasOne(d => d.PropertyOptionList).WithMany(p => p.Properties).HasForeignKey(d => d.PropertyOptionListId).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<PropertyOptionList>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<ContentDataType>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<LayoutTypeProperty>(entity =>
+            {
+                entity.HasOne(d => d.LayoutType).WithMany(p => p.LayoutTypeProperties).HasForeignKey(d => d.LayoutTypeId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.Property).WithMany(p => p.LayoutTypeProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ContentTypeProperty>(entity =>
+            {
+                entity.HasOne(d => d.ContentType).WithMany(p => p.ContentTypeProperties).HasForeignKey(d => d.ConentTypeId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.Property).WithMany(p => p.ContentTypeProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<sysdiagrams>(entity =>
@@ -243,6 +290,13 @@ namespace Deviser.Core.Data.Entities
         public virtual DbSet<PageContentTranslation> PageContentTranslation { get; set; }
         public virtual DbSet<SiteSetting> SiteSetting { get; set; }
         public virtual DbSet<Language> Language { get; set; }
+        public virtual DbSet<LayoutType> LayoutType { get; set; }
+        public virtual DbSet<ContentType> ContentType { get; set; }
+        public virtual DbSet<Property> Property { get; set; }
+        public virtual DbSet<PropertyOptionList> PropertyOptionList { get; set; }
+        public virtual DbSet<ContentDataType> ContentDataType { get; set; }
+        public virtual DbSet<LayoutTypeProperty> LayoutTypeProperty { get; set; }
+        public virtual DbSet<ContentTypeProperty> ContentTypeProperty { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         //public DbSet<ApplicationUser> ApplicationUser { get; set; }
         //public DbSet<ApplicationUser> ApplicationUser { get; set; }

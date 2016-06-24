@@ -14,6 +14,7 @@ namespace Deviser.Core.Data.DataProviders
         {
             this.container = container;
             dbOptions = container.Resolve<DbContextOptions<DeviserDBContext>>();
+            
         }
 
     }

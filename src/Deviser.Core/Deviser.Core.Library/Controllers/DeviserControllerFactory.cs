@@ -48,7 +48,7 @@ namespace Deviser.Core.Library.Controllers
                 foreach (var pageModule in currentPage.PageModule)
                 {
                     Module module = moduleProvider.Get(pageModule.ModuleId);
-                    ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.ModuleActionTypeId == (int)DomainTypes.ModuleActionType.View);
+                    ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == pageModule.ModuleActionId);
                     ModuleContext moduleContext = new ModuleContext();
                     moduleContext.ModuleInfo = module;
                     moduleContext.PageModuleId = pageModule.Id;
@@ -70,6 +70,7 @@ namespace Deviser.Core.Library.Controllers
                         try
                         {
                             string moduleStringResult = await ExecuteModuleController(actionContext, moduleContext, moduleAction);
+                            moduleStringResult = $"<div class=\"sd-module-container\" data-module=\"{moduleContext.ModuleInfo.Name}\" data-page-module-id=\"{moduleContext.PageModuleId}\">{moduleStringResult}</div>";
                             contentResults.Add(new DomainTypes.ContentResult
                             {
                                 Result = moduleStringResult,
@@ -168,7 +169,7 @@ namespace Deviser.Core.Library.Controllers
                 throw new NullReferenceException("Action cannot be located, please check whether module has been installed properly");
 
             var moduleActionContext = new ActionContext(actionContext.HttpContext, context.RouteData, actionDescriptor);
-            
+
             var invoker = moduleInvokerProvider.CreateInvoker(moduleActionContext, actionDescriptor as ControllerActionDescriptor);
             var result = await invoker.InvokeAction() as ViewResult;
             string strResult = result.ExecuteResultToString(moduleActionContext);

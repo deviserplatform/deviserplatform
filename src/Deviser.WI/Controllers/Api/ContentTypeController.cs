@@ -15,6 +15,7 @@ using Autofac;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using AutoMapper;
 
 namespace DeviserWI.Controllers.API
 {
@@ -23,11 +24,13 @@ namespace DeviserWI.Controllers.API
     {
         private readonly ILogger<ContentTypeController> logger;
 
+        private IContentTypeProvider contentTypeProvider;
         private JToken contentTypes;
 
         public ContentTypeController(ILifetimeScope container)
         {
             logger = container.Resolve<ILogger<ContentTypeController>>();
+            contentTypeProvider = container.Resolve<IContentTypeProvider>();
             IHostingEnvironment hostingEnvironment = container.Resolve<IHostingEnvironment>();
             try
             {
@@ -46,8 +49,16 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                if (contentTypes != null)
-                    return Ok(contentTypes);
+                //if (contentTypes != null)
+                //    return Ok(contentTypes);
+                //return NotFound();
+
+                var contentTypes = contentTypeProvider.GetContentTypes();
+
+                var result = Mapper.Map<List<Deviser.Core.Library.DomainTypes.ContentType>>(contentTypes);
+
+                if (result != null)
+                    return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
