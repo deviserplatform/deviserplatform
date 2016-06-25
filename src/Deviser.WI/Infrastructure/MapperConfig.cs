@@ -20,9 +20,11 @@ namespace Deviser.WI.Infrastructure
                 config.CreateMap<PropertyOptionList, Core.Library.DomainTypes.PropertyOptionList>().ReverseMap();
                 config.CreateMap<Property, Core.Library.DomainTypes.Property>().ReverseMap();
                 config.CreateMap<Core.Library.DomainTypes.ContentType, ContentType>().ReverseMap()
-                .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.ContentTypeProperties.Select(ctp=>ctp.Property)));
+                .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.ContentTypeProperties.Select(ctp => ctp.Property)))
+                .ForMember(dest => dest.DataType, opt => opt.MapFrom(src => src.ContentDataType.Name));
                 config.CreateMap<ContentDataType, Core.Library.DomainTypes.ContentDataType>().ReverseMap();
-                
+                config.CreateMap<PageContent, Core.Library.DomainTypes.PageContent>().ReverseMap();
+
 
             });
 

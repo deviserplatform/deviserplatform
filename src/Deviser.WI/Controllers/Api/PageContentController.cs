@@ -1,6 +1,7 @@
 ﻿using Autofac;
+using AutoMapper;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
+//using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.DomainTypes;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Modules;
@@ -36,7 +37,8 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = pageContentProvider.Get(contentId);
+                var dataResult = pageContentProvider.Get(contentId);
+                var result = Mapper.Map<PageContent>(dataResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -53,7 +55,8 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = pageContentProvider.Get(pageId, cultureCode);
+                var dataResult = pageContentProvider.Get(pageId, cultureCode);
+                var result = Mapper.Map<List<PageContent>>(dataResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -70,7 +73,8 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = moduleManager.CreatePageContent(pageContent);
+                var dataResult = moduleManager.CreatePageContent(Mapper.Map<Deviser.Core.Data.Entities.PageContent>(pageContent));
+                var result = Mapper.Map<PageContent>(dataResult);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
@@ -87,7 +91,8 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = pageContentProvider.Update(pageContent);
+                var dataResult = pageContentProvider.Update(Mapper.Map<Deviser.Core.Data.Entities.PageContent>(pageContent));
+                var result = Mapper.Map<PageContent>(dataResult);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
@@ -108,7 +113,8 @@ namespace DeviserWI.Controllers.API
                 if (pageContents == null || pageContents.Count() == 0)
                     return BadRequest();
 
-                pageContentProvider.Update(new List<PageContent>(pageContents));
+                var dataPageContent = Mapper.Map<IEnumerable<Deviser.Core.Data.Entities.PageContent>>(pageContents);
+                pageContentProvider.Update(new List<Deviser.Core.Data.Entities.PageContent>(dataPageContent));
                 return Ok();
             }
             catch (Exception ex)

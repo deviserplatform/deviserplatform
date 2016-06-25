@@ -47,9 +47,11 @@ namespace Deviser.Core.Data.DataProviders
                     PageContent returnData = context.PageContent
                                 .AsNoTracking()
                                 .Include(pc => pc.PageContentTranslation)
-                               .Where(e => e.Id == pageContentId && !e.IsDeleted)
-                               .AsNoTracking()
-                               .FirstOrDefault();
+                                .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentDataType)
+                                .Include(pc => pc.ContentType).ThenInclude(pc=>pc.ContentTypeProperties)
+                                .Where(e => e.Id == pageContentId && !e.IsDeleted)
+                                .AsNoTracking()
+                                .FirstOrDefault();
                     return returnData; 
                 }
             }
@@ -86,6 +88,8 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     List<PageContent> returnData = context.PageContent
                                .Include(pc => pc.PageContentTranslation)
+                               .Include(pc => pc.ContentType).ThenInclude(pc=> pc.ContentDataType)
+                               .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentTypeProperties)
                                .Where(e => e.PageId == pageId && !e.IsDeleted)
                                .ToList();
                     foreach (var pageContent in returnData)

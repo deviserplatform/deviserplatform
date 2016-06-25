@@ -12,6 +12,8 @@ namespace Deviser.Core.Library.DomainTypes
         public string Label { get; set; }
         public string IconImage { get; set; }
         public string IconClass { get; set; }
+        public int SortOrder { get; set; }
+        public string DataType { get; set; }
         public ContentDataType ContentDataType { get; set; }
         public ICollection<Property> Properties { get; set; }
     }

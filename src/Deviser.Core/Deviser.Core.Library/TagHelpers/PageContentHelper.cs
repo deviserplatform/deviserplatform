@@ -109,8 +109,7 @@ namespace Deviser.Core.Library.TagHelpers
                                 .OrderBy(pc => pc.SortOrder);
                             foreach (var pageContent in pageContents)
                             {
-                                dynamic typeInfo = JsonConvert.DeserializeObject<dynamic>(pageContent.TypeInfo);
-                                string typeName = (string)typeInfo.type;
+                                string typeName = pageContent.ContentType.Name;
                                 ViewContext.ViewData["contentType"] = typeName;
                                 htmlContent = htmlHelper.Partial(string.Format(Globals.ContentTypesViewPath, typeName), pageContent);
                                 var contentResult = GetString(htmlContent);

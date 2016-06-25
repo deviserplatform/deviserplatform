@@ -44,25 +44,35 @@
         vm.selectItem = selectItem;
         vm.copyElement = copyElement;
         vm.editContent = editContent;
-        vm.uaLayout = {};
 
-        var pageLayout = {};
 
         init();
 
         /////////////////////////////////////////////
         /*Function declarations only*/
 
+        //Controller initialization
+        function init() {
+            vm.uaLayout = {}; //unassigned layout
+            var pageLayout = {};
+
+            getCurrentPage().then(function () {
+                $q.all([
+                    getLayout(),
+                    getContentTypes(),
+                    getModuleActions(),
+                    getPageContents()
+                ]).then(function () {
+                    loadPageContents();
+                });
+            });
+        }
+
         //Event handlers
         function insertedCallback(event, index) {
             var parentScope = $(event.currentTarget).scope().$parent;
             var containerId = parentScope.item.id;
-
             updateElements(parentScope.item);
-
-            //item.sortOrder = index + 1;
-            //createElement(item, containerId);            
-            //return item;
         }
 
         function dropCallback(event, index, item) {
@@ -73,8 +83,6 @@
         function itemMoved(item, index) {
             item.placeHolders.splice(index, 1);
             updateElements(item);
-            //sorting elements after old element has been moved
-            //sortElements();
         }
 
         function deleteElement(event, index, item) {
@@ -89,7 +97,7 @@
         }
 
         function copyElement(contentType) {
-            contentType.id = vm.newGuid();
+            //contentType.id = vm.newGuid();
         }
 
         function editContent(content) {
@@ -99,7 +107,7 @@
                 size: 'lg',
                 openedClass: 'edit-content-modal',
                 backdrop: 'static',
-                templateUrl: 'contenttypes/' + content.type + '.html',
+                templateUrl: 'contenttypes/' + content.contentType.name + '.html',
                 controller: 'EditContentCtrl as ecVM',
                 resolve: {
                     contentInfo: function () {
@@ -119,24 +127,7 @@
             return defer.promise;
         }
 
-        //Private functions
-        function init() {
-
-            getCurrentPage().then(function () {
-
-                $q.all([
-                    getLayout(),
-                    getContentTypes(),
-                    getModuleActions(),
-                    getPageContents()
-                ]).then(function () {
-                    loadPageContents();
-                    processContentTypes(vm.contentTypes);
-                });
-
-            });
-        }
-
+        /*Private functions*/
         function getCurrentPage() {
             var defer = $q.defer();
             pageService.get(appContext.currentPageId)
@@ -169,7 +160,16 @@
             var defer = $q.defer();
             contentTypeService.get()
             .then(function (data) {
-                vm.contentTypes = data;
+                var contentTypes = data;
+                vm.contentTypes = [];
+                _.each(contentTypes, function (contentType) {
+                    vm.contentTypes.push({
+                        layoutTemplate: "content",
+                        type: "content",
+                        contentType: contentType,
+                        properties: contentType.properties
+                    });
+                });
                 defer.resolve('data received!');
             }, function (error) {
                 showMessage("error", SYS_ERROR_MSG);
@@ -201,7 +201,7 @@
 
         function getPageContents() {
             var defer = $q.defer();
-            pageContentService.get(appContext.currentPageId, appContext.currentCulture)
+            pageContentService.get(appContext.currentPageId, appContext.currentCulture.name)
             .then(function (pageContents) {
                 vm.pageContents = pageContents;
                 defer.resolve(pageContents);
@@ -210,15 +210,6 @@
                 defer.reject(SYS_ERROR_MSG);
             });
             return defer.promise;
-        }
-
-        function processContentTypes(contentTypes) {
-            if (contentTypes) {
-                _.each(contentTypes, function (contentType) {
-                    contentType.id = sdUtil.getGuid();
-                    contentType.layoutTemplate = "content";
-                });
-            }
         }
 
         function loadPageContents() {
@@ -239,10 +230,17 @@
                 return _.contains(containerIds, module.containerId);
             });
 
-            _.each(unAssignedSrcConents, function (content) {
-                var index = content.sortOrder - 1;
-                var contentTypeInfo = JSON.parse(content.typeInfo);
-                unAssignedContents.push(contentTypeInfo);
+            _.each(unAssignedSrcConents, function (pageContent) {
+                var properties = JSON.parse(pageContent.properties);
+                var content = {
+                    id: pageContent.id,
+                    layoutTemplate: 'content',
+                    type: 'content',
+                    properties: properties,
+                    pageContent: pageContent,
+                    sortOrder: pageContent.sortOrder
+                }
+                unAssignedContents.push(content);
             });
 
             _.each(unAssignedSrcModules, function (pageModule) {
@@ -251,7 +249,8 @@
                     id: pageModule.id,
                     layoutTemplate: "module",
                     type: "module",
-                    module: pageModule.module
+                    pageModule: pageModule,
+                    sortOrder: pageModule.sortOrder
                 };//JSON.parse(pageModule.module);
                 unAssignedModules.push(module);
             })
@@ -274,12 +273,20 @@
                     //Load content items if found
                     var pageContents = _.where(vm.pageContents, { containerId: item.id });
                     if (pageContents) {
-                        _.each(pageContents, function (content) {
-                            var index = content.sortOrder - 1;
-                            var contentTypeInfo = JSON.parse(content.typeInfo);
+                        _.each(pageContents, function (pageContent) {
+                            var properties = JSON.parse(pageContent.properties);
+                            var content = {
+                                id: pageContent.id,
+                                layoutTemplate: 'content',
+                                type: 'content',
+                                properties: properties,
+                                pageContent: pageContent,
+                                contentType : pageContent.contentType,
+                                sortOrder: pageContent.sortOrder
+                            }
                             //contentTypeInfo.sortOrder = content.sortOrder;
                             //item.placeHolders.splice(index, 0, contentTypeInfo); //Insert placeHolder into specified index
-                            item.placeHolders.push(contentTypeInfo);
+                            item.placeHolders.push(content);
                         });
                     }
 
@@ -368,16 +375,32 @@
             var defer = $q.defer();
             var contents = [];
             _.each(elementsToSort.contents, function (item) {
-                contents.push({
-                    id: item.element.id,
-                    pageId: appContext.currentPageId,
-                    typeInfo: angular.toJson(item.element),
-                    containerId: item.containerId,
-                    sortOrder: item.element.sortOrder
-                    //cultureCode: appContext.currentCulture //TODO: get this from appContext
-                });
+                var pageContent;
+               
+                if (item.element.id) {
+                    pageContent = item.element.pageContent;
+                }
+                else {
+                    //New page content
+                    pageContent = {};
+                    pageContent.id = vm.newGuid(); //Id shoud be generated only on client side
+                    pageContent.pageId = appContext.currentPageId;
+                    pageContent.contentTypeId = item.element.contentType.id;
+
+                    item.element.id = pageContent.id;
+                    item.element.pageContent = pageContent;
+
+                }
+                pageContent.properties = angular.toJson(item.element.properties)
+                pageContent.containerId = item.containerId;                
+                pageContent.sortOrder = item.element.sortOrder;
+
+                
+
+                contents.push(pageContent);
             });
 
+            //Updating only page contents, not content translations 
             pageContentService.putContents(contents).then(function (response) {
                 console.log(response);
                 defer.resolve('page content updated');
@@ -392,31 +415,34 @@
             var defer = $q.defer();
             var modules = [];
             _.each(elementsToSort.modules, function (item) {
+                var module = {
+                    pageId: appContext.currentPageId,
+                    containerId: item.containerId,
+                    sortOrder: item.element.sortOrder
+                };
                 if (item.element.id) {
                     //Update
-                    modules.push({
-                        id: item.element.id,
-                        pageId: appContext.currentPageId,
-                        moduleId: item.element.pageModule.module.id,
-                        containerId: item.containerId,
-                        moduleActionId: item.element.pageModule.moduleActionId,
-                        sortOrder: item.element.sortOrder
-                        //Modules are not multilingual
-                    });
+                    module.id = item.element.id;
                 }
                 else {
                     //New element
-                    modules.push({
-                        id: item.element.id,
-                        pageId: appContext.currentPageId,
-                        moduleId: item.element.moduleAction.module.id,
-                        containerId: item.containerId,
-                        moduleActionId: item.element.moduleAction.id,
-                        sortOrder: item.element.sortOrder
-                        //Modules are not multilingual
-                    });
+                    module.id = vm.newGuid();    
+                    item.element.id = module.id;
                 }
-               
+
+                if (item.element.pageModule) {
+                    //pagemodule from db
+                    module.moduleId = item.element.pageModule.module.id;
+                    module.moduleActionId = item.element.pageModule.moduleActionId;
+                }
+                else {
+                    //newely created module                    
+                    module.moduleId = item.element.moduleAction.module.id;
+                    module.moduleActionId = item.element.moduleAction.id;
+                }
+
+                modules.push(module);
+
             });
 
             pageModuleService.putModules(modules).then(function (data) {
@@ -450,7 +476,7 @@
             }
         }
 
-        function createElement(item, containerId) {
+        /*function createElement(item, containerId) {
             if (item.layoutTemplate === "content") {
                 createContent(item, containerId);
             }
@@ -489,7 +515,7 @@
             }, function (error) {
                 showMessage("error", SYS_ERROR_MSG);
             });
-        }
+        }*/
 
         function deleteContent(contentId) {
             pageContentService.remove(contentId).then(function (data) {
@@ -615,7 +641,8 @@
                 getPageContents(),
                 getSiteLanguages()
             ]).then(function () {
-                vm.selectedLocale = appContext.currentCulture;
+                var currentCultureCode = appContext.currentCulture.name;
+                vm.selectedLocale = _.findWhere(vm.languages, {cultureCode:currentCultureCode});
                 //load correct translation
                 var translation = getTranslationForLocale(vm.selectedLocale.name);
                 vm.contentTranslation = translation;
@@ -648,7 +675,7 @@
                     //else {
                     //    vm.contentTranslation = {};
                     //}
-                    vm.typeInfo = JSON.parse(pageContent.typeInfo);
+                    vm.contentType = pageContent.contentType;
                     defer.resolve('data received!');
                 }, function (error) {
                     showMessage("error", SYS_ERROR_MSG);
@@ -660,13 +687,13 @@
         function getTranslationForLocale(locale) {
             var translation = _.findWhere(vm.contentTranslations, { cultureCode: locale });
             if (!translation) {
-                if (vm.typeInfo.dataType === 'string') {
+                if (vm.contentType.dataType === 'string') {
                     translation = {
                         cultureCode: locale,
                         contentData: ''
                     };
                 }
-                else if (vm.typeInfo.dataType === 'object') {
+                else if (vm.contentType.dataType === 'object') {
                     translation = {
                         cultureCode: locale,
                         contentData: {}
@@ -686,13 +713,13 @@
         }
 
         function serializeContentTranslation() {
-            if (vm.typeInfo.dataType && (vm.typeInfo.dataType === 'array' || vm.typeInfo.dataType === 'object')) {
+            if (vm.contentType.dataType && (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object')) {
                 vm.contentTranslation.contentData = angular.toJson(vm.contentTranslation.contentData);
             }
         }
 
         function deserializeContentTranslation() {
-            if (vm.typeInfo.dataType && (vm.typeInfo.dataType === 'array' || vm.typeInfo.dataType === 'object')) {
+            if (vm.contentType.dataType && (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object')) {
                 vm.contentTranslation.contentData = JSON.parse(vm.contentTranslation.contentData);
             }
         }

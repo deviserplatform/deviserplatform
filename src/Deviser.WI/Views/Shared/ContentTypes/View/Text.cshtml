@@ -6,8 +6,7 @@
     if (ViewData["isEditMode"] != null)
     {
         isEditMode = (bool)ViewData["isEditMode"];
-    }
-    dynamic typeInfo = JsonConvert.DeserializeObject<dynamic>(Model.TypeInfo);
+    }    
     var appContext = (AppContext)ViewData["AppContext"];
     var currentCulture = appContext.CurrentCulture.ToString();
     PageContentTranslation contentTranslation = null;

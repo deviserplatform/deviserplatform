@@ -6,16 +6,23 @@
     {
         isEditMode = (bool)ViewData["isEditMode"];
     }
-    dynamic typeInfo = JsonConvert.DeserializeObject<dynamic>(Model.TypeInfo);
     var appContext = (AppContext)ViewData["AppContext"];
     var currentCulture = appContext.CurrentCulture.ToString();
     PageContentTranslation contentTranslation = null;
+    dynamic rootObj = null;
+    int totalItems = 0;
     if (Model.PageContentTranslation != null)
     {
         contentTranslation = Model.PageContentTranslation.FirstOrDefault(t => t.CultureCode == currentCulture);
+        if (contentTranslation != null && !string.IsNullOrEmpty(contentTranslation.ContentData))
+        {
+            rootObj = JsonConvert.DeserializeObject<dynamic>(contentTranslation.ContentData);
+            totalItems = rootObj.items.Count;
+        }
     }
-    var rootObj = JsonConvert.DeserializeObject<dynamic>(contentTranslation.ContentData);
-    int totalItems = rootObj.items.Count;
+
+
+
 }
 
 @if (contentTranslation != null)

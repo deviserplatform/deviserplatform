@@ -10,6 +10,8 @@ namespace Deviser.Core.Data.Entities
         public string ControllerName { get; set; }
         public string ControllerNamespace { get; set; }
         public string DisplayName { get; set; }
+        public string IconImage { get; set; }
+        public string IconClass { get; set; }
         public int ModuleActionTypeId { get; set; }
         public int ModuleId { get; set; }
         public bool IsDefault { get; set; }

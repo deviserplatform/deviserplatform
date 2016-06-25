@@ -8,9 +8,10 @@ using Deviser.Core.Data.Entities;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDBContext))]
-    partial class DeviserDBContextModelSnapshot : ModelSnapshot
+    [Migration("20160625084118_DeviserPlatform_0.0.5")]
+    partial class DeviserPlatform_005
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20901")
@@ -44,8 +45,6 @@ namespace Deviser.WI.Migrations
                     b.Property<string>("Label");
 
                     b.Property<string>("Name");
-
-                    b.Property<int>("SortOrder");
 
                     b.HasKey("Id");
 
@@ -208,10 +207,6 @@ namespace Deviser.WI.Migrations
 
                     b.Property<string>("DisplayName")
                         .HasAnnotation("MaxLength", 50);
-
-                    b.Property<string>("IconClass");
-
-                    b.Property<string>("IconImage");
 
                     b.Property<bool>("IsDefault")
                         .ValueGeneratedOnAdd()

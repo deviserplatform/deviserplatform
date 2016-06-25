@@ -139,6 +139,7 @@ namespace Deviser.Core.Data.DataProviders
                                .Include(p => p.PageTranslation)
                                .Include(p => p.Layout)
                                .Include(p => p.PageContent).ThenInclude(pc => pc.PageContentTranslation)
+                               .Include(p => p.PageContent).ThenInclude(pc=>pc.ContentType)
                                .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
                                .OrderBy(p => p.Id)
                                .FirstOrDefault();

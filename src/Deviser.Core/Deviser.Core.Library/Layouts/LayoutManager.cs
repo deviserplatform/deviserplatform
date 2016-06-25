@@ -175,7 +175,7 @@ namespace Deviser.Core.Library.Layouts
                             CultureCode = Globals.FallbackLanguage
                         });
 
-                        PageContent pageContent = new PageContent
+                        Data.Entities.PageContent pageContent = new Data.Entities.PageContent
                         {
                             PageId = pageId,
                             ContainerId = placeHolder.Id,

@@ -149,6 +149,9 @@ namespace Deviser.Core.Data.Entities
                 entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Page).WithMany(p => p.PageContent).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.ContentType).WithMany(p => p.PageContents).HasForeignKey(d => d.ContentTypeId).OnDelete(DeleteBehavior.Restrict);
+
             });
 
             modelBuilder.Entity<PageContentTranslation>(entity =>
@@ -170,6 +173,8 @@ namespace Deviser.Core.Data.Entities
 
             modelBuilder.Entity<PageModule>(entity =>
             {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
                 entity.HasIndex(e => e.ModuleId).HasName("IX_FK_PageModule_Modules");
 
                 entity.HasIndex(e => e.PageId).HasName("IX_FK_PageModule_Module");
