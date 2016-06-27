@@ -184,6 +184,8 @@ namespace Deviser.Core.Data.Entities
                 entity.HasOne(d => d.Module).WithMany(p => p.PageModule).HasForeignKey(d => d.ModuleId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(d => d.Page).WithMany(p => p.PageModule).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.ModuleAction).WithMany(p => p.PageModules).HasForeignKey(d => d.ModuleActionId).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<PageTranslation>(entity =>

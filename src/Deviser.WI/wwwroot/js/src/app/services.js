@@ -154,10 +154,22 @@
         var serviceUrl = "/pagemodule";
         var url = globals.appSettings.serviceBaseUrl + serviceUrl;
         var service = baseService($http, $q, globals, serviceUrl);
-        service.get = null;
+        service.get = get;
         service.put = null;
         service.putModules = putModules;
         return service;
+
+        function get(id) {
+            var getUrl = url + '/page/' + id;
+
+            var request = $http({
+                method: 'GET',
+                url: getUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
 
         function putModules(data) {
             var putUrl = url + '/list';

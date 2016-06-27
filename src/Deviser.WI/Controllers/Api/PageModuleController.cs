@@ -33,6 +33,24 @@ namespace DeviserWI.Controllers.API
             moduleManager = container.Resolve<IModuleManager>();
         }
 
+        [HttpGet]
+        [Route("page/{pageId}")]
+        public IActionResult Get(int pageId)
+        {
+            try
+            {
+                var result = moduleManager.GetPageModuleByPage(pageId);
+                if (result != null)
+                    return Ok(result);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting pageModules, pageId: ", pageId), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpPost]
         public IActionResult Post([FromBody]PageModule pageModule)
         {

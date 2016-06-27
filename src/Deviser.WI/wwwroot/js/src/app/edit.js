@@ -61,7 +61,8 @@
                     getLayout(),
                     getContentTypes(),
                     getModuleActions(),
-                    getPageContents()
+                    getPageContents(),
+                    getPageModules()
                 ]).then(function () {
                     loadPageContents();
                 });
@@ -141,6 +142,19 @@
             return defer.promise;
         }
 
+        function getPageModules() {
+            var defer = $q.defer();
+            pageModuleService.get(appContext.currentPageId)
+            .then(function (data) {
+                vm.pageModules = data;
+                defer.resolve(data);
+            }, function (error) {
+                showMessage("error", SYS_ERROR_MSG);
+                defer.reject(SYS_ERROR_MSG);
+            });
+            return defer.promise;
+        }
+
         function getLayout() {
             var defer = $q.defer();
             layoutService.get(vm.currentPage.layoutId)
@@ -187,7 +201,7 @@
                 _.each(moduleActions, function (moduleAction) {
                     vm.modules.push({
                         layoutTemplate: "module",
-                        type: "module",
+                        type: "module",                        
                         moduleAction: moduleAction
                     });
                 });
@@ -226,7 +240,7 @@
                 return _.contains(containerIds, content.containerId);
             });
 
-            var unAssignedSrcModules = _.reject(vm.currentPage.pageModule, function (module) {
+            var unAssignedSrcModules = _.reject(vm.pageModules, function (module) {
                 return _.contains(containerIds, module.containerId);
             });
 
@@ -249,6 +263,7 @@
                     id: pageModule.id,
                     layoutTemplate: "module",
                     type: "module",
+                    moduleAction: pageModule.moduleAction,
                     pageModule: pageModule,
                     sortOrder: pageModule.sortOrder
                 };//JSON.parse(pageModule.module);
@@ -281,7 +296,7 @@
                                 type: 'content',
                                 properties: properties,
                                 pageContent: pageContent,
-                                contentType : pageContent.contentType,
+                                contentType: pageContent.contentType,
                                 sortOrder: pageContent.sortOrder
                             }
                             //contentTypeInfo.sortOrder = content.sortOrder;
@@ -291,7 +306,7 @@
                     }
 
                     //Load modules if found
-                    var pageModules = _.where(vm.currentPage.pageModule, { containerId: item.id });
+                    var pageModules = _.where(vm.pageModules, { containerId: item.id });
                     if (pageModules) {
                         _.each(pageModules, function (pageModule) {
                             var index = pageModule.sortOrder - 1;
@@ -299,6 +314,7 @@
                                 id: pageModule.id,
                                 layoutTemplate: "module",
                                 type: "module",
+                                moduleAction: pageModule.moduleAction,
                                 pageModule: pageModule,
                                 sortOrder: pageModule.sortOrder
                             };//JSON.parse(pageModule.module);
@@ -376,7 +392,7 @@
             var contents = [];
             _.each(elementsToSort.contents, function (item) {
                 var pageContent;
-               
+
                 if (item.element.id) {
                     pageContent = item.element.pageContent;
                 }
@@ -392,10 +408,10 @@
 
                 }
                 pageContent.properties = angular.toJson(item.element.properties)
-                pageContent.containerId = item.containerId;                
+                pageContent.containerId = item.containerId;
                 pageContent.sortOrder = item.element.sortOrder;
 
-                
+
 
                 contents.push(pageContent);
             });
@@ -426,7 +442,7 @@
                 }
                 else {
                     //New element
-                    module.id = vm.newGuid();    
+                    module.id = vm.newGuid();
                     item.element.id = module.id;
                 }
 
@@ -573,7 +589,7 @@
         /*Function declarations only*/
         //Event handlers
         function changeLanguage() {
-            var translation = getTranslationForLocale(vm.selectedLocale.name);
+            var translation = getTranslationForLocale(vm.selectedLocale.cultureCode);
             vm.contentTranslation = translation;
             deserializeContentTranslation();
         }
@@ -642,11 +658,13 @@
                 getSiteLanguages()
             ]).then(function () {
                 var currentCultureCode = appContext.currentCulture.name;
-                vm.selectedLocale = _.findWhere(vm.languages, {cultureCode:currentCultureCode});
+                vm.selectedLocale = _.findWhere(vm.languages, { cultureCode: currentCultureCode });
                 //load correct translation
-                var translation = getTranslationForLocale(vm.selectedLocale.name);
+                var translation = getTranslationForLocale(vm.selectedLocale.cultureCode);
                 vm.contentTranslation = translation;
-                deserializeContentTranslation();
+                if (typeof (vm.contentTranslation.contentData) === 'string') {
+                    deserializeContentTranslation();
+                }
             });
         }
 

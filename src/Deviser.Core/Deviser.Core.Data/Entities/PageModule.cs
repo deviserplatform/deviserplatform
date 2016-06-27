@@ -12,6 +12,7 @@ namespace Deviser.Core.Data.Entities
         public int ModuleActionId { get; set; }
         public int SortOrder { get; set; }
         public int PageId { get; set; }
+        public ModuleAction ModuleAction { get;set;}
         public virtual Module Module { get; set; }
         public virtual Page Page { get; set; }
     }

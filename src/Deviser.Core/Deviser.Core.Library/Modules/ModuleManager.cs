@@ -27,6 +27,21 @@ namespace Deviser.Core.Library.Modules
             pageContentProvider = container.Resolve<IPageContentProvider>();
         }
 
+        public List<PageModule> GetPageModuleByPage(int pageId)
+        {
+            try
+            {
+                var pageModules = pageProvider.GetPageModules(pageId);
+                return pageModules;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting pageModules, pageId: ", pageId), ex);
+            }
+            
+            return null;
+        }
+
         public PageModule CreatePageModule(PageModule pageModule)
         {
             try

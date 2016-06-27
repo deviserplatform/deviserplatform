@@ -17,5 +17,6 @@ namespace Deviser.Core.Data.Entities
         public bool IsDefault { get; set; }
         public virtual ModuleActionType ModuleActionType { get; set; }
         public virtual Module Module { get; set; }
+        public virtual ICollection<PageModule> PageModules { get; set; }
     }
 }

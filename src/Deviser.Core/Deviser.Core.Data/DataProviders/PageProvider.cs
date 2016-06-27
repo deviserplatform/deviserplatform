@@ -296,6 +296,8 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     IEnumerable<PageModule> returnData = context.PageModule
                                 .Where(e => e.PageId == pageId && !e.IsDeleted)
+                                .Include(e=>e.Module)
+                                .Include(e=>e.ModuleAction)
                                 .OrderBy(p => p.Id)
                                 .ToList();
 

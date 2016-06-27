@@ -3,14 +3,42 @@
     {
         Layout = "~/Sites/Default/Skins/Skyline/LayoutDesigner.cshtml";
     }
+    Deviser.Core.Data.Entities.Page currentPage = (Deviser.Core.Data.Entities.Page)ViewBag.AppContext.CurrentPage;
 }
 <script type="text/javascript">
     var appContext =  @Html.Raw(SDJsonConvert.SerializeObject(ViewBag.AppContext));
     console.log(appContext);
 </script>
 
-<div class="container-fluid body-content page-edit" ng-app="deviserEdit">
-    <div class="col-md-12" ng-controller="EditCtrl as editVM">
+<div class="layout-wrapper" ng-app="deviserEdit" ng-controller="EditCtrl as editVM">
+    <div class="row">
+        <div class="col-md-2">
+            <h3 class="page-title">
+                Page Editor
+                <small>edit the page</small>
+            </h3>
+        </div>
+        <div class="col-md-8">
+            <h3>Layout Name: {{editVM.pageLayout.name}}</h3>
+        </div>
+        <div class="col-md-2">
+            <h3> Page name: @currentPage.PageTranslation.First().Title</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div ng-class="{'alert alert-danger':editVM.message.messageType=='error',
+                     'alert alert-info':editVM.message.messageType=='info',
+                     'alert alert-success':editVM.message.messageType=='success',
+                     'alert alert-warning':editVM.message.messageType=='warning'}" role="alert">
+                {{editVM.message.content}}
+            </div>
+        </div>
+    </div>
+
+
+    <div class="layout-container nestedDemo" >
         <script type="text/ng-template" id="placeHolders.html">
             <div ng-bind="parentItem = item" style="display:none"></div>
             <div class="content-item"
@@ -94,7 +122,12 @@
                 @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
                 <div class="content-header clearfix">
                     <div class="content-title">
-                        {{item.contentType.label}} {{$index+1}}
+                        <i class="{{item.contentType.iconClass}}" ng-show="item.contentType.iconClass"></i>
+                        <img src="{{item.contentType.iconImage}}" ng-show="item.contentType.iconImage" alt="{{item.contentType.name}}" />
+                        {{item.contentType.label}}
+                        
+                        
+                        {{$index+1}}
                     </div>
                     <div class="content-controls" dnd-nodrag>
                         <a class="btn btn-primary" ng-click="editVM.editContent(item)">
@@ -111,7 +144,12 @@
         <script type="text/ng-template" id="module.html">
             <div class="container-element box box-blue">
                 @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
-                <h3>{{item.module.name}} {{$index+1}}</h3>
+                <h3>
+                    <i class="{{item.moduleAction.iconClass}}" ng-show="item.moduleAction.iconClass"></i>
+                    <img src="{{item.moduleAction.iconImage}}" ng-show="item.moduleAction.iconImage" alt="{{item.moduleAction.name}}" />
+                    {{item.moduleAction.displayName}}
+
+                 {{$index+1}}</h3>
                 <div class="container-content">
 
                 </div>
@@ -124,22 +162,8 @@
 
         @await Html.PartialAsync("_NgComponents")
 
-
+        
         <div class="row">
-            <h3 class="page-title">
-                Page Editor
-                <small>edit the page</small>
-            </h3>
-        </div>
-        <div class="row">
-            <div ng-class="{'alert alert-danger':editVM.message.messageType=='error',
-                     'alert alert-info':editVM.message.messageType=='info',
-                     'alert alert-success':editVM.message.messageType=='success',
-                     'alert alert-warning':editVM.message.messageType=='warning'}" role="alert">
-                {{editVM.message.content}}
-            </div>
-        </div>
-        <div class="layout-container nestedDemo">
             <div class="col-md-2">
                 <div class="toolbox box box-grey box-padding">
                     <h3>Content Elements</h3>
@@ -179,75 +203,52 @@
                 </div>
             </div>
             <div class="col-md-8">
-
-                <h3>Layout Name: {{editVM.pageLayout.name}}</h3>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="dropzone box box-yellow">
-                            <!-- The dropzone also uses the list template -->
-                            <h3>Page Container</h3>
-                            <div class="row dnd-list"
-                                 dnd-list="editVM.pageLayout.placeHolders"
-                                 dnd-allowed-types="editVM.layoutAllowedTypes"
-                                 dnd-drop="editVM.dropCallback(event, index, item)"
-                                 dnd-inserted="editVM.insertedCallback(event, index)">
-                                <div class="content-item"
-                                     ng-repeat="item in editVM.pageLayout.placeHolders"
-                                     dnd-draggable="item"
-                                     dnd-type="item.type"
-                                     dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"
-                                     dnd-effect-allowed="move"
-                                     dnd-moved="editVM.itemMoved(editVM.pageLayout, $index)"
-                                     dnd-selected="editVM.selectItem(item)"
-                                     ng-class="{selected:editVM.selectedItem === item}"
-                                     ng-include="item.layoutTemplate + '.html'">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <div class="dropzone box box-yellow">
-                            <!-- The dropzone also uses the list template -->
-                            <h3>Unassigned Elements</h3>
-                            <div class="row dnd-list"
-                                 dnd-list="editVM.uaLayout.placeHolders"
-                                 dnd-allowed-types="editVM.layoutAllowedTypes"
-                                 dnd-inserted="editVM.insertedCallback(event, index)">
-                                <div class="content-item"
-                                     ng-repeat="item in editVM.uaLayout.placeHolders"
-                                     dnd-draggable="item"
-                                     dnd-type="item.type"
-                                     dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"
-                                     dnd-effect-allowed="move"
-                                     dnd-moved="editVM.itemMoved(editVM.uaLayout, $index)"
-                                     dnd-selected="editVM.selectItem(item)"
-                                     ng-class="{selected:editVM.selectedItem === item}"
-                                     ng-include="item.layoutTemplate + '.html'">
-                                </div>
-                            </div>
+                
+                <div class="dropzone box box-yellow">
+                    <!-- The dropzone also uses the list template -->
+                    <h3>Page Container</h3>
+                    <div class="row dnd-list"
+                         dnd-list="editVM.pageLayout.placeHolders"
+                         dnd-allowed-types="editVM.layoutAllowedTypes"
+                         dnd-drop="editVM.dropCallback(event, index, item)"
+                         dnd-inserted="editVM.insertedCallback(event, index)">
+                        <div class="content-item"
+                             ng-repeat="item in editVM.pageLayout.placeHolders"
+                             dnd-draggable="item"
+                             dnd-type="item.type"
+                             dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"
+                             dnd-effect-allowed="move"
+                             dnd-moved="editVM.itemMoved(editVM.pageLayout, $index)"
+                             dnd-selected="editVM.selectItem(item)"
+                             ng-class="{selected:editVM.selectedItem === item}"
+                             ng-include="item.layoutTemplate + '.html'">
                         </div>
                     </div>
                 </div>
+
                 @*<div view-source="nested" highlight-lines="{markup: '1-18, 20-28, 40-42, 57-68, 78-82'}"></div>*@
             </div>
             <!-- Sidebar -->
             <div class="col-md-2">
                 <div class="box box-grey box-padding">
-                    <h3>Selected</h3>
-                    <strong>Item Type: </strong> {{editVM.selectedItem.type}}
-                    <br>
-                    <br>
-                    <strong>Properties</strong>
-                    <table>
+                    <h3>Selected</h3>                    
+                    <table class="table">
                         <tbody>
+                            <tr>
+                                <td>Item Type</td>
+                                <td>{{editVM.selectedItem.type}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <strong>Properties</strong>
+                                </td>
+                            </tr>
                             <tr ng-repeat="property in editVM.selectedItem.properties track by $index">
                                 <td>
-                                    {{property.propertyName}}:
+                                    {{property.label}}:
                                 </td>
                                 <td>
-                                    <input type="text" ng-model="property.ropertyValue" />
+                                    <input type="text" class="form-control" ng-model="property.ropertyValue" />
                                 </td>
                             </tr>
                         </tbody>
@@ -263,6 +264,32 @@
             </div>
 
         </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="dropzone box box-yellow">
+                    <!-- The dropzone also uses the list template -->
+                    <h3>Unassigned Elements</h3>
+                    <div class="row dnd-list"
+                         dnd-list="editVM.uaLayout.placeHolders"
+                         dnd-allowed-types="editVM.layoutAllowedTypes"
+                         dnd-inserted="editVM.insertedCallback(event, index)">
+                        <div class="content-item"
+                             ng-repeat="item in editVM.uaLayout.placeHolders"
+                             dnd-draggable="item"
+                             dnd-type="item.type"
+                             dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"
+                             dnd-effect-allowed="move"
+                             dnd-moved="editVM.itemMoved(editVM.uaLayout, $index)"
+                             dnd-selected="editVM.selectItem(item)"
+                             ng-class="{selected:editVM.selectedItem === item}"
+                             ng-include="item.layoutTemplate + '.html'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @*<div class="row">
             <div class="col-lg-6">
                 <pre>{{editVM.pageLayout | json}}</pre>
