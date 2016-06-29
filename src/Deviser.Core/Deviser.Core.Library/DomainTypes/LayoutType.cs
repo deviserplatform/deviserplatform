@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Deviser.Core.Data.Entities
+namespace Deviser.Core.Library.DomainTypes
 {
     public class LayoutType
     {
@@ -13,6 +13,6 @@ namespace Deviser.Core.Data.Entities
         public string IconImage { get; set; }
         public string IconClass { get; set; }
         public string LayoutTypeIds { get; set; }
-        public ICollection<LayoutTypeProperty> LayoutTypeProperties { get; set; }
+        public ICollection<Property> Properties { get; set; }
     }
 }

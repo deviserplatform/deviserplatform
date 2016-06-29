@@ -25,7 +25,7 @@
         vm.pageLayout = {};
         vm.selectedItem = {}
         vm.deletedElements = [];
-        vm.layoutAllowedTypes = [];
+        vm.layoutAllowedTypes = ["9341f92e-83d8-4afe-ad4a-a95deeda9ae3", "5a0a5884-da84-4922-a02f-5828b55d5c92"] //Id of container and wrapper;
 
         //Function binding
         vm.newGuid = sdUtil.getGuid;
@@ -50,8 +50,7 @@
             $q.all([
             getCurrentPage(),
             getLayouts(),
-            getLayoutTypes(),
-            getLayoutAllowedTypes()
+            getLayoutTypes()
             ]).then(function () {
                 if (vm.currentPage.layoutId) {
                     var selectedLayout = _.find(vm.layouts, function (layout) {
@@ -115,24 +114,15 @@
             return defer.promise;
         }
 
-        function getLayoutAllowedTypes() {
-            var defer = $q.defer();
-            layoutTypeService.getAllowedRootTypes()
-            .then(function (data) {
-                vm.layoutAllowedTypes = data;
-                defer.resolve('data received!');
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-                defer.reject(SYS_ERROR_MSG);
-            });
-            return defer.promise;
-        }
-        
         function processLayoutTypes(layoutTypes) {
             if (layoutTypes) {
                 _.each(layoutTypes, function (layoutType) {
+                    layoutType.layoutTypeId = layoutType.id;
                     layoutType.id = sdUtil.getGuid();
                     layoutType.placeHolders = [];
+                    layoutType.layoutTypeIds = layoutType.layoutTypeIds.replace(/ /g, '');
+                    layoutType.allowedTypes = (layoutType.layoutTypeIds) ? layoutType.layoutTypeIds.split(",") : "";
+                    layoutType.type = layoutType.name;
                     if (layoutType.type === "column") {
                         layoutType.layoutTemplate = "column";
                     }
@@ -181,7 +171,7 @@
                     //console.log(data);
                     vm.pageLayout.id = data.id;
                     vm.pageLayout.placeHolders = data.placeHolders;
-                    vm.pageLayout.isChanged = false;                    
+                    vm.pageLayout.isChanged = false;
                     showMessage("success", "Layout has been saved");
                 }, function (error) {
                     showMessage("error", SYS_ERROR_MSG);
@@ -244,7 +234,7 @@
         function itemMoved(item, index) {
             item.placeHolders.splice(index, 1);
         }
-        
+
         function logListEvent(action, event, index, external, type) {
             var message = external ? 'External ' : '';
             message += type + ' element is ' + action + ' position ' + index;

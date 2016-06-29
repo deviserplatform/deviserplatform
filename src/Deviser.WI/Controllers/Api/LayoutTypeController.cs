@@ -15,6 +15,7 @@ using Autofac;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using AutoMapper;
 
 namespace DeviserWI.Controllers.API
 {
@@ -23,17 +24,21 @@ namespace DeviserWI.Controllers.API
     {
         private readonly ILogger<LayoutTypeController> logger;
 
-        private JToken contentTypes;
+
+        private ILayoutTypeProvider layoutTypeProvider;
+
+        //private JToken contentTypes;
         private List<string> rootAllowedTypes;
         public LayoutTypeController(ILifetimeScope container)
         {
             logger = container.Resolve<ILogger<LayoutTypeController>>();
+            layoutTypeProvider = container.Resolve<ILayoutTypeProvider>();
             IHostingEnvironment hostingEnvironment = container.Resolve<IHostingEnvironment>();
             try
             {
                 var contentTypesfilePath = Path.Combine(hostingEnvironment.ContentRootPath, "appcontentcofig.json");                
                 JObject contentConfig = JObject.Parse(System.IO.File.ReadAllText(contentTypesfilePath));
-                contentTypes = (JArray)contentConfig.SelectToken("layoutTypes");
+                //contentTypes = (JArray)contentConfig.SelectToken("layoutTypes");
                 rootAllowedTypes = contentConfig.SelectToken("rootLayoutTypes").ToObject<List<string>>();
             }
             catch
@@ -47,13 +52,15 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                if (contentTypes != null)
-                    return Ok(contentTypes);
+                var layoutTypes = layoutTypeProvider.GetLayoutTypes();
+                var result = Mapper.Map<List<Deviser.Core.Library.DomainTypes.LayoutType>>(layoutTypes);
+                if (result != null)
+                    return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting content types"), ex);
+                logger.LogError(string.Format("Error occured while getting layout types"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

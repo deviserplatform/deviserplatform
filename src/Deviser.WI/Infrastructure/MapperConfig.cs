@@ -25,6 +25,9 @@ namespace Deviser.WI.Infrastructure
                 config.CreateMap<ContentDataType, Core.Library.DomainTypes.ContentDataType>().ReverseMap();
                 config.CreateMap<PageContent, Core.Library.DomainTypes.PageContent>().ReverseMap();
 
+                config.CreateMap<Core.Library.DomainTypes.LayoutType, LayoutType>().ReverseMap()
+               .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.LayoutTypeProperties.Select(ctp => ctp.Property)));
+
 
             });
 

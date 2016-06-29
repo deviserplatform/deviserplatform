@@ -10,7 +10,7 @@
     console.log(appContext);
 </script>
 
-<div class="layout-wrapper" ng-app="deviserLayout" ng-controller="LayoutCtrl as layoutVM">    
+<div class="layout-wrapper" ng-app="deviserLayout" ng-controller="LayoutCtrl as layoutVM">
     <div class="row layout-controls">
         <div class="col-md-2">
             <h3 class="layout-title">
@@ -62,7 +62,7 @@
                 <div class="content-item"
                      ng-repeat="item in parentItem.placeHolders"
                      dnd-draggable="item"
-                     dnd-type="item.type"
+                     dnd-type="item.layoutTypeId"
                      dnd-effect-allowed="move"
                      dnd-moved="layoutVM.itemMoved(parentItem, $index)"
                      dnd-selected="layoutVM.selectedItem  = item"
@@ -146,12 +146,17 @@
                         <div>
                             <!-- The toolbox only allows to copy objects, not move it. After a new
                             element was created, dnd-copied is invoked and we generate the next id -->
-                            <div ng-repeat="contentType in layoutVM.layoutTypes track by $index"
-                                 dnd-type="contentType.type"
-                                 dnd-draggable="contentType"
+                            <div ng-repeat="layoutType in layoutVM.layoutTypes track by $index"
+                                 dnd-type="layoutType.layoutTypeId"
+                                 dnd-draggable="layoutType"
                                  dnd-effect-allowed="copy"
-                                 dnd-copied="contentType.id = layoutVM.newGuid()">
-                                <button type="button" class="btn btn-default">{{contentType.type}}</button>
+                                 dnd-copied="layoutType.id = layoutVM.newGuid()">
+                                <button type="button" class="btn btn-default">
+
+                                    <i class="{{layoutType.iconClass}}" ng-show="layoutType.iconClass"></i>
+                                    <img src="{{layoutType.iconImage}}" ng-show="layoutType.iconImage" alt="{{layoutType.name}}" />
+                                    {{layoutType.label}}
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -172,7 +177,7 @@
                                     <div class="content-item"
                                          ng-repeat="item in layoutVM.pageLayout.placeHolders"
                                          dnd-draggable="item"
-                                         dnd-type="item.type"
+                                         dnd-type="item.layoutTypeId"
                                          dnd-effect-allowed="move"
                                          dnd-moved="layoutVM.itemMoved(layoutVM.pageLayout, $index)"
                                          dnd-selected="layoutVM.selectedItem  = item"
@@ -219,11 +224,11 @@
 
             </div>
             <div class="row">
-                    <div class="col-lg-6">
-                        <pre>{{layoutVM.pageLayout | json}}</pre>
-                    </div>
-
+                <div class="col-lg-6">
+                    <pre>{{layoutVM.pageLayout | json}}</pre>
                 </div>
+
+            </div>
 
         </div>
 

@@ -227,8 +227,6 @@ namespace Deviser.Core.Data.Entities
             modelBuilder.Entity<LayoutType>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                
-                entity.Ignore(e => e.AllowedTypes);
             });
 
             modelBuilder.Entity<ContentType>(entity =>

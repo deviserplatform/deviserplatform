@@ -226,6 +226,27 @@
                     </div>
                 </div>
 
+                <div class="dropzone box box-yellow">
+                    <!-- The dropzone also uses the list template -->
+                    <h3>Unassigned Elements</h3>
+                    <div class="row dnd-list"
+                         dnd-list="editVM.uaLayout.placeHolders"
+                         dnd-allowed-types="editVM.layoutAllowedTypes"
+                         dnd-inserted="editVM.insertedCallback(event, index)">
+                        <div class="content-item"
+                             ng-repeat="item in editVM.uaLayout.placeHolders"
+                             dnd-draggable="item"
+                             dnd-type="item.type"
+                             dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"
+                             dnd-effect-allowed="move"
+                             dnd-moved="editVM.itemMoved(editVM.uaLayout, $index)"
+                             dnd-selected="editVM.selectItem(item)"
+                             ng-class="{selected:editVM.selectedItem === item}"
+                             ng-include="item.layoutTemplate + '.html'">
+                        </div>
+                    </div>
+                </div>
+
                 @*<div view-source="nested" highlight-lines="{markup: '1-18, 20-28, 40-42, 57-68, 78-82'}"></div>*@
             </div>
             <!-- Sidebar -->
@@ -265,31 +286,7 @@
 
         </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="dropzone box box-yellow">
-                    <!-- The dropzone also uses the list template -->
-                    <h3>Unassigned Elements</h3>
-                    <div class="row dnd-list"
-                         dnd-list="editVM.uaLayout.placeHolders"
-                         dnd-allowed-types="editVM.layoutAllowedTypes"
-                         dnd-inserted="editVM.insertedCallback(event, index)">
-                        <div class="content-item"
-                             ng-repeat="item in editVM.uaLayout.placeHolders"
-                             dnd-draggable="item"
-                             dnd-type="item.type"
-                             dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"
-                             dnd-effect-allowed="move"
-                             dnd-moved="editVM.itemMoved(editVM.uaLayout, $index)"
-                             dnd-selected="editVM.selectItem(item)"
-                             ng-class="{selected:editVM.selectedItem === item}"
-                             ng-include="item.layoutTemplate + '.html'">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+      
         @*<div class="row">
             <div class="col-lg-6">
                 <pre>{{editVM.pageLayout | json}}</pre>
