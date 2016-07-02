@@ -24,6 +24,8 @@ using System.IO;
 using Deviser.Modules.Security.Services;
 using Deviser.Core.Library;
 using Deviser.Modules.Security.Services;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Deviser.WI
 {
@@ -66,21 +68,23 @@ namespace Deviser.WI
                 .AddEntityFrameworkStores<DeviserDBContext>()
                 .AddDefaultTokenProviders();
 
+            services.Add(ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, SerializerSettingsSetup>());
+
             services.AddMvc(option =>
             {
-                var jsonOutputFormatter = new JsonOutputFormatter();
-                jsonOutputFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                //jsonOutputFormatter.SerializerSettings.DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore;
-                jsonOutputFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
-                jsonOutputFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                //var jsonOutputFormatter = new JsonOutputFormatter();
+                //jsonOutputFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                ////jsonOutputFormatter.SerializerSettings.DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore;
+                //jsonOutputFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
+                //jsonOutputFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 
-                var jsonOutputFormatterOld = option.OutputFormatters.FirstOrDefault(formatter => formatter is JsonOutputFormatter);
-                if (jsonOutputFormatterOld != null)
-                {
-                    option.OutputFormatters.Remove(jsonOutputFormatterOld);
-                }
-                //options.OutputFormatters.RemoveAll(formatter => formatter.Instance.GetType() == typeof(JsonOutputFormatter));
-                option.OutputFormatters.Insert(0, jsonOutputFormatter);
+                //var jsonOutputFormatterOld = option.OutputFormatters.FirstOrDefault(formatter => formatter is JsonOutputFormatter);
+                //if (jsonOutputFormatterOld != null)
+                //{
+                //    option.OutputFormatters.Remove(jsonOutputFormatterOld);
+                //}
+                ////options.OutputFormatters.RemoveAll(formatter => formatter.Instance.GetType() == typeof(JsonOutputFormatter));
+                //option.OutputFormatters.Insert(0, jsonOutputFormatter);
             })
             .AddRazorOptions(options =>
             {

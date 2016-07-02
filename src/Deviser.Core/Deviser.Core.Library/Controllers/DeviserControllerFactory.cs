@@ -164,13 +164,14 @@ namespace Deviser.Core.Library.Controllers
             context.RouteData.PushState(actionContext.RouteData.Routers[0], null, null);
 
 
-            var actionDescriptor = actionSelector.Select(context);
+            var actionDescriptions = actionSelector.SelectCandidates(context);
+            var actionDescriptor = actionSelector.SelectBestCandidate(context, actionDescriptions);
             if (actionDescriptor == null)
                 throw new NullReferenceException("Action cannot be located, please check whether module has been installed properly");
 
             var moduleActionContext = new ActionContext(actionContext.HttpContext, context.RouteData, actionDescriptor);
 
-            var invoker = moduleInvokerProvider.CreateInvoker(moduleActionContext, actionDescriptor as ControllerActionDescriptor);
+            var invoker = moduleInvokerProvider.CreateInvoker(moduleActionContext);
             var result = await invoker.InvokeAction() as ViewResult;
             string strResult = result.ExecuteResultToString(moduleActionContext);
             return strResult;

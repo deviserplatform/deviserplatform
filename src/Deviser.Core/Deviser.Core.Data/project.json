@@ -1,39 +1,22 @@
 {
   "version": "1.0.0-*",
   "description": "Deviser.Core.Data Class Library",
-  "authors": [ "karthick" ],
+  "authors": [ "Karthick Sundararajan" ],
 
   "dependencies": {
-    "Autofac": "4.0.0-rc2-240",
-    "Autofac.Extensions.DependencyInjection": "4.0.0-rc2-240",
-    "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.0.0-rc2-final",
-    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0-rc2-final",
-    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0-rc2-final",
-    "Microsoft.EntityFrameworkCore.Tools": {
-      "version": "1.0.0-preview1-final",
-      "type": "build"
-    },
-    "Microsoft.EntityFrameworkCore.SqlServer.Design": "1.0.0-rc2-final",
-    "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc2-final"
+    "Autofac": "4.0.0-rc3-286",
+    "Autofac.Extensions.DependencyInjection": "4.0.0-rc3-280",
+    "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.0.0",
+    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0",
+    "Microsoft.EntityFrameworkCore.SqlServer.Design": "1.0.0",
+    "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
+    "NETStandard.Library": "1.6.0"
   },
 
-  "frameworks": {    
-    "netcoreapp1.0": {
-      "imports": [
-        "dotnet5.6",
-        "dnxcore50",
-        "portable-net45+win8"
-      ]
-    }
-  },
-
-  "tools": {
-    "Microsoft.EntityFrameworkCore.Tools": {
-      "version": "1.0.0-preview1-final",
-      "imports": [
-        "portable-net45+win8+dnxcore50",
-        "portable-net45+win8"
-      ]
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
     }
   }
 }

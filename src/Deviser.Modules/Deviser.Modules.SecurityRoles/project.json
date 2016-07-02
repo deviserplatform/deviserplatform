@@ -3,17 +3,14 @@
   "description": "Deviser.Modules.SecurityRoles Module",
   "authors": [ "Karthick Sundararajan" ],
 
-  "frameworks": {    
-    "netcoreapp1.0": {
-      "imports": [
-        "dotnet5.6",
-        "dnxcore50",
-        "portable-net45+win8"
-      ]
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
     }
   },
 
   "dependencies": {
+    "NETStandard.Library": "1.6.0",
     "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
     "Deviser.Core.Library": "1.0.0-*"
   }

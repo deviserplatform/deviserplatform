@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace Deviser.Core.Library.Modules
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class ModuleAttribute : RouteConstraintAttribute
+    public class ModuleAttribute : RouteValueAttribute
     {
         public ModuleAttribute(string moduleName)
-            : base("area", moduleName, blockNonAttributedActions: true)
+            : base("area", moduleName)
         {
             if (string.IsNullOrEmpty(moduleName))
             {

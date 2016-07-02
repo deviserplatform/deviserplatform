@@ -1,25 +1,22 @@
 {
   "version": "1.0.0-*",
   "description": "Deviser.Core.Library Class Library",
-  "authors": [ "karthick" ],
-
-  "frameworks": {    
-    "netcoreapp1.0": {
-      "imports": [
-        "dotnet5.6",
-        "dnxcore50",
-        "portable-net45+win8"
-      ]
-    }
-  },
+  "authors": [ "Karthick Sundararajan" ],
 
   "dependencies": {
-    "Autofac": "4.0.0-rc2-240",
-    "Autofac.Extensions.DependencyInjection": "4.0.0-rc2-240",
-    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
-    "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc2-final",
-    "Deviser.Core.Data": "1.0.0-*",
+    "Autofac": "4.0.0-rc3-286",
+    "Autofac.Extensions.DependencyInjection": "4.0.0-rc3-280",
     "AutoMapper": "4.2.1",
-    "Microsoft.AspNetCore.Mvc.Core": "1.0.0-rc2-final"
+    "Deviser.Core.Data": "1.0.0-*",
+    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
+    "Microsoft.AspNetCore.Mvc.Core": "1.0.0",
+    "NETStandard.Library": "1.6.0"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
   }
 }

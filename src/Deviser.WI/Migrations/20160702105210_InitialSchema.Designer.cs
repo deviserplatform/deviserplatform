@@ -8,13 +8,13 @@ using Deviser.Core.Data.Entities;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDBContext))]
-    [Migration("20160627204154_DeviserPlatform_0.0.7")]
-    partial class DeviserPlatform_007
+    [Migration("20160702105210_InitialSchema")]
+    partial class InitialSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.0-rc2-20901")
+                .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentDataType", b =>
@@ -131,7 +131,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<string>("Label");
 
-                    b.Property<string>("LayoutIds");
+                    b.Property<string>("LayoutTypeIds");
 
                     b.Property<string>("Name");
 
@@ -560,6 +560,7 @@ namespace Deviser.WI.Migrations
                         .HasName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
+                        .IsUnique()
                         .HasName("UserNameIndex");
 
                     b.ToTable("User");
@@ -653,106 +654,106 @@ namespace Deviser.WI.Migrations
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentType", b =>
                 {
-                    b.HasOne("Deviser.Core.Data.Entities.ContentDataType")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.ContentDataType", "ContentDataType")
+                        .WithMany("ContentTypes")
                         .HasForeignKey("ContentDataTypeId");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeProperty", b =>
                 {
-                    b.HasOne("Deviser.Core.Data.Entities.ContentType")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.ContentType", "ContentType")
+                        .WithMany("ContentTypeProperties")
                         .HasForeignKey("ConentTypeId");
 
-                    b.HasOne("Deviser.Core.Data.Entities.Property")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.Property", "Property")
+                        .WithMany("ContentTypeProperties")
                         .HasForeignKey("PropertyId");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.LayoutTypeProperty", b =>
                 {
-                    b.HasOne("Deviser.Core.Data.Entities.LayoutType")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.LayoutType", "LayoutType")
+                        .WithMany("LayoutTypeProperties")
                         .HasForeignKey("LayoutTypeId");
 
-                    b.HasOne("Deviser.Core.Data.Entities.Property")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.Property", "Property")
+                        .WithMany("LayoutTypeProperties")
                         .HasForeignKey("PropertyId");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleAction", b =>
                 {
-                    b.HasOne("Deviser.Core.Data.Entities.ModuleActionType")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.ModuleActionType", "ModuleActionType")
+                        .WithMany("ModuleAction")
                         .HasForeignKey("ModuleActionTypeId");
 
-                    b.HasOne("Deviser.Core.Data.Entities.Module")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.Module", "Module")
+                        .WithMany("ModuleAction")
                         .HasForeignKey("ModuleId");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Page", b =>
                 {
-                    b.HasOne("Deviser.Core.Data.Entities.Layout")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.Layout", "Layout")
+                        .WithMany("Page")
                         .HasForeignKey("LayoutId");
 
-                    b.HasOne("Deviser.Core.Data.Entities.Page")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.Page", "Parent")
+                        .WithMany("ChildPage")
                         .HasForeignKey("ParentId");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageContent", b =>
                 {
-                    b.HasOne("Deviser.Core.Data.Entities.ContentType")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.ContentType", "ContentType")
+                        .WithMany("PageContents")
                         .HasForeignKey("ContentTypeId");
 
-                    b.HasOne("Deviser.Core.Data.Entities.Page")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.Page", "Page")
+                        .WithMany("PageContent")
                         .HasForeignKey("PageId");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageContentTranslation", b =>
                 {
-                    b.HasOne("Deviser.Core.Data.Entities.PageContent")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.PageContent", "PageContent")
+                        .WithMany("PageContentTranslation")
                         .HasForeignKey("PageContentId");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageModule", b =>
                 {
-                    b.HasOne("Deviser.Core.Data.Entities.ModuleAction")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.ModuleAction", "ModuleAction")
+                        .WithMany("PageModules")
                         .HasForeignKey("ModuleActionId");
 
-                    b.HasOne("Deviser.Core.Data.Entities.Module")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.Module", "Module")
+                        .WithMany("PageModule")
                         .HasForeignKey("ModuleId");
 
-                    b.HasOne("Deviser.Core.Data.Entities.Page")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.Page", "Page")
+                        .WithMany("PageModule")
                         .HasForeignKey("PageId");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageTranslation", b =>
                 {
-                    b.HasOne("Deviser.Core.Data.Entities.Page")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.Page", "Page")
+                        .WithMany("PageTranslation")
                         .HasForeignKey("PageId");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Property", b =>
                 {
-                    b.HasOne("Deviser.Core.Data.Entities.PropertyOptionList")
-                        .WithMany()
+                    b.HasOne("Deviser.Core.Data.Entities.PropertyOptionList", "PropertyOptionList")
+                        .WithMany("Properties")
                         .HasForeignKey("PropertyOptionListId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Deviser.Core.Data.Entities.Role")
-                        .WithMany()
+                        .WithMany("Claims")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -760,7 +761,7 @@ namespace Deviser.WI.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
                 {
                     b.HasOne("Deviser.Core.Data.Entities.User")
-                        .WithMany()
+                        .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -768,7 +769,7 @@ namespace Deviser.WI.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>", b =>
                 {
                     b.HasOne("Deviser.Core.Data.Entities.User")
-                        .WithMany()
+                        .WithMany("Logins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -776,12 +777,12 @@ namespace Deviser.WI.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole<string>", b =>
                 {
                     b.HasOne("Deviser.Core.Data.Entities.Role")
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Deviser.Core.Data.Entities.User")
-                        .WithMany()
+                        .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

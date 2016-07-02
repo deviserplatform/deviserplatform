@@ -18,11 +18,9 @@ namespace Deviser.Core.Library.Controllers
 
     public class ModuleInvokerProvider : IModuleInvokerProvider
     {
-        private readonly IControllerActionArgumentBinder _argumentBinder;
+        private readonly IControllerArgumentBinder _argumentBinder;
         private readonly IControllerFactory _controllerFactory;
         private readonly ControllerActionInvokerCache _controllerActionInvokerCache;
-        private readonly IReadOnlyList<IInputFormatter> _inputFormatters;
-        private readonly IReadOnlyList<IModelValidatorProvider> _modelValidatorProviders;
         private readonly IReadOnlyList<IValueProviderFactory> _valueProviderFactories;
         private readonly int _maxModelValidationErrors;
         private readonly ILogger _logger;
@@ -31,7 +29,7 @@ namespace Deviser.Core.Library.Controllers
         public ModuleInvokerProvider(
             IControllerFactory controllerFactory,
             ControllerActionInvokerCache controllerActionInvokerCache,
-            IControllerActionArgumentBinder argumentBinder,
+            IControllerArgumentBinder argumentBinder,
             IOptions<MvcOptions> optionsAccessor,
             ILoggerFactory loggerFactory,
             DiagnosticSource diagnosticSource)
@@ -39,11 +37,9 @@ namespace Deviser.Core.Library.Controllers
             _controllerFactory = controllerFactory;
             _controllerActionInvokerCache = controllerActionInvokerCache;
             _argumentBinder = argumentBinder;
-            _inputFormatters = optionsAccessor.Value.InputFormatters.ToArray();
-            _modelValidatorProviders = optionsAccessor.Value.ModelValidatorProviders.ToArray();
             _valueProviderFactories = optionsAccessor.Value.ValueProviderFactories.ToArray();
             _maxModelValidationErrors = optionsAccessor.Value.MaxModelValidationErrors;
-            _logger = loggerFactory.CreateLogger<ModuleActionInvoker>();
+            _logger = loggerFactory.CreateLogger<ControllerActionInvoker>();
             _diagnosticSource = diagnosticSource;
         }
 
@@ -53,7 +49,7 @@ namespace Deviser.Core.Library.Controllers
         }
 
         /// <inheritdoc />
-        public IModuleActionInvoker CreateInvoker(ActionContext actionContext, ControllerActionDescriptor descriptor)
+        public IModuleActionInvoker CreateInvoker(ActionContext actionContext)
         {
             if (actionContext == null)
             {
@@ -65,16 +61,13 @@ namespace Deviser.Core.Library.Controllers
             if (actionDescriptor != null)
             {
                 var result = new ModuleActionInvoker(
-                    actionContext,
                   _controllerActionInvokerCache,
                     _controllerFactory,
-                    actionDescriptor,
-                    _inputFormatters,
                     _argumentBinder,
-                    _modelValidatorProviders,
-                    _valueProviderFactories,
                     _logger,
                     _diagnosticSource,
+                    actionContext,
+                    _valueProviderFactories,
                     _maxModelValidationErrors);
 
                 return result;
