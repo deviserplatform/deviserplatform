@@ -38,7 +38,7 @@ namespace Deviser.Core.Library.Controllers
         /// </summary>
         /// <param name="pageId"></param>
         /// <returns></returns>
-        public async Task<Dictionary<string, List<DomainTypes.ContentResult>>> GetPageModuleResults(ActionContext actionContext, int pageId)
+        public async Task<Dictionary<string, List<DomainTypes.ContentResult>>> GetPageModuleResults(ActionContext actionContext, Guid pageId)
         {
             Dictionary<string, List<DomainTypes.ContentResult>> actionResults = new Dictionary<string, List<DomainTypes.ContentResult>>();
             Page currentPage = pageProvider.GetPage(pageId);

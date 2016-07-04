@@ -51,8 +51,8 @@ namespace DeviserWI.Controllers.API
             }
         }
 
-        [HttpGet("{id}")]        
-        public IActionResult Get(int id)
+        [HttpGet("{id}")]
+        public IActionResult Get(Guid id)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace DeviserWI.Controllers.API
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-               
+
         [HttpPut]
         public IActionResult Put([FromBody] Page page)
         {
@@ -105,7 +105,7 @@ namespace DeviserWI.Controllers.API
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-                
+
         [HttpPut("{id}")]
         public IActionResult PutPage(int id, [FromBody] Page page)
         {
@@ -128,11 +128,11 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             try
             {
-                if (id > 0)
+                if (id != Guid.Empty)
                 {
                     bool result = navigation.DeletePage(id);
                     if (result)

@@ -12,7 +12,7 @@ namespace Deviser.Core.Data.DataProviders
     public interface IModuleProvider
     {
         List<Module> Get();
-        Module Get(int moduleId);
+        Module Get(Guid moduleId);
         List<ModuleAction> GetModuleActions();
         Module Get(string moduleName);
         Module Create(Module module);
@@ -41,7 +41,7 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     IEnumerable<Module> returnData = context.Module
                         .Include(m => m.ModuleAction)//.ThenInclude(ma=>ma.ModuleActionType)
-                        .Where(m => m.ModuleAction.Any(ma => ma.ModuleActionTypeId == 1)) //Selecting View Actions Only
+                        .Where(m => m.ModuleAction.Any(ma => ma.ModuleActionType.ControlType.ToLower() == "view")) //Selecting View Actions Only
                         .ToList();
 
                     return new List<Module>(returnData);
@@ -62,7 +62,7 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     IEnumerable<ModuleAction> returnData = context.ModuleAction
                         .Include(ma => ma.Module)//.ThenInclude(ma=>ma.ModuleActionType)
-                        .Where(m => m.ModuleActionTypeId == 1) //Selecting View Actions Only
+                        .Where(m => m.ModuleActionType.ControlType.ToLower() == "view") //Selecting View Actions Only
                         .ToList();
 
                     return new List<ModuleAction>(returnData);
@@ -75,7 +75,7 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
-        public Module Get(int moduleId)
+        public Module Get(Guid moduleId)
         {
             try
             {

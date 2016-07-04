@@ -28,16 +28,16 @@ namespace Deviser.Core.Library
             languageProvider = container.Resolve<ILanguageProvider>();
         }
 
-        public Page GetPageTree(int parentId)
+        public Page GetPageTree(Guid parentId)
         {
             var root = pageProvider.GetPageTree();
             return GetPageTree(root, parentId);
         }
 
-        public Page GetPageTree(int currentPageId, SystemPageFilter systemFilter, int parentId = 0)
+        public Page GetPageTree(Guid currentPageId, SystemPageFilter systemFilter, Guid parentId = new Guid())
         {
             Page root;
-            if (parentId > 0)
+            if (parentId != Guid.Empty)
             {
                 root = GetPageTree(parentId);
             }
@@ -66,7 +66,7 @@ namespace Deviser.Core.Library
             return root;
         }
 
-        public List<Page> GetBreadCrumbs(int currentPageId)
+        public List<Page> GetBreadCrumbs(Guid currentPageId)
         {
             Page root = pageProvider.GetPageTree();
             FilterPage(root, currentPageId);
@@ -119,7 +119,7 @@ namespace Deviser.Core.Library
             return null;
         }
 
-        public bool DeletePage(int pageId, bool forceDelete = false)
+        public bool DeletePage(Guid pageId, bool forceDelete = false)
         {
             try
             {
@@ -168,7 +168,7 @@ namespace Deviser.Core.Library
             return result;
         }
 
-        private Page GetPageTree(Page page, int pageId)
+        private Page GetPageTree(Page page, Guid pageId)
         {
             Page resultPage = null;
             if (page.Id == pageId)
@@ -208,9 +208,9 @@ namespace Deviser.Core.Library
         {
             //string url = "";
             var URLs = InitParentUrls();
-            if (page != null && page.ParentId != null && page.ParentId > 0)
+            if (page != null && page.ParentId != null && page.ParentId != Guid.Empty)
             {
-                Page parentPage = pageProvider.GetPage((int)page.ParentId);
+                Page parentPage = pageProvider.GetPage((Guid)page.ParentId);
                 var parentURLs = GetParentURL(parentPage);
                 if (parentPage.PageTranslation != null && parentPage.PageTranslation.Count > 0)
                 {
@@ -243,7 +243,7 @@ namespace Deviser.Core.Library
             {
 
                 //For new page
-                if (page.Id <= 0)
+                if (page.Id == Guid.Empty)
                 {
                     page.LastModifiedDate = page.CreatedDate = DateTime.Now;
                 }
@@ -317,7 +317,7 @@ namespace Deviser.Core.Library
         //    return null;
         //}
 
-        private void FilterPage(Page page, int currentPageId, Func<Page, bool> predicate = null)
+        private void FilterPage(Page page, Guid currentPageId, Func<Page, bool> predicate = null)
         {
             if (page != null)
             {

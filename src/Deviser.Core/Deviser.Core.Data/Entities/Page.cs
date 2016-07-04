@@ -12,17 +12,17 @@ namespace Deviser.Core.Data.Entities
             PageTranslation = new HashSet<PageTranslation>();
         }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? EndDate { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsSystem { get; set; }
         public bool IsIncludedInMenu { get; set; }
         public DateTime? LastModifiedDate { get; set; }
-        public int? LayoutId { get; set; }
+        public Guid? LayoutId { get; set; }
         public int? PageLevel { get; set; }
         public int? PageOrder { get; set; }
-        public int? ParentId { get; set; }
+        public Guid? ParentId { get; set; }
         public string SkinSrc { get; set; }
         public DateTime? StartDate { get; set; }
 

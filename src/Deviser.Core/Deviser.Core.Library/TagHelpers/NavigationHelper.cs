@@ -38,7 +38,7 @@ namespace Deviser.Core.Library.TagHelpers
         public SystemPageFilter SystemFilter { get; set; }
 
         [HtmlAttributeName(ParentAttributeName)]
-        public int ParentId { get; set; }
+        public Guid ParentId { get; set; }
 
         [HtmlAttributeNotBound]
         [ViewContext]

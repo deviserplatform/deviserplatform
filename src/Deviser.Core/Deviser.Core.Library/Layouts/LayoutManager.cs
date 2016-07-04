@@ -52,7 +52,7 @@ namespace Deviser.Core.Library.Layouts
             return null;
         }
 
-        public PageLayout GetPageLayout(int layoutId)
+        public PageLayout GetPageLayout(Guid layoutId)
         {
             try
             {
@@ -129,7 +129,7 @@ namespace Deviser.Core.Library.Layouts
 
         }
 
-        private void UpdatePageLayout(int pageId, int layoutId)
+        private void UpdatePageLayout(Guid pageId, Guid layoutId)
         {
             var page = pageProvider.GetPage(pageId);
             page.LayoutId = layoutId;
@@ -161,7 +161,7 @@ namespace Deviser.Core.Library.Layouts
             }
         }
 
-        private void CreateElement(List<PlaceHolder> placeHolders, int pageId)
+        private void CreateElement(List<PlaceHolder> placeHolders, Guid pageId)
         {
             if (placeHolders != null && placeHolders.Count > 0)
             {

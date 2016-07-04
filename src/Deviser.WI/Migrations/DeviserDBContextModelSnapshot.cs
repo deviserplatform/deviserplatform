@@ -102,7 +102,7 @@ namespace Deviser.WI.Migrations
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Layout", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Config");
@@ -159,7 +159,7 @@ namespace Deviser.WI.Migrations
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Module", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime?>("CreatedDate")
@@ -194,7 +194,7 @@ namespace Deviser.WI.Migrations
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleAction", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("ActionName")
@@ -217,9 +217,9 @@ namespace Deviser.WI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);
 
-                    b.Property<int>("ModuleActionTypeId");
+                    b.Property<Guid>("ModuleActionTypeId");
 
-                    b.Property<int>("ModuleId");
+                    b.Property<Guid>("ModuleId");
 
                     b.HasKey("Id");
 
@@ -233,7 +233,7 @@ namespace Deviser.WI.Migrations
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleActionType", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("ControlType")
@@ -246,7 +246,7 @@ namespace Deviser.WI.Migrations
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Page", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime?>("CreatedDate")
@@ -268,13 +268,13 @@ namespace Deviser.WI.Migrations
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime");
 
-                    b.Property<int?>("LayoutId");
+                    b.Property<Guid?>("LayoutId");
 
                     b.Property<int?>("PageLevel");
 
                     b.Property<int?>("PageOrder");
 
-                    b.Property<int?>("ParentId");
+                    b.Property<Guid?>("ParentId");
 
                     b.Property<string>("SkinSrc")
                         .HasAnnotation("MaxLength", 200);
@@ -310,7 +310,7 @@ namespace Deviser.WI.Migrations
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("PageId");
+                    b.Property<Guid>("PageId");
 
                     b.Property<string>("Properties");
 
@@ -365,11 +365,11 @@ namespace Deviser.WI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);
 
-                    b.Property<int>("ModuleActionId");
+                    b.Property<Guid>("ModuleActionId");
 
-                    b.Property<int>("ModuleId");
+                    b.Property<Guid>("ModuleId");
 
-                    b.Property<int>("PageId");
+                    b.Property<Guid>("PageId");
 
                     b.Property<int>("SortOrder");
 
@@ -388,7 +388,7 @@ namespace Deviser.WI.Migrations
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageTranslation", b =>
                 {
-                    b.Property<int>("PageId");
+                    b.Property<Guid>("PageId");
 
                     b.Property<string>("Locale")
                         .HasAnnotation("MaxLength", 10);
@@ -472,7 +472,7 @@ namespace Deviser.WI.Migrations
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.SiteSetting", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("SettingName")

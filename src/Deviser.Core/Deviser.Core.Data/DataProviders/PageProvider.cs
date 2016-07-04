@@ -13,12 +13,12 @@ namespace Deviser.Core.Data.DataProviders
     {
         Page GetPageTree();
         List<Page> GetPages();
-        Page GetPage(int pageId);
+        Page GetPage(Guid pageId);
         Page CreatePage(Page page);
         Page UpdatePage(Page page);
         Page UpdatePageTree(Page page);
         List<PageTranslation> GetPageTranslations(string locale);
-        List<PageModule> GetPageModules(int pageId);
+        List<PageModule> GetPageModules(Guid pageId);
         PageModule GetPageModule(Guid pageModuleId);
         PageModule GetPageModuleByContainer(Guid containerId);
         PageModule CreatePageModule(PageModule pageModule);
@@ -128,7 +128,7 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
-        public Page GetPage(int pageId)
+        public Page GetPage(Guid pageId)
         {
             try
             {
@@ -256,7 +256,7 @@ namespace Deviser.Core.Data.DataProviders
                                 //foreach (var grandChild in child.ChildPages)
                                 UpdatePageTreeTree(context, child);
                             }
-                            else if (child.Id > 0)
+                            else if (child.Id != Guid.Empty)
                             {
                                 //context.UpdateGraph(child, map => map.AssociatedCollection(p => p.ChildPages)
                                 //                  .OwnedCollection(p => p.PageTranslations));
@@ -288,7 +288,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-        public List<PageModule> GetPageModules(int pageId)
+        public List<PageModule> GetPageModules(Guid pageId)
         {
             try
             {

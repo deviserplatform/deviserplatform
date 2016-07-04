@@ -32,11 +32,11 @@ namespace Deviser.Core.Library
             try
             {
                 List<SiteSetting> siteSetting = siteSettingProvider.GetSettings();
-                int homeTabId;
+                Guid homeTabId;
                 string strHomeTabId = siteSettingProvider.GetSettingValue("HomePageId");
                 string siteRoot = siteSettingProvider.GetSettingValue("SiteRoot");
 
-                if (!string.IsNullOrEmpty(strHomeTabId) && int.TryParse(strHomeTabId, out homeTabId))
+                if (!string.IsNullOrEmpty(strHomeTabId) && Guid.TryParse(strHomeTabId, out homeTabId))
                 {
                     Globals.HomePage = pageProvider.GetPage(homeTabId);
                     Globals.SiteRoot = siteRoot;

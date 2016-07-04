@@ -14,7 +14,7 @@ namespace Deviser.Core.Library.DomainTypes
         public DateTime? CreatedDate { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? LastModifiedDate { get; set; }
-        public int PageId { get; set; }
+        public Guid PageId { get; set; }
         public Guid ContentTypeId { get; set; }
         public virtual Deviser.Core.Data.Entities.Page Page { get; set; }
         public virtual ContentType ContentType { get; set; }

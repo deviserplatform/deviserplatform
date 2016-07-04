@@ -51,7 +51,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpGet("{cultureCode}/{pageId}")]
-        public IActionResult Get(string cultureCode, int pageId)
+        public IActionResult Get(string cultureCode, Guid pageId)
         {
             try
             {

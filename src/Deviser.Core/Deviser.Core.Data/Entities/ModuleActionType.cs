@@ -10,7 +10,7 @@ namespace Deviser.Core.Data.Entities
             ModuleAction = new HashSet<ModuleAction>();
         }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string ControlType { get; set; }
 
         public virtual ICollection<ModuleAction> ModuleAction { get; set; }

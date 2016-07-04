@@ -48,7 +48,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult Get(Guid id)
         {
             try
             {
@@ -99,7 +99,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             try
             {

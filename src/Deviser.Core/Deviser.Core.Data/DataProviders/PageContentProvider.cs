@@ -13,7 +13,7 @@ namespace Deviser.Core.Data.DataProviders
     {
         PageContent Get(Guid pageContentId);
         List<PageContent> GetByContainer(Guid containerId);
-        List<PageContent> Get(int pageId, string cultureCode);
+        List<PageContent> Get(Guid pageId, string cultureCode);
         PageContentTranslation GetTranslation(Guid pageConentId);
         PageContentTranslation GetTranslations(Guid pageConentId, string cultureCode);
         PageContent Create(PageContent content);
@@ -80,7 +80,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-        public List<PageContent> Get(int pageId, string cultureCode)
+        public List<PageContent> Get(Guid pageId, string cultureCode)
         {
             try
             {

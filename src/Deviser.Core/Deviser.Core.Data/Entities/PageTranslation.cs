@@ -5,7 +5,7 @@ namespace Deviser.Core.Data.Entities
 {
     public partial class PageTranslation
     {
-        public int PageId { get; set; }
+        public Guid PageId { get; set; }
         public string Locale { get; set; }
         public string Description { get; set; }
         public string Keywords { get; set; }

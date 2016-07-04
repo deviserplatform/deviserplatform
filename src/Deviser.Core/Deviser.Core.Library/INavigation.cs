@@ -7,11 +7,11 @@ namespace Deviser.Core.Library
 {
     public interface INavigation
     {
-        Page GetPageTree(int pageId);
-        Page GetPageTree(int currentPageId, SystemPageFilter systemFilter, int parentId = 0);
-        List<Page> GetBreadCrumbs(int currentPageId);
+        Page GetPageTree(Guid pageId);
+        Page GetPageTree(Guid currentPageId, SystemPageFilter systemFilter, Guid parentId = new Guid());
+        List<Page> GetBreadCrumbs(Guid currentPageId);
         Page UpdatePageTree(Page page);
         Page UpdateSinglePage(Page page);
-        bool DeletePage(int pageId, bool forceDelete = false);
+        bool DeletePage(Guid pageId, bool forceDelete = false);
     }
 }

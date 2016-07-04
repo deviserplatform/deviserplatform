@@ -141,7 +141,7 @@
 
         function newLayout() {
             vm.pageLayout = {};
-            vm.pageLayout.id = 0;
+            vm.pageLayout.id = undefined;
             vm.pageLayout.name = "";
             vm.pageLayout.isChanged = false;
             vm.pageLayout.placeHolders = [];
@@ -154,7 +154,7 @@
         }
 
         function copyLayout() {
-            vm.pageLayout.id = 0;
+            vm.pageLayout.id = undefined;
             vm.pageLayout.name = "";
             vm.pageLayout.isChanged = true;
         }
@@ -164,7 +164,7 @@
 
             //vm.pageLayout.config = JSON.stringify(vm.pageLayout.placeHolders);
             vm.pageLayout.pageId = appContext.currentPageId;
-            if (vm.pageLayout.id > 0) {
+            if (vm.pageLayout.id) {
                 //Update layout
                 layoutService.put(vm.pageLayout)
                 .then(function (data) {

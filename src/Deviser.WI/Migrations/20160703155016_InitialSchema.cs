@@ -44,8 +44,7 @@ namespace Deviser.WI.Migrations
                 name: "Layout",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     Config = table.Column<string>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
                     Name = table.Column<string>(maxLength: 50, nullable: true)
@@ -75,8 +74,7 @@ namespace Deviser.WI.Migrations
                 name: "Module",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     Description = table.Column<string>(maxLength: 2000, nullable: true),
                     IsActive = table.Column<bool>(nullable: false, defaultValue: true),
@@ -94,8 +92,7 @@ namespace Deviser.WI.Migrations
                 name: "ModuleActionType",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     ControlType = table.Column<string>(maxLength: 50, nullable: true)
                 },
                 constraints: table =>
@@ -135,8 +132,7 @@ namespace Deviser.WI.Migrations
                 name: "SiteSetting",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     SettingName = table.Column<string>(maxLength: 50, nullable: true),
                     SettingValue = table.Column<string>(nullable: true)
                 },
@@ -229,18 +225,17 @@ namespace Deviser.WI.Migrations
                 name: "Page",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     EndDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
                     IsIncludedInMenu = table.Column<bool>(nullable: false),
                     IsSystem = table.Column<bool>(nullable: false, defaultValue: false),
                     LastModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    LayoutId = table.Column<int>(nullable: true),
+                    LayoutId = table.Column<Guid>(nullable: true),
                     PageLevel = table.Column<int>(nullable: true),
                     PageOrder = table.Column<int>(nullable: true),
-                    ParentId = table.Column<int>(nullable: true),
+                    ParentId = table.Column<Guid>(nullable: true),
                     SkinSrc = table.Column<string>(maxLength: 200, nullable: true),
                     StartDate = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
@@ -265,8 +260,7 @@ namespace Deviser.WI.Migrations
                 name: "ModuleAction",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     ActionName = table.Column<string>(maxLength: 50, nullable: true),
                     ControllerName = table.Column<string>(maxLength: 50, nullable: true),
                     ControllerNamespace = table.Column<string>(maxLength: 200, nullable: true),
@@ -274,8 +268,8 @@ namespace Deviser.WI.Migrations
                     IconClass = table.Column<string>(nullable: true),
                     IconImage = table.Column<string>(nullable: true),
                     IsDefault = table.Column<bool>(nullable: false, defaultValue: false),
-                    ModuleActionTypeId = table.Column<int>(nullable: false),
-                    ModuleId = table.Column<int>(nullable: false)
+                    ModuleActionTypeId = table.Column<Guid>(nullable: false),
+                    ModuleId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -410,7 +404,7 @@ namespace Deviser.WI.Migrations
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
                     LastModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    PageId = table.Column<int>(nullable: false),
+                    PageId = table.Column<Guid>(nullable: false),
                     Properties = table.Column<string>(nullable: true),
                     SortOrder = table.Column<int>(nullable: false)
                 },
@@ -435,7 +429,7 @@ namespace Deviser.WI.Migrations
                 name: "PageTranslation",
                 columns: table => new
                 {
-                    PageId = table.Column<int>(nullable: false),
+                    PageId = table.Column<Guid>(nullable: false),
                     Locale = table.Column<string>(maxLength: 10, nullable: false),
                     Description = table.Column<string>(maxLength: 500, nullable: true),
                     Keywords = table.Column<string>(maxLength: 500, nullable: true),
@@ -461,9 +455,9 @@ namespace Deviser.WI.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     ContainerId = table.Column<Guid>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
-                    ModuleActionId = table.Column<int>(nullable: false),
-                    ModuleId = table.Column<int>(nullable: false),
-                    PageId = table.Column<int>(nullable: false),
+                    ModuleActionId = table.Column<Guid>(nullable: false),
+                    ModuleId = table.Column<Guid>(nullable: false),
+                    PageId = table.Column<Guid>(nullable: false),
                     SortOrder = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

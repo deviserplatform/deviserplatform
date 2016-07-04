@@ -78,7 +78,7 @@
         //////////////////////////////////
         ///*Function declarations only*/
         function init() {
-            vm.currentLocale = appContext.currentCulture; //to be replaced as language feature in future
+            vm.currentLocale = appContext.currentCulture.name; //to be replaced as language feature in future
             getPages();
             getSkins();
             getLanguages();

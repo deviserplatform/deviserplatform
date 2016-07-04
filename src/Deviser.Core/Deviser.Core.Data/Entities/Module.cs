@@ -11,7 +11,7 @@ namespace Deviser.Core.Data.Entities
             PageModule = new HashSet<PageModule>();
         }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; }

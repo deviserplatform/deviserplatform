@@ -12,7 +12,7 @@ namespace Deviser.Core.Data.Entities
         public DateTime? CreatedDate { get; set; }        
         public bool IsDeleted { get; set; }
         public DateTime? LastModifiedDate { get; set; }        
-        public int PageId { get; set; }
+        public Guid PageId { get; set; }
         public Guid ContentTypeId { get; set; }
         public virtual Page Page { get; set; }
         public virtual ContentType ContentType { get; set; }

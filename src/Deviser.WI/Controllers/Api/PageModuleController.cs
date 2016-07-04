@@ -35,7 +35,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpGet]
         [Route("page/{pageId}")]
-        public IActionResult Get(int pageId)
+        public IActionResult Get(Guid pageId)
         {
             try
             {

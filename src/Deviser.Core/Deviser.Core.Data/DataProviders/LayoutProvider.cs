@@ -11,7 +11,7 @@ namespace Deviser.Core.Data.DataProviders
     public interface ILayoutProvider
     {
         List<Layout> GetLayouts();
-        Layout GetLayout(int layoutId);
+        Layout GetLayout(Guid layoutId);
         Layout CreateLayout(Layout layout);
         Layout UpdateLayout(Layout layout);
 
@@ -49,7 +49,7 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
-        public Layout GetLayout(int layoutId)
+        public Layout GetLayout(Guid layoutId)
         {
             try
             {

@@ -12,7 +12,7 @@ namespace Deviser.Core.Library
     {
         public Page CurrentPage { get; set; }
 
-        public int CurrentPageId { get; set; }
+        public Guid CurrentPageId { get; set; }
 
         public string CurrentLink { get; set; }
 
