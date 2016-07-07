@@ -81,7 +81,8 @@ Page Header
 
             .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown .dropdown-toggle:hover,
             .sd-dropdown-menu.dropdown-menu li > a:hover,
-            .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown.open .dropdown-toggle {
+            .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown.open .dropdown-toggle, 
+            .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown.active {
                 background-color: #3f4f62;
             }
 

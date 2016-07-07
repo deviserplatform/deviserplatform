@@ -1,10 +1,13 @@
 ﻿@using System.Security.Claims
 @using Deviser.Core.Library.TagHelpers;
 @using Deviser.Core.Library;
+@using Deviser.Core.Library.Services;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     string loggedInClass = User.Identity.IsAuthenticated ? "logged-in" : "";
 }
+@inject IScopeService testService
+
 @await Component.InvokeAsync("ControlBar")
 <nav class="navbar navbar-default navbar-fixed-top @loggedInClass">
     <div class="container">
@@ -42,6 +45,8 @@
     </div>
     <!-- /.container-fluid -->
 </nav>
+
+
 
 @RenderBody()
 

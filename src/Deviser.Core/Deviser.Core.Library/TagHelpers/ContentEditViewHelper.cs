@@ -2,6 +2,7 @@
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.DomainTypes;
+using Deviser.Core.Library.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
@@ -37,8 +38,8 @@ namespace Deviser.Core.Library.TagHelpers
         [ViewContext]
         public ViewContext ViewContext { get; set; }
 
-        public ContentEditViewHelper(ILifetimeScope container, IHttpContextAccessor httpContextAccessor)
-             : base(httpContextAccessor)
+        public ContentEditViewHelper(ILifetimeScope container, IHttpContextAccessor httpContextAccessor, IScopeService scopeService)
+             : base(httpContextAccessor, scopeService)
         {
             this.htmlHelper = container.Resolve<IHtmlHelper>();
             this.navigation = container.Resolve<INavigation>();

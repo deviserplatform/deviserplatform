@@ -2,6 +2,7 @@
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library;
+using Deviser.Core.Library.Services;
 using Deviser.WI.ViewModels.Components;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,7 +17,8 @@ namespace Deviser.WI.ViewComponents
     public class LanguageSwitcher : DeviserViewComponent
     {
         private ILanguageProvider languageProvider;
-        public LanguageSwitcher(ILifetimeScope container)
+        public LanguageSwitcher(IScopeService scopeService, ILifetimeScope container)
+            :base(scopeService)
         {
             languageProvider = container.Resolve<ILanguageProvider>();
         }

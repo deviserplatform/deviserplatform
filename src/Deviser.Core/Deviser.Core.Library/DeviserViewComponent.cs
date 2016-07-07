@@ -1,4 +1,5 @@
 ﻿using Deviser.Core.Library.Extensions;
+using Deviser.Core.Library.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Localization;
@@ -14,25 +15,25 @@ namespace Deviser.Core.Library
 {
     public class DeviserViewComponent : ViewComponent
     {
-        protected ISession Session
+        IScopeService scopeService;
+        public DeviserViewComponent(IScopeService scopeService)
         {
-            get
-            {
-                return HttpContext.Session;
-            }
+            this.scopeService = scopeService;
         }
+
+        //protected ISession Session
+        //{
+        //    get
+        //    {
+        //        return HttpContext.Session;
+        //    }
+        //}
 
         protected AppContext AppContext
         {
             get
             {
-                AppContext returnValue = Session.GetObjectFromJson<AppContext>("AppContext");
-                if (returnValue == null)
-                {
-                    returnValue = new AppContext();
-                    Session.SetObjectAsJson("AppContext", returnValue);
-                }
-                returnValue.CurrentCulture = CurrentCulture;
+                AppContext returnValue = scopeService.AppContext;
                 return returnValue;
             }
         }

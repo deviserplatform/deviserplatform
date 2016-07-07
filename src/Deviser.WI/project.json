@@ -8,7 +8,7 @@
     },
 
     "Autofac": "4.0.0-rc3-286",
-    "Autofac.Extensions.DependencyInjection": "4.0.0-rc3-280", 
+    "Autofac.Extensions.DependencyInjection": "4.0.0-rc3-280",
     "AutoMapper": "4.2.1",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
@@ -53,6 +53,7 @@
     "Deviser.Modules.Language": "1.0.0-*",
     "Deviser.Modules.FileManager": "1.0.0-*",
     "Deviser.Modules.Security": "1.0.0-*",
+    "Deviser.Modules.ContentManagement": "1.0.0-*",
     "Serilog.Extensions.Logging": "1.0.0",
     "Serilog.Sinks.Literate": "2.0.0",
     "Serilog.Sinks.RollingFile": "2.0.0"

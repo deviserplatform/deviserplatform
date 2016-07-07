@@ -15,57 +15,35 @@ namespace Deviser.Core.Library.Controllers
 {
     public class DeviserController : Controller
     {
-
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             Globals.CurrentCulture = GetCurrentCulture();
             base.OnActionExecuting(context);
         }
 
-        protected ISession Session
-        {
-            get
-            {
-                return HttpContext.Session;
-            }
-        }
+        //protected ISession Session
+        //{
+        //    get
+        //    {
+        //        return HttpContext.Session;
+        //    }
+        //}
 
         protected bool IsAjaxRequest
         {
             get
             {
                 StringValues isAjaxRequest;
-                if(Request.Headers.TryGetValue("IsAjaxRequest", out isAjaxRequest))
+                if (Request.Headers.TryGetValue("IsAjaxRequest", out isAjaxRequest))
                 {
                     return bool.Parse(isAjaxRequest.ToString());
                 }
                 return false;
-                
+
             }
         }
 
-        protected AppContext AppContext
-        {
-            get
-            {
-                AppContext returnValue = Session.GetObjectFromJson<AppContext>("AppContext");
-                if (returnValue == null)
-                {
-                    returnValue = new AppContext();
-                    Session.SetObjectAsJson("AppContext", returnValue);
-                }
-                returnValue.CurrentCulture = CurrentCulture;
-                return returnValue;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-                Session.SetObjectAsJson("AppContext", value);
-            }
-        }
+        protected AppContext AppContext { get; set; }
 
         public CultureInfo CurrentCulture
         {

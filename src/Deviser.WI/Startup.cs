@@ -26,6 +26,7 @@ using Deviser.Core.Library;
 using Deviser.Modules.Security.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc;
+using Deviser.Core.Library.Services;
 
 namespace Deviser.WI
 {
@@ -98,6 +99,7 @@ namespace Deviser.WI
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddScoped<IScopeService, ScopeService>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
             // Add Autofac

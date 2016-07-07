@@ -4,6 +4,7 @@ using Deviser.Core.Data.Entities;
 using Deviser.Core.Library;
 using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.DomainTypes;
+using Deviser.Core.Library.Services;
 using Deviser.Core.Library.Sites;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -28,8 +29,9 @@ namespace Deviser.WI.Controllers
         IPageManager pageManager;
         IDeviserControllerFactory deviserControllerFactory;
         ISiteBootstrapper siteBootstrapper;
+        IScopeService scopeService;
 
-        public PageController(ILifetimeScope container)
+        public PageController(ILifetimeScope container, IScopeService scopeService)
         {
             this.container = container;
             logger = container.Resolve<ILogger<PageController>>();
@@ -37,6 +39,7 @@ namespace Deviser.WI.Controllers
             pageManager = container.Resolve<IPageManager>();
             deviserControllerFactory = container.Resolve<IDeviserControllerFactory>();
             siteBootstrapper = container.Resolve<ISiteBootstrapper>();
+            this.scopeService = scopeService;
             siteBootstrapper.InitializeSite();
         }
 
@@ -44,9 +47,11 @@ namespace Deviser.WI.Controllers
         {            
             try
             {
-                Page currentPage = await GetPageModules(permalink);
+                Page currentPage = GetPageModules(permalink);
                 if (currentPage != null)
                 {
+                    Dictionary<string, List<Core.Library.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(Context, currentPage.Id);
+                    ViewBag.ModuleActionResults = moduleActionResults;
                     return View(currentPage);
                 }
             }
@@ -60,11 +65,13 @@ namespace Deviser.WI.Controllers
 
         public IActionResult Layout(string permalink)
         {
+            Page currentPage = GetPageModules(permalink);
             //Page currentPage = await GetPageModules(permalink);
             if (AppContext != null)
             {
                 ViewBag.Skin = Globals.AdminSkin;
                 ViewBag.AppContext = AppContext;
+                RouteData.Values.Add("permalink", permalink);
                 return View(ViewBag);
             }
             return null;
@@ -72,16 +79,18 @@ namespace Deviser.WI.Controllers
 
         public IActionResult Edit(string permalink)
         {
+            Page currentPage = GetPageModules(permalink);
             if (AppContext != null)
             {
                 ViewBag.Skin = Globals.AdminSkin;
                 ViewBag.AppContext = AppContext;
+                RouteData.Values.Add("permalink", permalink);
                 return View(AppContext.CurrentPage);
             }
             return null;
         }
 
-        private async Task<Page> GetPageModules(string permalink)
+        private Page GetPageModules(string permalink)
         {
             Page currentPage = null;
 
@@ -105,7 +114,7 @@ namespace Deviser.WI.Controllers
                 appContext.CurrentLink = permalink;
                 currentPage.PageModule = null;
                 appContext.CurrentPage = currentPage;
-                Dictionary<string, List<Core.Library.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(Context, currentPage.Id);
+                
                 //Skins are not used for sometime period
                 string skin = "";
                 if (!string.IsNullOrEmpty(currentPage.SkinSrc))
@@ -115,21 +124,10 @@ namespace Deviser.WI.Controllers
 
                 skin = skin.Replace("[G]", "~/Sites/Default/");
 
-                //var contentModuleHtml = System.Web.Mvc.Html.renderac
-
-                /*DeviserWI.Modules.Content.Controllers.DefaultController contentController = new DeviserWI.Modules.Content.Controllers.DefaultController();
-                ActionResult result = contentController.Index();
-
-                foreach (var pageModule in currentPage.PageModules)
-                {
-                    skinModel.Add(pageModule.PaneName, result);
-                }*/
-
-
                 //return View(skin, skinModel);
-                AppContext = appContext;
-                ViewBag.AppContext = AppContext;
-                ViewBag.ModuleActionResults = moduleActionResults;
+                scopeService.AppContext =  AppContext = appContext; //Very important!!!
+                scopeService.AppContext.CurrentCulture = CurrentCulture; //Very important!!!
+                ViewBag.AppContext = AppContext;                
                 ViewBag.Skin = skin;
             }
             return currentPage;

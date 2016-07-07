@@ -1,4 +1,5 @@
 ﻿using Deviser.Core.Library.Extensions;
+using Deviser.Core.Library.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Localization;
@@ -13,17 +14,19 @@ namespace Deviser.Core.Library.TagHelpers
 {
     public class DeviserTagHelper : TagHelper
     {
+        IScopeService scopeService;
+        
+        public DeviserTagHelper(IHttpContextAccessor httpContextAccessor, IScopeService scopeService)
+        {
+            HttpContext = httpContextAccessor.HttpContext;
+            this.scopeService = scopeService;
+        }
+
         protected AppContext AppContext
         {
             get
             {
-                AppContext returnValue = HttpContext.Session.GetObjectFromJson<AppContext>("AppContext");
-                if (returnValue == null)
-                {
-                    returnValue = new AppContext();
-                    HttpContext.Session.SetObjectAsJson("AppContext", returnValue);
-                }
-                returnValue.CurrentCulture = CurrentCulture;
+                AppContext returnValue = scopeService.AppContext;
                 return returnValue;
             }
         }
@@ -41,11 +44,6 @@ namespace Deviser.Core.Library.TagHelpers
                 var requestCulture = requestCultureFeature.RequestCulture.UICulture;
                 return requestCulture;
             }
-        }
-
-        public DeviserTagHelper(IHttpContextAccessor httpContextAccessor)
-        {
-            HttpContext = httpContextAccessor.HttpContext;
         }
     }
 }

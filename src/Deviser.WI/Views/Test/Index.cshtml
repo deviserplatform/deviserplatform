@@ -1,6 +1,8 @@
-﻿@model RegisterViewModel
+﻿@using Deviser.Core.Library.Services;
 @{
     ViewData["Title"] = "Test";
 }
+
+@inject IScopeService testService
 
 <h2>@ViewData["Title"].</h2>
