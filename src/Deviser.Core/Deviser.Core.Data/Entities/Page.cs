@@ -29,6 +29,7 @@ namespace Deviser.Core.Data.Entities
         public virtual ICollection<PageContent> PageContent { get; set; }
         public virtual ICollection<PageModule> PageModule { get; set; }
         public virtual ICollection<PageTranslation> PageTranslation { get; set; }
+        public virtual ICollection<PagePermission> PagePermissions { get; set; }
         public virtual Layout Layout { get; set; }
         public virtual Page Parent { get; set; }
         public virtual ICollection<Page> ChildPage { get; set; }

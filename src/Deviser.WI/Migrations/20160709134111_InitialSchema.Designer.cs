@@ -8,7 +8,7 @@ using Deviser.Core.Data.Entities;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDBContext))]
-    [Migration("20160703155016_InitialSchema")]
+    [Migration("20160709134111_InitialSchema")]
     partial class InitialSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -387,6 +387,28 @@ namespace Deviser.WI.Migrations
                     b.ToTable("PageModule");
                 });
 
+            modelBuilder.Entity("Deviser.Core.Data.Entities.PagePermission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("PageId");
+
+                    b.Property<Guid>("PermissionId");
+
+                    b.Property<Guid>("RoleId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PageId");
+
+                    b.HasIndex("PermissionId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("PagePermission");
+                });
+
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageTranslation", b =>
                 {
                     b.Property<Guid>("PageId");
@@ -414,6 +436,26 @@ namespace Deviser.WI.Migrations
                     b.HasIndex("PageId");
 
                     b.ToTable("PageTranslation");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Permission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("CreatedDate");
+
+                    b.Property<string>("Entity");
+
+                    b.Property<string>("Label");
+
+                    b.Property<DateTime?>("LastModifiedDate");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Permission");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Property", b =>
@@ -452,7 +494,8 @@ namespace Deviser.WI.Migrations
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Role", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -513,7 +556,8 @@ namespace Deviser.WI.Migrations
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.User", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("AccessFailedCount");
 
@@ -566,7 +610,7 @@ namespace Deviser.WI.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -575,8 +619,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<string>("ClaimValue");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired();
+                    b.Property<Guid>("RoleId");
 
                     b.HasKey("Id");
 
@@ -585,7 +628,7 @@ namespace Deviser.WI.Migrations
                     b.ToTable("RoleClaim");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -594,8 +637,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<string>("ClaimValue");
 
-                    b.Property<string>("UserId")
-                        .IsRequired();
+                    b.Property<Guid>("UserId");
 
                     b.HasKey("Id");
 
@@ -604,7 +646,7 @@ namespace Deviser.WI.Migrations
                     b.ToTable("UserClaim");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider");
 
@@ -612,8 +654,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<string>("ProviderDisplayName");
 
-                    b.Property<string>("UserId")
-                        .IsRequired();
+                    b.Property<Guid>("UserId");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -622,11 +663,11 @@ namespace Deviser.WI.Migrations
                     b.ToTable("UserLogin");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.Property<string>("UserId");
+                    b.Property<Guid>("UserId");
 
-                    b.Property<string>("RoleId");
+                    b.Property<Guid>("RoleId");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -637,9 +678,9 @@ namespace Deviser.WI.Migrations
                     b.ToTable("UserRole");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.Property<string>("UserId");
+                    b.Property<Guid>("UserId");
 
                     b.Property<string>("LoginProvider");
 
@@ -736,6 +777,21 @@ namespace Deviser.WI.Migrations
                         .HasForeignKey("PageId");
                 });
 
+            modelBuilder.Entity("Deviser.Core.Data.Entities.PagePermission", b =>
+                {
+                    b.HasOne("Deviser.Core.Data.Entities.Page", "Page")
+                        .WithMany("PagePermission")
+                        .HasForeignKey("PageId");
+
+                    b.HasOne("Deviser.Core.Data.Entities.Permission", "Permission")
+                        .WithMany("PagePermission")
+                        .HasForeignKey("PermissionId");
+
+                    b.HasOne("Deviser.Core.Data.Entities.Role", "Role")
+                        .WithMany("PagePermission")
+                        .HasForeignKey("RoleId");
+                });
+
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageTranslation", b =>
                 {
                     b.HasOne("Deviser.Core.Data.Entities.Page", "Page")
@@ -750,7 +806,7 @@ namespace Deviser.WI.Migrations
                         .HasForeignKey("PropertyOptionListId");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Deviser.Core.Data.Entities.Role")
                         .WithMany("Claims")
@@ -758,7 +814,7 @@ namespace Deviser.WI.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<System.Guid>", b =>
                 {
                     b.HasOne("Deviser.Core.Data.Entities.User")
                         .WithMany("Claims")
@@ -766,7 +822,7 @@ namespace Deviser.WI.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.HasOne("Deviser.Core.Data.Entities.User")
                         .WithMany("Logins")
@@ -774,7 +830,7 @@ namespace Deviser.WI.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole<System.Guid>", b =>
                 {
                     b.HasOne("Deviser.Core.Data.Entities.Role")
                         .WithMany("Users")

@@ -11,7 +11,7 @@
     ]);
 
     app.controller('PageManagementCtrl', ['$scope', '$timeout', '$filter', '$q',
-        'globals', 'pageService', 'skinService', 'languageService', editCtrl]);
+        'globals', 'pageService', 'skinService', 'languageService', 'roleService', editCtrl]);
 
     app.filter('selectLanguage', function () {
 
@@ -33,15 +33,18 @@
     ////////////////////////////////
     /*Function declarations only*/
     function editCtrl($scope, $timeout, $filter, $q,
-    globals, pageService, skinService, languageService) {
+    globals, pageService, skinService, languageService, roleService) {
         var vm = this;
-        SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
+        var SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
+        var pageViewPermissionId = globals.appSettings.permissions.pageView;
+        var pageEditPermissionId = globals.appSettings.permissions.pageEdit;
+        var administratorRoleId = globals.appSettings.roles.administrator;
         vm.alerts = [];
         vm.pages = [];
         vm.selectedItem = {};
         vm.liveTill = {};
         vm.liveFrom = {};
-
+        vm.administratorRoleId = administratorRoleId;
 
 
         vm.options = {
@@ -71,6 +74,10 @@
         vm.newSubPage = newSubPage;
         vm.changeLanguage = changeLanguage;
         vm.save = save;
+        vm.isView = isView;
+        vm.isEdit = isEdit;
+        vm.changeViewPermission = changeViewPermission;
+        vm.changeEditPermission = changeEditPermission;
         vm.siteLanguage = "en-US";
 
         init();
@@ -80,6 +87,7 @@
         function init() {
             vm.currentLocale = appContext.currentCulture.name; //to be replaced as language feature in future
             getPages();
+            getRoles();
             getSkins();
             getLanguages();
         }
@@ -108,6 +116,14 @@
                 vm.languages = languages;
             }, function (error) {
                 showMessage("error", "Cannot get all languages, please contact administrator");
+            });
+        }
+
+        function getRoles() {
+            roleService.get().then(function (roles) {
+                vm.roles = roles;
+            }, function (error) {
+                showMessage("error", "Cannot get all roles, please contact administrator");
             });
         }
 
@@ -164,6 +180,68 @@
         function selectCurrent(selected) {
             vm.currentLocale = vm.siteLanguage;
             vm.selectedItem = selected;
+            if (vm.selectedItem.pagePermissions) {
+                _.each(vm.selectedItem.pagePermissions, function (pagePermission) {
+                    pagePermission.isView = function (role) {
+                        return
+                    }
+                });
+            }
+            
+        }
+
+        function isView(page, role) {
+            var permission = _.find(page.pagePermissions, function (p) {
+                return p.roleId === role.id && p.permissionId === pageViewPermissionId
+            });
+            return permission;
+        }
+
+        function isEdit(page, role) {
+            var permission = _.find(page.pagePermissions, function (p) {
+                return p.roleId === role.id && p.permissionId === pageEditPermissionId;
+            });
+            return permission;
+        }
+
+        function changeViewPermission(page, role) {
+            //if (role.id !== administratorRoleId) {
+                if (isView(page, role)) {
+                    //Remove
+                    page.pagePermissions = _.reject(page.pagePermissions, function (p) {
+                        return p.roleId === role.id && p.permissionId === pageViewPermissionId
+                    })
+                }
+                else {
+                    //Add
+                    var permission = {
+                        pageId: page.id,
+                        roleId: role.id,
+                        permissionId: pageViewPermissionId
+                    };
+                    page.pagePermissions.push(permission);
+                }
+            //}
+        }
+
+        function changeEditPermission(page, role) {
+            //if (role.id !== administratorRoleId) {
+                if (isEdit(page, role)) {
+                    //Remove
+                    page.pagePermissions = _.reject(page.pagePermissions, function (p) {
+                        return p.roleId === role.id && p.permissionId === pageEditPermissionId
+                    })
+                }
+                else {
+                    //Add
+                    var permission = {
+                        pageId: page.id,
+                        roleId: role.id,
+                        permissionId: pageEditPermissionId
+                    };
+                    page.pagePermissions.push(permission);
+                }
+            //}
         }
 
         function newSubPage(parentPage) {

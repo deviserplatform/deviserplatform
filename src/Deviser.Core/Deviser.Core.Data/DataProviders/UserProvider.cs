@@ -12,7 +12,7 @@ namespace Deviser.Core.Data.DataProviders
     public interface IUserProvider
     {
         List<User> GetUsers();
-        User GetUser(string userId);
+        User GetUser(Guid userId);
 
     }
 
@@ -48,7 +48,7 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
-        public User GetUser(string userId)
+        public User GetUser(Guid userId)
         {
             try
             {

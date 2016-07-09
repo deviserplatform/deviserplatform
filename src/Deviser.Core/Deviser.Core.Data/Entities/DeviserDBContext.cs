@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using System;
 
 namespace Deviser.Core.Data.Entities
 {
-    public partial class DeviserDBContext : IdentityDbContext<User, Role, string>
+    public partial class DeviserDBContext : IdentityDbContext<User, Role, Guid>
     {
 
 
@@ -35,27 +36,25 @@ namespace Deviser.Core.Data.Entities
                 entity.ToTable("Role");
             });
 
-            modelBuilder.Entity<IdentityUserClaim<string>>(entity =>
+            modelBuilder.Entity<IdentityUserClaim<Guid>>(entity =>
             {
                 entity.ToTable("UserClaim");
             });
 
-            modelBuilder.Entity<IdentityRoleClaim<string>>(entity =>
+            modelBuilder.Entity<IdentityRoleClaim<Guid>>(entity =>
             {
                 entity.ToTable("RoleClaim");
             });
 
-            modelBuilder.Entity<IdentityUserRole<string>>(entity =>
+            modelBuilder.Entity<IdentityUserRole<Guid>>(entity =>
             {
                 entity.ToTable("UserRole");
             });
 
-            modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
+            modelBuilder.Entity<IdentityUserLogin<Guid>>(entity =>
             {
                 entity.ToTable("UserLogin");
             });
-
-
 
             modelBuilder.Entity<Layout>(entity =>
             {
@@ -269,6 +268,15 @@ namespace Deviser.Core.Data.Entities
                 entity.HasOne(d => d.Property).WithMany(p => p.ContentTypeProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<PagePermission>(entity =>
+            {
+                entity.HasOne(d => d.Page).WithMany(p => p.PagePermissions).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.Permission).WithMany(p => p.PagePermissions).HasForeignKey(d => d.PermissionId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.Role).WithMany(p => p.PagePermissions).HasForeignKey(d => d.RoleId).OnDelete(DeleteBehavior.Restrict);
+            });
+
             modelBuilder.Entity<sysdiagrams>(entity =>
             {
                 entity.HasKey(e => e.diagram_id)
@@ -302,6 +310,8 @@ namespace Deviser.Core.Data.Entities
         public virtual DbSet<ContentDataType> ContentDataType { get; set; }
         public virtual DbSet<LayoutTypeProperty> LayoutTypeProperty { get; set; }
         public virtual DbSet<ContentTypeProperty> ContentTypeProperty { get; set; }
+        public virtual DbSet<PagePermission> PagePermission { get; set; }
+        public virtual DbSet<Permission> Permission { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         //public DbSet<ApplicationUser> ApplicationUser { get; set; }
         //public DbSet<ApplicationUser> ApplicationUser { get; set; }

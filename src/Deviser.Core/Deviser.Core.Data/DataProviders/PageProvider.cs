@@ -31,10 +31,10 @@ namespace Deviser.Core.Data.DataProviders
     {
         //Logger
         private readonly ILogger<LayoutProvider> logger;
-        
+
         //Constructor
         public PageProvider(ILifetimeScope container)
-            :base(container)
+            : base(container)
         {
             this.container = container;
             logger = container.Resolve<ILogger<LayoutProvider>>();
@@ -70,13 +70,13 @@ namespace Deviser.Core.Data.DataProviders
                     //    .Include(p => p.PageTranslation)
                     //    .Where(p => p.ParentId == null).First();
 
-                    var rootOnly =  context.Page
+                    var rootOnly = context.Page
                             .Where(p => p.ParentId == null)
                             .First();
                     GetPageTree(context, rootOnly);
                     return rootOnly;
                 }
-                    
+
             }
             catch (Exception ex)
             {
@@ -90,7 +90,8 @@ namespace Deviser.Core.Data.DataProviders
             //Page resultPage = null;
 
             page.ChildPage = context.Page
-                .Include(p=>p.PageTranslation)
+                .Include(p => p.PageTranslation)
+                .Include(p => p.PagePermissions)
                 .Where(p => p.ParentId == page.Id).ToList();
 
             if (page.ChildPage != null)
@@ -118,7 +119,7 @@ namespace Deviser.Core.Data.DataProviders
                                 .OrderBy(p => p.Id)
                                 .ToList();
 
-                    return new List<Page>(returnData); 
+                    return new List<Page>(returnData);
                 }
             }
             catch (Exception ex)
@@ -139,7 +140,7 @@ namespace Deviser.Core.Data.DataProviders
                                .Include(p => p.PageTranslation)
                                .Include(p => p.Layout)
                                .Include(p => p.PageContent).ThenInclude(pc => pc.PageContentTranslation)
-                               .Include(p => p.PageContent).ThenInclude(pc=>pc.ContentType)
+                               .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType)
                                .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
                                .OrderBy(p => p.Id)
                                .FirstOrDefault();
@@ -154,7 +155,7 @@ namespace Deviser.Core.Data.DataProviders
                         returnData.PageContent = returnData.PageContent.Where(pc => !pc.IsDeleted).ToList();
                     }
 
-                    return returnData; 
+                    return returnData;
                 }
             }
             catch (Exception ex)
@@ -173,7 +174,7 @@ namespace Deviser.Core.Data.DataProviders
                     page.CreatedDate = DateTime.Now; page.LastModifiedDate = DateTime.Now;
                     resultPage = context.Page.Add(page).Entity;
                     context.SaveChanges();
-                    return resultPage; 
+                    return resultPage;
                 }
             }
             catch (Exception ex)
@@ -204,9 +205,36 @@ namespace Deviser.Core.Data.DataProviders
                             context.PageTranslation.Add(translation);
                         }
                     }
+
+                    //Remove all permissions for this page and add new 
+                    if (page.PagePermissions != null && page.PagePermissions.Count > 0)
+                    {
+                        //Filter deleted permissions in UI and delete all of them
+                        var toDelete = context.PagePermission.Where(dbPermission => !page.PagePermissions.Any(pagePermission => pagePermission.PermissionId == dbPermission.PermissionId && pagePermission.RoleId == dbPermission.RoleId)).ToList();
+                        if (toDelete != null && toDelete.Count > 0)
+                            context.PagePermission.RemoveRange(toDelete);
+
+                        //Filter new permissions which are not in db and add all of them
+                        var toAdd = page.PagePermissions.Where(pagePermission => !context.PagePermission.Any(dbPermission => dbPermission.PermissionId == pagePermission.PermissionId && dbPermission.RoleId == pagePermission.RoleId)).ToList();
+                        if(toAdd!=null && toAdd.Count > 0)
+                        {
+                            foreach (var permission in toAdd)
+                            {
+                                //permission.Page = null;
+                                if (permission.Id == Guid.Empty)
+                                    permission.Id = Guid.NewGuid();
+                                context.PagePermission.Add(permission);
+                            }
+                        }
+
+
+                        
+                    }
+
+
                     //context.PageTranslation.UpdateRange(page.PageTranslation);
                     context.SaveChanges();
-                    return resultPage; 
+                    return resultPage;
                 }
             }
             catch (Exception ex)
@@ -226,7 +254,7 @@ namespace Deviser.Core.Data.DataProviders
                     UpdatePageTreeTree(context, page);
                     context.SaveChanges();
                     resultPage = context.Page.ToList().First();
-                    return resultPage; 
+                    return resultPage;
                 }
             }
             catch (Exception ex)
@@ -280,7 +308,7 @@ namespace Deviser.Core.Data.DataProviders
                     .OrderBy(p => p.PageId)
                     .ToList();
                     return new List<PageTranslation>(returnData);
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -296,12 +324,12 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     IEnumerable<PageModule> returnData = context.PageModule
                                 .Where(e => e.PageId == pageId && !e.IsDeleted)
-                                .Include(e=>e.Module)
-                                .Include(e=>e.ModuleAction)
+                                .Include(e => e.Module)
+                                .Include(e => e.ModuleAction)
                                 .OrderBy(p => p.Id)
                                 .ToList();
 
-                    return new List<PageModule>(returnData); 
+                    return new List<PageModule>(returnData);
                 }
             }
             catch (Exception ex)
@@ -322,7 +350,7 @@ namespace Deviser.Core.Data.DataProviders
                                .OrderBy(p => p.Id)
                                .FirstOrDefault();
 
-                    return returnData; 
+                    return returnData;
                 }
             }
             catch (Exception ex)
@@ -343,7 +371,7 @@ namespace Deviser.Core.Data.DataProviders
                                .OrderBy(p => p.Id)
                                .FirstOrDefault();
 
-                    return returnData; 
+                    return returnData;
                 }
             }
             catch (Exception ex)
@@ -361,7 +389,7 @@ namespace Deviser.Core.Data.DataProviders
                     PageModule resultPageModule;
                     resultPageModule = context.PageModule.Add(pageModule).Entity;
                     context.SaveChanges();
-                    return resultPageModule; 
+                    return resultPageModule;
                 }
             }
             catch (Exception ex)
@@ -380,7 +408,7 @@ namespace Deviser.Core.Data.DataProviders
                     resultPageModule = context.PageModule.Attach(pageModule).Entity;
                     context.Entry(pageModule).State = EntityState.Modified;
                     context.SaveChanges();
-                    return resultPageModule; 
+                    return resultPageModule;
                 }
             }
             catch (Exception ex)
@@ -408,13 +436,13 @@ namespace Deviser.Core.Data.DataProviders
                             context.PageModule.Add(module);
                         }
                     }
-                    context.SaveChanges(); 
+                    context.SaveChanges();
                 }
             }
             catch (Exception ex)
             {
                 logger.LogError("Error occured while calling UpdatePageModules", ex);
             }
-        }        
+        }
     }
 }

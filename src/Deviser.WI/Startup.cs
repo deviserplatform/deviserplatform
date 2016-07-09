@@ -66,7 +66,7 @@ namespace Deviser.WI
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Deviser.WI")));
 
             services.AddIdentity<User, Role>()
-                .AddEntityFrameworkStores<DeviserDBContext>()
+                .AddEntityFrameworkStores<DeviserDBContext, Guid>()
                 .AddDefaultTokenProviders();
 
             services.Add(ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, SerializerSettingsSetup>());

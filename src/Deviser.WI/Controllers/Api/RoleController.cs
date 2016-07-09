@@ -52,7 +52,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(string id)
+        public IActionResult Get(Guid id)
         {
             try
             {
@@ -107,11 +107,11 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        public IActionResult Delete(Guid id)
         {
             try
             {
-                if (!string.IsNullOrEmpty(id))
+                if (id!= Guid.Empty)
                 {
                     var result = roleProvider.DeleteRole(id);
                     if (result != null)

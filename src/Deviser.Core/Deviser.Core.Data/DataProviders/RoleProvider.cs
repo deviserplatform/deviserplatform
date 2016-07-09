@@ -13,11 +13,11 @@ namespace Deviser.Core.Data.DataProviders
     public interface IRoleProvider
     {
         List<Role> GetRoles();
-        Role GetRole(string roleId);
+        Role GetRole(Guid roleId);
         Role GetRoleByName(string roleName);
         Role CreateRole(Role role);
         Role UpdateRole(Role role);
-        Role DeleteRole(string roleId);
+        Role DeleteRole(Guid roleId);
 
     }
 
@@ -40,7 +40,9 @@ namespace Deviser.Core.Data.DataProviders
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
-                    IEnumerable<Role> returnData = context.Roles.ToList();
+                    IEnumerable<Role> returnData = context.Roles
+                        .OrderBy(r=>r.Name)
+                        .ToList();
                     return new List<Role>(returnData); 
                 }
             }
@@ -51,7 +53,7 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
-        public Role GetRole(string roleId)
+        public Role GetRole(Guid roleId)
         {
             try
             {
@@ -134,7 +136,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-        public Role DeleteRole(string roleId)
+        public Role DeleteRole(Guid roleId)
         {
             try
             {

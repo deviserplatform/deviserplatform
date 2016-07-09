@@ -80,7 +80,7 @@ namespace Deviser.WI.Controllers.Api
                 {
                     var user = new Core.Data.Entities.User();
                     Mapper.Map(userDTO, user, typeof(Core.Library.DomainTypes.User), typeof(Core.Data.Entities.User));
-                    user.Id = Guid.NewGuid().ToString();
+                    user.Id = Guid.NewGuid();
                     user.UserName = userDTO.Email;
                     var result = await userManager.CreateAsync(user, userDTO.password);
                     if (result.Succeeded)
@@ -126,7 +126,7 @@ namespace Deviser.WI.Controllers.Api
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        public IActionResult Delete(Guid id)
         {
             try
             {
@@ -176,11 +176,10 @@ namespace Deviser.WI.Controllers.Api
                 if (passwordObj != null && passwordObj.userId != null &&
                     passwordObj.currentPassword != null && passwordObj.newPassword != null)
                 {
-                    string userId = passwordObj.userId;
-                    string currentPassword = passwordObj.currentPassword;
-                    string newPassword = passwordObj.newPassword;
-                    if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(userId) &&
-                        !string.IsNullOrEmpty(newPassword))
+                    var userId = (Guid)passwordObj.userId;
+                    var currentPassword = passwordObj.currentPassword;
+                    var newPassword = passwordObj.newPassword;
+                    if (userId!= Guid.Empty && !string.IsNullOrEmpty(newPassword))
                     {
                         var user = userManager.Users.FirstOrDefault(u => u.Id == userId);
                         var result = userManager.ChangePasswordAsync(user, currentPassword, newPassword).Result;
@@ -204,8 +203,8 @@ namespace Deviser.WI.Controllers.Api
             {
                 if (userRoleObj != null && userRoleObj.userId != null && userRoleObj.roleName != null)
                 {
-                    string userId = (string)userRoleObj.userId;
-                    string roleName = (string)userRoleObj.roleName;
+                    var userId = (Guid)userRoleObj.userId;
+                    var roleName = (string)userRoleObj.roleName;
                     var user = userManager.Users.FirstOrDefault(u => u.Id == userId);
                     var result = userManager.AddToRoleAsync(user, roleName).Result;
                     if (result.Succeeded)
@@ -225,7 +224,7 @@ namespace Deviser.WI.Controllers.Api
         }
                 
         [HttpDelete("role/{userId}/{roleName}")]
-        public IActionResult RemoveRole(string userId, string roleName)
+        public IActionResult RemoveRole(Guid userId, string roleName)
         {
             try
             {
