@@ -1,4 +1,4 @@
-﻿{
+{
   "userSecretsId": "aspnet-Deviser.WI-cc242608-e994-48c7-8978-e503b390704f",
 
   "dependencies": {
@@ -6,7 +6,6 @@
       "version": "1.0.0",
       "type": "platform"
     },
-
     "Autofac": "4.0.0-rc3-286",
     "Autofac.Extensions.DependencyInjection": "4.0.0-rc3-280",
     "AutoMapper": "4.2.1",
@@ -45,6 +44,7 @@
       "type": "build"
     },
     "MailKit": "1.4.0",
+    "Deviser.Core.Common": "1.0.0",
     "Deviser.Core.Data": "1.0.0-*",
     "Deviser.Core.Library": "1.0.0-*",
     "Deviser.Modules.PageManagement": "1.0.0-*",

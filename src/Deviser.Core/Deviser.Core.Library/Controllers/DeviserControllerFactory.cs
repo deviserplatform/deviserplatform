@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
-using Deviser.Core.Library.DomainTypes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -11,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Deviser.Core.Common.DomainTypes;
+using ContentResult = Deviser.Core.Common.DomainTypes.ContentResult;
 using Module = Deviser.Core.Data.Entities.Module;
 
 namespace Deviser.Core.Library.Controllers
@@ -38,9 +39,9 @@ namespace Deviser.Core.Library.Controllers
         /// </summary>
         /// <param name="pageId"></param>
         /// <returns></returns>
-        public async Task<Dictionary<string, List<DomainTypes.ContentResult>>> GetPageModuleResults(ActionContext actionContext, Guid pageId)
+        public async Task<Dictionary<string, List<ContentResult>>> GetPageModuleResults(ActionContext actionContext, Guid pageId)
         {
-            Dictionary<string, List<DomainTypes.ContentResult>> actionResults = new Dictionary<string, List<DomainTypes.ContentResult>>();
+            Dictionary<string, List<ContentResult>> actionResults = new Dictionary<string, List<ContentResult>>();
             Page currentPage = pageProvider.GetPage(pageId);
             if (currentPage.PageModule != null && currentPage.PageModule.Count > 0)
             {
@@ -54,7 +55,7 @@ namespace Deviser.Core.Library.Controllers
                     moduleContext.PageModuleId = pageModule.Id;
                     if (module != null && moduleAction != null)
                     {
-                        List<DomainTypes.ContentResult> contentResults;
+                        List<ContentResult> contentResults;
                         string containerId = pageModule.ContainerId.ToString();
                         //Prepare the result object
                         if (actionResults.ContainsKey(containerId))
@@ -63,7 +64,7 @@ namespace Deviser.Core.Library.Controllers
                         }
                         else
                         {
-                            contentResults = new List<DomainTypes.ContentResult>();
+                            contentResults = new List<ContentResult>();
                             actionResults.Add(containerId, contentResults);
                         }
 
@@ -71,7 +72,7 @@ namespace Deviser.Core.Library.Controllers
                         {
                             string moduleStringResult = await ExecuteModuleController(actionContext, moduleContext, moduleAction);
                             moduleStringResult = $"<div class=\"sd-module-container\" data-module=\"{moduleContext.ModuleInfo.Name}\" data-page-module-id=\"{moduleContext.PageModuleId}\">{moduleStringResult}</div>";
-                            contentResults.Add(new DomainTypes.ContentResult
+                            contentResults.Add(new ContentResult
                             {
                                 Result = moduleStringResult,
                                 SortOrder = pageModule.SortOrder
@@ -80,7 +81,7 @@ namespace Deviser.Core.Library.Controllers
                         catch (Exception ex)
                         {
                             var actionResult = "Module load exception has been occured";
-                            contentResults.Add(new DomainTypes.ContentResult
+                            contentResults.Add(new ContentResult
                             {
                                 Result = actionResult,
                                 SortOrder = pageModule.SortOrder

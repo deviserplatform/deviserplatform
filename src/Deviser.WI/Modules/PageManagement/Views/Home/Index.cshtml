@@ -26,7 +26,8 @@
                         </div>
                     </div>
                     <div data-nodrag class="draggable-content" ng-class="{'selected' : pmVM.selectedItem.id === page.id}">
-                        <a class="btn btn-success btn-xs" ng-click="pmVM.toggle(this)">
+                        
+                        <a ng-click="pmVM.toggle(this)" ng-show="page.childPage.length>0">
                             <!--<span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span>-->
                             <i class="fa" ng-class="{'fa-angle-up' : !collapsed, 'fa-angle-down': collapsed}"></i>
                         </a>
@@ -40,7 +41,7 @@
                         <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="pmVM.delete(page)" ng-show="depth()!=1">
                             <i class="fa fa-trash-o"></i>
                         </a>
-                        <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="pmVM.newSubPage(page)" style="margin-right: 8px;">
+                        <a class="pull-right btn btn-default btn-xs" data-nodrag ng-click="pmVM.newSubPage(page)" style="margin-right: 8px;">
                             <i class="fa fa-plus"></i>
                         </a>
                     </div>

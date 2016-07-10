@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using Deviser.Core.Library.DomainTypes;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Newtonsoft.Json;
@@ -18,6 +18,8 @@ using Deviser.Core.Library;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Net.Http.Headers;
 using System.Threading.Tasks;
+using Deviser.Core.Common;
+using Deviser.Core.Common.DomainTypes;
 
 namespace DeviserWI.Controllers.API
 {

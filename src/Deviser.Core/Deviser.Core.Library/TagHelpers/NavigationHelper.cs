@@ -1,8 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
-using Deviser.Core.Library.DomainTypes;
-using Deviser.Core.Library.Services;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,6 +14,10 @@ using System.Globalization;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Deviser.Core.Common;
+using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Library.Services;
 
 namespace Deviser.Core.Library.TagHelpers
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using Deviser.Core.Library.DomainTypes;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Newtonsoft.Json;
@@ -53,7 +53,7 @@ namespace DeviserWI.Controllers.API
             try
             {
                 var layoutTypes = layoutTypeProvider.GetLayoutTypes();
-                var result = Mapper.Map<List<Deviser.Core.Library.DomainTypes.LayoutType>>(layoutTypes);
+                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.LayoutType>>(layoutTypes);
                 if (result != null)
                     return Ok(result);
                 return NotFound();

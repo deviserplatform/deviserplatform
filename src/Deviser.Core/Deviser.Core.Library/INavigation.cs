@@ -1,7 +1,8 @@
 ﻿using System;
 using Deviser.Core.Data.Entities;
-using Deviser.Core.Library.DomainTypes;
 using System.Collections.Generic;
+using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Core.Library
 {

@@ -1,5 +1,4 @@
 ﻿using Deviser.Core.Data.Entities;
-using Deviser.Core.Library.DomainTypes;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -12,6 +11,9 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Deviser.Core.Common;
+using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Core.Library.TagHelpers
 {

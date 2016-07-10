@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Deviser.Core.Library.DomainTypes;
+using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Core.Library.FileManagement
 {

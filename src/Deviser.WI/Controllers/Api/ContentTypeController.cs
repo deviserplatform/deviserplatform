@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using Deviser.Core.Library.DomainTypes;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Newtonsoft.Json;
@@ -55,7 +55,7 @@ namespace DeviserWI.Controllers.API
 
                 var contentTypes = contentTypeProvider.GetContentTypes();
 
-                var result = Mapper.Map<List<Deviser.Core.Library.DomainTypes.ContentType>>(contentTypes);
+                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.ContentType>>(contentTypes);
 
                 if (result != null)
                     return Ok(result);

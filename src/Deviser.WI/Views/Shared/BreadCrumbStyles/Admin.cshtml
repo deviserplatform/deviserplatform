@@ -1,7 +1,8 @@
 ﻿@model List<Deviser.Core.Data.Entities.Page>
 @using AppContext = Deviser.Core.Library.AppContext;
-@using System.Security.Claims
-@using Deviser.Core.Library
+@using System.Security.Claims;
+@using Deviser.Core.Library;
+@using Deviser.Core.Common;
 @{
     Layout = null;
     AppContext deviserContext = (AppContext)ViewBag.AppContext;  //HttpContext.Current.Session["AppContext"];

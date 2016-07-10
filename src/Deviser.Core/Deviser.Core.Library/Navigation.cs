@@ -1,13 +1,16 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
-using Deviser.Core.Library.DomainTypes;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Deviser.Core.Common;
+using Deviser.Core.Common.DomainTypes;
+using Microsoft.AspNetCore.Http;
+using Deviser.Core.Library.Sites;
 
 namespace Deviser.Core.Library
 {
@@ -17,6 +20,7 @@ namespace Deviser.Core.Library
         private readonly ILogger<LayoutProvider> logger;
 
         private IPageProvider pageProvider;
+        private IPageManager pageManager;
         private ILanguageProvider languageProvider;
         private Page activePage = null;
         private List<Page> breadcrumbs = null;
@@ -26,8 +30,9 @@ namespace Deviser.Core.Library
             logger = container.Resolve<ILogger<LayoutProvider>>();
             pageProvider = container.Resolve<IPageProvider>();
             languageProvider = container.Resolve<ILanguageProvider>();
+            pageManager = container.Resolve<IPageManager>();
         }
-
+        
         public Page GetPageTree(Guid parentId)
         {
             var root = pageProvider.GetPageTree();
@@ -52,12 +57,12 @@ namespace Deviser.Core.Library
             if (systemFilter == SystemPageFilter.PublicOnly)
             {
                 //page.ChildPage = page.ChildPage.Where(p => !p.IsSystem).ToList();
-                predicate = p => !p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu;
+                predicate = p => !p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && pageManager.IsPageAccessible(p);
             }
             else if (systemFilter == SystemPageFilter.SystemOnly)
             {
                 //page.ChildPage = page.ChildPage.Where(p => p.IsSystem).ToList();
-                predicate = p => p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu;
+                predicate = p => p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && pageManager.IsPageAccessible(p); 
             }
 
 
@@ -65,6 +70,7 @@ namespace Deviser.Core.Library
             SetBreadCrumb(activePage);
             return root;
         }
+
 
         public List<Page> GetBreadCrumbs(Guid currentPageId)
         {
@@ -106,6 +112,35 @@ namespace Deviser.Core.Library
                     var currentURLs = GetParentURL(page);
                     UpdatePageTreeURL(page, currentURLs);
                     var resultPage = pageProvider.UpdatePage(page);
+                    //Update admin permissions
+
+                    var adminPermissions = new List<PagePermission>();
+                    adminPermissions.Add(new PagePermission
+                    {
+                        PageId = page.Id,
+                        RoleId = Globals.AdministratorRoleId,
+                        PermissionId = Globals.PageViewPermissionId,
+                    });
+
+                    adminPermissions.Add(new PagePermission
+                    {
+                        PageId = page.Id,
+                        RoleId = Globals.AdministratorRoleId,
+                        PermissionId = Globals.PageEditPermissionId,
+                    });
+
+                    adminPermissions = pageProvider.AddPermissions(adminPermissions);
+
+                    if (resultPage.PagePermissions == null)
+                    {
+                        resultPage.PagePermissions = adminPermissions;
+                    }
+                    else
+                    {
+                        adminPermissions.AddRange(resultPage.PagePermissions);
+                        resultPage.PagePermissions = adminPermissions;
+                    }
+
                     UpdateChildPages(resultPage.ChildPage);
                     if (resultPage != null)
                         return resultPage;
@@ -148,12 +183,12 @@ namespace Deviser.Core.Library
             {
                 foreach (var lang in activeLanguages)
                 {
-                    parentURLs.Add(lang.CultureCode, "");
+                    parentURLs.Add(lang.CultureCode, lang.CultureCode.ToLower());
                 }
             }
             else
             {
-                parentURLs.Add(Globals.FallbackLanguage, "");
+                parentURLs.Add(Globals.FallbackLanguage, Globals.FallbackLanguage.ToLower());
             }
             return parentURLs;
         }
@@ -161,7 +196,7 @@ namespace Deviser.Core.Library
         private Dictionary<string, string> CopyParentUrls(Dictionary<string, string> parentUrls)
         {
             var result = InitParentUrls();
-            foreach(var kv in parentUrls)
+            foreach (var kv in parentUrls)
             {
                 result[kv.Key] = kv.Value;
             }
@@ -219,11 +254,11 @@ namespace Deviser.Core.Library
                         if (parentURLs.ContainsKey(pageTranslation.Locale) && !string.IsNullOrEmpty(parentURLs[pageTranslation.Locale]))
                         {
                             //parent page has translation for current locale/culturecode
-                            URLs[pageTranslation.Locale] = pageTranslation.Locale.ToLower() + parentURLs[pageTranslation.Locale] + "/" + pageTranslation.Name.Replace(" ", "");
+                            URLs[pageTranslation.Locale] = parentURLs[pageTranslation.Locale] + "/" + pageTranslation.Name.Replace(" ", "");
                         }
                         else
                         {
-                            URLs[pageTranslation.Locale] = pageTranslation.Locale.ToLower() + parentURLs[Globals.FallbackLanguage] + "/" + pageTranslation.Name.Replace(" ", "");
+                            URLs[pageTranslation.Locale] = parentURLs[Globals.FallbackLanguage] + "/" + pageTranslation.Name.Replace(" ", "");
                         }
                     }
                 }
@@ -256,13 +291,15 @@ namespace Deviser.Core.Library
                         if (!string.IsNullOrEmpty(parentURLs[pageTranslation.Locale]))
                         {
                             parentURLs[pageTranslation.Locale] += "/" + pageTranslation.Name.Replace(" ", "");
-                            pageTranslation.URL = pageTranslation.Locale.ToLower() + parentURLs[pageTranslation.Locale];
+                            var pageUrl = parentURLs[pageTranslation.Locale];
+                            pageTranslation.URL = getUniqueUrl(pageTranslation, pageUrl);
                         }
                         else
                         {
                             //Parent page is not yet translated, therefore taking parent url from fallbacklanguage
                             parentURLs[pageTranslation.Locale] = fallbackParentURL + "/" + pageTranslation.Name.Replace(" ", "");
-                            pageTranslation.URL = pageTranslation.Locale.ToLower() + parentURLs[pageTranslation.Locale];
+                            var pageUrl = parentURLs[pageTranslation.Locale];
+                            pageTranslation.URL = getUniqueUrl(pageTranslation, pageUrl);
                         }
 
                     }
@@ -293,6 +330,20 @@ namespace Deviser.Core.Library
                     }
                 }
             }
+        }
+
+        private string getUniqueUrl(PageTranslation pageTranslation, string pageUrl)
+        {
+            var duplicateTranslation = pageProvider.GetPageTranslation(pageUrl);
+            while (duplicateTranslation != null &&
+                pageTranslation.PageId != duplicateTranslation.PageId &&
+                pageTranslation.Locale != duplicateTranslation.Locale)
+            {
+                pageUrl += "1";
+                pageTranslation.Name += "1";
+                duplicateTranslation = pageProvider.GetPageTranslation(pageUrl);
+            }
+            return pageUrl;
         }
 
         //private void ProcessPageTranslation(Page page, string parentURL = "")

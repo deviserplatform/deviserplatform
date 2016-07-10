@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Deviser.Core.Library.DomainTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
@@ -8,6 +7,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Core.Library.FileManagement
 {

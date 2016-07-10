@@ -13,19 +13,19 @@ namespace Deviser.WI.Infrastructure
         {
             Mapper.Initialize(config =>
             {
-                config.CreateMap<Core.Library.DomainTypes.User, User>().ForMember(m => m.Roles, opt => opt.Ignore());
-                config.CreateMap<User, Core.Library.DomainTypes.User>().ForMember(m => m.Roles, opt => opt.Ignore());
-                config.CreateMap<Core.Library.DomainTypes.PageLayout, Layout>();
-                config.CreateMap<Layout, Core.Library.DomainTypes.PageLayout>();
-                config.CreateMap<PropertyOptionList, Core.Library.DomainTypes.PropertyOptionList>().ReverseMap();
-                config.CreateMap<Property, Core.Library.DomainTypes.Property>().ReverseMap();
-                config.CreateMap<Core.Library.DomainTypes.ContentType, ContentType>().ReverseMap()
+                config.CreateMap<Core.Common.DomainTypes.User, User>().ForMember(m => m.Roles, opt => opt.Ignore());
+                config.CreateMap<User, Core.Common.DomainTypes.User>().ForMember(m => m.Roles, opt => opt.Ignore());
+                config.CreateMap<Core.Common.DomainTypes.PageLayout, Layout>();
+                config.CreateMap<Layout, Core.Common.DomainTypes.PageLayout>();
+                config.CreateMap<PropertyOptionList, Core.Common.DomainTypes.PropertyOptionList>().ReverseMap();
+                config.CreateMap<Property, Core.Common.DomainTypes.Property>().ReverseMap();
+                config.CreateMap<Core.Common.DomainTypes.ContentType, ContentType>().ReverseMap()
                 .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.ContentTypeProperties.Select(ctp => ctp.Property)))
                 .ForMember(dest => dest.DataType, opt => opt.MapFrom(src => src.ContentDataType.Name));
-                config.CreateMap<ContentDataType, Core.Library.DomainTypes.ContentDataType>().ReverseMap();
-                config.CreateMap<PageContent, Core.Library.DomainTypes.PageContent>().ReverseMap();
+                config.CreateMap<ContentDataType, Core.Common.DomainTypes.ContentDataType>().ReverseMap();
+                config.CreateMap<PageContent, Core.Common.DomainTypes.PageContent>().ReverseMap();
 
-                config.CreateMap<Core.Library.DomainTypes.LayoutType, LayoutType>().ReverseMap()
+                config.CreateMap<Core.Common.DomainTypes.LayoutType, LayoutType>().ReverseMap()
                .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.LayoutTypeProperties.Select(ctp => ctp.Property)));
 
 

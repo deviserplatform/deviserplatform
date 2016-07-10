@@ -2,7 +2,7 @@
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library;
-using Deviser.Core.Library.DomainTypes;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Modules;
 using Microsoft.AspNetCore.Http;

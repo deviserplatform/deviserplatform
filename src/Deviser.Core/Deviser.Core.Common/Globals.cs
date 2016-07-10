@@ -1,23 +1,17 @@
-﻿using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
+﻿using Deviser.Core.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Deviser.Core.Library
+namespace Deviser.Core.Common
 {
     public class Globals
     {
         private static string applicationMapPath;
         private static string hostMapPath;
-
-        private static List<SiteSetting> siteSettings;
-        private static ISiteSettingProvider siteSettingProvider;
-        private static IPageProvider pageProvider;
 
         public const string glbHostSkinFolder = "_default";
 
@@ -156,6 +150,38 @@ namespace Deviser.Core.Library
         }
 
         public static string SiteRoot { get; set; }
+
+        public static Guid AdministratorRoleId
+        {
+            get
+            {
+                return new Guid("9b461499-c49e-4398-bfed-4364a176ebbd");
+            }
+        }
+
+        public static Guid AllUsersRoleId
+        {
+            get
+            {
+                return new Guid("086357bf-01b1-494c-a8b8-54fdfa7c4c9e");
+            }
+        }
+
+        public static Guid PageViewPermissionId
+        {
+            get
+            {
+                return new Guid("29cb1b57-1862-4300-b378-f3271b870148");
+            }
+        }
+
+        public static Guid PageEditPermissionId
+        {
+            get
+            {
+                return new Guid("2da41181-be15-4ad6-a89c-3ba8b71f993b");
+            }
+        }
 
         private static string GetCurrentDomainDirectory()
         {

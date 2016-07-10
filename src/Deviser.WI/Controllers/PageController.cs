@@ -1,9 +1,10 @@
 ﻿using Autofac;
+using Deviser.Core.Common;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library;
 using Deviser.Core.Library.Controllers;
-using Deviser.Core.Library.DomainTypes;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Services;
 using Deviser.Core.Library.Sites;
 using Microsoft.AspNetCore.Mvc;
@@ -50,9 +51,16 @@ namespace Deviser.WI.Controllers
                 Page currentPage = GetPageModules(permalink);
                 if (currentPage != null)
                 {
-                    Dictionary<string, List<Core.Library.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(Context, currentPage.Id);
-                    ViewBag.ModuleActionResults = moduleActionResults;
-                    return View(currentPage);
+                    if (pageManager.IsPageAccessible(currentPage))
+                    {
+                        Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(Context, currentPage.Id);
+                        ViewBag.ModuleActionResults = moduleActionResults;
+                        return View(currentPage);
+                    }
+                    else
+                    {
+                        return View("UnAuthorized");
+                    }
                 }
             }
             catch (Exception ex)

@@ -205,7 +205,7 @@
         }
 
         function changeViewPermission(page, role) {
-            //if (role.id !== administratorRoleId) {
+            if (role.id !== administratorRoleId) {
                 if (isView(page, role)) {
                     //Remove
                     page.pagePermissions = _.reject(page.pagePermissions, function (p) {
@@ -221,11 +221,11 @@
                     };
                     page.pagePermissions.push(permission);
                 }
-            //}
+           }
         }
 
         function changeEditPermission(page, role) {
-            //if (role.id !== administratorRoleId) {
+            if (role.id !== administratorRoleId) {
                 if (isEdit(page, role)) {
                     //Remove
                     page.pagePermissions = _.reject(page.pagePermissions, function (p) {
@@ -241,7 +241,7 @@
                     };
                     page.pagePermissions.push(permission);
                 }
-            //}
+            }
         }
 
         function newSubPage(parentPage) {
@@ -281,6 +281,7 @@
         function savePage(page) {
             pageService.put(page, page.id)
                     .then(function (data) {
+                        vm.selectedItem = data;
                         showMessage("success", "Page updated successfully");
                     }, function (error) {
                         showMessage("error", "'Cannot update page, please contact administrator");

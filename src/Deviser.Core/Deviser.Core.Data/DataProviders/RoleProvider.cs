@@ -13,6 +13,7 @@ namespace Deviser.Core.Data.DataProviders
     public interface IRoleProvider
     {
         List<Role> GetRoles();
+        List<Role> GetRoles(string userName);
         Role GetRole(Guid roleId);
         Role GetRoleByName(string roleName);
         Role CreateRole(Role role);
@@ -44,6 +45,30 @@ namespace Deviser.Core.Data.DataProviders
                         .OrderBy(r=>r.Name)
                         .ToList();
                     return new List<Role>(returnData); 
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting GetRoles", ex);
+            }
+            return null;
+        }
+
+        public List<Role> GetRoles(string userName)
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    var user = context.Users.FirstOrDefault(u => u.UserName.ToLower() == userName);
+                    if(user!=null)
+                    {
+                        IEnumerable<Role> returnData = context.Roles
+                       .Where(r => r.Users.Any(u=>u.UserId==user.Id))
+                       .OrderBy(r => r.Name)
+                       .ToList();
+                        return new List<Role>(returnData);
+                    }
                 }
             }
             catch (Exception ex)

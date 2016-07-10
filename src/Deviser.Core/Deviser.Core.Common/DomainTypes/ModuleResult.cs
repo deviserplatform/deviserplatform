@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Deviser.Core.Library.DomainTypes
+namespace Deviser.Core.Common.DomainTypes
 {
     public class ContentResult
     {

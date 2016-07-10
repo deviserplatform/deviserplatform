@@ -18,12 +18,14 @@ namespace Deviser.Core.Data.DataProviders
         Page UpdatePage(Page page);
         Page UpdatePageTree(Page page);
         List<PageTranslation> GetPageTranslations(string locale);
+        PageTranslation GetPageTranslation(string url);
         List<PageModule> GetPageModules(Guid pageId);
         PageModule GetPageModule(Guid pageModuleId);
         PageModule GetPageModuleByContainer(Guid containerId);
         PageModule CreatePageModule(PageModule pageModule);
         PageModule UpdatePageModule(PageModule pageModule);
         void UpdatePageModules(List<PageModule> pageModules);
+        List<PagePermission> AddPermissions(List<PagePermission> pagePermissions);
 
     }
 
@@ -103,8 +105,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             //return resultPage;
         }
-
-
+        
         public List<Page> GetPages()
         {
             try
@@ -138,6 +139,7 @@ namespace Deviser.Core.Data.DataProviders
                     Page returnData = context.Page
                                .Where(e => e.Id == pageId)
                                .Include(p => p.PageTranslation)
+                               .Include(p => p.PagePermissions)
                                .Include(p => p.Layout)
                                .Include(p => p.PageContent).ThenInclude(pc => pc.PageContentTranslation)
                                .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType)
@@ -164,6 +166,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
+
         public Page CreatePage(Page page)
         {
             try
@@ -183,6 +186,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
+
         public Page UpdatePage(Page page)
         {
             try
@@ -210,12 +214,16 @@ namespace Deviser.Core.Data.DataProviders
                     if (page.PagePermissions != null && page.PagePermissions.Count > 0)
                     {
                         //Filter deleted permissions in UI and delete all of them
-                        var toDelete = context.PagePermission.Where(dbPermission => !page.PagePermissions.Any(pagePermission => pagePermission.PermissionId == dbPermission.PermissionId && pagePermission.RoleId == dbPermission.RoleId)).ToList();
+                        var toDelete = context.PagePermission.Where(dbPermission => dbPermission.PageId == page.Id && 
+                        !page.PagePermissions.Any(pagePermission => pagePermission.PermissionId == dbPermission.PermissionId  && pagePermission.RoleId == dbPermission.RoleId)).ToList();
                         if (toDelete != null && toDelete.Count > 0)
                             context.PagePermission.RemoveRange(toDelete);
 
                         //Filter new permissions which are not in db and add all of them
-                        var toAdd = page.PagePermissions.Where(pagePermission => !context.PagePermission.Any(dbPermission => dbPermission.PermissionId == pagePermission.PermissionId && dbPermission.RoleId == pagePermission.RoleId)).ToList();
+                        var toAdd = page.PagePermissions.Where(pagePermission => !context.PagePermission.Any(dbPermission => 
+                        dbPermission.PermissionId == pagePermission.PermissionId &&
+                        dbPermission.PageId == pagePermission.PageId &&
+                        dbPermission.RoleId == pagePermission.RoleId)).ToList();
                         if(toAdd!=null && toAdd.Count > 0)
                         {
                             foreach (var permission in toAdd)
@@ -226,9 +234,6 @@ namespace Deviser.Core.Data.DataProviders
                                 context.PagePermission.Add(permission);
                             }
                         }
-
-
-                        
                     }
 
 
@@ -243,6 +248,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
+
         public Page UpdatePageTree(Page page)
         {
             try
@@ -297,6 +303,7 @@ namespace Deviser.Core.Data.DataProviders
 
             }
         }
+
         public List<PageTranslation> GetPageTranslations(string locale)
         {
             try
@@ -316,6 +323,27 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
+
+        public PageTranslation GetPageTranslation(string url)
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    var returnData = context.PageTranslation
+                    .Where(e => e.URL.ToLower() == url.ToLower())
+                    .OrderBy(p => p.PageId)
+                    .FirstOrDefault();
+                    return returnData;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting GetPageTranslation", ex);
+            }
+            return null;
+        }
+
         public List<PageModule> GetPageModules(Guid pageId)
         {
             try
@@ -380,6 +408,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
+
         public PageModule CreatePageModule(PageModule pageModule)
         {
             try
@@ -398,6 +427,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
+
         public PageModule UpdatePageModule(PageModule pageModule)
         {
             try
@@ -443,6 +473,48 @@ namespace Deviser.Core.Data.DataProviders
             {
                 logger.LogError("Error occured while calling UpdatePageModules", ex);
             }
+        }
+
+        /// <summary>
+        /// Add permissions if its not exisit in db
+        /// </summary>
+        /// <param name="pagePermissions"></param>
+        /// <returns></returns>
+        public List<PagePermission> AddPermissions(List<PagePermission> pagePermissions)
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    //Remove all permissions for this page and add new 
+                    if (pagePermissions != null && pagePermissions.Count > 0)
+                    {   
+                        //Filter new permissions which are not in db and add all of them
+                        var toAdd = pagePermissions.Where(pagePermission => !context.PagePermission.Any(dbPermission => 
+                        dbPermission.PermissionId == pagePermission.PermissionId &&
+                        dbPermission.PageId == pagePermission.PageId && 
+                        dbPermission.RoleId == pagePermission.RoleId)).ToList();
+                        if (toAdd != null && toAdd.Count > 0)
+                        {
+                            foreach (var permission in toAdd)
+                            {
+                                //permission.Page = null;
+                                if (permission.Id == Guid.Empty)
+                                    permission.Id = Guid.NewGuid();
+                                context.PagePermission.Add(permission);
+                            }
+                        }
+
+                        context.SaveChanges();
+                        return toAdd;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while calling UpdatePage", ex);
+            }
+            return null;
         }
     }
 }

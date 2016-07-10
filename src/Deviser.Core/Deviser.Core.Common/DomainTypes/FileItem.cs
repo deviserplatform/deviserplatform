@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Deviser.Core.Common.DomainTypes;
 
-namespace Deviser.Core.Library.DomainTypes
+namespace Deviser.Core.Common.DomainTypes
 {
     public class FileItem
     {

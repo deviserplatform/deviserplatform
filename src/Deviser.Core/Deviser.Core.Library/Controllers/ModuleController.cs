@@ -1,11 +1,12 @@
-﻿using Deviser.Core.Library.DomainTypes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Autofac;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Core.Library.Controllers
 {

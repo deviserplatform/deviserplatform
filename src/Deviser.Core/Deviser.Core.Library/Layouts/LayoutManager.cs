@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
-using Deviser.Core.Library.DomainTypes;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using Autofac;
+using Deviser.Core.Common;
+using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Core.Library.Layouts
 {
