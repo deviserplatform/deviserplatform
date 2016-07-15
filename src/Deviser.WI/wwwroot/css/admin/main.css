@@ -79,6 +79,14 @@ body {
     height: 33px;
 }
 
+.transition {
+    -webkit-transition: all 300ms ease-in-out;
+    -moz-transition: all 300ms ease-in-out;
+    -ms-transition: all 300ms ease-in-out;
+    -o-transition: all 300ms ease-in-out;
+    transition: all 300ms ease-in-out;
+}
+
 /*Side Nav*/
 .navbar-default {
     background-color: inherit;
@@ -382,35 +390,21 @@ body {
 }
 
 .angular-ui-tree-nodes .angular-ui-tree-nodes {
-    padding-left: 30px;
+    padding-left: 20px;
 }
 
-.draggable-content.selected {
+.tree-node.selected {
     border-color: #3598dc;
     background-image: none;
     background-color: #3598dc;
     color: #FFFFFF;
 }
 
-.draggable-bar-container {
-    position: absolute;
-    margin: 0;
-    left: 0;
-    top: 0;
-    cursor: move;
-    width: 30px;
-    vertical-align: middle;
-    padding: 4px;
-    height: 30px;
-    border: 1px solid #aaa;
-    background: #ddd;
-}
-
-.draggable-content {
+.tree-node {
     display: block;
     height: 30px;
     margin: 5px 0;
-    padding: 4px 10px 4px 40px;
+    padding: 4px 10px 4px 10px;
     color: #333;
     text-decoration: none;
     font-weight: 400;
@@ -419,6 +413,27 @@ body {
     border-radius: 3px;
     box-sizing: border-box;
 }
+
+    .tree-node a.expander, .tree-node a.expander:hover {
+        color:#000;
+        text-decoration: none;
+    }
+
+    .draggable-content{
+        margin-left:10px;
+    }
+
+    .tree-node a.expander i{
+        font-size: 1.3em;
+    }
+
+    .tree-node .node-actions{
+        display:none;
+    }
+
+    .tree-node:hover .node-actions{
+        display:block;
+    }
 
 .angular-ui-tree-placeholder {
     display: block;
@@ -456,22 +471,22 @@ div.edit-page.form-horizontal .control-label {
     margin-bottom: 10px;
 }
 
-.layout-controls h3.layout-title{
-    margin:0;
-}
+    .layout-controls h3.layout-title {
+        margin: 0;
+    }
 
-.layout-controls .layout-dropdown .btn,
-.layout-controls .dropdown-menu{
-    width:200px;
-}
+    .layout-controls .layout-dropdown .btn,
+    .layout-controls .dropdown-menu {
+        width: 200px;
+    }
 
-.layout-controls .layout-name{
-    width:30%;
-}
+    .layout-controls .layout-name {
+        width: 30%;
+    }
 
-.layout-controls .layout-name input{
-    width:100%;
-}
+        .layout-controls .layout-name input {
+            width: 100%;
+        }
 
 /*Edit mode*/
 

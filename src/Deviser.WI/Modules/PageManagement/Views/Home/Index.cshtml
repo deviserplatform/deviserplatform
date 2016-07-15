@@ -15,34 +15,34 @@
     </div>
 
 
-    <div class="row">
+    <div class="row transition">
         <div class="col-lg-4">
             <!-- Nested list template -->
             <script type="text/ng-template" id="items_renderer.html">
-                <div ng-click="pmVM.selectCurrent(page)" class="tree-node">
-                    <div ui-tree-handle class="draggable-bar-container">
-                        <div class="draggable-bar">
-                            <i class="fa fa-bars"></i>
-                        </div>
-                    </div>
-                    <div data-nodrag class="draggable-content" ng-class="{'selected' : pmVM.selectedItem.id === page.id}">
-                        
-                        <a ng-click="pmVM.toggle(this)" ng-show="page.childPage.length>0">
-                            <!--<span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span>-->
-                            <i class="fa" ng-class="{'fa-angle-up' : !collapsed, 'fa-angle-down': collapsed}"></i>
-                        </a>
+                <div ng-click="pmVM.selectPage(page)" class="tree-node tree-node-content" ng-class="{'selected' : pmVM.selectedItem.id === page.id}">
+                    @*<div ui-tree-handle class="draggable-bar-container">
+                            <div class="draggable-bar">
+                                <i class="fa fa-bars"></i>
+                            </div>
+                        </div>*@
 
+                    <a class="expander pull-left" ng-click="pmVM.toggle(this)" ng-show="page.childPage.length>0">
+                        <!--<span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span>-->
+                        <i class="fa" ng-class="{'fa-angle-down' : !collapsed, 'fa-angle-right': collapsed}"></i>
+                    </a>
+                    <div ui-tree-handle class="draggable-content pull-left">
                         <span ng-repeat="translation in page.pageTranslation | selectLanguage:pmVM.siteLanguage">
                             {{translation.name}}
                         </span>
 
                         <span ng-if="depth()==1">Root</span>
-
-                        <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="pmVM.delete(page)" ng-show="depth()!=1">
-                            <i class="fa fa-trash-o"></i>
-                        </a>
-                        <a class="pull-right btn btn-default btn-xs" data-nodrag ng-click="pmVM.newSubPage(page)" style="margin-right: 8px;">
+                    </div>
+                    <div data-nodrag class="node-actions pull-right">
+                        <a class="btn btn-default btn-xs" data-nodrag ng-click="pmVM.newSubPage(page)" title="Add new page">
                             <i class="fa fa-plus"></i>
+                        </a>
+                        <a class="btn btn-danger btn-xs" data-nodrag ng-click="pmVM.delete(page)" ng-show="depth()!=1" title="Remove this page">
+                            <i class="fa fa-trash-o"></i>
                         </a>
                     </div>
                 </div>
@@ -242,6 +242,7 @@
                 </uib-accordion-group>
             </uib-accordion>
 
+            <h2  ng-show="!pmVM.selectedItem.pageLevel || pmVM.selectedItem.pageLevel==0">Select a page to edit</h2>
 
             <div class="form-group">
                 <input type="button" class="btn btn-primary" ng-click="pmVM.save()" value="Save" ng-disabled="!pmVM.isChanged" />
@@ -249,9 +250,7 @@
 
 
         </div>
-        <div class="col-lg-4" ng-show="!pmVM.selectedItem.pageLevel || pmVM.selectedItem.pageLevel==0">
-            <h2>Select a page to edit</h2>
-        </div>
+        
     </div>
 
 

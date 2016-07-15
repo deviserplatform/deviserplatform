@@ -70,7 +70,7 @@
         /*Function binding*/
         vm.delete = remove;
         vm.toggle = toggle;
-        vm.selectCurrent = selectCurrent;
+        vm.selectPage = selectPage;
         vm.newSubPage = newSubPage;
         vm.changeLanguage = changeLanguage;
         vm.save = save;
@@ -86,6 +86,7 @@
         ///*Function declarations only*/
         function init() {
             vm.currentLocale = appContext.currentCulture.name; //to be replaced as language feature in future
+            vm.accordion = {};
             getPages();
             getRoles();
             getSkins();
@@ -177,9 +178,10 @@
             scope.toggle();
         }
 
-        function selectCurrent(selected) {
+        function selectPage(page) {
             vm.currentLocale = vm.siteLanguage;
-            vm.selectedItem = selected;
+            vm.selectedItem = page;
+            vm.accordion.common = !vm.accordion.permissions;
             if (vm.selectedItem.pagePermissions) {
                 _.each(vm.selectedItem.pagePermissions, function (pagePermission) {
                     pagePermission.isView = function (role) {
