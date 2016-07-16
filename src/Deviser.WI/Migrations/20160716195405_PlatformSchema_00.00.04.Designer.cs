@@ -8,9 +8,10 @@ using Deviser.Core.Data.Entities;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDBContext))]
-    partial class DeviserDBContextModelSnapshot : ModelSnapshot
+    [Migration("20160716195405_PlatformSchema_00.00.04")]
+    partial class PlatformSchema_000004
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")
@@ -500,9 +501,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<DateTime?>("CreatedDate");
 
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(true);
+                    b.Property<bool>("IsActive");
 
                     b.Property<string>("Label");
 

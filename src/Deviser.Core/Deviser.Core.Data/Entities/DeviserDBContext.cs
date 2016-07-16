@@ -251,6 +251,7 @@ namespace Deviser.Core.Data.Entities
             modelBuilder.Entity<PropertyOptionList>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
             });
 
             modelBuilder.Entity<ContentDataType>(entity =>

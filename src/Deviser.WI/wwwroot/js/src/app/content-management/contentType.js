@@ -9,15 +9,23 @@
     'deviser.config'
     ]);
 
-    app.controller('ContentTypesCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals',
+    app.controller('ContentTypesCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'sdUtil',
         'contentTypeService', languageCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
-    function languageCtrl($scope, $timeout, $filter, $q, globals, contentTypeService) {
+    function languageCtrl($scope, $timeout, $filter, $q, globals, sdUtil, contentTypeService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
+        vm.viewStates = {
+            NEW: "NEW",
+            EDIT: "EDIT",
+            LIST: "LIST"
+        };
+        vm.currentViewState = vm.viewStates.LIST;
+
+        /*Function bindings*/
         vm.newContent = newContent;
         vm.edit = edit;
         vm.isValidName = isValidName;
@@ -25,12 +33,9 @@
         vm.activate = activate;
         vm.cancel = cancel;
         vm.hasError = hasError;
-        vm.viewStates = {
-            NEW: "NEW",
-            EDIT: "EDIT",
-            LIST: "LIST"
-        };
-        vm.currentViewState = vm.viewStates.LIST;
+        vm.addProperty = addProperty;
+        vm.removeProperty = removeProperty;
+        
 
         init();
 
@@ -40,6 +45,7 @@
         /*Controller Initialization*/
         function init() {
             getContentTypes();
+            getContentDataTypes();
         }
 
         /*Event handlers*/
@@ -92,12 +98,35 @@
             vm.currentViewState = vm.viewStates.LIST;
         }
 
+        function addProperty() {
+            var property = {
+                id: sdUtil.getGuid(),
+                name: '',
+                label: ''
+            }
+            vm.selectedContentType.properties.push(property)
+        }
+
+        function removeProperty(property) {
+            vm.selectedContentType.properties = _.reject(vm.selectedContentType.properties, function (prop) {
+                return prop.id === property.id;
+            })
+        }
+
         /*Private functions*/
         function getContentTypes() {
             contentTypeService.get().then(function (contentTypes) {
                 vm.contentTypes = contentTypes;
             }, function (error) {
                 showMessage("error", "Cannot get all content types, please contact administrator");
+            });
+        }
+
+        function getContentDataTypes() {
+            contentTypeService.getContentDataType().then(function (contentDataTypes) {
+                vm.contentDataTypes = contentDataTypes;
+            }, function (error) {
+                showMessage("error", "Cannot get all content data types, please contact administrator");
             });
         }
 

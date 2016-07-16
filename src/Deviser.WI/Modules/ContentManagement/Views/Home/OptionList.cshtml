@@ -1,23 +1,23 @@
-@{
+﻿@{
     ViewData["Title"] = "Index";
     //Layout = "~/_Layout.cshtml";
 }
 
-<div ng-app="deviser.contentTypes" ng-controller="ContentTypesCtrl as ctVM">
+<div ng-app="deviser.optionList" ng-controller="OptionListCtrl as olVM">
 
-    <div class="alert alert-dismissable" ng-class="{'alert-danger':ctVM.message.messageType=='error',
-                              'alert-info':ctVM.message.messageType=='info',
-                              'alert-success':ctVM.message.messageType=='success',
-                              'alert-warning':ctVM.message.messageType=='warning'}" role="alert" ng-show="ctVM.message.messageType">
-        {{ctVM.message.content}}
+    <div class="alert alert-dismissable" ng-class="{'alert-danger':olVM.message.messageType=='error',
+                              'alert-info':olVM.message.messageType=='info',
+                              'alert-success':olVM.message.messageType=='success',
+                              'alert-warning':olVM.message.messageType=='warning'}" role="alert" ng-show="olVM.message.messageType">
+        {{olVM.message.content}}
     </div>
 
-    <div class="row" ng-show="ctVM.currentViewState == ctVM.viewStates.LIST">
+    <div class="row" ng-show="olVM.currentViewState == olVM.viewStates.LIST">
         <div class="col-md-12">
             <div class="portlet box blue" id="form_wizard_1">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-th-large"></i> Content Types
+                        <i class="fa fa-th-list" aria-hidden="true"></i> Property Option List
                     </div>
                 </div>
                 <div class="portlet-body form">
@@ -28,7 +28,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="btn-group">
-                                            <a class="btn btn-success" ng-click="ctVM.newContent()"><i class="fa fa-plus"></i> New</a>
+                                            <a class="btn btn-success" ng-click="olVM.newList()"><i class="fa fa-plus"></i> New </a>
                                         </div>
                                     </div>
                                 </div>
@@ -52,21 +52,20 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="contentType in ctVM.contentTypes">
-                                            <td>
-                                                <i class="{{contentType.iconClass}}"></i>
-                                                {{contentType.label}}
+                                        <tr ng-repeat="optionList in olVM.optionLists">
+                                            <td>                                                
+                                                {{optionList.label}}
                                             </td>
                                             <td>
-                                                {{contentType.name}}
+                                                {{optionList.name}}
                                             </td>
                                             <td>
-                                                <a href="" class="btn btn-default btn-xs" ng-click="ctVM.edit(contentType)">
+                                                <a href="" class="btn btn-default btn-xs" ng-click="olVM.edit(optionList)">
                                                     <i class="fa fa-edit"></i> Edit
                                                 </a>
                                             </td>
                                             <td>
-                                                <input type="checkbox" ng-model="contentType.isActive" ng-click="ctVM.activate(contentType)" />
+                                                <input type="checkbox" ng-model="optionList.isActive" ng-click="olVM.activate(optionList)" />
                                             </td>
                                         </tr>
                                     </tbody>
@@ -81,63 +80,42 @@
         </div>
     </div>
 
-    <div class="row" ng-show="ctVM.currentViewState == ctVM.viewStates.NEW || ctVM.currentViewState == ctVM.viewStates.EDIT">
+    <div class="row" ng-show="olVM.currentViewState == olVM.viewStates.NEW || olVM.currentViewState == olVM.viewStates.EDIT">
         <div class="col-md-12">
             <div class="portlet box blue" id="form_wizard_1">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-th-large"></i> Content Types
+                        <i class="fa fa-th-list" aria-hidden="true"></i> Property Option List
                     </div>
                 </div>
                 <div class="portlet-body form">
-                    <form class="form-horizontal" name="contentTypeForm" novalidate>
+                    <form class="form-horizontal" name="optionListForm" novalidate>
                         <div class="form-body">
-                            <div class="form-group" ng-class="{'has-error':ctVM.hasError(contentTypeForm, 'label', 'required')}">
+                            <div class="form-group" ng-class="{'has-error':olVM.hasError(optionListForm, 'label', 'required')}">
                                 <label class="col-md-3 control-label">Label</label>
                                 <div class="col-md-6">
-                                    <input class="form-control" name="label" ng-model="ctVM.selectedContentType.label" required />
+                                    <input class="form-control" name="label" ng-model="olVM.selectedOptionList.label" required />
                                 </div>
                             </div>
                             <div class="form-group"
-                                 ng-class="{'has-error': (ctVM.hasError(contentTypeForm, 'label', 'required') || !ctVM.isValidName(ctVM.selectedContentType.name)) &&
-                                 ctVM.currentViewState == ctVM.viewStates.NEW }">
+                                 ng-class="{'has-error': (olVM.hasError(optionListForm, 'label', 'required') || !olVM.isValidName(olVM.selectedOptionList.name)) &&
+                                 olVM.currentViewState == olVM.viewStates.NEW }">
                                 <label class="col-md-3 control-label">Name</label>
                                 <div class="col-md-6">
                                     <input class="form-control"
                                            name="name"
-                                           ng-model="ctVM.selectedContentType.name"
-                                           ng-disabled="ctVM.currentViewState == ctVM.viewStates.EDIT"
+                                           ng-model="olVM.selectedOptionList.name"
+                                           ng-disabled="olVM.currentViewState == olVM.viewStates.EDIT"
                                            sd-to-lower-case />
                                 </div>
                             </div>
-
-                            <div class="form-group"
-                                 ng-class="{'has-error': !ctVM.selectedContentType.contentDataType && contentTypeForm.submitted}">
-                                <label class="col-md-3 control-label">Data Type</label>
-                                <div class="col-md-6">
-                                    <ui-select ng-model="ctVM.selectedContentType.contentDataType" theme="bootstrap" 
-                                               ng-disabled="ctVM.currentViewState == ctVM.viewStates.EDIT || ctVM.contentDataTypes.length<=0">
-                                        <ui-select-match placeholder="Select data type">{{$select.selected.label}}</ui-select-match>
-                                        <ui-select-choices repeat="language in ctVM.contentDataTypes | filter: $select.search">
-                                            <div ng-bind-html="language.label | highlight: $select.search"></div>
-                                        </ui-select-choices>
-                                    </ui-select>
-                                </div>
-                            </div>                            
                             <div class="form-group">
-                                <label class="col-md-3 control-label">Icon Class</label>
-                                <div class="col-md-6">
-                                    <input class="form-control" ng-model="ctVM.selectedContentType.iconClass" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Properties</label>
-                                <div class="col-md-6">
+                                <div class="col-md-6 col-md-offset-3">
                                     <div class="table-toolbar">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="btn-group">
-                                                    <a class="btn btn-success" ng-click="ctVM.addProperty()"><i class="fa fa-plus"></i> Add Property </a>
+                                                    <a class="btn btn-success" ng-click="olVM.addListItem()"><i class="fa fa-plus"></i> Add Item </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -158,19 +136,19 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr ng-repeat="property in ctVM.selectedContentType.properties">
+                                                <tr ng-repeat="item in olVM.selectedOptionList.items">
                                                     <td>
-                                                        <input class="form-control" name="label" ng-model="property.label" />
+                                                        <input class="form-control" name="label" ng-model="item.label"/>
                                                     </td>
                                                     <td>
-                                                        <input class="form-control" name="label" ng-model="property.name" />
+                                                        <input class="form-control" name="label" ng-model="item.name" />
                                                     </td>
                                                     <td>
-                                                        <a href="" class="btn btn-default btn-xs" ng-click="ctVM.removeProperty(property)">
+                                                        <a href="" class="btn btn-default btn-xs" ng-click="olVM.removeListItem(item)">
                                                             <i class="fa fa-trash-o"></i> Delete
                                                         </a>
                                                     </td>
-                                                </tr>
+                                                </tr>                                                
                                             </tbody>
                                         </table>
                                     </div>
@@ -180,8 +158,8 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn btn-success" ng-click="ctVM.save()" ng-disabled="!ctVM.selectedContentType">Save</button>
-                                    <button type="button" class="btn btn-default" ng-click="ctVM.cancel()">Cancel</button>
+                                    <button type="submit" class="btn btn-success" ng-click="olVM.save()" ng-disabled="!olVM.selectedOptionList">Save</button>
+                                    <button type="button" class="btn btn-default" ng-click="olVM.cancel()">Cancel</button>
                                 </div>
                             </div>
                         </div>

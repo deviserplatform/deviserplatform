@@ -4,6 +4,7 @@
     app.factory('pageService', pageService);
     app.factory('contentTypeService', contentTypeService);
     app.factory('layoutTypeService', layoutTypeService);
+    app.factory('optionListService', optionListService);
     app.factory('pageContentService', pageContentService);
     app.factory('contentTranslationService', contentTranslationService);
     app.factory('moduleService', moduleService);
@@ -18,6 +19,7 @@
     app.factory('languageService', languageService);
     app.factory('fileService', fileService);
     app.factory('assetService', assetService);
+    
     
     ////////////////////////////////
     /*Function declarations only*/
@@ -35,12 +37,34 @@
     }
 
     function contentTypeService($http, $q, globals) {
-        return baseService($http, $q, globals, '/contenttype');
+        var serviceUrl = '/contenttype';
+        var service = baseService($http, $q, globals, serviceUrl);
+        service.getContentDataType = getContentDataType;
+        return service;
+
+        ////////////////////////////////
+        /*Function declarations only*/
+        function getContentDataType() {
+            var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/datatype';
+            var request = $http({
+                method: 'GET',
+                url: getUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
     }
 
     function layoutTypeService($http, $q, globals) {
         var serviceUrl = '/layouttype';
-        var service = baseService($http, $q, globals, serviceUrl);        
+        var service = baseService($http, $q, globals, serviceUrl);       
+        return service;
+    }
+
+    function optionListService($http, $q, globals) {
+        var serviceUrl = '/optionlist';
+        var service = baseService($http, $q, globals, serviceUrl);
         return service;
     }
        

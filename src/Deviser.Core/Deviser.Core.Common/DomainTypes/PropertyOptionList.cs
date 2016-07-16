@@ -11,5 +11,8 @@ namespace Deviser.Core.Common.DomainTypes
         public string Name { get; set; }
         public string Label { get; set; }
         public string List { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? LastModifiedDate { get; set; }
     }
 }

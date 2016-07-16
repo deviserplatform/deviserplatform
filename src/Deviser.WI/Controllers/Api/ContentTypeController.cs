@@ -34,7 +34,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetContentTypes()
         {
             try
             {
@@ -45,6 +45,30 @@ namespace DeviserWI.Controllers.API
                 var contentTypes = contentTypeProvider.GetContentTypes();
 
                 var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.ContentType>>(contentTypes);
+
+                if (result != null)
+                    return Ok(result);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting content types"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("datatype/")]
+        public IActionResult GetContentDataTypes()
+        {
+            try
+            {
+                //if (contentTypes != null)
+                //    return Ok(contentTypes);
+                //return NotFound();
+
+                var contentDataTypes = contentTypeProvider.GetContentDataTypes();
+                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.ContentDataType>>(contentDataTypes);
 
                 if (result != null)
                     return Ok(result);
@@ -87,6 +111,7 @@ namespace DeviserWI.Controllers.API
             try
             {
                 var dbResult = contentTypeProvider.UpdateContentType(Mapper.Map<Deviser.Core.Data.Entities.ContentType>(contentType));
+                //TODO: Update properties Add/Remove/Update
                 var result = Mapper.Map<Deviser.Core.Common.DomainTypes.ContentType>(dbResult);
                 if (result != null)
                     return Ok(result);

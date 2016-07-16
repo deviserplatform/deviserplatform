@@ -12,6 +12,7 @@ namespace Deviser.Core.Data.DataProviders
     public interface IContentTypeProvider
     {
         List<ContentType> GetContentTypes();
+        List<ContentDataType> GetContentDataTypes();
         ContentType GetContentType(Guid contentTypeId);
         ContentType CreateContentType(ContentType contentType);
         ContentType GetContentType(string contentTypeName);
@@ -68,6 +69,23 @@ namespace Deviser.Core.Data.DataProviders
             catch (Exception ex)
             {
                 logger.LogError("Error occured while getting ContentType by id", ex);
+            }
+            return null;
+        }
+
+        public List<ContentDataType> GetContentDataTypes()
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    var returnData = context.ContentDataType.ToList();
+                    return returnData;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting ContentDataTypes", ex);
             }
             return null;
         }
