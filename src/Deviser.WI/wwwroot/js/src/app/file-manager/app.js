@@ -5,7 +5,7 @@
     'ui.bootstrap',
     'ui.select',
     'sd.sdlib',
-    'deviserLayout.services',
+    'deviser.services',
     'deviser.config'
     ]);
 

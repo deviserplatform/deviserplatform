@@ -4,7 +4,7 @@
         'ui.bootstrap',
         'ui.sortable',
         'ui.select',
-        'deviserLayout.services',
+        'deviser.services',
         'ngFileUpload',
         'angular-img-cropper'
     ]);

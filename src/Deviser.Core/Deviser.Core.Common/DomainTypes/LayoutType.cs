@@ -14,5 +14,8 @@ namespace Deviser.Core.Common.DomainTypes
         public string IconClass { get; set; }
         public string LayoutTypeIds { get; set; }
         public ICollection<Property> Properties { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? LastModifiedDate { get; set; }
     }
 }

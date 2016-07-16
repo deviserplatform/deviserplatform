@@ -39,6 +39,7 @@ namespace DeviserWI.Controllers.API
                 var contentTypesfilePath = Path.Combine(hostingEnvironment.ContentRootPath, "appcontentcofig.json");                
                 JObject contentConfig = JObject.Parse(System.IO.File.ReadAllText(contentTypesfilePath));
                 //contentTypes = (JArray)contentConfig.SelectToken("layoutTypes");
+                //TODO: Move it to SiteSettings
                 rootAllowedTypes = contentConfig.SelectToken("rootLayoutTypes").ToObject<List<string>>();
             }
             catch
@@ -78,6 +79,48 @@ namespace DeviserWI.Controllers.API
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting root allowed types"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult CreateLayoutType([FromBody]Deviser.Core.Common.DomainTypes.LayoutType layoutType)
+        {
+            try
+            {
+                if (layoutType == null || string.IsNullOrEmpty(layoutType.Name))
+                    return BadRequest("Invalid parameter");
+
+                if(layoutTypeProvider.GetLayoutType(layoutType.Name)!=null)
+                    return BadRequest("Layout type already exist");
+
+                var dbResult = layoutTypeProvider.CreateLayoutType(Mapper.Map<Deviser.Core.Data.Entities.LayoutType>(layoutType));
+                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.LayoutType>(dbResult);
+                if (result != null)
+                    return Ok(result);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while creating layout type"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        public IActionResult UpdateLayoutType([FromBody]Deviser.Core.Common.DomainTypes.LayoutType layoutType)
+        {
+            try
+            {
+                var dbResult = layoutTypeProvider.UpdateLayoutType(Mapper.Map<Deviser.Core.Data.Entities.LayoutType>(layoutType));
+                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.LayoutType>(dbResult);
+                if (result != null)
+                    return Ok(result);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while updating layout type"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

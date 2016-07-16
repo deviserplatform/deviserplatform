@@ -3,4 +3,132 @@
     //Layout = "~/_Layout.cshtml";
 }
 
-Content Management - Content Types
+<div ng-app="deviser.contentTypes" ng-controller="ContentTypesCtrl as ctVM">
+
+    <div class="alert alert-dismissable" ng-class="{'alert-danger':ctVM.message.messageType=='error',
+                              'alert-info':ctVM.message.messageType=='info',
+                              'alert-success':ctVM.message.messageType=='success',
+                              'alert-warning':ctVM.message.messageType=='warning'}" role="alert" ng-show="ctVM.message.messageType">
+        {{ctVM.message.content}}
+    </div>
+
+    <div class="row" ng-show="ctVM.currentViewState == ctVM.viewStates.LIST">
+        <div class="col-md-12">
+            <div class="portlet box blue" id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-th-large"></i> Content Types
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <form action="#" class="form-horizontal" id="submit_form" method="POST">
+
+                        <div class="form-body">
+                            <div class="table-toolbar">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="btn-group">
+                                            <a class="btn btn-success" ng-click="ctVM.newContent()"><i class="fa fa-plus"></i> New</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-scrollable">
+                                <table class="table table-striped table-bordered table-advance table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Label
+                                            </th>
+                                            <th>
+                                                Name
+                                            </th>
+                                            <th>
+                                                Edit
+                                            </th>
+                                            <th>
+                                                Is Active
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="contentType in ctVM.contentTypes">
+                                            <td>
+                                                <i class="{{contentType.iconClass}}"></i>
+                                                {{contentType.label}}
+                                            </td>
+                                            <td>
+                                                {{contentType.name}}
+                                            </td>
+                                            <td>
+                                                <a href="" class="btn btn-default btn-xs" ng-click="ctVM.edit(contentType)">
+                                                    <i class="fa fa-edit"></i> Edit
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" ng-model="contentType.isActive" ng-click="ctVM.activate(contentType)" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-show="ctVM.currentViewState == ctVM.viewStates.NEW || ctVM.currentViewState == ctVM.viewStates.EDIT">
+        <div class="col-md-12">
+            <div class="portlet box blue" id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-th-large"></i> Content Types
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <form class="form-horizontal" name="contentTypeForm" novalidate>
+                        <div class="form-body">
+                            <div class="form-group" ng-class="{'has-error':ctVM.hasError(contentTypeForm, 'label', 'required')}">
+                                <label class="col-md-3 control-label">Label</label>
+                                <div class="col-md-6">
+                                    <input class="form-control" name="label" ng-model="ctVM.selectedContentType.label" required />
+                                </div>
+                            </div>
+                            <div class="form-group"
+                                 ng-class="{'has-error': (ctVM.hasError(contentTypeForm, 'label', 'required') || !ctVM.isValidName(ctVM.selectedContentType.name)) &&
+                                 ctVM.currentViewState == ctVM.viewStates.NEW }">
+                                <label class="col-md-3 control-label">Name</label>
+                                <div class="col-md-6">
+                                    <input class="form-control"
+                                           name="name"
+                                           ng-model="ctVM.selectedContentType.name"
+                                           ng-disabled="ctVM.currentViewState == ctVM.viewStates.EDIT"
+                                           sd-to-lower-case />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Icon Class</label>
+                                <div class="col-md-6">
+                                    <input class="form-control" ng-model="ctVM.selectedContentType.iconClass" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <button type="submit" class="btn btn-success" ng-click="ctVM.save()" ng-disabled="!ctVM.selectedContentType">Save</button>
+                                    <button type="button" class="btn btn-default" ng-click="ctVM.cancel()">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

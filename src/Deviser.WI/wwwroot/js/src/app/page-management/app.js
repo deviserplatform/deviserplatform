@@ -6,7 +6,7 @@
     'ui.tree',
     'ui.select',
     'sd.sdlib',
-    'deviserLayout.services',
+    'deviser.services',
     'deviser.config'
     ]);
 

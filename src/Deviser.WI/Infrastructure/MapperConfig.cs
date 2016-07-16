@@ -20,13 +20,18 @@ namespace Deviser.WI.Infrastructure
                 config.CreateMap<PropertyOptionList, Core.Common.DomainTypes.PropertyOptionList>().ReverseMap();
                 config.CreateMap<Property, Core.Common.DomainTypes.Property>().ReverseMap();
                 config.CreateMap<Core.Common.DomainTypes.ContentType, ContentType>().ReverseMap()
-                .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.ContentTypeProperties.Select(ctp => ctp.Property)))
-                .ForMember(dest => dest.DataType, opt => opt.MapFrom(src => src.ContentDataType.Name));
+                .ForMember(dest => dest.Properties, opt => opt.MapFrom(src =>
+                    src.ContentTypeProperties != null ? src.ContentTypeProperties.Select(ctp => ctp.Property) : null))
+                .ForMember(dest => dest.DataType, opt => opt.MapFrom(src =>
+                   src.ContentDataType != null ? src.ContentDataType.Name : null));
+
                 config.CreateMap<ContentDataType, Core.Common.DomainTypes.ContentDataType>().ReverseMap();
                 config.CreateMap<PageContent, Core.Common.DomainTypes.PageContent>().ReverseMap();
 
-                config.CreateMap<Core.Common.DomainTypes.LayoutType, LayoutType>().ReverseMap()
-               .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.LayoutTypeProperties.Select(ctp => ctp.Property)));
+                config.CreateMap<Core.Common.DomainTypes.LayoutType, LayoutType>()
+                .ReverseMap().ForMember(dest => dest.Properties, opt => opt.MapFrom(src =>
+                  src.LayoutTypeProperties != null ? src.LayoutTypeProperties.Select(ctp => ctp.Property) : null)
+                );
 
 
             });

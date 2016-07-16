@@ -25,23 +25,12 @@ namespace DeviserWI.Controllers.API
         private readonly ILogger<ContentTypeController> logger;
 
         private IContentTypeProvider contentTypeProvider;
-        private JToken contentTypes;
 
         public ContentTypeController(ILifetimeScope container)
         {
             logger = container.Resolve<ILogger<ContentTypeController>>();
             contentTypeProvider = container.Resolve<IContentTypeProvider>();
             IHostingEnvironment hostingEnvironment = container.Resolve<IHostingEnvironment>();
-            try
-            {
-                var contentTypesfilePath = Path.Combine(hostingEnvironment.ContentRootPath, "appcontentcofig.json");                
-                JObject contentConfig = JObject.Parse(System.IO.File.ReadAllText(contentTypesfilePath));
-                contentTypes = (JArray)contentConfig.SelectToken("contentTypes");
-            }
-            catch
-            {
-                throw;
-            }
         }
 
         [HttpGet]
@@ -64,6 +53,48 @@ namespace DeviserWI.Controllers.API
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting content types"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult CreateContentType([FromBody]Deviser.Core.Common.DomainTypes.ContentType contentType)
+        {
+            try
+            {
+                if (contentType == null || string.IsNullOrEmpty(contentType.Name))
+                    return BadRequest("Invalid parameter");
+
+                if (contentTypeProvider.GetContentType(contentType.Name) != null)
+                    return BadRequest("Content type already exist");
+
+                var dbResult = contentTypeProvider.CreateContentType(Mapper.Map<Deviser.Core.Data.Entities.ContentType>(contentType));
+                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.ContentType>(dbResult);
+                if (result != null)
+                    return Ok(result);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while creating layout type"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        public IActionResult UpdateContentType([FromBody]Deviser.Core.Common.DomainTypes.ContentType contentType)
+        {
+            try
+            {
+                var dbResult = contentTypeProvider.UpdateContentType(Mapper.Map<Deviser.Core.Data.Entities.ContentType>(contentType));
+                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.ContentType>(dbResult);
+                if (result != null)
+                    return Ok(result);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while updating content type"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

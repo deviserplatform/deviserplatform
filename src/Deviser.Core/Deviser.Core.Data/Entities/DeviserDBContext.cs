@@ -226,11 +226,15 @@ namespace Deviser.Core.Data.Entities
             modelBuilder.Entity<LayoutType>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
             });
 
             modelBuilder.Entity<ContentType>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
 
                 entity.HasOne(d => d.ContentDataType).WithMany(p => p.ContentTypes).HasForeignKey(d => d.ContentDataTypeId).OnDelete(DeleteBehavior.Restrict);
 

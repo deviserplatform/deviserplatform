@@ -14,5 +14,8 @@ namespace Deviser.Core.Data.Entities
         public string IconClass { get; set; }
         public string LayoutTypeIds { get; set; }
         public ICollection<LayoutTypeProperty> LayoutTypeProperties { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? LastModifiedDate { get; set; }
     }
 }

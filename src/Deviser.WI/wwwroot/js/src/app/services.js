@@ -1,5 +1,5 @@
 ﻿(function () {
-    var app = angular.module('deviserLayout.services', ['deviser.config']);
+    var app = angular.module('deviser.services', ['deviser.config']);
     app.factory('layoutService', layoutService);
     app.factory('pageService', pageService);
     app.factory('contentTypeService', contentTypeService);

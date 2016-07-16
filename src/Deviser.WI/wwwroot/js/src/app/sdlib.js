@@ -3,13 +3,77 @@
     var app = angular.module('sd.sdlib', [
         'ngSanitize']);
 
+    app.directive('sdEnter', sdEnterDir);
+
+    app.directive('sdNumberOnly', sdNumberOnlyDir);
+
+    app.directive('sdToLowerCase', sdToLowerCaseDir);
+
     app.directive("sdEdit", ['$compile', '$templateCache', sdContenteditable]);
+
     app.directive('contenteditable', ['$sce', contenteditable]);
 
     app.factory('sdUtil', [sdUtil]);
 
     /////////////////////////////////////////////
     /*Function declarations only*/
+    function sdEnterDir() {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if (event.which === 13) {
+                    scope.$apply(function () {
+                        scope.$eval(attrs.ictEnter);
+                    });
+
+                    event.preventDefault();
+                }
+            });
+        };
+    }
+
+    function sdNumberOnlyDir() {
+        var returnObject = {
+            require: 'ngModel',
+            link: link
+        }
+        return returnObject;
+
+        function link(scope, element, attrs, modelCtrl) {
+
+            modelCtrl.$parsers.push(function (inputValue) {
+                if (inputValue == undefined) return ''
+                var transformedInput = inputValue.replace(/[^0-9]/g, '');
+                if (transformedInput != inputValue) {
+                    modelCtrl.$setViewValue(transformedInput);
+                    modelCtrl.$render();
+                }
+
+                return transformedInput;
+            });
+        }
+    }
+
+    function sdToLowerCaseDir() {
+        var returnObject = {
+            require: 'ngModel',
+            link: link
+        }
+        return returnObject;
+
+        function link(scope, element, attrs, modelCtrl) {
+
+            modelCtrl.$parsers.push(function (inputValue) {
+                if (inputValue == undefined) return '';
+                var transformedInput = inputValue.toLowerCase();
+                if (transformedInput != inputValue) {
+                    modelCtrl.$setViewValue(transformedInput);
+                    modelCtrl.$render();
+                }
+                return transformedInput;
+            });
+        }
+    }
+
     function sdContenteditable($compile, $templateCache) {
         var returnObject = {
             restrict: "A",
@@ -123,7 +187,8 @@
 
     function sdUtil() {
         var service = {
-            getGuid: getGuid
+            getGuid: getGuid,
+            isGuid: isGuid
         };
 
         return service;
@@ -136,6 +201,10 @@
             }
             return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
               s4() + '-' + s4() + s4() + s4();
+        }
+
+        function isGuid(guid) {
+            return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(guid);
         }
 
     }

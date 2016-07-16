@@ -7,7 +7,7 @@
     'ui.select',
     'dndLists',
     'sd.sdlib',
-    'deviserLayout.services',
+    'deviser.services',
     'deviser.config',
     'modules.app.imageManager'
     ]);

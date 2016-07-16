@@ -14,6 +14,7 @@ namespace Deviser.Core.Data.DataProviders
         List<ContentType> GetContentTypes();
         ContentType GetContentType(Guid contentTypeId);
         ContentType CreateContentType(ContentType contentType);
+        ContentType GetContentType(string contentTypeName);
         ContentType UpdateContentType(ContentType contentType);
 
     }
@@ -37,6 +38,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     ContentType result;
+                    contentType.CreatedDate = contentType.LastModifiedDate = DateTime.Now;
                     result = context.ContentType.Add(contentType).Entity;
                     context.SaveChanges();
                     return result;
@@ -58,6 +60,27 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     var returnData = context.ContentType
                                .Where(e => e.Id == contentTypeId)
+                               .FirstOrDefault();
+
+                    return returnData;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting ContentType by id", ex);
+            }
+            return null;
+        }
+
+        public ContentType GetContentType(string contentTypeName)
+        {
+            try
+            {
+
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    var returnData = context.ContentType
+                               .Where(e => e.Name.ToLower() == contentTypeName.ToLower())
                                .FirstOrDefault();
 
                     return returnData;
@@ -97,6 +120,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     ContentType result;
+                    contentType.LastModifiedDate = DateTime.Now;
                     result = context.ContentType.Attach(contentType).Entity;
                     context.Entry(contentType).State = EntityState.Modified;
                     context.SaveChanges();

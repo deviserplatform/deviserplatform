@@ -13,6 +13,7 @@ namespace Deviser.Core.Data.DataProviders
     {
         List<LayoutType> GetLayoutTypes();
         LayoutType GetLayoutType(Guid layoutTypeId);
+        LayoutType GetLayoutType(string layoutTypeName);
         LayoutType CreateLayoutType(LayoutType layoutType);
         LayoutType UpdateLayoutType(LayoutType layoutType);
 
@@ -36,6 +37,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     LayoutType result;
+                    layoutType.CreatedDate = layoutType.LastModifiedDate = DateTime.Now;
                     result = context.LayoutType.Add(layoutType).Entity;
                     context.SaveChanges();
                     return result;
@@ -57,6 +59,27 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     var returnData = context.LayoutType
                                .Where(e => e.Id == layoutTypeId)
+                               .FirstOrDefault();
+
+                    return returnData;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting LayoutType by id", ex);
+            }
+            return null;
+        }
+
+        public LayoutType GetLayoutType(string layoutTypeName)
+        {
+            try
+            {
+
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    var returnData = context.LayoutType
+                               .Where(e => e.Name.ToLower() == layoutTypeName.ToLower())
                                .FirstOrDefault();
 
                     return returnData;
@@ -95,6 +118,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     LayoutType result;
+                    layoutType.LastModifiedDate = DateTime.Now;
                     result = context.LayoutType.Attach(layoutType).Entity;
                     context.Entry(layoutType).State = EntityState.Modified;
                     context.SaveChanges();
