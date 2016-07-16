@@ -38,10 +38,10 @@
                         <span ng-if="depth()==1">Root</span>
                     </div>
                     <div data-nodrag class="node-actions pull-right">
-                        <a class="btn btn-default btn-xs" data-nodrag ng-click="pmVM.newSubPage(page)" title="Add new page">
+                        <a data-nodrag ng-click="pmVM.newSubPage(page)" title="Add new page">
                             <i class="fa fa-plus"></i>
                         </a>
-                        <a class="btn btn-danger btn-xs" data-nodrag ng-click="pmVM.delete(page)" ng-show="depth()!=1" title="Remove this page">
+                        <a data-nodrag ng-click="pmVM.delete(page)" ng-show="depth()!=1" title="Remove this page">
                             <i class="fa fa-trash-o"></i>
                         </a>
                     </div>
