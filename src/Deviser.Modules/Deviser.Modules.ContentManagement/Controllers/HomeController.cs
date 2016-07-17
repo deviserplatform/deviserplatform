@@ -28,5 +28,10 @@ namespace Deviser.Modules.ContentManagement.Controllers
         {
             return View();
         }
+
+        public IActionResult Properties()
+        {
+            return View();
+        }
     }
 }
