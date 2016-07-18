@@ -10,11 +10,12 @@
     ]);
 
     app.controller('ContentTypesCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'sdUtil',
-        'contentTypeService', languageCtrl]);
+        'contentTypeService', 'propertyService', languageCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
-    function languageCtrl($scope, $timeout, $filter, $q, globals, sdUtil, contentTypeService) {
+    function languageCtrl($scope, $timeout, $filter, $q, globals, sdUtil,
+        contentTypeService, propertyService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
@@ -24,6 +25,7 @@
             LIST: "LIST"
         };
         vm.currentViewState = vm.viewStates.LIST;
+        vm.taggingLabel = '(new)';
 
         /*Function bindings*/
         vm.newContent = newContent;
@@ -33,6 +35,7 @@
         vm.activate = activate;
         vm.cancel = cancel;
         vm.hasError = hasError;
+        vm.propertyTransform = propertyTransform;
         vm.addProperty = addProperty;
         vm.removeProperty = removeProperty;
         
@@ -46,6 +49,7 @@
         function init() {
             getContentTypes();
             getContentDataTypes();
+            getProperties();
         }
 
         /*Event handlers*/
@@ -71,7 +75,7 @@
                         console.log(result);
                         vm.currentViewState = vm.viewStates.LIST;
                         vm.selectedContentType = {};
-                        getContentTypes();
+                        init();
                         showMessage("success", "New content type has been added");
                     }, function (error) {
                         showMessage("error", "Cannot add layout type, please contact administrator");
@@ -98,13 +102,39 @@
             vm.currentViewState = vm.viewStates.LIST;
         }
 
+        function propertyTransform(propertyLabel) {
+            var propertyName = propertyLabel.replace(/\s+/g, '');
+            propertyName = propertyName.toLowerCase();
+            var item = {
+                name: propertyName,
+                label: propertyLabel
+            };
+            return item;
+        }
+
         function addProperty() {
-            var property = {
-                id: sdUtil.getGuid(),
-                name: '',
-                label: ''
+
+            if (!vm.selectedContentType.properties) {
+                vm.selectedContentType.properties = [];
             }
-            vm.selectedContentType.properties.push(property)
+
+            if (vm.selectedProperty.id) {
+                //Add existing property
+                vm.selectedContentType.properties.push(vm.selectedProperty)
+            }
+            else{
+                //Add new property to service and then add it to selected content type
+                propertyService.post(vm.selectedProperty).then(function (property) {
+                    console.log(property);
+                    vm.selectedProperty = property;
+                    vm.selectedContentType.properties.push(vm.selectedProperty)
+                    getProperties();
+                    showMessage("success", "New property has been added");
+                }, function (error) {
+                    showMessage("error", "Cannot add new property, please contact administrator");
+                });
+            }
+            
         }
 
         function removeProperty(property) {
@@ -130,10 +160,21 @@
             });
         }
 
+        function getProperties() {
+            propertyService.get().then(function (properties) {
+                properties.splice(0, 0, {
+                    label:'Choose Property'
+                });
+                vm.properties = properties;
+            }, function (error) {
+                showMessage("error", "Cannot get all properties, please contact administrator");
+            });
+        }
+
         function update(contentType) {
             contentTypeService.put(contentType).then(function (result) {
                 console.log(result);
-                getContentTypes();
+                init();
                 showMessage("success", "Content Type has been updated");
                 vm.currentViewState = vm.viewStates.LIST;
             }, function (error) {

@@ -4,6 +4,7 @@
     app.factory('pageService', pageService);
     app.factory('contentTypeService', contentTypeService);
     app.factory('layoutTypeService', layoutTypeService);
+    app.factory('propertyService', propertyService);
     app.factory('optionListService', optionListService);
     app.factory('pageContentService', pageContentService);
     app.factory('contentTranslationService', contentTranslationService);
@@ -59,6 +60,12 @@
     function layoutTypeService($http, $q, globals) {
         var serviceUrl = '/layouttype';
         var service = baseService($http, $q, globals, serviceUrl);       
+        return service;
+    }
+    
+    function propertyService($http, $q, globals) {
+        var serviceUrl = '/property';
+        var service = baseService($http, $q, globals, serviceUrl);
         return service;
     }
 

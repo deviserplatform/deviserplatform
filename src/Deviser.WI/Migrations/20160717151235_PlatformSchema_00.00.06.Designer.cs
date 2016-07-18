@@ -8,9 +8,10 @@ using Deviser.Core.Data.Entities;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDBContext))]
-    partial class DeviserDBContextModelSnapshot : ModelSnapshot
+    [Migration("20160717151235_PlatformSchema_00.00.06")]
+    partial class PlatformSchema_000006
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")

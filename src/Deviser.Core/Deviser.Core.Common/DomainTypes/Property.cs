@@ -14,5 +14,8 @@ namespace Deviser.Core.Common.DomainTypes
         public string Value { get; set; }
         public Guid? PropertyOptionListId { get; set; }
         public PropertyOptionList PropertyOptionList { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? LastModifiedDate { get; set; }
     }
 }

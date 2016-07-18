@@ -36,6 +36,7 @@ namespace Deviser.WI
             builder.RegisterType<UserProvider>().As<IUserProvider>();
             builder.RegisterType<LanguageProvider>().As<ILanguageProvider>();
             builder.RegisterType<OptionListProvider>().As<IOptionListProvider>();
+            builder.RegisterType<PropertyProvider>().As<IPropertyProvider>(); 
 
             builder.RegisterType<SiteBootstrapper>().As<ISiteBootstrapper>(); 
             builder.RegisterType<PageManager>().As<IPageManager>();

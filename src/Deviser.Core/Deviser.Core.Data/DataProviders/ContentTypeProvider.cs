@@ -27,7 +27,7 @@ namespace Deviser.Core.Data.DataProviders
 
         //Constructor
         public ContentTypeProvider(ILifetimeScope container)
-            :base(container)
+            : base(container)
         {
             logger = container.Resolve<ILogger<ContentTypeProvider>>();
         }
@@ -39,6 +39,15 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     ContentType result;
+                    contentType.Id = Guid.NewGuid();
+                    contentType.ContentDataType = null;
+                    if (contentType.ContentTypeProperties!=null && contentType.ContentTypeProperties.Count > 0)
+                    {
+                        foreach(var ctp in contentType.ContentTypeProperties)
+                        {
+                            ctp.ConentTypeId = contentType.Id;
+                        }
+                    }
                     contentType.CreatedDate = contentType.LastModifiedDate = DateTime.Now;
                     result = context.ContentType.Add(contentType).Entity;
                     context.SaveChanges();
@@ -118,8 +127,8 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     var returnData = context.ContentType
-                        .Include(c=>c.ContentTypeProperties).ThenInclude(cp=>cp.Property)
-                        .Include(c=>c.ContentDataType)
+                        .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property)
+                        .Include(c => c.ContentDataType)
                         .ToList();
                     return new List<ContentType>(returnData);
                 }
@@ -137,6 +146,37 @@ namespace Deviser.Core.Data.DataProviders
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
+                    if (contentType.ContentTypeProperties != null && contentType.ContentTypeProperties.Count > 0)
+                    {
+
+                        var toRemoveFromClient = contentType.ContentTypeProperties.Where(clientProp => context.ContentTypeProperty.Any(dbProp =>
+                         clientProp.ConentTypeId == dbProp.ConentTypeId && clientProp.PropertyId == dbProp.PropertyId)).ToList();
+
+                        var currentTypeProperties = context.ContentTypeProperty.Where(ctp => ctp.ConentTypeId == contentType.Id).ToList();
+
+                        List<ContentTypeProperty> toRemoveFromDb = null;
+
+                        if (currentTypeProperties != null && currentTypeProperties.Count > 0)
+                        {
+                            toRemoveFromDb = currentTypeProperties.Where(dbProp => !contentType.ContentTypeProperties.Any(clientProp => dbProp.PropertyId == clientProp.PropertyId)).ToList();
+                        }
+
+                        if (toRemoveFromClient != null && toRemoveFromClient.Count > 0)
+                        {
+                            foreach (var contentTypeProp in toRemoveFromClient)
+                            {
+                                //ContentTypeProperty exist in db, therefore remove it from contentType (client source)
+                                contentType.ContentTypeProperties.Remove(contentTypeProp);
+                            }
+                        }
+
+                        if (toRemoveFromDb != null && toRemoveFromDb.Count > 0)
+                        {
+                            //ContentTypeProperty is not exist in contentType (client source), because client has been removed it. Therefor, remove it from db.
+                            context.ContentTypeProperty.RemoveRange(toRemoveFromDb);
+                        }
+                    }
+
                     ContentType result;
                     contentType.LastModifiedDate = DateTime.Now;
                     result = context.ContentType.Attach(contentType).Entity;

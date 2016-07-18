@@ -16,7 +16,9 @@ namespace Deviser.Core.Data.Entities
         public ICollection<LayoutTypeProperty> LayoutTypeProperties { get; set; }
         public ICollection<ContentTypeProperty> ContentTypeProperties { get; set; }
         public PropertyOptionList PropertyOptionList { get; set; }
-        
+        public bool IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? LastModifiedDate { get; set; }
 
     }
 }

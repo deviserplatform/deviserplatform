@@ -245,6 +245,8 @@ namespace Deviser.Core.Data.Entities
 
                 entity.Ignore(e => e.Value);
 
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+
                 entity.HasOne(d => d.PropertyOptionList).WithMany(p => p.Properties).HasForeignKey(d => d.PropertyOptionListId).OnDelete(DeleteBehavior.Restrict);
             });
 
