@@ -161,10 +161,7 @@
         }
 
         function getProperties() {
-            propertyService.get().then(function (properties) {
-                properties.splice(0, 0, {
-                    label:'Choose Property'
-                });
+            propertyService.get().then(function (properties) {                
                 vm.properties = properties;
             }, function (error) {
                 showMessage("error", "Cannot get all properties, please contact administrator");

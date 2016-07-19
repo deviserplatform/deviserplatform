@@ -430,6 +430,7 @@ body {
 
     .tree-node a.expander i{
         font-size: 1.3em;
+        padding: 0 4px 0 4px;
     }
 
     .tree-node .node-actions{
