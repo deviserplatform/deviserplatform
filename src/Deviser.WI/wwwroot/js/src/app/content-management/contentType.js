@@ -25,7 +25,6 @@
             LIST: "LIST"
         };
         vm.currentViewState = vm.viewStates.LIST;
-        vm.taggingLabel = '(new)';
 
         /*Function bindings*/
         vm.newContent = newContent;
@@ -38,7 +37,7 @@
         vm.propertyTransform = propertyTransform;
         vm.addProperty = addProperty;
         vm.removeProperty = removeProperty;
-        
+        vm.isPropExist = isPropExist;
 
         init();
 
@@ -113,34 +112,39 @@
         }
 
         function addProperty() {
+            if (!isPropExist()) {
+                if (!vm.selectedContentType.properties) {
+                    vm.selectedContentType.properties = [];
+                }
 
-            if (!vm.selectedContentType.properties) {
-                vm.selectedContentType.properties = [];
-            }
-
-            if (vm.selectedProperty.id) {
-                //Add existing property
-                vm.selectedContentType.properties.push(vm.selectedProperty)
-            }
-            else{
-                //Add new property to service and then add it to selected content type
-                propertyService.post(vm.selectedProperty).then(function (property) {
-                    console.log(property);
-                    vm.selectedProperty = property;
+                if (vm.selectedProperty.id) {
+                    //Add existing property
                     vm.selectedContentType.properties.push(vm.selectedProperty)
-                    getProperties();
-                    showMessage("success", "New property has been added");
-                }, function (error) {
-                    showMessage("error", "Cannot add new property, please contact administrator");
-                });
+                }
+                else {
+                    //Add new property to service and then add it to selected content type
+                    propertyService.post(vm.selectedProperty).then(function (property) {
+                        console.log(property);
+                        vm.selectedProperty = property;
+                        vm.selectedContentType.properties.push(vm.selectedProperty)
+                        getProperties();
+                        showMessage("success", "New property has been added");
+                    }, function (error) {
+                        showMessage("error", "Cannot add new property, please contact administrator");
+                    });
+                }
             }
-            
         }
 
         function removeProperty(property) {
             vm.selectedContentType.properties = _.reject(vm.selectedContentType.properties, function (prop) {
                 return prop.id === property.id;
             })
+        }
+
+        function isPropExist() {
+            var isExist = _.findWhere(vm.selectedContentType.properties, { id: vm.selectedProperty.id });
+            return isExist;
         }
 
         /*Private functions*/

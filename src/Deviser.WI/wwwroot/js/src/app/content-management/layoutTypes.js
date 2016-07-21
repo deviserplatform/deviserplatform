@@ -10,14 +10,23 @@
     ]);
 
     app.controller('LayoutTypesCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals',
-        'layoutTypeService', languageCtrl]);
+        'layoutTypeService', 'propertyService', languageCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
-    function languageCtrl($scope, $timeout, $filter, $q, globals, layoutTypeService) {
+    function languageCtrl($scope, $timeout, $filter, $q, globals,
+        layoutTypeService, propertyService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
-        vm.alerts = [];
+        vm.alerts = [];       
+        vm.viewStates = {
+            NEW: "NEW",
+            EDIT: "EDIT",
+            LIST: "LIST"
+        };
+        vm.currentViewState = vm.viewStates.LIST;
+
+        /*Function bindings*/
         vm.newContentType = newContentType;
         vm.edit = edit;
         vm.isValidName = isValidName;
@@ -25,12 +34,10 @@
         vm.activate = activate;
         vm.cancel = cancel;
         vm.hasError = hasError;
-        vm.viewStates = {
-            NEW: "NEW",
-            EDIT: "EDIT",
-            LIST: "LIST"
-        };
-        vm.currentViewState = vm.viewStates.LIST;
+        vm.propertyTransform = propertyTransform;
+        vm.addProperty = addProperty;
+        vm.removeProperty = removeProperty;
+        vm.isPropExist = isPropExist;
 
         init();
 
@@ -40,6 +47,7 @@
         /*Controller Initialization*/
         function init() {
             getLayoutTypes();
+            getProperties();
         }
 
         /*Event handlers*/
@@ -99,12 +107,66 @@
             vm.currentViewState = vm.viewStates.LIST;
         }
 
+        function propertyTransform(propertyLabel) {
+            var propertyName = propertyLabel.replace(/\s+/g, '');
+            propertyName = propertyName.toLowerCase();
+            var item = {
+                name: propertyName,
+                label: propertyLabel
+            };
+            return item;
+        }
+
+        function addProperty() {
+            if (!isPropExist()) {
+                if (!vm.selectedLayoutType.properties) {
+                    vm.selectedLayoutType.properties = [];
+                }
+
+                if (vm.selectedProperty.id) {
+                    //Add existing property
+                    vm.selectedLayoutType.properties.push(vm.selectedProperty)
+                }
+                else {
+                    //Add new property to service and then add it to selected content type
+                    propertyService.post(vm.selectedProperty).then(function (property) {
+                        console.log(property);
+                        vm.selectedProperty = property;
+                        vm.selectedLayoutType.properties.push(vm.selectedProperty)
+                        getProperties();
+                        showMessage("success", "New property has been added");
+                    }, function (error) {
+                        showMessage("error", "Cannot add new property, please contact administrator");
+                    });
+                }
+            }
+        }
+
+        function removeProperty(property) {
+            vm.selectedLayoutType.properties = _.reject(vm.selectedLayoutType.properties, function (prop) {
+                return prop.id === property.id;
+            })
+        }
+
+        function isPropExist() {
+            var isExist = _.findWhere(vm.selectedLayoutType.properties, { id: vm.selectedProperty.id });
+            return isExist;
+        }
+
         /*Private functions*/
         function getLayoutTypes() {
             layoutTypeService.get().then(function (layoutTypes) {
                 vm.layoutTypes = layoutTypes;
             }, function (error) {
                 showMessage("error", "Cannot get all layout types, please contact administrator");
+            });
+        }
+
+        function getProperties() {
+            propertyService.get().then(function (properties) {
+                vm.properties = properties;
+            }, function (error) {
+                showMessage("error", "Cannot get all properties, please contact administrator");
             });
         }
 

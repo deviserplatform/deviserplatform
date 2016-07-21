@@ -33,9 +33,11 @@ namespace Deviser.WI.Infrastructure
                 config.CreateMap<PageContent, Core.Common.DomainTypes.PageContent>().ReverseMap();
 
                 config.CreateMap<Core.Common.DomainTypes.LayoutType, LayoutType>()
-                .ReverseMap().ForMember(dest => dest.Properties, opt => opt.MapFrom(src =>
-                  src.LayoutTypeProperties != null ? src.LayoutTypeProperties.Select(ctp => ctp.Property) : null)
-                );
+                .ForMember(dest => dest.LayoutTypeProperties, opt => opt.MapFrom(src =>
+                    src.Properties != null ? src.Properties.Select(ctp => new LayoutTypeProperty { PropertyId = ctp.Id, LayoutTypeId = src.Id }) : null))
+                .ReverseMap()
+                .ForMember(dest => dest.Properties, opt => opt.MapFrom(src =>
+                  src.LayoutTypeProperties != null ? src.LayoutTypeProperties.Select(ctp => ctp.Property) : null));
 
 
             });

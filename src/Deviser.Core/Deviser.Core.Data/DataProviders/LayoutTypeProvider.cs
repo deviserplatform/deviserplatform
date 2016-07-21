@@ -117,6 +117,37 @@ namespace Deviser.Core.Data.DataProviders
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
+                    if (layoutType.LayoutTypeProperties != null && layoutType.LayoutTypeProperties.Count > 0)
+                    {
+
+                        var toRemoveFromClient = layoutType.LayoutTypeProperties.Where(clientProp => context.ContentTypeProperty.Any(dbProp =>
+                         clientProp.LayoutTypeId == dbProp.ConentTypeId && clientProp.PropertyId == dbProp.PropertyId)).ToList();
+
+                        var layoutTypeProperties = context.ContentTypeProperty.Where(ctp => ctp.ConentTypeId == layoutType.Id).ToList();
+
+                        List<ContentTypeProperty> toRemoveFromDb = null;
+
+                        if (layoutTypeProperties != null && layoutTypeProperties.Count > 0)
+                        {
+                            toRemoveFromDb = layoutTypeProperties.Where(dbProp => !layoutType.LayoutTypeProperties.Any(clientProp => dbProp.PropertyId == clientProp.PropertyId)).ToList();
+                        }
+
+                        if (toRemoveFromClient != null && toRemoveFromClient.Count > 0)
+                        {
+                            foreach (var layoutTypeProp in toRemoveFromClient)
+                            {
+                                //ContentTypeProperty exist in db, therefore remove it from contentType (client source)
+                                layoutType.LayoutTypeProperties.Remove(layoutTypeProp);
+                            }
+                        }
+
+                        if (toRemoveFromDb != null && toRemoveFromDb.Count > 0)
+                        {
+                            //ContentTypeProperty is not exist in contentType (client source), because client has been removed it. Therefor, remove it from db.
+                            context.ContentTypeProperty.RemoveRange(toRemoveFromDb);
+                        }
+                    }
+
                     LayoutType result;
                     layoutType.LastModifiedDate = DateTime.Now;
                     result = context.LayoutType.Attach(layoutType).Entity;

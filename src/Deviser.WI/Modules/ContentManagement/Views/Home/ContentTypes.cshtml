@@ -133,15 +133,16 @@
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Properties</label>
                                 <div class="col-md-6">
-                                    <ui-select tagging="ctVM.propertyTransform" tagging-label="false" ng-model="ctVM.selectedProperty" theme="bootstrap" ng-disabled="ctVM.properties.length<=0">
+                                    <ui-select tagging="ctVM.propertyTransform" ng-model="ctVM.selectedProperty" theme="bootstrap" ng-disabled="ctVM.properties.length<=0">
                                         <ui-select-match placeholder="Select property">{{$select.selected.label}}</ui-select-match>
                                         <ui-select-choices repeat="property in ctVM.properties | filter: $select.search">
-                                            <div ng-bind-html="property.label | highlight: $select.search"></div>
+                                            <div ng-if="property.isTag" ng-bind-html="(property.label | highlight: $select.search) +' (New Property)'"></div>
+                                            <div ng-if="!property.isTag" ng-bind-html="property.label | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
                                 </div>
                                 <div class="col-md-3">
-                                    <a class="btn btn-primary" ng-click="ctVM.addProperty()" ng-disabled="(ctVM.properties.length<=0 || !ctVM.selectedProperty)">Add Property</a>
+                                    <a class="btn btn-primary" ng-click="ctVM.addProperty()" ng-disabled="(ctVM.properties.length<=0 || !ctVM.selectedProperty || ctVM.isPropExist())">Add Property</a>
                                 </div>
                             </div>
                             <div class="form-group">
