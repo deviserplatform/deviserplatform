@@ -131,7 +131,6 @@ body {
     margin-bottom: 20px;
     background-color: #fff;
     border: 1px solid transparent;
-    border-radius: 4px;
     -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
     box-shadow: 0 1px 2px rgba(0,0,0,.05);
 }
@@ -140,7 +139,6 @@ body {
     margin-bottom: 20px;
     background-color: #fff;
     border: 1px dashed transparent;
-    border-radius: 4px;
     -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
     box-shadow: 0 1px 2px rgba(0,0,0,.05);
 }
@@ -149,8 +147,6 @@ body {
         color: #333;
         border-color: #ddd;
         border-bottom: 1px solid transparent;
-        border-top-right-radius: 3px;
-        border-top-left-radius: 3px;
         background-repeat: repeat-x;
         display: block;
         font-size: 16px;
@@ -190,9 +186,7 @@ body {
 }
 
     .box-grey > h3 {
-        background-color: #f5f5f5;
-        background-image: -webkit-linear-gradient(top,#f5f5f5 0,#e8e8e8 100%);
-        background-image: linear-gradient(to bottom,#f5f5f5 0,#e8e8e8 100%);
+        background-color: #f5f5f5;        
     }
 
 .box-blue {
@@ -202,9 +196,7 @@ body {
     .box-blue > h3 {
         color: #31708f;
         background-color: #d9edf7;
-        border-color: #bce8f1;
-        background-image: -webkit-linear-gradient(top,#d9edf7 0,#c4e3f3 100%);
-        background-image: linear-gradient(to bottom,#d9edf7 0,#c4e3f3 100%);
+        border-color: #bce8f1;        
     }
 
 .box-yellow {
@@ -214,9 +206,7 @@ body {
     .box-yellow > h3 {
         color: #8a6d3b;
         background-color: #fcf8e3;
-        border-color: #faebcc;
-        background-image: -webkit-linear-gradient(top,#fcf8e3 0,#faf2cc 100%);
-        background-image: linear-gradient(to bottom,#fcf8e3 0,#faf2cc 100%);
+        border-color: #faebcc;        
     }
 
 /***************************** Required styles *****************************/
@@ -293,14 +283,13 @@ body {
 }
 
 .nestedDemo .dropzone .selected .box {
-    border-color: #d6e9c6;
+    border-color: #2e6da4;
 }
 
     .nestedDemo .dropzone .selected .box > h3 {
-        color: #3c763d;
-        background-color: #dff0d8;
-        background-image: linear-gradient(to bottom,#dff0d8 0,#d0e9c6 100%);
-        border-color: #d6e9c6;
+        color: #fff;
+        background-color: #337ab7;
+        border-color: #2e6da4;        
     }
 
 /***************************** Element type specific styles *****************************/
@@ -492,6 +481,22 @@ div.edit-page.form-horizontal .control-label {
 
         .layout-controls .layout-name input {
             width: 100%;
+        }
+
+        .box.properties .row{
+            padding: 10px 0 10px 0;
+            border-bottom:1px solid #ddd;
+            display: flex;
+            align-items: center;
+        }
+
+        .box.properties .row:first-of-type{
+            padding-top:0px;
+        }
+
+        .box.properties .row:last-of-type{
+            padding-bottom:0px;
+            border-bottom:none;
         }
 
 /*Edit mode*/

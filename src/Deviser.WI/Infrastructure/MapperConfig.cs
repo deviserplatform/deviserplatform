@@ -20,7 +20,7 @@ namespace Deviser.WI.Infrastructure
                 config.CreateMap<PropertyOptionList, Core.Common.DomainTypes.PropertyOptionList>().ReverseMap();
                 config.CreateMap<Property, Core.Common.DomainTypes.Property>().ReverseMap();
                 config.CreateMap<Core.Common.DomainTypes.ContentType, ContentType>()
-                .ForMember(dest => dest.ContentDataTypeId, opt => opt.MapFrom(src => src.ContentDataType.Id))                
+                .ForMember(dest => dest.ContentDataTypeId, opt => opt.MapFrom(src => src.ContentDataType.Id))
                 .ForMember(dest => dest.ContentTypeProperties, opt => opt.MapFrom(src =>
                     src.Properties != null ? src.Properties.Select(ctp => new ContentTypeProperty { PropertyId = ctp.Id, ConentTypeId = src.Id }) : null))
                 .ReverseMap()
@@ -30,7 +30,13 @@ namespace Deviser.WI.Infrastructure
                    src.ContentDataType != null ? src.ContentDataType.Name : null));
 
                 config.CreateMap<ContentDataType, Core.Common.DomainTypes.ContentDataType>().ReverseMap();
-                config.CreateMap<PageContent, Core.Common.DomainTypes.PageContent>().ReverseMap();
+
+                config.CreateMap<PageContent, Core.Common.DomainTypes.PageContent>()
+                .ForMember(dest => dest.Properties, opt =>
+                opt.MapFrom(src => !string.IsNullOrEmpty(src.Properties) ? SDJsonConvert.DeserializeObject<List<Core.Common.DomainTypes.Property>>(src.Properties) : null))
+                .ReverseMap()
+                .ForMember(dest => dest.Properties, opt =>
+                opt.MapFrom(src => (src.Properties != null) ? SDJsonConvert.SerializeObject(src.Properties) : null));
 
                 config.CreateMap<Core.Common.DomainTypes.LayoutType, LayoutType>()
                 .ForMember(dest => dest.LayoutTypeProperties, opt => opt.MapFrom(src =>

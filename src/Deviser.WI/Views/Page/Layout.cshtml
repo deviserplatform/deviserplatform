@@ -26,7 +26,7 @@
                         <span class="pull-left" ng-show="!layoutVM.pageLayout.name">Choose Layout</span> <i class="fa fa-angle-down pull-right"></i>
                     </button>
                     <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-                        <li ng-repeat="layout in layoutVM.layouts track by $index"><a href ng-click="layoutVM.selectLayout(layout)">{{layout.name}}</a></li>
+                        <li ng-repeat="layout in layoutVM.layouts track by $index"><a ng-click="layoutVM.selectLayout(layout)">{{layout.name}}</a></li>
                     </ul>
                 </div>
                 <button type="button" class="layout-control btn btn-success" ng-click="layoutVM.newLayout()">
@@ -65,7 +65,7 @@
                      dnd-type="item.layoutTypeId"
                      dnd-effect-allowed="move"
                      dnd-moved="layoutVM.itemMoved(parentItem, $index)"
-                     dnd-selected="layoutVM.selectedItem  = item"
+                     dnd-selected="layoutVM.selectItem(item)"
                      ng-class="{selected:layoutVM.selectedItem === item}"
                      ng-include="item.layoutTemplate + '.html'">
                 </div>
@@ -73,8 +73,7 @@
             </script>
             <script type="text/ng-template" id="container.html">
                 <div class="container-element box box-blue">
-                    @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
-                    <h3>{{item.type}} {{$index+1}} container</h3>
+                    <h3>{{item.label}} {{$index+1}}</h3>
                     <div class="container-content">
                         <div class="row dnd-list"
                              dnd-list="item.placeHolders"
@@ -87,8 +86,7 @@
             </script>
             <script type="text/ng-template" id="row.html">
                 <div class="container-element box box-blue">
-                    @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
-                    <h3>{{item.type}} {{$index+1}}</h3>
+                    <h3>{{item.label}} {{$index+1}}</h3>
                     <div class="container-content">
                         <div class="row dnd-list"
                              dnd-list="item.placeHolders"
@@ -103,8 +101,7 @@
             <script type="text/ng-template" id="column.html">
                 <div class="col-md-3">
                     <div class="container-element box box-blue">
-                        @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
-                        <h3>{{item.type}} {{$index+1}}</h3>
+                        <h3>{{item.label}} {{$index+1}}</h3>
                         <div class="container-content">
                             <div class="row dnd-list"
                                  dnd-list="item.placeHolders"
@@ -117,9 +114,8 @@
                 </div>
             </script>
             <script type="text/ng-template" id="repeater.html">
-                <div class="container-element box box-blue">
-                    @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
-                    <h3>{{item.type}} {{$index+1}} repeater</h3>
+                <div class="container-element box box-blue">                    
+                    <h3>{{item.label}} {{$index+1}} repeater</h3>
                     <div class="container-content">
                         <div class="row dnd-list"
                              dnd-list="item.placeHolders"
@@ -162,12 +158,9 @@
                     </div>
                 </div>
                 <div class="col-md-8">
-
-
-
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="dropzone box box-yellow">
+                            <div class="dropzone box box-grey">
                                 <!-- The dropzone also uses the list template -->
                                 <h3>Page Container</h3>
                                 <div class="row dnd-list"
@@ -180,7 +173,7 @@
                                          dnd-type="item.layoutTypeId"
                                          dnd-effect-allowed="move"
                                          dnd-moved="layoutVM.itemMoved(layoutVM.pageLayout, $index)"
-                                         dnd-selected="layoutVM.selectedItem  = item"
+                                         dnd-selected="layoutVM.selectItem(item)"
                                          ng-class="{selected:layoutVM.selectedItem === item}"
                                          ng-include="item.layoutTemplate + '.html'">
                                     </div>
@@ -189,29 +182,40 @@
 
                             </div>
                         </div>
-                    </div>
-                    @*<div view-source="nested" highlight-lines="{markup: '1-18, 20-28, 40-42, 57-68, 78-82'}"></div>*@
+                    </div>                    
                 </div>
                 <!-- Sidebar -->
                 <div class="col-md-2">
-                    <div class="box box-grey box-padding">
+                    <div class="box box-grey box-padding properties">
                         <h3>Selected</h3>
-                        <strong>Item Type </strong> {{layoutVM.selectedItem.type}}
-                        <br>
-                        <br>
-                        <strong>Properties</strong>
-                        <table class="table">
-                            <tbody>
-                                <tr ng-repeat="property in layoutVM.selectedItem.properties track by $index">
-                                    <td>
-                                        {{property.propertyName}}
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control" ng-model="property.ropertyValue" />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Layout Type</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{layoutVM.selectedItem.label}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Properties</strong>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-repeat="property in layoutVM.selectedItem.properties track by $index">
+                            <div class="col-md-6">
+                                {{property.label}}
+                            </div>
+                            <div class="col-md-6" ng-show="!property.propertyOptionList">
+                                <input type="text" class="form-control input-sm" ng-model="property.value" />
+                            </div>
+                            <div class="col-md-6" ng-show="property.propertyOptionList">
+                                <select class="form-control input-sm" name="repeatSelect" id="repeatSelect" ng-model="property.value">
+                                    <option ng-repeat="option in property.propertyOptionList" value="{{option.id}}">{{option.label}}</option>
+                                </select>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="trashcan box box-grey box-padding">
                         <!-- If you use [] as referenced list, the dropped elements will be lost -->
@@ -223,17 +227,13 @@
                 </div>
 
             </div>
-            <div class="row">
+            @*<div class="row">
                 <div class="col-lg-6">
                     <pre>{{layoutVM.pageLayout | json}}</pre>
                 </div>
 
-            </div>
-
+            </div>*@
         </div>
-
-
     </div>
-
 </div>
 

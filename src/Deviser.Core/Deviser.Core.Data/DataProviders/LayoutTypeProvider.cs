@@ -58,8 +58,9 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     var returnData = context.LayoutType
-                               .Where(e => e.Id == layoutTypeId)
-                               .FirstOrDefault();
+                        .Include(lt=>lt.LayoutTypeProperties)
+                        .Where(e => e.Id == layoutTypeId)
+                        .FirstOrDefault();
 
                     return returnData;
                 }
@@ -79,8 +80,9 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     var returnData = context.LayoutType
-                               .Where(e => e.Name.ToLower() == layoutTypeName.ToLower())
-                               .FirstOrDefault();
+                        .Include(lt => lt.LayoutTypeProperties)
+                        .Where(e => e.Name.ToLower() == layoutTypeName.ToLower())
+                        .FirstOrDefault();
 
                     return returnData;
                 }
@@ -99,7 +101,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     var returnData = context.LayoutType
-                        .Include(c => c.LayoutTypeProperties).ThenInclude(cp => cp.Property)                        
+                        .Include(c => c.LayoutTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p=>p.PropertyOptionList)
                         .ToList();
                     return new List<LayoutType>(returnData);
                 }
@@ -120,12 +122,12 @@ namespace Deviser.Core.Data.DataProviders
                     if (layoutType.LayoutTypeProperties != null && layoutType.LayoutTypeProperties.Count > 0)
                     {
 
-                        var toRemoveFromClient = layoutType.LayoutTypeProperties.Where(clientProp => context.ContentTypeProperty.Any(dbProp =>
-                         clientProp.LayoutTypeId == dbProp.ConentTypeId && clientProp.PropertyId == dbProp.PropertyId)).ToList();
+                        var toRemoveFromClient = layoutType.LayoutTypeProperties.Where(clientProp => context.LayoutTypeProperty.Any(dbProp =>
+                         clientProp.LayoutTypeId == dbProp.LayoutTypeId && clientProp.PropertyId == dbProp.PropertyId)).ToList();
 
-                        var layoutTypeProperties = context.ContentTypeProperty.Where(ctp => ctp.ConentTypeId == layoutType.Id).ToList();
+                        var layoutTypeProperties = context.LayoutTypeProperty.Where(ctp => ctp.LayoutTypeId == layoutType.Id).ToList();
 
-                        List<ContentTypeProperty> toRemoveFromDb = null;
+                        List<LayoutTypeProperty> toRemoveFromDb = null;
 
                         if (layoutTypeProperties != null && layoutTypeProperties.Count > 0)
                         {
@@ -144,7 +146,7 @@ namespace Deviser.Core.Data.DataProviders
                         if (toRemoveFromDb != null && toRemoveFromDb.Count > 0)
                         {
                             //ContentTypeProperty is not exist in contentType (client source), because client has been removed it. Therefor, remove it from db.
-                            context.ContentTypeProperty.RemoveRange(toRemoveFromDb);
+                            context.LayoutTypeProperty.RemoveRange(toRemoveFromDb);
                         }
                     }
 

@@ -8,7 +8,8 @@ namespace Deviser.Core.Common.DomainTypes
 {
     public class ItemProperty
     {
-        public string PropertyName { get; set; }
-        public string PropertyValue { get; set; }
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Value { get; set; }
     }
 }

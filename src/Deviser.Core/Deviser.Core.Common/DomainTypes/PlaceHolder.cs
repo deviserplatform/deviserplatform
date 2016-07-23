@@ -15,6 +15,7 @@ namespace Deviser.Core.Common.DomainTypes
         public string LayoutTemplate { get; set; }
         public int SortOrder { get; set; }
         public Module Module { get; set; }
+        public Guid LayoutTypeId { get; set; }
         public List<ItemProperty> Properties { get; set; }
         public List<PlaceHolder> PlaceHolders { get; set; }
     }

@@ -10,7 +10,7 @@ namespace Deviser.Core.Common.DomainTypes
     {
         public Guid Id { get; set; }
         public Guid ContainerId { get; set; }
-        public string Properties { get; set; }
+        public List<Property> Properties { get; set; }
         public int SortOrder { get; set; }
         public DateTime? CreatedDate { get; set; }
         public bool IsDeleted { get; set; }
@@ -20,5 +20,14 @@ namespace Deviser.Core.Common.DomainTypes
         public virtual Deviser.Core.Data.Entities.Page Page { get; set; }
         public virtual ContentType ContentType { get; set; }
         public virtual ICollection<Deviser.Core.Data.Entities.PageContentTranslation> PageContentTranslation { get; set; }
+
+        public Property GetProperty(string propertyName)
+        {
+            if(Properties!=null && Properties.Count > 0)
+            {
+                return Properties.FirstOrDefault(p => p.Name == "cssclass");
+            }
+            return null;
+        }
     }
 }

@@ -127,7 +127,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     var returnData = context.ContentType
-                        .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property)
+                        .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.PropertyOptionList)
                         .Include(c => c.ContentDataType)
                         .ToList();
                     return new List<ContentType>(returnData);

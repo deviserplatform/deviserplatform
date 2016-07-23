@@ -112,6 +112,9 @@
                 name: '',
                 label:''
             }
+            if (!vm.selectedOptionList.items) {
+                vm.selectedOptionList.items = [];
+            }
             vm.selectedOptionList.items.push(listItem)
         }
 

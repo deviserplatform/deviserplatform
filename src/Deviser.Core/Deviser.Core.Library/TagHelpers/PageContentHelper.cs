@@ -13,7 +13,8 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Common.DomainTypes;
+using PageContent = Deviser.Core.Common.DomainTypes.PageContent;
+using AutoMapper;
 
 namespace Deviser.Core.Library.TagHelpers
 {
@@ -44,6 +45,8 @@ namespace Deviser.Core.Library.TagHelpers
 
         protected IHtmlGenerator Generator { get; }
 
+        protected ICollection<PageContent> PageContents {get;set;}
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (CurrentPage == null)
@@ -69,6 +72,7 @@ namespace Deviser.Core.Library.TagHelpers
             PageLayout pageLayout = new PageLayout();
             pageLayout.Name = CurrentPage.Layout.Name;
             pageLayout.PlaceHolders = JsonConvert.DeserializeObject<List<PlaceHolder>>(CurrentPage.Layout.Config);
+            PageContents = Mapper.Map<ICollection<PageContent>>(CurrentPage.PageContent);
             if (pageLayout.PlaceHolders != null && pageLayout.PlaceHolders.Count > 0)
             {
                 string result = RenderContentItems(pageLayout.PlaceHolders, ModuleActionResults);
@@ -103,10 +107,10 @@ namespace Deviser.Core.Library.TagHelpers
                             }
                         }
 
-                        if (CurrentPage.PageContent.Any(pc => pc.ContainerId == placeHolder.Id))
+                        if (PageContents.Any(pc => pc.ContainerId == placeHolder.Id))
                         {
                             //Page contents                            
-                            var pageContents = CurrentPage.PageContent
+                            var pageContents = PageContents
                                 .Where(pc => pc.ContainerId == placeHolder.Id)
                                 .OrderBy(pc => pc.SortOrder);
                             foreach (var pageContent in pageContents)

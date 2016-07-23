@@ -85,8 +85,9 @@
                     });
                 }
                 else {
-                    var allowedTypeIds = _.pluck(vm.selectedLayoutType.allowedLayoutTypes, 'id');
+                    var allowedTypeIds = _.pluck(vm.selectedLayoutType.allowedLayoutTypes, 'id');                    
                     vm.layoutTypeIds = allowedTypeIds.join(',');
+                    delete vm.selectedLayoutType.allowedLayoutTypes;
                     update(vm.selectedLayoutType);
                 }
             }
@@ -170,7 +171,7 @@
             });
         }
 
-        function update(layoutType) {
+        function update(layoutType) {            
             layoutTypeService.put(layoutType).then(function (result) {
                 console.log(result);
                 getLayoutTypes();

@@ -38,6 +38,7 @@
         vm.copyLayout = copyLayout;
         vm.saveLayout = saveLayout;
         vm.deleteLayout = deleteLayout;
+        vm.selectItem = selectItem;
         vm.itemMoved = itemMoved;
         vm.deleteElement = deleteElement;
 
@@ -52,18 +53,18 @@
             getLayouts(),
             getLayoutTypes()
             ]).then(function () {
+                processLayoutTypes(vm.layoutTypes);
                 if (vm.currentPage.layoutId) {
                     var selectedLayout = _.find(vm.layouts, function (layout) {
                         return layout.id === vm.currentPage.layoutId;
                     });
                     if (selectedLayout) {
-                        vm.pageLayout = selectedLayout;
+                        selectLayout(selectedLayout);
                     }
                     else {
                         newLayout();
                     }
                 }
-                processLayoutTypes(vm.layoutTypes);
             });
         }
 
@@ -120,7 +121,7 @@
                     layoutType.layoutTypeId = layoutType.id;
                     layoutType.id = sdUtil.getGuid();
                     layoutType.placeHolders = [];
-                    layoutType.layoutTypeIds = layoutType.layoutTypeIds.replace(/ /g, '');
+                    layoutType.layoutTypeIds = layoutType.layoutTypeIds.replace(/\s+/g, '');
                     layoutType.allowedTypes = (layoutType.layoutTypeIds) ? layoutType.layoutTypeIds.split(",") : "";
                     layoutType.type = layoutType.name;
                     if (layoutType.type === "column") {
@@ -173,6 +174,7 @@
                     vm.pageLayout.placeHolders = data.placeHolders;
                     vm.pageLayout.isChanged = false;
                     showMessage("success", "Layout has been saved");
+                    processplaceHolders(vm.pageLayout.placeHolders);
                 }, function (error) {
                     showMessage("error", SYS_ERROR_MSG);
                 });
@@ -186,7 +188,9 @@
                     vm.pageLayout.placeHolders = data.placeHolders;
                     vm.pageLayout.isChanged = false;
                     showMessage("success", "Layout has been saved");
-                    getLayouts();
+                    getLayouts().then(function () {
+                        processplaceHolders(vm.pageLayout.placeHolders);
+                    });
                 }, function (error) {
                     showMessage("error", SYS_ERROR_MSG);
                 });
@@ -197,7 +201,13 @@
             if (placeHolders) {
                 _.each(placeHolders, function (item, index) {
                     console.log(item)
+                    var masterLayout = _.findWhere(vm.layoutTypes, { layoutTypeId: item.layoutTypeId });
+                    if (masterLayout) {
+                        item.label = masterLayout.label;
+                    }
+                    
                     item.sortOrder = index + 1;
+
                     if (item.placeHolders) {
                         processplaceHolders(item.placeHolders);
                     }
@@ -214,6 +224,29 @@
             }, function (error) {
                 showMessage("error", SYS_ERROR_MSG);
             });
+        }
+
+        function selectItem(item) {
+            var propertiesValue = item.properties;
+            var masterLayout = _.findWhere(vm.layoutTypes, { layoutTypeId: item.layoutTypeId });
+            var masterProperties = masterLayout.properties;
+            _.each(masterProperties, function (prop) {
+                if (prop) {
+                    var propVal = _.findWhere(propertiesValue, { id: prop.id });
+                    if (propVal) {
+                        //Property exist, update property label
+                        propVal.label = prop.label;
+                        if (prop.propertyOptionList && prop.propertyOptionList.list) {
+                            propVal.propertyOptionList = angular.fromJson(prop.propertyOptionList.list);
+                        }
+                    }
+                    else {
+                        //Property not exist, add the property
+                        item.properties.push(angular.copy(prop));
+                    }
+                }
+            });
+            vm.selectedItem = item;
         }
 
         function dragoverCallback(event, index, item) {

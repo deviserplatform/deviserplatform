@@ -88,8 +88,8 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     List<PageContent> returnData = context.PageContent
                                .Include(pc => pc.PageContentTranslation)
-                               .Include(pc => pc.ContentType).ThenInclude(pc=> pc.ContentDataType)
-                               .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentTypeProperties)
+                               .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentDataType)
+                               .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentTypeProperties).ThenInclude(ctp => ctp.Property)
                                .Where(e => e.PageId == pageId && !e.IsDeleted)
                                .ToList();
                     foreach (var pageContent in returnData)

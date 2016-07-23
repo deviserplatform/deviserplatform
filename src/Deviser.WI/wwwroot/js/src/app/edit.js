@@ -44,7 +44,7 @@
         vm.selectItem = selectItem;
         vm.copyElement = copyElement;
         vm.editContent = editContent;
-
+        vm.saveProperties = saveProperties;
 
         init();
 
@@ -73,7 +73,8 @@
         function insertedCallback(event, index) {
             var parentScope = $(event.currentTarget).scope().$parent;
             var containerId = parentScope.item.id;
-            updateElements(parentScope.item);
+            //updateElements(parentScope.item);
+            //console.log('insertedCallback');
         }
 
         function dropCallback(event, index, item) {
@@ -84,6 +85,7 @@
         function itemMoved(item, index) {
             item.placeHolders.splice(index, 1);
             updateElements(item);
+            //console.log('itemMoved');
         }
 
         function deleteElement(event, index, item) {
@@ -126,6 +128,40 @@
                 defer.reject(SYS_ERROR_MSG);
             });
             return defer.promise;
+        }
+
+        function saveProperties() {
+            //It Saves content with properties
+            if (vm.selectedItem.layoutTemplate === "content") {
+
+                //Prepare content to update
+                var pageContent = {};//vm.selectedItem.pageContent;
+                
+                var properties = [];
+                _.each(vm.selectedItem.properties, function (srcProp) {
+                    if (srcProp) {
+                        var prop = {
+                            id: srcProp.id,
+                            name: srcProp.name,
+                            label: srcProp.label,
+                            value: srcProp.value
+                        }
+                        properties.push(prop);
+                    }
+                });
+                pageContent.id = vm.selectedItem.pageContent.id;
+                pageContent.pageId = vm.selectedItem.pageContent.pageId;
+                pageContent.contentTypeId = vm.selectedItem.pageContent.contentTypeId;
+                pageContent.properties = properties;
+                pageContent.containerId = vm.selectedItem.pageContent.containerId;
+                pageContent.sortOrder = vm.selectedItem.sortOrder;
+
+                pageContentService.put(pageContent).then(function (response) {
+                    console.log(response);                    
+                }, function (response) {
+                    console.log(response);
+                });
+            }
         }
 
         /*Private functions*/
@@ -244,16 +280,8 @@
                 return _.contains(containerIds, module.containerId);
             });
 
-            _.each(unAssignedSrcConents, function (pageContent) {
-                var properties = JSON.parse(pageContent.properties);
-                var content = {
-                    id: pageContent.id,
-                    layoutTemplate: 'content',
-                    type: 'content',
-                    properties: properties,
-                    pageContent: pageContent,
-                    sortOrder: pageContent.sortOrder
-                }
+            _.each(unAssignedSrcConents, function (pageContent) {                
+                var content = getPageContentWithProperties(pageContent);
                 unAssignedContents.push(content);
             });
 
@@ -289,17 +317,7 @@
                     var pageContents = _.where(vm.pageContents, { containerId: item.id });
                     if (pageContents) {
                         _.each(pageContents, function (pageContent) {
-                            var properties = JSON.parse(pageContent.properties);
-                            var content = {
-                                id: pageContent.id,
-                                layoutTemplate: 'content',
-                                type: 'content',
-                                properties: properties,
-                                pageContent: pageContent,
-                                contentType: pageContent.contentType,
-                                sortOrder: pageContent.sortOrder
-                            }
-                            //contentTypeInfo.sortOrder = content.sortOrder;
+                            var content = getPageContentWithProperties(pageContent);
                             //item.placeHolders.splice(index, 0, contentTypeInfo); //Insert placeHolder into specified index
                             item.placeHolders.push(content);
                         });
@@ -330,6 +348,37 @@
                     }
                 });
             }
+        }
+
+        function getPageContentWithProperties(pageContent) {
+            var propertiesValue = pageContent.properties;
+            var masterContentType = _.find(vm.contentTypes, function (element) {
+                return element.contentType.id === pageContent.contentType.id;
+            });
+            var properties = angular.copy(masterContentType.properties);
+
+            //Loading values to the properties
+            _.each(properties, function (prop) {
+                var propVal = _.findWhere(propertiesValue, { id: prop.id });
+                if (propVal) {
+                    prop.value = propVal.value;
+                }
+                if (prop.propertyOptionList && prop.propertyOptionList.list) {
+                    prop.propertyOptionList = angular.fromJson(prop.propertyOptionList.list);
+                }
+            });
+
+            var content = {
+                id: pageContent.id,
+                layoutTemplate: 'content',
+                type: 'content',
+                properties: properties,
+                pageContent: pageContent,
+                contentType: pageContent.contentType,
+                sortOrder: pageContent.sortOrder
+            }
+
+            return content;
         }
 
         function updateElements(container) {
@@ -391,14 +440,16 @@
             var defer = $q.defer();
             var contents = [];
             _.each(elementsToSort.contents, function (item) {
-                var pageContent;
+                var pageContent = {};
 
                 if (item.element.id) {
-                    pageContent = item.element.pageContent;
+                    pageContent.id = item.element.pageContent.id;
+                    pageContent.pageId = item.element.pageContent.pageId;
+                    pageContent.contentTypeId = item.element.pageContent.contentTypeId;
                 }
                 else {
                     //New page content
-                    pageContent = {};
+                    
                     pageContent.id = vm.newGuid(); //Id shoud be generated only on client side
                     pageContent.pageId = appContext.currentPageId;
                     pageContent.contentTypeId = item.element.contentType.id;
@@ -407,7 +458,20 @@
                     item.element.pageContent = pageContent;
 
                 }
-                pageContent.properties = angular.toJson(item.element.properties)
+
+                var properties = [];
+                _.each(item.element.properties, function (srcProp) {
+                    if (srcProp) {
+                        var prop = {
+                            id: srcProp.id,
+                            name: srcProp.name,
+                            label: srcProp.label,
+                            value: srcProp.value
+                        }
+                        properties.push(prop);
+                    }
+                });
+                pageContent.properties = properties;
                 pageContent.containerId = item.containerId;
                 pageContent.sortOrder = item.element.sortOrder;
 
@@ -417,13 +481,19 @@
             });
 
             //Updating only page contents, not content translations 
-            pageContentService.putContents(contents).then(function (response) {
-                console.log(response);
-                defer.resolve('page content updated');
-            }, function (response) {
-                console.log(response);
+            if (contents && contents.length > 0) {
+                pageContentService.putContents(contents).then(function (response) {
+                    console.log(response);
+                    defer.resolve('page content updated');
+                }, function (response) {
+                    console.log(response);
+                    defer.reject(SYS_ERROR_MSG);
+                });
+            }
+            else {
                 defer.reject(SYS_ERROR_MSG);
-            });
+            }
+
             return defer.promise;
         }
 
@@ -461,12 +531,18 @@
 
             });
 
-            pageModuleService.putModules(modules).then(function (data) {
-                console.log(data);
-                defer.resolve('page content updated');
-            }, function (error) {
+            if (modules && modules.length > 0) {
+                pageModuleService.putModules(modules).then(function (data) {
+                    console.log(data);
+                    defer.resolve('page content updated');
+                }, function (error) {
+                    defer.reject(SYS_ERROR_MSG);
+                });
+            }
+            else {
                 defer.reject(SYS_ERROR_MSG);
-            });
+            }
+            
             return defer.promise;
         }
 

@@ -15,16 +15,17 @@
         contentTranslation = Model.PageContentTranslation.FirstOrDefault(t => t.CultureCode == currentCulture);
     }
 
-    var rootObj = JsonConvert.DeserializeObject<dynamic>(contentTranslation.ContentData);
-
 }
 
 @if (contentTranslation != null)
 {
-    <img src="@rootObj.imageUrl" alt="@rootObj.imageAltText" />
+    <div>            
+         @Html.Raw(contentTranslation.ContentData)
+    </div>
 }
 else{
     <div>
+        @Model.GetProperty("cssclass").Value
         Please enter the content
     </div>
 }
