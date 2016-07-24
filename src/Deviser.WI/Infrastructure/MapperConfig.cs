@@ -17,8 +17,17 @@ namespace Deviser.WI.Infrastructure
                 config.CreateMap<User, Core.Common.DomainTypes.User>().ForMember(m => m.Roles, opt => opt.Ignore());
                 config.CreateMap<Core.Common.DomainTypes.PageLayout, Layout>();
                 config.CreateMap<Layout, Core.Common.DomainTypes.PageLayout>();
-                config.CreateMap<PropertyOptionList, Core.Common.DomainTypes.PropertyOptionList>().ReverseMap();
+
+                config.CreateMap<PropertyOptionList, Core.Common.DomainTypes.PropertyOptionList>()
+                .ForMember(dest => dest.List, opt =>
+                opt.MapFrom(src => !string.IsNullOrEmpty(src.List) ? SDJsonConvert.DeserializeObject<List<Core.Common.DomainTypes.PropertyOption>>(src.List) : null))
+                .ReverseMap()
+                .ForMember(dest => dest.List, opt =>
+                opt.MapFrom(src => (src.List != null) ? SDJsonConvert.SerializeObject(src.List) : null)); 
+
+
                 config.CreateMap<Property, Core.Common.DomainTypes.Property>().ReverseMap();
+
                 config.CreateMap<Core.Common.DomainTypes.ContentType, ContentType>()
                 .ForMember(dest => dest.ContentDataTypeId, opt => opt.MapFrom(src => src.ContentDataType.Id))
                 .ForMember(dest => dest.ContentTypeProperties, opt => opt.MapFrom(src =>

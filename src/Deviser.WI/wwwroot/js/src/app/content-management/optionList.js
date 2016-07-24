@@ -58,7 +58,7 @@
             vm.selectedOptionList = optionList;
             vm.selectedOptionList.items = [];
             if (vm.selectedOptionList.list) {
-                vm.selectedOptionList.items = angular.fromJson(vm.selectedOptionList.list);
+                vm.selectedOptionList.items = vm.selectedOptionList.list;
             }
         }
 
@@ -71,7 +71,7 @@
             if ($scope.optionListForm.$valid) {
 
                 if (vm.selectedOptionList.items) {
-                    vm.selectedOptionList.list = angular.toJson(vm.selectedOptionList.items);
+                    vm.selectedOptionList.list = vm.selectedOptionList.items;
                 }
                 
                 if (vm.currentViewState == vm.viewStates.NEW && vm.isValidName(vm.selectedOptionList.name)) {

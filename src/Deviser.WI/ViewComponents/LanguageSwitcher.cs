@@ -2,6 +2,7 @@
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library;
+using Deviser.Core.Library.Extensions;
 using Deviser.Core.Library.Services;
 using Deviser.WI.ViewModels.Components;
 using Microsoft.AspNetCore.Mvc;
@@ -51,7 +52,7 @@ namespace Deviser.WI.ViewComponents
                 PageTranslation translation = null;
                 if (scopeService.PageContext.CurrentPage.PageTranslation.Any(t => t.Locale.ToLower() == cultureCode.ToLower()))
                 {
-                    translation = scopeService.PageContext.CurrentPage.PageTranslation.First(t => t.Locale.ToLower() == cultureCode.ToLower());
+                    translation = scopeService.PageContext.CurrentPage.PageTranslation.Get(cultureCode.ToLower());
                     return "/" + translation.URL;
                 }
             }

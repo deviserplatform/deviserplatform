@@ -1,31 +1,19 @@
-﻿@model Deviser.Core.Common.DomainTypes.PageContent
+﻿@model DynamicContent
 @inject IScopeService scopeService
 @{
-    bool isEditMode = false;
-    if (ViewData["isEditMode"] != null)
-    {
-        isEditMode = (bool)ViewData["isEditMode"];
-    }
     var pageContext = scopeService.PageContext;
     var currentCulture = pageContext.CurrentCulture.ToString();
-    PageContentTranslation contentTranslation = null;
-    dynamic rootObj = null;
+
+    dynamic rootObj = Model.Content;
     int totalItems = 0;
-    if (Model.PageContentTranslation != null)
+    if (rootObj != null)
     {
-        contentTranslation = Model.PageContentTranslation.FirstOrDefault(t => t.CultureCode == currentCulture);
-        if (contentTranslation != null && !string.IsNullOrEmpty(contentTranslation.ContentData))
-        {
-            rootObj = JsonConvert.DeserializeObject<dynamic>(contentTranslation.ContentData);
-            totalItems = rootObj.items.Count;
-        }
+        totalItems = rootObj.items.Count;
     }
-
-
 
 }
 
-@if (contentTranslation != null)
+@if (Model != null)
 {
     <!-- Carousel
     ================================================== -->
@@ -40,8 +28,7 @@
         <div class="carousel-inner" role="listbox">
             @foreach (var item in rootObj.items)
             {
-                <div class="item @(item.viewOrder == 1 ? "active" : "")">
-                    @*<img class="second-slide" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==">*@
+                <div class="item @(item.viewOrder == 1 ? "active" : "")">                    
                     <img src="@item.imageUrl" alt="@item.imageAltText" />
                     <div class="container">
                         <div class="carousel-caption">

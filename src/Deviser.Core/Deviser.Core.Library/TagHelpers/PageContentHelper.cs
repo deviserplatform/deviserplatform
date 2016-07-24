@@ -15,6 +15,8 @@ using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
 using PageContent = Deviser.Core.Common.DomainTypes.PageContent;
 using AutoMapper;
+using Deviser.Core.Library.Services;
+using System.Globalization;
 
 namespace Deviser.Core.Library.TagHelpers
 {
@@ -25,12 +27,14 @@ namespace Deviser.Core.Library.TagHelpers
         private const string PageAttributeName = "sde-page";
         private const string ModuleResultAttributeName = "sde-module-results";
 
-        IHtmlHelper htmlHelper;
+        private IHtmlHelper htmlHelper;
+        private readonly IScopeService scopeService;
 
-        public PageContentHelper(IHtmlHelper htmlHelper, IHtmlGenerator generator)
+        public PageContentHelper(IHtmlHelper htmlHelper, IHtmlGenerator generator, IScopeService scopeService)
         {
             Generator = generator;
             this.htmlHelper = htmlHelper;
+            this.scopeService = scopeService;
         }
 
         [HtmlAttributeName(PageAttributeName)]
@@ -45,7 +49,15 @@ namespace Deviser.Core.Library.TagHelpers
 
         protected IHtmlGenerator Generator { get; }
 
-        protected ICollection<PageContent> PageContents {get;set;}
+        protected ICollection<PageContent> PageContents { get; set; }
+
+        protected CultureInfo CurrentCulture
+        {
+            get
+            {
+                return scopeService.PageContext.CurrentCulture;
+            }
+        }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -73,6 +85,27 @@ namespace Deviser.Core.Library.TagHelpers
             pageLayout.Name = CurrentPage.Layout.Name;
             pageLayout.PlaceHolders = JsonConvert.DeserializeObject<List<PlaceHolder>>(CurrentPage.Layout.Config);
             PageContents = Mapper.Map<ICollection<PageContent>>(CurrentPage.PageContent);
+
+            //Copy property options from master data
+            if (PageContents != null && PageContents.Count > 0)
+            {
+                foreach (var pageContent in PageContents)
+                {
+                    if (pageContent.ContentType.Properties != null && pageContent.ContentType.Properties.Count > 0)
+                    {
+                        foreach (var prop in pageContent.ContentType.Properties)
+                        {
+                            var propValue = pageContent.Properties.FirstOrDefault(p => p.Id == prop.Id);
+                            if (propValue != null)
+                            {
+                                propValue.PropertyOptionListId = prop.PropertyOptionListId;
+                                propValue.PropertyOptionList = prop.PropertyOptionList;
+                            }
+                        }
+                    }
+                }
+            }
+
             if (pageLayout.PlaceHolders != null && pageLayout.PlaceHolders.Count > 0)
             {
                 string result = RenderContentItems(pageLayout.PlaceHolders, ModuleActionResults);
@@ -90,9 +123,9 @@ namespace Deviser.Core.Library.TagHelpers
                     if (placeHolder != null)
                     {
                         //ControlData controlData = new ControlData();
-                        string currentResult="";
+                        string currentResult = "";
                         List<ContentResult> currentResults = new List<ContentResult>();
-                        IHtmlContent htmlContent;                        
+                        IHtmlContent htmlContent;
                         List<ContentResult> moduleResult = null;
                         var layoutType = placeHolder.Type.ToLower();
                         ViewContext.ViewData["isEditMode"] = false;
@@ -112,12 +145,27 @@ namespace Deviser.Core.Library.TagHelpers
                             //Page contents                            
                             var pageContents = PageContents
                                 .Where(pc => pc.ContainerId == placeHolder.Id)
-                                .OrderBy(pc => pc.SortOrder);
+                                .OrderBy(pc => pc.SortOrder).ToList();
                             foreach (var pageContent in pageContents)
                             {
                                 string typeName = pageContent.ContentType.Name;
-                                ViewContext.ViewData["contentType"] = typeName;
-                                htmlContent = htmlHelper.Partial(string.Format(Globals.ContentTypesViewPath, typeName), pageContent);
+                                var contentTranslation = pageContent.PageContentTranslation.FirstOrDefault(t => t.CultureCode.ToLower() == CurrentCulture.ToString().ToLower());
+                                dynamic content = null;
+                                if (pageContent.ContentType.ContentDataType.Name == "string")
+                                {
+                                    content = (contentTranslation != null) ? contentTranslation.ContentData : null;
+                                }
+                                else
+                                {
+                                    content = (contentTranslation != null) ? SDJsonConvert.DeserializeObject<dynamic>(contentTranslation.ContentData) : null;
+                                }
+
+                                var dynamicContent = new DynamicContent
+                                {
+                                    PageContent = pageContent,
+                                    Content = content
+                                };
+                                htmlContent = htmlHelper.Partial(string.Format(Globals.ContentTypesViewPath, typeName), dynamicContent);
                                 var contentResult = GetString(htmlContent);
                                 currentResults.Add(new ContentResult
                                 {
@@ -136,7 +184,7 @@ namespace Deviser.Core.Library.TagHelpers
                         });
 
                         var sortedResult = currentResults.OrderBy(r => r.SortOrder).ToList();
-                        foreach(var contentResult in sortedResult)
+                        foreach (var contentResult in sortedResult)
                         {
                             currentResult += contentResult.Result;
                         }
@@ -152,7 +200,7 @@ namespace Deviser.Core.Library.TagHelpers
                         htmlContent = htmlHelper.Partial(string.Format(Globals.LayoutTypesPath, layoutType), currentResult);
                         var layoutResult = GetString(htmlContent);
                         sb.Append(layoutResult);
-                        
+
                     }
                 }
             }

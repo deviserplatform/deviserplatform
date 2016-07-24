@@ -1,31 +1,23 @@
-﻿@model Deviser.Core.Common.DomainTypes.PageContent
-@using PageContext = Deviser.Core.Library.PageContext;
+﻿@model DynamicContent
+
 @inject IScopeService scopeService
 @{
-    bool isEditMode = false;
-    if (ViewData["isEditMode"] != null)
-    {
-        isEditMode = (bool)ViewData["isEditMode"];
-    }
     var pageContext = scopeService.PageContext;
     var currentCulture = pageContext.CurrentCulture.ToString();
-    PageContentTranslation contentTranslation = null;
-    if (Model.PageContentTranslation != null)
-    {
-        contentTranslation = Model.PageContentTranslation.FirstOrDefault(t => t.CultureCode == currentCulture);
-    }
 
+    dynamic rootObj = Model.Content;
+    var videoType = Model.PageContent.Properties.Get("videotype");
 }
 
-@if (contentTranslation != null)
+@if (Model != null)
 {
     <div>            
-         @Html.Raw(contentTranslation.ContentData)
+         @Html.Raw(rootObj)
+        @videoType.SelectedOption.Name
     </div>
 }
 else{
-    <div>
-        @Model.GetProperty("cssclass").Value
+    <div>        
         Please enter the content
     </div>
 }

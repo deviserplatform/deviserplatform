@@ -105,7 +105,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             //return resultPage;
         }
-        
+
         public List<Page> GetPages()
         {
             try
@@ -142,7 +142,8 @@ namespace Deviser.Core.Data.DataProviders
                                .Include(p => p.PagePermissions)
                                .Include(p => p.Layout)
                                .Include(p => p.PageContent).ThenInclude(pc => pc.PageContentTranslation)
-                               .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType)
+                               .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType).ThenInclude(ct => ct.ContentDataType)
+                               .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType).ThenInclude(ct=> ct.ContentTypeProperties).ThenInclude(ctp=>ctp.Property).ThenInclude(p=>p.PropertyOptionList)
                                .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
                                .OrderBy(p => p.Id)
                                .FirstOrDefault();
@@ -214,17 +215,17 @@ namespace Deviser.Core.Data.DataProviders
                     if (page.PagePermissions != null && page.PagePermissions.Count > 0)
                     {
                         //Filter deleted permissions in UI and delete all of them
-                        var toDelete = context.PagePermission.Where(dbPermission => dbPermission.PageId == page.Id && 
-                        !page.PagePermissions.Any(pagePermission => pagePermission.PermissionId == dbPermission.PermissionId  && pagePermission.RoleId == dbPermission.RoleId)).ToList();
+                        var toDelete = context.PagePermission.Where(dbPermission => dbPermission.PageId == page.Id &&
+                        !page.PagePermissions.Any(pagePermission => pagePermission.PermissionId == dbPermission.PermissionId && pagePermission.RoleId == dbPermission.RoleId)).ToList();
                         if (toDelete != null && toDelete.Count > 0)
                             context.PagePermission.RemoveRange(toDelete);
 
                         //Filter new permissions which are not in db and add all of them
-                        var toAdd = page.PagePermissions.Where(pagePermission => !context.PagePermission.Any(dbPermission => 
+                        var toAdd = page.PagePermissions.Where(pagePermission => !context.PagePermission.Any(dbPermission =>
                         dbPermission.PermissionId == pagePermission.PermissionId &&
                         dbPermission.PageId == pagePermission.PageId &&
                         dbPermission.RoleId == pagePermission.RoleId)).ToList();
-                        if(toAdd!=null && toAdd.Count > 0)
+                        if (toAdd != null && toAdd.Count > 0)
                         {
                             foreach (var permission in toAdd)
                             {
@@ -488,11 +489,11 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     //Remove all permissions for this page and add new 
                     if (pagePermissions != null && pagePermissions.Count > 0)
-                    {   
+                    {
                         //Filter new permissions which are not in db and add all of them
-                        var toAdd = pagePermissions.Where(pagePermission => !context.PagePermission.Any(dbPermission => 
+                        var toAdd = pagePermissions.Where(pagePermission => !context.PagePermission.Any(dbPermission =>
                         dbPermission.PermissionId == pagePermission.PermissionId &&
-                        dbPermission.PageId == pagePermission.PageId && 
+                        dbPermission.PageId == pagePermission.PageId &&
                         dbPermission.RoleId == pagePermission.RoleId)).ToList();
                         if (toAdd != null && toAdd.Count > 0)
                         {

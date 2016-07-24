@@ -1,25 +1,16 @@
-﻿@model Deviser.Core.Common.DomainTypes.PageContent
+﻿@model Deviser.Core.Common.DomainTypes.DynamicContent
 @inject IScopeService scopeService
 @{
-    bool isEditMode = false;
-    if (ViewData["isEditMode"] != null)
-    {
-        isEditMode = (bool)ViewData["isEditMode"];
-    }
     var pageContext = scopeService.PageContext;
     var currentCulture = pageContext.CurrentCulture.ToString();
-    PageContentTranslation contentTranslation = null;
-    if (Model.PageContentTranslation != null)
-    {
-        contentTranslation = Model.PageContentTranslation.FirstOrDefault(t => t.CultureCode == currentCulture);
-    }
 
+    dynamic rootObj = Model.Content;
 }
 
-@if (contentTranslation != null)
+@if (Model != null)
 {
     <div>            
-         @Html.Raw(contentTranslation.ContentData)
+         @Html.Raw(rootObj)
     </div>
 }
 else{
