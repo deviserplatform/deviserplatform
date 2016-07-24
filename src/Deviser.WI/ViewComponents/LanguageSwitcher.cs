@@ -17,10 +17,12 @@ namespace Deviser.WI.ViewComponents
     public class LanguageSwitcher : DeviserViewComponent
     {
         private ILanguageProvider languageProvider;
+        private readonly IScopeService scopeService;
         public LanguageSwitcher(IScopeService scopeService, ILifetimeScope container)
             :base(scopeService)
         {
             languageProvider = container.Resolve<ILanguageProvider>();
+            this.scopeService = scopeService;
         }
 
         public override async Task<IViewComponentResult> InvokeAsync()
@@ -36,7 +38,7 @@ namespace Deviser.WI.ViewComponents
                     EnglishName = lang.EnglishName,
                     NativeName = lang.NativeName,
                     Url = GetLocalizedUrl(lang.CultureCode),
-                    IsActive = lang.CultureCode.ToLower() == AppContext.CurrentCulture.ToString().ToLower()
+                    IsActive = lang.CultureCode.ToLower() == scopeService.PageContext.CurrentCulture.ToString().ToLower()
                 });
             }
             return View(viewModel);
@@ -44,12 +46,12 @@ namespace Deviser.WI.ViewComponents
 
         private string GetLocalizedUrl(string cultureCode)
         {
-            if (AppContext != null && AppContext.CurrentPage != null && AppContext.CurrentPage.PageTranslation != null)
+            if (scopeService.PageContext != null && scopeService.PageContext.CurrentPage != null && scopeService.PageContext.CurrentPage.PageTranslation != null)
             {
                 PageTranslation translation = null;
-                if (AppContext.CurrentPage.PageTranslation.Any(t => t.Locale.ToLower() == cultureCode.ToLower()))
+                if (scopeService.PageContext.CurrentPage.PageTranslation.Any(t => t.Locale.ToLower() == cultureCode.ToLower()))
                 {
-                    translation = AppContext.CurrentPage.PageTranslation.First(t => t.Locale.ToLower() == cultureCode.ToLower());
+                    translation = scopeService.PageContext.CurrentPage.PageTranslation.First(t => t.Locale.ToLower() == cultureCode.ToLower());
                     return "/" + translation.URL;
                 }
             }

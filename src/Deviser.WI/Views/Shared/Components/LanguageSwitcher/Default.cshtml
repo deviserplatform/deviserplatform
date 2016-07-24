@@ -1,11 +1,11 @@
 ﻿@model List<LanguageViewModel>
+@inject IScopeService scopeService
 @using System.Security.Claims
 @using Deviser.Core.Library
 @using Deviser.WI.ViewModels.Components
-@using AppContext = Deviser.Core.Library.AppContext;
 @{
     Layout = null;
-    AppContext deviserContext = (AppContext)ViewBag.AppContext;  //HttpContext.Current.Session["AppContext"];
+    var pageContext = scopeService.PageContext;
 }
 
 

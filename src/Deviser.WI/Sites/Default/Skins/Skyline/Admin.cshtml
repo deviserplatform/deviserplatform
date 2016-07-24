@@ -1,7 +1,8 @@
 ﻿@using Deviser.Core.Library.TagHelpers;
+@inject IScopeService scopeService
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    Deviser.Core.Data.Entities.Page currentPage = (Deviser.Core.Data.Entities.Page)ViewBag.AppContext.CurrentPage;
+    var currentPage = scopeService.PageContext.CurrentPage;
 }
 
 <div id="wrapper">

@@ -1,13 +1,14 @@
-﻿@{
+﻿@inject IScopeService scopeService
+@{
     if (ViewBag.Skin != null)
     {
         Layout = "~/Sites/Default/Skins/Skyline/LayoutDesigner.cshtml";
     }
-    Deviser.Core.Data.Entities.Page currentPage = (Deviser.Core.Data.Entities.Page)ViewBag.AppContext.CurrentPage;
+    var currentPage = scopeService.PageContext.CurrentPage;
 }
 <script type="text/javascript">
-    var appContext =  @Html.Raw(SDJsonConvert.SerializeObject(ViewBag.AppContext));
-    console.log(appContext);
+    var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
+    console.log(pageContext);
 </script>
 
 <div class="layout-wrapper" ng-app="deviserLayout" ng-controller="LayoutCtrl as layoutVM">

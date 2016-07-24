@@ -1,4 +1,5 @@
 ﻿using Deviser.Core.Data.Entities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,17 +9,27 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Library
 {
-    public class AppContext
+    public class PageContext
     {
+        [JsonIgnore]
         public Page CurrentPage { get; set; }
 
         public Guid CurrentPageId { get; set; }
 
         public string CurrentLink { get; set; }
 
+        [JsonIgnore]
         public CultureInfo CurrentCulture
         {
             get; set;
+        }
+
+        public string CurrentLocale
+        {
+            get
+            {
+                return CurrentCulture.Name;
+            }
         }
     }
 }

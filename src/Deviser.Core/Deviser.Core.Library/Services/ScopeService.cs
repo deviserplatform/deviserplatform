@@ -14,8 +14,9 @@ namespace Deviser.Core.Library.Services
     {
         public ScopeService()
         {
-            AppContext AppContext = new AppContext();
+            PageContext = new PageContext();
         }
-        public AppContext AppContext { get; set; }
+
+        public PageContext PageContext { get; set; }
     }
 }

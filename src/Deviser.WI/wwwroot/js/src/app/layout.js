@@ -70,7 +70,7 @@
 
         function getCurrentPage() {
             var defer = $q.defer();
-            pageService.get(appContext.currentPageId)
+            pageService.get(pageContext.currentPageId)
             .then(function (data) {
                 vm.currentPage = data;
                 defer.resolve('data received!');
@@ -164,7 +164,7 @@
             processplaceHolders(vm.pageLayout.placeHolders);
 
             //vm.pageLayout.config = JSON.stringify(vm.pageLayout.placeHolders);
-            vm.pageLayout.pageId = appContext.currentPageId;
+            vm.pageLayout.pageId = pageContext.currentPageId;
             if (vm.pageLayout.id) {
                 //Update layout
                 layoutService.put(vm.pageLayout)

@@ -1,13 +1,13 @@
 ﻿@model Deviser.Core.Data.Entities.Page
+@inject IScopeService scopeService
 @using System.Security.Claims
 @using Deviser.Core.Library
 @using Deviser.Core.Common;
-@using AppContext = Deviser.Core.Library.AppContext;
 @{
     Layout = null;
-    AppContext deviserContext = (AppContext)ViewBag.AppContext;  //HttpContext.Current.Session["AppContext"];
-    PageTranslation translation = Model.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
-    
+    var pageContext = scopeService.PageContext;
+    PageTranslation translation = Model.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
+
 }
 
 @if (Model.PageLevel == 0)
@@ -20,7 +20,7 @@
     </li>
     @foreach (var page in Model.ChildPage)
     {
-        translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
+        translation = page.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
         string activeClass = (page.IsActive || page.IsBreadCrumb) ? "active open" : "";
         if (translation != null)
         {
@@ -41,7 +41,7 @@ else if (Model.PageLevel == 1)
         @foreach (var page in Model.ChildPage)
         {
             string activeClass = (page.IsActive || page.IsBreadCrumb) ? "active open" : "";
-            translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
+            translation = page.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
             if (translation != null)
             {
                 translation.URL = Globals.SiteRoot + translation.URL;

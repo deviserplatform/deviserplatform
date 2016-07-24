@@ -22,28 +22,9 @@ namespace Deviser.Core.Library.TagHelpers
             this.scopeService = scopeService;
         }
 
-        protected AppContext AppContext
-        {
-            get
-            {
-                AppContext returnValue = scopeService.AppContext;
-                return returnValue;
-            }
-        }
-
         protected HttpContext HttpContext
         {
             get; set;
-        }
-
-        public CultureInfo CurrentCulture
-        {
-            get
-            {
-                var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
-                var requestCulture = requestCultureFeature.RequestCulture.UICulture;
-                return requestCulture;
-            }
         }
     }
 }

@@ -85,7 +85,7 @@
         //////////////////////////////////
         ///*Function declarations only*/
         function init() {
-            vm.currentLocale = appContext.currentCulture.name; //to be replaced as language feature in future
+            vm.currentLocale = pageContext.currentLocale; //to be replaced as language feature in future
             vm.accordion = {};
             getPages();
             getRoles();

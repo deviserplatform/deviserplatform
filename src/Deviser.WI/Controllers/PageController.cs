@@ -13,7 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AppContext = Deviser.Core.Library.AppContext;
+using PageContext = Deviser.Core.Library.PageContext;
 
 namespace Deviser.WI.Controllers
 {
@@ -73,12 +73,10 @@ namespace Deviser.WI.Controllers
 
         public IActionResult Layout(string permalink)
         {
-            Page currentPage = GetPageModules(permalink);
-            //Page currentPage = await GetPageModules(permalink);
-            if (AppContext != null)
+            Page currentPage = GetPageModules(permalink);            
+            if (scopeService.PageContext != null)
             {
                 ViewBag.Skin = Globals.AdminSkin;
-                ViewBag.AppContext = AppContext;
                 RouteData.Values.Add("permalink", permalink);
                 return View(ViewBag);
             }
@@ -88,12 +86,11 @@ namespace Deviser.WI.Controllers
         public IActionResult Edit(string permalink)
         {
             Page currentPage = GetPageModules(permalink);
-            if (AppContext != null)
+            if (scopeService.PageContext != null)
             {
                 ViewBag.Skin = Globals.AdminSkin;
-                ViewBag.AppContext = AppContext;
                 RouteData.Values.Add("permalink", permalink);
-                return View(AppContext.CurrentPage);
+                return View(scopeService.PageContext.CurrentPage);
             }
             return null;
         }
@@ -115,13 +112,13 @@ namespace Deviser.WI.Controllers
             }
 
             
-            AppContext appContext = new AppContext();
+            PageContext pageContext = new PageContext();
             if (currentPage != null)
             {
-                appContext.CurrentPageId = currentPage.Id;
-                appContext.CurrentLink = permalink;
+                pageContext.CurrentPageId = currentPage.Id;
+                pageContext.CurrentLink = permalink;
                 currentPage.PageModule = null;
-                appContext.CurrentPage = currentPage;
+                pageContext.CurrentPage = currentPage;
                 
                 //Skins are not used for sometime period
                 string skin = "";
@@ -133,9 +130,8 @@ namespace Deviser.WI.Controllers
                 skin = skin.Replace("[G]", "~/Sites/Default/");
 
                 //return View(skin, skinModel);
-                scopeService.AppContext =  AppContext = appContext; //Very important!!!
-                scopeService.AppContext.CurrentCulture = CurrentCulture; //Very important!!!
-                ViewBag.AppContext = AppContext;                
+                scopeService.PageContext = pageContext; //Very important!!!
+                scopeService.PageContext.CurrentCulture = CurrentCulture; //Very important!!!
                 ViewBag.Skin = skin;
             }
             return currentPage;

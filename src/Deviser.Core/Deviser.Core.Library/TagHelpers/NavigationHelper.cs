@@ -32,6 +32,7 @@ namespace Deviser.Core.Library.TagHelpers
         private INavigation navigation;
         private IHtmlHelper htmlHelper;
 
+        private readonly IScopeService scopeService;
         private readonly ILogger<NavigationHelper> logger;
 
         [HtmlAttributeName(NavAttributeName)]
@@ -54,6 +55,7 @@ namespace Deviser.Core.Library.TagHelpers
             htmlHelper = container.Resolve<IHtmlHelper>();
             navigation = container.Resolve<INavigation>();
             logger = container.Resolve<ILogger<NavigationHelper>>();
+            this.scopeService = scopeService;
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -67,7 +69,7 @@ namespace Deviser.Core.Library.TagHelpers
             try
             {
                 ((HtmlHelper)htmlHelper).Contextualize(ViewContext);
-                Page root = navigation.GetPageTree(AppContext.CurrentPageId, SystemFilter, ParentId);
+                Page root = navigation.GetPageTree(scopeService.PageContext.CurrentPageId, SystemFilter, ParentId);
 
                 var htmlContent = htmlHelper.Partial(string.Format(Globals.MenuStylePath, MenuStyle), root);
                 var contentResult = GetString(htmlContent);

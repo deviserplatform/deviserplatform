@@ -73,7 +73,7 @@
         function insertedCallback(event, index) {
             var parentScope = $(event.currentTarget).scope().$parent;
             var containerId = parentScope.item.id;
-            //updateElements(parentScope.item);
+            updateElements(parentScope.item);
             //console.log('insertedCallback');
         }
 
@@ -84,8 +84,8 @@
 
         function itemMoved(item, index) {
             item.placeHolders.splice(index, 1);
-            updateElements(item);
-            //console.log('itemMoved');
+            //updateElements(item);
+            console.log('itemMoved');
         }
 
         function deleteElement(event, index, item) {
@@ -167,7 +167,7 @@
         /*Private functions*/
         function getCurrentPage() {
             var defer = $q.defer();
-            pageService.get(appContext.currentPageId)
+            pageService.get(pageContext.currentPageId)
             .then(function (data) {
                 vm.currentPage = data;
                 defer.resolve(data);
@@ -180,7 +180,7 @@
 
         function getPageModules() {
             var defer = $q.defer();
-            pageModuleService.get(appContext.currentPageId)
+            pageModuleService.get(pageContext.currentPageId)
             .then(function (data) {
                 vm.pageModules = data;
                 defer.resolve(data);
@@ -251,7 +251,7 @@
 
         function getPageContents() {
             var defer = $q.defer();
-            pageContentService.get(appContext.currentPageId, appContext.currentCulture.name)
+            pageContentService.get(pageContext.currentPageId, pageContext.currentLocale)
             .then(function (pageContents) {
                 vm.pageContents = pageContents;
                 defer.resolve(pageContents);
@@ -451,7 +451,7 @@
                     //New page content
                     
                     pageContent.id = vm.newGuid(); //Id shoud be generated only on client side
-                    pageContent.pageId = appContext.currentPageId;
+                    pageContent.pageId = pageContext.currentPageId;
                     pageContent.contentTypeId = item.element.contentType.id;
 
                     item.element.id = pageContent.id;
@@ -502,7 +502,7 @@
             var modules = [];
             _.each(elementsToSort.modules, function (item) {
                 var module = {
-                    pageId: appContext.currentPageId,
+                    pageId: pageContext.currentPageId,
                     containerId: item.containerId,
                     sortOrder: item.element.sortOrder
                 };
@@ -580,11 +580,11 @@
         function createContent(item, containerId) {
             var content = {
                 id: item.id,
-                pageId: appContext.currentPageId,
+                pageId: pageContext.currentPageId,
                 typeInfo: angular.toJson(item),
                 containerId: containerId,
                 sortOrder: item.sortOrder,
-                cultureCode: appContext.currentCulture //TODO: get this from appContext
+                cultureCode: pageContext.currentLocale //TODO: get this from pageContext
             }
             pageContentService.post(content).then(function (data) {
                 console.log(data);
@@ -596,7 +596,7 @@
         function createModule(item, containerId) {
             var pageModule = {
                 id: item.id,
-                pageId: appContext.currentPageId,
+                pageId: pageContext.currentPageId,
                 moduleId: item.module.id,
                 containerId: containerId,
                 sortOrder: item.sortOrder
@@ -733,7 +733,7 @@
                 getPageContents(),
                 getSiteLanguages()
             ]).then(function () {
-                var currentCultureCode = appContext.currentCulture.name;
+                var currentCultureCode = pageContext.currentLocale;
                 vm.selectedLocale = _.findWhere(vm.languages, { cultureCode: currentCultureCode });
                 //load correct translation
                 var translation = getTranslationForLocale(vm.selectedLocale.cultureCode);
@@ -762,7 +762,7 @@
                 function (pageContent) {
                     console.log(pageContent);
                     vm.contentTranslations = pageContent.pageContentTranslation;
-                    //var contentTranslation = _.findWhere(pageContent.pageContentTranslation, { cultureCode: appContext.currentCulture });
+                    //var contentTranslation = _.findWhere(pageContent.pageContentTranslation, { cultureCode: pageContext.currentLocale });
                     //if (contentTranslation) {
                     //    vm.contentTranslation = contentTranslation;
                     //}

@@ -1,17 +1,17 @@
 ﻿@model List<Deviser.Core.Data.Entities.Page>
-@using AppContext = Deviser.Core.Library.AppContext;
+@inject IScopeService scopeService
 @using System.Security.Claims;
 @using Deviser.Core.Library;
 @using Deviser.Core.Common;
 @{
     Layout = null;
-    AppContext deviserContext = (AppContext)ViewBag.AppContext;  //HttpContext.Current.Session["AppContext"];
+    var pageContext = scopeService.PageContext;
 }
 
 <ul class="page-breadcrumb">
     @foreach (var page in Model)
     {
-        var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == deviserContext.CurrentCulture.ToString());
+        var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
         if (translation != null)
         {
             translation.URL = Globals.SiteRoot + translation.URL;

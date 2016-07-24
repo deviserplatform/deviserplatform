@@ -8,6 +8,6 @@ namespace Deviser.Core.Library.Services
 {
     public class IScopeService
     {
-        public AppContext AppContext { get; set; }
+        public PageContext PageContext { get; set; }
     }
 }

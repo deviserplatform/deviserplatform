@@ -1,14 +1,14 @@
 ﻿@model Deviser.Core.Common.DomainTypes.PageContent
-@using AppContext = Deviser.Core.Library.AppContext;
-
+@using PageContext = Deviser.Core.Library.PageContext;
+@inject IScopeService scopeService
 @{
     bool isEditMode = false;
     if (ViewData["isEditMode"] != null)
     {
         isEditMode = (bool)ViewData["isEditMode"];
-    }    
-    var appContext = (AppContext)ViewData["AppContext"];
-    var currentCulture = appContext.CurrentCulture.ToString();
+    }
+    var pageContext = scopeService.PageContext;
+    var currentCulture = pageContext.CurrentCulture.ToString();
     PageContentTranslation contentTranslation = null;
     if (Model.PageContentTranslation != null)
     {

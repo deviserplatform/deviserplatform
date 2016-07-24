@@ -27,6 +27,7 @@ namespace Deviser.Core.Library.TagHelpers
         private IPageProvider pageProvider;
         private INavigation navigation;
         private IHtmlHelper htmlHelper;
+        private readonly IScopeService scopeService;
 
         [HtmlAttributeName(BcAttributeName)]
         public string BreadCrumbStyle { get; set; }
@@ -39,9 +40,11 @@ namespace Deviser.Core.Library.TagHelpers
              : base(httpContextAccessor, scopeService)
         {
             pageProvider = container.Resolve<IPageProvider>();
-            this.htmlHelper = container.Resolve<IHtmlHelper>();
-            this.navigation = container.Resolve<INavigation>();
-            
+            htmlHelper = container.Resolve<IHtmlHelper>();
+            navigation = container.Resolve<INavigation>();
+            this.scopeService = scopeService;
+
+
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -53,7 +56,7 @@ namespace Deviser.Core.Library.TagHelpers
             }
 
             ((HtmlHelper)htmlHelper).Contextualize(ViewContext);
-            List<Page> pages = navigation.GetBreadCrumbs(AppContext.CurrentPageId);
+            List<Page> pages = navigation.GetBreadCrumbs(scopeService.PageContext.CurrentPageId);
 
             var htmlContent = htmlHelper.Partial(string.Format(Globals.BreadCrumbStylePath, BreadCrumbStyle), pages);
             var contentResult = GetString(htmlContent);

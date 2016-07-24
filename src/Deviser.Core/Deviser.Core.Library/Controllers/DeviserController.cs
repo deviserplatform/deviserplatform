@@ -22,14 +22,6 @@ namespace Deviser.Core.Library.Controllers
             base.OnActionExecuting(context);
         }
 
-        //protected ISession Session
-        //{
-        //    get
-        //    {
-        //        return HttpContext.Session;
-        //    }
-        //}
-
         protected bool IsAjaxRequest
         {
             get
@@ -43,9 +35,7 @@ namespace Deviser.Core.Library.Controllers
 
             }
         }
-
-        protected AppContext AppContext { get; set; }
-
+        
         public CultureInfo CurrentCulture
         {
             get
@@ -56,29 +46,25 @@ namespace Deviser.Core.Library.Controllers
 
         [NonAction]
         public override ViewResult View()
-        {
-            ViewBag.AppContext = AppContext;
+        {            
             return base.View();
         }
 
         [NonAction]
         public override ViewResult View(object model)
         {
-            ViewBag.AppContext = AppContext;
             return base.View(model);
         }
 
         [NonAction]
         public override ViewResult View(string viewName)
         {
-            ViewBag.AppContext = AppContext;
             return base.View(viewName);
         }
 
         [NonAction]
         public override ViewResult View(string viewName, object model)
         {
-            ViewBag.AppContext = AppContext;
             return base.View(viewName, model);
         }
 
