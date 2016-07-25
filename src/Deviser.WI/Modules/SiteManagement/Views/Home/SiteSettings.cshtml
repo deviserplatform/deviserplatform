@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    //Layout = "~/_Layout.cshtml";
+}
+
+<div ng-app="deviser.siteSettings" ng-controller="SiteSettingsCtrl as ssVM">
+
+    <div class="alert alert-dismissable" ng-class="{'alert-danger':ssVM.message.messageType=='error',
+                              'alert-info':ssVM.message.messageType=='info',
+                              'alert-success':ssVM.message.messageType=='success',
+                              'alert-warning':ssVM.message.messageType=='warning'}" role="alert" ng-show="ssVM.message.messageType">
+        {{ssVM.message.content}}
+    </div>
+
+    <div class="row" ng-show="ssVM.currentViewState == ssVM.viewStates.LIST">
+        <div class="col-md-12">
+            <div class="portlet box blue" id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-cog" aria-hidden="true"></i> Site Settings
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <form class="form-horizontal" name="propertyForm" novalidate>
+                        <div class="form-body">
+                            <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
+                                <label class="col-md-3 control-label">Label</label>
+                                <div class="col-md-6">
+                                    <input class="form-control" name="label" ng-model="ssVM.selectedProperty.label" required />
+                                </div>
+                            </div>                            
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">More Option</label>
+                                <div class="col-md-6">
+                                    <input type="checkbox" ng-model="ssVM.selectedProperty.moreOption" />
+                                </div>
+                            </div>
+                            <div class="form-group" ng-show="ssVM.selectedProperty.moreOption">
+                                <label class="col-md-3 control-label">Option List</label>
+                                <div class="col-md-6">
+                                    <ui-select ng-model="ssVM.selectedProperty.propertyOptionList" theme="bootstrap"
+                                               ng-disabled="ssVM.optionLists.length<=0">
+                                        <ui-select-match placeholder="Select option list">{{$select.selected.label}}</ui-select-match>
+                                        <ui-select-choices repeat="optionList in ssVM.optionLists | filter: $select.search">
+                                            <div ng-bind-html="optionList.label | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <button type="submit" class="btn btn-success" ng-click="ssVM.save()" ng-disabled="!ssVM.selectedProperty">Save</button>
+                                    <button type="button" class="btn btn-default" ng-click="ssVM.cancel()">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

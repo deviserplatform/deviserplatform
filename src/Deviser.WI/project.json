@@ -53,6 +53,7 @@
     "Deviser.Modules.Language": "1.0.0-*",
     "Deviser.Modules.FileManager": "1.0.0-*",
     "Deviser.Modules.Security": "1.0.0-*",
+    "Deviser.Modules.SiteManagement": "1.0.0-*",
     "Deviser.Modules.ContentManagement": "1.0.0-*",
     "Serilog.Extensions.Logging": "1.0.0",
     "Serilog.Sinks.Literate": "2.0.0",
@@ -106,6 +107,7 @@
       "wwwroot",
       "Views",
       "Modules",
+      "Sites",
       "appsettings.json",
       "web.config"
     ]

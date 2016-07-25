@@ -12,6 +12,7 @@ namespace Deviser.Core.Data.DataProviders
     {
         List<SiteSetting> GetSettings();
         string GetSettingValue(string settingName);
+        List<SiteSetting> UpdateSetting(List<SiteSetting> settings);
     }
 
     public class SiteSettingProvider : DataProviderBase, ISiteSettingProvider
@@ -58,6 +59,26 @@ namespace Deviser.Core.Data.DataProviders
             catch (Exception ex)
             {
                 logger.LogError("Error occured while getting GetSettings", ex);
+            }
+            return null;
+        }
+
+        public List<SiteSetting> UpdateSetting(List<SiteSetting> settings)
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    context.SiteSetting.UpdateRange(settings);
+                    context.SaveChanges();
+                    var result = context.SiteSetting.ToList();
+                    if (result != null)
+                        return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while updating settings", ex);
             }
             return null;
         }

@@ -38,6 +38,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Modules.ContentMana
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Core.Common", "src\Deviser.Core\Deviser.Core.Common\Deviser.Core.Common.xproj", "{6CA6A9E5-B940-4ABB-87B1-403C680A49AC}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Modules.SiteManagement", "src\Deviser.Modules\Deviser.Modules.SiteManagement\Deviser.Modules.SiteManagement.xproj", "{432E2E3C-DE3C-4C5B-8571-5A3F97AC2E28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,10 @@ Global
 		{6CA6A9E5-B940-4ABB-87B1-403C680A49AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CA6A9E5-B940-4ABB-87B1-403C680A49AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CA6A9E5-B940-4ABB-87B1-403C680A49AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{432E2E3C-DE3C-4C5B-8571-5A3F97AC2E28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{432E2E3C-DE3C-4C5B-8571-5A3F97AC2E28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{432E2E3C-DE3C-4C5B-8571-5A3F97AC2E28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{432E2E3C-DE3C-4C5B-8571-5A3F97AC2E28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,5 +117,6 @@ Global
 		{07DC4E90-16E7-4357-B692-103EF1B89CBD} = {88901A99-F73F-4CF2-8038-A5E98BAF73FF}
 		{CD1A5AAC-F892-45F0-8C11-D9353C10A11A} = {88901A99-F73F-4CF2-8038-A5E98BAF73FF}
 		{6CA6A9E5-B940-4ABB-87B1-403C680A49AC} = {F3FFE0B0-32B0-4867-AA80-7FB130E72263}
+		{432E2E3C-DE3C-4C5B-8571-5A3F97AC2E28} = {88901A99-F73F-4CF2-8038-A5E98BAF73FF}
 	EndGlobalSection
 EndGlobal

@@ -17,6 +17,7 @@
 /// <reference path="js/src/app/sdlib.js" />
 /// <reference path="js/src/app/security-roles/app.js" />
 /// <reference path="js/src/app/services.js" />
+/// <reference path="js/src/app/site-management/site-settings.js" />
 /// <reference path="js/src/app/underscore-ext.js" />
 /// <reference path="js/src/app/user-management/app.js" />
 /// <reference path="js/src/lib-fixes/select.min.js" />
