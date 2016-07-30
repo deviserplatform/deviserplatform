@@ -23,52 +23,37 @@
                 <div class="portlet-body form">
                     <form class="form-horizontal" name="propertyForm" novalidate>
                         <div class="form-body">
-                            @*<div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
-                                <label class="col-md-3 control-label">HomePage</label>
-                                <div class="col-md-6">
-                                    <input class="form-control" name="HomePageId" ng-model="ssVM.setting.HomePageId.settingValue" required />
-                                </div>
-                            </div>*@
+     
                             <div class="form-group" >
                                 <label class="col-md-3 control-label">Home Page</label>
                                 <div class="col-md-6">
                                     <ui-select ng-model="ssVM.setting.HomePageId.settingValue" theme="bootstrap">
                                         <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
-                                        <ui-select-choices repeat="page in ssVM.pages | filter: $select.search">
+                                        <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
                                             <div ng-bind-html="page.pageName | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
                                 </div>
                             </div>
-                            @*<div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
-                                <label class="col-md-3 control-label">LoginPage</label>
-                                <div class="col-md-6">
-                                    <input class="form-control" name="LoginPage" ng-model="ssVM.setting.LoginPage.settingValue" required />
-                                </div>
-                            </div>*@ 
+                            
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Login Page</label>
                                 <div class="col-md-6">
                                     <ui-select ng-model="ssVM.setting.LoginPage.settingValue" theme="bootstrap">
                                         <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
-                                        <ui-select-choices repeat="page in ssVM.pages | filter: $select.search">
+                                        <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
                                             <div ng-bind-html="page.pageName | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
                                 </div>
                             </div>                
-                            @*<div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
-                                <label class="col-md-3 control-label">Registration Page</label>
-                                <div class="col-md-6">
-                                    <input class="form-control" name="RegistrationPage" ng-model="ssVM.setting.RegistrationPage.settingValue" required />
-                                </div>
-                            </div>*@
+                           
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Registration Page</label>
                                 <div class="col-md-6">
                                     <ui-select ng-model="ssVM.setting.RegistrationPage.settingValue" theme="bootstrap">
                                         <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
-                                        <ui-select-choices repeat="page in ssVM.pages | filter: $select.search">
+                                        <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
                                             <div ng-bind-html="page.pageName | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
@@ -116,35 +101,25 @@
                                     <input class="form-control" name="SiteRoot" ng-model="ssVM.setting.SiteRoot.settingValue" required />
                                 </div>
                             </div>
-                            @*<div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
-                                <label class="col-md-3 control-label">Redirect After Logout</label>
-                                <div class="col-md-6">
-                                    <input class="form-control" name="RedirectAfterLogout" ng-model="ssVM.setting.RedirectAfterLogout.settingValue" required />
-                                </div>
-                            </div>*@
+                            
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Redirect After Logout</label>
                                 <div class="col-md-6">
                                     <ui-select ng-model="ssVM.setting.RedirectAfterLogout.settingValue" theme="bootstrap">
                                         <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
-                                        <ui-select-choices repeat="page in ssVM.pages | filter: $select.search">
-                                            <div ng-bind-html="page.pageName | highlight: $select.search"></div>
+                                        <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
+                                            <div ng-bind-html=" page.pageName | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
                                 </div>
                             </div>
-                            @*<div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
-                                <label class="col-md-3 control-label">Redirect After Login</label>
-                                <div class="col-md-6">
-                                    <input class="form-control" name="RedirectAfterLogin" ng-model="ssVM.setting.RedirectAfterLogin.settingValue" required />
-                                </div>
-                            </div>*@
+                            
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Redirect After Login</label>
                                 <div class="col-md-6">
                                     <ui-select ng-model="ssVM.setting.RedirectAfterLogin.settingValue" theme="bootstrap">
                                         <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
-                                        <ui-select-choices repeat="page in ssVM.pages | filter: $select.search">
+                                        <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
                                             <div ng-bind-html="page.pageName | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
@@ -187,7 +162,7 @@
                         <div class="form-actions">
                             <div class="row">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn btn-success" ng-click="ssVM.save()" ng-disabled="!ssVM.selectedProperty">Save</button>
+                                    <button type="submit" class="btn btn-success" ng-click="ssVM.update()" >Update</button>
                                     <button type="button" class="btn btn-default" ng-click="ssVM.cancel()">Cancel</button>
                                 </div>
                             </div>
