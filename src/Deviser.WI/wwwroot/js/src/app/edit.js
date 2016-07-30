@@ -70,11 +70,23 @@
         }
 
         //Event handlers
-        function insertedCallback(event, index) {
+        function insertedCallback(event, index, item) {
             var parentScope = $(event.currentTarget).scope().$parent;
             var containerId = parentScope.item.id;
-            updateElements(parentScope.item);
-            //console.log('insertedCallback');
+            console.log('-----------------------');
+            console.log('insertedCallback');
+            console.log('event:');
+            console.log(event);
+            console.log('parentScope:');
+            console.log(parentScope);
+            console.log('item:');
+            console.log(item);
+            console.log('-----------------------');
+            if (!item.id) {
+                //Update element only when new item has been added
+                updateElements(parentScope.item);
+            }
+            
         }
 
         function dropCallback(event, index, item) {
@@ -84,7 +96,7 @@
 
         function itemMoved(item, index) {
             item.placeHolders.splice(index, 1);
-            //updateElements(item);
+            updateElements(item);
             console.log('itemMoved');
         }
 
@@ -138,7 +150,7 @@
                 var pageContent = {};//vm.selectedItem.pageContent;
                 
                 var properties = [];
-                _.each(vm.selectedItem.properties, function (srcProp) {
+                _.forEach(vm.selectedItem.properties, function (srcProp) {
                     if (srcProp) {
                         var prop = {
                             id: srcProp.id,
@@ -212,7 +224,7 @@
             .then(function (data) {
                 var contentTypes = data;
                 vm.contentTypes = [];
-                _.each(contentTypes, function (contentType) {
+                _.forEach(contentTypes, function (contentType) {
                     vm.contentTypes.push({
                         layoutTemplate: "content",
                         type: "content",
@@ -234,7 +246,7 @@
             .then(function (data) {
                 var moduleActions = data;
                 vm.modules = [];
-                _.each(moduleActions, function (moduleAction) {
+                _.forEach(moduleActions, function (moduleAction) {
                     vm.modules.push({
                         layoutTemplate: "module",
                         type: "module",                        
@@ -273,19 +285,19 @@
             vm.pageLayout.pageId = vm.currentPage.id;
 
             var unAssignedSrcConents = _.reject(vm.pageContents, function (content) {
-                return _.contains(containerIds, content.containerId);
+                return _.includes(containerIds, content.containerId);
             });
 
             var unAssignedSrcModules = _.reject(vm.pageModules, function (module) {
-                return _.contains(containerIds, module.containerId);
+                return _.includes(containerIds, module.containerId);
             });
 
-            _.each(unAssignedSrcConents, function (pageContent) {                
+            _.forEach(unAssignedSrcConents, function (pageContent) {
                 var content = getPageContentWithProperties(pageContent);
                 unAssignedContents.push(content);
             });
 
-            _.each(unAssignedSrcModules, function (pageModule) {
+            _.forEach(unAssignedSrcModules, function (pageModule) {
                 var index = pageModule.sortOrder - 1;
                 var module = {
                     id: pageModule.id,
@@ -307,16 +319,16 @@
 
         function positionPageContents(placeHolders) {
             if (placeHolders) {
-                _.each(placeHolders, function (item) {
+                _.forEach(placeHolders, function (item) {
                     //console.log(item)
 
                     //adding containerId to filter unallocated items in a separate dndlist
                     containerIds.push(item.id);
 
                     //Load content items if found
-                    var pageContents = _.where(vm.pageContents, { containerId: item.id });
+                    var pageContents = _.filter(vm.pageContents, { containerId: item.id });
                     if (pageContents) {
-                        _.each(pageContents, function (pageContent) {
+                        _.forEach(pageContents, function (pageContent) {
                             var content = getPageContentWithProperties(pageContent);
                             //item.placeHolders.splice(index, 0, contentTypeInfo); //Insert placeHolder into specified index
                             item.placeHolders.push(content);
@@ -324,9 +336,9 @@
                     }
 
                     //Load modules if found
-                    var pageModules = _.where(vm.pageModules, { containerId: item.id });
+                    var pageModules = _.filter(vm.pageModules, { containerId: item.id });
                     if (pageModules) {
-                        _.each(pageModules, function (pageModule) {
+                        _.forEach(pageModules, function (pageModule) {
                             var index = pageModule.sortOrder - 1;
                             var module = {
                                 id: pageModule.id,
@@ -341,7 +353,7 @@
                         })
                     }
 
-                    item.placeHolders = _.sortBy(item.placeHolders, 'sortOrder');
+                    item.placeHolders = _.sortBy(item.placeHolders, ['sortOrder']);
 
                     if (item.placeHolders) {
                         positionPageContents(item.placeHolders);
@@ -358,8 +370,8 @@
             var properties = angular.copy(masterContentType.properties);
 
             //Loading values to the properties
-            _.each(properties, function (prop) {
-                var propVal = _.findWhere(propertiesValue, { id: prop.id });
+            _.forEach(properties, function (prop) {
+                var propVal = _.find(propertiesValue, { id: prop.id });
                 if (propVal) {
                     prop.value = propVal.value;
                 }
@@ -439,7 +451,7 @@
         function updatePageContents(elementsToSort) {
             var defer = $q.defer();
             var contents = [];
-            _.each(elementsToSort.contents, function (item) {
+            _.forEach(elementsToSort.contents, function (item) {
                 var pageContent = {};
 
                 if (item.element.id) {
@@ -460,7 +472,7 @@
                 }
 
                 var properties = [];
-                _.each(item.element.properties, function (srcProp) {
+                _.forEach(item.element.properties, function (srcProp) {
                     if (srcProp) {
                         var prop = {
                             id: srcProp.id,
@@ -500,7 +512,7 @@
         function updateModules(elementsToSort) {
             var defer = $q.defer();
             var modules = [];
-            _.each(elementsToSort.modules, function (item) {
+            _.forEach(elementsToSort.modules, function (item) {
                 var module = {
                     pageId: pageContext.currentPageId,
                     containerId: item.containerId,
@@ -653,7 +665,7 @@
         vm.cancelDetailView = cancelDetailView;
         vm.sortableOptions = {
             stop: function (e, ui) {
-                _.each(vm.contentTranslation.contentData.items, function (item, index) {
+                _.forEach(vm.contentTranslation.contentData.items, function (item, index) {
                     item.viewOrder = index + 1;
                 });
             }
@@ -734,7 +746,7 @@
                 getSiteLanguages()
             ]).then(function () {
                 var currentCultureCode = pageContext.currentLocale;
-                vm.selectedLocale = _.findWhere(vm.languages, { cultureCode: currentCultureCode });
+                vm.selectedLocale = _.find(vm.languages, { cultureCode: currentCultureCode });
                 //load correct translation
                 var translation = getTranslationForLocale(vm.selectedLocale.cultureCode);
                 vm.contentTranslation = translation;
@@ -762,7 +774,7 @@
                 function (pageContent) {
                     console.log(pageContent);
                     vm.contentTranslations = pageContent.pageContentTranslation;
-                    //var contentTranslation = _.findWhere(pageContent.pageContentTranslation, { cultureCode: pageContext.currentLocale });
+                    //var contentTranslation = _.find(pageContent.pageContentTranslation, { cultureCode: pageContext.currentLocale });
                     //if (contentTranslation) {
                     //    vm.contentTranslation = contentTranslation;
                     //}
@@ -779,7 +791,7 @@
         }
 
         function getTranslationForLocale(locale) {
-            var translation = _.findWhere(vm.contentTranslations, { cultureCode: locale });
+            var translation = _.find(vm.contentTranslations, { cultureCode: locale });
             if (!translation) {
                 if (vm.contentType.dataType === 'string') {
                     translation = {

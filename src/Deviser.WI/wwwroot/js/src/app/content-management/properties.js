@@ -63,7 +63,7 @@
         }
 
         function isValidName(name) {
-            return !_.findWhere(vm.properties, { name: name });
+            return !_.find(vm.properties, { name: name });
         }
 
         function save() {

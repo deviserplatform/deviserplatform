@@ -62,12 +62,12 @@
             vm.selectedLayoutType = layout;
             var allowedTypeIds = vm.selectedLayoutType.layoutTypeIds.replace(/\s+/g, '').split(',');
             vm.selectedLayoutType.allowedLayoutTypes = _.filter(vm.layoutTypes, function (layoutType) {
-                return _.contains(allowedTypeIds, layoutType.id);
+                return _.includes(allowedTypeIds, layoutType.id);
             });
         }
 
         function isValidName(name) {
-            return !_.findWhere(vm.layoutTypes, { name: name });
+            return !_.find(vm.layoutTypes, { name: name });
         }
 
         function save() {
@@ -85,7 +85,7 @@
                     });
                 }
                 else {
-                    var allowedTypeIds = _.pluck(vm.selectedLayoutType.allowedLayoutTypes, 'id');                    
+                    var allowedTypeIds = _.map(vm.selectedLayoutType.allowedLayoutTypes, 'id');
                     vm.layoutTypeIds = allowedTypeIds.join(',');
                     delete vm.selectedLayoutType.allowedLayoutTypes;
                     update(vm.selectedLayoutType);
@@ -150,7 +150,7 @@
         }
 
         function isPropExist() {
-            var isExist = _.findWhere(vm.selectedLayoutType.properties, { id: vm.selectedProperty.id });
+            var isExist = _.find(vm.selectedLayoutType.properties, { id: vm.selectedProperty.id });
             return isExist;
         }
 

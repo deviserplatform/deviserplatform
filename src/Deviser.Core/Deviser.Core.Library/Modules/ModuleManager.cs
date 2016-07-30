@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Deviser.Core.Common;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Microsoft.Extensions.Logging;
@@ -50,7 +51,21 @@ namespace Deviser.Core.Library.Modules
                 {
                     PageModule result = pageProvider.GetPageModule(pageModule.Id);                    
                     if (result == null)
+                    {
                         result = pageProvider.CreatePageModule(pageModule);
+                        List<ModulePermission> adminPermissions = AddAdminPermissions(result);
+
+                        if (result.ModulePermissions == null)
+                        {
+                            result.ModulePermissions = adminPermissions;
+                        }
+                        else
+                        {
+                            adminPermissions.AddRange(result.ModulePermissions);
+                            result.ModulePermissions = adminPermissions;
+                        }
+                    }
+
                     else 
                     {
                         result.IsDeleted = false;
@@ -68,6 +83,27 @@ namespace Deviser.Core.Library.Modules
             return null;
         }
 
+        private List<ModulePermission> AddAdminPermissions(PageModule pageModule)
+        {
+            //Update admin permissions
+            var adminPermissions = new List<ModulePermission>();
+            adminPermissions.Add(new ModulePermission
+            {
+                PageModuleId = pageModule.Id,
+                RoleId = Globals.AdministratorRoleId,
+                PermissionId = Globals.ModuleViewPermissionId,
+            });
+
+            adminPermissions.Add(new ModulePermission
+            {
+                PageModuleId = pageModule.Id,
+                RoleId = Globals.AdministratorRoleId,
+                PermissionId = Globals.ModuleEditPermissionId,
+            });
+            adminPermissions = pageProvider.AddModulePermissions(adminPermissions);
+            return adminPermissions;
+        }
+
         public void UpdatePageModules(List<PageModule> pageModules)
         {
             try
@@ -75,6 +111,21 @@ namespace Deviser.Core.Library.Modules
                 if (pageModules != null)
                 {
                     pageProvider.UpdatePageModules(pageModules);
+
+                    foreach(var pageModule in pageModules)
+                    {
+                        var adminPermissions = AddAdminPermissions(pageModule);
+
+                        if (pageModule.ModulePermissions == null)
+                        {
+                            pageModule.ModulePermissions = adminPermissions;
+                        }
+                        else
+                        {
+                            adminPermissions.AddRange(pageModule.ModulePermissions);
+                            pageModule.ModulePermissions = adminPermissions;
+                        }
+                    }
                 }
             }
             catch (Exception ex)

@@ -15,5 +15,7 @@ namespace Deviser.Core.Data.Entities
         public ModuleAction ModuleAction { get;set;}
         public virtual Module Module { get; set; }
         public virtual Page Page { get; set; }
+
+        public virtual ICollection<ModulePermission> ModulePermissions { get; set; }
     }
 }

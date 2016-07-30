@@ -17,5 +17,7 @@ namespace Deviser.Core.Data.Entities
         }
 
         public virtual ICollection<PagePermission> PagePermissions { get; set; }
+        public virtual ICollection<ModulePermission> ModulePermissions { get; set; }
+        public virtual ICollection<ContentPermission> ContentPermissions { get; set; }
     }
 }

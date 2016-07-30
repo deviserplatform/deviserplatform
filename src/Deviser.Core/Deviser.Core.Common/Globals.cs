@@ -183,6 +183,38 @@ namespace Deviser.Core.Common
             }
         }
 
+        public static Guid ModuleViewPermissionId
+        {
+            get
+            {
+                return new Guid("34b46847-80be-4099-842a-b654ad550c3e");
+            }
+        }
+
+        public static Guid ModuleEditPermissionId
+        {
+            get
+            {
+                return new Guid("cc3dbe2d-1e4a-46a0-8c10-9e73f1f5c699");
+            }
+        }
+
+        public static Guid ContentViewPermissionId
+        {
+            get
+            {
+                return new Guid("491b37a3-deba-4f55-9df6-a67cdd810108");
+            }
+        }
+
+        public static Guid ContentEditPermissionId
+        {
+            get
+            {
+                return new Guid("461b37d9-b801-4235-b74f-0c51f35d170f");
+            }
+        }
+
         private static string GetCurrentDomainDirectory()
         {
             //var dir = AppDomain.CurrentDomain.BaseDirectory.Replace("/", "\\");

@@ -63,7 +63,7 @@
         }
 
         function isValidName(name) {
-            return !_.findWhere(vm.contentTypes, { name: name });
+            return !_.find(vm.contentTypes, { name: name });
         }
 
         function save() {
@@ -143,7 +143,7 @@
         }
 
         function isPropExist() {
-            var isExist = _.findWhere(vm.selectedContentType.properties, { id: vm.selectedProperty.id });
+            var isExist = _.find(vm.selectedContentType.properties, { id: vm.selectedProperty.id });
             return isExist;
         }
 

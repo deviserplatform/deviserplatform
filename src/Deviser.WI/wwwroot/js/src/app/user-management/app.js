@@ -113,7 +113,7 @@
         function filterRoles() {
             if (vm.selectedUser) {
                 vm.roles = _.reject(allRoles, function (role) {
-                    return _.findWhere(vm.selectedUser.roles, { id: role.id });
+                    return _.find(vm.selectedUser.roles, { id: role.id });
                 });
             }
 
@@ -145,7 +145,7 @@
                     }, function (error) {
                         if (error.errors) {
                             var validationError = '';
-                            _.each(error.errors, function (er) {
+                            _.forEach(error.errors, function (er) {
                                 validationError += er.description;
                             });
                             showMessage("error", validationError);
@@ -173,7 +173,7 @@
                     else {
                         if (result.errors) {
                             var validationError = '';
-                            _.each(result.errors, function (er) {
+                            _.forEach(result.errors, function (er) {
                                 validationError += er.description;
                             });
                             showMessage("error", validationError);
