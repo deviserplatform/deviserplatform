@@ -102,3 +102,56 @@
         <button class="btn btn-warning" ng-click="imVM.no()">Cancel</button>
     </div>
 </script>
+
+<script type="text/ng-template" id="app/components/permissionEditor.tpl.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{peVM.label.title}}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="permission-content">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Role
+                        </th>
+                        <th>
+                            View
+                        </th>
+                        <th>
+                            Edit
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="role in peVM.roles"
+                        ng-class="{'active':role.id === peVM.administratorRoleId}">
+                        <td>
+                            {{role.name}}
+                        </td>
+                        <td>
+                            <a ng-click="peVM.changeViewPermission(role)">
+                                <i class="fa fa-check-square-o"
+                                   ng-class="{'fa-square-o':!peVM.isView(role) , 'fa-check-square-o':peVM.isView(role)}"
+                                   aria-hidden="true"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a ng-click="peVM.changeEditPermission(role)">
+                                <i class="fa fa-check-square-o"
+                                   ng-class="{'fa-square-o':!peVM.isEdit(role) , 'fa-check-square-o':peVM.isEdit(role)}"
+                                   aria-hidden="true"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="peVM.save()">Save</button>
+        <button class="btn btn-warning" type="button" ng-click="peVM.cancel()">Cancel</button>
+    </div>
+
+    
+</script>

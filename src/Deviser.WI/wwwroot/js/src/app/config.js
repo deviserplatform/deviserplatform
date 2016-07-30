@@ -21,7 +21,9 @@
             alertLifeTime: 10000,
             permissions: {
                 pageView: '29cb1b57-1862-4300-b378-f3271b870148',
-                pageEdit: '2da41181-be15-4ad6-a89c-3ba8b71f993b'
+                pageEdit: '2da41181-be15-4ad6-a89c-3ba8b71f993b',
+                moduleView: '34b46847-80be-4099-842a-b654ad550c3e',
+                moduleEdit: 'cc3dbe2d-1e4a-46a0-8c10-9e73f1f5c699'
             },
             roles: {
                 administrator: '9b461499-c49e-4398-bfed-4364a176ebbd'

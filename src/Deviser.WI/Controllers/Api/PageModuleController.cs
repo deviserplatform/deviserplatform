@@ -34,8 +34,26 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpGet]
+        [Route("{id}")]
+        public IActionResult Get(Guid id)
+        {
+            try
+            {
+                var result = moduleManager.GetPageModule(id);
+                if (result != null)
+                    return Ok(result);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting pageModule, id: ", id), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet]
         [Route("page/{pageId}")]
-        public IActionResult Get(Guid pageId)
+        public IActionResult GetByPage(Guid pageId)
         {
             try
             {
@@ -51,12 +69,12 @@ namespace DeviserWI.Controllers.API
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         public IActionResult Post([FromBody]PageModule pageModule)
         {
             try
             {
-                var result = moduleManager.CreatePageModule(pageModule);
+                var result = moduleManager.CreateUpdatePageModule(pageModule);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();

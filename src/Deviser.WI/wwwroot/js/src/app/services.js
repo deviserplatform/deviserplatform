@@ -195,12 +195,12 @@
         var serviceUrl = "/pagemodule";
         var url = globals.appSettings.serviceBaseUrl + serviceUrl;
         var service = baseService($http, $q, globals, serviceUrl);
-        service.get = get;
-        service.put = null;
+        service.getByPage = getByPage;
+        service.post = null;
         service.putModules = putModules;
         return service;
 
-        function get(id) {
+        function getByPage(id) {
             var getUrl = url + '/page/' + id;
 
             var request = $http({

@@ -56,8 +56,7 @@
 
         </script>
         <script type="text/ng-template" id="container.html">
-            <div class="container-element box-layout box-grey">
-                @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
+            <div class="container-element box-layout box-grey">                
                 <h3>{{item.type}} {{$index+1}}</h3>
                 <div class="container-content">
                     <div class="row dnd-list"
@@ -72,7 +71,6 @@
         </script>
         <script type="text/ng-template" id="row.html">
             <div class="container-element box-layout box-grey">
-                @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
                 <h3>{{item.type}} {{$index+1}}</h3>
                 <div class="container-content">
                     <div class="row dnd-list"
@@ -89,7 +87,6 @@
         <script type="text/ng-template" id="column.html">
             <div class="col-md-3">
                 <div class="container-element box-layout box-grey">
-                    @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
                     <h3>{{item.type}} {{$index+1}}</h3>
                     <div class="container-content">
                         <div class="row dnd-list"
@@ -105,7 +102,6 @@
         </script>
         <script type="text/ng-template" id="repeater.html">
             <div class="container-element box-layout box-grey">
-                @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
                 <h3>{{item.type}} {{$index+1}}</h3>
                 <div class="container-content">
                     <div class="row dnd-list"
@@ -145,19 +141,36 @@
         <script type="text/ng-template" id="module.html">
             <div class="container-element box box-blue">
                 @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
-                <h3>
+                @*<h3>
                     <i class="{{item.moduleAction.iconClass}}" ng-show="item.moduleAction.iconClass"></i>
                     <img src="{{item.moduleAction.iconImage}}" ng-show="item.moduleAction.iconImage" alt="{{item.moduleAction.name}}" />
                     {{item.moduleAction.displayName}}
 
-                 {{$index+1}}</h3>
+
+                    {{$index+1}}
+                </h3>*@
+                <div class="module-header clearfix">                   
+                    <div class="module-title">
+                        <i class="{{item.moduleAction.iconClass}}" ng-show="item.moduleAction.iconClass"></i>
+                        <img src="{{item.moduleAction.iconImage}}" ng-show="item.moduleAction.iconImage" alt="{{item.moduleAction.name}}" />
+                        {{item.moduleAction.displayName}}
+
+
+                        {{$index+1}}
+                    </div>
+                    <div class="module-controls" dnd-nodrag>
+                        <a class="btn btn-primary" ng-click="editVM.changeModulePermission(item)">
+                            <i class="fa fa-shield" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
                 <div class="container-content">
 
                 </div>
             </div>
         </script>
 
-        @*@Html.Partial("/views/shared/contenttypes/edit/text.cshtml")*@
+        
 
         <div sd-content-edits="All"></div>
 

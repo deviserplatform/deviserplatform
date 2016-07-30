@@ -380,9 +380,10 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     PageModule returnData = context.PageModule
-                               .Where(e => e.Id == pageModuleId && !e.IsDeleted)
-                               .OrderBy(p => p.Id)
-                               .FirstOrDefault();
+                        .Include(pm=>pm.ModulePermissions)
+                        .Where(e => e.Id == pageModuleId && !e.IsDeleted)
+                        .OrderBy(p => p.Id)
+                        .FirstOrDefault();
 
                     return returnData;
                 }
@@ -539,10 +540,10 @@ namespace Deviser.Core.Data.DataProviders
                     if (modulePermissions != null && modulePermissions.Count > 0)
                     {
                         //Filter new permissions which are not in db and add all of them
-                        var toAdd = modulePermissions.Where(pagePermission => !context.ModulePermission.Any(dbPermission =>
-                        dbPermission.PermissionId == pagePermission.PermissionId &&
-                        dbPermission.PageModuleId == pagePermission.PageModuleId &&
-                        dbPermission.RoleId == pagePermission.RoleId)).ToList();
+                        var toAdd = modulePermissions.Where(modulePermission => !context.ModulePermission.Any(dbPermission =>
+                        dbPermission.PermissionId == modulePermission.PermissionId &&
+                        dbPermission.PageModuleId == modulePermission.PageModuleId &&
+                        dbPermission.RoleId == modulePermission.RoleId)).ToList();
                         if (toAdd != null && toAdd.Count > 0)
                         {
                             foreach (var permission in toAdd)
@@ -577,9 +578,9 @@ namespace Deviser.Core.Data.DataProviders
                     context.ModulePermission.RemoveRange(toDelete);
 
                 //Filter new permissions which are not in db and add all of them
-                var toAdd = pageModule.ModulePermissions.Where(modulePermission => !context.PagePermission.Any(dbPermission =>
+                var toAdd = pageModule.ModulePermissions.Where(modulePermission => !context.ModulePermission.Any(dbPermission =>
                 dbPermission.PermissionId == modulePermission.PermissionId &&
-                dbPermission.PageId == modulePermission.PageModuleId &&
+                dbPermission.PageModuleId == modulePermission.PageModuleId &&
                 dbPermission.RoleId == modulePermission.RoleId)).ToList();
                 if (toAdd != null && toAdd.Count > 0)
                 {

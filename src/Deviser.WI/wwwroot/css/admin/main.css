@@ -160,13 +160,17 @@ body {
         padding: 5px 10px;
     }
 
-.box .content-title {
+.box .content-title, .box .module-title {
     float: left;
     padding: 6px 15px;
 }
 
-.box .content-controls {
+.box .content-controls, .box .module-controls {
     float: right;
+}
+
+.box .module-header {
+    background-color: #d9edf7;
 }
 
 .modal-dialog {

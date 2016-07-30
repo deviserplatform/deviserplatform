@@ -28,6 +28,21 @@ namespace Deviser.Core.Library.Modules
             pageContentProvider = container.Resolve<IPageContentProvider>();
         }
 
+        public PageModule GetPageModule(Guid pageModuleId)
+        {
+            try
+            {
+                var pageModules = pageProvider.GetPageModule(pageModuleId);
+                return pageModules;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting pageModule, pageModuleId: ", pageModuleId), ex);
+            }
+
+            return null;
+        }
+
         public List<PageModule> GetPageModuleByPage(Guid pageId)
         {
             try
@@ -43,7 +58,7 @@ namespace Deviser.Core.Library.Modules
             return null;
         }
 
-        public PageModule CreatePageModule(PageModule pageModule)
+        public PageModule CreateUpdatePageModule(PageModule pageModule)
         {
             try
             {
@@ -70,7 +85,8 @@ namespace Deviser.Core.Library.Modules
                     {
                         result.IsDeleted = false;
                         result.ContainerId = pageModule.ContainerId;
-                        result.SortOrder = pageModule.SortOrder;                        
+                        result.SortOrder = pageModule.SortOrder;
+                        result.ModulePermissions = pageModule.ModulePermissions;                    
                         result = pageProvider.UpdatePageModule(result);
                     }                        
                     return result;
@@ -81,27 +97,6 @@ namespace Deviser.Core.Library.Modules
                 logger.LogError(string.Format("Error occured while creating a pageModule, moduleId: ", pageModule.ModuleId), ex);
             }
             return null;
-        }
-
-        private List<ModulePermission> AddAdminPermissions(PageModule pageModule)
-        {
-            //Update admin permissions
-            var adminPermissions = new List<ModulePermission>();
-            adminPermissions.Add(new ModulePermission
-            {
-                PageModuleId = pageModule.Id,
-                RoleId = Globals.AdministratorRoleId,
-                PermissionId = Globals.ModuleViewPermissionId,
-            });
-
-            adminPermissions.Add(new ModulePermission
-            {
-                PageModuleId = pageModule.Id,
-                RoleId = Globals.AdministratorRoleId,
-                PermissionId = Globals.ModuleEditPermissionId,
-            });
-            adminPermissions = pageProvider.AddModulePermissions(adminPermissions);
-            return adminPermissions;
         }
 
         public void UpdatePageModules(List<PageModule> pageModules)
@@ -156,6 +151,27 @@ namespace Deviser.Core.Library.Modules
                 logger.LogError(string.Format("Error occured while creating a page content"), ex);                
             }
             return null;
+        }
+
+        private List<ModulePermission> AddAdminPermissions(PageModule pageModule)
+        {
+            //Update admin permissions
+            var adminPermissions = new List<ModulePermission>();
+            adminPermissions.Add(new ModulePermission
+            {
+                PageModuleId = pageModule.Id,
+                RoleId = Globals.AdministratorRoleId,
+                PermissionId = Globals.ModuleViewPermissionId,
+            });
+
+            adminPermissions.Add(new ModulePermission
+            {
+                PageModuleId = pageModule.Id,
+                RoleId = Globals.AdministratorRoleId,
+                PermissionId = Globals.ModuleEditPermissionId,
+            });
+            adminPermissions = pageProvider.AddModulePermissions(adminPermissions);
+            return adminPermissions;
         }
     }
 }

@@ -6,9 +6,10 @@ namespace Deviser.Core.Library.Modules
 {
     public interface IModuleManager
     {
-        List<PageModule> GetPageModuleByPage(Guid pageId);
+        PageModule GetPageModule(Guid pageModuleId);
+        List<PageModule> GetPageModuleByPage(Guid pageId);        
         PageContent CreatePageContent(PageContent pageContent);
-        PageModule CreatePageModule(PageModule pageModule);
+        PageModule CreateUpdatePageModule(PageModule pageModule);
         void UpdatePageModules(List<PageModule> pageModules);
     }
 }

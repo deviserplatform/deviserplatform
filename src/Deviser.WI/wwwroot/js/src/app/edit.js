@@ -18,6 +18,9 @@
     app.controller('EditContentCtrl', ['$scope', '$uibModalInstance', '$q', 'sdUtil', 'languageService',
         'pageContentService', 'contentTranslationService', 'contentInfo', editContentCtrl]);
 
+    app.controller('ModulePermissionCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', 'sdUtil', 'globals', 'roleService', 'pageModuleService',
+        'pageModule', modulePermissionCtrl]);
+
     ////////////////////////////////
     /*Function declarations only*/
     function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, sdUtil, layoutService, pageService,
@@ -44,6 +47,7 @@
         vm.selectItem = selectItem;
         vm.copyElement = copyElement;
         vm.editContent = editContent;
+        vm.changeModulePermission = changeModulePermission;
         vm.saveProperties = saveProperties;
 
         init();
@@ -142,6 +146,32 @@
             return defer.promise;
         }
 
+        function changeModulePermission(pageModule) {
+            var defer = $q.defer();
+            var modalInstance = $uibModal.open({
+                animation: true,
+                size: 'lg',
+                backdrop: 'static',
+                templateUrl: 'app/components/permissionEditor.tpl.html',
+                controller: 'ModulePermissionCtrl as peVM',
+                resolve: {
+                    pageModule: function () {
+                        var returnObject = pageModule;
+                        return returnObject;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selectedItem) {
+                //$log.info('Modal Oked at: ' + new Date());
+                defer.resolve('data received!');
+            }, function () {
+                //$log.info('Modal dismissed at: ' + new Date());
+                defer.reject(SYS_ERROR_MSG);
+            });
+            return defer.promise;
+        }
+
         function saveProperties() {
             //It Saves content with properties
             if (vm.selectedItem.layoutTemplate === "content") {
@@ -192,7 +222,7 @@
 
         function getPageModules() {
             var defer = $q.defer();
-            pageModuleService.get(pageContext.currentPageId)
+            pageModuleService.getByPage(pageContext.currentPageId)
             .then(function (data) {
                 vm.pageModules = data;
                 defer.resolve(data);
@@ -580,47 +610,6 @@
             }
         }
 
-        /*function createElement(item, containerId) {
-            if (item.layoutTemplate === "content") {
-                createContent(item, containerId);
-            }
-            else if (item.layoutTemplate === "module") {
-                createModule(item, containerId);
-            }
-        }
-
-        function createContent(item, containerId) {
-            var content = {
-                id: item.id,
-                pageId: pageContext.currentPageId,
-                typeInfo: angular.toJson(item),
-                containerId: containerId,
-                sortOrder: item.sortOrder,
-                cultureCode: pageContext.currentLocale //TODO: get this from pageContext
-            }
-            pageContentService.post(content).then(function (data) {
-                console.log(data);
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-            });
-        }
-
-        function createModule(item, containerId) {
-            var pageModule = {
-                id: item.id,
-                pageId: pageContext.currentPageId,
-                moduleId: item.module.id,
-                containerId: containerId,
-                sortOrder: item.sortOrder
-                //Modules are not multilingual
-            }
-            pageModuleService.post(pageModule).then(function (data) {
-                console.log(data);
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-            });
-        }*/
-
         function deleteContent(contentId) {
             pageContentService.remove(contentId).then(function (data) {
                 console.log(data);
@@ -831,5 +820,144 @@
         }
 
     };
+
+    function modulePermissionCtrl($scope, $timeout, $uibModalInstance, $q, sdUtil, globals, roleService, pageModuleService, pageModule) {
+        var vm = this;
+        var moduleViewPermissionId = globals.appSettings.permissions.moduleView;
+        var moduleEditPermissionId = globals.appSettings.permissions.moduleEdit;
+        var administratorRoleId = globals.appSettings.roles.administrator;
+        var pageModuleInfo = pageModule; //In order to re-use permission template for both module and content
+
+        vm.label = {
+            title: 'Module Permission',
+            tableRowTitleView: 'View Module',
+            tableRowTitleEdit: 'Edit Module'
+
+        }
+
+
+
+        /*Event handler bindings*/
+        vm.isView = isView;
+        vm.isEdit = isEdit;
+        vm.changeViewPermission = changeViewPermission;
+        vm.changeEditPermission = changeEditPermission;
+        vm.save = save;
+        vm.cancel = cancel;
+
+        init();
+
+        /////////////////////////////////////////////
+        /*Function declarations only*/
+        function init() {
+            getRoles();
+            getPageModule();
+        }
+
+        //Event handlers
+        function isView(role) {
+            if (vm.pageModule) {
+                var permission = _.find(vm.pageModule.modulePermissions, function (p) {
+                    return p.roleId === role.id && p.permissionId === moduleViewPermissionId
+                });
+                return permission;
+            }
+            return false;
+        }
+
+        function isEdit(role) {
+            if (vm.pageModule) {
+                var permission = _.find(vm.pageModule.modulePermissions, function (p) {
+                    return p.roleId === role.id && p.permissionId === moduleEditPermissionId;
+                });
+                return permission;
+            }
+            return false;
+        }
+
+        function changeViewPermission(role) {
+            if (role.id !== administratorRoleId) {
+                if (isView(role)) {
+                    //Remove
+                    vm.pageModule.modulePermissions = _.reject(vm.pageModule.modulePermissions, function (p) {
+                        return p.roleId === role.id && p.permissionId === moduleViewPermissionId
+                    })
+                }
+                else {
+                    //Add
+                    var permission = {
+                        pageModuleId: vm.pageModule.id,
+                        roleId: role.id,
+                        permissionId: moduleViewPermissionId
+                    };
+                    vm.pageModule.modulePermissions.push(permission);
+                }
+            }
+        }
+
+        function changeEditPermission(role) {
+            if (role.id !== administratorRoleId) {
+                if (isEdit(role)) {
+                    //Remove
+                    vm.pageModule.modulePermissions = _.reject(vm.pageModule.modulePermissions, function (p) {
+                        return p.roleId === role.id && p.permissionId === moduleEditPermissionId
+                    })
+                }
+                else {
+                    //Add
+                    var permission = {
+                        pageModuleId: vm.pageModule.id,
+                        roleId: role.id,
+                        permissionId: moduleEditPermissionId
+                    };
+                    vm.pageModule.modulePermissions.push(permission);
+                }
+            }
+        }
+
+        function save() {
+            pageModuleService.put(vm.pageModule).then(function (data) {
+                console.log(data);
+                $uibModalInstance.dismiss('cancel'); //Everything ok, close the modal dialog
+            }, function (error) {
+                showMessage("error", SYS_ERROR_MSG);
+            });
+        }
+
+        function cancel() {
+            $uibModalInstance.dismiss('cancel');
+        }
+
+        /*Private functions*/
+        function getRoles() {
+            roleService.get().then(function (roles) {
+                vm.roles = roles;                
+            }, function (error) {
+                showMessage("error", "Cannot get all roles, please contact administrator");
+            });
+        }
+
+        function getPageModule() {
+            pageModuleService.get(pageModuleInfo.id).then(function (pageModule) {
+                vm.pageModule = pageModule;
+            }, function (error) {
+                showMessage("error", "Cannot get all roles, please contact administrator");
+            });
+        }
+
+        function showMessage(messageType, messageContent) {
+            vm.message = {
+                messageType: messageType,
+                content: messageContent
+            }
+
+            $timeout(function () {
+                vm.message = {
+                    messageType: "",
+                    content: ""
+                };
+            }, globals.appSettings.alertLifeTime);
+        }
+    }
 
 }());
