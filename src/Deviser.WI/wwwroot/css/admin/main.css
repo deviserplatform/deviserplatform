@@ -99,13 +99,14 @@ body {
 
 .sidebar .nav > li > a:hover,
 .sidebar .nav > li > a:focus,
-.sidebar .nav ul.nav-second-level li.active > a {
+.sidebar .nav ul.nav-second-level li.active > a,
+.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
     background: #2C3542;
     border-color: transparent;
 }
 
-.sidebar .nav > li.active > a,
-.sidebar .nav .open > a:focus {
+.sidebar .nav > li.active > a, 
+.root.nav .open > a, .root.nav .open > a:hover, .root.nav .open > a:focus{
     background: #EF4A34;
     color: #fff;
 }

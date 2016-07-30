@@ -15,7 +15,7 @@
     <li>
         <a href="/@Globals.HomePageUrl">
             <i class="fa fa-home"></i>
-            <span class="title">Back to Home</span>            
+            <span class="title">Back to Home</span>
         </a>
     </li>
     @foreach (var page in Model.ChildPage)
@@ -25,7 +25,7 @@
         if (translation != null)
         {
             translation.URL = Globals.SiteRoot + translation.URL;
-            <li class=" @activeClass">
+            <li class=" @activeClass ">
                 <a href="#"> @translation.Name<span class="fa arrow"></span></a>
                 @if (page.ChildPage != null && page.ChildPage.Count > 0)
                 {
@@ -42,6 +42,33 @@ else if (Model.PageLevel == 1)
         {
             string activeClass = (page.IsActive || page.IsBreadCrumb) ? "active open" : "";
             translation = page.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
+            var hasChild = page.ChildPage != null && page.ChildPage.Count > 0;
+            if (translation != null)
+            {
+                translation.URL = Globals.SiteRoot + translation.URL;
+                <li class="@activeClass">
+                    <a href="@translation.URL">
+                        @translation.Name
+                        @if(hasChild){
+                            <span class="fa arrow"></span>
+                        }
+                    </a>
+                    @if (hasChild)
+                    {
+                        @Html.Partial(string.Format(Globals.MenuStylePath, "Admin"), page)
+                    }
+                </li>
+            }
+        }
+    </ul>
+}
+else if (Model.PageLevel == 2)
+{
+    <ul class="nav nav-third-level">
+        @foreach (var page in Model.ChildPage)
+        {
+            string activeClass = (page.IsActive || page.IsBreadCrumb) ? "active open" : "";
+            translation = page.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
             if (translation != null)
             {
                 translation.URL = Globals.SiteRoot + translation.URL;
@@ -49,6 +76,10 @@ else if (Model.PageLevel == 1)
                     <a href="@translation.URL">
                         @translation.Name
                     </a>
+                    @if (page.ChildPage != null && page.ChildPage.Count > 0)
+                    {
+                        @Html.Partial(string.Format(Globals.MenuStylePath, "Admin"), page)
+                    }
                 </li>
             }
         }
