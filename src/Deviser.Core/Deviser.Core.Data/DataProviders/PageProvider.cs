@@ -114,11 +114,11 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     IEnumerable<Page> returnData = context.Page
-                                .Where(e => e.ParentId == null)
+                                .Where(e => e.ParentId != null)
                                 //.Include("PageTranslations").Include("ChildPages").Include("PageModules").Include("PageModules.Module")
-                                .Include(p => p.PageTranslation).Include(p => p.ChildPage)
+                                .Include(p => p.PageTranslation)
                                 .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
-                                .OrderBy(p => p.Id)
+                                .OrderBy(p => p.PageOrder)
                                 .ToList();
 
                     return new List<Page>(returnData);
