@@ -129,8 +129,8 @@
         }
 
         function changeLanguage() {
-            var currentPageTranslation = _.findWhere(vm.selectedItem.pageTranslation, { locale: vm.currentLocale });
-            var defaultPageTranslation = _.findWhere(vm.selectedItem.pageTranslation, { locale: vm.siteLanguage });
+            var currentPageTranslation = _.find(vm.selectedItem.pageTranslation, { locale: vm.currentLocale });
+            var defaultPageTranslation = _.find(vm.selectedItem.pageTranslation, { locale: vm.siteLanguage });
             defaultPageTranslation = JSON.parse(angular.toJson(defaultPageTranslation));
             if (!currentPageTranslation) {
                 defaultPageTranslation.locale = vm.currentLocale;
@@ -183,7 +183,7 @@
             vm.selectedItem = page;
             vm.accordion.common = !vm.accordion.permissions;
             if (vm.selectedItem.pagePermissions) {
-                _.each(vm.selectedItem.pagePermissions, function (pagePermission) {
+                _.forEach(vm.selectedItem.pagePermissions, function (pagePermission) {
                     pagePermission.isView = function (role) {
                         return
                     }
@@ -301,7 +301,7 @@
 
         function reSortPages(page) {
             if (page && page.childPage) {
-                _.each(page.childPage, function (child, index) {
+                _.forEach(page.childPage, function (child, index) {
                     child.pageOrder = index + 1;
                     reSortPages(child);
                 });
@@ -315,7 +315,7 @@
                         return page.pageOrder;
                     });
 
-                    _.each(page.childPage, function (child, index) {
+                    _.sortBy(page.childPage, function (child, index) {
                         sortPages(child);
                     });
                 }

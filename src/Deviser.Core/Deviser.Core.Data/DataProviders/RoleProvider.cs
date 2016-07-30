@@ -145,7 +145,9 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     RoleManager<Role> rm = container.Resolve<RoleManager<Role>>();
-                    var result = rm.UpdateAsync(role).Result;
+                    var dbRole = rm.Roles.FirstOrDefault(r => r.Id == role.Id);
+                    dbRole.Name = role.Name;
+                    var result = rm.UpdateAsync(dbRole).Result;
 
                     //Role resultRole;
                     //resultRole = context.Roles.Attach(role).Entity;

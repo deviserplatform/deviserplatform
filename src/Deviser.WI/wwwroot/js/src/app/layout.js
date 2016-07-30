@@ -87,8 +87,8 @@
             .then(function (layouts) {
                 console.log(layouts);
                 //Processing the data
-                layouts = _.where(layouts, { isDeleted: false });
-                _.each(layouts, function (item) {
+                layouts = _.filter(layouts, { isDeleted: false });
+                _.forEach(layouts, function (item) {
                     if (item && !item.placeHolders) {
                         item.placeHolders = [];
                     }
@@ -117,7 +117,7 @@
 
         function processLayoutTypes(layoutTypes) {
             if (layoutTypes) {
-                _.each(layoutTypes, function (layoutType) {
+                _.forEach(layoutTypes, function (layoutType) {
                     layoutType.layoutTypeId = layoutType.id;
                     layoutType.id = sdUtil.getGuid();
                     layoutType.placeHolders = [];
@@ -199,9 +199,9 @@
 
         function processplaceHolders(placeHolders) {
             if (placeHolders) {
-                _.each(placeHolders, function (item, index) {
+                _.forEach(placeHolders, function (item, index) {
                     console.log(item)
-                    var masterLayout = _.findWhere(vm.layoutTypes, { layoutTypeId: item.layoutTypeId });
+                    var masterLayout = _.find(vm.layoutTypes, { layoutTypeId: item.layoutTypeId });
                     if (masterLayout) {
                         item.label = masterLayout.label;
                     }
@@ -228,11 +228,11 @@
 
         function selectItem(item) {
             var propertiesValue = item.properties;
-            var masterLayout = _.findWhere(vm.layoutTypes, { layoutTypeId: item.layoutTypeId });
+            var masterLayout = _.find(vm.layoutTypes, { layoutTypeId: item.layoutTypeId });
             var masterProperties = masterLayout.properties;
-            _.each(masterProperties, function (prop) {
+            _.forEach(masterProperties, function (prop) {
                 if (prop) {
-                    var propVal = _.findWhere(propertiesValue, { id: prop.id });
+                    var propVal = _.find(propertiesValue, { id: prop.id });
                     if (propVal) {
                         //Property exist, update property label
                         propVal.label = prop.label;

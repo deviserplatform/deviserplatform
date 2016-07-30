@@ -162,7 +162,7 @@
 
         function getImages() {
             assetService.get().then(function (images) {
-                _.each(images, function (image) {
+                _.forEach(images, function (image) {
                     image.path += '?' + Math.random() * 100;
                 })
 

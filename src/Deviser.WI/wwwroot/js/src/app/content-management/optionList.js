@@ -63,7 +63,7 @@
         }
 
         function isValidName(name) {
-            return !_.findWhere(vm.optionLists, { name: name });
+            return !_.find(vm.optionLists, { name: name });
         }
 
         function save() {

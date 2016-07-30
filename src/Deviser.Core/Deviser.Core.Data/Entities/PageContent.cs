@@ -17,5 +17,6 @@ namespace Deviser.Core.Data.Entities
         public virtual Page Page { get; set; }
         public virtual ContentType ContentType { get; set; }
         public virtual ICollection<PageContentTranslation> PageContentTranslation { get; set; }
+        public virtual ICollection<ContentPermission> ContentPermissions { get; set; }
     }
 }

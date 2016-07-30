@@ -284,6 +284,24 @@ namespace Deviser.Core.Data.Entities
                 entity.HasOne(d => d.Role).WithMany(p => p.PagePermissions).HasForeignKey(d => d.RoleId).OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<ModulePermission>(entity =>
+            {
+                entity.HasOne(d => d.PageModule).WithMany(p => p.ModulePermissions).HasForeignKey(d => d.PageModuleId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.Permission).WithMany(p => p.ModulePermissions).HasForeignKey(d => d.PermissionId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.Role).WithMany(p => p.ModulePermissions).HasForeignKey(d => d.RoleId).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ContentPermission>(entity =>
+            {
+                entity.HasOne(d => d.PageContent).WithMany(p => p.ContentPermissions).HasForeignKey(d => d.PageContentId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.Permission).WithMany(p => p.ContentPermissions).HasForeignKey(d => d.PermissionId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.Role).WithMany(p => p.ContentPermissions).HasForeignKey(d => d.RoleId).OnDelete(DeleteBehavior.Restrict);
+            });
+
             modelBuilder.Entity<sysdiagrams>(entity =>
             {
                 entity.HasKey(e => e.diagram_id)
@@ -319,6 +337,8 @@ namespace Deviser.Core.Data.Entities
         public virtual DbSet<ContentTypeProperty> ContentTypeProperty { get; set; }
         public virtual DbSet<PagePermission> PagePermission { get; set; }
         public virtual DbSet<Permission> Permission { get; set; }
+        public virtual DbSet<ModulePermission> ModulePermission { get; set; }
+        public virtual DbSet<ContentPermission> ContentPermission { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         //public DbSet<ApplicationUser> ApplicationUser { get; set; }
         //public DbSet<ApplicationUser> ApplicationUser { get; set; }

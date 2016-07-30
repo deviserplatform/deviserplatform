@@ -112,8 +112,8 @@ namespace Deviser.Core.Library
                     var currentURLs = GetParentURL(page);
                     UpdatePageTreeURL(page, currentURLs);
                     var resultPage = pageProvider.UpdatePage(page);
-                    //Update admin permissions
 
+                    //Update admin permissions
                     var adminPermissions = new List<PagePermission>();
                     adminPermissions.Add(new PagePermission
                     {
@@ -129,7 +129,7 @@ namespace Deviser.Core.Library
                         PermissionId = Globals.PageEditPermissionId,
                     });
 
-                    adminPermissions = pageProvider.AddPermissions(adminPermissions);
+                    adminPermissions = pageProvider.AddPagePermissions(adminPermissions);
 
                     if (resultPage.PagePermissions == null)
                     {
