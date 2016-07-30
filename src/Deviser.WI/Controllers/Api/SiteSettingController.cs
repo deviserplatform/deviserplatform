@@ -42,8 +42,9 @@ namespace Deviser.WI.Controllers.Api
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-        [HttpPut ("{id}")]
-        public IActionResult Put(Guid id,[FromBody]List<SiteSetting> settings)
+
+        [HttpPut]
+        public IActionResult Put([FromBody]List<SiteSetting> settings)
         {
             try
             {

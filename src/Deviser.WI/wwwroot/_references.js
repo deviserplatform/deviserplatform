@@ -37,3 +37,4 @@
 /// <reference path="lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js" />
 /// <reference path="lib/metisMenu/dist/metisMenu.js" />
 /// <reference path="lib/ng-file-upload/ng-file-upload.js" />
+/// <reference path="lib/underscore/underscore.js" />
