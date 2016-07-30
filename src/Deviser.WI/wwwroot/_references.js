@@ -30,7 +30,6 @@
 /// <reference path="lib/angular-ui-select/dist/select.js" />
 /// <reference path="lib/angular-ui-sortable/sortable.js" />
 /// <reference path="lib/angular-ui-tree/dist/angular-ui-tree.js" />
-/// <reference path="lib/angular-ui-tree_old/dist/angular-ui-tree.js" />
 /// <reference path="lib/bootstrap/dist/js/bootstrap.js" />
 /// <reference path="lib/jqueri-ui/jquery-ui.js" />
 /// <reference path="lib/jquery/dist/jquery.js" />

@@ -6,6 +6,7 @@
     app.factory('layoutTypeService', layoutTypeService);
     app.factory('propertyService', propertyService);
     app.factory('optionListService', optionListService);
+    app.factory('siteSettingService', siteSettingService);
     app.factory('pageContentService', pageContentService);
     app.factory('contentTranslationService', contentTranslationService);
     app.factory('moduleService', moduleService);
@@ -30,7 +31,23 @@
     }
 
     function pageService($http, $q, globals) {
-        return baseService($http, $q, globals, '/page');
+        var serviceUrl = '/page';
+        var service = baseService($http, $q, globals, serviceUrl);
+        service.getPages = getPages;
+        return service;
+
+        ////////////////////////////////
+        /*Function declarations only*/
+        function getPages() {
+            var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/list';
+            var request = $http({
+                method: 'GET',
+                url: getUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
     }
 
     function skinService($http, $q, globals) {
@@ -73,9 +90,14 @@
         var serviceUrl = '/optionlist';
         var service = baseService($http, $q, globals, serviceUrl);
         return service;
-    }
-       
+    } 
     
+    function siteSettingService($http, $q, globals) {
+        var serviceUrl = '/sitesetting';
+        var service = baseService($http, $q, globals, serviceUrl);
+        return service;
+    }
+
     function pageContentService($http, $q, globals) {
         var serviceUrl = "/pagecontent";
         var service = baseService($http, $q, globals, serviceUrl);

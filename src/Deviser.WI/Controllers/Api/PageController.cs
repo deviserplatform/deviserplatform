@@ -51,6 +51,24 @@ namespace DeviserWI.Controllers.API
             }
         }
 
+        [HttpGet]
+        [Route("list/")]
+        public IActionResult GetPages()
+        {
+            try
+            {
+                var pages = pageProvider.GetPages() ;
+                if (pages != null)
+                    return Ok(pages);
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting all pages"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
