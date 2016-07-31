@@ -39,7 +39,7 @@
     </div>
 
 
-    <div class="layout-container nestedDemo" >
+    <div class="layout-container nestedDemo">
         <script type="text/ng-template" id="placeHolders.html">
             <div ng-bind="parentItem = item" style="display:none"></div>
             <div class="content-item"
@@ -56,7 +56,7 @@
 
         </script>
         <script type="text/ng-template" id="container.html">
-            <div class="container-element box-layout box-grey">                
+            <div class="container-element box-layout box-grey">
                 <h3>{{item.type}} {{$index+1}}</h3>
                 <div class="container-content">
                     <div class="row dnd-list"
@@ -122,8 +122,8 @@
                         <i class="{{item.contentType.iconClass}}" ng-show="item.contentType.iconClass"></i>
                         <img src="{{item.contentType.iconImage}}" ng-show="item.contentType.iconImage" alt="{{item.contentType.name}}" />
                         {{item.contentType.label}}
-                        
-                        
+
+
                         {{$index+1}}
                     </div>
                     <div class="content-controls" dnd-nodrag>
@@ -140,16 +140,8 @@
         </script>
         <script type="text/ng-template" id="module.html">
             <div class="container-element box box-blue">
-                @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
-                @*<h3>
-                    <i class="{{item.moduleAction.iconClass}}" ng-show="item.moduleAction.iconClass"></i>
-                    <img src="{{item.moduleAction.iconImage}}" ng-show="item.moduleAction.iconImage" alt="{{item.moduleAction.name}}" />
-                    {{item.moduleAction.displayName}}
 
-
-                    {{$index+1}}
-                </h3>*@
-                <div class="module-header clearfix">                   
+                <div class="module-header clearfix">
                     <div class="module-title">
                         <i class="{{item.moduleAction.iconClass}}" ng-show="item.moduleAction.iconClass"></i>
                         <img src="{{item.moduleAction.iconImage}}" ng-show="item.moduleAction.iconImage" alt="{{item.moduleAction.name}}" />
@@ -158,25 +150,37 @@
 
                         {{$index+1}}
                     </div>
-                    <div class="module-controls" dnd-nodrag>
+                    <div class="module-controls" dnd-nodrag uib-dropdown>
                         <a class="btn btn-primary" ng-click="editVM.changeModulePermission(item)">
                             <i class="fa fa-shield" aria-hidden="true"></i>
                         </a>
+                        <a class="btn btn-primary" ng-click="editVM.editModule(item)" uib-dropdown-toggle>
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <ul class="module-actions dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                            <li ng-repeat="action in editVM.selectedItem.pageModule.editActions" role="menuitem">
+                                <a ng-click="editVM.openModuleActionEdit(action)">
+                                    <i class="{{action.iconClass}}" ng-show="action.iconClass"></i>
+
+                                    {{action.displayName}}
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="container-content">
-
+                    
                 </div>
             </div>
         </script>
 
-        
+
 
         <div sd-content-edits="All"></div>
 
         @await Html.PartialAsync("_NgComponents")
 
-        
+
         <div class="row">
             <div class="col-md-2">
                 <div class="toolbox box box-grey box-padding">
@@ -217,7 +221,7 @@
                 </div>
             </div>
             <div class="col-md-8">
-                
+
                 <div class="dropzone box box-grey">
                     <!-- The dropzone also uses the list template -->
                     <h3>Page Container</h3>
@@ -266,7 +270,7 @@
             <!-- Sidebar -->
             <div class="col-md-2">
                 <div class="box box-grey box-padding properties">
-                    <h3>Selected</h3>   
+                    <h3>Selected</h3>
                     <div class="row">
                         <div class="col-md-6">
                             <strong>Content Type</strong>
@@ -278,7 +282,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <strong>Properties</strong>
-                        </div>                        
+                        </div>
                     </div>
                     <div class="row" ng-repeat="property in editVM.selectedItem.properties track by $index">
                         <div class="col-md-6">
@@ -310,7 +314,7 @@
 
         </div>
 
-      
+
         <div class="row">
             <div class="col-lg-6">
                 <pre>{{editVM.pageLayout | json}}</pre>

@@ -94,6 +94,31 @@ namespace Deviser.WI.Controllers
             return null;
         }
 
+        [HttpGet]
+        [Route("[controller]/[action]/{pageModuleId}/{moduleActionId}")]
+        public IActionResult EditModule(Guid pageModuleId, Guid moduleActionId)
+        {
+            if (pageModuleId != Guid.Empty)
+            {
+                try
+                {
+                    object result = deviserControllerFactory.GetModuleEditResult(Context, pageModuleId, moduleActionId).Result;
+                    ViewBag.result = result;
+                    return View(result);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError("Module load exception has been occured", ex);
+                    throw ex;
+                }
+            }
+            else
+            {
+                return BadRequest("Invalid module id");
+            }
+
+        }
+
         private Page GetPageModules(string permalink)
         {
             Page currentPage = null;

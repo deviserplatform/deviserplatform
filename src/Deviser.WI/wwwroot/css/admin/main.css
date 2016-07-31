@@ -510,6 +510,10 @@ div.edit-page.form-horizontal .control-label {
     width: 80%;
 }
 
+.module-actions.dropdown-menu li{
+    border:none;
+}
+
 /*Image manager*/
 .image-manager-modal .modal-sm {
     width: 900px;

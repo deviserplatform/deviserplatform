@@ -95,65 +95,38 @@ namespace Deviser.Core.Library.Controllers
             return actionResults;
         }
 
-        public async Task<string> ExecuteModuleController(ActionContext actionContext, string moduleName, Guid pageModuleId, string controllerName, string actionName)
+        public async Task<string> GetModuleEditResult(ActionContext actionContext, Guid pageModuleId, Guid moduleActionid)
         {
-            string actionResult = null;
-            Module module = moduleProvider.Get(moduleName);
-            if (module == null || pageModuleId == Guid.Empty)
-                return "Invalid module or module context";
-
-            ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.ModuleActionType.ControlType == "VIEW");
-            if (moduleAction == null)
-                return "Invalid action";
-
-            PageModule pageModule = pageProvider.GetPageModule(pageModuleId);
-
-            if (pageModule == null)
-                return "Invalid pageModuleId";
-
-            ModuleContext moduleContext = new ModuleContext();
-            moduleContext.ModuleInfo = module;
-            moduleContext.PageModuleId = pageModuleId;
-            actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleAction);
+            string actionResult = string.Empty;
+            try
+            {
+                var pageModule = pageProvider.GetPageModule(pageModuleId);
+                var module = moduleProvider.Get(pageModule.ModuleId);
+                ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == moduleActionid);
+                ModuleContext moduleContext = new ModuleContext();
+                moduleContext.ModuleInfo = module;
+                moduleContext.PageModuleId = pageModule.Id;
+                if (module != null && moduleAction != null)
+                {
+                    List<ContentResult> contentResults = new List<ContentResult>();
+                    actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleAction);
+                    actionResult = $"<div class=\"sd-module-container\" data-module=\"{moduleContext.ModuleInfo.Name}\" data-page-module-id=\"{moduleContext.PageModuleId}\">{actionResult}</div>";
+                }
+            }
+            catch (Exception ex)
+            {
+                actionResult = "Module load exception has been occured";
+                logger.LogError("Module load exception has been occured", ex);
+            }
 
             return actionResult;
         }
-
-
+        
         private async Task<string> ExecuteModuleController(ActionContext actionContext, ModuleContext moduleContext, ModuleAction moduleAction)
-        {
-            //var routeData = new RouteData();
-            //string url = "Modules/{moduleName}/{pageModuleId}/{controller}/{action}/{id}";
-            //routeData.Route = new Route(url, controllerContext.RouteData.RouteHandler);
-            //routeData.Values.Add("moduleName", moduleContext.ModuleInfo.Name);
-            //routeData.Values.Add("pageModuleId", moduleContext.PageModuleId);
-            //routeData.Values.Add("controller", moduleAction.ControllerName);
-            //routeData.Values.Add("action", moduleAction.ActionName);
-            //routeData.DataTokens.Add("Namespaces", new string[] { moduleAction.ControllerNamespace });
-
-            ////controllerName = "Deviser.Modules.HtmlModule.Controllers." + controllerName;
-
-            //var requestContext = new RequestContext(controllerContext.HttpContext, routeData);
-            //IController controller = controllerFactory.CreateController(requestContext, moduleAction.ControllerName);
-
-
-            //var moduleController = controller as IModuleController;
-
-            //moduleController.ModuleContext = moduleContext;
-            //moduleController.CanExecuteAction = false;
-            //moduleController.Execute(requestContext);
-
-            //ActionResult result = moduleController.ResultOfLastExecute;
-
-            //return new SDActionResult
-            //{
-            //    ActionResult = result,
-            //    ControllerContext = moduleController.SDControllerContext
-            //};
-
+        {          
             if (actionContext == null)
             {
-
+                return null;
             }
 
             RouteContext context = new RouteContext(actionContext.HttpContext);

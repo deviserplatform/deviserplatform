@@ -184,11 +184,38 @@
     }
 
     function moduleActionService($http, $q, globals) {
-        var service = baseService($http, $q, globals, '/moduleaction');
+        var serviceUrl = '/moduleaction';
+        var service = baseService($http, $q, globals, serviceUrl);
+        service.getEditActions = getEditActions;
+        service.getEditActionView = getEditActionView;
         service.put = null;
         service.post = null;
         service.remove = null;
         return service;
+
+        function getEditActions(id) {
+            var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/edit/'+ id;
+
+            var request = $http({
+                method: 'GET',
+                url: getUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
+
+        function getEditActionView(pageModuleId, moduleActionId) {
+            var getUrl = '/page/editmodule/' + pageModuleId + '/' + moduleActionId;
+
+            var request = $http({
+                method: 'GET',
+                url: getUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
     }
 
     function pageModuleService($http, $q, globals) {

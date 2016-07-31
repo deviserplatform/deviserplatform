@@ -40,5 +40,22 @@ namespace Deviser.WI.Controllers
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [HttpGet("edit/{moduleId}")]
+        public IActionResult GetEditActions(Guid moduleId)
+        {
+            try
+            {
+                var result = moduleProvider.GetEditModuleActions(moduleId);
+                if (result != null)
+                    return Ok(result);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting edit modules actions"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }

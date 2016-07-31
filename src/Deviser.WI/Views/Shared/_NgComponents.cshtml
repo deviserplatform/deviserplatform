@@ -152,6 +152,16 @@
         <button class="btn btn-primary" type="button" ng-click="peVM.save()">Save</button>
         <button class="btn btn-warning" type="button" ng-click="peVM.cancel()">Cancel</button>
     </div>
+</script>
 
-    
+<script type="text/ng-template" id="app/components/editModule.tpl.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Module Edit Title</h3>
+    </div>
+    <div class="modal-body" ng-bind-html="emVM.editView">
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" type="button" ng-click="emVM.cancel()">Close</button>
+    </div>
 </script>

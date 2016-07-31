@@ -14,6 +14,7 @@ namespace Deviser.Core.Data.DataProviders
         List<Module> Get();
         Module Get(Guid moduleId);
         List<ModuleAction> GetModuleActions();
+        List<ModuleAction> GetEditModuleActions(Guid moduleId);
         Module Get(string moduleName);
         Module Create(Module module);
         Module Update(Module module);
@@ -63,6 +64,27 @@ namespace Deviser.Core.Data.DataProviders
                     IEnumerable<ModuleAction> returnData = context.ModuleAction
                         .Include(ma => ma.Module)//.ThenInclude(ma=>ma.ModuleActionType)
                         .Where(m => m.ModuleActionType.ControlType.ToLower() == "view") //Selecting View Actions Only
+                        .ToList();
+
+                    return new List<ModuleAction>(returnData);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting ModuleActions", ex);
+            }
+            return null;
+        }
+
+        public List<ModuleAction> GetEditModuleActions(Guid moduleId)
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    IEnumerable<ModuleAction> returnData = context.ModuleAction
+                        .Include(ma => ma.Module)//.ThenInclude(ma=>ma.ModuleActionType)
+                        .Where(m => m.ModuleId== moduleId && m.ModuleActionType.ControlType.ToLower() == "edit") //Selecting View Actions Only
                         .ToList();
 
                     return new List<ModuleAction>(returnData);

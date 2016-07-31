@@ -1,11 +1,16 @@
-﻿(function () {
+﻿var sdFormHelper = (function () {
 
-    /*Event bindings*/
-    $("form.sd-form").on("submit", formSubmit);
-    $("a.sd-ajax-load").on("click", ajaxAnchorClick)
+    init();
 
     //////////////////////////////////
     /*Function declarations only*/
+    function init() {
+        /*Event bindings*/
+        $("form.sd-form").on("submit", formSubmit);
+        $("a.sd-ajax-load").on("click", ajaxAnchorClick)
+    }
+
+
     function formSubmit(event) {
         event.preventDefault();
         var $form = $(this),
@@ -75,4 +80,9 @@
         });
 
     }
+
+    return {
+        init:init
+    }
+
 })();

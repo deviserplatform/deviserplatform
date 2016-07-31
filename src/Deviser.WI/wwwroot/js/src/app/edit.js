@@ -18,6 +18,8 @@
     app.controller('EditContentCtrl', ['$scope', '$uibModalInstance', '$q', 'sdUtil', 'languageService',
         'pageContentService', 'contentTranslationService', 'contentInfo', editContentCtrl]);
 
+    app.controller('EditModuleCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', '$sce', 'sdUtil', 'globals', 'moduleActionService', 'moduleInfo', editModuleCtrl]);
+
     app.controller('ModulePermissionCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', 'sdUtil', 'globals', 'roleService', 'pageModuleService',
         'pageModule', modulePermissionCtrl]);
 
@@ -47,6 +49,8 @@
         vm.selectItem = selectItem;
         vm.copyElement = copyElement;
         vm.editContent = editContent;
+        vm.editModule = editModule;
+        vm.openModuleActionEdit = openModuleActionEdit;
         vm.changeModulePermission = changeModulePermission;
         vm.saveProperties = saveProperties;
 
@@ -131,6 +135,47 @@
                 resolve: {
                     contentInfo: function () {
                         var returnObject = content;
+                        return returnObject;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selectedItem) {
+                //$log.info('Modal Oked at: ' + new Date());
+                defer.resolve('data received!');
+            }, function () {
+                //$log.info('Modal dismissed at: ' + new Date());
+                defer.reject(SYS_ERROR_MSG);
+            });
+            return defer.promise;
+        }
+
+        function editModule(item) {
+            vm.selectedItem = item;
+            var pageModule = item.pageModule;
+            moduleActionService.getEditActions(pageModule.module.id).then(function (editActions) {
+                vm.selectedItem.pageModule.editActions = editActions;
+            }, function (response) {
+                console.log(response);
+                showMessage("error", SYS_ERROR_MSG);
+            });
+        }
+
+        function openModuleActionEdit(moduleAction) {
+            var defer = $q.defer();
+            var modalInstance = $uibModal.open({
+                animation: true,
+                size: 'lg',
+                openedClass: 'edit-content-modal',
+                backdrop: 'static',
+                templateUrl: 'app/components/editModule.tpl.html',
+                controller: 'EditModuleCtrl as emVM',
+                resolve: {
+                    moduleInfo: function () {
+                        var returnObject = {
+                            moduleActionId: moduleAction.id,
+                            pageModuleId: vm.selectedItem.pageModule.id
+                        };
                         return returnObject;
                     }
                 }
@@ -820,6 +865,37 @@
         }
 
     };
+
+    function editModuleCtrl($scope, $timeout, $uibModalInstance, $q, $sce, sdUtil, globals, moduleActionService, moduleInfo) {
+        var vm = this;
+        vm.pageModuleId = moduleInfo.pageModuleId;
+        vm.moduleActionId = moduleInfo.moduleActionId;
+
+        vm.cancel = cancel;
+
+        init();
+
+        /////////////////////////////////////////////
+        /*Function declarations only*/
+        function init() {
+            getModuleActionContent();
+        }
+
+        //Event handlers 
+        function cancel() {
+            $uibModalInstance.dismiss('cancel');
+        }
+
+        function getModuleActionContent() {
+            moduleActionService.getEditActionView(vm.pageModuleId, vm.moduleActionId).then(function (response) {
+                console.log(response);
+                vm.editView = $sce.trustAsHtml(response);
+                setTimeout(sdFormHelper.init, 300);
+            }, function (response) {
+                console.log(response);
+            });
+        }
+    }
 
     function modulePermissionCtrl($scope, $timeout, $uibModalInstance, $q, sdUtil, globals, roleService, pageModuleService, pageModule) {
         var vm = this;

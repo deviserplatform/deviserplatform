@@ -1,0 +1,33 @@
+﻿@model Deviser.Modules.Security.Models.TestViewModel
+
+<h1>Module Edit view</h1>
+
+<form sd-module="Security" sd-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="sd-form form-horizontal">
+    
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Field1" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Field1" class="form-control" />
+            <span asp-validation-for="Field1" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Field2" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Field2" class="form-control" />
+            <span asp-validation-for="Field2" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-default">Submit</button>
+        </div>
+    </div>    
+</form>
+
+<div>
+    @ViewBag.Result
+</div>
