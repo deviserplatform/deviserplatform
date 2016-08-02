@@ -6,8 +6,8 @@
     /*Function declarations only*/
     function init() {
         /*Event bindings*/
-        $("form.sd-form").on("submit", formSubmit);
-        $("a.sd-ajax-load").on("click", ajaxAnchorClick)
+        $("body").on("submit", "form.sd-form", formSubmit);
+        $("body").on("click", "a.sd-ajax-load", ajaxAnchorClick)
     }
 
 

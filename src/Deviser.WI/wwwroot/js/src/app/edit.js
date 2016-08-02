@@ -890,7 +890,6 @@
             moduleActionService.getEditActionView(vm.pageModuleId, vm.moduleActionId).then(function (response) {
                 console.log(response);
                 vm.editView = $sce.trustAsHtml(response);
-                setTimeout(sdFormHelper.init, 300);
             }, function (response) {
                 console.log(response);
             });
