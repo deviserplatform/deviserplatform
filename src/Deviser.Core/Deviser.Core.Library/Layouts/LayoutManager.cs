@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using Autofac;
 using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Common.DomainTypes;
+using PageModule = Deviser.Core.Data.Entities.PageModule;
 
 namespace Deviser.Core.Library.Layouts
 {

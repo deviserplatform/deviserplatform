@@ -23,6 +23,9 @@
     app.controller('ModulePermissionCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', 'sdUtil', 'globals', 'roleService', 'pageModuleService',
         'pageModule', modulePermissionCtrl]);
 
+    app.controller('ContentPermissionCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', 'sdUtil', 'globals', 'roleService', 'pageContentService',
+        'pageContent', contentPermissionCtrl]);
+
     ////////////////////////////////
     /*Function declarations only*/
     function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, sdUtil, layoutService, pageService,
@@ -52,6 +55,7 @@
         vm.editModule = editModule;
         vm.openModuleActionEdit = openModuleActionEdit;
         vm.changeModulePermission = changeModulePermission;
+        vm.changeContentPermission = changeContentPermission;
         vm.saveProperties = saveProperties;
 
         init();
@@ -94,7 +98,7 @@
                 //Update element only when new item has been added
                 updateElements(parentScope.item);
             }
-            
+
         }
 
         function dropCallback(event, index, item) {
@@ -152,8 +156,18 @@
 
         function editModule(item) {
             vm.selectedItem = item;
-            var pageModule = item.pageModule;
-            moduleActionService.getEditActions(pageModule.module.id).then(function (editActions) {
+            var moduleId;
+            if (item.pageModule) {
+                moduleId = item.pageModule.module.id
+            }
+            else {
+                moduleId = item.moduleAction.module.id;
+            }
+            
+            moduleActionService.getEditActions(moduleId).then(function (editActions) {
+                if (!vm.selectedItem.pageModule) {
+                    vm.selectedItem.pageModule = {};
+                }
                 vm.selectedItem.pageModule.editActions = editActions;
             }, function (response) {
                 console.log(response);
@@ -162,7 +176,7 @@
         }
 
         function openModuleActionEdit(moduleAction) {
-            var defer = $q.defer();
+            var defer = $q.defer();            
             var modalInstance = $uibModal.open({
                 animation: true,
                 size: 'lg',
@@ -174,7 +188,7 @@
                     moduleInfo: function () {
                         var returnObject = {
                             moduleActionId: moduleAction.id,
-                            pageModuleId: vm.selectedItem.pageModule.id
+                            pageModuleId: vm.selectedItem.id
                         };
                         return returnObject;
                     }
@@ -217,13 +231,39 @@
             return defer.promise;
         }
 
+        function changeContentPermission(pageContent) {
+            var defer = $q.defer();
+            var modalInstance = $uibModal.open({
+                animation: true,
+                size: 'lg',
+                backdrop: 'static',
+                templateUrl: 'app/components/permissionEditor.tpl.html',
+                controller: 'ContentPermissionCtrl as peVM',
+                resolve: {
+                    pageContent: function () {
+                        var returnObject = pageContent;
+                        return returnObject;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selectedItem) {
+                //$log.info('Modal Oked at: ' + new Date());
+                defer.resolve('data received!');
+            }, function () {
+                //$log.info('Modal dismissed at: ' + new Date());
+                defer.reject(SYS_ERROR_MSG);
+            });
+            return defer.promise;
+        }
+
         function saveProperties() {
             //It Saves content with properties
             if (vm.selectedItem.layoutTemplate === "content") {
 
                 //Prepare content to update
                 var pageContent = {};//vm.selectedItem.pageContent;
-                
+
                 var properties = [];
                 _.forEach(vm.selectedItem.properties, function (srcProp) {
                     if (srcProp) {
@@ -244,7 +284,7 @@
                 pageContent.sortOrder = vm.selectedItem.sortOrder;
 
                 pageContentService.put(pageContent).then(function (response) {
-                    console.log(response);                    
+                    console.log(response);
                 }, function (response) {
                     console.log(response);
                 });
@@ -324,7 +364,7 @@
                 _.forEach(moduleActions, function (moduleAction) {
                     vm.modules.push({
                         layoutTemplate: "module",
-                        type: "module",                        
+                        type: "module",
                         moduleAction: moduleAction
                     });
                 });
@@ -536,7 +576,7 @@
                 }
                 else {
                     //New page content
-                    
+
                     pageContent.id = vm.newGuid(); //Id shoud be generated only on client side
                     pageContent.pageId = pageContext.currentPageId;
                     pageContent.contentTypeId = item.element.contentType.id;
@@ -629,7 +669,7 @@
             else {
                 defer.reject(SYS_ERROR_MSG);
             }
-            
+
             return defer.promise;
         }
 
@@ -910,8 +950,6 @@
 
         }
 
-
-
         /*Event handler bindings*/
         vm.isView = isView;
         vm.isEdit = isEdit;
@@ -991,7 +1029,13 @@
         }
 
         function save() {
-            pageModuleService.put(vm.pageModule).then(function (data) {
+            vm.pageModule.inheritViewPermissions = vm.inheritViewPermissions;
+            var pageModule = {
+                id: vm.pageModule.id,
+                inheritViewPermissions: vm.inheritViewPermissions,
+                modulePermissions: vm.pageModule.modulePermissions
+            }
+            pageModuleService.putPermission(pageModule).then(function (data) {
                 console.log(data);
                 $uibModalInstance.dismiss('cancel'); //Everything ok, close the modal dialog
             }, function (error) {
@@ -1006,7 +1050,7 @@
         /*Private functions*/
         function getRoles() {
             roleService.get().then(function (roles) {
-                vm.roles = roles;                
+                vm.roles = roles;
             }, function (error) {
                 showMessage("error", "Cannot get all roles, please contact administrator");
             });
@@ -1015,6 +1059,151 @@
         function getPageModule() {
             pageModuleService.get(pageModuleInfo.id).then(function (pageModule) {
                 vm.pageModule = pageModule;
+                vm.inheritViewPermissions = vm.pageModule.inheritViewPermissions;
+            }, function (error) {
+                showMessage("error", "Cannot get all roles, please contact administrator");
+            });
+        }
+
+        function showMessage(messageType, messageContent) {
+            vm.message = {
+                messageType: messageType,
+                content: messageContent
+            }
+
+            $timeout(function () {
+                vm.message = {
+                    messageType: "",
+                    content: ""
+                };
+            }, globals.appSettings.alertLifeTime);
+        }
+    }
+
+    function contentPermissionCtrl($scope, $timeout, $uibModalInstance, $q, sdUtil, globals, roleService, pageContentService, pageContent) {
+        var vm = this;
+        var contentViewPermissionId = globals.appSettings.permissions.contentView;
+        var contentEditPermissionId = globals.appSettings.permissions.contentEdit;
+        var administratorRoleId = globals.appSettings.roles.administrator;
+        var pageContentInfo = pageContent; //In order to re-use permission template for both module and content
+
+        vm.label = {
+            title: 'Content Permission',
+            tableRowTitleView: 'View Content',
+            tableRowTitleEdit: 'Edit Content'
+
+        }
+
+        /*Event handler bindings*/
+        vm.isView = isView;
+        vm.isEdit = isEdit;
+        vm.changeViewPermission = changeViewPermission;
+        vm.changeEditPermission = changeEditPermission;
+        vm.save = save;
+        vm.cancel = cancel;
+
+        init();
+
+        /////////////////////////////////////////////
+        /*Function declarations only*/
+        function init() {
+            getRoles();
+            getPageContent();
+        }
+
+        //Event handlers
+        function isView(role) {
+            if (vm.pageContent) {
+                var permission = _.find(vm.pageContent.contentPermissions, function (p) {
+                    return p.roleId === role.id && p.permissionId === contentViewPermissionId
+                });
+                return permission;
+            }
+            return false;
+        }
+
+        function isEdit(role) {
+            if (vm.pageContent) {
+                var permission = _.find(vm.pageContent.contentPermissions, function (p) {
+                    return p.roleId === role.id && p.permissionId === contentEditPermissionId;
+                });
+                return permission;
+            }
+            return false;
+        }
+
+        function changeViewPermission(role) {
+            if (role.id !== administratorRoleId) {
+                if (isView(role)) {
+                    //Remove
+                    vm.pageContent.contentPermissions = _.reject(vm.pageContent.contentPermissions, function (p) {
+                        return p.roleId === role.id && p.permissionId === contentViewPermissionId
+                    })
+                }
+                else {
+                    //Add
+                    var permission = {
+                        pageContentId: vm.pageContent.id,
+                        roleId: role.id,
+                        permissionId: contentViewPermissionId
+                    };
+                    vm.pageContent.contentPermissions.push(permission);
+                }
+            }
+        }
+
+        function changeEditPermission(role) {
+            if (role.id !== administratorRoleId) {
+                if (isEdit(role)) {
+                    //Remove
+                    vm.pageContent.contentPermissions = _.reject(vm.pageContent.contentPermissions, function (p) {
+                        return p.roleId === role.id && p.permissionId === contentEditPermissionId
+                    })
+                }
+                else {
+                    //Add
+                    var permission = {
+                        pageContentId: vm.pageContent.id,
+                        roleId: role.id,
+                        permissionId: contentEditPermissionId
+                    };
+                    vm.pageContent.contentPermissions.push(permission);
+                }
+            }
+        }
+
+        function save() {
+            vm.pageContent.inheritViewPermissions = vm.inheritViewPermissions;
+            var pageContent = {
+                id: vm.pageContent.id,
+                inheritViewPermissions: vm.inheritViewPermissions,
+                contentPermissions: vm.pageContent.contentPermissions
+            }
+            pageContentService.putPermission(pageContent).then(function (data) {
+                console.log(data);
+                $uibModalInstance.dismiss('cancel'); //Everything ok, close the modal dialog
+            }, function (error) {
+                showMessage("error", SYS_ERROR_MSG);
+            });
+        }
+
+        function cancel() {
+            $uibModalInstance.dismiss('cancel');
+        }
+
+        /*Private functions*/
+        function getRoles() {
+            roleService.get().then(function (roles) {
+                vm.roles = roles;
+            }, function (error) {
+                showMessage("error", "Cannot get all roles, please contact administrator");
+            });
+        }
+
+        function getPageContent() {
+            pageContentService.get(pageContentInfo.id).then(function (pageContent) {
+                vm.pageContent = pageContent;
+                vm.inheritViewPermissions = vm.pageContent.inheritViewPermissions;
             }, function (error) {
                 showMessage("error", "Cannot get all roles, please contact administrator");
             });

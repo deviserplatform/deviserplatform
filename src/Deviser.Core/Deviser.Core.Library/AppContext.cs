@@ -18,6 +18,10 @@ namespace Deviser.Core.Library
 
         public string CurrentLink { get; set; }
 
+        public bool HasPageViewPermission { get; set; }
+
+        public bool HasPageEditPermission { get; set; }
+
         [JsonIgnore]
         public CultureInfo CurrentCulture
         {

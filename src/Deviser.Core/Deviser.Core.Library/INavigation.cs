@@ -2,7 +2,8 @@
 using Deviser.Core.Data.Entities;
 using System.Collections.Generic;
 using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Common.DomainTypes;
+
+using Page = Deviser.Core.Data.Entities.Page;
 
 namespace Deviser.Core.Library
 {

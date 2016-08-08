@@ -25,6 +25,7 @@ namespace Deviser.Core.Data.DataProviders
         PageModule CreatePageModule(PageModule pageModule);
         PageModule UpdatePageModule(PageModule pageModule);
         void UpdatePageModules(List<PageModule> pageModules);
+        void UpdateModulePermission(PageModule pageModule);
         List<PagePermission> AddPagePermissions(List<PagePermission> pagePermissions);
         List<ModulePermission> AddModulePermissions(List<ModulePermission> modulePermissions);
 
@@ -144,8 +145,10 @@ namespace Deviser.Core.Data.DataProviders
                                .Include(p => p.Layout)
                                .Include(p => p.PageContent).ThenInclude(pc => pc.PageContentTranslation)
                                .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType).ThenInclude(ct => ct.ContentDataType)
-                               .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType).ThenInclude(ct=> ct.ContentTypeProperties).ThenInclude(ctp=>ctp.Property).ThenInclude(p=>p.PropertyOptionList)
+                               .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType).ThenInclude(ct => ct.ContentTypeProperties).ThenInclude(ctp => ctp.Property).ThenInclude(p => p.PropertyOptionList)
+                               .Include(p => p.PageContent).ThenInclude(pc => pc.ContentPermissions)
                                .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
+                               .Include(p => p.PageModule).ThenInclude(pm => pm.ModulePermissions)
                                .OrderBy(p => p.Id)
                                .FirstOrDefault();
 
@@ -216,7 +219,7 @@ namespace Deviser.Core.Data.DataProviders
                             context.PageTranslation.Add(translation);
                         }
                     }
-                    
+
                     if (page.PagePermissions != null && page.PagePermissions.Count > 0)
                     {
                         //Filter deleted permissions in UI and delete all of them
@@ -380,7 +383,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     PageModule returnData = context.PageModule
-                        .Include(pm=>pm.ModulePermissions)
+                        .Include(pm => pm.ModulePermissions)
                         .Where(e => e.Id == pageModuleId && !e.IsDeleted)
                         .OrderBy(p => p.Id)
                         .FirstOrDefault();
@@ -443,9 +446,6 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     PageModule resultPageModule;
                     resultPageModule = context.PageModule.Update(pageModule).Entity;
-
-                    UpdateModulePermission(pageModule, context);
-
                     context.SaveChanges();
                     return resultPageModule;
                 }
@@ -456,7 +456,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-        
+
         public void UpdatePageModules(List<PageModule> pageModules)
         {
             try
@@ -495,7 +495,7 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 using (var context = new DeviserDBContext(dbOptions))
-                {                    
+                {
                     if (pagePermissions != null && pagePermissions.Count > 0)
                     {
                         //Filter new permissions which are not in db and add all of them
@@ -567,30 +567,50 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
-        private void UpdateModulePermission(PageModule pageModule, DeviserDBContext context)
+        public void UpdateModulePermission(PageModule pageModule)
         {
             if (pageModule.ModulePermissions != null && pageModule.ModulePermissions.Count > 0)
             {
-                //Filter deleted permissions in UI and delete all of them
-                var toDelete = context.ModulePermission.Where(dbPermission => dbPermission.PageModuleId == pageModule.Id &&
-                !pageModule.ModulePermissions.Any(modulePermission => modulePermission.PermissionId == dbPermission.PermissionId && modulePermission.RoleId == dbPermission.RoleId)).ToList();
-                if (toDelete != null && toDelete.Count > 0)
-                    context.ModulePermission.RemoveRange(toDelete);
+                //Assuming all permissions have same pageModuleId
+                var pageModuleId = pageModule.Id;
+                var modulePermissions = pageModule.ModulePermissions;
 
-                //Filter new permissions which are not in db and add all of them
-                var toAdd = pageModule.ModulePermissions.Where(modulePermission => !context.ModulePermission.Any(dbPermission =>
-                dbPermission.PermissionId == modulePermission.PermissionId &&
-                dbPermission.PageModuleId == modulePermission.PageModuleId &&
-                dbPermission.RoleId == modulePermission.RoleId)).ToList();
-                if (toAdd != null && toAdd.Count > 0)
+                try
                 {
-                    foreach (var permission in toAdd)
+                    using (var context = new DeviserDBContext(dbOptions))
                     {
-                        //permission.Page = null;
-                        if (permission.Id == Guid.Empty)
-                            permission.Id = Guid.NewGuid();
-                        context.ModulePermission.Add(permission);
+                        //Update InheritViewPermissions only
+                        var dbPageContent = context.PageModule.First(pc => pc.Id == pageModuleId);
+                        dbPageContent.InheritViewPermissions = pageModule.InheritViewPermissions;
+
+                        //Filter deleted permissions in UI and delete all of them
+                        var toDelete = context.ModulePermission.Where(dbPermission => dbPermission.PageModuleId == pageModuleId &&
+                        !modulePermissions.Any(modulePermission => modulePermission.PermissionId == dbPermission.PermissionId && modulePermission.RoleId == dbPermission.RoleId)).ToList();
+                        if (toDelete != null && toDelete.Count > 0)
+                            context.ModulePermission.RemoveRange(toDelete);
+
+                        //Filter new permissions which are not in db and add all of them
+                        var toAdd = modulePermissions.Where(modulePermission => !context.ModulePermission.Any(dbPermission =>
+                        dbPermission.PermissionId == modulePermission.PermissionId &&
+                        dbPermission.PageModuleId == modulePermission.PageModuleId &&
+                        dbPermission.RoleId == modulePermission.RoleId)).ToList();
+                        if (toAdd != null && toAdd.Count > 0)
+                        {
+                            foreach (var permission in toAdd)
+                            {
+                                //permission.Page = null;
+                                if (permission.Id == Guid.Empty)
+                                    permission.Id = Guid.NewGuid();
+                                context.ModulePermission.Add(permission);
+                            }
+                        }
+
+                        context.SaveChanges();
                     }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError("Error occured while updating module persmissions", ex);
                 }
             }
         }

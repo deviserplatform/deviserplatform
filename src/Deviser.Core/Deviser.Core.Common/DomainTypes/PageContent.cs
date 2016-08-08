@@ -19,7 +19,9 @@ namespace Deviser.Core.Common.DomainTypes
         public Guid ContentTypeId { get; set; }
         public virtual Deviser.Core.Data.Entities.Page Page { get; set; }
         public virtual ContentType ContentType { get; set; }
+        public bool InheritViewPermissions { get; set; }
         public virtual ICollection<Deviser.Core.Data.Entities.PageContentTranslation> PageContentTranslation { get; set; }
+        public virtual ICollection<Deviser.Core.Data.Entities.ContentPermission> ContentPermissions { get; set; }
 
         public Property GetProperty(string propertyName)
         {

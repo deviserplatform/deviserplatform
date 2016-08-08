@@ -12,3 +12,4 @@ namespace Deviser.Core.Common.DomainTypes
         public string Label { get; set; }
     }
 }
+    

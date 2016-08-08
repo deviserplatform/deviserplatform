@@ -57,7 +57,8 @@
     "Deviser.Modules.ContentManagement": "1.0.0-*",
     "Serilog.Extensions.Logging": "1.0.0",
     "Serilog.Sinks.Literate": "2.0.0",
-    "Serilog.Sinks.RollingFile": "2.0.0"
+    "Serilog.Sinks.RollingFile": "2.0.0",
+    "Deviser.Modules.ModuleManagement": "1.0.0-*"
   },
 
   "tools": {

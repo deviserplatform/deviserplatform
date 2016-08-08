@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 using Deviser.Core.Common.DomainTypes;
 using ContentResult = Deviser.Core.Common.DomainTypes.ContentResult;
 using Module = Deviser.Core.Data.Entities.Module;
+using PageModule = Deviser.Core.Data.Entities.PageModule;
+using ModuleAction = Deviser.Core.Data.Entities.ModuleAction;
+using Deviser.Core.Library.Services;
 
 namespace Deviser.Core.Library.Controllers
 {
@@ -24,14 +27,16 @@ namespace Deviser.Core.Library.Controllers
         private IModuleProvider moduleProvider;
         private IActionSelector actionSelector;
         private IModuleInvokerProvider moduleInvokerProvider;
+        private IScopeService scopeService;
 
-        public DeviserControllerFactory(ILifetimeScope container)
+        public DeviserControllerFactory(ILifetimeScope container, IScopeService scopeService)
         {
             logger = container.Resolve<ILogger<DeviserControllerFactory>>();
             actionSelector = container.Resolve<IActionSelector>();
             moduleInvokerProvider = container.Resolve<IModuleInvokerProvider>();
             pageProvider = container.Resolve<IPageProvider>();
             moduleProvider = container.Resolve<IModuleProvider>();
+            this.scopeService = scopeService;
         }
 
         /// <summary>
@@ -42,7 +47,7 @@ namespace Deviser.Core.Library.Controllers
         public async Task<Dictionary<string, List<ContentResult>>> GetPageModuleResults(ActionContext actionContext, Guid pageId)
         {
             Dictionary<string, List<ContentResult>> actionResults = new Dictionary<string, List<ContentResult>>();
-            Page currentPage = pageProvider.GetPage(pageId);
+            Page currentPage = scopeService.PageContext.CurrentPage;
             if (currentPage.PageModule != null && currentPage.PageModule.Count > 0)
             {
                 currentPage.PageModule = currentPage.PageModule.Where(pm => !pm.IsDeleted).ToList();
@@ -95,16 +100,15 @@ namespace Deviser.Core.Library.Controllers
             return actionResults;
         }
 
-        public async Task<string> GetModuleEditResult(ActionContext actionContext, Guid pageModuleId, Guid moduleActionid)
+        public async Task<string> GetModuleEditResult(ActionContext actionContext, PageModule pageModule, Guid moduleEditActionId)
         {
             string actionResult = string.Empty;
             try
-            {
-                var pageModule = pageProvider.GetPageModule(pageModuleId);
+            {                   
                 var module = moduleProvider.Get(pageModule.ModuleId);
-                ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == moduleActionid);
+                ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleActionType
                 ModuleContext moduleContext = new ModuleContext();
-                moduleContext.ModuleInfo = module;
+                moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleActionType
                 moduleContext.PageModuleId = pageModule.Id;
                 if (module != null && moduleAction != null)
                 {

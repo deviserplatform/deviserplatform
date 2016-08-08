@@ -13,10 +13,12 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
-using PageContent = Deviser.Core.Common.DomainTypes.PageContent;
 using AutoMapper;
 using Deviser.Core.Library.Services;
 using System.Globalization;
+
+using PageContent = Deviser.Core.Common.DomainTypes.PageContent;
+using Page = Deviser.Core.Data.Entities.Page;
 
 namespace Deviser.Core.Library.TagHelpers
 {

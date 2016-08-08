@@ -1,8 +1,7 @@
 ﻿using Autofac;
 using AutoMapper;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
-
+using Deviser.Core.Common.DomainTypes;
 using DeviserWI.Controllers.API;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Deviser.Core.Library;
+using Deviser.Core.Data.Entities;
 
 namespace Deviser.WI.Controllers.Api
 {
@@ -41,7 +41,7 @@ namespace Deviser.WI.Controllers.Api
                 var users = userProvider.GetUsers();
                 if (users != null)
                 {
-                    List<Core.Common.DomainTypes.User> result = Mapper.Map<List<Core.Common.DomainTypes.User>>(users);
+                    List<Deviser.Core.Common.DomainTypes.User> result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.User>>(users);
                     //Roles workarround
                     foreach(var user in users)
                     {
@@ -54,7 +54,7 @@ namespace Deviser.WI.Controllers.Api
                                 if (userRole != null)
                                 {
                                     var role = roleProvider.GetRole(userRole.RoleId);
-                                    targetUser.Roles.Add(role);
+                                    targetUser.Roles.Add(Mapper.Map<Role>(role));
                                 }
                             }
                             
@@ -77,9 +77,8 @@ namespace Deviser.WI.Controllers.Api
             try
             {
                 if(userDTO!=null)
-                {
-                    var user = new Core.Data.Entities.User();
-                    Mapper.Map(userDTO, user, typeof(Core.Common.DomainTypes.User), typeof(Core.Data.Entities.User));
+                {   
+                    var user = Mapper.Map<Core.Data.Entities.User>(userDTO);
                     user.Id = Guid.NewGuid();
                     user.UserName = userDTO.Email;
                     var result = await userManager.CreateAsync(user, userDTO.Password);
@@ -111,8 +110,7 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var user = userManager.Users.FirstOrDefault(u => u.Id == userDTO.Id);
-                Mapper.Map(userDTO, user, typeof(Core.Common.DomainTypes.User), typeof(Core.Data.Entities.User));
+                var user = Mapper.Map<Core.Data.Entities.User>(userDTO);
                 var result = userManager.UpdateAsync(user).Result;
                 if (result != null)
                     return Ok(result);
@@ -260,7 +258,7 @@ namespace Deviser.WI.Controllers.Api
                     if (userRole != null)
                     {
                         var role = roleProvider.GetRole(userRole.RoleId);
-                        userDTO.Roles.Add(role);
+                        userDTO.Roles.Add(Mapper.Map<Role>(role));
                     }
 
                 }

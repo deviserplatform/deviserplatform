@@ -12,10 +12,10 @@ namespace Deviser.Core.Library.Sites
 {
     public class PageManager : IPageManager
     {
-        private ILifetimeScope container;
-        private IPageProvider pageProvider;
-        private IHttpContextAccessor httpContextAccessor;
-        private IRoleProvider roleProvider;
+        protected ILifetimeScope container;
+        protected IPageProvider pageProvider;
+        protected IHttpContextAccessor httpContextAccessor;
+        protected IRoleProvider roleProvider;
 
         public PageManager(ILifetimeScope container)
         {
@@ -25,7 +25,7 @@ namespace Deviser.Core.Library.Sites
             httpContextAccessor = container.Resolve<IHttpContextAccessor>();
         }
 
-        private bool IsUserAuthenticated
+        protected bool IsUserAuthenticated
         {
             get
             {
@@ -33,7 +33,7 @@ namespace Deviser.Core.Library.Sites
             }
         }
 
-        private string CurrentUserName
+        protected string CurrentUserName
         {
             get
             {
@@ -41,7 +41,7 @@ namespace Deviser.Core.Library.Sites
             }
         }
 
-        private List<Role> CurrentUserRoles
+        protected List<Role> CurrentUserRoles
         {
             get
             {
@@ -64,11 +64,21 @@ namespace Deviser.Core.Library.Sites
             return resultPage;
         }
         
-        public bool IsPageAccessible(Page page)
+        public bool HasViewPermission(Page page)
         {
             if (page != null && page.PagePermissions != null)
             {
                 return (page.PagePermissions.Any(pagePermission => pagePermission.PermissionId == Globals.PageViewPermissionId &&
+               (pagePermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == pagePermission.RoleId)))));
+            }
+            return false;
+        }
+
+        public bool HasEditPermission(Page page)
+        {
+            if (page != null && page.PagePermissions != null)
+            {
+                return (page.PagePermissions.Any(pagePermission => pagePermission.PermissionId == Globals.PageEditPermissionId &&
                (pagePermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == pagePermission.RoleId)))));
             }
             return false;

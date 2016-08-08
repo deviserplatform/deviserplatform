@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Deviser.Core.Library.Modules;
 
 namespace Deviser.WI.Controllers
 {
@@ -24,12 +25,14 @@ namespace Deviser.WI.Controllers
         public ActionContext Context { get; set; }
 
 
-        ILifetimeScope container;
-        IPageProvider pageProvider;
-        IPageManager pageManager;
-        IDeviserControllerFactory deviserControllerFactory;
-        ISiteBootstrapper siteBootstrapper;
-        IScopeService scopeService;
+        private ILifetimeScope container;
+        private IPageProvider pageProvider;
+        private IPageManager pageManager;
+        private IDeviserControllerFactory deviserControllerFactory;
+        private ISiteBootstrapper siteBootstrapper;
+        private IScopeService scopeService;
+        private IContentManager contentManager;
+        private IModuleManager moduleManager;
 
         public PageController(ILifetimeScope container, IScopeService scopeService)
         {
@@ -39,18 +42,20 @@ namespace Deviser.WI.Controllers
             pageManager = container.Resolve<IPageManager>();
             deviserControllerFactory = container.Resolve<IDeviserControllerFactory>();
             siteBootstrapper = container.Resolve<ISiteBootstrapper>();
+            contentManager = container.Resolve<IContentManager>();
+            moduleManager = container.Resolve<IModuleManager>();
             this.scopeService = scopeService;
             siteBootstrapper.InitializeSite();
         }
 
         public async Task<IActionResult> Index(string permalink)
-        {            
+        {
             try
             {
                 Page currentPage = GetPageModules(permalink);
                 if (currentPage != null)
                 {
-                    if (pageManager.IsPageAccessible(currentPage))
+                    if (scopeService.PageContext.HasPageViewPermission)
                     {
                         Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(Context, currentPage.Id);
                         ViewBag.ModuleActionResults = moduleActionResults;
@@ -72,7 +77,7 @@ namespace Deviser.WI.Controllers
 
         public IActionResult Layout(string permalink)
         {
-            Page currentPage = GetPageModules(permalink);            
+            Page currentPage = GetPageModules(permalink);
             if (scopeService.PageContext != null)
             {
                 ViewBag.Skin = Globals.AdminSkin;
@@ -85,13 +90,21 @@ namespace Deviser.WI.Controllers
         public IActionResult Edit(string permalink)
         {
             Page currentPage = GetPageModules(permalink);
-            if (scopeService.PageContext != null)
+            if (currentPage != null && scopeService.PageContext != null)
             {
-                ViewBag.Skin = Globals.AdminSkin;
-                RouteData.Values.Add("permalink", permalink);
-                return View(scopeService.PageContext.CurrentPage);
+                if (scopeService.PageContext.HasPageEditPermission)
+                {
+                    ViewBag.Skin = Globals.AdminSkin;
+                    RouteData.Values.Add("permalink", permalink);
+                    return View(scopeService.PageContext.CurrentPage);
+                }
+                else
+                {
+                    return View("UnAuthorized");
+                }
+
             }
-            return null;
+            return View("NotFound");
         }
 
         [HttpGet]
@@ -102,9 +115,21 @@ namespace Deviser.WI.Controllers
             {
                 try
                 {
-                    object result = deviserControllerFactory.GetModuleEditResult(Context, pageModuleId, moduleActionId).Result;
-                    ViewBag.result = result;
-                    return View(result);
+                    var pageModule = pageProvider.GetPageModule(pageModuleId); //It referes PageModule's View ModuleActionType
+
+                    if (pageModule == null)
+                        return NotFound();
+
+                    if (moduleManager.HasEditPermission(pageModule))
+                    {
+                        object result = deviserControllerFactory.GetModuleEditResult(Context, pageModule, moduleActionId).Result;
+                        ViewBag.result = result;
+                        return View(result);
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -127,7 +152,7 @@ namespace Deviser.WI.Controllers
             {
                 permalink = Globals.HomePageUrl;
                 currentPage = Globals.HomePage;
-            }   
+            }
             else
             {
                 string requestCulture = (RouteData.Values["culture"] != null) ? RouteData.Values["culture"].ToString() : CurrentCulture.ToString().ToLower();
@@ -135,15 +160,31 @@ namespace Deviser.WI.Controllers
                 currentPage = pageManager.GetPageByUrl(permalink, CurrentCulture.ToString());
             }
 
-            
+
             PageContext pageContext = new PageContext();
             if (currentPage != null)
             {
+
+                if (currentPage.PageContent != null && currentPage.PageContent.Count > 0)
+                {
+                    //Filter pageContents where current user has view permissions
+                    var filteredPageContents = currentPage.PageContent.Where(pc => contentManager.HasViewPermission(pc)).ToList();
+                    currentPage.PageContent = filteredPageContents;
+                }
+
+                if (currentPage.PageModule != null && currentPage.PageModule.Count > 0)
+                {
+                    //Filter pageContents where current user has view permissions
+                    var filteredPageModules = currentPage.PageModule.Where(pm => moduleManager.HasViewPermission(pm)).ToList();
+                    currentPage.PageModule = filteredPageModules;
+                }
+
                 pageContext.CurrentPageId = currentPage.Id;
                 pageContext.CurrentLink = permalink;
-                currentPage.PageModule = null;
                 pageContext.CurrentPage = currentPage;
-                
+                pageContext.HasPageViewPermission = pageManager.HasViewPermission(currentPage);
+                pageContext.HasPageEditPermission = pageManager.HasEditPermission(currentPage);
+
                 //Skins are not used for sometime period
                 string skin = "";
                 if (!string.IsNullOrEmpty(currentPage.SkinSrc))

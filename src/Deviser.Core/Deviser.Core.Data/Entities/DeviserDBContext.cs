@@ -145,6 +145,8 @@ namespace Deviser.Core.Data.Entities
 
                 entity.Property(e => e.IsDeleted).HasDefaultValue(false);
 
+                entity.Property(e => e.InheritViewPermissions).HasDefaultValue(true);
+
                 entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Page).WithMany(p => p.PageContent).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
@@ -179,6 +181,8 @@ namespace Deviser.Core.Data.Entities
                 entity.HasIndex(e => e.PageId).HasName("IX_FK_PageModule_Module");
 
                 entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+
+                entity.Property(e => e.InheritViewPermissions).HasDefaultValue(true);
 
                 entity.HasOne(d => d.Module).WithMany(p => p.PageModule).HasForeignKey(d => d.ModuleId).OnDelete(DeleteBehavior.Restrict);
 
