@@ -122,22 +122,22 @@
                                     </div>
                                 </div>
                                 <div uib-accordion-group class="panel-default" heading="SMTP Settings">
-                                    <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
+                                    <div class="form-group">
                                         <label class="col-md-3 control-label">SMTP Server and Port</label>
                                         <div class="col-md-6">
-                                            <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.SMTPServerAndPort.settingValue" required />
+                                            <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.SMTPServerAndPort.settingValue"/>
                                         </div>
                                     </div>
-                                    <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
+                                    <div class="form-group">
                                         <label class="col-md-3 control-label">Connection Limit</label>
                                         <div class="col-md-6">
-                                            <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.ConnectionLimit.settingValue" required />
+                                            <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.ConnectionLimit.settingValue"/>
                                         </div>
                                     </div>
-                                    <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
+                                    <div class="form-group">
                                         <label class="col-md-3 control-label">Max Idle Time</label>
                                         <div class="col-md-6">
-                                            <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.MaxIdleTime.settingValue" required />
+                                            <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.MaxIdleTime.settingValue"/>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -152,6 +152,18 @@
                                         <label class="col-md-3 control-label">SMTP Enable SSL</label>
                                         <div class="col-md-6">
                                             <input type="checkbox" ng-model="ssVM.setting.SMTPEnableSSL.settingValue" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-show="ssVM.setting.SMTPAuthentication.settingValue=='Basic'">
+                                        <label class="col-md-3 control-label">SMTP Username</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.SMTPUsername.settingValue"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-show="ssVM.setting.SMTPAuthentication.settingValue=='Basic'">
+                                        <label class="col-md-3 control-label">SMTP Password</label>
+                                        <div class="col-md-6">
+                                            <input type="password" class="form-control" name="SMTPSettings" ng-model="ssVM.setting.SMTPPassword.settingValue"/>
                                         </div>
                                     </div>
                                 </div>

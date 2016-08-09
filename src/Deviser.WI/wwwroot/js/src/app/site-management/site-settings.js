@@ -39,11 +39,10 @@
         }
 
         /*Event handlers*/
-        function updateSiteSettings() {
+        function updateSiteSettings() {            
             var settings = _.values(vm.setting);
             siteSettingService.put(settings).then(function (result) {
                 getSiteSettings();
-                vm.setting.SMTPAuthentication.settingValue = angular.toJson(vm.SMTPAuthentication.settingValue);
                 showMessage("success", "Site Settings has been updated");
             }, function (error) {
                 showMessage("error", "Cannot update site setting please contact administrator");
@@ -60,7 +59,6 @@
             siteSettingService.get().then(function (siteSettings) {
                 vm.siteSettings = siteSettings;     
                 vm.setting = _.keyBy(siteSettings, "settingName");
-                vm.setting.SMTPAuthentication.settingValue = angular.fromJson(vm.SMTPAuthentication.settingValue);
                 vm.setting.SMTPEnableSSL.settingValue = (vm.setting.SMTPEnableSSL.settingValue === "true") ? true : false;
                 vm.setting.EnableDisableRegistration.settingValue = (vm.setting.EnableDisableRegistration.settingValue === "true") ? true : false;
 

@@ -1,4 +1,5 @@
-﻿using MailKit.Net.Smtp;
+﻿using Deviser.Core.Library.Sites;
+using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System;
@@ -13,9 +14,12 @@ namespace Deviser.Modules.Security.Services
     // For more details see this link http://go.microsoft.com/fwlink/?LinkID=532713
     public class AuthMessageSender : IEmailSender, ISmsSender
     {
-        public AuthMessageSender(IOptions<AuthMessageSenderOptions> optionsAccessor)
+        ISettingManager settingManager;
+
+        public AuthMessageSender(IOptions<AuthMessageSenderOptions> optionsAccessor, ISettingManager settingManager)
         {
             Options = optionsAccessor.Value;
+            this.settingManager = settingManager;
         }
 
         public AuthMessageSenderOptions Options { get; }  // set only via Secret Manager
@@ -23,6 +27,7 @@ namespace Deviser.Modules.Security.Services
 
         public Task SendEmailAsync(string email, string subject, string message)
         {
+            var smtpSetting = settingManager.GetSMTPSetting();
             // Plug in your email service here to send an email.
             var myMessage = new MimeMessage();
             myMessage.To.Add(new MailboxAddress("", email));
@@ -35,9 +40,9 @@ namespace Deviser.Modules.Security.Services
 
             using (var client = new SmtpClient())
             {
-                client.Connect(Options.SmtpServer, 587, false);
+                client.Connect(smtpSetting.Server, smtpSetting.Port, smtpSetting.EnableSSL);
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
-                client.Authenticate(Options.SendGridUser, Options.SendGridKey);
+                client.Authenticate(smtpSetting.Username, smtpSetting.Password);
                 client.Send(myMessage);
                 client.Disconnect(true);
             }
