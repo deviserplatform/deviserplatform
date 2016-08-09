@@ -12,6 +12,10 @@ using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Http;
 using Deviser.Core.Library.Sites;
 
+using Page = Deviser.Core.Data.Entities.Page;
+using PagePermission = Deviser.Core.Data.Entities.PagePermission;
+using PageTranslation = Deviser.Core.Data.Entities.PageTranslation;
+
 namespace Deviser.Core.Library
 {
     public class Navigation : INavigation
@@ -57,12 +61,12 @@ namespace Deviser.Core.Library
             if (systemFilter == SystemPageFilter.PublicOnly)
             {
                 //page.ChildPage = page.ChildPage.Where(p => !p.IsSystem).ToList();
-                predicate = p => !p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && pageManager.IsPageAccessible(p);
+                predicate = p => !p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && pageManager.HasViewPermission(p);
             }
             else if (systemFilter == SystemPageFilter.SystemOnly)
             {
                 //page.ChildPage = page.ChildPage.Where(p => p.IsSystem).ToList();
-                predicate = p => p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && pageManager.IsPageAccessible(p); 
+                predicate = p => p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && pageManager.HasViewPermission(p); 
             }
 
 

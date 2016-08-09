@@ -1,9 +1,12 @@
+﻿using Deviser.Core.Data.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Deviser.Core.Data.Entities
+namespace Deviser.Core.Common.DomainTypes
 {
-    public partial class PageModule
+    public class PageModule
     {
         public Guid Id { get; set; }
         public Guid ContainerId { get; set; }
@@ -12,7 +15,7 @@ namespace Deviser.Core.Data.Entities
         public Guid ModuleActionId { get; set; }
         public int SortOrder { get; set; }
         public Guid PageId { get; set; }
-        public ModuleAction ModuleAction { get;set;}
+        public ModuleAction ModuleAction { get; set; }
         public virtual Module Module { get; set; }
         public virtual Page Page { get; set; }
         public bool InheritViewPermissions { get; set; }

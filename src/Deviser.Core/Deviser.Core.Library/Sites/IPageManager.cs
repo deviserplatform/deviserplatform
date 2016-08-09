@@ -5,6 +5,7 @@ namespace Deviser.Core.Library.Sites
     public interface IPageManager
     {
         Page GetPageByUrl(string url, string locale);
-        bool IsPageAccessible(Page page);
+        bool HasViewPermission(Page page);
+        bool HasEditPermission(Page page);
     }
 }

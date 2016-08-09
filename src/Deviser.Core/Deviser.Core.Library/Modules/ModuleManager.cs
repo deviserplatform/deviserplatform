@@ -2,6 +2,8 @@
 using Deviser.Core.Common;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
+using Deviser.Core.Library.Sites;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,23 +13,17 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.Modules
 {
-    public class ModuleManager : IModuleManager
+    public class ModuleManager : PageManager, IModuleManager
     {
         //Logger
         private readonly ILogger<ModuleManager> logger;
-
-        IPageProvider pageProvider;
-        IPageContentProvider pageContentProvider;
-        ILifetimeScope container;
-
+        
         public ModuleManager(ILifetimeScope container)
+            :base(container)
         {
-            this.container = container;
-            logger = container.Resolve<ILogger<ModuleManager>>();
-            pageProvider = container.Resolve<IPageProvider>();
-            pageContentProvider = container.Resolve<IPageContentProvider>();
+            
         }
-
+        
         public PageModule GetPageModule(Guid pageModuleId)
         {
             try
@@ -129,28 +125,19 @@ namespace Deviser.Core.Library.Modules
             }
         }
 
-        public PageContent CreatePageContent(PageContent pageContent)
+        public void UpdateModulePermission(PageModule pageModule)
         {
             try
             {
-                PageContent result = pageContentProvider.Get(pageContent.Id);
-                if (result == null)
-                    result = pageContentProvider.Create(pageContent);
-                else
-                {                    
-                    pageContent.IsDeleted = false;
-                    result.ContainerId = pageContent.ContainerId;
-                    result.SortOrder = pageContent.SortOrder;
-                    result.LastModifiedDate = DateTime.Now;
-                    result = pageContentProvider.Update(result);
+                if (pageModule != null)
+                {
+                    pageProvider.UpdateModulePermission(pageModule);
                 }
-                return result;
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating a page content"), ex);                
+                logger.LogError(string.Format("Error occured while updating page content"), ex);
             }
-            return null;
         }
 
         private List<ModulePermission> AddAdminPermissions(PageModule pageModule)
@@ -172,6 +159,28 @@ namespace Deviser.Core.Library.Modules
             });
             adminPermissions = pageProvider.AddModulePermissions(adminPermissions);
             return adminPermissions;
+        }
+
+        public bool HasViewPermission(PageModule pageModule)
+        {
+            if (pageModule != null && pageModule.ModulePermissions != null)
+            {
+                var result = (pageModule.ModulePermissions.Any(modulePermission => modulePermission.PermissionId == Globals.ModuleViewPermissionId &&
+               (modulePermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == modulePermission.RoleId)))));
+                var page = pageProvider.GetPage(pageModule.PageId);
+                return result || (pageModule.InheritViewPermissions && HasViewPermission(page));
+            }
+            return false;
+        }
+
+        public bool HasEditPermission(PageModule pageModule)
+        {
+            if (pageModule != null && pageModule.ModulePermissions != null)
+            {
+                return (pageModule.ModulePermissions.Any(modulePermission => modulePermission.PermissionId == Globals.ModuleEditPermissionId &&
+               (modulePermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == modulePermission.RoleId)))));
+            }
+            return false;
         }
     }
 }

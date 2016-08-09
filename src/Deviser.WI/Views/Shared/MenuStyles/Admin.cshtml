@@ -6,7 +6,7 @@
 @{
     Layout = null;
     var pageContext = scopeService.PageContext;
-    PageTranslation translation = Model.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
+    var translation = Model.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
 
 }
 

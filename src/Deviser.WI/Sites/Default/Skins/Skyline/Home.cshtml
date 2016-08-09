@@ -1,13 +1,14 @@
-﻿@using System.Security.Claims
+﻿@inject IScopeService scopeService
+@using System.Security.Claims
 @using Deviser.Core.Library.TagHelpers;
 @using Deviser.Core.Library;
 @using Deviser.Core.Library.Services;
 @using Deviser.Core.Common;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    string loggedInClass = User.Identity.IsAuthenticated ? "logged-in" : "";
+    var pageContext = scopeService.PageContext;
+    string loggedInClass = pageContext.HasPageEditPermission ? "logged-in" : "";
 }
-@inject IScopeService testService
 
 @await Component.InvokeAsync("ControlBar")
 <nav class="navbar navbar-default navbar-fixed-top @loggedInClass">

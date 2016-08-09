@@ -9,7 +9,7 @@ namespace Deviser.Core.Common.DomainTypes
 {
     public class ModuleContext
     {
-        public Module ModuleInfo { get; set; }
+        public Deviser.Core.Data.Entities.Module ModuleInfo { get; set; }
         public Guid PageModuleId { get; set; }
     }
 }

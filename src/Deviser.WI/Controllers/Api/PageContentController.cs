@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using Deviser.Core.Library.Sites;
 
 namespace DeviserWI.Controllers.API
 {
@@ -22,14 +23,16 @@ namespace DeviserWI.Controllers.API
     {
         private readonly ILogger<PageContentController> logger;
 
-        IPageContentProvider pageContentProvider;
-        IModuleManager moduleManager;
+        //private IPageContentProvider pageContentProvider;
+        private IModuleManager moduleManager;
+        private IContentManager contentManager;
 
         public PageContentController(ILifetimeScope container)
         {
             logger = container.Resolve<ILogger<PageContentController>>();
-            pageContentProvider = container.Resolve<IPageContentProvider>();
+            //pageContentProvider = container.Resolve<IPageContentProvider>();
             moduleManager = container.Resolve<IModuleManager>();
+            contentManager = container.Resolve<IContentManager>();
         }
 
         [HttpGet("{contentId}")]
@@ -37,7 +40,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dataResult = pageContentProvider.Get(contentId);
+                var dataResult = contentManager.Get(contentId);
                 var result = Mapper.Map<PageContent>(dataResult);
                 if (result != null)
                     return Ok(result);
@@ -55,7 +58,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dataResult = pageContentProvider.Get(pageId, cultureCode);
+                var dataResult = contentManager.Get(pageId, cultureCode);
                 var result = Mapper.Map<List<PageContent>>(dataResult);
                 if (result != null)
                     return Ok(result);
@@ -73,7 +76,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dataResult = moduleManager.CreatePageContent(Mapper.Map<Deviser.Core.Data.Entities.PageContent>(pageContent));
+                var dataResult = contentManager.AddOrUpdatePageContent(Mapper.Map<Deviser.Core.Data.Entities.PageContent>(pageContent));
                 var result = Mapper.Map<PageContent>(dataResult);
                 if (result != null)
                     return Ok(result);
@@ -91,7 +94,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dataResult = pageContentProvider.Update(Mapper.Map<Deviser.Core.Data.Entities.PageContent>(pageContent));
+                var dataResult = contentManager.AddOrUpdatePageContent(Mapper.Map<Deviser.Core.Data.Entities.PageContent>(pageContent));
                 var result = Mapper.Map<PageContent>(dataResult);
                 if (result != null)
                     return Ok(result);
@@ -114,7 +117,7 @@ namespace DeviserWI.Controllers.API
                     return BadRequest();
 
                 var dataPageContent = Mapper.Map<IEnumerable<Deviser.Core.Data.Entities.PageContent>>(pageContents);
-                pageContentProvider.Update(new List<Deviser.Core.Data.Entities.PageContent>(dataPageContent));
+                contentManager.AddOrUpdatePageContents(new List<Deviser.Core.Data.Entities.PageContent>(dataPageContent));
                 return Ok();
             }
             catch (Exception ex)
@@ -124,16 +127,33 @@ namespace DeviserWI.Controllers.API
             }
         }
 
+        [HttpPut]
+        [Route("permission/")]
+        public IActionResult PutPermissions([FromBody] PageContent pageContent)
+        {
+            try
+            {
+                if (pageContent == null || pageContent.ContentPermissions ==null || pageContent.ContentPermissions.Count() == 0)
+                    return BadRequest();
+                
+                contentManager.UpdateContentPermission(Mapper.Map<Deviser.Core.Data.Entities.PageContent>(pageContent));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while updating page content permissions"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
             try
             {
-                var content = pageContentProvider.Get(id);
-                if (content != null)
-                {
-                    content.IsDeleted = true;
-                    pageContentProvider.Update(content);
+                var deleteResult = contentManager.DeletePageContent(id);
+                if (deleteResult)
+                {                    
                     return Ok();
                 }
                 return BadRequest();

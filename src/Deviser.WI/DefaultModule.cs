@@ -41,6 +41,7 @@ namespace Deviser.WI
             builder.RegisterType<SiteBootstrapper>().As<ISiteBootstrapper>(); 
             builder.RegisterType<PageManager>().As<IPageManager>();
             builder.RegisterType<ModuleManager>().As<IModuleManager>();
+            builder.RegisterType<ContentManager>().As<IContentManager>(); 
             builder.RegisterType<LayoutManager>().As<ILayoutManager>();
             builder.RegisterType<SkinManager>().As<ISkinManager>();
             builder.RegisterType<Navigation>().As<INavigation>();

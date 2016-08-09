@@ -8,8 +8,10 @@ namespace Deviser.Core.Library.Modules
     {
         PageModule GetPageModule(Guid pageModuleId);
         List<PageModule> GetPageModuleByPage(Guid pageId);        
-        PageContent CreatePageContent(PageContent pageContent);
         PageModule CreateUpdatePageModule(PageModule pageModule);
         void UpdatePageModules(List<PageModule> pageModules);
+        void UpdateModulePermission(PageModule pageModule);
+        bool HasEditPermission(PageModule pageModule);
+        bool HasViewPermission(PageModule pageModule);
     }
 }

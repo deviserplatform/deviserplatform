@@ -9,7 +9,7 @@
     var permalink = ViewContext.RouteData.Values["permalink"];
 }
 
-@if (User.Identity.IsAuthenticated)
+@if (pageContext.HasPageEditPermission)
 {
     <!-- BEGIN HEADER -->
     <div class="sd-controlbar">

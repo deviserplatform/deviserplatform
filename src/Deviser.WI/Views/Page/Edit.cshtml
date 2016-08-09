@@ -127,6 +127,9 @@
                         {{$index+1}}
                     </div>
                     <div class="content-controls" dnd-nodrag>
+                        <a class="btn btn-primary" ng-click="editVM.changeContentPermission(item)">
+                            <i class="fa fa-shield" aria-hidden="true"></i>
+                        </a>
                         <a class="btn btn-primary" ng-click="editVM.editContent(item)">
                             <i class="fa fa-pencil"></i>
                         </a>

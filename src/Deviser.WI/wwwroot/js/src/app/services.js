@@ -104,6 +104,7 @@
         var url = globals.appSettings.serviceBaseUrl + serviceUrl;
         service.get = get;
         service.putContents = putContents;
+        service.putPermission = putPermission;
         return service;
 
         ////////////////////////////////
@@ -133,6 +134,19 @@
 
         function putContents(data) {
             var putUrl = url + '/list';
+            var request = $http({
+                method: 'PUT',
+                url: putUrl,
+                data: angular.toJson(data)
+            });
+
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
+
+        function putPermission(data) {
+            var putUrl = url + '/permission';
             var request = $http({
                 method: 'PUT',
                 url: putUrl,
@@ -225,6 +239,8 @@
         service.getByPage = getByPage;
         service.post = null;
         service.putModules = putModules;
+        service.putPermission = putPermission;
+
         return service;
 
         function getByPage(id) {
@@ -241,6 +257,19 @@
 
         function putModules(data) {
             var putUrl = url + '/list';
+            var request = $http({
+                method: 'PUT',
+                url: putUrl,
+                data: angular.toJson(data)
+            });
+
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
+
+        function putPermission(data) {
+            var putUrl = url + '/permission';
             var request = $http({
                 method: 'PUT',
                 url: putUrl,

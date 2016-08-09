@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
 using Deviser.Core.Library;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Layouts;
@@ -14,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using AutoMapper;
+using Deviser.Core.Data.Entities;
 
 namespace DeviserWI.Controllers.API
 {
