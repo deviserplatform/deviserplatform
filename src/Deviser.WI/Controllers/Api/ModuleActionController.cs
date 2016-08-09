@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Autofac;
 using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Entities;
+using ModuleAction = Deviser.Core.Data.Entities.ModuleAction;
+
 
 namespace Deviser.WI.Controllers
 {
@@ -54,6 +57,64 @@ namespace Deviser.WI.Controllers
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting edit modules actions"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody] ModuleAction moduleAction)
+        {
+            try
+            {
+                var result = moduleProvider.Create(moduleAction); 
+                if (result != null)
+                    return Ok(result);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while creating a Module"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        public IActionResult Put([FromBody] ModuleAction moduleActions)
+        {
+            try
+            {
+                var result = moduleProvider.Update(moduleActions);
+                if (result != null)
+                    return Ok(result);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while updating Module"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(Guid id)
+        {
+            try
+            {
+                var moduleActions = moduleProvider.Get(id); //is it correct?
+                if (moduleActions != null)
+                {
+                    moduleActions.IsActive = true; //is it correct?
+                    var result = moduleProvider.Update(moduleActions);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while deleting module"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
