@@ -18,7 +18,8 @@ namespace Deviser.Core.Data.DataProviders
         Module Get(string moduleName);
         Module Create(Module module);
         Module Update(Module module);
-
+        ModuleAction Create(ModuleAction moduleActions);
+        ModuleAction Update(ModuleAction moduleActions);
     }
 
     public class ModuleProvider : DataProviderBase, IModuleProvider
@@ -166,6 +167,44 @@ namespace Deviser.Core.Data.DataProviders
                     context.Entry(module).State = EntityState.Modified;
                     context.SaveChanges();
                     return resultModule;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while calling Update", ex);
+            }
+            return null;
+        }
+
+        public ModuleAction Create(ModuleAction moduleActions)
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    ModuleAction resultModuleAction;
+                    resultModuleAction = context.ModuleAction.Add(moduleActions).Entity;
+                    context.SaveChanges();
+                    return resultModuleAction;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while calling Create", ex);
+            }
+            return null;
+        }
+        public ModuleAction Update(ModuleAction moduleActions)
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    ModuleAction resultModuleAction;
+                    resultModuleAction = context.ModuleAction.Attach(moduleActions).Entity;
+                    context.Entry(moduleActions).State = EntityState.Modified;
+                    context.SaveChanges();
+                    return resultModuleAction;
                 }
             }
             catch (Exception ex)
