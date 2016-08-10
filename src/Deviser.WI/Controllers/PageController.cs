@@ -52,7 +52,8 @@ namespace Deviser.WI.Controllers
         {
             try
             {
-                Page currentPage = GetPageModules(permalink);
+                Page currentPage = InitPageContext(permalink);
+                FilterPageElements(currentPage);
                 if (currentPage != null)
                 {
                     if (scopeService.PageContext.HasPageViewPermission)
@@ -77,7 +78,8 @@ namespace Deviser.WI.Controllers
 
         public IActionResult Layout(string permalink)
         {
-            Page currentPage = GetPageModules(permalink);
+            Page currentPage = InitPageContext(permalink);
+            FilterPageElements(currentPage);
             if (scopeService.PageContext != null)
             {
                 ViewBag.Skin = Globals.AdminSkin;
@@ -89,7 +91,8 @@ namespace Deviser.WI.Controllers
 
         public IActionResult Edit(string permalink)
         {
-            Page currentPage = GetPageModules(permalink);
+            Page currentPage = InitPageContext(permalink);
+            FilterPageElements(currentPage);
             if (currentPage != null && scopeService.PageContext != null)
             {
                 if (scopeService.PageContext.HasPageEditPermission)
@@ -109,18 +112,19 @@ namespace Deviser.WI.Controllers
 
         [HttpGet]
         [Route("[controller]/[action]/{pageModuleId}/{moduleActionId}")]
-        public IActionResult EditModule(Guid pageModuleId, Guid moduleActionId)
+        public IActionResult EditModule(string currentLink, Guid pageModuleId, Guid moduleActionId)
         {
             if (pageModuleId != Guid.Empty)
             {
                 try
                 {
                     var pageModule = pageProvider.GetPageModule(pageModuleId); //It referes PageModule's View ModuleActionType
-
+                    InitPageContext(currentLink);
                     if (pageModule == null)
                         return NotFound();
 
-                    if (moduleManager.HasEditPermission(pageModule))
+                    //if (moduleManager.HasEditPermission(pageModule))
+                    if (scopeService.PageContext.HasPageEditPermission)
                     {
                         object result = deviserControllerFactory.GetModuleEditResult(Context, pageModule, moduleActionId).Result;
                         ViewBag.result = result;
@@ -144,7 +148,7 @@ namespace Deviser.WI.Controllers
 
         }
 
-        private Page GetPageModules(string permalink)
+        private Page InitPageContext(string permalink)
         {
             Page currentPage = null;
 
@@ -156,12 +160,25 @@ namespace Deviser.WI.Controllers
             else
             {
                 string requestCulture = (RouteData.Values["culture"] != null) ? RouteData.Values["culture"].ToString() : CurrentCulture.ToString().ToLower();
-                permalink = $"{requestCulture}/{permalink}";
+
+                if (!permalink.Contains(requestCulture))
+                    permalink = $"{requestCulture}/{permalink}";
+
                 currentPage = pageManager.GetPageByUrl(permalink, CurrentCulture.ToString());
             }
-
-
             PageContext pageContext = new PageContext();
+            pageContext.CurrentPageId = currentPage.Id;
+            pageContext.CurrentUrl = permalink;
+            pageContext.CurrentPage = currentPage;
+            pageContext.HasPageViewPermission = pageManager.HasViewPermission(currentPage);
+            pageContext.HasPageEditPermission = pageManager.HasEditPermission(currentPage);
+            scopeService.PageContext = pageContext; //Very important!!!
+            scopeService.PageContext.CurrentCulture = CurrentCulture; //Very important!!!
+            return currentPage;
+        }
+
+        private void FilterPageElements(Page currentPage)
+        {
             if (currentPage != null)
             {
 
@@ -179,12 +196,6 @@ namespace Deviser.WI.Controllers
                     currentPage.PageModule = filteredPageModules;
                 }
 
-                pageContext.CurrentPageId = currentPage.Id;
-                pageContext.CurrentLink = permalink;
-                pageContext.CurrentPage = currentPage;
-                pageContext.HasPageViewPermission = pageManager.HasViewPermission(currentPage);
-                pageContext.HasPageEditPermission = pageManager.HasEditPermission(currentPage);
-
                 //Skins are not used for sometime period
                 string skin = "";
                 if (!string.IsNullOrEmpty(currentPage.SkinSrc))
@@ -194,13 +205,8 @@ namespace Deviser.WI.Controllers
 
                 skin = skin.Replace("[G]", "~/Sites/Default/");
 
-                //return View(skin, skinModel);
-                scopeService.PageContext = pageContext; //Very important!!!
-                scopeService.PageContext.CurrentCulture = CurrentCulture; //Very important!!!
                 ViewBag.Skin = skin;
             }
-            return currentPage;
         }
-
     }
 }

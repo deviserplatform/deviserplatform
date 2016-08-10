@@ -49,5 +49,35 @@ namespace Deviser.Core.Library.Sites
             }
             return null;
         }
+
+        public SiteSetting GetSiteSetting()
+        {
+            try
+            {
+                var settings = siteSettingProvider.GetSettings();
+                var result = new SiteSetting()
+                {
+                    DefaultAdminLayoutId = settings.First(s => s.SettingName == "SMTPServerAndPort").SettingValue,
+                    DefaultAdminTheme = settings.First(s => s.SettingName == "DefaultAdminTheme").SettingValue,
+                    HomePageId = settings.First(s => s.SettingName == "HomePageId").SettingValue,
+                    LoginPageId = settings.First(s => s.SettingName == "LoginPageId").SettingValue,
+                    RedirectAfterLogin = settings.First(s => s.SettingName == "RedirectAfterLogin").SettingValue,
+                    RedirectAfterLogout = settings.First(s => s.SettingName == "RedirectAfterLogout").SettingValue,
+                    RegistrationPageId = settings.First(s => s.SettingName == "RegistrationPageId").SettingValue,
+                    SiteAdminEmail = settings.First(s => s.SettingName == "SiteAdminEmail").SettingValue,
+                    SiteDefaultLayout = settings.First(s => s.SettingName == "SiteDefaultLayout").SettingValue,
+                    SiteDefaultTheme = settings.First(s => s.SettingName == "SiteDefaultTheme").SettingValue,
+                    SiteDesctiption = settings.First(s => s.SettingName == "SiteDesctiption").SettingValue,
+                    SiteName = settings.First(s => s.SettingName == "SiteName").SettingValue,
+                    SiteRoot = settings.First(s => s.SettingName == "SiteRoot").SettingValue,
+                };
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while calling Get", ex);
+            }
+            return null;
+        }
     }
 }

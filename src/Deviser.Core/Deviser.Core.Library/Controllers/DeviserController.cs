@@ -19,6 +19,16 @@ namespace Deviser.Core.Library.Controllers
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             Globals.CurrentCulture = GetCurrentCulture();
+            //string permalink = "";
+            //permalink = RouteData.Values["permalink"] as string;
+            //if (string.IsNullOrEmpty(permalink))
+            //    permalink = context.HttpContext.Request.Query["permalink"];
+
+            //if (!string.IsNullOrEmpty(permalink))
+            //{
+
+            //}
+
             base.OnActionExecuting(context);
         }
 
@@ -35,7 +45,7 @@ namespace Deviser.Core.Library.Controllers
 
             }
         }
-        
+
         public CultureInfo CurrentCulture
         {
             get
@@ -46,7 +56,7 @@ namespace Deviser.Core.Library.Controllers
 
         [NonAction]
         public override ViewResult View()
-        {            
+        {
             return base.View();
         }
 

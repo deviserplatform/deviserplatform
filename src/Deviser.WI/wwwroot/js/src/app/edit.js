@@ -927,7 +927,7 @@
         }
 
         function getModuleActionContent() {
-            moduleActionService.getEditActionView(vm.pageModuleId, vm.moduleActionId).then(function (response) {
+            moduleActionService.getEditActionView(pageContext.currentUrl, vm.pageModuleId, vm.moduleActionId).then(function (response) {
                 console.log(response);
                 vm.editView = $sce.trustAsHtml(response);
             }, function (response) {
