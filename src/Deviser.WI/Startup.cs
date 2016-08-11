@@ -1,33 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Deviser.Core.Common;
+using Deviser.Core.Data.Entities;
+using Deviser.Core.Library.Messaging;
+using Deviser.Core.Library.Modules;
+using Deviser.Core.Library.Services;
+using Deviser.WI.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using Deviser.Core.Data.Entities;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Newtonsoft.Json.Serialization;
-using Deviser.Core.Library.Modules;
-using System.Globalization;
-using Microsoft.AspNetCore.Routing;
-using Deviser.WI.Infrastructure;
-using Serilog;
-using Serilog.Sinks.RollingFile;
-using System.IO;
-using Deviser.Modules.Security.Services;
-using Deviser.Core.Library;
-using Deviser.Modules.Security.Services;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Mvc;
-using Deviser.Core.Library.Services;
-using Deviser.Core.Common;
+using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 
 namespace Deviser.WI
 {
@@ -98,10 +90,9 @@ namespace Deviser.WI
             MapperConfig.CreateMaps();
 
             // Add application services.
-            services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddTransient<IEmailSender, MessageSender>();
+            services.AddTransient<ISmsSender, MessageSender>();
             services.AddScoped<IScopeService, ScopeService>();
-            services.Configure<AuthMessageSenderOptions>(Configuration);
 
             // Add Autofac
             var containerBuilder = new ContainerBuilder();

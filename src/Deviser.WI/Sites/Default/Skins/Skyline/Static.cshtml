@@ -6,18 +6,9 @@
 @using Deviser.Core.Common;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    string loggedInClass = "";
-    PageContext pageContext = null;
-    if (scopeService != null && scopeService.PageContext!=null)
-    {
-        pageContext = scopeService.PageContext;
-        loggedInClass = pageContext.HasPageEditPermission ? "logged-in" : "";
-    }
-
 }
 
-@await Component.InvokeAsync("ControlBar")
-<nav class="navbar navbar-default navbar-fixed-top @loggedInClass">
+<nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div>
             <!-- Brand and toggle get grouped for better mobile display -->

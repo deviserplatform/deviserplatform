@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Deviser.Modules.Security.Models;
 using Deviser.Modules.Security.Models.ManageViewModels;
-using Deviser.Modules.Security.Services;
 using Deviser.Core.Data.Entities;
+using Deviser.Core.Library.Messaging;
 
 namespace Deviser.Modules.Security.Controllers
 {

@@ -11,12 +11,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Deviser.Modules.Security.Models;
 using Deviser.Modules.Security.Models.AccountViewModels;
-using Deviser.Modules.Security.Services;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library;
 using Deviser.Core.Library.Modules;
 using Microsoft.AspNetCore.Http;
 using Deviser.Core.Library.Controllers;
+using Deviser.Core.Library.Messaging;
 
 namespace Deviser.Modules.Security.Controllers
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Deviser.Modules.Security.Services
+namespace Deviser.Core.Library.Messaging
 {
     public interface IEmailSender
     {

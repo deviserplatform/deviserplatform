@@ -45,7 +45,6 @@
                 $form.remove();
                 //$formContainer.empty();
                 $formContainer.html(data);
-                $("form.sd-form").on("submit", formSubmit);
             }
         });
 
@@ -72,7 +71,6 @@
             var $formContainer = $a.closest('.sd-module-container');
             //$formContainer.empty();
             $formContainer.html(data);
-            $("form.sd-form").on("submit", formSubmit);
         });
 
         request.fail(function (jqXHR, textStatus) {

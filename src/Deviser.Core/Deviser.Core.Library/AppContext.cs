@@ -16,7 +16,7 @@ namespace Deviser.Core.Library
 
         public Guid CurrentPageId { get; set; }
 
-        public string CurrentLink { get; set; }
+        public string CurrentUrl { get; set; }
 
         public bool HasPageViewPermission { get; set; }
 

@@ -47,6 +47,8 @@ namespace Deviser.WI
             builder.RegisterType<Navigation>().As<INavigation>();
             builder.RegisterType<FileManagement>().As<IFileManagement>();
             builder.RegisterType<LanguageManager>().As<ILanguageManager>();
+            builder.RegisterType<SettingManager>().As<ISettingManager>();
+            
             //Autofac Property injection is not working
             //ref: https://github.com/autofac/Autofac.Mvc/issues/1
             builder.RegisterType<ModuleController>().PropertiesAutowired();
