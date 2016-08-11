@@ -12,11 +12,17 @@ namespace Deviser.Core.Library.Services
 {
     public class ScopeService : IScopeService
     {
-        public ScopeService()
+        public ScopeService(IHttpContextAccessor httpContextAccessor)
         {
-            PageContext = new PageContext();
+            object pageContext;
+            if(httpContextAccessor.HttpContext.Items.TryGetValue("PageContext", out pageContext))
+            {
+                PageContext = pageContext as PageContext;
+            }
+            else
+            {
+                PageContext = new PageContext();
+            }
         }
-
-        public PageContext PageContext { get; set; }
     }
 }
