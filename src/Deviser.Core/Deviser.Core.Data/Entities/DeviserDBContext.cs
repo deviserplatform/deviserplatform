@@ -147,6 +147,10 @@ namespace Deviser.Core.Data.Entities
 
                 entity.Property(e => e.InheritViewPermissions).HasDefaultValue(true);
 
+                entity.Property(e => e.InheritEditPermissions).HasDefaultValue(true);
+
+                entity.Ignore(e => e.HasEditPermission);
+
                 entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Page).WithMany(p => p.PageContent).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
@@ -183,6 +187,10 @@ namespace Deviser.Core.Data.Entities
                 entity.Property(e => e.IsDeleted).HasDefaultValue(false);
 
                 entity.Property(e => e.InheritViewPermissions).HasDefaultValue(true);
+
+                entity.Property(e => e.InheritEditPermissions).HasDefaultValue(true);
+
+                entity.Ignore(e => e.HasEditPermission);
 
                 entity.HasOne(d => d.Module).WithMany(p => p.PageModule).HasForeignKey(d => d.ModuleId).OnDelete(DeleteBehavior.Restrict);
 

@@ -19,6 +19,8 @@ namespace Deviser.Core.Common.DomainTypes
         public virtual Module Module { get; set; }
         public virtual Page Page { get; set; }
         public bool InheritViewPermissions { get; set; }
+        public bool InheritEditPermissions { get; set; }
+        public bool HasEditPermission { get; set; }
         public virtual ICollection<ModulePermission> ModulePermissions { get; set; }
     }
 }

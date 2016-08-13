@@ -16,6 +16,8 @@ namespace Deviser.Core.Data.Entities
         public Guid ContentTypeId { get; set; }
         public virtual Page Page { get; set; }
         public bool InheritViewPermissions { get; set; }
+        public bool InheritEditPermissions { get; set; }
+        public bool HasEditPermission { get; set; }
         public virtual ContentType ContentType { get; set; }
         public virtual ICollection<PageContentTranslation> PageContentTranslation { get; set; }
         public virtual ICollection<ContentPermission> ContentPermissions { get; set; }

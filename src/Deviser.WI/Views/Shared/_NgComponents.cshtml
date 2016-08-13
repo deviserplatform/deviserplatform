@@ -146,13 +146,27 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="form-group">
-                <a ng-click="peVM.inheritViewPermissions=!peVM.inheritViewPermissions">
-                    Inherit view permissions 
-                    <i class="fa fa-check-square-o"
-                       ng-class="{'fa-square-o':!peVM.inheritViewPermissions , 'fa-check-square-o':peVM.inheritViewPermissions}"
-                       aria-hidden="true"></i>
-                </a>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <a ng-click="peVM.inheritViewPermissions=!peVM.inheritViewPermissions">
+                            Inherit view permissions
+                            <i class="fa fa-check-square-o"
+                               ng-class="{'fa-square-o':!peVM.inheritViewPermissions , 'fa-check-square-o':peVM.inheritViewPermissions}"
+                               aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <a ng-click="peVM.inheritEditPermissions=!peVM.inheritEditPermissions">
+                            Inherit edit permissions
+                            <i class="fa fa-check-square-o"
+                               ng-class="{'fa-square-o':!peVM.inheritEditPermissions , 'fa-check-square-o':peVM.inheritEditPermissions}"
+                               aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

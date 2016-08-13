@@ -126,7 +126,7 @@
 
                         {{$index+1}}
                     </div>
-                    <div class="content-controls" dnd-nodrag>
+                    <div class="content-controls" dnd-nodrag ng-show="item.pageContent.hasEditPermission">
                         <a class="btn btn-primary" ng-click="editVM.changeContentPermission(item)">
                             <i class="fa fa-shield" aria-hidden="true"></i>
                         </a>
@@ -153,7 +153,7 @@
 
                         {{$index+1}}
                     </div>
-                    <div class="module-controls" dnd-nodrag uib-dropdown>
+                    <div class="module-controls" dnd-nodrag uib-dropdown ng-show="item.pageModule.hasEditPermission">
                         <a class="btn btn-primary" ng-click="editVM.changeModulePermission(item)">
                             <i class="fa fa-shield" aria-hidden="true"></i>
                         </a>

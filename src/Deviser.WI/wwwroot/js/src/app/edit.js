@@ -580,7 +580,7 @@
                     pageContent.id = vm.newGuid(); //Id shoud be generated only on client side
                     pageContent.pageId = pageContext.currentPageId;
                     pageContent.contentTypeId = item.element.contentType.id;
-
+                    pageContent.hasEditPermission = true; //New content always has edit permission
                     item.element.id = pageContent.id;
                     item.element.pageContent = pageContent;
 
@@ -626,7 +626,7 @@
 
         function updateModules(elementsToSort) {
             var defer = $q.defer();
-            var modules = [];
+            var modules = []; //pageModules
             _.forEach(elementsToSort.modules, function (item) {
                 var module = {
                     pageId: pageContext.currentPageId,
@@ -652,6 +652,8 @@
                     //newely created module                    
                     module.moduleId = item.element.moduleAction.module.id;
                     module.moduleActionId = item.element.moduleAction.id;
+                    module.hasEditPermission = true; //New content always has edit permission
+                    item.element.pageModule = module;
                 }
 
                 modules.push(module);
@@ -1028,11 +1030,12 @@
             }
         }
 
-        function save() {
-            vm.pageModule.inheritViewPermissions = vm.inheritViewPermissions;
+        function save() {            
             var pageModule = {
                 id: vm.pageModule.id,
+                pageId: vm.pageModule.pageId,
                 inheritViewPermissions: vm.inheritViewPermissions,
+                inheritEditPermissions : vm.inheritEditPermissions,
                 modulePermissions: vm.pageModule.modulePermissions
             }
             pageModuleService.putPermission(pageModule).then(function (data) {
@@ -1060,6 +1063,7 @@
             pageModuleService.get(pageModuleInfo.id).then(function (pageModule) {
                 vm.pageModule = pageModule;
                 vm.inheritViewPermissions = vm.pageModule.inheritViewPermissions;
+                vm.inheritEditPermissions = vm.pageModule.inheritEditPermissions;
             }, function (error) {
                 showMessage("error", "Cannot get all roles, please contact administrator");
             });
@@ -1172,11 +1176,12 @@
             }
         }
 
-        function save() {
-            vm.pageContent.inheritViewPermissions = vm.inheritViewPermissions;
+        function save() {            
             var pageContent = {
                 id: vm.pageContent.id,
+                pageId:vm.pageContent.pageId,
                 inheritViewPermissions: vm.inheritViewPermissions,
+                inheritEditPermissions:vm.inheritEditPermissions,
                 contentPermissions: vm.pageContent.contentPermissions
             }
             pageContentService.putPermission(pageContent).then(function (data) {
@@ -1204,6 +1209,7 @@
             pageContentService.get(pageContentInfo.id).then(function (pageContent) {
                 vm.pageContent = pageContent;
                 vm.inheritViewPermissions = vm.pageContent.inheritViewPermissions;
+                vm.inheritEditPermissions = vm.pageContent.inheritEditPermissions;
             }, function (error) {
                 showMessage("error", "Cannot get all roles, please contact administrator");
             });
