@@ -10,7 +10,7 @@ namespace Deviser.Modules.ContentManagement.Controllers
     public class HomeController : ModuleController
     {
         public HomeController(ILifetimeScope container)
-            : base(container)
+            :base(container)
         {
 
         }

@@ -163,47 +163,47 @@ namespace Deviser.Core.Library.Layouts
             }
         }
 
-        private void CreateElement(List<PlaceHolder> placeHolders, Guid pageId)
-        {
-            if (placeHolders != null && placeHolders.Count > 0)
-            {
-                foreach (var placeHolder in placeHolders)
-                {
-                    if (placeHolder.Type == "text")
-                    {
-                        var translations = new List<PageContentTranslation>();
-                        translations.Add(new PageContentTranslation
-                        {
-                            CultureCode = Globals.FallbackLanguage
-                        });
+        //private void CreateElement(List<PlaceHolder> placeHolders, Guid pageId)
+        //{
+        //    if (placeHolders != null && placeHolders.Count > 0)
+        //    {
+        //        foreach (var placeHolder in placeHolders)
+        //        {
+        //            if (placeHolder.Type == "text")
+        //            {
+        //                var translations = new List<PageContentTranslation>();
+        //                translations.Add(new PageContentTranslation
+        //                {
+        //                    CultureCode = Globals.FallbackLanguage
+        //                });
 
-                        Data.Entities.PageContent pageContent = new Data.Entities.PageContent
-                        {
-                            PageId = pageId,
-                            ContainerId = placeHolder.Id,
-                            PageContentTranslation = translations
-                            //CultureCode = Globals.FallbackLanguage
-                        };
-                        pageContentProvider.Create(pageContent);
+        //                Data.Entities.PageContent pageContent = new Data.Entities.PageContent
+        //                {
+        //                    PageId = pageId,
+        //                    ContainerId = placeHolder.Id,
+        //                    PageContentTranslation = translations
+        //                    //CultureCode = Globals.FallbackLanguage
+        //                };
+        //                pageContentProvider.Create(pageContent);
 
-                    }
-                    else if (placeHolder.Type == "module")
-                    {
-                        PageModule pageModule = new PageModule
-                        {
-                            PageId = pageId,
-                            ModuleId = placeHolder.Module.Id,
-                            ContainerId = placeHolder.Id
-                        };
-                        pageProvider.CreatePageModule(pageModule);
-                    }
+        //            }
+        //            else if (placeHolder.Type == "module")
+        //            {
+        //                PageModule pageModule = new PageModule
+        //                {
+        //                    PageId = pageId,
+        //                    ModuleId = placeHolder.Module.Id,
+        //                    ContainerId = placeHolder.Id
+        //                };
+        //                pageProvider.CreatePageModule(pageModule);
+        //            }
 
-                    if (placeHolder.PlaceHolders != null)
-                    {
-                        CreateElement(placeHolder.PlaceHolders, pageId);
-                    }
-                }
-            }
-        }
+        //            if (placeHolder.PlaceHolders != null)
+        //            {
+        //                CreateElement(placeHolder.PlaceHolders, pageId);
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

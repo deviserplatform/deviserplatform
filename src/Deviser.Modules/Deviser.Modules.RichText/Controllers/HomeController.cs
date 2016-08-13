@@ -13,7 +13,7 @@ namespace Deviser.Modules.RichText.Controllers
     public class HomeController  : ModuleController
     {
         public HomeController(ILifetimeScope container)
-            :base(container)
+            : base(container)
         {
 
         }

@@ -1,12 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Localization;
-using System.Globalization;
-using Deviser.Core.Library.Sites;
+﻿using System;
+using Microsoft.AspNetCore.Http;
+using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Core.Library.Services
 {
@@ -15,6 +9,7 @@ namespace Deviser.Core.Library.Services
         public ScopeService(IHttpContextAccessor httpContextAccessor)
         {
             object pageContext;
+            object moduleContext;
             if(httpContextAccessor.HttpContext.Items.TryGetValue("PageContext", out pageContext))
             {
                 PageContext = pageContext as PageContext;
@@ -22,6 +17,15 @@ namespace Deviser.Core.Library.Services
             else
             {
                 PageContext = new PageContext();
+            }
+
+            if (httpContextAccessor.HttpContext.Items.TryGetValue("ModuleContext", out moduleContext))
+            {
+                ModuleContext = moduleContext as ModuleContext;
+            }
+            else
+            {
+                ModuleContext = new ModuleContext();
             }
         }
     }

@@ -17,6 +17,7 @@ using Deviser.Core.Library.Modules;
 using Microsoft.AspNetCore.Http;
 using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.Messaging;
+using Deviser.Core.Library.Services;
 
 namespace Deviser.Modules.Security.Controllers
 {
@@ -29,19 +30,22 @@ namespace Deviser.Modules.Security.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
+        private IScopeService scopeService;
 
         public AccountController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IScopeService scopeService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
+            this.scopeService = scopeService;
         }
 
         //
@@ -473,7 +477,7 @@ namespace Deviser.Modules.Security.Controllers
             }
             else
             {
-                url = "/" + Globals.HomePageUrl;
+                url = scopeService.PageContext.HomePageFullUrl;
             }
 
             if (IsAjaxRequest)
@@ -487,7 +491,7 @@ namespace Deviser.Modules.Security.Controllers
                 return Redirect(url);
             }
 
-            //string url = "/" + Globals.HomePageUrl;
+            
             ////return Redirect(url);
             ////return Ok(url);
 

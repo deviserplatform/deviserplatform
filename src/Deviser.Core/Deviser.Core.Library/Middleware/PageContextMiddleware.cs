@@ -1,4 +1,6 @@
 ﻿using Deviser.Core.Common;
+using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.Services;
 using Deviser.Core.Library.Sites;
@@ -14,54 +16,89 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.Middleware
 {
+    /// <summary>
+    /// It initialize the PageContext for every non /api requests
+    /// </summary>
     public class PageContextMiddleware
     {
         private readonly RequestDelegate next;
         private readonly ILogger logger;
         private IRouter router;
-        private ISiteBootstrapper siteBootstrapper;
         private RouteContext routeContext;
         private HttpContext httpContext;
         private IPageManager pageManager;
-
-        public PageContextMiddleware(RequestDelegate next, 
+        private IModuleProvider moduleProvider;
+        private ISettingManager settingManager;
+        private PageContext pageContext;
+        public PageContextMiddleware(RequestDelegate next,
             ILoggerFactory loggerFactory,
-            ISiteBootstrapper siteBootstrapper,
             IPageManager pageManager,
+            IModuleProvider moduleProvider,
+            ISettingManager settingManager,
             IRouter router)
         {
             this.next = next;
             this.router = router;
             this.pageManager = pageManager;
-            //this.scopeService = scopeService;
+            this.moduleProvider = moduleProvider;
+            this.settingManager = settingManager;
             logger = loggerFactory.CreateLogger<PageContextMiddleware>();
-            siteBootstrapper.InitializeSite();
+            pageContext = new PageContext();
         }
 
         public async Task Invoke(HttpContext context)
         {
             httpContext = context;
-
+            
             if (!context.Request.Path.Value.Contains("/api"))
             {
                 routeContext = new RouteContext(context);
                 routeContext.RouteData.Routers.Add(router);
                 await router.RouteAsync(routeContext);
 
+                InitFirstLevel();
                 InitPageContext();
+                InitModuleContext();
             }
-            
 
             logger.LogInformation("Handling request: " + context.Request.Path);
             await next.Invoke(context);
             logger.LogInformation("Finished handling request.");
         }
 
-        private Page InitPageContext()
+        private void InitFirstLevel()
+        {
+            try
+            {
+                var currentCulture = GetCurrentCulture();
+                pageContext.SiteSetting = settingManager.GetSiteSetting();
+                pageContext.CurrentCulture = currentCulture;
+
+                Guid homePageId;
+                string strHomePageId = pageContext.SiteSetting.HomePageId;
+                
+                if (!string.IsNullOrEmpty(strHomePageId) && Guid.TryParse(strHomePageId, out homePageId))
+                {
+                    pageContext.HomePage = pageManager.GetPage(homePageId);
+                }
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = string.Format("Error occured while initializing site ");
+                logger.LogError(errorMessage, ex);
+            }
+            
+        }
+
+        /// <summary>
+        /// This method initilizes the PageContext based on the RouteData or Query "permalink"
+        /// </summary>
+        /// <returns></returns>
+        private void InitPageContext()
         {
             //permalink in the url has first preference
-            string permalink = (routeContext.RouteData.Values["permalink"]!=null)? routeContext.RouteData.Values["permalink"].ToString():"";
-
+            string permalink = (routeContext.RouteData.Values["permalink"] != null) ? routeContext.RouteData.Values["permalink"].ToString() : "";
+            var currentCulture = pageContext.CurrentCulture;
             if (string.IsNullOrEmpty(permalink))
             {
                 //if permalink is null, check for querystring
@@ -69,11 +106,11 @@ namespace Deviser.Core.Library.Middleware
             }
 
             Page currentPage = null;
-            var currentCulture = GetCurrentCulture();
+            
             if (string.IsNullOrEmpty(permalink))
             {
-                permalink = Globals.HomePageUrl;
-                currentPage = Globals.HomePage;
+                permalink = pageContext.HomePageUrl;
+                currentPage = pageContext.HomePage;
             }
             else
             {
@@ -84,17 +121,52 @@ namespace Deviser.Core.Library.Middleware
 
                 currentPage = pageManager.GetPageByUrl(permalink, currentCulture.ToString());
             }
-            PageContext pageContext = new PageContext();
+            
             pageContext.CurrentPageId = currentPage.Id;
             pageContext.CurrentUrl = permalink;
             pageContext.CurrentPage = currentPage;
             pageContext.HasPageViewPermission = pageManager.HasViewPermission(currentPage);
             pageContext.HasPageEditPermission = pageManager.HasEditPermission(currentPage);
-            pageContext.CurrentCulture = currentCulture;
-            httpContext.Items.Add("PageContext", pageContext);
-            //scopeService.PageContext = pageContext; //Very important!!!
-            //scopeService.PageContext.CurrentCulture = currentCulture; //Very important!!!
-            return currentPage;
+            
+            
+            if (!httpContext.Items.ContainsKey("PageContext"))
+            {
+                httpContext.Items.Add("PageContext", pageContext);
+            }
+            else
+            {
+                httpContext.Items["PageContext"] = pageContext;
+            }
+        }
+
+        private void InitModuleContext()
+        {
+            object moduleName;
+            object pageModuleId;
+            var moduleContext = new ModuleContext();
+
+            if (routeContext.RouteData.Values.TryGetValue("area", out moduleName))
+            {
+                moduleContext.ModuleInfo = moduleProvider.Get((string)moduleName);
+            }
+
+            if (routeContext.RouteData.Values.TryGetValue("pageModuleId", out pageModuleId))
+            {
+                moduleContext.PageModuleId = (Guid)pageModuleId;
+            }
+
+            if (moduleContext.ModuleInfo != null || moduleContext.PageModuleId != null)
+            {
+                if (!httpContext.Items.ContainsKey("ModuleContext"))
+                {
+                    httpContext.Items.Add("ModuleContext", moduleContext);
+                }
+                else
+                {
+                    httpContext.Items["ModuleContext"] = moduleContext;
+                }
+            }
+
         }
 
         private CultureInfo GetCurrentCulture()

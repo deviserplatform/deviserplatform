@@ -43,7 +43,7 @@ namespace Deviser.Core.Common.DomainTypes
 
         public PropertyOptionList PropertyOptionList { get; set; }
         public bool IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? LastModifiedDate { get; set; }
+        //public DateTime? CreatedDate { get; set; }
+        //public DateTime? LastModifiedDate { get; set; }
     }
 }

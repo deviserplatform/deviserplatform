@@ -19,7 +19,8 @@
         <div class="col-lg-4">
             <!-- Nested list template -->
             <script type="text/ng-template" id="items_renderer.html">
-                <div ng-click="pmVM.selectPage(page)" class="tree-node tree-node-content" ng-class="{'selected' : pmVM.selectedItem.id === page.id}">
+                <div ng-click="pmVM.selectPage(page)" class="tree-node tree-node-content"
+                     ng-class="{'selected' : pmVM.selectedItem.id === page.id}">
                     @*<div ui-tree-handle class="draggable-bar-container">
                             <div class="draggable-bar">
                                 <i class="fa fa-bars"></i>
@@ -31,13 +32,17 @@
                         <i class="fa" ng-class="{'fa-angle-down' : !collapsed, 'fa-angle-right': collapsed}"></i>
                     </a>
                     <div ui-tree-handle class="draggable-content pull-left">
-                        <span ng-repeat="translation in page.pageTranslation | selectLanguage:pmVM.siteLanguage">
-                            {{translation.name}}
-                        </span>
+                        <div ng-repeat="translation in page.pageTranslation | selectLanguage:pmVM.siteLanguage">
+                            <span>{{translation.name}}</span>
+                            <div ng-bind="page.url = translation.url" style="display:none"></div>
+                        </div>
 
                         <span ng-if="depth()==1">Root</span>
                     </div>
                     <div data-nodrag class="node-actions pull-right">
+
+                        <a href="/{{page.url}}" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+
                         <a data-nodrag ng-click="pmVM.newSubPage(page)" title="Add new page">
                             <i class="fa fa-plus"></i>
                         </a>
@@ -114,7 +119,7 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">KeyWords</label>
                                 <div class="col-sm-6">
-                                    <input type="text" class="form-control" placeholder="Enter keywords" ng-model="translation.keyWords">
+                                    <input type="text" class="form-control" placeholder="Enter keywords" ng-model="translation.keywords">
                                 </div>
                             </div>
                         </div>
@@ -155,44 +160,44 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">Live from</label>
-                                <div class="col-sm-6">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Live from"
-                                               datepicker-popup="{{pmVM.dateFormat}}"
-                                               is-open="pmVM.liveFrom.opened"
-                                               datepicker-options="pmVM.dateOptions"
-                                               date-disabled="pmVM.disabledDatePicker(date, mode)"
-                                               close-text="Close"
-                                               ng-model="pmVM.selectedItem.startDate">
-                                        <span class="input-group-btn">
-                                            <a class="btn btn-default" ng-click="pmVM.openDatePicker($event, pmVM.liveFrom)">
-                                                <i class="glyphicon glyphicon-calendar"></i>
-                                            </a>
-                                        </span>
+                            @*<div class="form-group">
+                                    <label class="col-sm-2 control-label">Live from</label>
+                                    <div class="col-sm-6">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="Live from"
+                                                   datepicker-popup="{{pmVM.dateFormat}}"
+                                                   is-open="pmVM.liveFrom.opened"
+                                                   datepicker-options="pmVM.dateOptions"
+                                                   date-disabled="pmVM.disabledDatePicker(date, mode)"
+                                                   close-text="Close"
+                                                   ng-model="pmVM.selectedItem.startDate">
+                                            <span class="input-group-btn">
+                                                <a class="btn btn-default" ng-click="pmVM.openDatePicker($event, pmVM.liveFrom)">
+                                                    <i class="glyphicon glyphicon-calendar"></i>
+                                                </a>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">Live till</label>
-                                <div class=" col-sm-6">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Live till"
-                                               datepicker-popup="{{pmVM.dateFormat}}"
-                                               is-open="pmVM.liveTill.opened"
-                                               datepicker-options="pmVM.dateOptions"
-                                               date-disabled="pmVM.disabledDatePicker(date, mode)"
-                                               close-text="Close"
-                                               ng-model="pmVM.selectedItem.endDate">
-                                        <span class="input-group-btn">
-                                            <a class="btn btn-default" ng-click="pmVM.openDatePicker($event, pmVM.liveTill)">
-                                                <i class="glyphicon glyphicon-calendar"></i>
-                                            </a>
-                                        </span>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Live till</label>
+                                    <div class=" col-sm-6">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="Live till"
+                                                   datepicker-popup="{{pmVM.dateFormat}}"
+                                                   is-open="pmVM.liveTill.opened"
+                                                   datepicker-options="pmVM.dateOptions"
+                                                   date-disabled="pmVM.disabledDatePicker(date, mode)"
+                                                   close-text="Close"
+                                                   ng-model="pmVM.selectedItem.endDate">
+                                            <span class="input-group-btn">
+                                                <a class="btn btn-default" ng-click="pmVM.openDatePicker($event, pmVM.liveTill)">
+                                                    <i class="glyphicon glyphicon-calendar"></i>
+                                                </a>
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+                                </div>*@
                         </div>
                     </div>
                 </uib-accordion-group>
@@ -242,7 +247,7 @@
                 </uib-accordion-group>
             </uib-accordion>
 
-            <h2  ng-show="!pmVM.selectedItem.pageLevel || pmVM.selectedItem.pageLevel==0">Select a page to edit</h2>
+            <h2 ng-show="!pmVM.selectedItem.pageLevel || pmVM.selectedItem.pageLevel==0">Select a page to edit</h2>
 
             <div class="form-group">
                 <input type="button" class="btn btn-primary" ng-click="pmVM.save()" value="Save" ng-disabled="!pmVM.isChanged" />
@@ -250,7 +255,7 @@
 
 
         </div>
-        
+
     </div>
 
 

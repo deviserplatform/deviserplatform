@@ -87,15 +87,10 @@
             var containerId = parentScope.item.id;
             console.log('-----------------------');
             console.log('insertedCallback');
-            console.log('event:');
-            console.log(event);
-            console.log('parentScope:');
-            console.log(parentScope);
-            console.log('item:');
-            console.log(item);
             console.log('-----------------------');
-            if (!item.id) {
+            if (!item.id || item.isUnassigned) {
                 //Update element only when new item has been added
+                console.log('updatingElement');
                 updateElements(parentScope.item);
             }
 
@@ -409,6 +404,7 @@
 
             _.forEach(unAssignedSrcConents, function (pageContent) {
                 var content = getPageContentWithProperties(pageContent);
+                content.isUnassigned = true;
                 unAssignedContents.push(content);
             });
 
@@ -420,7 +416,8 @@
                     type: "module",
                     moduleAction: pageModule.moduleAction,
                     pageModule: pageModule,
-                    sortOrder: pageModule.sortOrder
+                    sortOrder: pageModule.sortOrder,
+                    isUnassigned:true
                 };//JSON.parse(pageModule.module);
                 unAssignedModules.push(module);
             })
@@ -949,8 +946,8 @@
             title: 'Module Permission',
             tableRowTitleView: 'View Module',
             tableRowTitleEdit: 'Edit Module'
-
         }
+        vm.administratorRoleId = administratorRoleId;
 
         /*Event handler bindings*/
         vm.isView = isView;
@@ -1095,8 +1092,8 @@
             title: 'Content Permission',
             tableRowTitleView: 'View Content',
             tableRowTitleEdit: 'Edit Content'
-
         }
+        vm.administratorRoleId = administratorRoleId;
 
         /*Event handler bindings*/
         vm.isView = isView;

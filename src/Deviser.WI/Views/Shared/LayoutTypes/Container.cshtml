@@ -1,4 +1,7 @@
-﻿@model string
-<div class="container">    
-    @Html.Raw(Model)
+﻿@model LayoutContent
+@{
+    var properties = Model.PlaceHolder.Properties;
+}
+<div class="container @properties.Get("cssclass").Value">    
+    @Html.Raw(Model.ContentResult)
 </div>
