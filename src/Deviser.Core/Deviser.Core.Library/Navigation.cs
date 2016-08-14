@@ -15,6 +15,7 @@ using Deviser.Core.Library.Sites;
 using Page = Deviser.Core.Data.Entities.Page;
 using PagePermission = Deviser.Core.Data.Entities.PagePermission;
 using PageTranslation = Deviser.Core.Data.Entities.PageTranslation;
+using Deviser.Core.Library.Services;
 
 namespace Deviser.Core.Library
 {
@@ -26,17 +27,22 @@ namespace Deviser.Core.Library
         private IPageProvider pageProvider;
         private IPageManager pageManager;
         private ILanguageProvider languageProvider;
+        private IScopeService scopeService;
+        private ISettingManager settingManager;
         private Page activePage = null;
         private List<Page> breadcrumbs = null;
 
+        #region Public Methods
         public Navigation(ILifetimeScope container)
         {
             logger = container.Resolve<ILogger<LayoutProvider>>();
             pageProvider = container.Resolve<IPageProvider>();
             languageProvider = container.Resolve<ILanguageProvider>();
             pageManager = container.Resolve<IPageManager>();
+            scopeService = container.Resolve<IScopeService>();
+            settingManager = container.Resolve<ISettingManager>();
         }
-        
+
         public Page GetPageTree(Guid parentId)
         {
             var root = pageProvider.GetPageTree();
@@ -66,7 +72,7 @@ namespace Deviser.Core.Library
             else if (systemFilter == SystemPageFilter.SystemOnly)
             {
                 //page.ChildPage = page.ChildPage.Where(p => p.IsSystem).ToList();
-                predicate = p => p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && pageManager.HasViewPermission(p); 
+                predicate = p => p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && pageManager.HasViewPermission(p);
             }
 
 
@@ -75,7 +81,6 @@ namespace Deviser.Core.Library
             return root;
         }
 
-
         public List<Page> GetBreadCrumbs(Guid currentPageId)
         {
             Page root = pageProvider.GetPageTree();
@@ -83,6 +88,24 @@ namespace Deviser.Core.Library
             breadcrumbs = new List<Page>();
             SetBreadCrumb(activePage);
             return breadcrumbs.OrderBy(p => p.PageLevel).ToList();
+        }
+
+        public Page CreatePage (Page page)
+        {
+            try
+            {
+                var siteSetting = settingManager.GetSiteSetting();
+                page.LayoutId = siteSetting.DefaultLayoutId;
+                page.SkinSrc = siteSetting.DefaultTheme;
+                page.PageTranslation = null;
+                var result = pageProvider.CreatePage(page);                
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while creating a page, PageId: ", page.Id), ex);
+            }
+            return null;
         }
 
         public Page UpdatePageTree(Page page)
@@ -178,6 +201,24 @@ namespace Deviser.Core.Library
             }
             return false;
         }
+
+        public string NavigateUrl(Guid pageId, string locale = null)
+        {
+            var page = pageProvider.GetPage(pageId);
+            return NavigateUrl(page, locale);
+        }
+
+        public string NavigateUrl(Page page, string locale = null)
+        {
+            if (locale == null)
+                locale = scopeService.PageContext.CurrentCulture.ToString().ToLower();
+            var translation = page.PageTranslation.FirstOrDefault(t => t.Locale.ToLower() == locale);
+
+            return translation != null ? scopeService.PageContext.SiteRoot + translation.URL : "";
+        }
+        #endregion
+
+        #region Private Methods
 
         private Dictionary<string, string> InitParentUrls()
         {
@@ -350,28 +391,6 @@ namespace Deviser.Core.Library
             return pageUrl;
         }
 
-        //private void ProcessPageTranslation(Page page, string parentURL = "")
-        //{
-        //    var currentPageTranslation = GetPageTranslation(page);
-        //    if (currentPageTranslation != null)
-        //    {
-        //        parentURL += "/" + currentPageTranslation.Name;
-        //        currentPageTranslation.URL = parentURL;
-        //    }
-        //}
-
-        //private PageTranslation GetPageTranslation(Page page)
-        //{
-        //    if (page != null)
-        //    {
-        //        var currentPageTranslation = page.PageTranslation.FirstOrDefault(pt => pt.Locale != null && pt.Locale.ToString() == Globals.CurrentCulture.ToString());
-        //        if (currentPageTranslation == null)
-        //            currentPageTranslation = page.PageTranslation.FirstOrDefault();
-        //        return currentPageTranslation;
-        //    }
-        //    return null;
-        //}
-
         private void FilterPage(Page page, Guid currentPageId, Func<Page, bool> predicate = null)
         {
             if (page != null)
@@ -417,5 +436,7 @@ namespace Deviser.Core.Library
                 }
             }
         }
+
+        #endregion
     }
 }

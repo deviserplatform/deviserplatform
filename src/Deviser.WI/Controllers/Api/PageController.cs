@@ -91,7 +91,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = pageProvider.CreatePage(page);
+                var result = navigation.CreatePage(page);
                 if (result != null)
                     return Ok(result);
                 return BadRequest("Invalid page");

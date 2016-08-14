@@ -60,7 +60,7 @@
                 vm.siteSettings = siteSettings;     
                 vm.setting = _.keyBy(siteSettings, "settingName");
                 vm.setting.SMTPEnableSSL.settingValue = (vm.setting.SMTPEnableSSL.settingValue === "true") ? true : false;
-                vm.setting.EnableDisableRegistration.settingValue = (vm.setting.EnableDisableRegistration.settingValue === "true") ? true : false;
+                vm.setting.RegistrationEnabled.settingValue = (vm.setting.RegistrationEnabled.settingValue === "true") ? true : false;
 
             }, function (error) {
                 showMessage("error", "Cannot get all Site Settings, please contact administrator");

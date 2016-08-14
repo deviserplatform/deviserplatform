@@ -49,7 +49,7 @@ namespace Deviser.Core.Library.Middleware
         public async Task Invoke(HttpContext context)
         {
             httpContext = context;
-            
+
             if (!context.Request.Path.Value.Contains("/api"))
             {
                 routeContext = new RouteContext(context);
@@ -74,10 +74,9 @@ namespace Deviser.Core.Library.Middleware
                 pageContext.SiteSetting = settingManager.GetSiteSetting();
                 pageContext.CurrentCulture = currentCulture;
 
-                Guid homePageId;
-                string strHomePageId = pageContext.SiteSetting.HomePageId;
-                
-                if (!string.IsNullOrEmpty(strHomePageId) && Guid.TryParse(strHomePageId, out homePageId))
+                Guid homePageId = pageContext.SiteSetting.HomePageId;
+
+                if (homePageId != Guid.Empty)
                 {
                     pageContext.HomePage = pageManager.GetPage(homePageId);
                 }
@@ -87,7 +86,7 @@ namespace Deviser.Core.Library.Middleware
                 string errorMessage = string.Format("Error occured while initializing site ");
                 logger.LogError(errorMessage, ex);
             }
-            
+
         }
 
         /// <summary>
@@ -106,7 +105,7 @@ namespace Deviser.Core.Library.Middleware
             }
 
             Page currentPage = null;
-            
+
             if (string.IsNullOrEmpty(permalink))
             {
                 permalink = pageContext.HomePageUrl;
@@ -121,14 +120,14 @@ namespace Deviser.Core.Library.Middleware
 
                 currentPage = pageManager.GetPageByUrl(permalink, currentCulture.ToString());
             }
-            
+
             pageContext.CurrentPageId = currentPage.Id;
             pageContext.CurrentUrl = permalink;
             pageContext.CurrentPage = currentPage;
             pageContext.HasPageViewPermission = pageManager.HasViewPermission(currentPage);
             pageContext.HasPageEditPermission = pageManager.HasEditPermission(currentPage);
-            
-            
+
+
             if (!httpContext.Items.ContainsKey("PageContext"))
             {
                 httpContext.Items.Add("PageContext", pageContext);

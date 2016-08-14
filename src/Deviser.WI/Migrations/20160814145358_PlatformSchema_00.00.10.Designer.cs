@@ -8,9 +8,10 @@ using Deviser.Core.Data.Entities;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDBContext))]
-    partial class DeviserDBContextModelSnapshot : ModelSnapshot
+    [Migration("20160814145358_PlatformSchema_00.00.10")]
+    partial class PlatformSchema_000010
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")
@@ -498,18 +499,18 @@ namespace Deviser.WI.Migrations
                         .HasAnnotation("MaxLength", 500);
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasAnnotation("MaxLength", 100);
 
                     b.Property<string>("Title")
                         .HasAnnotation("MaxLength", 200);
 
                     b.Property<string>("URL")
-                        .IsRequired()
                         .HasAnnotation("MaxLength", 255);
 
                     b.HasKey("PageId", "Locale");
 
-                    b.HasAlternateKey("URL");
+                    b.HasAlternateKey("Name", "Locale");
 
                     b.HasIndex("PageId");
 

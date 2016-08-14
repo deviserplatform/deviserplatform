@@ -180,6 +180,12 @@
 
         function selectPage(page) {
             vm.currentLocale = vm.siteLanguage;
+            if (!page.pageTranslation || page.pageTranslation.length == 0) {
+                page.pageTranslation = [
+                {
+                    locale: vm.currentLocale
+                }];
+            }
             vm.selectedItem = page;
             vm.accordion.common = !vm.accordion.permissions;
             if (vm.selectedItem.pagePermissions) {
@@ -189,7 +195,7 @@
                     }
                 });
             }
-            
+
         }
 
         function isView(page, role) {
@@ -223,7 +229,7 @@
                     };
                     page.pagePermissions.push(permission);
                 }
-           }
+            }
         }
 
         function changeEditPermission(page, role) {
