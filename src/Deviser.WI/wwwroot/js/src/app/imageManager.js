@@ -39,7 +39,9 @@
 
         function ctrl($scope, $uibModal) {
             var vm = this;
+
             vm.showPopup = showPopup;
+            vm.removeImage = removeImage;
 
             init();
 
@@ -60,6 +62,12 @@
                 }, function (response) {
                     console.log(response);
                 });
+            }
+
+            function removeImage() {
+                vm.src = null;
+                vm.alt = null;
+                vm.focusPoint = null;
             }
 
             function showImageManager() {
@@ -308,14 +316,14 @@
         var $focusPoint = $('.focuspoint');
 
 
-        if (ictContentModule.TabModuleSettings.ImageCropSize) {
-            var imgCropSize = JSON.parse(ictContentModule.TabModuleSettings.ImageCropSize);
-            if (imgCropSize) {
-                $previewContainer.css('height', imgCropSize.Height - 20);
-                $previewContainer.css('width', imgCropSize.Width - 20);
+        //if (ictContentModule.TabModuleSettings.ImageCropSize) {
+        //    var imgCropSize = JSON.parse(ictContentModule.TabModuleSettings.ImageCropSize);
+        //    if (imgCropSize) {
+        //        $previewContainer.css('height', imgCropSize.Height - 20);
+        //        $previewContainer.css('width', imgCropSize.Width - 20);
 
-            }
-        }
+        //    }
+        //}
 
         $previewContainer.data('focusX', focusPoint.x);
         $previewContainer.data('focusY', focusPoint.y);

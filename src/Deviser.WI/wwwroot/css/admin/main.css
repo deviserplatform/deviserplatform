@@ -97,16 +97,16 @@ body {
     border-top: 1px solid #3d4957;
 }
 
-.sidebar .nav > li > a:hover,
-.sidebar .nav > li > a:focus,
-.sidebar .nav ul.nav-second-level li.active > a,
-.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
-    background: #2C3542;
-    border-color: transparent;
-}
+    .sidebar .nav > li > a:hover,
+    .sidebar .nav > li > a:focus,
+    .sidebar .nav ul.nav-second-level li.active > a,
+    .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+        background: #2C3542;
+        border-color: transparent;
+    }
 
-.sidebar .nav > li.active > a, 
-.root.nav .open > a, .root.nav .open > a:hover, .root.nav .open > a:focus{
+.sidebar .nav > li.active > a,
+.root.nav .open > a, .root.nav .open > a:hover, .root.nav .open > a:focus {
     background: #EF4A34;
     color: #fff;
 }
@@ -191,7 +191,7 @@ body {
 }
 
     .box-grey > h3 {
-        background-color: #f5f5f5;        
+        background-color: #f5f5f5;
     }
 
 .box-blue {
@@ -201,7 +201,7 @@ body {
     .box-blue > h3 {
         color: #31708f;
         background-color: #d9edf7;
-        border-color: #bce8f1;        
+        border-color: #bce8f1;
     }
 
 .box-yellow {
@@ -211,7 +211,7 @@ body {
     .box-yellow > h3 {
         color: #8a6d3b;
         background-color: #fcf8e3;
-        border-color: #faebcc;        
+        border-color: #faebcc;
     }
 
 /***************************** Required styles *****************************/
@@ -294,7 +294,7 @@ body {
     .nestedDemo .dropzone .selected .box > h3 {
         color: #fff;
         background-color: #337ab7;
-        border-color: #2e6da4;        
+        border-color: #2e6da4;
     }
 
 /***************************** Element type specific styles *****************************/
@@ -391,7 +391,7 @@ body {
 }
 
 .tree-node {
-    background:#f5f5f5;
+    background: #f5f5f5;
     display: block;
     height: 30px;
     margin: 5px 0;
@@ -404,36 +404,36 @@ body {
     box-sizing: border-box;
 }
 
-    .tree-node a.expander, .tree-node a.expander:hover, 
+    .tree-node a.expander, .tree-node a.expander:hover,
     .tree-node .node-actions a, .tree-node .node-actions a:hover {
-        color:#000;
+        color: #000;
         text-decoration: none;
     }
 
-    .tree-node.selected .node-actions a{
-        color:#FFFFFF;
+    .tree-node.selected .node-actions a {
+        color: #FFFFFF;
     }
 
-    .node-actions a{
-        margin-left:10px;
-    }
+.node-actions a {
+    margin-left: 10px;
+}
 
-    .draggable-content{
-        margin-left:10px;
-    }
+.draggable-content {
+    margin-left: 10px;
+}
 
-    .tree-node a.expander i{
-        font-size: 1.3em;
-        padding: 0 4px 0 4px;
-    }
+.tree-node a.expander i {
+    font-size: 1.3em;
+    padding: 0 4px 0 4px;
+}
 
-    .tree-node .node-actions{
-        display:none;
-    }
+.tree-node .node-actions {
+    display: none;
+}
 
-    .tree-node:hover .node-actions{
-        display:block;
-    }
+.tree-node:hover .node-actions {
+    display: block;
+}
 
 .angular-ui-tree-placeholder {
     display: block;
@@ -488,21 +488,21 @@ div.edit-page.form-horizontal .control-label {
             width: 100%;
         }
 
-        .box.properties .row{
-            padding: 10px 0 10px 0;
-            border-bottom:1px solid #ddd;
-            display: flex;
-            align-items: center;
-        }
+.box.properties .row {
+    padding: 10px 0 10px 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+}
 
-        .box.properties .row:first-of-type{
-            padding-top:0px;
-        }
+    .box.properties .row:first-of-type {
+        padding-top: 0px;
+    }
 
-        .box.properties .row:last-of-type{
-            padding-bottom:0px;
-            border-bottom:none;
-        }
+    .box.properties .row:last-of-type {
+        padding-bottom: 0px;
+        border-bottom: none;
+    }
 
 /*Edit mode*/
 
@@ -510,11 +510,15 @@ div.edit-page.form-horizontal .control-label {
     width: 80%;
 }
 
-.module-actions.dropdown-menu li{
-    border:none;
+.module-actions.dropdown-menu li {
+    border: none;
 }
 
 /*Image manager*/
+.image-manager .image-preview {
+    display: inline-block;
+}
+
 .image-manager-modal .modal-sm {
     width: 900px;
 }
@@ -523,9 +527,34 @@ div.edit-page.form-horizontal .control-label {
     height: 20vh;
 }
 
+.image-manager .info {
+    padding: 10px;
+}
+
 .drop-box {
     background: #F8F8F8;
     border: 5px dashed #DDD;
     text-align: center;
     padding: 20px 10px;
+}
+
+.image-manager-modal .tab-pane {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0px 0px 5px 5px;
+    padding: 10px;
+}
+
+.image-manager-modal .nav-tabs {
+    margin-bottom: 0;
+}
+
+.image-manager-modal .file-menu {
+    height: 300px;
+    overflow-y: auto;
+}
+
+.image-manager-modal .image-preview{
+    height: 250px;
 }

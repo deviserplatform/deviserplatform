@@ -1,13 +1,14 @@
 ﻿<script type="text/ng-template" id="app/components/imageManager.tpl.html">
-    <div>
+    <div class="image-manager">
         <div class="form-group">
             <div class="image-preview">
                 <img src="{{locVM.src}}" alt="{{locVM.alt}}" ng-show="locVM.src" />
             </div>
-            <span ng-show="!locVM.src">Select a image</span>            
+            <p ng-show="!locVM.src" class="info bg-info">Select a image</p>
         </div>
         <div class="form-group">
             <button type="button" class="btn btn-primary" ng-click="locVM.showPopup()">Upload/Change Image</button>
+            <button type="button" class="btn btn-danger" ng-click="locVM.removeImage()">Remove Image</button>
         </div>
     </div>
 </script>
@@ -17,24 +18,23 @@
         <h3 class="modal-title">Image Manager</h3>
     </div>
     <div class="modal-body">
-        <div class="row">   
+        <div class="row">
             <div class="col-md-12">
-                <label>Upload</label>
                 <div ng-class="{'alert alert-danger':imVM.message.messageType=='error',
                      'alert alert-info':imVM.message.messageType=='info',
                      'alert alert-success':imVM.message.messageType=='success',
                      'alert alert-warning':imVM.message.messageType=='warning'}" role="alert">
                     {{imVM.message.content}}
                 </div>
-
-                <!--<input type="file" ng-file-select="imVM.onFileSelect($files)" file-select="uploadFile" multiple accept="image/*" class="form-control">-->
-
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
                 <div ngf-drop="imVM.onFileSelect($files)" ngf-select="imVM.onFileSelect($files)" ng-model="files" class="drop-box"
                      ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true"
                      accept="image/*"
                      ngf-pattern="'image/*,application/pdf'">Drop images here or click to upload</div>
                 <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
-
 
                 <div class="checkbox" ng-show="!imVM.isNewContent">
                     <label>
@@ -46,11 +46,16 @@
 
         <div class="row">
             <div class="col-md-4 file-list">
-                <input type="text" ng-model="imVM.searchText" placeholder="Search" class="image-search-textbox">
-                <ul class="image-files">
-                    <li class="image-file" ng-repeat="file in imVM.images | filter:imVM.searchText | orderBy:'Name'" ng-class="{'active':imVM.imageSource === file.path}">
-                        <a ng-click="imVM.selectImage(file)">{{file.name}}</a>
-                    </li>
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search Image" ng-model="imVM.searchText">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </span>
+                </div><!-- /input-group -->
+                <ul class="list-group file-menu">
+                    <a class="list-group-item" ng-repeat="file in imVM.images | filter:imVM.searchText | orderBy:'Name'" ng-class="{'active':imVM.imageSource === file.path}" ng-click="imVM.selectImage(file)">{{file.name}}</a>
                 </ul>
             </div>
             <div class="col-md-8 image-chooser">
@@ -58,23 +63,21 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" ng-class="{'active':imVM.selectedTab==='PREVIEW'}"><a role="tab" ng-click="imVM.selectedTab='PREVIEW'">Preview</a></li>
-                        <li role="presentation" ng-class="{'active':imVM.selectedTab==='CROP'}"><a role="tab" ng-click="imVM.selectedTab='CROP'">Crop</a></li>                        
+                        <li role="presentation" ng-class="{'active':imVM.selectedTab==='CROP'}"><a role="tab" ng-click="imVM.selectedTab='CROP'">Crop</a></li>
                     </ul>
 
                     <!-- Tab panes -->
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane" ng-class="{'active':imVM.selectedTab==='PREVIEW'}">
-                            <div class="row">
-                                <div class="image">
-                                    <img ng-src="{{imVM.imageSource}}" />
-                                </div>
-                                <div class="image-alt">
-                                    <input type="text" ng-model="imVM.imageAlt" placeholder="Image alt text" class="image-alt-textbox" />
-                                </div>
+                            <div class="form-group image">
+                                <img class="image-preview" ng-src="{{imVM.imageSource}}" />
+                            </div>
+                            <div class="form-group image-alt">
+                                <input type="text" ng-model="imVM.imageAlt" placeholder="Image alt text" class="form-control image-alt-textbox" />
                             </div>
                         </div>
                         <div role="tabpanel" class="tab-pane" ng-class="{'active':imVM.selectedTab==='CROP'}">
-                            <div class="row">
+                            <div class="form-group">
                                 <canvas width="500" height="300" id="canvas"
                                         image-cropper
                                         image="imVM.imageSource"
@@ -83,19 +86,18 @@
                                         keep-aspect="true"
                                         touch-radius="30"></canvas>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <img ng-src="{{imVM.croppedImage}}" />
-                                </div>
-                                <div class="col-md-6">
-                                    <button type="button" class="btn btn-primary" ng-click="imVM.cropImage()">Crop Image</button>
-                                </div>
+                            <div class="form-group">
+                                <img ng-src="{{imVM.croppedImage}}" />
                             </div>
-                        </div>                        
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary" ng-click="imVM.cropImage()">Crop Image</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="imVM.yes()">OK</button>
