@@ -1,37 +1,6 @@
 ﻿/***********************************************************/
 /*Admin Layout Elements*/
 /***********************************************************/
-div,
-svg,
-input,
-select,
-textarea,
-span,
-img,
-table,
-label,
-td,
-th,
-p,
-a,
-button,
-ul,
-code,
-pre,
-li {
-    -webkit-border-radius: 0 !important;
-    -moz-border-radius: 0 !important;
-    border-radius: 0 !important;
-}
-
-/* except below bootstrap elements */
-.img-circle {
-    border-radius: 50% !important;
-}
-
-.img-rounded {
-    border-radius: 6px !important;
-}
 
 /***
 General reset
@@ -120,7 +89,6 @@ body {
 /*Form control*/
 /***********************************************************/
 .btn, .input-group-addon, .form-control {
-    border-radius: unset;
     -webkit-box-shadow: none;
     box-shadow: none;
 }
@@ -505,10 +473,18 @@ div.edit-page.form-horizontal .control-label {
     }
 
 /*Edit mode*/
+body.edit-content-modal{
+     overflow: hidden;
+}
 
 .edit-content-modal .modal-lg {
     width: 80%;
 }
+.edit-content-modal .modal-body{
+    height: 60vh;
+    overflow-x: auto;
+}
+   
 
 .module-actions.dropdown-menu li {
     border: none;
@@ -541,8 +517,7 @@ div.edit-page.form-horizontal .control-label {
 .image-manager-modal .tab-pane {
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    border-radius: 0px 0px 5px 5px;
+    border-bottom: 1px solid #ddd;    
     padding: 10px;
 }
 
