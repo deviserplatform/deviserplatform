@@ -18,8 +18,8 @@ var paths = {
     minCss: webroot + "css/**/*.min.css",
     concatJsDest: webroot + "js/site.min.js",
     concatCssDest: webroot + "css/site.min.css",
-    sassPath: webroot + "css/admin/sd-bootstrap/**/*.scss",
-    sassDest: webroot + "css/admin/sd-bootstrap"
+    sassPath: webroot + "css/admin/**/*.scss",
+    sassDest: webroot + "css/admin"
 };
 
 gulp.task("clean:js", function () {    
@@ -31,7 +31,7 @@ gulp.task("clean:css", function () {
 });
 
 gulp.task("clean:sass", function () {    
-    return del(paths.sassDest +'/bootstrap.css', { force: true });
+    return del(paths.sassDest +'/main.css', { force: true });
 });
 
 gulp.task('sass', function () {

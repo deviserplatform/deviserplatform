@@ -1,0 +1,606 @@
+/*!
+ * Bootstrap v3.3.7 (http://getbootstrap.com)
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */
+
+// Core variables and mixins
+@import "bootstrap/variables";
+@import "bootstrap/mixins";
+
+// Reset and dependencies
+@import "bootstrap/normalize";
+@import "bootstrap/print";
+@import "bootstrap/glyphicons";
+
+// Core CSS
+@import "bootstrap/scaffolding";
+@import "bootstrap/type";
+@import "bootstrap/code";
+@import "bootstrap/grid";
+@import "bootstrap/tables";
+@import "bootstrap/forms";
+@import "bootstrap/buttons";
+
+// Components
+@import "bootstrap/component-animations";
+@import "bootstrap/dropdowns";
+@import "bootstrap/button-groups";
+@import "bootstrap/input-groups";
+@import "bootstrap/navs";
+@import "bootstrap/navbar";
+@import "bootstrap/breadcrumbs";
+@import "bootstrap/pagination";
+@import "bootstrap/pager";
+@import "bootstrap/labels";
+@import "bootstrap/badges";
+@import "bootstrap/jumbotron";
+@import "bootstrap/thumbnails";
+@import "bootstrap/alerts";
+@import "bootstrap/progress-bars";
+@import "bootstrap/media";
+@import "bootstrap/list-group";
+@import "bootstrap/panels";
+@import "bootstrap/responsive-embed";
+@import "bootstrap/wells";
+@import "bootstrap/close";
+
+// Components w/ JavaScript
+@import "bootstrap/modals";
+@import "bootstrap/tooltip";
+@import "bootstrap/popovers";
+@import "bootstrap/carousel";
+
+// Utility classes
+@import "bootstrap/utilities";
+@import "bootstrap/responsive-utilities";
+
+@import url('admin-base.css');
+/***********************************************************/
+/*Admin Layout Elements*/
+/***********************************************************/
+
+/***
+General reset
+***/
+/* Set default body */
+body {
+    background-color: #364150;
+    color: #333333;
+    font-family: "Open Sans", sans-serif;
+    padding: 0px !important;
+    margin: 0px !important;
+    direction: "ltr";
+    font-size: 14px;
+}
+
+/*
+ Internet Explorer 10 doesn't differentiate device width from viewport width, and thus doesn't 
+ properly apply the media queries in Bootstrap's CSS. To address this, 
+ you can optionally include the following CSS and JavaScript to work around this problem until Microsoft issues a fix.
+*/
+@-webkit-viewport {
+    width: device-width;
+}
+
+@-moz-viewport {
+    width: device-width;
+}
+
+@-ms-viewport {
+    width: device-width;
+}
+
+@-o-viewport {
+    width: device-width;
+}
+
+@viewport {
+    width: device-width;
+}
+
+.page-footer {
+    color: #98a6ba;
+    padding: 8px 20px 5px;
+    font-size: 13px;
+    height: 33px;
+}
+
+.transition {
+    -webkit-transition: all 300ms ease-in-out;
+    -moz-transition: all 300ms ease-in-out;
+    -ms-transition: all 300ms ease-in-out;
+    -o-transition: all 300ms ease-in-out;
+    transition: all 300ms ease-in-out;
+}
+
+/*Side Nav*/
+.navbar-default {
+    background-color: inherit;
+}
+
+.sidebar ul li a, .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+    color: #b4bcc8;
+    border-top: 1px solid #3d4957;
+}
+
+.sidebar .nav > li > a:hover,
+.sidebar .nav > li > a:focus,
+.sidebar .nav ul.nav-second-level li.active > a,
+.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+    background: #2C3542;
+    border-color: transparent;
+}
+
+.sidebar .nav > li.active > a,
+.root.nav .open > a, .root.nav .open > a:hover, .root.nav .open > a:focus {
+    background: #EF4A34;
+    color: #fff;
+}
+
+.sidebar ul li:last-child > a {
+    border-bottom: 1px solid transparent !important;
+}
+
+
+/***********************************************************/
+/*Form control*/
+/***********************************************************/
+.btn, .input-group-addon, .form-control {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+/***********************************************************/
+/*Layout*/
+/***********************************************************/
+.box {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+
+.box-layout {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px dashed transparent;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+
+.box > h3, .box-layout > h3 {
+    color: #333;
+    border-color: #ddd;
+    border-bottom: 1px solid transparent;
+    background-repeat: repeat-x;
+    display: block;
+    font-size: 16px;
+    padding: 10px 15px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.box-layout > h3 {
+    padding: 5px 10px;
+}
+
+.box .content-title, .box .module-title {
+    float: left;
+    padding: 6px 15px;
+}
+
+.box .content-controls, .box .module-controls {
+    float: right;
+}
+
+.box .module-header {
+    background-color: #d9edf7;
+}
+
+.modal-dialog {
+    margin: 100px auto;
+}
+
+.box-padding {
+    padding: 15px;
+}
+
+.box-padding > h3 {
+    margin: -15px;
+    margin-bottom: 15px;
+}
+
+.box-grey {
+    border-color: #ddd;
+}
+
+.box-grey > h3 {
+    background-color: #f5f5f5;
+}
+
+.box-blue {
+    border-color: #bce8f1;
+}
+
+.box-blue > h3 {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+
+.box-yellow {
+    border-color: #faebcc;
+}
+
+.box-yellow > h3 {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+
+/***************************** Required styles *****************************/
+
+/**
+ * For the correct positioning of the placeholder element, the dnd-list and
+ * it's children must have position: relative
+ */
+.nestedDemo ul[dnd-list],
+.nestedDemo ul[dnd-list] > li {
+    position: relative;
+}
+
+/***************************** Dropzone Styling *****************************/
+
+/**
+ * The dnd-list should always have a min-height,
+ * otherwise you can't drop to it once it's empty
+ */
+.dnd-list, .nestedDemo .dropzone ul[dnd-list] {
+    min-height: 42px;
+    margin: 0px;
+    padding-left: 0px;
+}
+
+/**
+ * The dnd-lists's child elements currently MUST have
+ * position: relative. Otherwise we can not determine
+ * whether the mouse pointer is in the upper or lower
+ * half of the element we are dragging over. In other
+ * browsers we can use event.offsetY for this.
+ */
+.nestedDemo .dropzone li {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    display: block;
+    padding: 0px;
+}
+
+/**
+ * Reduce opacity of elements during the drag operation. This allows the user
+ * to see where he is dropping his element, even if the element is huge. The
+ * .dndDragging class is automatically set during the drag operation.
+ */
+.nestedDemo .dropzone .dndDragging {
+    opacity: 0.7;
+}
+
+/**
+ * The dndDraggingSource class will be applied to the source element of a drag
+ * operation. It makes sense to hide it to give the user the feeling that he's
+ * actually moving it. Note that the source element has also .dndDragging class.
+ */
+.nestedDemo .dropzone .dndDraggingSource {
+    display: none;
+}
+
+/**
+ * An element with .dndPlaceholder class will be added as child of the dnd-list
+ * while the user is dragging over it.
+ */
+.nestedDemo .dropzone .dndPlaceholder {
+    background-color: #ddd;
+    min-height: 30px;
+    display: block;
+    position: relative;
+}
+
+/***************************** Element Selection *****************************/
+
+.nestedDemo .dropzone .selected .item {
+    color: #3c763d;
+    background-color: #dff0d8;
+}
+
+.nestedDemo .dropzone .selected .box {
+    border-color: #2e6da4;
+}
+
+.nestedDemo .dropzone .selected .box > h3 {
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+}
+
+/***************************** Element type specific styles *****************************/
+
+.nestedDemo .dropzone .item {
+    padding: 10px 15px;
+}
+
+.nestedDemo .dropzone .container-element {
+    margin: 10px;
+}
+
+.nestedDemo .dropzone .container-element .column {
+    float: left;
+    width: 50%;
+}
+
+/***************************** Toolbox *****************************/
+
+.nestedDemo .toolbox ul {
+    list-style: none;
+    padding-left: 0px;
+    cursor: move;
+}
+
+.nestedDemo .toolbox button {
+    margin: 5px 0 5px 0;
+    width: 100%;
+    opacity: 1.0;
+    text-align: left;
+}
+
+.nestedDemo .toolbox .dndDragging {
+    opacity: 0.5;
+}
+
+.nestedDemo .toolbox .dndDraggingSource {
+    opacity: 1.0;
+}
+
+/***************************** Trashcan *****************************/
+
+.nestedDemo .trashcan ul {
+    list-style: none;
+    padding-left: 0px;
+}
+
+.nestedDemo .trashcan img {
+    width: 100%;
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    filter: grayscale(100%);
+}
+
+.nestedDemo .trashcan .dndDragover img {
+    width: 100%;
+    -webkit-filter: none;
+    -moz-filter: none;
+    filter: none;
+}
+
+.nestedDemo .trashcan .dndPlaceholder {
+    display: none;
+}
+
+
+.content-item {
+    background-color: #fff;
+    border: 1px;
+    display: block;
+    padding: 0;
+}
+
+.trashcan ul {
+    font-size: 5em;
+    text-align: center;
+}
+
+
+
+/***********************************************************/
+/*Angular Tree*/
+/***********************************************************/
+
+.angular-ui-tree-nodes .angular-ui-tree-nodes {
+    padding-left: 20px;
+}
+
+.tree-node.selected {
+    border-color: #3598dc;
+    background-image: none;
+    background-color: #3598dc;
+    color: #FFFFFF;
+}
+
+.tree-node {
+    background: #f5f5f5;
+    display: block;
+    height: 30px;
+    margin: 5px 0;
+    padding: 4px 10px 4px 10px;
+    text-decoration: none;
+    font-weight: 400;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+.tree-node a.expander, .tree-node a.expander:hover,
+.tree-node .node-actions a, .tree-node .node-actions a:hover {
+    color: #000;
+    text-decoration: none;
+}
+
+.tree-node.selected .node-actions a {
+    color: #FFFFFF;
+}
+
+.node-actions a {
+    margin-left: 10px;
+}
+
+.draggable-content {
+    margin-left: 10px;
+}
+
+.tree-node a.expander i {
+    font-size: 1.3em;
+    padding: 0 4px 0 4px;
+}
+
+.tree-node .node-actions {
+    display: none;
+}
+
+.tree-node:hover .node-actions {
+    display: block;
+}
+
+.angular-ui-tree-placeholder {
+    display: block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    min-height: 20px;
+    font-size: 13px;
+    line-height: 20px;
+    margin: 5px 0;
+    padding: 0;
+    min-height: 30px;
+    background: #f2fbff;
+    border: 1px dashed #b6bcbf;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+
+/*Form elements*/
+div.edit-page.form-horizontal .control-label {
+    text-align: left;
+}
+
+
+
+/*Layout Designer*/
+.layout-designer-container {
+    background: #fff;
+    min-height: 90vh;
+}
+
+.layout-controls {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.layout-controls h3.layout-title {
+    margin: 0;
+}
+
+.layout-controls .layout-dropdown .btn,
+.layout-controls .dropdown-menu {
+    width: 200px;
+}
+
+.layout-controls .layout-name {
+    width: 30%;
+}
+
+.layout-controls .layout-name input {
+    width: 100%;
+}
+
+.box.properties .row {
+    padding: 10px 0 10px 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+}
+
+.box.properties .row:first-of-type {
+    padding-top: 0px;
+}
+
+.box.properties .row:last-of-type {
+    padding-bottom: 0px;
+    border-bottom: none;
+}
+
+/*Edit mode*/
+body.edit-content-modal {
+    overflow: hidden;
+}
+
+.edit-content-modal .modal-lg {
+    width: 80%;
+}
+
+.edit-content-modal .modal-body {
+    height: 60vh;
+    overflow-x: auto;
+}
+
+
+.module-actions.dropdown-menu li {
+    border: none;
+}
+
+/*Image manager*/
+.image-manager .image-preview {
+    display: inline-block;
+}
+
+.image-manager-modal .modal-sm {
+    width: 900px;
+}
+
+.image-preview img {
+    height: 20vh;
+}
+
+.image-manager .info {
+    padding: 10px;
+}
+
+.drop-box {
+    background: #F8F8F8;
+    border: 5px dashed #DDD;
+    text-align: center;
+    padding: 20px 10px;
+}
+
+.image-manager-modal {
+    .tab-pane {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        padding: 10px;
+    }
+
+    .nav-tabs {
+        margin-bottom: 0;
+    }
+
+    .file-menu {
+        height: 300px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .image-preview {
+        height: 250px;
+    }
+
+    .list-group-item {
+        padding: 4px 8px;
+        border: none;
+    }
+
+    .list-group {
+        margin-top: 10px;
+    }
+}

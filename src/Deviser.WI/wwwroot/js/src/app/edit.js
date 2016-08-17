@@ -158,7 +158,7 @@
             else {
                 moduleId = item.moduleAction.module.id;
             }
-            
+
             moduleActionService.getEditActions(moduleId).then(function (editActions) {
                 if (!vm.selectedItem.pageModule) {
                     vm.selectedItem.pageModule = {};
@@ -171,7 +171,7 @@
         }
 
         function openModuleActionEdit(moduleAction) {
-            var defer = $q.defer();            
+            var defer = $q.defer();
             var modalInstance = $uibModal.open({
                 animation: true,
                 size: 'lg',
@@ -417,7 +417,7 @@
                     moduleAction: pageModule.moduleAction,
                     pageModule: pageModule,
                     sortOrder: pageModule.sortOrder,
-                    isUnassigned:true
+                    isUnassigned: true
                 };//JSON.parse(pageModule.module);
                 unAssignedModules.push(module);
             })
@@ -823,9 +823,8 @@
                 //load correct translation
                 var translation = getTranslationForLocale(vm.selectedLocale.cultureCode);
                 vm.contentTranslation = translation;
-                if (typeof (vm.contentTranslation.contentData) === 'string') {
-                    deserializeContentTranslation();
-                }
+                deserializeContentTranslation();
+
             });
         }
 
@@ -898,7 +897,9 @@
         }
 
         function deserializeContentTranslation() {
-            if (vm.contentType.dataType && (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object')) {
+            if (vm.contentType.dataType &&
+                (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object') &&
+                typeof (vm.contentTranslation.contentData) === 'string') {
                 vm.contentTranslation.contentData = JSON.parse(vm.contentTranslation.contentData);
             }
         }
@@ -1027,12 +1028,12 @@
             }
         }
 
-        function save() {            
+        function save() {
             var pageModule = {
                 id: vm.pageModule.id,
                 pageId: vm.pageModule.pageId,
                 inheritViewPermissions: vm.inheritViewPermissions,
-                inheritEditPermissions : vm.inheritEditPermissions,
+                inheritEditPermissions: vm.inheritEditPermissions,
                 modulePermissions: vm.pageModule.modulePermissions
             }
             pageModuleService.putPermission(pageModule).then(function (data) {
@@ -1173,12 +1174,12 @@
             }
         }
 
-        function save() {            
+        function save() {
             var pageContent = {
                 id: vm.pageContent.id,
-                pageId:vm.pageContent.pageId,
+                pageId: vm.pageContent.pageId,
                 inheritViewPermissions: vm.inheritViewPermissions,
-                inheritEditPermissions:vm.inheritEditPermissions,
+                inheritEditPermissions: vm.inheritEditPermissions,
                 contentPermissions: vm.pageContent.contentPermissions
             }
             pageContentService.putPermission(pageContent).then(function (data) {

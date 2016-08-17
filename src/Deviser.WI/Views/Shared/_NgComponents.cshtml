@@ -54,9 +54,12 @@
                         </button>
                     </span>
                 </div><!-- /input-group -->
-                <ul class="list-group file-menu">
-                    <a class="list-group-item" ng-repeat="file in imVM.images | filter:imVM.searchText | orderBy:'Name'" ng-class="{'active':imVM.imageSource === file.path}" ng-click="imVM.selectImage(file)">{{file.name}}</a>
-                </ul>
+                <div class="list-group file-menu">
+                    <a class="list-group-item" 
+                       ng-repeat="file in imVM.images | filter:imVM.searchText | orderBy:'Name'" 
+                       ng-class="{'active':imVM.isActive(file)}" 
+                       ng-click="imVM.selectImage(file)">{{file.name}}</a>
+                </div>
             </div>
             <div class="col-md-8 image-chooser">
                 <div class="row">

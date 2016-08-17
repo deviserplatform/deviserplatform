@@ -114,6 +114,7 @@
         vm.selectImage = selectImage;
         vm.yes = yes;
         vm.no = no;
+        vm.isActive = isActive;
         vm.onFileSelect = onFileSelect;
         vm.cropImage = cropImage;
         vm.focusImage = focusImage;
@@ -130,10 +131,11 @@
                 w: 0,
                 h: 0
             };
+            vm.selectedTab = 'PREVIEW';
             if (vm.imageSource) {
                 setImage(vm.imageSource);
+                vm.imageSource = vm.imageSource.split("?")[0];
             }
-
             getCropSize();
         }
 
@@ -168,6 +170,15 @@
             $uibModalInstance.dismiss('cancel');
         }
 
+        function isActive(file) {
+            if (file && file.path) {
+                var path = file.path.split('?')[0];
+                vm.imageSource = vm.imageSource.split('?')[0];
+                return vm.imageSource === path;
+            }
+            return false;
+        }
+
         function getImages() {
             assetService.get().then(function (images) {
                 _.forEach(images, function (image) {
@@ -183,6 +194,7 @@
             init();
             console.log(data);
             vm.imageSource = data.data[0];
+            vm.imageSource += '?' + Math.random() * 100;
             showMessage("success", "File uploaded successfully!");
         }
 

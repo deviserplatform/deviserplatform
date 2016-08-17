@@ -6,7 +6,7 @@
         <div class="form-group" ng-show="!ecVM.isDetailView">
             <ui-select ng-model="ecVM.selectedLocale" theme="bootstrap" ng-disabled="ecVM.languages.length<=0" ng-change="ecVM.changeLanguage()">
                 <ui-select-match placeholder="Coose a language">{{$select.selected.englishName}}</ui-select-match>
-                <ui-select-choices repeat="language.cultureCode as language in ecVM.languages | filter: $select.search">
+                <ui-select-choices repeat="language in ecVM.languages | filter: $select.search">
                     <div ng-bind-html="language.englishName | highlight: $select.search"></div>
                     <small ng-bind-html="language.nativeName | highlight: $select.search"></small>
                 </ui-select-choices>
@@ -48,11 +48,7 @@
             <div class="form-group">
                 <label for="txtTitle">Title</label>
                 <input type="text" id="txtTitle" ng-model="ecVM.selectedItem.title" class="form-control" placeholder="Enter title">
-            </div>
-            <div class="form-group">
-                <label for="txtTitle">Title</label>
-                <input type="text" id="txtTitle" ng-model="ecVM.selectedItem.title1" class="form-control" placeholder="Enter title">
-            </div>
+            </div>            
             <div class="form-group">
                 <label for="txtDescrption">Description</label>
                 <textarea id="txtDescription" class="form-control" ng-model="ecVM.selectedItem.description" laceholder="Enter description"></textarea>
@@ -60,14 +56,18 @@
             
             <div sd-image-manager src="ecVM.selectedItem.imageUrl" alt="ecVM.selectedItem.imageAltText" focus-point="ecVM.selectedItem.focusPoint"></div>
 
-            <a class="btn btn-primary" ng-click="ecVM.updateItem()">Update Slide</a>
-            <a class="btn btn-default" ng-click="ecVM.cancelDetailView()">Back to List</a>
         </div>
 
     </div>
-    <div class="modal-footer" ng-show="!ecVM.isDetailView">
-        <button class="btn btn-primary" type="button" ng-click="ecVM.save()">Save</button>
-        <button class="btn btn-warning" type="button" ng-click="ecVM.cancel()">Cancel</button>
+    <div class="modal-footer">
+        <div ng-show="!ecVM.isDetailView">
+            <button class="btn btn-primary" type="button" ng-click="ecVM.save()" ng-disabled="ecVM.isDetailView">Save</button>
+            <button class="btn btn-warning" type="button" ng-click="ecVM.cancel()" ng-disabled="ecVM.isDetailView">Cancel</button>
+        </div>
+        <div ng-show="ecVM.isDetailView">
+            <a class="btn btn-primary" ng-click="ecVM.updateItem()">Update Slide</a>
+            <a class="btn btn-default" ng-click="ecVM.cancelDetailView()">Back to List</a>
+        </div>
     </div>
 </script>
 
