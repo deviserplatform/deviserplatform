@@ -1,0 +1,46 @@
+﻿@model DynamicContent
+@inject IScopeService scopeService
+@{
+    var pageContext = scopeService.PageContext;
+    var currentCulture = pageContext.CurrentCulture.ToString();
+
+    dynamic rootObj = Model.Content;
+    int totalItems = 0;
+    if (rootObj != null)
+    {
+        totalItems = rootObj.items.Count;
+    }
+
+    var id = "accordion" + Model.PageContent.Id.ToString();
+
+}
+
+@if (rootObj != null)
+{
+    <div class="panel-group" id="@id" role="tablist" aria-multiselectable="true">
+        @foreach (var item in rootObj.items)
+        {
+            var itemId = "pane" + item.id;
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#@id" href="#@itemId" aria-expanded="true" aria-controls="@itemId">
+                            @item.title
+                        </a>
+                    </h4>
+                </div>
+                <div id="@itemId" class="panel-collapse collapse @(item.viewOrder == 1 ? "in" : "")" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        @item.description
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div>
+        Please enter the content
+    </div>
+}

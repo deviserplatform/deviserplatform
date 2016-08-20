@@ -6209,7 +6209,7 @@ body.edit-content-modal {
   width: 80%; }
 
 .edit-content-modal .modal-body {
-  height: 60vh;
+  max-height: 60vh;
   overflow-x: auto; }
 
 .module-actions.dropdown-menu li {

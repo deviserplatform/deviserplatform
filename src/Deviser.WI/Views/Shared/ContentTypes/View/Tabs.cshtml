@@ -1,0 +1,46 @@
+﻿@model DynamicContent
+@inject IScopeService scopeService
+@{
+    var pageContext = scopeService.PageContext;
+    var currentCulture = pageContext.CurrentCulture.ToString();
+
+    dynamic rootObj = Model.Content;
+    int totalItems = 0;
+    if (rootObj != null)
+    {
+        totalItems = rootObj.items.Count;
+    }
+    int index = 0;
+
+}
+
+@if (rootObj != null)
+{
+    <!-- Indicators -->
+    <ul class="nav nav-tabs" role="tablist">
+        @foreach (var item in rootObj.items)
+        {
+            var id = "tabPane" + item.id;
+            <li role="presentation" class="@(item.viewOrder == 1 ? "active" : "")">
+                <a href="#@id" aria-controls="home" role="tab" data-toggle="tab">@item.title</a>
+            </li>
+            index++;
+        }
+    </ul>
+
+    <div class="tab-content">
+        @foreach (var item in rootObj.items)
+        {
+            var id = "tabPane" + item.id;
+            <div id="@id" role="tabpanel" class="tab-pane @(item.viewOrder == 1 ? "active" : "")">
+                @item.description
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div>
+        Please enter the content
+    </div>
+}

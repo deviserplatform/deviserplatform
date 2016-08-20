@@ -11,13 +11,18 @@
 
 @if (rootObj != null)
 {
-    <div>            
-         @Html.Raw(rootObj)
-        @videoType.SelectedOption.Name
+    <div class="video-container">
+        <a class="video popup-video" href="@rootObj.videoUrl">
+            <div class="thumb-text">
+                <i class="fa fa-play-circle" aria-hidden="true"></i>
+            </div>
+            <img src="@rootObj.imageUrl" alt="@rootObj.imageAltText">
+        </a>
     </div>
 }
-else{
-    <div>        
+else
+{
+    <div>
         Please enter the content
     </div>
 }

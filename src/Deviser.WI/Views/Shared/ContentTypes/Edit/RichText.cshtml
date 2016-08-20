@@ -1,4 +1,4 @@
-﻿<script type="text/ng-template" id="contenttypes/text.html">
+﻿<script type="text/ng-template" id="contenttypes/richtext.html">
     <div class="modal-header">
         <h3 class="modal-title">Edit {{ecVM.typeInfo.type}}</h3>
     </div>
@@ -7,9 +7,7 @@
         <div sd-language-selector selected-locale="ecVM.selectedLocale" change-language="ecVM.changeLanguage()"></div>
 
         <div class="form-group">
-            <textarea class="form-control" ng-model="ecVM.contentTranslation.contentData">
-
-            </textarea>
+            <div text-angular ng-model="ecVM.contentTranslation.contentData"></div>
         </div>        
     </div>
     <div class="modal-footer">

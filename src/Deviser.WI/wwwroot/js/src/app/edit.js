@@ -6,11 +6,15 @@
     'ui.bootstrap',
     'ui.select',
     'dndLists',
+    'textAngular',
     'sd.sdlib',
     'deviser.services',
     'deviser.config',
-    'modules.app.imageManager'
+    'modules.app.imageManager',
+    'modules.app.languageSelector'
     ]);
+
+    app.config(['$provide', config]);
 
     app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$uibModal', 'globals', 'sdUtil', 'layoutService', 'pageService',
         'contentTypeService', 'pageContentService', 'moduleService', 'moduleActionService', 'pageModuleService', editCtrl]);
@@ -26,8 +30,21 @@
     app.controller('ContentPermissionCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', 'sdUtil', 'globals', 'roleService', 'pageContentService',
         'pageContent', contentPermissionCtrl]);
 
+
     ////////////////////////////////
     /*Function declarations only*/
+    function config($provide) {
+        $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function (taRegisterTool, taOptions) {
+            taOptions.toolbar = [
+                 ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
+                 ['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo', 'clear'],
+                 ['justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'outdent'],
+                 ['html', 'wordcount', 'charcount']
+            ];
+            return taOptions;
+        }]);
+    }
+
     function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, sdUtil, layoutService, pageService,
         contentTypeService, pageContentService, moduleService, moduleActionService, pageModuleService) {
         var vm = this;
@@ -88,12 +105,11 @@
             console.log('-----------------------');
             console.log('insertedCallback');
             console.log('-----------------------');
-            if (!item.id || item.isUnassigned) {
-                //Update element only when new item has been added
-                console.log('updatingElement');
-                updateElements(parentScope.item);
-            }
 
+            console.log('updatingElement');
+            //Update elements should be called each time even if the item is not new,
+            //because when a item moved from one placeholder to another placeholder container should be updated!
+            updateElements(parentScope.item);
         }
 
         function dropCallback(event, index, item) {
