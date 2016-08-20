@@ -3,6 +3,7 @@
 /// <reference path="js/admin/main.js" />
 /// <reference path="js/site.js" />
 /// <reference path="js/src/app/components/imagemanager.js" />
+/// <reference path="js/src/app/components/language-selector.js" />
 /// <reference path="js/src/app/config.js" />
 /// <reference path="js/src/app/content-management/contentType.js" />
 /// <reference path="js/src/app/content-management/layoutTypes.js" />
