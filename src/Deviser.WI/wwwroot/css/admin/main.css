@@ -6118,8 +6118,6 @@ body {
   text-decoration: none;
   font-weight: 400;
   border: 1px solid #ccc;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
   box-sizing: border-box; }
 
 .tree-node a.expander, .tree-node a.expander:hover,

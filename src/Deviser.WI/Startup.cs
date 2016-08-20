@@ -36,7 +36,7 @@ namespace Deviser.WI
             Log.Logger = new LoggerConfiguration()
                 //.Enrich.FromLogContext()
                 .MinimumLevel.Debug()
-                .WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "log-{Date}.txt"))
+                .WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "log", "log-{Date}.txt"))
                 .CreateLogger();
 
 
@@ -175,7 +175,7 @@ namespace Deviser.WI
 
             app.UseMvc(routeBuilder);
 
-            
+
         }
     }
 }

@@ -59,9 +59,12 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
                     IconClass = table.Column<string>(nullable: true),
                     IconImage = table.Column<string>(nullable: true),
+                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
                     Label = table.Column<string>(nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true),
                     LayoutTypeIds = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true)
                 },
@@ -106,6 +109,7 @@ namespace Deviser.WI.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
                     Entity = table.Column<string>(nullable: true),
                     Label = table.Column<string>(nullable: true),
                     LastModifiedDate = table.Column<DateTime>(nullable: true),
@@ -121,7 +125,10 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
                     Label = table.Column<string>(nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true),
                     List = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true)
                 },
@@ -220,9 +227,12 @@ namespace Deviser.WI.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     ContentDataTypeId = table.Column<Guid>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
                     IconClass = table.Column<string>(nullable: true),
                     IconImage = table.Column<string>(nullable: true),
+                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
                     Label = table.Column<string>(nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     SortOrder = table.Column<int>(nullable: false)
                 },
@@ -309,7 +319,10 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
                     Label = table.Column<string>(nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     PropertyOptionListId = table.Column<Guid>(nullable: true)
                 },
@@ -418,6 +431,8 @@ namespace Deviser.WI.Migrations
                     ContainerId = table.Column<Guid>(nullable: false),
                     ContentTypeId = table.Column<Guid>(nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    InheritEditPermissions = table.Column<bool>(nullable: false, defaultValue: true),
+                    InheritViewPermissions = table.Column<bool>(nullable: false, defaultValue: true),
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
                     LastModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     PageId = table.Column<Guid>(nullable: false),
@@ -483,11 +498,12 @@ namespace Deviser.WI.Migrations
                     Keywords = table.Column<string>(maxLength: 500, nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: true),
                     Title = table.Column<string>(maxLength: 200, nullable: true),
-                    URL = table.Column<string>(maxLength: 255, nullable: true)
+                    URL = table.Column<string>(maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PageTranslation", x => new { x.PageId, x.Locale });
+                    table.UniqueConstraint("AK_PageTranslation_URL", x => x.URL);
                     table.ForeignKey(
                         name: "FK_PageTranslation_Page_PageId",
                         column: x => x.PageId,
@@ -502,6 +518,8 @@ namespace Deviser.WI.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     ContainerId = table.Column<Guid>(nullable: false),
+                    InheritEditPermissions = table.Column<bool>(nullable: false, defaultValue: true),
+                    InheritViewPermissions = table.Column<bool>(nullable: false, defaultValue: true),
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
                     ModuleActionId = table.Column<Guid>(nullable: false),
                     ModuleId = table.Column<Guid>(nullable: false),
@@ -582,6 +600,38 @@ namespace Deviser.WI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ContentPermission",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    PageContentId = table.Column<Guid>(nullable: false),
+                    PermissionId = table.Column<Guid>(nullable: false),
+                    RoleId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContentPermission", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ContentPermission_PageContent_PageContentId",
+                        column: x => x.PageContentId,
+                        principalTable: "PageContent",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ContentPermission_Permission_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "Permission",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ContentPermission_Role_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Role",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PageContentTranslation",
                 columns: table => new
                 {
@@ -603,6 +653,53 @@ namespace Deviser.WI.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "ModulePermission",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    PageModuleId = table.Column<Guid>(nullable: false),
+                    PermissionId = table.Column<Guid>(nullable: false),
+                    RoleId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ModulePermission", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ModulePermission_PageModule_PageModuleId",
+                        column: x => x.PageModuleId,
+                        principalTable: "PageModule",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ModulePermission_Permission_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "Permission",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ModulePermission_Role_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Role",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContentPermission_PageContentId",
+                table: "ContentPermission",
+                column: "PageContentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContentPermission_PermissionId",
+                table: "ContentPermission",
+                column: "PermissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContentPermission_RoleId",
+                table: "ContentPermission",
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ContentType_ContentDataTypeId",
@@ -638,6 +735,21 @@ namespace Deviser.WI.Migrations
                 name: "IX_FK_ModuleActions_Modules",
                 table: "ModuleAction",
                 column: "ModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModulePermission_PageModuleId",
+                table: "ModulePermission",
+                column: "PageModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModulePermission_PermissionId",
+                table: "ModulePermission",
+                column: "PermissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModulePermission_RoleId",
+                table: "ModulePermission",
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Page_LayoutId",
@@ -755,6 +867,9 @@ namespace Deviser.WI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ContentPermission");
+
+            migrationBuilder.DropTable(
                 name: "ContentTypeProperty");
 
             migrationBuilder.DropTable(
@@ -764,10 +879,10 @@ namespace Deviser.WI.Migrations
                 name: "LayoutTypeProperty");
 
             migrationBuilder.DropTable(
-                name: "PageContentTranslation");
+                name: "ModulePermission");
 
             migrationBuilder.DropTable(
-                name: "PageModule");
+                name: "PageContentTranslation");
 
             migrationBuilder.DropTable(
                 name: "PagePermission");
@@ -803,10 +918,10 @@ namespace Deviser.WI.Migrations
                 name: "Property");
 
             migrationBuilder.DropTable(
-                name: "PageContent");
+                name: "PageModule");
 
             migrationBuilder.DropTable(
-                name: "ModuleAction");
+                name: "PageContent");
 
             migrationBuilder.DropTable(
                 name: "Permission");
@@ -819,6 +934,9 @@ namespace Deviser.WI.Migrations
 
             migrationBuilder.DropTable(
                 name: "PropertyOptionList");
+
+            migrationBuilder.DropTable(
+                name: "ModuleAction");
 
             migrationBuilder.DropTable(
                 name: "ContentType");
