@@ -202,6 +202,17 @@ namespace Deviser.Core.Library
             return false;
         }
 
+        public string NavigateUrl(string pageId, string locale = null)
+        {
+            if (!string.IsNullOrEmpty(pageId))
+            {
+                Guid id = Guid.Parse(pageId);
+                var page = pageProvider.GetPage(id);
+                return NavigateUrl(page, locale);
+            }
+            return string.Empty;
+        }
+
         public string NavigateUrl(Guid pageId, string locale = null)
         {
             var page = pageProvider.GetPage(pageId);

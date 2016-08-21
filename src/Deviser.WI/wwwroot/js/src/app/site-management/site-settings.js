@@ -76,6 +76,7 @@
                 });
             })
         }
+
         function getLayouts() {
             layoutService.get().then(function (layouts) {
                 vm.layouts = layouts;                

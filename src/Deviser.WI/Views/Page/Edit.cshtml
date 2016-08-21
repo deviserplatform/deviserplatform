@@ -302,7 +302,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 col-md-offset-6" ng-show="editVM.selectedItem.contentType">
-                            <a class="btn btn-primary" ng-click="editVM.saveProperties()">Save</a>
+                            <a class="btn btn-primary" ng-click="editVM.saveProperties()" ng-disabled="!editVM.selectedItem.isPropertyChanged">Save</a>
                         </div>
                     </div>
                 </div>
