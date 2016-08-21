@@ -190,10 +190,7 @@
     }
 
     function moduleService($http, $q, globals) {
-        var service = baseService($http, $q, globals, '/module');
-        service.put = null;
-        service.post = null;
-        service.remove = null;
+        var service = baseService($http, $q, globals, '/module');       
         return service;
     }
 
@@ -201,10 +198,7 @@
         var serviceUrl = '/moduleaction';
         var service = baseService($http, $q, globals, serviceUrl);
         service.getEditActions = getEditActions;
-        service.getEditActionView = getEditActionView;
-        service.put = null;
-        service.post = null;
-        service.remove = null;
+        service.getEditActionView = getEditActionView;       
         return service;
 
         function getEditActions(id) {

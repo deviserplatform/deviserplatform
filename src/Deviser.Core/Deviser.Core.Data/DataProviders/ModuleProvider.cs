@@ -13,13 +13,14 @@ namespace Deviser.Core.Data.DataProviders
     {
         List<Module> Get();
         Module Get(Guid moduleId);
+        ModuleAction GetModuleAction(Guid moduleActionId);
         List<ModuleAction> GetModuleActions();
         List<ModuleAction> GetEditModuleActions(Guid moduleId);
         Module Get(string moduleName);
         Module Create(Module module);
         Module Update(Module module);
-        ModuleAction Create(ModuleAction moduleActions);
-        ModuleAction Update(ModuleAction moduleActions);
+        ModuleAction CreateModuleAction(ModuleAction moduleAction); 
+        ModuleAction UpdateModuleAction(ModuleAction moduleAction);
     }
 
     public class ModuleProvider : DataProviderBase, IModuleProvider
@@ -47,6 +48,26 @@ namespace Deviser.Core.Data.DataProviders
                         .ToList();
 
                     return new List<Module>(returnData);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting Get", ex);
+            }
+            return null;
+        }
+
+        public ModuleAction GetModuleAction(Guid moduleActionId)
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    var returnData = context.ModuleAction
+                        .Where(m => m.Id == moduleActionId)
+                        .FirstOrDefault();
+                    return returnData;
+                    
                 }
             }
             catch (Exception ex)
@@ -104,7 +125,7 @@ namespace Deviser.Core.Data.DataProviders
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
-                    Module returnData = context.Module
+                    var returnData = context.Module
                               .Where(e => e.Id == moduleId)
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) // ("ModuleActions.ModuleActionType")
                               .FirstOrDefault();
@@ -124,7 +145,7 @@ namespace Deviser.Core.Data.DataProviders
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
-                    Module returnData = context.Module
+                    var returnData = context.Module
                               .Where(e => e.Name == moduleName)
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
                               .FirstOrDefault();
@@ -144,8 +165,7 @@ namespace Deviser.Core.Data.DataProviders
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
-                    Module resultModule;
-                    resultModule = context.Module.Add(module).Entity;
+                    var resultModule = context.Module.Add(module).Entity;
                     context.SaveChanges();
                     return resultModule;
                 }
@@ -161,9 +181,8 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 using (var context = new DeviserDBContext(dbOptions))
-                {
-                    Module resultModule;
-                    resultModule = context.Module.Attach(module).Entity;
+                {                    
+                    var resultModule = context.Module.Attach(module).Entity;
                     context.Entry(module).State = EntityState.Modified;
                     context.SaveChanges();
                     return resultModule;
@@ -175,15 +194,14 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-
-        public ModuleAction Create(ModuleAction moduleActions)
+        
+        public ModuleAction CreateModuleAction(ModuleAction moduleAction)
         {
             try
             {
                 using (var context = new DeviserDBContext(dbOptions))
-                {
-                    ModuleAction resultModuleAction;
-                    resultModuleAction = context.ModuleAction.Add(moduleActions).Entity;
+                {   
+                    var resultModuleAction = context.ModuleAction.Add(moduleAction).Entity;
                     context.SaveChanges();
                     return resultModuleAction;
                 }
@@ -194,15 +212,14 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-        public ModuleAction Update(ModuleAction moduleActions)
+        public ModuleAction UpdateModuleAction(ModuleAction moduleAction)
         {
             try
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
-                    ModuleAction resultModuleAction;
-                    resultModuleAction = context.ModuleAction.Attach(moduleActions).Entity;
-                    context.Entry(moduleActions).State = EntityState.Modified;
+                    var resultModuleAction = context.ModuleAction.Attach(moduleAction).Entity;
+                    context.Entry(moduleAction).State = EntityState.Modified;
                     context.SaveChanges();
                     return resultModuleAction;
                 }

@@ -12,6 +12,7 @@
 /// <reference path="js/src/app/imageManager.js" />
 /// <reference path="js/src/app/language/app.js" />
 /// <reference path="js/src/app/layout.js" />
+/// <reference path="js/src/app/module-management/module.js" />
 /// <reference path="js/src/app/page-management/app.js" />
 /// <reference path="js/src/app/sd-form-helper.js" />
 /// <reference path="js/src/app/sdlib.js" />
