@@ -7,13 +7,13 @@
     Layout = null;
     var pageContext = scopeService.PageContext;
     var translation = Model.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
-
+    var siteRoot = pageContext.SiteSetting.SiteRoot;
 }
 
 @if (Model.PageLevel == 0)
 {
     <li>
-        <a href="/@Globals.HomePageUrl">
+        <a href="@pageContext.HomePageFullUrl">
             <i class="fa fa-home"></i>
             <span class="title">Back to Home</span>
         </a>
@@ -24,7 +24,7 @@
         string activeClass = (page.IsActive || page.IsBreadCrumb) ? "active open" : "";
         if (translation != null)
         {
-            translation.URL = Globals.SiteRoot + translation.URL;
+            translation.URL = pageContext.SiteSetting.SiteRoot + translation.URL;
             <li class=" @activeClass ">
                 <a href="#"> @translation.Name<span class="fa arrow"></span></a>
                 @if (page.ChildPage != null && page.ChildPage.Count > 0)
@@ -45,7 +45,7 @@ else if (Model.PageLevel == 1)
             var hasChild = page.ChildPage != null && page.ChildPage.Count > 0;
             if (translation != null)
             {
-                translation.URL = Globals.SiteRoot + translation.URL;
+                translation.URL = siteRoot + translation.URL;
                 <li class="@activeClass">
                     <a href="@translation.URL">
                         @translation.Name
@@ -71,7 +71,7 @@ else if (Model.PageLevel == 2)
             translation = page.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
             if (translation != null)
             {
-                translation.URL = Globals.SiteRoot + translation.URL;
+                translation.URL = siteRoot + translation.URL;
                 <li class="@activeClass">
                     <a href="@translation.URL">
                         @translation.Name

@@ -147,6 +147,10 @@ namespace Deviser.Core.Data.Entities
 
                 entity.Property(e => e.InheritViewPermissions).HasDefaultValue(true);
 
+                entity.Property(e => e.InheritEditPermissions).HasDefaultValue(true);
+
+                entity.Ignore(e => e.HasEditPermission);
+
                 entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Page).WithMany(p => p.PageContent).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
@@ -184,6 +188,10 @@ namespace Deviser.Core.Data.Entities
 
                 entity.Property(e => e.InheritViewPermissions).HasDefaultValue(true);
 
+                entity.Property(e => e.InheritEditPermissions).HasDefaultValue(true);
+
+                entity.Ignore(e => e.HasEditPermission);
+
                 entity.HasOne(d => d.Module).WithMany(p => p.PageModule).HasForeignKey(d => d.ModuleId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(d => d.Page).WithMany(p => p.PageModule).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
@@ -202,6 +210,8 @@ namespace Deviser.Core.Data.Entities
                 entity.Property(e => e.Keywords).HasMaxLength(500);
 
                 entity.Property(e => e.Name).HasMaxLength(100);
+
+                entity.HasAlternateKey("URL");
 
                 entity.Property(e => e.Title).HasMaxLength(200);
 

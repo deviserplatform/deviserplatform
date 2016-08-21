@@ -6,6 +6,7 @@
 @{
     Layout = null;
     var pageContext = scopeService.PageContext;
+    var siteRoot = pageContext.SiteSetting.SiteRoot;
 }
 
 <ul class="page-breadcrumb">
@@ -14,7 +15,7 @@
         var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
         if (translation != null)
         {
-            translation.URL = Globals.SiteRoot + translation.URL;
+            translation.URL = siteRoot + translation.URL;
             <li>
                 @if (Model.First() == page)
                 {

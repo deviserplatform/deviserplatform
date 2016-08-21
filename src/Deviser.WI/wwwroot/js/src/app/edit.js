@@ -6,11 +6,15 @@
     'ui.bootstrap',
     'ui.select',
     'dndLists',
+    'textAngular',
     'sd.sdlib',
     'deviser.services',
     'deviser.config',
-    'modules.app.imageManager'
+    'modules.app.imageManager',
+    'modules.app.languageSelector'
     ]);
+
+    app.config(['$provide', config]);
 
     app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$uibModal', 'globals', 'sdUtil', 'layoutService', 'pageService',
         'contentTypeService', 'pageContentService', 'moduleService', 'moduleActionService', 'pageModuleService', editCtrl]);
@@ -26,8 +30,21 @@
     app.controller('ContentPermissionCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', 'sdUtil', 'globals', 'roleService', 'pageContentService',
         'pageContent', contentPermissionCtrl]);
 
+
     ////////////////////////////////
     /*Function declarations only*/
+    function config($provide) {
+        $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function (taRegisterTool, taOptions) {
+            taOptions.toolbar = [
+                 ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
+                 ['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo', 'clear'],
+                 ['justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'outdent'],
+                 ['html', 'wordcount', 'charcount']
+            ];
+            return taOptions;
+        }]);
+    }
+
     function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, sdUtil, layoutService, pageService,
         contentTypeService, pageContentService, moduleService, moduleActionService, pageModuleService) {
         var vm = this;
@@ -87,18 +104,12 @@
             var containerId = parentScope.item.id;
             console.log('-----------------------');
             console.log('insertedCallback');
-            console.log('event:');
-            console.log(event);
-            console.log('parentScope:');
-            console.log(parentScope);
-            console.log('item:');
-            console.log(item);
             console.log('-----------------------');
-            if (!item.id) {
-                //Update element only when new item has been added
-                updateElements(parentScope.item);
-            }
 
+            console.log('updatingElement');
+            //Update elements should be called each time even if the item is not new,
+            //because when a item moved from one placeholder to another placeholder container should be updated!
+            updateElements(parentScope.item);
         }
 
         function dropCallback(event, index, item) {
@@ -163,7 +174,7 @@
             else {
                 moduleId = item.moduleAction.module.id;
             }
-            
+
             moduleActionService.getEditActions(moduleId).then(function (editActions) {
                 if (!vm.selectedItem.pageModule) {
                     vm.selectedItem.pageModule = {};
@@ -176,7 +187,7 @@
         }
 
         function openModuleActionEdit(moduleAction) {
-            var defer = $q.defer();            
+            var defer = $q.defer();
             var modalInstance = $uibModal.open({
                 animation: true,
                 size: 'lg',
@@ -409,6 +420,7 @@
 
             _.forEach(unAssignedSrcConents, function (pageContent) {
                 var content = getPageContentWithProperties(pageContent);
+                content.isUnassigned = true;
                 unAssignedContents.push(content);
             });
 
@@ -420,7 +432,8 @@
                     type: "module",
                     moduleAction: pageModule.moduleAction,
                     pageModule: pageModule,
-                    sortOrder: pageModule.sortOrder
+                    sortOrder: pageModule.sortOrder,
+                    isUnassigned: true
                 };//JSON.parse(pageModule.module);
                 unAssignedModules.push(module);
             })
@@ -580,7 +593,7 @@
                     pageContent.id = vm.newGuid(); //Id shoud be generated only on client side
                     pageContent.pageId = pageContext.currentPageId;
                     pageContent.contentTypeId = item.element.contentType.id;
-
+                    pageContent.hasEditPermission = true; //New content always has edit permission
                     item.element.id = pageContent.id;
                     item.element.pageContent = pageContent;
 
@@ -626,7 +639,7 @@
 
         function updateModules(elementsToSort) {
             var defer = $q.defer();
-            var modules = [];
+            var modules = []; //pageModules
             _.forEach(elementsToSort.modules, function (item) {
                 var module = {
                     pageId: pageContext.currentPageId,
@@ -652,6 +665,8 @@
                     //newely created module                    
                     module.moduleId = item.element.moduleAction.module.id;
                     module.moduleActionId = item.element.moduleAction.id;
+                    module.hasEditPermission = true; //New content always has edit permission
+                    item.element.pageModule = module;
                 }
 
                 modules.push(module);
@@ -824,9 +839,8 @@
                 //load correct translation
                 var translation = getTranslationForLocale(vm.selectedLocale.cultureCode);
                 vm.contentTranslation = translation;
-                if (typeof (vm.contentTranslation.contentData) === 'string') {
-                    deserializeContentTranslation();
-                }
+                deserializeContentTranslation();
+
             });
         }
 
@@ -899,7 +913,9 @@
         }
 
         function deserializeContentTranslation() {
-            if (vm.contentType.dataType && (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object')) {
+            if (vm.contentType.dataType &&
+                (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object') &&
+                typeof (vm.contentTranslation.contentData) === 'string') {
                 vm.contentTranslation.contentData = JSON.parse(vm.contentTranslation.contentData);
             }
         }
@@ -947,8 +963,8 @@
             title: 'Module Permission',
             tableRowTitleView: 'View Module',
             tableRowTitleEdit: 'Edit Module'
-
         }
+        vm.administratorRoleId = administratorRoleId;
 
         /*Event handler bindings*/
         vm.isView = isView;
@@ -1029,10 +1045,11 @@
         }
 
         function save() {
-            vm.pageModule.inheritViewPermissions = vm.inheritViewPermissions;
             var pageModule = {
                 id: vm.pageModule.id,
+                pageId: vm.pageModule.pageId,
                 inheritViewPermissions: vm.inheritViewPermissions,
+                inheritEditPermissions: vm.inheritEditPermissions,
                 modulePermissions: vm.pageModule.modulePermissions
             }
             pageModuleService.putPermission(pageModule).then(function (data) {
@@ -1060,6 +1077,7 @@
             pageModuleService.get(pageModuleInfo.id).then(function (pageModule) {
                 vm.pageModule = pageModule;
                 vm.inheritViewPermissions = vm.pageModule.inheritViewPermissions;
+                vm.inheritEditPermissions = vm.pageModule.inheritEditPermissions;
             }, function (error) {
                 showMessage("error", "Cannot get all roles, please contact administrator");
             });
@@ -1091,8 +1109,8 @@
             title: 'Content Permission',
             tableRowTitleView: 'View Content',
             tableRowTitleEdit: 'Edit Content'
-
         }
+        vm.administratorRoleId = administratorRoleId;
 
         /*Event handler bindings*/
         vm.isView = isView;
@@ -1173,10 +1191,11 @@
         }
 
         function save() {
-            vm.pageContent.inheritViewPermissions = vm.inheritViewPermissions;
             var pageContent = {
                 id: vm.pageContent.id,
+                pageId: vm.pageContent.pageId,
                 inheritViewPermissions: vm.inheritViewPermissions,
+                inheritEditPermissions: vm.inheritEditPermissions,
                 contentPermissions: vm.pageContent.contentPermissions
             }
             pageContentService.putPermission(pageContent).then(function (data) {
@@ -1204,6 +1223,7 @@
             pageContentService.get(pageContentInfo.id).then(function (pageContent) {
                 vm.pageContent = pageContent;
                 vm.inheritViewPermissions = vm.pageContent.inheritViewPermissions;
+                vm.inheritEditPermissions = vm.pageContent.inheritEditPermissions;
             }, function (error) {
                 showMessage("error", "Cannot get all roles, please contact administrator");
             });

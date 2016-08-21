@@ -15,6 +15,7 @@ using System.Net;
 using System.Net.Http;
 using Deviser.Core.Library.Sites;
 using AutoMapper;
+using Deviser.Core.Library.Services;
 
 namespace DeviserWI.Controllers.API
 {
@@ -24,9 +25,10 @@ namespace DeviserWI.Controllers.API
         //Logger
         private readonly ILogger<PageModuleController> logger;
 
-        IPageProvider pageProvider;
-        IModuleManager moduleManager;
-        IPageManager pageManager;
+        private IPageProvider pageProvider;
+        private IModuleManager moduleManager;
+        private IPageManager pageManager;
+        private IScopeService scopeService;
 
         public PageModuleController(ILifetimeScope container)
         {
@@ -34,6 +36,7 @@ namespace DeviserWI.Controllers.API
             pageProvider = container.Resolve<IPageProvider>();
             moduleManager = container.Resolve<IModuleManager>();
             pageManager = container.Resolve<IPageManager>();
+            scopeService = container.Resolve<IScopeService>();
         }
 
         [HttpGet]
@@ -63,10 +66,10 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = moduleManager.GetPageModuleByPage(pageId);
-                if (result != null)
-                {
-                    //var filteredResult = result.Where(pm => moduleManager.HasEditPermission(pm)).ToList();
+                var dbResult = moduleManager.GetPageModuleByPage(pageId);                
+                if (dbResult != null)
+                {  
+                    var result = Mapper.Map<List<PageModule>>(dbResult);
                     return Ok(result);
                 }
                 return BadRequest();
@@ -139,7 +142,7 @@ namespace DeviserWI.Controllers.API
                 if (pageModule == null || pageModule.ModulePermissions == null || pageModule.ModulePermissions.Count == 0)
                     return BadRequest();
 
-                var page = pageProvider.GetPage(pageModule.Id);
+                var page = pageProvider.GetPage(pageModule.PageId);
                 if (pageManager.HasEditPermission(page)) //Check edit permission for the page
                 {
                     moduleManager.UpdateModulePermission(Mapper.Map<Deviser.Core.Data.Entities.PageModule>(pageModule));

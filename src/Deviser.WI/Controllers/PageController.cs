@@ -29,7 +29,6 @@ namespace Deviser.WI.Controllers
         private IPageProvider pageProvider;
         private IPageManager pageManager;
         private IDeviserControllerFactory deviserControllerFactory;
-        private ISiteBootstrapper siteBootstrapper;
         private IScopeService scopeService;
         private IContentManager contentManager;
         private IModuleManager moduleManager;
@@ -41,18 +40,16 @@ namespace Deviser.WI.Controllers
             pageProvider = container.Resolve<IPageProvider>();
             pageManager = container.Resolve<IPageManager>();
             deviserControllerFactory = container.Resolve<IDeviserControllerFactory>();
-            siteBootstrapper = container.Resolve<ISiteBootstrapper>();
             contentManager = container.Resolve<IContentManager>();
             moduleManager = container.Resolve<IModuleManager>();
             this.scopeService = scopeService;
-            siteBootstrapper.InitializeSite();
         }
 
         public async Task<IActionResult> Index(string permalink)
         {
             try
             {
-                Page currentPage = InitPageContext(permalink);
+                Page currentPage = scopeService.PageContext.CurrentPage;
                 FilterPageElements(currentPage);
                 if (currentPage != null)
                 {
@@ -78,7 +75,7 @@ namespace Deviser.WI.Controllers
 
         public IActionResult Layout(string permalink)
         {
-            Page currentPage = InitPageContext(permalink);
+            Page currentPage = scopeService.PageContext.CurrentPage;
             FilterPageElements(currentPage);
             if (scopeService.PageContext != null)
             {
@@ -91,7 +88,7 @@ namespace Deviser.WI.Controllers
 
         public IActionResult Edit(string permalink)
         {
-            Page currentPage = InitPageContext(permalink);
+            Page currentPage = scopeService.PageContext.CurrentPage;
             FilterPageElements(currentPage);
             if (currentPage != null && scopeService.PageContext != null)
             {
@@ -119,7 +116,7 @@ namespace Deviser.WI.Controllers
                 try
                 {
                     var pageModule = pageProvider.GetPageModule(pageModuleId); //It referes PageModule's View ModuleActionType
-                    InitPageContext(currentLink);
+                    
                     if (pageModule == null)
                         return NotFound();
 
@@ -147,36 +144,7 @@ namespace Deviser.WI.Controllers
             }
 
         }
-
-        private Page InitPageContext(string permalink)
-        {
-            Page currentPage = null;
-
-            if (string.IsNullOrEmpty(permalink))
-            {
-                permalink = Globals.HomePageUrl;
-                currentPage = Globals.HomePage;
-            }
-            else
-            {
-                string requestCulture = (RouteData.Values["culture"] != null) ? RouteData.Values["culture"].ToString() : CurrentCulture.ToString().ToLower();
-
-                if (!permalink.Contains(requestCulture))
-                    permalink = $"{requestCulture}/{permalink}";
-
-                currentPage = pageManager.GetPageByUrl(permalink, CurrentCulture.ToString());
-            }
-            PageContext pageContext = new PageContext();
-            pageContext.CurrentPageId = currentPage.Id;
-            pageContext.CurrentUrl = permalink;
-            pageContext.CurrentPage = currentPage;
-            pageContext.HasPageViewPermission = pageManager.HasViewPermission(currentPage);
-            pageContext.HasPageEditPermission = pageManager.HasEditPermission(currentPage);
-            scopeService.PageContext = pageContext; //Very important!!!
-            scopeService.PageContext.CurrentCulture = CurrentCulture; //Very important!!!
-            return currentPage;
-        }
-
+        
         private void FilterPageElements(Page currentPage)
         {
             if (currentPage != null)

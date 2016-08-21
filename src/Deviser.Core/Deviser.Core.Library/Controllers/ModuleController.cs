@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Autofac;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Library.Services;
 
 namespace Deviser.Core.Library.Controllers
 {
@@ -14,6 +14,7 @@ namespace Deviser.Core.Library.Controllers
     {
         private IPageProvider pageProvider;
         private IModuleProvider moduleProvider;
+        protected IScopeService scopeService;
 
         //public ILifetimeScope container { get; set; }
 
@@ -21,6 +22,7 @@ namespace Deviser.Core.Library.Controllers
         {
             pageProvider = container.Resolve<IPageProvider>();
             moduleProvider = container.Resolve<IModuleProvider>();
+            scopeService = container.Resolve<IScopeService>();
         }
 
         public ModuleContext ModuleContext { get; private set; }
@@ -41,6 +43,12 @@ namespace Deviser.Core.Library.Controllers
             if (context.RouteData.Values.TryGetValue("pageModuleId", out pageModuleId))
             {
                 ModuleContext.PageModuleId = (Guid)pageModuleId;
+            }
+
+            if (ModuleContext == null &&
+                (scopeService.ModuleContext.ModuleInfo != null || scopeService.ModuleContext.PageModuleId != null))
+            {
+                ModuleContext = scopeService.ModuleContext;
             }
         }
     }

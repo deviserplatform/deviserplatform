@@ -122,16 +122,16 @@ namespace Deviser.Core.Common
             }
         }
 
-        public static Page HomePage { get; set; }
+        //public static Page HomePage { get; set; }
 
-        public static string HomePageUrl
-        {
-            get
-            {
-                var homePageTranslation = HomePage.PageTranslation.FirstOrDefault(t => t.Locale == CurrentCulture.ToString());
-                return (homePageTranslation != null) ? homePageTranslation.URL : "";
-            }
-        }
+        //public static string HomePageUrl
+        //{
+        //    get
+        //    {
+        //        var homePageTranslation = HomePage.PageTranslation.FirstOrDefault(t => t.Locale == CurrentCulture.ToString());
+        //        return (homePageTranslation != null) ? homePageTranslation.URL : "";
+        //    }
+        //}
 
         public static string DefaultSkin
         {
@@ -149,7 +149,7 @@ namespace Deviser.Core.Common
             }
         }
 
-        public static string SiteRoot { get; set; }
+        //public static string SiteRoot { get; set; }
 
         public static Guid AdministratorRoleId
         {

@@ -58,10 +58,12 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dataResult = contentManager.Get(pageId, cultureCode);
-                var result = Mapper.Map<List<PageContent>>(dataResult);
-                if (result != null)
+                var dbResult = contentManager.Get(pageId, cultureCode);
+                if (dbResult != null)
+                {   
+                    var result = Mapper.Map<List<PageContent>>(dbResult);
                     return Ok(result);
+                }
                 return NotFound();
             }
             catch (Exception ex)

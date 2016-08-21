@@ -86,6 +86,7 @@ namespace Deviser.Core.Data.DataProviders
                     IEnumerable<ModuleAction> returnData = context.ModuleAction
                         .Include(ma => ma.Module)//.ThenInclude(ma=>ma.ModuleActionType)
                         .Where(m => m.ModuleActionType.ControlType.ToLower() == "view") //Selecting View Actions Only
+                        .OrderBy(ma=>ma.DisplayName)
                         .ToList();
 
                     return new List<ModuleAction>(returnData);

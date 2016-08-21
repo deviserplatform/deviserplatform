@@ -363,6 +363,7 @@ namespace Deviser.Core.Data.DataProviders
                                 .Where(e => e.PageId == pageId && !e.IsDeleted)
                                 .Include(e => e.Module)
                                 .Include(e => e.ModuleAction)
+                                .Include(e => e.ModulePermissions)
                                 .OrderBy(p => p.Id)
                                 .ToList();
 
@@ -582,6 +583,7 @@ namespace Deviser.Core.Data.DataProviders
                         //Update InheritViewPermissions only
                         var dbPageContent = context.PageModule.First(pc => pc.Id == pageModuleId);
                         dbPageContent.InheritViewPermissions = pageModule.InheritViewPermissions;
+                        dbPageContent.InheritEditPermissions = pageModule.InheritEditPermissions;
 
                         //Filter deleted permissions in UI and delete all of them
                         var toDelete = context.ModulePermission.Where(dbPermission => dbPermission.PageModuleId == pageModuleId &&

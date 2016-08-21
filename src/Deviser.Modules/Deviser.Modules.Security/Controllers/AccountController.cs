@@ -17,6 +17,7 @@ using Deviser.Core.Library.Modules;
 using Microsoft.AspNetCore.Http;
 using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.Messaging;
+using Deviser.Core.Library.Services;
 
 namespace Deviser.Modules.Security.Controllers
 {
@@ -29,19 +30,25 @@ namespace Deviser.Modules.Security.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
+        private IScopeService scopeService;
+        private INavigation navigation;
 
         public AccountController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IScopeService scopeService,
+            INavigation navigation)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
+            this.scopeService = scopeService;
+            this.navigation = navigation;
         }
 
         //
@@ -71,7 +78,7 @@ namespace Deviser.Modules.Security.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return RedirectToLocal(returnUrl);
+                    return RedirectAfterLogin(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -99,8 +106,12 @@ namespace Deviser.Modules.Security.Controllers
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            if (scopeService.PageContext.SiteSetting.RegistrationEnabled)
+            {
+                ViewData["ReturnUrl"] = returnUrl;
+                return View();
+            }
+            return NotFound();
         }
 
         //
@@ -110,28 +121,32 @@ namespace Deviser.Modules.Security.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
+            if (scopeService.PageContext.SiteSetting.RegistrationEnabled)
             {
-                var user = new User { UserName = model.Email, Email = model.Email };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                ViewData["ReturnUrl"] = returnUrl;
+                if (ModelState.IsValid)
                 {
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                    // Send an email with this link
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
-                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation(3, "User created a new account with password.");
-                    return RedirectToLocal();
+                    var user = new User { UserName = model.Email, Email = model.Email };
+                    var result = await _userManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+                        // Send an email with this link
+                        //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                        //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
+                        //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        _logger.LogInformation(3, "User created a new account with password.");
+                        return RedirectToLocal();
+                    }
+                    AddErrors(result);
                 }
-                AddErrors(result);
-            }
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+                // If we got this far, something failed, redisplay form
+                return View(model); 
+            }
+            return NotFound();
         }
 
         //
@@ -142,7 +157,7 @@ namespace Deviser.Modules.Security.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            return RedirectToLocal();
+            return RedirectAfterLogout();
         }
 
         //
@@ -463,6 +478,20 @@ namespace Deviser.Modules.Security.Controllers
             return _userManager.GetUserAsync(HttpContext.User);
         }
 
+        private IActionResult RedirectAfterLogin(string returnUrl = null)
+        {
+            if(string.IsNullOrEmpty(returnUrl))
+                returnUrl = navigation.NavigateUrl(scopeService.PageContext.SiteSetting.RedirectAfterLogin);
+            return RedirectToLocal(returnUrl);
+        }
+
+        private IActionResult RedirectAfterLogout(string returnUrl = null)
+        {
+            if (string.IsNullOrEmpty(returnUrl))
+                returnUrl = navigation.NavigateUrl(scopeService.PageContext.SiteSetting.RedirectAfterLogout);
+            return RedirectToLocal(returnUrl);
+        }
+
         private IActionResult RedirectToLocal(string returnUrl = null)
         {
             string url;
@@ -473,7 +502,7 @@ namespace Deviser.Modules.Security.Controllers
             }
             else
             {
-                url = "/" + Globals.HomePageUrl;
+                url = scopeService.PageContext.HomePageFullUrl;
             }
 
             if (IsAjaxRequest)
@@ -486,23 +515,9 @@ namespace Deviser.Modules.Security.Controllers
             {
                 return Redirect(url);
             }
-
-            //string url = "/" + Globals.HomePageUrl;
-            ////return Redirect(url);
-            ////return Ok(url);
-
-            ////var result = new ObjectResult(url);
-            ////result.StatusCode = StatusCodes.Status301MovedPermanently;
-
-            //var result = new StatusCodeResult(StatusCodes.Status302Found);
-            //Response.Headers.Add("Location", url);
-            //return result;
-
-            ////var response = //Request.CreateResponse(HttpStatusCode.Moved);
-            ////response.Headers.Location = new Uri("http://www.abcmvc.com");
-            ////return response;
-            ////return RedirectToAction(nameof(HomeController.Index), "Home");
         }
+
+
 
         #endregion
     }

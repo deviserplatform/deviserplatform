@@ -6,9 +6,14 @@
         Layout = ViewBag.Skin;
     }
 
-    ViewBag.Title = "Index";
+    var pageContext = scopeService.PageContext;
+
+    ViewBag.Title = pageContext.CurrentTranslation.Title;
+    ViewBag.Description = pageContext.CurrentTranslation.Description;
+    ViewBag.Keywords = pageContext.CurrentTranslation.Keywords;
+
     Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>> moduleActionResults =
-        (Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>>)ViewBag.ModuleActionResults;
+(Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>>)ViewBag.ModuleActionResults;
 }
 <script type="text/javascript">
     var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));

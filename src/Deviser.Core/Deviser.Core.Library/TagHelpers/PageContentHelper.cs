@@ -111,6 +111,20 @@ namespace Deviser.Core.Library.TagHelpers
             if (pageLayout.PlaceHolders != null && pageLayout.PlaceHolders.Count > 0)
             {
                 string result = RenderContentItems(pageLayout.PlaceHolders, ModuleActionResults);
+                if (ModuleActionResults.Count > 0)
+                {
+                    //One or more modules are not added in containers
+                    foreach(var moduleActionResult in ModuleActionResults)
+                    {
+                        if(moduleActionResult.Value!=null && moduleActionResult.Value.Count > 0)
+                        {
+                            foreach(var contentResult in moduleActionResult.Value)
+                            {
+                                result += contentResult.Result;
+                            }
+                        }
+                    }
+                }
                 output.Content.SetHtmlContent(result);
             }
         }
@@ -138,6 +152,7 @@ namespace Deviser.Core.Library.TagHelpers
                             if (moduleActionResults.TryGetValue(placeHolder.Id.ToString(), out moduleResult))
                             {
                                 //sb.Append(moduleResult);
+                                moduleActionResults.Remove(placeHolder.Id.ToString());
                                 currentResults.AddRange(moduleResult);
                             }
                         }
@@ -197,9 +212,13 @@ namespace Deviser.Core.Library.TagHelpers
                         //currentResult += (!string.IsNullOrEmpty(contentResult))? contentResult : "";
                         //currentResult += RenderContentItems(placeHolder.PlaceHolders, moduleActionResults);
 
+                        var layoutContent = new LayoutContent
+                        {
+                            PlaceHolder = placeHolder,
+                            ContentResult = currentResult
+                        };
 
-
-                        htmlContent = htmlHelper.Partial(string.Format(Globals.LayoutTypesPath, layoutType), currentResult);
+                        htmlContent = htmlHelper.Partial(string.Format(Globals.LayoutTypesPath, layoutType), layoutContent);
                         var layoutResult = GetString(htmlContent);
                         sb.Append(layoutResult);
 

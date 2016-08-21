@@ -1,0 +1,18 @@
+﻿<script type="text/ng-template" id="contenttypes/richtext.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Edit {{ecVM.typeInfo.type}}</h3>
+    </div>
+    <div class="modal-body">
+        
+        <div sd-language-selector selected-locale="ecVM.selectedLocale" change-language="ecVM.changeLanguage()"></div>
+
+        <div class="form-group">
+            <div text-angular ng-model="ecVM.contentTranslation.contentData"></div>
+        </div>        
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ecVM.save()">Save</button>
+        <button class="btn btn-warning" type="button" ng-click="ecVM.cancel()">Cancel</button>
+    </div>
+</script>
+    

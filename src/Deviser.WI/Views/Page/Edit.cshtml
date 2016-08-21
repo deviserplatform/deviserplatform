@@ -85,7 +85,7 @@
             </div>
         </script>
         <script type="text/ng-template" id="column.html">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="container-element box-layout box-grey">
                     <h3>{{item.type}} {{$index+1}}</h3>
                     <div class="container-content">
@@ -126,7 +126,7 @@
 
                         {{$index+1}}
                     </div>
-                    <div class="content-controls" dnd-nodrag>
+                    <div class="content-controls" dnd-nodrag ng-show="item.pageContent.hasEditPermission">
                         <a class="btn btn-primary" ng-click="editVM.changeContentPermission(item)">
                             <i class="fa fa-shield" aria-hidden="true"></i>
                         </a>
@@ -153,7 +153,7 @@
 
                         {{$index+1}}
                     </div>
-                    <div class="module-controls" dnd-nodrag uib-dropdown>
+                    <div class="module-controls" dnd-nodrag uib-dropdown ng-show="item.pageModule.hasEditPermission">
                         <a class="btn btn-primary" ng-click="editVM.changeModulePermission(item)">
                             <i class="fa fa-shield" aria-hidden="true"></i>
                         </a>
@@ -275,10 +275,10 @@
                 <div class="box box-grey box-padding properties">
                     <h3>Selected</h3>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <strong>Content Type</strong>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             {{editVM.selectedItem.contentType.label}}
                         </div>
                     </div>
@@ -302,7 +302,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 col-md-offset-6" ng-show="editVM.selectedItem.contentType">
-                            <a class="btn btn-primary" ng-click="editVM.saveProperties()">Save Properties</a>
+                            <a class="btn btn-primary" ng-click="editVM.saveProperties()">Save</a>
                         </div>
                     </div>
                 </div>
@@ -318,12 +318,12 @@
         </div>
 
 
-        <div class="row">
+        @*<div class="row">
             <div class="col-lg-6">
                 <pre>{{editVM.pageLayout | json}}</pre>
             </div>
 
-        </div>
+        </div>*@
 
     </div>
 

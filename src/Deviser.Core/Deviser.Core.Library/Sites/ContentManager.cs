@@ -17,10 +17,10 @@ namespace Deviser.Core.Library.Sites
         private readonly ILogger<ContentManager> logger;
 
         private IPageContentProvider pageContentProvider;
-        
+
         public ContentManager(ILifetimeScope container)
-            :base(container)
-        {   
+            : base(container)
+        {
             logger = container.Resolve<ILogger<ContentManager>>();
             pageContentProvider = container.Resolve<IPageContentProvider>();
             httpContextAccessor = container.Resolve<IHttpContextAccessor>();
@@ -45,8 +45,15 @@ namespace Deviser.Core.Library.Sites
         {
             try
             {
-                var result = pageContentProvider.Get(pageId, cultureCode);
-                return result;
+                var pageContents = pageContentProvider.Get(pageId, cultureCode);
+                if (pageContents != null)
+                {
+                    foreach (var pageContent in pageContents)
+                    {
+                        pageContent.HasEditPermission = HasEditPermission(pageContent);
+                    }
+                }
+                return pageContents;
             }
             catch (Exception ex)
             {
@@ -63,7 +70,7 @@ namespace Deviser.Core.Library.Sites
                 if (result == null)
                 {
                     result = pageContentProvider.Create(pageContent);
-                    
+
                     List<ContentPermission> adminPermissions = AddAdminPermissions(result);
 
                     if (result.ContentPermissions == null)
@@ -174,24 +181,24 @@ namespace Deviser.Core.Library.Sites
 
         public bool HasViewPermission(PageContent pageContent)
         {
-            if (pageContent != null && pageContent.ContentPermissions != null)
-            {
-                var result =  (pageContent.ContentPermissions.Any(contentPermission => contentPermission.PermissionId == Globals.ContentViewPermissionId &&
-               (contentPermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == contentPermission.RoleId)))));
-                var page = pageProvider.GetPage(pageContent.PageId);
-                return result || (pageContent.InheritViewPermissions && HasViewPermission(page));
-            }
-            return false;
+            if (pageContent == null && pageContent.ContentPermissions == null)
+                throw new ArgumentNullException("pageContent.ContentPermissions", "PageContent and ContentPermissions should not be null");
+
+            var result = (pageContent.ContentPermissions.Any(contentPermission => contentPermission.PermissionId == Globals.ContentViewPermissionId &&
+          (contentPermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == contentPermission.RoleId)))));
+            var page = pageProvider.GetPage(pageContent.PageId);
+            return result || (pageContent.InheritViewPermissions && HasViewPermission(page));
         }
 
         public bool HasEditPermission(PageContent pageContent)
         {
-            if (pageContent != null && pageContent.ContentPermissions != null)
-            {
-                return (pageContent.ContentPermissions.Any(contentPermission => contentPermission.PermissionId == Globals.ContentEditPermissionId &&
-               (contentPermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == contentPermission.RoleId)))));
-            }
-            return false;
+            if (pageContent == null && pageContent.ContentPermissions == null)
+                throw new ArgumentNullException("pageContent.ContentPermissions", "PageContent and ContentPermissions should not be null");
+
+            var result = (pageContent.ContentPermissions.Any(contentPermission => contentPermission.PermissionId == Globals.ContentEditPermissionId &&
+           (contentPermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == contentPermission.RoleId)))));
+            var page = pageProvider.GetPage(pageContent.PageId);
+            return result || (pageContent.InheritEditPermissions && HasViewPermission(page));
         }
     }
 }

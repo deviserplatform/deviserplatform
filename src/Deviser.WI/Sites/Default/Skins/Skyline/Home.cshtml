@@ -6,14 +6,8 @@
 @using Deviser.Core.Common;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    string loggedInClass = "";
-    PageContext pageContext = null;
-    if (scopeService != null && scopeService.PageContext!=null)
-    {
-        pageContext = scopeService.PageContext;
-        loggedInClass = pageContext.HasPageEditPermission ? "logged-in" : "";
-    }
-
+    var pageContext = scopeService.PageContext;
+    var loggedInClass = pageContext.HasPageEditPermission ? "logged-in" : "";
 }
 
 @await Component.InvokeAsync("ControlBar")
@@ -28,7 +22,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/@Globals.HomePageUrl">
+                <a class="navbar-brand" href="@pageContext.HomePageFullUrl">
                     <img src="/images/DeviserLogoDark.png" alt="DEVISER">
                 </a>
             </div>

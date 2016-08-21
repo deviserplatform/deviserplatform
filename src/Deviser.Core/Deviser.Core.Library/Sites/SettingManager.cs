@@ -55,18 +55,27 @@ namespace Deviser.Core.Library.Sites
             try
             {
                 var settings = siteSettingProvider.GetSettings();
+                var strRegistrationEnabled = settings.First(s => s.SettingName == "RegistrationEnabled").SettingValue;
+                var strDefaultAdminLayoutId = settings.First(s => s.SettingName == "DefaultAdminLayoutId").SettingValue;
+                var strHomePageId = settings.First(s => s.SettingName == "HomePageId").SettingValue;
+                var strLoginPageId = settings.First(s => s.SettingName == "LoginPageId").SettingValue;
+                var strRedirectAfterLogin = settings.First(s => s.SettingName == "RedirectAfterLogin").SettingValue;
+                var strRedirectAfterLogout = settings.First(s => s.SettingName == "RedirectAfterLogout").SettingValue;
+                var strRegistrationPageId = settings.First(s => s.SettingName == "RegistrationPageId").SettingValue;
+                var strDefaultLayoutId = settings.First(s => s.SettingName == "DefaultLayoutId").SettingValue;
                 var result = new SiteSetting()
                 {
-                    DefaultAdminLayoutId = settings.First(s => s.SettingName == "SMTPServerAndPort").SettingValue,
+                    DefaultAdminLayoutId = string.IsNullOrEmpty(strDefaultAdminLayoutId) ? Guid.Parse(strDefaultAdminLayoutId) : Guid.Empty,
+                    DefaultLayoutId = !string.IsNullOrEmpty(strDefaultLayoutId) ? Guid.Parse(strDefaultLayoutId) : Guid.Empty,
                     DefaultAdminTheme = settings.First(s => s.SettingName == "DefaultAdminTheme").SettingValue,
-                    HomePageId = settings.First(s => s.SettingName == "HomePageId").SettingValue,
-                    LoginPageId = settings.First(s => s.SettingName == "LoginPageId").SettingValue,
-                    RedirectAfterLogin = settings.First(s => s.SettingName == "RedirectAfterLogin").SettingValue,
-                    RedirectAfterLogout = settings.First(s => s.SettingName == "RedirectAfterLogout").SettingValue,
-                    RegistrationPageId = settings.First(s => s.SettingName == "RegistrationPageId").SettingValue,
+                    HomePageId = !string.IsNullOrEmpty(strHomePageId) ? Guid.Parse(strHomePageId) : Guid.Empty,
+                    LoginPageId = !string.IsNullOrEmpty(strLoginPageId) ? Guid.Parse(strLoginPageId) : Guid.Empty,
+                    RedirectAfterLogin = !string.IsNullOrEmpty(strRedirectAfterLogin) ? Guid.Parse(strRedirectAfterLogin) : Guid.Empty,
+                    RedirectAfterLogout = !string.IsNullOrEmpty(strRedirectAfterLogout) ? Guid.Parse(strRedirectAfterLogout) : Guid.Empty,
+                    RegistrationEnabled = !string.IsNullOrEmpty(strRegistrationEnabled) ? bool.Parse(strRegistrationEnabled) : false,
+                    RegistrationPageId = !string.IsNullOrEmpty(strRegistrationPageId) ? Guid.Parse(strRegistrationPageId) : Guid.Empty,
                     SiteAdminEmail = settings.First(s => s.SettingName == "SiteAdminEmail").SettingValue,
-                    SiteDefaultLayout = settings.First(s => s.SettingName == "SiteDefaultLayout").SettingValue,
-                    SiteDefaultTheme = settings.First(s => s.SettingName == "SiteDefaultTheme").SettingValue,
+                    DefaultTheme = settings.First(s => s.SettingName == "DefaultTheme").SettingValue,
                     SiteDesctiption = settings.First(s => s.SettingName == "SiteDesctiption").SettingValue,
                     SiteName = settings.First(s => s.SettingName == "SiteName").SettingValue,
                     SiteRoot = settings.First(s => s.SettingName == "SiteRoot").SettingValue,

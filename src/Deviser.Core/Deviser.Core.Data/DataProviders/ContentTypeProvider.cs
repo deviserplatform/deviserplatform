@@ -88,7 +88,10 @@ namespace Deviser.Core.Data.DataProviders
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
-                    var returnData = context.ContentDataType.ToList();
+                    var returnData = context.ContentDataType
+                        .OrderBy(cd=>cd.Name)
+                        .ToList();
+
                     return returnData;
                 }
             }
@@ -108,6 +111,7 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     var returnData = context.ContentType
                                .Where(e => e.Name.ToLower() == contentTypeName.ToLower())
+                               .OrderBy(ct => ct.Name)
                                .FirstOrDefault();
 
                     return returnData;
@@ -129,6 +133,7 @@ namespace Deviser.Core.Data.DataProviders
                     var returnData = context.ContentType
                         .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.PropertyOptionList)
                         .Include(c => c.ContentDataType)
+                        .OrderBy(c=>c.Name)
                         .ToList();
                     return new List<ContentType>(returnData);
                 }

@@ -10,9 +10,11 @@ using Deviser.Modules.Security.Models;
 using Deviser.Modules.Security.Models.ManageViewModels;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.Messaging;
+using Deviser.Core.Library.Modules;
 
 namespace Deviser.Modules.Security.Controllers
 {
+    [Module("Security")]
     [Authorize]
     public class ManageController : Controller
     {

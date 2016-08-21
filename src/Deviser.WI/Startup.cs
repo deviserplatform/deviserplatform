@@ -3,6 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 using Deviser.Core.Common;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.Messaging;
+using Deviser.Core.Library.Middleware;
 using Deviser.Core.Library.Modules;
 using Deviser.Core.Library.Services;
 using Deviser.WI.Infrastructure;
@@ -35,7 +36,7 @@ namespace Deviser.WI
             Log.Logger = new LoggerConfiguration()
                 //.Enrich.FromLogContext()
                 .MinimumLevel.Debug()
-                .WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "log-{Date}.txt"))
+                .WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "log", "log-{Date}.txt"))
                 .CreateLogger();
 
 
@@ -150,7 +151,7 @@ namespace Deviser.WI
             // IMPORTANT: This session call MUST go before UseMvc()
             app.UseSession();
 
-            app.UseMvc(routes =>
+            Action<IRouteBuilder> routeBuilder = routes =>
             {
                 //routes.MapRoute(
                 //    name: "default",
@@ -168,7 +169,13 @@ namespace Deviser.WI
                 template: "{culture}/{*permalink}",
                 defaults: new { controller = "Page", action = "Index" },
                 constraints: new { permalink = container.Resolve<IRouteConstraint>() });
-            });
+            };
+
+            app.UsePageContext(routeBuilder);
+
+            app.UseMvc(routeBuilder);
+
+
         }
     }
 }

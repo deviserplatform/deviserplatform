@@ -13,6 +13,9 @@ Page Header
     filter: none;
     background-image: none;
     background-color: #2b3643;
+    position: fixed;
+    top: 0;
+    z-index: 100;
 }
 
     .sd-controlbar .sd-navbar-brand img {

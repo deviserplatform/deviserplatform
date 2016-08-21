@@ -363,6 +363,10 @@ namespace Deviser.WI.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime");
 
+                    b.Property<bool>("InheritEditPermissions")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
                     b.Property<bool>("InheritViewPermissions")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(true);
@@ -424,6 +428,10 @@ namespace Deviser.WI.Migrations
                     b.Property<Guid>("Id");
 
                     b.Property<Guid>("ContainerId");
+
+                    b.Property<bool>("InheritEditPermissions")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("InheritViewPermissions")
                         .ValueGeneratedOnAdd()
@@ -496,9 +504,12 @@ namespace Deviser.WI.Migrations
                         .HasAnnotation("MaxLength", 200);
 
                     b.Property<string>("URL")
+                        .IsRequired()
                         .HasAnnotation("MaxLength", 255);
 
                     b.HasKey("PageId", "Locale");
+
+                    b.HasAlternateKey("URL");
 
                     b.HasIndex("PageId");
 

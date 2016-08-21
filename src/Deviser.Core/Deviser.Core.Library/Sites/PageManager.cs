@@ -3,6 +3,7 @@ using Deviser.Core.Common;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,9 @@ namespace Deviser.Core.Library.Sites
 {
     public class PageManager : IPageManager
     {
+        //Logger
+        private readonly ILogger<PageManager> logger;
+
         protected ILifetimeScope container;
         protected IPageProvider pageProvider;
         protected IHttpContextAccessor httpContextAccessor;
@@ -20,6 +24,7 @@ namespace Deviser.Core.Library.Sites
         public PageManager(ILifetimeScope container)
         {
             this.container = container;
+            logger = container.Resolve<ILogger<PageManager>>();
             pageProvider = container.Resolve<IPageProvider>();
             roleProvider = container.Resolve<IRoleProvider>();
             httpContextAccessor = container.Resolve<IHttpContextAccessor>();
@@ -49,6 +54,20 @@ namespace Deviser.Core.Library.Sites
             }
         }
 
+        public Page GetPage(Guid pageId)
+        {
+            try
+            {
+                var returnData = pageProvider.GetPage(pageId);
+                return returnData;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while calling GetPage", ex);
+            }
+            return null;
+        }
+
         public Page GetPageByUrl(string url, string locale)
         {
             Page resultPage = null;
@@ -63,7 +82,7 @@ namespace Deviser.Core.Library.Sites
             }
             return resultPage;
         }
-        
+
         public bool HasViewPermission(Page page)
         {
             if (page != null && page.PagePermissions != null)
