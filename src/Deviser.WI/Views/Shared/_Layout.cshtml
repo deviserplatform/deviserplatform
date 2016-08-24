@@ -16,7 +16,9 @@
 
     <link href="~/lib/magnific-popup/dist/magnific-popup.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/admin/controlbar.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />    
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDXVNBX9Jhd_CB2UUcRa897oD6rWzRhupQ" type="text/javascript"></script>
+    <script src="~/js/infobox.js"></script>
 </head>
 <body class="header-fixed">
     @RenderBody()
@@ -24,6 +26,8 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
     <script src="~/lib/magnific-popup/dist/jquery.magnific-popup.js"></script>
     <script src="~/js/src/app/sd-form-helper.js"></script>
+    
+    <script src="~/js/sd-maps.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("scripts", required: false)
 </body>

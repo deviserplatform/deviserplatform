@@ -1,6 +1,7 @@
 ﻿/// <autosync enabled="true" />
 /// <reference path="../gulpfile.js" />
 /// <reference path="js/admin/main.js" />
+/// <reference path="js/sd-maps.js" />
 /// <reference path="js/site.js" />
 /// <reference path="js/src/app/components/image-manager.js" />
 /// <reference path="js/src/app/components/language-selector.js" />
