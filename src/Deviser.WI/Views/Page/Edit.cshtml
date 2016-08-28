@@ -41,76 +41,54 @@
 
     <div class="layout-container nestedDemo">
         <script type="text/ng-template" id="placeHolders.html">
-            <div ng-bind="parentItem = item" style="display:none"></div>
-            <div class="content-item"
-                 ng-repeat="item in parentItem.placeHolders"
-                 dnd-draggable="item"
-                 dnd-type="item.type"
-                 dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"
-                 dnd-effect-allowed="move"
-                 dnd-moved="editVM.itemMoved(parentItem, $index)"
-                 dnd-selected="editVM.selectItem(item)"
-                 ng-class="{selected:editVM.selectedItem === item}"
-                 ng-include="item.layoutTemplate + '.html'">
+            <div class="row dnd-list"
+                 dnd-list="item.placeHolders"
+                 dnd-allowed-types="item.allowedTypes"
+                 dnd-drop="editVM.dropCallback(event, index, item)"
+                 ng-init="placeHolders = item.placeHolders; parentItem=item;">
+                <div class="content-item"
+                     ng-repeat="item in placeHolders"
+                     dnd-draggable="item"
+                     dnd-type="item.layoutTypeId"
+                     dnd-effect-allowed="move"
+                     dnd-moved="editVM.itemMoved(placeHolders, $index, event)"
+                     dnd-selected="editVM.selectItem(item)"
+                     ng-class="{selected:editVM.selectedItem === item}"
+                     ng-include="item.layoutTemplate + '.html'">
+                </div>
             </div>
-
         </script>
         <script type="text/ng-template" id="container.html">
             <div class="container-element box-layout box-grey">
                 <h3>{{item.type}} {{$index+1}}</h3>
-                <div class="container-content">
-                    <div class="row dnd-list"
-                         dnd-list="item.placeHolders"
-                         dnd-allowed-types="item.allowedTypes"
-                         dnd-drop="editVM.dropCallback(event, index, item)"
-                         dnd-inserted="editVM.insertedCallback(event, index, item)">
-                        <div ng-include="'placeHolders.html'"></div>
-                    </div>
+                <div class="container-content" ng-include="'placeHolders.html'">
+
                 </div>
             </div>
         </script>
         <script type="text/ng-template" id="row.html">
             <div class="container-element box-layout box-grey">
                 <h3>{{item.type}} {{$index+1}}</h3>
-                <div class="container-content">
-                    <div class="row dnd-list"
-                         dnd-list="item.placeHolders"
-                         dnd-horizontal-list="true"
-                         dnd-allowed-types="item.allowedTypes"
-                         dnd-drop="editVM.dropCallback(event, index, item)"
-                         dnd-inserted="editVM.insertedCallback(event, index, item)">
-                        <div ng-include="'placeHolders.html'"></div>
-                    </div>
+                <div class="container-content" ng-include="'placeHolders.html'">
+
                 </div>
             </div>
         </script>
         <script type="text/ng-template" id="column.html">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="container-element box-layout box-grey">
                     <h3>{{item.type}} {{$index+1}}</h3>
-                    <div class="container-content">
-                        <div class="row dnd-list"
-                             dnd-list="item.placeHolders"
-                             dnd-allowed-types="item.allowedTypes"
-                             dnd-drop="editVM.dropCallback(event, index, item)"
-                             dnd-inserted="editVM.insertedCallback(event, index, item)">
-                            <div ng-include="'placeHolders.html'"></div>
-                        </div>
+                    <div class="container-content" ng-include="'placeHolders.html'">
+
                     </div>
                 </div>
             </div>
         </script>
         <script type="text/ng-template" id="repeater.html">
             <div class="container-element box-layout box-grey">
-                <h3>{{item.type}} {{$index+1}}</h3>
-                <div class="container-content">
-                    <div class="row dnd-list"
-                         dnd-list="item.placeHolders"
-                         dnd-allowed-types="item.allowedTypes"
-                         dnd-drop="editVM.dropCallback(event, index, item)"
-                         dnd-inserted="editVM.insertedCallback(event, index, item)">
-                        <div ng-include="'placeHolders.html'"></div>
-                    </div>
+                <h3>{{item.type}} {{$index+1}} repeater</h3>
+                <div class="container-content" ng-include="'placeHolders.html'">
+
                 </div>
             </div>
         </script>
@@ -172,7 +150,7 @@
                     </div>
                 </div>
                 <div class="container-content">
-                    
+
                 </div>
             </div>
         </script>
@@ -239,7 +217,7 @@
                              dnd-type="item.type"
                              dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"
                              dnd-effect-allowed="move"
-                             dnd-moved="editVM.itemMoved(editVM.pageLayout, $index)"
+                             dnd-moved="editVM.itemMoved(editVM.pageLayout.placeHolders, $index, event)"
                              dnd-selected="editVM.selectItem(item)"
                              ng-class="{selected:editVM.selectedItem === item}"
                              ng-include="item.layoutTemplate + '.html'">
@@ -260,7 +238,7 @@
                              dnd-type="item.type"
                              dnd-disable-if="(item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module')"
                              dnd-effect-allowed="move"
-                             dnd-moved="editVM.itemMoved(editVM.uaLayout, $index)"
+                             dnd-moved="editVM.itemMoved(editVM.uaLayout.placeHolders, $index, event)"
                              dnd-selected="editVM.selectItem(item)"
                              ng-class="{selected:editVM.selectedItem === item}"
                              ng-include="item.layoutTemplate + '.html'">
@@ -319,11 +297,11 @@
 
 
         @*<div class="row">
-            <div class="col-lg-6">
-                <pre>{{editVM.pageLayout | json}}</pre>
-            </div>
+                <div class="col-lg-6">
+                    <pre>{{editVM.pageLayout | json}}</pre>
+                </div>
 
-        </div>*@
+            </div>*@
 
     </div>
 

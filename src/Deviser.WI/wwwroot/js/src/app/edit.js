@@ -124,9 +124,10 @@
             return item;
         }
 
-        function itemMoved(item, index) {
-            item.placeHolders.splice(index, 1);
-            updateElements(item);
+        function itemMoved(placeHolders, index, event) {
+            var parentItem = $(event.currentTarget).closest('.dnd-list').scope().parentItem;
+            placeHolders.splice(index, 1);
+            updateElements(parentItem);
             console.log('itemMoved');
         }
 

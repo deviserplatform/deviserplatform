@@ -5984,7 +5984,8 @@ body {
 .dnd-list, .nestedDemo .dropzone ul[dnd-list] {
   min-height: 42px;
   margin: 0px;
-  padding-left: 0px; }
+  padding-left: 0px;
+  position: relative; }
 
 /**
  * The dnd-lists's child elements currently MUST have
@@ -6091,7 +6092,8 @@ body {
   background-color: #fff;
   border: 1px;
   display: block;
-  padding: 0; }
+  padding: 0;
+  position: relative; }
 
 .trashcan ul {
   font-size: 5em;
