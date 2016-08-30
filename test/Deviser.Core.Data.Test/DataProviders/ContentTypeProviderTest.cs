@@ -49,14 +49,15 @@ namespace Deviser.Core.Data.DataProviders
             containerBuilder.Populate(services);
             container = containerBuilder.Build();
             serviceProvider = new AutofacServiceProvider(container);
+
+            SetupData();
         }
 
         [Fact]
-        public void PassingTest()
+        public void CreateContentTypeSuccess()
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
             var contentType = new ContentType
             {
                 Name = "TypeName",
@@ -68,40 +69,187 @@ namespace Deviser.Core.Data.DataProviders
 
             //Assert
             Assert.NotNull(result);
+            Assert.NotEqual(result.Id, Guid.Empty);
+            Assert.True(result.CreatedDate > DateTime.MinValue);
+            Assert.True(result.LastModifiedDate > DateTime.MinValue);
         }
 
-        private class TestAuthHandler : IAuthenticationHandler
+        [Fact]
+        public void CreateContentTypeFail()
         {
-            public void Authenticate(AuthenticateContext context)
-            {
-                context.NotAuthenticated();
-            }
+            //Arrange
+            ContentTypeProvider contentTypeProvider = new ContentTypeProvider(container);
+            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            ContentType contentType = null;
 
-            public Task AuthenticateAsync(AuthenticateContext context)
-            {
-                context.NotAuthenticated();
-                return Task.FromResult(0);
-            }
+            //Act
+            var result = contentTypeProvider.CreateContentType(contentType);
 
-            public Task ChallengeAsync(ChallengeContext context)
-            {
-                throw new NotImplementedException();
-            }
+            //Assert
+            Assert.Null(result);
+        }
 
-            public void GetDescriptions(DescribeSchemesContext context)
-            {
-                throw new NotImplementedException();
-            }
+        [Fact]
+        public void GetContentTypeSuccess()
+        {
+            //Arrange
+            var contentTypeProvider = new ContentTypeProvider(container);
+            var id = GetContentTypes().First().Id;
 
-            public Task SignInAsync(SignInContext context)
-            {
-                throw new NotImplementedException();
-            }
+            //Act
+            var result = contentTypeProvider.GetContentType(id);
 
-            public Task SignOutAsync(SignOutContext context)
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotEqual(result.Id, Guid.Empty);
+            Assert.True(result.CreatedDate > DateTime.MinValue);
+            Assert.True(result.LastModifiedDate > DateTime.MinValue);
+        }
+
+        [Fact]
+        [InlineData("Text")]
+        [InlineData("Image")]
+        [InlineData("RichText")]
+        public void GetContentTypeSuccess(string typeName)
+        {
+            //Arrange
+            var contentTypeProvider = new ContentTypeProvider(container);
+
+            //Act
+            var result = contentTypeProvider.GetContentType(typeName);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotEqual(result.Id, Guid.Empty);
+            Assert.True(result.CreatedDate > DateTime.MinValue);
+            Assert.True(result.LastModifiedDate > DateTime.MinValue);
+        }
+
+        [Fact]
+        public void GetContentTypeFail()
+        {
+            //Arrange
+            var contentTypeProvider = new ContentTypeProvider(container);
+            var id = Guid.Empty;
+
+            //Act
+            var result = contentTypeProvider.GetContentType(id);
+
+            //Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        [InlineData("SkyType")]
+        public void GetContentTypeFail(string typeName)
+        {
+            //Arrange
+            var contentTypeProvider = new ContentTypeProvider(container);
+
+            //Act
+            var result = contentTypeProvider.GetContentType(typeName);
+
+            //Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void GetContentTypesSuccess()
+        {
+            //Arrange
+            var contentTypeProvider = new ContentTypeProvider(container);
+
+            //Act
+            var result = contentTypeProvider.GetContentTypes();
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.True(result.Count > 0);
+        }
+
+        [Fact]
+        public void GetContentTypesFail()
+        {
+            //Arrange
+            var contentTypeProvider = new ContentTypeProvider(container);
+            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            dbContext.RemoveRange(dbContext.ContentType);
+
+            //Act
+            var result = contentTypeProvider.GetContentTypes();
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.True(result.Count > 0);
+        }
+
+        private void SetupData()
+        {
+            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            List<ContentType> contentTypes = GetContentTypes();
+            var contentTypeProvider = new ContentTypeProvider(container);
+            foreach(var contentType in contentTypes)
             {
-                throw new NotImplementedException();
+                contentTypeProvider.CreateContentType(contentType);
             }
         }
+
+        private List<ContentType> GetContentTypes()
+        {
+            List<ContentType> contentTypes = new List<ContentType>();
+            contentTypes.Add(new ContentType
+            {
+                Id = Guid.NewGuid(),
+                Name = "Text",
+                Label = "Text",
+            });
+            contentTypes.Add(new ContentType
+            {
+                Id = Guid.NewGuid(),
+                Name = "Image",
+                Label = "Image",
+            });
+            contentTypes.Add(new ContentType
+            {
+                Id = Guid.NewGuid(),
+                Name = "RichText",
+                Label = "Rich text",
+            });
+            return contentTypes;
+        }
+
+        //private class TestAuthHandler : IAuthenticationHandler
+        //{
+        //    public void Authenticate(AuthenticateContext context)
+        //    {
+        //        context.NotAuthenticated();
+        //    }
+
+        //    public Task AuthenticateAsync(AuthenticateContext context)
+        //    {
+        //        context.NotAuthenticated();
+        //        return Task.FromResult(0);
+        //    }
+
+        //    public Task ChallengeAsync(ChallengeContext context)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+
+        //    public void GetDescriptions(DescribeSchemesContext context)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+
+        //    public Task SignInAsync(SignInContext context)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+
+        //    public Task SignOutAsync(SignOutContext context)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
     }
 }
