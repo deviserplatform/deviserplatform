@@ -49,8 +49,6 @@ namespace Deviser.Core.Data.DataProviders
             containerBuilder.Populate(services);
             container = containerBuilder.Build();
             serviceProvider = new AutofacServiceProvider(container);
-
-            SetupData();
         }
 
         [Fact]
@@ -94,7 +92,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
-            var id = GetContentTypes().First().Id;
+            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var contentTypes = GetContentTypes();
+            foreach(var ct in contentTypes)
+            {
+                contentTypeProvider.CreateContentType(ct);
+            }
+            var id = contentTypes.First().Id;
 
             //Act
             var result = contentTypeProvider.GetContentType(id);
@@ -104,9 +108,12 @@ namespace Deviser.Core.Data.DataProviders
             Assert.NotEqual(result.Id, Guid.Empty);
             Assert.True(result.CreatedDate > DateTime.MinValue);
             Assert.True(result.LastModifiedDate > DateTime.MinValue);
+
+            //Clean
+            dbContext.ContentType.RemoveRange(dbContext.ContentType);
         }
 
-        [Fact]
+        [Theory]
         [InlineData("Text")]
         [InlineData("Image")]
         [InlineData("RichText")]
@@ -114,6 +121,12 @@ namespace Deviser.Core.Data.DataProviders
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
+            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var contentTypes = GetContentTypes();
+            foreach (var ct in contentTypes)
+            {
+                contentTypeProvider.CreateContentType(ct);
+            }
 
             //Act
             var result = contentTypeProvider.GetContentType(typeName);
@@ -123,6 +136,9 @@ namespace Deviser.Core.Data.DataProviders
             Assert.NotEqual(result.Id, Guid.Empty);
             Assert.True(result.CreatedDate > DateTime.MinValue);
             Assert.True(result.LastModifiedDate > DateTime.MinValue);
+
+            //Clean
+            dbContext.ContentType.RemoveRange(dbContext.ContentType);
         }
 
         [Fact]
@@ -139,7 +155,7 @@ namespace Deviser.Core.Data.DataProviders
             Assert.Null(result);
         }
 
-        [Fact]
+        [Theory]
         [InlineData("SkyType")]
         public void GetContentTypeFail(string typeName)
         {
@@ -158,6 +174,12 @@ namespace Deviser.Core.Data.DataProviders
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
+            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var contentTypes = GetContentTypes();
+            foreach (var ct in contentTypes)
+            {
+                contentTypeProvider.CreateContentType(ct);
+            }
 
             //Act
             var result = contentTypeProvider.GetContentTypes();
@@ -165,6 +187,30 @@ namespace Deviser.Core.Data.DataProviders
             //Assert
             Assert.NotNull(result);
             Assert.True(result.Count > 0);
+
+            //Clean
+            dbContext.ContentType.RemoveRange(dbContext.ContentType);
+        }
+
+        [Fact]
+        public void GetContentDataTypesSuccess()
+        {
+            //Arrange
+            var contentTypeProvider = new ContentTypeProvider(container);
+            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var contentDataTypes = GetContentDataTypes();
+            dbContext.ContentDataType.AddRange(contentDataTypes);
+            dbContext.SaveChanges();
+
+            //Act
+            var result = contentTypeProvider.GetContentDataTypes();
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.True(result.Count > 0);
+
+            //Clean
+            dbContext.ContentDataType.RemoveRange(dbContext.ContentDataType);
         }
 
         [Fact]
@@ -180,42 +226,193 @@ namespace Deviser.Core.Data.DataProviders
 
             //Assert
             Assert.NotNull(result);
-            Assert.True(result.Count > 0);
+            Assert.True(result.Count == 0);
         }
 
-        private void SetupData()
+        [Fact]
+        public void GetContentDataTypesFail()
         {
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            List<ContentType> contentTypes = GetContentTypes();
+            //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
-            foreach(var contentType in contentTypes)
+            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            dbContext.RemoveRange(dbContext.ContentDataType);
+
+            //Act
+            var result = contentTypeProvider.GetContentDataTypes();
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.True(result.Count == 0);
+        }
+
+        [Fact]
+        public void UpdateContentTypePropAddSuccess()
+        {
+            //Arrange
+            var contentTypeProvider = new ContentTypeProvider(container);
+            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var contentTypes = GetContentTypes();
+            foreach (var ct in contentTypes)
             {
-                contentTypeProvider.CreateContentType(contentType);
+                contentTypeProvider.CreateContentType(ct);
             }
+            var contentTypeToUpdate = contentTypes.First();
+            contentTypeToUpdate.ContentTypeProperties = new List<ContentTypeProperty>();
+            var cssProp = new Property()
+            {
+                Id = Guid.NewGuid(),
+                Name = "cssclass",
+                Label = "Css Class"
+            };
+            dbContext.Property.Add(cssProp);
+
+            contentTypeToUpdate.ContentTypeProperties.Add(new ContentTypeProperty
+            {
+                ConentTypeId = contentTypeToUpdate.Id,
+                PropertyId = cssProp.Id,
+            });
+
+            //Act
+            contentTypeToUpdate.Label = "New Label";
+            var result = contentTypeProvider.UpdateContentType(contentTypeToUpdate);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.True(result.Label == contentTypeToUpdate.Label);
+            Assert.True(result.ContentTypeProperties.Count > 0);
+
+            //Clean
+            dbContext.Property.RemoveRange(dbContext.Property);
+            dbContext.ContentTypeProperty.RemoveRange(dbContext.ContentTypeProperty);
+            dbContext.ContentType.RemoveRange(dbContext.ContentType);
+        }
+
+        [Fact]
+        public void UpdateContentTypePropRemoveSuccess()
+        {
+            //Arrange
+            var contentTypeProvider = new ContentTypeProvider(container);
+            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var contentTypes = GetContentTypes();
+            foreach (var ct in contentTypes)
+            {
+                contentTypeProvider.CreateContentType(ct);
+            }
+            var contentTypeToUpdate = contentTypes.First();
+            contentTypeToUpdate.ContentTypeProperties = new List<ContentTypeProperty>();
+            var cssProp = new Property()
+            {
+                Id = Guid.NewGuid(),
+                Name = "cssclass",
+                Label = "Css Class"
+            };
+            var heightProp = new Property()
+            {
+                Id = Guid.NewGuid(),
+                Name = "height",
+                Label = "Height"
+            };
+
+            dbContext.Property.Add(cssProp);
+            dbContext.ContentTypeProperty.Add(new ContentTypeProperty
+            {
+                ConentTypeId = contentTypeToUpdate.Id,
+                PropertyId = cssProp.Id,
+            });
+            dbContext.ContentTypeProperty.Add(new ContentTypeProperty
+            {
+                ConentTypeId = contentTypeToUpdate.Id,
+                PropertyId = heightProp.Id,
+            });
+
+            //Act
+            contentTypeToUpdate.Label = "New Label";
+            var result = contentTypeProvider.UpdateContentType(contentTypeToUpdate);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.True(result.Label == contentTypeToUpdate.Label);
+            Assert.True(result.ContentTypeProperties.Count == 0);
+
+            //Clean
+            dbContext.Property.RemoveRange(dbContext.Property);
+            dbContext.ContentTypeProperty.RemoveRange(dbContext.ContentTypeProperty);
+            dbContext.ContentType.RemoveRange(dbContext.ContentType);
         }
 
         private List<ContentType> GetContentTypes()
-        {
-            List<ContentType> contentTypes = new List<ContentType>();
+        {   
+            var contentTypes = new List<ContentType>();
+            var stringType = new ContentDataType
+            {
+                Id = Guid.NewGuid(),
+                Name = "string",
+                Label = "string"
+            };
+            var objectType = new ContentDataType
+            {
+                Id = Guid.NewGuid(),
+                Name = "object",
+                Label = "object"
+            };
+            var arrayType = new ContentDataType
+            {
+                Id = Guid.NewGuid(),
+                Name = "array",
+                Label = "array"
+            };
+            
             contentTypes.Add(new ContentType
             {
                 Id = Guid.NewGuid(),
                 Name = "Text",
                 Label = "Text",
+                ContentDataTypeId = stringType.Id
             });
             contentTypes.Add(new ContentType
             {
                 Id = Guid.NewGuid(),
                 Name = "Image",
                 Label = "Image",
+                ContentDataTypeId = objectType.Id
             });
             contentTypes.Add(new ContentType
             {
                 Id = Guid.NewGuid(),
                 Name = "RichText",
                 Label = "Rich text",
+                ContentDataTypeId = stringType.Id
             });
+
             return contentTypes;
+        }
+
+        private List<ContentDataType> GetContentDataTypes()
+        {
+            var contentDataTypes = new List<ContentDataType>();
+            var stringType = new ContentDataType
+            {
+                Id = Guid.NewGuid(),
+                Name = "string",
+                Label = "string"
+            };
+            var objectType = new ContentDataType
+            {
+                Id = Guid.NewGuid(),
+                Name = "object",
+                Label = "object"
+            };
+            var arrayType = new ContentDataType
+            {
+                Id = Guid.NewGuid(),
+                Name = "array",
+                Label = "array"
+            };
+
+            contentDataTypes.Add(stringType);
+            contentDataTypes.Add(objectType);
+            contentDataTypes.Add(arrayType);
+            return contentDataTypes;
         }
 
         //private class TestAuthHandler : IAuthenticationHandler
