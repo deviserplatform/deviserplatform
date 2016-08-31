@@ -25,10 +25,11 @@
         vm.remove = remove;
         vm.save = save;
         vm.cancel = cancel;
-        vm.hasError = hasError;
+        //vm.hasError = hasError;
         vm.addModuleActions = addModuleActions;
         vm.editModuleActions = editModuleActions;
         vm.removeModuleActions = removeModuleActions;
+        vm.saveModuleAction = saveModuleAction;
         vm.viewStates = {
             NEW: "NEW",
             LIST: "LIST",
@@ -117,33 +118,7 @@
                 }
             }
         }
-        //if (vm.currentViewState == vm.viewStates.EDIT) {
-        //    if ($scope.editModuleForm.$valid) {
-        //        moduleService.put(vm.selectedModule).then(function (result) {
-        //            console.log(result);
-        //            getModules();
-        //            vm.currentViewState = vm.viewStates.LIST;
-        //            showMessage("success", "Module has been updated");
-        //        }, function (error) {
-        //            showMessage("error", "Cannot update module, please contact administrator");
-        //        });
-        //    }
 
-        //}
-        //else if (vm.currentViewState == vm.viewStates.NEW) {
-        //    if ($scope.moduleForm.$valid) {
-        //        moduleService.post(vm.newModule).then(function (result) {
-        //            console.log(result);
-        //            vm.currentViewState = vm.viewStates.LIST;
-        //            vm.newModule = {};
-        //            getModules();
-        //            showMessage("success", "New module has been created");
-        //        }, function (error) {
-        //            showMessage("error", "Cannot create module, please contact administrator");
-        //        });
-        //    }
-
-        //}
         function addModuleActions() {
             vm.currentViewState = vm.viewStates.NEWMODULEACTION;
             var actionItem = {
@@ -159,29 +134,26 @@
             vm.currentViewState = vm.viewStates.EDITMODULEACTION;
             vm.selectedModuleAction = moduleAction;
         }
-        
+
 
 
         function removeModuleActions(moduleAction) {
+            var index = vm.selectedModule.moduleAction.indexOf(moduleAction);
+            vm.selectedModule.moduleAction.splice(index, 1);
+        }
 
-            vm.selectedModule.moduleAction 
-            //moduleActionService.removeModuleActions(moduleAction.id).then(function (result) {
-            //    console.log(result);
-            //    getModuleActions();
-            //    vm.currentViewState = vm.viewStates.LISTMODULEACTION;
-            //    showMessage("success", "Module action has been removed");
-            //}, function (error) {
-            //    showMessage("error", "Cannot remove Module action, please contact administrator");
-            //});
+        function saveModuleAction() {
+            vm.currentViewState = vm.viewStates.LISTMODULEACTION;
+
         }
 
 
-        function hasError(form, field, validation) {
-            if (form && validation) {
-                return (form[field].$dirty && form[field].$error[validation]) || (form.submitted && form[field].$error[validation]);
-            }
-            return (form[field].$dirty && form[field].$invalid) || (form.submitted && form[field].$invalid);
-        }
+        //function hasError(form, field, validation) {
+        //    if (form && validation) {
+        //        return (form[field].$dirty && form[field].$error[validation]) || (form.submitted && form[field].$error[validation]);
+        //    }
+        //    return (form[field].$dirty && form[field].$invalid) || (form.submitted && form[field].$invalid);
+        //}
 
         function cancel() {
             vm.currentViewState = vm.viewStates.LIST;

@@ -182,9 +182,29 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
                 using (var context = new DeviserDBContext(dbOptions))
-                {                    
-                    var resultModule = context.Module.Attach(module).Entity;
-                    context.Entry(module).State = EntityState.Modified;
+                {
+                    var moduleActions = module.ModuleAction;
+                    module.ModuleAction = null;                  
+                    foreach (var moduleAction in moduleActions)
+                    {
+
+                        if (context.ModuleAction.Any(pc => pc.Id == moduleAction.Id))
+                        {
+                            //content exist, therefore update the content 
+                            context.ModuleAction.Update(moduleAction);
+                        }
+                        else
+                        {
+                            context.ModuleAction.Add(moduleAction);
+                        } 
+                    }
+
+                    var toDelete = context.ModuleAction.Where(dbModuleAction => dbModuleAction.ModuleId == module.Id &&
+                    !module.ModuleAction.Any(moduleAction => moduleAction.Id != dbModuleAction.Id)).ToList();
+
+                    context.ModuleAction.RemoveRange(toDelete);
+
+                    var resultModule = context.Module.Update(module).Entity;
                     context.SaveChanges();
                     return resultModule;
                 }

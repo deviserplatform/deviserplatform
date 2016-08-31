@@ -79,15 +79,13 @@
                 <div class="portlet-body form">
                     <form class="form-horizontal" name="moduleFrom" novalidate>
                         <div class="form-body">
-                            <div class="form-group" ng-class="{'has-error':mmVM.hasError(moduleForm, 'label', 'required')}">
+                            <div class="form-group">
                                 <label class="col-md-3 control-label">Label</label>
                                 <div class="col-md-6">
                                     <input class="form-control" name="label" ng-model="mmVM.selectedModule.label" required />
                                 </div>
                             </div>
-                            <div class="form-group"
-                                 ng-class="{'has-error': (mmVM.hasError(moduleForm, 'name', 'required') || !mmVM.isValidName(mmVM.selectedModule.name)) &&
-                                 mmVM.currentViewState == mmVM.viewStates.NEW }">
+                            <div class="form-group">
                                 <label class="col-md-3 control-label">Name</label>
                                 <div class="col-md-6">
                                     <input class="form-control"
@@ -97,7 +95,7 @@
                                            sd-to-lower-case />
                                 </div>
                             </div>
-                            <div class="form-group" ng-class="{'has-error':mmVM.hasError(moduleForm, 'isActive', 'required')}">
+                            <div class="form-group">
                                 <label class="col-md-3 control-label">Module Desctiption</label>
                                 <div class="col-md-6">
                                     <textarea class="form-control" rows="5" ng-model="mmVM.selectedModule.description"></textarea>
@@ -109,7 +107,7 @@
                                     <input type="checkbox" ng-model="mmVM.selectedModule.isActive" />
                                 </div>
                             </div>
-                            <div class="form-group" ng-class="{'has-error':mmVM.hasError(moduleForm, 'version', 'required')}">
+                            <div class="form-group">
                                 <label class="col-md-3 control-label">Version </label>
                                 <div class="col-md-6">
                                     <input class="form-control" name="version" ng-model="mmVM.selectedModule.version" />
@@ -118,8 +116,7 @@
 
 
                             <div class="row" ng-show="mmVM.currentViewState == mmVM.viewStates.NEW || mmVM.currentViewState == mmVM.viewStates.EDIT
-                            || mmVM.currentViewState == mmVM.viewStates.NEWMODULEACTION
-                            ||mmVM.currentViewState == mmVM.viewStates.LISTMODULEACTION">
+                            || mmVM.currentViewState == mmVM.viewStates.LISTMODULEACTION || mmVM.currentViewState == mmVM.viewStates.NEWMODULEACTION">
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6">
@@ -167,13 +164,21 @@
                                 </div>
                             </div>
 
-                            <div class="row" ng-show="mmVM.currentViewState == mmVM.viewStates.EDITMODULEACTION">
+                            <div class="row" ng-show="mmVM.currentViewState == mmVM.viewStates.EDITMODULEACTION || mmVM.currentViewState == mmVM.viewStates.NEWMODULEACTION ">
                                 <div class="col-md-12">
                                     <div class="table-toolbar">
                                         <div class="row">
                                             <div class="table-scrollable">
                                                 <table class="table table-striped table-bordered table-advance table-hover">
 
+                                                    <tr>
+                                                        <th>
+                                                            Display Name
+                                                        </th>
+                                                        <td>
+                                                            <input class="form-control" name="displayName" ng-model="mmVM.selectedModuleAction.displayName" ng-disabled="mmVM.currentViewState == mmVM.viewStates.EDITMODULEACTION" />
+                                                        </td>
+                                                    </tr>
                                                     <tr>
                                                         <th>
                                                             Action Name
@@ -238,16 +243,12 @@
                                                             <input class="form-control" name="pageModules" ng-model="mmVM.selectedModuleAction.pageModules" />
                                                         </td>
                                                     </tr>
+                                                    <tr>
+                                                        <td colspan="2" align="center">
+                                                            <button type="submit" class="btn btn-success" ng-click="mmVM.saveModuleAction()">Save Module Action</button>
+                                                        </td>
+                                                    </tr>
 
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>
-                                                                <a href="" class="btn btn-default btn-xs" ng-click="mmVM.removeModuleActions(moduleAction)">
-                                                                    <i class="fa fa-trash-o"></i> Delete Module Action
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
                                                 </table>
                                             </div>
                                         </div>
