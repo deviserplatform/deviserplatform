@@ -11,7 +11,8 @@
     'deviser.services',
     'deviser.config',
     'modules.app.imageManager',
-    'modules.app.languageSelector'
+    'modules.app.languageSelector',
+    'modules.app.linkSelector'
     ]);
 
     app.config(['$provide', config]);
@@ -99,6 +100,12 @@
         }
 
         //Event handlers
+        $scope.$watch(function () {
+            return vm.selectedItem.properties;
+        }, function (newValue, oldValue) {
+            vm.selectedItem.isPropertyChanged = true;
+        }, true);
+
         function insertedCallback(event, index, item) {
             var parentScope = $(event.currentTarget).scope().$parent;
             var containerId = parentScope.item.id;
@@ -117,9 +124,10 @@
             return item;
         }
 
-        function itemMoved(item, index) {
-            item.placeHolders.splice(index, 1);
-            updateElements(item);
+        function itemMoved(placeHolders, index, event) {
+            var parentItem = $(event.currentTarget).closest('.dnd-list').scope().parentItem;
+            placeHolders.splice(index, 1);
+            updateElements(parentItem);
             console.log('itemMoved');
         }
 
@@ -296,9 +304,10 @@
 
                 pageContentService.put(pageContent).then(function (response) {
                     console.log(response);
+                    vm.selectedItem.isPropertyChanged = false;
                 }, function (response) {
                     console.log(response);
-                });
+                },true);
             }
         }
 
@@ -744,6 +753,7 @@
     function editContentCtrl($scope, $uibModalInstance, $q, sdUtil, languageService, pageContentService, contentTranslationService, contentInfo) {
         var vm = this;
         vm.contentId = contentInfo.id;
+        vm.properties = contentInfo.properties;
         vm.changeLanguage = changeLanguage;
         vm.save = save;
         vm.cancel = cancel;

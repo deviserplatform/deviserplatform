@@ -24,6 +24,7 @@
                 src: '=',
                 alt: '=',
                 focusPoint: '=',
+                properties: '&',
                 label: '@'
             }
         };
@@ -39,7 +40,7 @@
 
         function ctrl($scope, $uibModal) {
             var vm = this;
-
+            var imageCropSize = {};
             vm.showPopup = showPopup;
             vm.removeImage = removeImage;
 
@@ -48,6 +49,9 @@
             /////////////////////////////////////////////
             /*Function declarations only*/
             function init() {
+                var properties = vm.properties();
+                imageCropSize.width = _.find(properties, { name: 'imagewidth' }).value;
+                imageCropSize.height = _.find(properties, { name: 'imageheight' }).value;
                 if (vm.focusPoint) {
                     setFocusPoint(vm.focusPoint);
                 }
@@ -75,13 +79,14 @@
                     templateUrl: 'app/components/imageManagerPopup.tpl.html',
                     controller: 'ImageManagerPopup as imVM',
                     size: 'sm',
-                    openedClass:'image-manager-modal',
+                    openedClass: 'image-manager-modal',
                     resolve: {
                         selectedImage: function () {
                             return {
                                 src: vm.src,
                                 alt: vm.alt,
-                                focusPoint: vm.focusPoint
+                                focusPoint: vm.focusPoint,
+                                imageCropSize: imageCropSize
                             };
                         }
                     }
@@ -102,7 +107,7 @@
 
     function imageManagerPopup($scope, $uibModalInstance, $timeout, Upload, assetService, selectedImage) {
         var vm = this;
-
+        var imageCropSize = selectedImage.imageCropSize;
         vm.imageSource = selectedImage.src;
         vm.imageAlt = selectedImage.alt;
         vm.focusPoint = selectedImage.focusPoint;
@@ -135,19 +140,20 @@
             if (vm.imageSource) {
                 setImage(vm.imageSource);
                 vm.imageSource = vm.imageSource.split("?")[0];
+                vm.selectedImage = {
+                    name: vm.imageSource.split('/').pop()
+                }
             }
             getCropSize();
         }
 
         function getCropSize() {
-            var imageCropSize;
-
             //if (ModuleSettings.TabModuleSettings.ImageCropSize) {
             //    imageCropSize = JSON.parse(ModuleSettings.TabModuleSettings.ImageCropSize);
             //}
 
-            vm.cropWidth = (imageCropSize && imageCropSize.Width) || 300;
-            vm.cropHeight = (imageCropSize && imageCropSize.Height) || 200;
+            vm.cropWidth = (imageCropSize && imageCropSize.width) || 300;
+            vm.cropHeight = (imageCropSize && imageCropSize.height) || 200;
 
         }
 
@@ -173,8 +179,8 @@
         function isActive(file) {
             if (file && file.path) {
                 var path = file.path.split('?')[0];
-                vm.imageSource = vm.imageSource.split('?')[0];
-                return vm.imageSource === path;
+                var imageSource = vm.imageSource.split('?')[0];
+                return imageSource === path;
             }
             return false;
         }
@@ -251,7 +257,7 @@
             var uploadObj = Upload.upload({
                 url: '/api/upload/images', //upload.php script, node.js route, or servlet url
                 method: 'POST',// or 'PUT',
-                
+
                 //withCredentials: true,
                 file: blobToUpload // or list of files ($files) for html5 only
                 //fileName: 'doc.jpg' or ['1.jpg', '2.jpg', ...] // to modify the name of the file(s)

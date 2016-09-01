@@ -264,8 +264,8 @@
             return item;
         }
 
-        function itemMoved(item, index) {
-            item.placeHolders.splice(index, 1);
+        function itemMoved(placeHolders, index) {
+            placeHolders.splice(index, 1);
         }
 
         function logListEvent(action, event, index, external, type) {

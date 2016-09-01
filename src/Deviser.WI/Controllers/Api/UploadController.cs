@@ -102,7 +102,7 @@ namespace DeviserWI.Controllers.API
                                 await file.CopyToAsync(fileStream);
                             }
                                                             
-                            fileList.Add(Globals.SiteAssetsPath.Replace("~", "") + "/" + Globals.ImagesFolder + "/" + fileName);
+                            fileList.Add(Globals.SiteAssetsPath.Replace("~", "") + Globals.ImagesFolder + "/" + fileName);
                         }
                     }
                     return Ok(fileList);

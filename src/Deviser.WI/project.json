@@ -6,9 +6,22 @@
       "version": "1.0.0",
       "type": "platform"
     },
-    "Autofac": "4.0.0-rc3-286",
-    "Autofac.Extensions.DependencyInjection": "4.0.0-rc3-280",
-    "AutoMapper": "4.2.1",
+    "Autofac": "4.1.0",
+    "Autofac.Extensions.DependencyInjection": "4.0.0",
+    "AutoMapper": "5.1.1",
+    "Deviser.Core.Common": "1.0.0-*",
+    "Deviser.Core.Data": "1.0.0-*",
+    "Deviser.Core.Library": "1.0.0-*",
+    "Deviser.Modules.ContentManagement": "1.0.0-*",
+    "Deviser.Modules.FileManager": "1.0.0-*",
+    "Deviser.Modules.Language": "1.0.0-*",
+    "Deviser.Modules.ModuleManagement": "1.0.0-*",
+    "Deviser.Modules.PageManagement": "1.0.0-*",
+    "Deviser.Modules.Security": "1.0.0-*",
+    "Deviser.Modules.SecurityRoles": "1.0.0-*",
+    "Deviser.Modules.SiteManagement": "1.0.0-*",
+    "Deviser.Modules.UserManagement": "1.0.0-*",
+    "MailKit": "1.4.2",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.0.0",
@@ -35,30 +48,9 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0",
-    "Microsoft.VisualStudio.Web.CodeGeneration.Tools": {
-      "version": "1.0.0-preview2-final",
-      "type": "build"
-    },
-    "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
-      "version": "1.0.0-preview2-final",
-      "type": "build"
-    },
-    "MailKit": "1.4.0",
-    "Deviser.Core.Common": "1.0.0",
-    "Deviser.Core.Data": "1.0.0-*",
-    "Deviser.Core.Library": "1.0.0-*",
-    "Deviser.Modules.PageManagement": "1.0.0-*",
-    "Deviser.Modules.UserManagement": "1.0.0-*",
-    "Deviser.Modules.SecurityRoles": "1.0.0-*",
-    "Deviser.Modules.Language": "1.0.0-*",
-    "Deviser.Modules.FileManager": "1.0.0-*",
-    "Deviser.Modules.Security": "1.0.0-*",
-    "Deviser.Modules.SiteManagement": "1.0.0-*",
-    "Deviser.Modules.ContentManagement": "1.0.0-*",
     "Serilog.Extensions.Logging": "1.0.0",
     "Serilog.Sinks.Literate": "2.0.0",
-    "Serilog.Sinks.RollingFile": "2.0.0",
-    "Deviser.Modules.ModuleManagement": "1.0.0-*"
+    "Serilog.Sinks.RollingFile": "2.0.0"
   },
 
   "tools": {

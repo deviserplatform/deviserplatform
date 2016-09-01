@@ -1,5 +1,8 @@
 ﻿<script type="text/ng-template" id="app/components/imageManager.tpl.html">
     <div class="image-manager">
+        <div>
+            <label>{{locVM.label}}</label>
+        </div>
         <div class="form-group">
             <div class="image-preview">
                 <img src="{{locVM.src}}" alt="{{locVM.alt}}" ng-show="locVM.src" />
@@ -55,9 +58,9 @@
                     </span>
                 </div><!-- /input-group -->
                 <div class="list-group file-menu">
-                    <a class="list-group-item" 
-                       ng-repeat="file in imVM.images | filter:imVM.searchText | orderBy:'Name'" 
-                       ng-class="{'active':imVM.isActive(file)}" 
+                    <a class="list-group-item"
+                       ng-repeat="file in imVM.images | filter:imVM.searchText | orderBy:'Name'"
+                       ng-class="{'active':imVM.isActive(file)}"
                        ng-click="imVM.selectImage(file)">{{file.name}}</a>
                 </div>
             </div>
@@ -90,8 +93,8 @@
                                         touch-radius="30"></canvas>
                             </div>
                             @*<div class="form-group">
-                                <img ng-src="{{imVM.croppedImage}}" />
-                            </div>*@
+                                    <img ng-src="{{imVM.croppedImage}}" />
+                                </div>*@
                             <div class="form-group">
                                 <button type="button" class="btn btn-primary" ng-click="imVM.cropImage()">Crop Image</button>
                             </div>
@@ -194,7 +197,7 @@
 </script>
 
 <script type="text/ng-template" id="app/components/languageSelector.tpl.html">
-    <div class="image-manager">
+    <div class="language-selector">        
         <div class="form-group">
             <ui-select ng-model="locVM.selectedLocale" theme="bootstrap" ng-disabled="locVM.languages.length<=0" on-select="locVM.changeLocalLanguage()">
                 <ui-select-match placeholder="Coose a language">{{$select.selected.englishName}}</ui-select-match>
@@ -206,3 +209,37 @@
         </div>
     </div>
 </script>
+
+<script type="text/ng-template" id="app/components/linkSelector.tpl.html">
+    <div class="link-selector">
+        <div>
+            <label>{{locVM.label}}</label>
+        </div>
+        <div class="form-group btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-default" ng-model="locVM.selectedLink.linkType" uib-btn-radio="'URL'">URL</button>
+            <button type="button" class="btn btn-default" ng-model="locVM.selectedLink.linkType" uib-btn-radio="'PAGE'">Page</button>
+        </div>
+        <div class="form-group" ng-show="locVM.selectedLink.linkType==='PAGE'">
+            <label class="control-label">Page</label>
+
+            <ui-select ng-model="locVM.selectedLink.pageId" theme="bootstrap">
+                <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
+                <ui-select-choices repeat="page.id as page in locVM.pages | filter: $select.search">
+                    <div ng-bind-html="page.pageName | highlight: $select.search"></div>
+                </ui-select-choices>
+            </ui-select>
+
+        </div>
+        <div class="form-group" ng-show="locVM.selectedLink.linkType==='URL'">
+            <label class="control-label">URL</label>
+            <input type="text" class="form-control" ng-model="locVM.selectedLink.url" />
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="locVM.selectedLink.isNewWindow"> Open link in new tab?
+            </label>
+        </div>
+    </div>
+</script>
+
+

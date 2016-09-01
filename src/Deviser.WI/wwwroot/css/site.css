@@ -249,3 +249,67 @@ a {
 .nav-tabs {
     margin-bottom: 0;
 }
+
+/*Teaser box*/
+.teaser-box-wrapper {
+    margin-top: 20px;
+}
+
+    .teaser-box-wrapper .teaser-item {
+        width: 300px;
+        height: 200px;
+        margin: 10px;
+        float: left;
+        border: 5px solid #fff;
+        overflow: hidden;
+        position: relative;
+        text-align: center;
+        box-shadow: 0px 0px 5px #aaa;
+        cursor: default;
+    }
+
+        .teaser-box-wrapper .teaser-item img {
+            width: 100%;
+            display: block;
+            position: relative;
+        }
+
+        .teaser-box-wrapper .teaser-item .mask {
+            width: 300px;
+            height: 200px;
+            position: absolute;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            overflow: visible;
+            border: 0px solid rgba(0,0,0,0.7);
+            box-sizing: border-box;
+            transition: all 0.4s ease-in-out;
+        }
+
+        .teaser-box-wrapper .teaser-item a.info {
+            position: relative;
+            top: -10px;
+            opacity: 0;
+            transform: scale(0,0);
+            transition: transform 0.2s 0.1s ease-in, opacity 0.1s ease-in-out;
+        }
+
+        .teaser-box-wrapper .teaser-item:hover .mask {
+            opacity: 1;
+            border: 100px solid rgba(0,0,0,0.7);
+            color: #fff;
+        }
+
+        .teaser-box-wrapper .teaser-item:hover a.info {
+            opacity: 1;
+            transform: scale(1,1);
+            transition-delay: 0.3s;
+            color: #fff;
+            text-decoration: none;
+        }
+
+.map-container {
+    height: 500px;
+}

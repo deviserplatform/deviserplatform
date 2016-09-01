@@ -1,0 +1,51 @@
+﻿@model DynamicContent
+@inject IScopeService scopeService
+@inject INavigation navigation
+@{
+    var pageContext = scopeService.PageContext;
+    var currentCulture = pageContext.CurrentCulture.ToString();
+
+    dynamic rootObj = Model.Content;
+    int totalItems = 0;
+    if (rootObj != null)
+    {
+        totalItems = rootObj.items.Count;
+    }
+}
+
+@if (rootObj != null)
+{
+    <div class="teaser-box-wrapper">
+        @foreach (var item in rootObj.items)
+        {
+            var itemId = "pane" + item.id;
+            var url = "";
+            var target = "";
+            if (item.link != null && item.link.linkType != null)
+            {
+                var linkType = (string)item.link.linkType;
+                target = ((bool)item.link.isNewWindow) ? "target=\"_blank\"" : "";
+                url = linkType == "PAGE" ? navigation.NavigateUrl((string)item.link.pageId) : (string)item.link.url;
+            }
+            <div class="col-md-4">
+                <div class="teaser-item">
+                    <img src="@item.imageUrl" alt="@item.imageAltText" />
+                    <div class="mask">
+                        <a href="@url" role="button" class="info" aria-expanded="true" @target>
+                            Read more
+                        </a>
+                        <div>
+                            @item.description
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div>
+        Please enter the content
+    </div>
+}
