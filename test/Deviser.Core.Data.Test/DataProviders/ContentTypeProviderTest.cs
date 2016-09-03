@@ -2,14 +2,11 @@
 using Autofac.Extensions.DependencyInjection;
 using Deviser.Core.Data.Entities;
 using Deviser.WI;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Deviser.Core.Data.DataProviders
