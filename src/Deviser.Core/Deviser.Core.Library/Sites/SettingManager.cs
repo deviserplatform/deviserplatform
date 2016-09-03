@@ -76,7 +76,8 @@ namespace Deviser.Core.Library.Sites
                     RegistrationPageId = !string.IsNullOrEmpty(strRegistrationPageId) ? Guid.Parse(strRegistrationPageId) : Guid.Empty,
                     SiteAdminEmail = settings.First(s => s.SettingName == "SiteAdminEmail").SettingValue,
                     DefaultTheme = settings.First(s => s.SettingName == "DefaultTheme").SettingValue,
-                    SiteDesctiption = settings.First(s => s.SettingName == "SiteDesctiption").SettingValue,
+                    SiteDescription = settings.First(s => s.SettingName == "SiteDescription").SettingValue,
+                    SiteLanguage = settings.First(s => s.SettingName == "SiteLanguage").SettingValue,
                     SiteName = settings.First(s => s.SettingName == "SiteName").SettingValue,
                     SiteRoot = settings.First(s => s.SettingName == "SiteRoot").SettingValue,
                 };

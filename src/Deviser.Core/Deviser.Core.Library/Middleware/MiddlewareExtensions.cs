@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.Middleware
 {
-    public static class PageContextExtension
+    public static class MiddlewareExtensions
     {
         public static IApplicationBuilder UsePageContext(this IApplicationBuilder builder, Action<IRouteBuilder> configureRoutes)
         {
@@ -43,5 +43,10 @@ namespace Deviser.Core.Library.Middleware
 
             return builder.UseMiddleware<PageContextMiddleware>(routes.Build());
         }
+
+        //public static IApplicationBuilder UseRouteMiddleware(this IApplicationBuilder builder)
+        //{
+        //    return builder.UseMiddleware<RouteMiddleware>();
+        //}
     }
 }

@@ -205,31 +205,38 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     Page resultPage;
                     page.LastModifiedDate = DateTime.Now;
-                    //resultPage = context.UpdateGraph<Page>(page, map => map.OwnedCollection(p => p.PageTranslations));
+
+                    var pagePermissions = page.PagePermissions;
+                    var pageTranslation = page.PageTranslation;
+                    page.PagePermissions = null;
+                    page.PageTranslation = null;
+
                     resultPage = context.Page.Update(page).Entity;
-                    foreach (var translation in page.PageTranslation)
+                    foreach (var translation in pageTranslation)
                     {
                         if (context.PageTranslation.Any(pt => pt.Locale == translation.Locale && pt.PageId == translation.PageId))
                         {
+                            translation.URL = GetUniqueUrl(context, translation.URL, translation.Locale);
                             //translation exist
                             context.PageTranslation.Update(translation);
                         }
                         else
                         {
+                            translation.URL = GetUniqueUrl(context, translation.URL, translation.Locale);
                             context.PageTranslation.Add(translation);
                         }
                     }
 
-                    if (page.PagePermissions != null && page.PagePermissions.Count > 0)
+                    if (pagePermissions != null && pagePermissions.Count > 0)
                     {
                         //Filter deleted permissions in UI and delete all of them
                         var toDelete = context.PagePermission.Where(dbPermission => dbPermission.PageId == page.Id &&
-                        !page.PagePermissions.Any(pagePermission => pagePermission.PermissionId == dbPermission.PermissionId && pagePermission.RoleId == dbPermission.RoleId)).ToList();
+                        !pagePermissions.Any(pagePermission => pagePermission.PermissionId == dbPermission.PermissionId && pagePermission.RoleId == dbPermission.RoleId)).ToList();
                         if (toDelete != null && toDelete.Count > 0)
                             context.PagePermission.RemoveRange(toDelete);
 
                         //Filter new permissions which are not in db and add all of them
-                        var toAdd = page.PagePermissions.Where(pagePermission => !context.PagePermission.Any(dbPermission =>
+                        var toAdd = pagePermissions.Where(pagePermission => !context.PagePermission.Any(dbPermission =>
                         dbPermission.PermissionId == pagePermission.PermissionId &&
                         dbPermission.PageId == pagePermission.PageId &&
                         dbPermission.RoleId == pagePermission.RoleId)).ToList();
@@ -256,6 +263,17 @@ namespace Deviser.Core.Data.DataProviders
                 logger.LogError("Error occured while calling UpdatePage", ex);
             }
             return null;
+        }
+
+        private string GetUniqueUrl(DeviserDBContext context, string url, string locale)
+        {
+            var counter = 0;
+            while (context.PageTranslation.Any(pt => pt.Locale == locale && pt.URL == url))
+            {
+                counter++;
+                url += (counter).ToString();
+            }
+            return url;
         }
 
         public Page UpdatePageTree(Page page)

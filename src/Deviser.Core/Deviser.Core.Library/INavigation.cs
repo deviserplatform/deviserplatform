@@ -9,6 +9,7 @@ namespace Deviser.Core.Library
 {
     public interface INavigation
     {
+        Page GetPageTree();
         Page GetPageTree(Guid pageId);
         Page GetPageTree(Guid currentPageId, SystemPageFilter systemFilter, Guid parentId = new Guid());
         List<Page> GetBreadCrumbs(Guid currentPageId);

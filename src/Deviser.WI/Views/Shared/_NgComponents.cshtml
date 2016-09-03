@@ -197,16 +197,14 @@
 </script>
 
 <script type="text/ng-template" id="app/components/languageSelector.tpl.html">
-    <div class="language-selector">        
-        <div class="form-group">
-            <ui-select ng-model="locVM.selectedLocale" theme="bootstrap" ng-disabled="locVM.languages.length<=0" on-select="locVM.changeLocalLanguage()">
-                <ui-select-match placeholder="Coose a language">{{$select.selected.englishName}}</ui-select-match>
-                <ui-select-choices repeat="language in locVM.languages | filter: $select.search">
-                    <div ng-bind-html="language.englishName | highlight: $select.search"></div>
-                    <small ng-bind-html="language.nativeName | highlight: $select.search"></small>
-                </ui-select-choices>
-            </ui-select>
-        </div>
+    <div class="language-selector">
+        <ui-select ng-model="locVM.selectedLocale" theme="bootstrap" ng-disabled="locVM.languages.length<=0" on-select="locVM.changeLocalLanguage()">
+            <ui-select-match placeholder="Coose a language">{{$select.selected.englishName}}</ui-select-match>
+            <ui-select-choices repeat="language in locVM.languages | filter: $select.search">
+                <div ng-bind-html="language.englishName | highlight: $select.search"></div>
+                <small ng-bind-html="language.nativeName | highlight: $select.search"></small>
+            </ui-select-choices>
+        </ui-select>
     </div>
 </script>
 

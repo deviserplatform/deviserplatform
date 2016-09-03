@@ -16,6 +16,7 @@ namespace Deviser.Core.Common.DomainTypes
         public Guid CurrentPageId { get; set; }
 
         public string CurrentUrl { get; set; }
+
         [JsonIgnore]
         public CultureInfo CurrentCulture
         {
@@ -64,11 +65,21 @@ namespace Deviser.Core.Common.DomainTypes
             }
         }
 
+        public bool IsMultilingual { get; set; }
+
         public string SiteRoot
         {
             get
             {
                 return SiteSetting.SiteRoot; //Expose it to json
+            }
+        }
+
+        public string SiteLanguage
+        {
+            get
+            {
+                return SiteSetting.SiteLanguage;
             }
         }
 

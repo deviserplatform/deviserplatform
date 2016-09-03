@@ -11,9 +11,11 @@ namespace Deviser.Core.Data.DataProviders
     public interface ILanguageProvider
     {
         List<Language> GetLanguages();
+        List<Language> GetActiveLanguages();
         Language GetLanguage(Guid languageId);
         Language CreateLanguage(Language language);
         Language UpdateLanguage(Language language);
+        bool IsMultilingual();
 
     }
 
@@ -47,6 +49,26 @@ namespace Deviser.Core.Data.DataProviders
                 logger.LogError("Error occured while getting Language", ex);
             }
             return null;
+        }
+
+        public List<Language> GetActiveLanguages()
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    IEnumerable<Language> returnData = context.Language
+                        .Where(l=>l.IsActive)
+                        .ToList();
+
+                    return new List<Language>(returnData);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting active languages", ex);
+                throw ex;
+            }
         }
 
         public Language GetLanguage(Guid languageId)
@@ -108,6 +130,12 @@ namespace Deviser.Core.Data.DataProviders
                 logger.LogError("Error occured while updating Language", ex);
             }
             return null;
+        }
+
+        public bool IsMultilingual()
+        {
+            var result = GetActiveLanguages();
+            return result != null && result.Count > 1;
         }
     }
 }
