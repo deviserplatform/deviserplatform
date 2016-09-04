@@ -211,8 +211,6 @@ namespace Deviser.Core.Data.Entities
 
                 entity.Property(e => e.Name).HasMaxLength(100);
 
-                entity.HasAlternateKey("URL");
-
                 entity.Property(e => e.Title).HasMaxLength(200);
 
                 entity.Property(e => e.URL).HasMaxLength(255);

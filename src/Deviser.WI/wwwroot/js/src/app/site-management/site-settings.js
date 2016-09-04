@@ -10,12 +10,12 @@
     ]);
 
     app.controller('SiteSettingsCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'sdUtil',
-        'siteSettingService', 'pageService', `layoutService`, `skinService`, siteSettingsCtrl]);
+        'siteSettingService', 'pageService', 'layoutService', 'skinService', 'languageService', siteSettingsCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
     function siteSettingsCtrl($scope, $timeout, $filter, $q, globals, sdUtil,
-        siteSettingService, pageService, layoutService, skinService) {
+        siteSettingService, pageService, layoutService, skinService, languageService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
@@ -36,10 +36,11 @@
             getPages();
             getLayouts();
             getSkin();
+            getSiteLanguages();
         }
 
         /*Event handlers*/
-        function updateSiteSettings() {            
+        function updateSiteSettings() {
             var settings = _.values(vm.setting);
             siteSettingService.put(settings).then(function (result) {
                 getSiteSettings();
@@ -86,6 +87,14 @@
             skinService.get().then(function (skins) {
                 vm.skins = skins;
             })
+        }
+
+        function getSiteLanguages() {
+            languageService.getSiteLanguages().then(function (languages) {
+                vm.languages = _.filter(languages, {isActive:true});
+            }, function (error) {
+                showMessage("error", "Cannot get all languages, please contact administrator");
+            });
         }
 
 

@@ -18,6 +18,7 @@ namespace Deviser.Core.Library.Multilingual
         //Logger
         private readonly ILogger<LanguageManager> logger;
         private ILanguageProvider languageProvider;
+        private INavigation navigation;
         private IHostingEnvironment hostingEnvironment;
 
         public LanguageManager(ILifetimeScope container)
@@ -25,6 +26,7 @@ namespace Deviser.Core.Library.Multilingual
             logger = container.Resolve<ILogger<LanguageManager>>();
             languageProvider = container.Resolve<ILanguageProvider>();
             hostingEnvironment = container.Resolve<IHostingEnvironment>();
+            navigation = container.Resolve<INavigation>();
         }
 
         public List<Language> GetAllLanguages(bool exceptEnabled = false)
@@ -65,8 +67,7 @@ namespace Deviser.Core.Library.Multilingual
         {
             try
             {
-                var enabledLanguages = languageProvider.GetLanguages();
-                enabledLanguages = enabledLanguages.Where(l => l.IsActive).ToList();
+                var enabledLanguages = languageProvider.GetActiveLanguages();
                 return enabledLanguages;
             }
             catch (Exception ex)
@@ -74,6 +75,83 @@ namespace Deviser.Core.Library.Multilingual
                 logger.LogError("Error occured while getting active languages", ex);
                 throw ex;
             }
+        }
+
+        public List<Language> GetLanguages()
+        {
+            try
+            {
+                var result = languageProvider.GetLanguages();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting languages", ex);
+                throw ex;
+            }
+        }
+
+        public Language GetLanguage(Guid languageId)
+        {
+            try
+            {
+                var result = languageProvider.GetLanguage(languageId);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting a language", ex);
+                throw ex;
+            }
+        }
+
+        public Language CreateLanguage(Language language)
+        {
+            try
+            {
+                var before = languageProvider.IsMultilingual();
+                var result = languageProvider.CreateLanguage(language);
+                var after = languageProvider.IsMultilingual();
+                if (before != after)
+                {
+                    TranslateAllPages();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while creating a language", ex);
+                throw ex;
+            }
+        }
+
+        public Language UpdateLanguage(Language language)
+        {
+            try
+            {
+                var before = languageProvider.IsMultilingual();
+                var result = languageProvider.UpdateLanguage(language);
+                var after = languageProvider.IsMultilingual();
+                if(before!=after)
+                {
+                    TranslateAllPages();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while updating languages", ex);
+                throw ex;
+            }
+        }
+        
+        /// <summary>
+        /// Update URL in page translation when site is not multilingual
+        /// </summary>
+        private void TranslateAllPages()
+        {
+            var root = navigation.GetPageTree();
+            navigation.UpdatePageTree(root);
         }
     }
 }

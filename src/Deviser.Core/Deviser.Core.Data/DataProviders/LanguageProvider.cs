@@ -10,11 +10,12 @@ namespace Deviser.Core.Data.DataProviders
 {
     public interface ILanguageProvider
     {
-        List<Language> GetLanguages();
-        Language GetLanguage(Guid languageId);
         Language CreateLanguage(Language language);
-        Language UpdateLanguage(Language language);
-
+        List<Language> GetLanguages();
+        List<Language> GetActiveLanguages();
+        Language GetLanguage(Guid languageId);
+        bool IsMultilingual();
+        Language UpdateLanguage(Language language);        
     }
 
     public class LanguageProvider : DataProviderBase, ILanguageProvider
@@ -27,6 +28,28 @@ namespace Deviser.Core.Data.DataProviders
             :base(container)
         {            
             logger = container.Resolve<ILogger<LanguageProvider>>();
+        }
+
+        public Language CreateLanguage(Language language)
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Language resultLayout;
+                    language.CreatedDate = language.LastModifiedDate = DateTime.Now;
+                    language.IsActive = true;
+
+                    resultLayout = context.Language.Add(language).Entity;
+                    context.SaveChanges();
+                    return resultLayout;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while creating Language", ex);
+            }
+            return null;
         }
 
         //Custom Field Declaration
@@ -45,6 +68,27 @@ namespace Deviser.Core.Data.DataProviders
             catch (Exception ex)
             {
                 logger.LogError("Error occured while getting Language", ex);
+            }
+            return null;
+        }
+
+        public List<Language> GetActiveLanguages()
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    IEnumerable<Language> returnData = context.Language
+                        .Where(l=>l.IsActive)
+                        .ToList();
+
+                    return new List<Language>(returnData);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting active languages", ex);
+                throw ex;
             }
             return null;
         }
@@ -68,28 +112,13 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-
-        public Language CreateLanguage(Language language)
+        
+        public bool IsMultilingual()
         {
-            try
-            {
-                using (var context = new DeviserDBContext(dbOptions))
-                {
-                    Language resultLayout;
-                    language.CreatedDate = language.LastModifiedDate = DateTime.Now;
-                    language.IsActive = true;
-
-                    resultLayout = context.Language.Add(language).Entity;
-                    context.SaveChanges();
-                    return resultLayout; 
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError("Error occured while creating Language", ex);
-            }
-            return null;
+            var result = GetActiveLanguages();
+            return result != null && result.Count > 1;
         }
+
         public Language UpdateLanguage(Language language)
         {
             try
@@ -100,7 +129,7 @@ namespace Deviser.Core.Data.DataProviders
                     resultLayout = context.Language.Attach(language).Entity;
                     context.Entry(language).State = EntityState.Modified;
                     context.SaveChanges();
-                    return resultLayout; 
+                    return resultLayout;
                 }
             }
             catch (Exception ex)

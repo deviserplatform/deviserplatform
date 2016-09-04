@@ -26,6 +26,8 @@
         </div>
     </script>
 
+    @await Html.PartialAsync("_NgComponents")
+
     <div class="row" ng-show="ssVM.currentViewState == ssVM.viewStates.LIST">
         <div class="col-md-12">
             <div class="portlet box blue" id="form_wizard_1">
@@ -48,7 +50,7 @@
                                     <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
                                         <label class="col-md-3 control-label">Site Desctiption</label>
                                         <div class="col-md-6">
-                                            <textarea class="form-control" rows="5" ng-model="ssVM.setting.SiteDesctiption.settingValue"></textarea>
+                                            <textarea class="form-control" rows="5" ng-model="ssVM.setting.SiteDescription.settingValue"></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
@@ -69,6 +71,22 @@
                                             <input type="checkbox" ng-model="ssVM.setting.RegistrationEnabled.settingValue" />
                                         </div>
                                     </div>
+
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Site Language</label>
+                                        <div class="col-md-6">
+                                            <ui-select ng-model="ssVM.setting.SiteLanguage.settingValue" theme="bootstrap" ng-disabled="ssVM.languages.length<=0">
+                                                <ui-select-match placeholder="Coose a language">{{$select.selected.englishName}}</ui-select-match>
+                                                <ui-select-choices repeat="language.cultureCode as language in ssVM.languages | filter: $select.search">
+                                                    <div ng-bind-html="language.englishName | highlight: $select.search"></div>
+                                                    <small ng-bind-html="language.nativeName | highlight: $select.search"></small>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+                                    </div>
+                                    
+                                    
+
                                 </div>
                                 <div uib-accordion-group class="panel-default" heading="Page Configuration">
                                     <div class="form-group">

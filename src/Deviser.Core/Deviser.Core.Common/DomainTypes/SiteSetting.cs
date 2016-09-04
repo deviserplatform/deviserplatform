@@ -18,7 +18,8 @@ namespace Deviser.Core.Common.DomainTypes
         public Guid RegistrationPageId { get; set; }
         public string SiteAdminEmail { get; set; }        
         public string DefaultTheme { get; set; }
-        public string SiteDesctiption { get; set; }
+        public string SiteDescription { get; set; }
+        public string SiteLanguage { get; set; }
         public string SiteName { get; set; }        
         public string SiteRoot { get; set; }
     }

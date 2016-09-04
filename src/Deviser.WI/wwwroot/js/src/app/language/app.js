@@ -27,6 +27,7 @@
             LIST: "LIST"
         };
         vm.currentViewState = vm.viewStates.LIST;
+        vm.siteLanguage = pageContext.siteLanguage;
 
         init();
 
@@ -71,13 +72,16 @@
         }
 
         function activate(language) {
-            languageService.put(language).then(function (result) {
-                console.log(result);
-                getSiteLanguages();
-                showMessage("success", "Role has been updated");
-            }, function (error) {
-                showMessage("error", "Cannot update role, please contact administrator");
-            });
+            if (language.cultureCode !== pageContext.siteLanguage) {
+                languageService.put(language).then(function (result) {
+                    console.log(result);
+                    getSiteLanguages();
+                    showMessage("success", "Role has been updated");
+                }, function (error) {
+                    showMessage("error", "Cannot update role, please contact administrator");
+                });
+            }
+            
         }
 
         function cancel() {

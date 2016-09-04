@@ -20,6 +20,9 @@ namespace Deviser.Core.Data.DataProviders
 
     }
 
+    /// <summary>
+    /// Data provider for both ContentTypes and ContentDataType
+    /// </summary>
     public class ContentTypeProvider : DataProviderBase, IContentTypeProvider
     {
         //Logger
@@ -32,6 +35,11 @@ namespace Deviser.Core.Data.DataProviders
             logger = container.Resolve<ILogger<ContentTypeProvider>>();
         }
 
+        /// <summary>
+        /// It creates new ContentType
+        /// </summary>
+        /// <param name="contentType"></param>
+        /// <returns></returns>
         public ContentType CreateContentType(ContentType contentType)
         {
             try
@@ -56,11 +64,16 @@ namespace Deviser.Core.Data.DataProviders
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while creating LayoutType", ex);
+                logger.LogError("Error occured while creating ContentType", ex);
             }
             return null;
         }
 
+        /// <summary>
+        /// It returns ContentType for given id
+        /// </summary>
+        /// <param name="contentTypeId"></param>
+        /// <returns></returns>
         public ContentType GetContentType(Guid contentTypeId)
         {
             try
@@ -82,6 +95,10 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
+        /// <summary>
+        /// It returns all ContentDataTypes
+        /// </summary>
+        /// <returns></returns>
         public List<ContentDataType> GetContentDataTypes()
         {
             try
@@ -102,6 +119,11 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
+        /// <summary>
+        /// It returns a ContentType by arrribute Name
+        /// </summary>
+        /// <param name="contentTypeName"></param>
+        /// <returns></returns>
         public ContentType GetContentType(string contentTypeName)
         {
             try
@@ -124,6 +146,10 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
+        /// <summary>
+        /// It retuns all ContentTypes
+        /// </summary>
+        /// <returns></returns>
         public List<ContentType> GetContentTypes()
         {
             try
@@ -145,6 +171,12 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
+        /// <summary>
+        /// It updates ContentType and ContentTypeProperties.
+        /// ContentTypeProperties are updated based on data from client i.e. sync (creates/update/delete)
+        /// </summary>
+        /// <param name="contentType"></param>
+        /// <returns></returns>
         public ContentType UpdateContentType(ContentType contentType)
         {
             try

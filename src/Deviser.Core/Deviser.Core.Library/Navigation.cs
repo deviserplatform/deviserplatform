@@ -16,31 +16,35 @@ using Page = Deviser.Core.Data.Entities.Page;
 using PagePermission = Deviser.Core.Data.Entities.PagePermission;
 using PageTranslation = Deviser.Core.Data.Entities.PageTranslation;
 using Deviser.Core.Library.Services;
+using Deviser.Core.Library.Multilingual;
 
 namespace Deviser.Core.Library
 {
-    public class Navigation : INavigation
+    public class Navigation : PageManager, INavigation
     {
         //Logger
         private readonly ILogger<LayoutProvider> logger;
 
-        private IPageProvider pageProvider;
-        private IPageManager pageManager;
+        
         private ILanguageProvider languageProvider;
         private IScopeService scopeService;
-        private ISettingManager settingManager;
+
         private Page activePage = null;
         private List<Page> breadcrumbs = null;
 
         #region Public Methods
         public Navigation(ILifetimeScope container)
+            :base(container)
         {
             logger = container.Resolve<ILogger<LayoutProvider>>();
-            pageProvider = container.Resolve<IPageProvider>();
             languageProvider = container.Resolve<ILanguageProvider>();
-            pageManager = container.Resolve<IPageManager>();
             scopeService = container.Resolve<IScopeService>();
-            settingManager = container.Resolve<ISettingManager>();
+        }
+
+        public Page GetPageTree()
+        {
+            var root = pageProvider.GetPageTree();
+            return root;
         }
 
         public Page GetPageTree(Guid parentId)
@@ -67,12 +71,12 @@ namespace Deviser.Core.Library
             if (systemFilter == SystemPageFilter.PublicOnly)
             {
                 //page.ChildPage = page.ChildPage.Where(p => !p.IsSystem).ToList();
-                predicate = p => !p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && pageManager.HasViewPermission(p);
+                predicate = p => !p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && HasViewPermission(p);
             }
             else if (systemFilter == SystemPageFilter.SystemOnly)
             {
                 //page.ChildPage = page.ChildPage.Where(p => p.IsSystem).ToList();
-                predicate = p => p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && pageManager.HasViewPermission(p);
+                predicate = p => p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && HasViewPermission(p);
             }
 
 
@@ -90,15 +94,15 @@ namespace Deviser.Core.Library
             return breadcrumbs.OrderBy(p => p.PageLevel).ToList();
         }
 
-        public Page CreatePage (Page page)
+        public Page CreatePage(Page page)
         {
             try
             {
-                var siteSetting = settingManager.GetSiteSetting();
+                var siteSetting = scopeService.PageContext.SiteSetting;
                 page.LayoutId = siteSetting.DefaultLayoutId;
                 page.SkinSrc = siteSetting.DefaultTheme;
                 page.PageTranslation = null;
-                var result = pageProvider.CreatePage(page);                
+                var result = pageProvider.CreatePage(page);
                 return result;
             }
             catch (Exception ex)
@@ -233,9 +237,9 @@ namespace Deviser.Core.Library
 
         private Dictionary<string, string> InitParentUrls()
         {
-            var activeLanguages = languageProvider.GetLanguages();
+            var activeLanguages = languageProvider.GetActiveLanguages();
             Dictionary<string, string> parentURLs = new Dictionary<string, string>();
-            if (activeLanguages != null && activeLanguages.Count > 0)
+            if (activeLanguages != null && activeLanguages.Count > 1)
             {
                 foreach (var lang in activeLanguages)
                 {
@@ -244,7 +248,7 @@ namespace Deviser.Core.Library
             }
             else
             {
-                parentURLs.Add(Globals.FallbackLanguage, Globals.FallbackLanguage.ToLower());
+                parentURLs.Add(Globals.FallbackLanguage, "");
             }
             return parentURLs;
         }
@@ -353,7 +357,8 @@ namespace Deviser.Core.Library
                         else
                         {
                             //Parent page is not yet translated, therefore taking parent url from fallbacklanguage
-                            parentURLs[pageTranslation.Locale] = fallbackParentURL + "/" + pageTranslation.Name.Replace(" ", "");
+
+                            parentURLs[pageTranslation.Locale] = (!string.IsNullOrEmpty(fallbackParentURL) ? "/" : "") + pageTranslation.Name.Replace(" ", "");
                             var pageUrl = parentURLs[pageTranslation.Locale];
                             pageTranslation.URL = getUniqueUrl(pageTranslation, pageUrl);
                         }

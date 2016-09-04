@@ -23,14 +23,12 @@ namespace Deviser.WI.Controllers.Api
     public class LanguageController : Controller
     {
         //Logger
-        private readonly ILogger<LanguageController> logger;
-        private ILanguageProvider languageProvider;
+        private readonly ILogger<LanguageController> logger;        
         private ILanguageManager languageManager;
 
         public LanguageController(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<LanguageController>>();
-            languageProvider = container.Resolve<ILanguageProvider>();
+            logger = container.Resolve<ILogger<LanguageController>>();            
             languageManager = container.Resolve<ILanguageManager>();
         }
 
@@ -69,7 +67,7 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var result = languageProvider.GetLanguages()
+                var result = languageManager.GetLanguages()
                     .ToList();
                 if (result != null)
                     return Ok(result);
@@ -87,7 +85,7 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var result = languageProvider.GetLanguage(id);
+                var result = languageManager.GetLanguage(id);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -104,7 +102,7 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var result = languageProvider.CreateLanguage(language);
+                var result = languageManager.CreateLanguage(language);
                 if (result != null)
                     return Ok(result);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
@@ -121,7 +119,7 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var result = languageProvider.UpdateLanguage(language);
+                var result = languageManager.UpdateLanguage(language);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
@@ -138,11 +136,11 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var language = languageProvider.GetLanguage(id);
+                var language = languageManager.GetLanguage(id);
                 if (language != null)
                 {
                     language.IsActive = false;
-                    var result = languageProvider.UpdateLanguage(language);
+                    var result = languageManager.UpdateLanguage(language);
                     if (result != null)
                     {
                         return Ok(result);

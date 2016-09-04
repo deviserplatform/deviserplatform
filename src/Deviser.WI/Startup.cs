@@ -172,9 +172,15 @@ namespace Deviser.WI
                 routes.MapRoute(name: Globals.moduleRoute,
                     template: "modules/{area:exists}/{controller=Home}/{action=Index}");
 
+                //routes.MapRoute(
+                //name: "CmsRouteMultilingual",
+                //template: "{culture}/{*permalink}",
+                //defaults: new { controller = "Page", action = "Index" },
+                //constraints: new { permalink = container.Resolve<IRouteConstraint>() });
+
                 routes.MapRoute(
                 name: "CmsRoute",
-                template: "{culture}/{*permalink}",
+                template: "{*permalink}",
                 defaults: new { controller = "Page", action = "Index" },
                 constraints: new { permalink = container.Resolve<IRouteConstraint>() });
             };

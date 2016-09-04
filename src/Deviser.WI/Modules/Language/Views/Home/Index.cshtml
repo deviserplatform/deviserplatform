@@ -57,7 +57,7 @@
                                                 {{language.nativeName}}
                                             </td>
                                             <td>
-                                                <input type="checkbox" ng-model="language.isActive" ng-click="lVM.activate(language)" />
+                                                <input type="checkbox" ng-model="language.isActive" ng-click="lVM.activate(language)" ng-disabled="lVM.siteLanguage===language.cultureCode" />
                                             </td>
                                         </tr>
                                     </tbody>
