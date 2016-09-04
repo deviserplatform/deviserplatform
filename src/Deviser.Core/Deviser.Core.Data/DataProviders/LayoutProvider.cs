@@ -10,11 +10,10 @@ namespace Deviser.Core.Data.DataProviders
 {
     public interface ILayoutProvider
     {
-        List<Layout> GetLayouts();
-        Layout GetLayout(Guid layoutId);
         Layout CreateLayout(Layout layout);
+        List<Layout> GetLayouts();
+        Layout GetLayout(Guid layoutId);        
         Layout UpdateLayout(Layout layout);
-
     }
 
     public class LayoutProvider : DataProviderBase, ILayoutProvider
@@ -29,7 +28,25 @@ namespace Deviser.Core.Data.DataProviders
             logger = container.Resolve<ILogger<LayoutProvider>>();
         }
 
-        //Custom Field Declaration
+        public Layout CreateLayout(Layout layout)
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    Layout resultLayout;
+                    resultLayout = context.Layout.Add(layout).Entity;
+                    context.SaveChanges();
+                    return resultLayout;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while calling creating layout", ex);
+            }
+            return null;
+        }
+        
         public List<Layout> GetLayouts()
         {
             try
@@ -44,7 +61,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting GetLayouts", ex);
+                logger.LogError("Error occured while getting all layouts", ex);
             }
             return null;
         }
@@ -66,29 +83,11 @@ namespace Deviser.Core.Data.DataProviders
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling GetLayout", ex);
+                logger.LogError("Error occured while getting a layout", ex);
             }
             return null;
         }
         
-        public Layout CreateLayout(Layout layout)
-        {
-            try
-            {
-                using (var context = new DeviserDBContext(dbOptions))
-                {
-                    Layout resultLayout;
-                    resultLayout = context.Layout.Add(layout).Entity;
-                    context.SaveChanges();
-                    return resultLayout; 
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError("Error occured while calling CreateLayout", ex);
-            }
-            return null;
-        }
         public Layout UpdateLayout(Layout layout)
         {
             try
@@ -105,7 +104,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling UpdateLayout", ex);
+                logger.LogError("Error occured while updating layout", ex);
             }
             return null;
         }

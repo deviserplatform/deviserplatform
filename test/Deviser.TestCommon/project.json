@@ -10,8 +10,7 @@
     },
     "dotnet-test-xunit": "2.2.0-*",
     "Microsoft.EntityFrameworkCore.InMemory": "1.0.0",
-    "xunit": "2.2.0-*",
-    "Deviser.TestCommon": "1.0.0-*"
+    "xunit": "2.2.0-*"
   },
 
   "frameworks": {
