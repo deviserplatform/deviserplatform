@@ -25,7 +25,7 @@ namespace Deviser.Core.Library
         //Logger
         private readonly ILogger<LayoutProvider> logger;
 
-        
+
         private ILanguageProvider languageProvider;
         private IScopeService scopeService;
 
@@ -34,7 +34,7 @@ namespace Deviser.Core.Library
 
         #region Public Methods
         public Navigation(ILifetimeScope container)
-            :base(container)
+            : base(container)
         {
             logger = container.Resolve<ILogger<LayoutProvider>>();
             languageProvider = container.Resolve<ILanguageProvider>();
@@ -98,9 +98,6 @@ namespace Deviser.Core.Library
         {
             try
             {
-                var siteSetting = scopeService.PageContext.SiteSetting;
-                page.LayoutId = siteSetting.DefaultLayoutId;
-                page.SkinSrc = siteSetting.DefaultTheme;
                 page.PageTranslation = null;
                 var result = pageProvider.CreatePage(page);
                 return result;
@@ -352,7 +349,7 @@ namespace Deviser.Core.Library
                         {
                             parentURLs[pageTranslation.Locale] += "/" + pageTranslation.Name.Replace(" ", "");
                             var pageUrl = parentURLs[pageTranslation.Locale];
-                            pageTranslation.URL = getUniqueUrl(pageTranslation, pageUrl);
+                            pageTranslation.URL = getUniqueUrl(pageTranslation, pageUrl, page.Id);
                         }
                         else
                         {
@@ -360,7 +357,7 @@ namespace Deviser.Core.Library
 
                             parentURLs[pageTranslation.Locale] = (!string.IsNullOrEmpty(fallbackParentURL) ? "/" : "") + pageTranslation.Name.Replace(" ", "");
                             var pageUrl = parentURLs[pageTranslation.Locale];
-                            pageTranslation.URL = getUniqueUrl(pageTranslation, pageUrl);
+                            pageTranslation.URL = getUniqueUrl(pageTranslation, pageUrl, page.Id);
                         }
 
                     }
@@ -393,16 +390,18 @@ namespace Deviser.Core.Library
             }
         }
 
-        private string getUniqueUrl(PageTranslation pageTranslation, string pageUrl)
+        private string getUniqueUrl(PageTranslation pageTranslation, string pageUrl, Guid pageId)
         {
             var duplicateTranslation = pageProvider.GetPageTranslation(pageUrl);
-            while (duplicateTranslation != null &&
-                pageTranslation.PageId != duplicateTranslation.PageId &&
-                pageTranslation.Locale != duplicateTranslation.Locale)
+
+            if (duplicateTranslation != null && duplicateTranslation.PageId != pageId)
             {
-                pageUrl += "1";
-                pageTranslation.Name += "1";
-                duplicateTranslation = pageProvider.GetPageTranslation(pageUrl);
+                while (duplicateTranslation != null && duplicateTranslation.URL == pageUrl)
+                {
+                    pageUrl += "1";
+                    pageTranslation.Name += "1";
+                    duplicateTranslation = pageProvider.GetPageTranslation(pageUrl);
+                }
             }
             return pageUrl;
         }

@@ -12,7 +12,7 @@ namespace Deviser.Core.Data.Entities
         public DeviserDBContext(DbContextOptions<DeviserDBContext> options)
             : base(options)
         {
-
+            
         }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder options)

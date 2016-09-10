@@ -4,7 +4,7 @@
     </div>
     <div class="modal-body">
         
-        <div sd-language-selector selected-locale="ecVM.selectedLocale" change-language="ecVM.changeLanguage()"></div>
+        <div class="form-group" sd-language-selector selected-locale="ecVM.selectedLocale" change-language="ecVM.changeLanguage()" ng-show="!ecVM.isDetailView"></div>
 
         <div class="form-group">
             <div text-angular ng-model="ecVM.contentTranslation.contentData"></div>

@@ -1,5 +1,4 @@
-﻿using Deviser.Core.Data.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +18,5 @@ namespace Deviser.Core.Common.DomainTypes
         public Guid ModuleId { get; set; }
         public bool IsDefault { get; set; }
         public virtual ModuleActionType ModuleActionType { get; set; }
-        public virtual Module Module { get; set; }
-        public virtual ICollection<PageModule> PageModules { get; set; }
     }
 }

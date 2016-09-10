@@ -290,6 +290,7 @@
             pageService.put(page, page.id)
                     .then(function (data) {
                         vm.selectedItem = data;
+                        getPages();
                         showMessage("success", "Page updated successfully");
                     }, function (error) {
                         showMessage("error", "'Cannot update page, please contact administrator");
@@ -299,6 +300,7 @@
         function savePageTree() {
             pageService.put(vm.pages[0])
                    .then(function (data) {
+                       getPages();
                        showMessage("success", "All pages updated successfully");
                    }, function (error) {
                        showMessage("error", "'Cannot update all pages, please contact administrator");

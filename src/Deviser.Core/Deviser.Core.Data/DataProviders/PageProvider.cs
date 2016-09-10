@@ -216,13 +216,14 @@ namespace Deviser.Core.Data.DataProviders
                     {
                         if (context.PageTranslation.Any(pt => pt.Locale == translation.Locale && pt.PageId == translation.PageId))
                         {
-                            translation.URL = GetUniqueUrl(context, translation.URL, translation.Locale);
+                            //translation.URL = GetUniqueUrl(context, translation.URL, translation.Locale);
                             //translation exist
                             context.PageTranslation.Update(translation);
                         }
                         else
                         {
-                            translation.URL = GetUniqueUrl(context, translation.URL, translation.Locale);
+                            //translation.URL = GetUniqueUrl(context, translation.URL, translation.Locale);
+                            translation.PageId = page.Id;
                             context.PageTranslation.Add(translation);
                         }
                     }
@@ -265,16 +266,16 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
-        private string GetUniqueUrl(DeviserDBContext context, string url, string locale)
-        {
-            var counter = 0;
-            while (context.PageTranslation.Any(pt => pt.Locale == locale && pt.URL == url))
-            {
-                counter++;
-                url += (counter).ToString();
-            }
-            return url;
-        }
+        //private string GetUniqueUrl(DeviserDBContext context, string url, string locale)
+        //{
+        //    var counter = 0;
+        //    while (context.PageTranslation.Any(pt => pt.Locale == locale && pt.URL == url))
+        //    {
+        //        counter++;
+        //        url += (counter).ToString();
+        //    }
+        //    return url;
+        //}
 
         public Page UpdatePageTree(Page page)
         {

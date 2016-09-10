@@ -45,6 +45,7 @@
                  dnd-list="item.placeHolders"
                  dnd-allowed-types="item.allowedTypes"
                  dnd-drop="editVM.dropCallback(event, index, item)"
+                 dnd-inserted="editVM.insertedCallback(event, index, item)"
                  ng-init="placeHolders = item.placeHolders; parentItem=item;">
                 <div class="content-item"
                      ng-repeat="item in placeHolders"

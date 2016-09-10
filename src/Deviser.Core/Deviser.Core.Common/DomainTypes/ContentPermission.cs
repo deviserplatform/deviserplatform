@@ -11,9 +11,6 @@ namespace Deviser.Core.Common.DomainTypes
         public Guid Id { get; set; }
         public Guid PageContentId { get; set; }
         public Guid PermissionId { get; set; }
-        public Guid RoleId { get; set; }
-        public PageContent PageContent { get; set; }
-        public Permission Permission { get; set; }
-        public Role Role { get; set; }
+        public Guid RoleId { get; set; }        
     }
 }
