@@ -1,21 +1,13 @@
 ﻿using Autofac;
-using Deviser.Core.Data.DataProviders;
+using AutoMapper;
 using Deviser.Core.Data.Entities;
-using Deviser.Core.Library;
-using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Library.Layouts;
-using Deviser.Core.Library.Modules;
 using Deviser.Core.Library.Multilingual;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 
 namespace Deviser.WI.Controllers.Api
 {
@@ -37,20 +29,8 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                //var result = CultureInfo.GetCultures(System.Globalization.CultureTypes.SpecificCultures).OrderBy(c => c.NativeName)
-                //           .Select(c => new Language
-                //           {
-                //               EnglishName = c.EnglishName,
-                //               NativeName = c.NativeName,
-                //               CultureCode = c.Name,
-                //               FallbackCulture = Globals.FallbackLanguage
-                //           })
-                //           .ToList();
-
-                var result = languageManager.GetAllLanguages(true);
-
-                
-
+                var dbResult = languageManager.GetAllLanguages(true);
+                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.Language>>(dbResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -67,8 +47,9 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var result = languageManager.GetLanguages()
+                var dbResult = languageManager.GetLanguages()
                     .ToList();
+                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.Language>>(dbResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -85,7 +66,8 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var result = languageManager.GetLanguage(id);
+                var dbResult = languageManager.GetLanguage(id);
+                var result = ConvertToDomainType(dbResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -102,7 +84,8 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var result = languageManager.CreateLanguage(language);
+                var dbResult = languageManager.CreateLanguage(language);
+                var result = ConvertToDomainType(dbResult);
                 if (result != null)
                     return Ok(result);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
@@ -119,14 +102,15 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var result = languageManager.UpdateLanguage(language);
+                var dbResult = languageManager.UpdateLanguage(language);
+                var result = ConvertToDomainType(dbResult);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating language, LayoutName: ", language.CultureCode), ex);
+                logger.LogError(string.Format("Error occured while updating language, cultureCode: ", language.CultureCode), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -140,7 +124,8 @@ namespace Deviser.WI.Controllers.Api
                 if (language != null)
                 {
                     language.IsActive = false;
-                    var result = languageManager.UpdateLanguage(language);
+                    var dbResult = languageManager.UpdateLanguage(language);
+                    var result = ConvertToDomainType(dbResult);
                     if (result != null)
                     {
                         return Ok(result);
@@ -153,6 +138,16 @@ namespace Deviser.WI.Controllers.Api
                 logger.LogError(string.Format("Error occured while deleting language"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private Deviser.Core.Common.DomainTypes.Language ConvertToDomainType(Language language)
+        {
+            return Mapper.Map<Deviser.Core.Common.DomainTypes.Language>(language);
+        }
+
+        private Language ConvertToDbType(Deviser.Core.Common.DomainTypes.Language language)
+        {
+            return Mapper.Map<Language>(language);
         }
     }
 }

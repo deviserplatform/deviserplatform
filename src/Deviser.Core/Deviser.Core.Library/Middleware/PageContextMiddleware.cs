@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Page = Deviser.Core.Data.Entities.Page;
 
 namespace Deviser.Core.Library.Middleware
 {

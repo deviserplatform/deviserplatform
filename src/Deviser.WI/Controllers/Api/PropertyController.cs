@@ -34,8 +34,8 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var properties = propertyProvider.GetProperties();
-                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.Property>>(properties);
+                var dbResult = propertyProvider.GetProperties();
+                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.Property>>(dbResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -52,8 +52,8 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var property = propertyProvider.GetProperty(id);
-                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.Property>(property);
+                var dbResult = propertyProvider.GetProperty(id);
+                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.Property>(dbResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();

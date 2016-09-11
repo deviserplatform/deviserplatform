@@ -22,8 +22,8 @@ namespace Deviser.Core.Common.DomainTypes
         public bool InheritViewPermissions { get; set; }
         public bool InheritEditPermissions { get; set; }
         public bool HasEditPermission { get; set; }
-        public virtual ICollection<Deviser.Core.Data.Entities.PageContentTranslation> PageContentTranslation { get; set; }
-        public virtual ICollection<Deviser.Core.Data.Entities.ContentPermission> ContentPermissions { get; set; }
+        public virtual ICollection<PageContentTranslation> PageContentTranslation { get; set; }
+        public virtual ICollection<ContentPermission> ContentPermissions { get; set; }
 
         public Property GetProperty(string propertyName)
         {

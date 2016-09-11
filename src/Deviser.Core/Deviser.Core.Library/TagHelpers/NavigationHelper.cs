@@ -16,7 +16,6 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Services;
 
 namespace Deviser.Core.Library.TagHelpers
@@ -69,7 +68,7 @@ namespace Deviser.Core.Library.TagHelpers
             try
             {
                 ((HtmlHelper)htmlHelper).Contextualize(ViewContext);
-                Page root = navigation.GetPageTree(scopeService.PageContext.CurrentPageId, SystemFilter, ParentId);
+                var root = navigation.GetPageTree(scopeService.PageContext.CurrentPageId, SystemFilter, ParentId);
 
                 var htmlContent = htmlHelper.Partial(string.Format(Globals.MenuStylePath, MenuStyle), root);
                 var contentResult = GetString(htmlContent);

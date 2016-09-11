@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
 using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Core.Library.Layouts
 {

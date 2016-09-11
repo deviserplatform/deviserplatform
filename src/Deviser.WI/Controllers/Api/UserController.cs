@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Deviser.Core.Library;
 using Deviser.Core.Data.Entities;
+using Role = Deviser.Core.Common.DomainTypes.Role;
 
 namespace Deviser.WI.Controllers.Api
 {
@@ -43,9 +44,9 @@ namespace Deviser.WI.Controllers.Api
                 {
                     List<Deviser.Core.Common.DomainTypes.User> result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.User>>(users);
                     //Roles workarround
-                    foreach(var user in users)
+                    foreach (var user in users)
                     {
-                        if(user.Roles!=null && user.Roles.Count > 0)
+                        if (user.Roles != null && user.Roles.Count > 0)
                         {
                             var targetUser = result.First(u => u.Id == user.Id);
                             targetUser.Roles = new List<Role>();
@@ -57,7 +58,6 @@ namespace Deviser.WI.Controllers.Api
                                     targetUser.Roles.Add(Mapper.Map<Role>(role));
                                 }
                             }
-                            
                         }
                     }
                     return Ok(result);

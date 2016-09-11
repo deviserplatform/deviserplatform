@@ -1,19 +1,13 @@
 ﻿using Autofac;
+using AutoMapper;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
 using Deviser.Core.Library;
-using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Library.Layouts;
-using Deviser.Core.Library.Modules;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+using Page = Deviser.Core.Data.Entities.Page;
 
 namespace DeviserWI.Controllers.API
 {
@@ -38,9 +32,10 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var pages = pageProvider.GetPageTree();
-                if (pages != null)
-                    return Ok(pages);
+                var dbResult = navigation.GetPageTree();
+                var result = ConvertToDomainType(dbResult);
+                if (result != null)
+                    return Ok(result);
 
                 return NotFound();
             }
@@ -57,9 +52,10 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var pages = pageProvider.GetPages() ;
-                if (pages != null)
-                    return Ok(pages);
+                var dbResult = pageProvider.GetPages();
+                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.Page>>(dbResult);
+                if (result != null)
+                    return Ok(result);
 
                 return NotFound();
             }
@@ -74,7 +70,8 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = pageProvider.GetPage(id);
+                var dbResult = navigation.GetPage(id);
+                var result = ConvertToDomainType(dbResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -87,11 +84,12 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Page page)
+        public IActionResult Post([FromBody] Deviser.Core.Common.DomainTypes.Page page)
         {
             try
             {
-                var result = navigation.CreatePage(page);
+                var dbResult = navigation.CreatePage(ConvertToDbType(page));
+                var result = ConvertToDomainType(dbResult);
                 if (result != null)
                     return Ok(result);
                 return BadRequest("Invalid page");
@@ -104,13 +102,14 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] Page page)
+        public IActionResult Put([FromBody] Deviser.Core.Common.DomainTypes.Page page)
         {
             try
             {
                 if (page != null)
                 {
-                    var result = navigation.UpdatePageTree(page);
+                    var dbResult = navigation.UpdatePageTree(ConvertToDbType(page));
+                    var result = ConvertToDomainType(dbResult);
                     if (result != null)
                         return Ok(result);
                 }
@@ -125,13 +124,14 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpPut("{id}")]
-        public IActionResult PutPage(int id, [FromBody] Page page)
+        public IActionResult PutPage(int id, [FromBody] Deviser.Core.Common.DomainTypes.Page page)
         {
             try
             {
                 if (page != null)
                 {
-                    var result = navigation.UpdateSinglePage(page);
+                    var dbResult = navigation.UpdateSinglePage(ConvertToDbType(page));
+                    var result = ConvertToDomainType(dbResult);
                     if (result != null)
                         return Ok(result);
                 }
@@ -164,6 +164,16 @@ namespace DeviserWI.Controllers.API
                 logger.LogError(errorMessage, ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private Deviser.Core.Common.DomainTypes.Page ConvertToDomainType(Page role)
+        {
+            return Mapper.Map<Deviser.Core.Common.DomainTypes.Page>(role);
+        }
+
+        private Page ConvertToDbType(Deviser.Core.Common.DomainTypes.Page role)
+        {
+            return Mapper.Map<Page>(role);
         }
     }
 }

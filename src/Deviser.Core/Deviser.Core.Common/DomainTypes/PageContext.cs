@@ -11,7 +11,7 @@ namespace Deviser.Core.Common.DomainTypes
     public class PageContext
     {
         [JsonIgnore]
-        public Page CurrentPage { get; set; }
+        public Deviser.Core.Data.Entities.Page CurrentPage { get; set; }
 
         public Guid CurrentPageId { get; set; }
 
@@ -46,7 +46,7 @@ namespace Deviser.Core.Common.DomainTypes
         public bool HasPageEditPermission { get; set; }
 
         [JsonIgnore]
-        public Page HomePage { get; set; }
+        public Deviser.Core.Data.Entities.Page HomePage { get; set; }
 
         public string HomePageUrl
         {

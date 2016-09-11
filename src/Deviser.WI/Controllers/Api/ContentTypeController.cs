@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using Deviser.Core.Common.DomainTypes;
+﻿using Autofac;
+using AutoMapper;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Autofac;
-using Microsoft.Extensions.PlatformAbstractions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
-using AutoMapper;
+using System;
+using System.Collections.Generic;
 
 namespace DeviserWI.Controllers.API
 {
@@ -63,12 +55,8 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                //if (contentTypes != null)
-                //    return Ok(contentTypes);
-                //return NotFound();
-
-                var contentDataTypes = contentTypeProvider.GetContentDataTypes();
-                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.ContentDataType>>(contentDataTypes);
+                var dbResult = contentTypeProvider.GetContentDataTypes();
+                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.ContentDataType>(dbResult);
 
                 if (result != null)
                     return Ok(result);
@@ -92,7 +80,7 @@ namespace DeviserWI.Controllers.API
                 if (contentTypeProvider.GetContentType(contentType.Name) != null)
                     return BadRequest("Content type already exist");
 
-                var dbResult = contentTypeProvider.CreateContentType(Mapper.Map<Deviser.Core.Data.Entities.ContentType>(contentType));
+                var dbResult = contentTypeProvider.CreateContentType(ConvertToDbType(contentType));
                 var result = Mapper.Map<Deviser.Core.Common.DomainTypes.ContentType>(dbResult);
                 if (result != null)
                     return Ok(result);
@@ -110,7 +98,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dbResult = contentTypeProvider.UpdateContentType(Mapper.Map<Deviser.Core.Data.Entities.ContentType>(contentType));
+                var dbResult = contentTypeProvider.UpdateContentType(ConvertToDbType(contentType));
                 //TODO: Update properties Add/Remove/Update
                 var result = Mapper.Map<Deviser.Core.Common.DomainTypes.ContentType>(dbResult);
                 if (result != null)
@@ -122,6 +110,16 @@ namespace DeviserWI.Controllers.API
                 logger.LogError(string.Format("Error occured while updating content type"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private Deviser.Core.Common.DomainTypes.ContentType ConvertToDomainType(ContentType role)
+        {
+            return Mapper.Map<Deviser.Core.Common.DomainTypes.ContentType>(role);
+        }
+
+        private ContentType ConvertToDbType(Deviser.Core.Common.DomainTypes.ContentType role)
+        {
+            return Mapper.Map<ContentType>(role);
         }
     }
 }

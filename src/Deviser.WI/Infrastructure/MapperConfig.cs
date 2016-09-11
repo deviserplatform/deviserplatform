@@ -44,8 +44,12 @@ namespace Deviser.WI.Infrastructure
                .ReverseMap()
                .ForMember(dest => dest.Properties, opt =>
                opt.MapFrom(src => (src.Properties != null) ? SDJsonConvert.SerializeObject(src.Properties) : null));
-                
+
+                config.CreateMap<Language, Core.Common.DomainTypes.Language>().ReverseMap();
+                config.CreateMap<Layout, Core.Common.DomainTypes.Layout>().ReverseMap();
                 config.CreateMap<Layout, Core.Common.DomainTypes.PageLayout>().ReverseMap();
+                config.CreateMap<Page, Core.Common.DomainTypes.Page>().ReverseMap();
+                config.CreateMap<PageContentTranslation, Core.Common.DomainTypes.PageContentTranslation>().ReverseMap(); 
                 config.CreateMap<PageModule, Core.Common.DomainTypes.PageModule>().ReverseMap();
                 config.CreateMap<PagePermission, Core.Common.DomainTypes.PagePermission>().ReverseMap();
                 config.CreateMap<PageTranslation, Core.Common.DomainTypes.PageTranslation>().ReverseMap();
@@ -59,6 +63,9 @@ namespace Deviser.WI.Infrastructure
                 .ForMember(dest => dest.List, opt =>
                 opt.MapFrom(src => (src.List != null) ? SDJsonConvert.SerializeObject(src.List) : null));
 
+                config.CreateMap<Role, Core.Common.DomainTypes.Role>().ReverseMap();
+
+                //Roles from db needs to be ignored, because User.Roles is not Role type, it is UserRole - join entity.
                 config.CreateMap<User, Core.Common.DomainTypes.User>()
                 .ForMember(dest => dest.Roles, opt => opt.Ignore())
                 .ReverseMap()

@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using AutoMapper;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Microsoft.AspNetCore.Http;
@@ -6,8 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Deviser.WI.Controllers.Api
 {
@@ -27,7 +26,8 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var result = pageContentProvider.GetTranslations(contentId, cultureCode);
+                var dbResult = pageContentProvider.GetTranslations(contentId, cultureCode);
+                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.PageContentTranslation>>(dbResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -40,11 +40,12 @@ namespace Deviser.WI.Controllers.Api
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] PageContentTranslation contentTranslation)
+        public IActionResult Post([FromBody] Deviser.Core.Common.DomainTypes.PageContentTranslation contentTranslation)
         {
             try
             {
-                var result = pageContentProvider.CreateTranslation(contentTranslation);
+                var dbResult = pageContentProvider.CreateTranslation(ConvertToDbType(contentTranslation));
+                var result = ConvertToDomainType(dbResult);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
@@ -57,11 +58,12 @@ namespace Deviser.WI.Controllers.Api
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] PageContentTranslation contentTranslation)
+        public IActionResult Put([FromBody] Deviser.Core.Common.DomainTypes.PageContentTranslation contentTranslation)
         {
             try
             {
-                var result = pageContentProvider.UpdateTranslation(contentTranslation);
+                var dbResult = pageContentProvider.UpdateTranslation(ConvertToDbType(contentTranslation));
+                var result = ConvertToDomainType(dbResult);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
@@ -92,6 +94,16 @@ namespace Deviser.WI.Controllers.Api
                 logger.LogError(string.Format("Error occured while deleting page content translation"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private Deviser.Core.Common.DomainTypes.PageContentTranslation ConvertToDomainType(PageContentTranslation role)
+        {
+            return Mapper.Map<Deviser.Core.Common.DomainTypes.PageContentTranslation>(role);
+        }
+
+        private PageContentTranslation ConvertToDbType(Deviser.Core.Common.DomainTypes.PageContentTranslation role)
+        {
+            return Mapper.Map<PageContentTranslation>(role);
         }
     }
 }
