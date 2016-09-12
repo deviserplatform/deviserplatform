@@ -193,5 +193,109 @@ namespace Deviser.TestCommon
 
             return layoutTypes;
         }
+
+        public static List<Module> GetModules()
+        {
+            var modules = new List<Module>();
+            var loginActions = new List<ModuleAction>();
+            var registerActions = new List<ModuleAction>();
+            var viewType = new ModuleActionType
+            {
+                Id = Guid.Parse("72366792-3740-4E6B-B960-9C9C5334163A"),
+                ControlType = "View"
+            };
+
+            var editType = new ModuleActionType
+            {
+                Id = Guid.Parse("192278B6-7BF2-40C2-A776-B9CA5FB04FBB"),
+                ControlType = "Edit"
+            };
+
+            loginActions.Add(new ModuleAction()
+            {
+                Id = Guid.NewGuid(),
+                ActionName = "Login",
+                ControllerName = "Account",
+                ControllerNamespace = "Deviser.Modules.Security.Controllers",
+                DisplayName = "Login",
+                IconClass = "fa fa-sign-in",
+                ModuleActionType = viewType
+            });
+
+            registerActions.Add(new ModuleAction()
+            {
+                Id = Guid.NewGuid(),
+                ActionName = "Index",
+                ControllerName = "Home",
+                ControllerNamespace = "Deviser.Modules.Language.Controllers",
+                DisplayName = "Register",
+                IconClass = "fa fa-language",
+                ModuleActionType = viewType
+            });
+
+
+            modules.Add(new Module()
+            {
+                Id = Guid.NewGuid(),
+                Name = "Login",
+                Label = "Login",
+                Description="Login module",
+                Version = "00.00.01",
+                ModuleAction = loginActions,
+            });
+
+            modules.Add(new Module()
+            {
+                Id = Guid.NewGuid(),
+                Name = "Language",
+                Label = "Language",
+                Description = "Language module",
+                Version = "00.00.01",
+                ModuleAction = registerActions
+            });
+            return modules;
+        }
+
+        public static List<ModuleAction> GetModuleActions()
+        {
+            var moduleActions = new List<ModuleAction>();
+            var viewType = new ModuleActionType
+            {
+                Id = Guid.Parse("72366792-3740-4E6B-B960-9C9C5334163A"),
+                ControlType = "View"
+            };
+
+            var editType = new ModuleActionType
+            {
+                Id = Guid.Parse("192278B6-7BF2-40C2-A776-B9CA5FB04FBB"),
+                ControlType = "Edit"
+            };
+
+            moduleActions.Add(new ModuleAction()
+            {
+                Id = Guid.NewGuid(),
+                ActionName = "Login",
+                ControllerName = "Account",
+                ControllerNamespace = "Deviser.Modules.Security.Controllers",
+                DisplayName = "Login",
+                IconClass= "fa fa-sign-in",
+                ModuleActionType = viewType
+
+            });
+
+            moduleActions.Add(new ModuleAction()
+            {
+                Id = Guid.NewGuid(),
+                ActionName = "Index",
+                ControllerName = "Home",
+                ControllerNamespace = "Deviser.Modules.Language.Controllers",
+                DisplayName = "Register",
+                IconClass = "fa fa-language",
+                ModuleActionType = editType
+
+            });
+
+            return moduleActions;
+        }
     }
 }
