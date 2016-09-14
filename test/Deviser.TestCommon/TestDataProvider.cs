@@ -297,5 +297,28 @@ namespace Deviser.TestCommon
 
             return moduleActions;
         }
+
+        public static List<PropertyOptionList> GetPropertyOptionLists()
+        {
+            var propertyOptionList = new List<PropertyOptionList>();
+
+            propertyOptionList.Add(new PropertyOptionList
+            {
+                Id = Guid.NewGuid(),
+                Name = "YesNo",
+                Label = "Yes No",
+                List = "[{name:\"yes\"},{name:\"no\"}]"
+            });
+
+            propertyOptionList.Add(new PropertyOptionList
+            {
+                Id = Guid.NewGuid(),
+                Name = "YesNoNa",
+                Label = "Yes No Na",
+                List = "[{name:\"yes\"},{name:\"no\"},{name:\"na\"}]"
+            });
+
+            return propertyOptionList;
+        }
     }
 }

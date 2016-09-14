@@ -50,6 +50,23 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
+        public List<PropertyOptionList> GetOptionLists()
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    var returnData = context.PropertyOptionList.ToList();
+                    return returnData;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting PropertyOptionList", ex);
+            }
+            return null;
+        }
+
         public PropertyOptionList GetOptionList(Guid optionListId)
         {
             try
@@ -87,23 +104,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-
-        public List<PropertyOptionList> GetOptionLists()
-        {
-            try
-            {
-                using (var context = new DeviserDBContext(dbOptions))
-                {
-                    var returnData = context.PropertyOptionList.ToList();
-                    return returnData;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError("Error occured while getting PropertyOptionList", ex);
-            }
-            return null;
-        }
+        
 
         public PropertyOptionList UpdateOptionList(PropertyOptionList contentType)
         {
