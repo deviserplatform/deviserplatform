@@ -15,7 +15,5 @@ namespace Deviser.Core.Common.DomainTypes
         public string Name { get; set; }
         public string Title { get; set; }
         public string URL { get; set; }
-
-        public virtual Page Page { get; set; }
     }
 }

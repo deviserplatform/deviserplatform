@@ -16,8 +16,8 @@ namespace Deviser.Core.Common.DomainTypes
         public int SortOrder { get; set; }
         public Guid PageId { get; set; }
         public ModuleAction ModuleAction { get; set; }
-        public virtual Module Module { get; set; }
-        public virtual Page Page { get; set; }
+        //public virtual Module Module { get; set; }
+        //public virtual Page Page { get; set; }
         public bool InheritViewPermissions { get; set; }
         public bool InheritEditPermissions { get; set; }
         public bool HasEditPermission { get; set; }

@@ -177,10 +177,10 @@
             vm.selectedItem = item;
             var moduleId;
             if (item.pageModule) {
-                moduleId = item.pageModule.module.id
+                moduleId = item.pageModule.moduleId
             }
             else {
-                moduleId = item.moduleAction.module.id;
+                moduleId = item.moduleAction.moduleId;
             }
 
             moduleActionService.getEditActions(moduleId).then(function (editActions) {

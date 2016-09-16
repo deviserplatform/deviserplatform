@@ -13,6 +13,7 @@ using Autofac;
 using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
 using PageModule = Deviser.Core.Data.Entities.PageModule;
+using Layout = Deviser.Core.Data.Entities.Layout;
 
 namespace Deviser.Core.Library.Layouts
 {

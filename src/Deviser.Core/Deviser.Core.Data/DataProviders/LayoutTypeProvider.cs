@@ -11,10 +11,10 @@ namespace Deviser.Core.Data.DataProviders
 {
     public interface ILayoutTypeProvider
     {
+        LayoutType CreateLayoutType(LayoutType layoutType);
         List<LayoutType> GetLayoutTypes();
         LayoutType GetLayoutType(Guid layoutTypeId);
-        LayoutType GetLayoutType(string layoutTypeName);
-        LayoutType CreateLayoutType(LayoutType layoutType);
+        LayoutType GetLayoutType(string layoutTypeName);        
         LayoutType UpdateLayoutType(LayoutType layoutType);
 
     }

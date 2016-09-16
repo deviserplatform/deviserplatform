@@ -13,10 +13,6 @@ namespace Deviser.Core.Common.DomainTypes
         public string Label { get; set; }
         public string Description { get; set; }
         public DateTime? CreatedDate { get; set; }
-        public DateTime? LastModifiedDate { get; set; }
-
-        public virtual ICollection<PagePermission> PagePermissions { get; set; }
-        public virtual ICollection<ModulePermission> ModulePermissions { get; set; }
-        public virtual ICollection<ContentPermission> ContentPermissions { get; set; }
+        public DateTime? LastModifiedDate { get; set; }        
     }
 }

@@ -45,9 +45,10 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = moduleManager.GetPageModule(id);
-                if (result != null && moduleManager.HasEditPermission(result))
+                var dbResult = moduleManager.GetPageModule(id);                
+                if (dbResult != null && moduleManager.HasEditPermission(dbResult))
                 {
+                    var result = Mapper.Map<List<PageModule>>(dbResult);
                     return Ok(result);
                 }
 

@@ -2,6 +2,7 @@
 using Autofac.Extensions.DependencyInjection;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
+using Deviser.TestCommon;
 using Deviser.WI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,43 +13,15 @@ using Xunit;
 
 namespace Deviser.Core.Data.Test.DataProviders
 {
-    public class LanguageProviderTest
+    public class LanguageProviderTest : TestBase
     {
-        private readonly ILifetimeScope container;
-        private readonly IServiceProvider serviceProvider;
-
-        public LanguageProviderTest()
-        {
-            var efServiceProvider = new ServiceCollection().AddEntityFrameworkInMemoryDatabase().BuildServiceProvider();
-            var services = new ServiceCollection();
-            services.AddOptions();
-            services
-                .AddDbContext<DeviserDBContext>(b => b.UseInMemoryDatabase()
-                .UseInternalServiceProvider(efServiceProvider));
-
-            services.AddLogging();
-            services.AddOptions();
-
-            // Add Autofac
-            var containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterModule<DefaultModule>();
-            containerBuilder.Populate(services);
-            container = containerBuilder.Build();
-            serviceProvider = new AutofacServiceProvider(container);
-        }
-
         [Fact]
         public void CreateLanguageSuccess()
         {
             //Arrange
             var languageProvider = new LanguageProvider(container);
-            var language = new Language
-            {
-                CultureCode = "en-US",
-                EnglishName = "English - United States",
-                FallbackCulture = "en-US",
-                NativeName = "English - United States"
-            };
+            var languages = TestDataProvider.GetLanguages();
+            var language = languages.First();
 
             //Act
             var result = languageProvider.CreateLanguage(language);
@@ -82,7 +55,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var languageProvider = new LanguageProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var languages = GetLanguages();
+            var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {
                 languageProvider.CreateLanguage(ct);
@@ -121,9 +94,9 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var languageProvider = new LanguageProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var languages = GetLanguages();
+            var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
-            {                
+            {
                 languageProvider.CreateLanguage(ct);
             }
             var inActiveLang = languages.First();
@@ -164,7 +137,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var languageProvider = new LanguageProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var languages = GetLanguages();
+            var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {
                 languageProvider.CreateLanguage(ct);
@@ -194,7 +167,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var languageProvider = new LanguageProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var languages = GetLanguages();
+            var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {
                 languageProvider.CreateLanguage(ct);
@@ -217,7 +190,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var languageProvider = new LanguageProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var languages = GetLanguages();
+            var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {
                 languageProvider.CreateLanguage(ct);
@@ -239,13 +212,13 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var languageProvider = new LanguageProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var languages = GetLanguages();
+            var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {
                 languageProvider.CreateLanguage(ct);
             }
 
-            foreach(var lang in languages)
+            foreach (var lang in languages)
             {
                 lang.IsActive = false;
                 languageProvider.UpdateLanguage(lang);
@@ -267,14 +240,14 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var languageProvider = new LanguageProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var languages = GetLanguages();
+            var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {
                 languageProvider.CreateLanguage(ct);
             }
 
             var languageToUpdate = languages.First();
-            
+
             //Act
             languageToUpdate.IsActive = false;
             languageToUpdate.NativeName = "NewName";
@@ -296,7 +269,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var languageProvider = new LanguageProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var languages = GetLanguages();
+            var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {
                 languageProvider.CreateLanguage(ct);
@@ -312,39 +285,6 @@ namespace Deviser.Core.Data.Test.DataProviders
 
             //Clean
             dbContext.Language.RemoveRange(dbContext.Language);
-        }
-
-
-        private List<Language> GetLanguages()
-        {
-            var languages = new List<Language>();
-
-            languages.Add(new Language
-            {
-                Id = Guid.NewGuid(),
-                CultureCode = "en-US",
-                EnglishName = "English - United States",
-                FallbackCulture = "en-US",
-                NativeName = "English - United States"
-            });
-            languages.Add(new Language
-            {
-                Id = Guid.NewGuid(),
-                CultureCode = "de-CH",
-                EnglishName = "German - Switzerland",
-                FallbackCulture = "en-US",
-                NativeName = "Deutsch - Schweiz"
-            });
-            languages.Add(new Language
-            {
-                Id = Guid.NewGuid(),
-                CultureCode = "fr-CH",
-                EnglishName = "French - Switzerland",
-                FallbackCulture = "en-US",
-                NativeName = "French - Suisse"
-            });
-
-            return languages;
         }
     }
 }

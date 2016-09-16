@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Deviser.Core.Data.Entities;
+using Deviser.TestCommon;
 using Deviser.WI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,43 +12,8 @@ using Xunit;
 
 namespace Deviser.Core.Data.DataProviders
 {
-    public class ContentTypeProviderTest
+    public class ContentTypeProviderTest : TestBase
     {
-        private readonly ILifetimeScope container;
-        private readonly IServiceProvider serviceProvider;
-
-        public ContentTypeProviderTest()
-        {
-            var efServiceProvider = new ServiceCollection().AddEntityFrameworkInMemoryDatabase().BuildServiceProvider();
-
-            var services = new ServiceCollection();
-            services.AddOptions();
-            services
-                .AddDbContext<DeviserDBContext>(b => b.UseInMemoryDatabase().UseInternalServiceProvider(efServiceProvider));
-
-            //services.AddIdentity<User, Role>()
-            //        .AddEntityFrameworkStores<DeviserDBContext>();
-
-            services.AddLogging();
-            services.AddOptions();
-
-            // IHttpContextAccessor is required for SignInManager, and UserManager
-            //var context = new DefaultHttpContext();
-            //context.Features.Set<IHttpAuthenticationFeature>(new HttpAuthenticationFeature() { Handler = new TestAuthHandler() });
-            //services.AddSingleton<IHttpContextAccessor>(
-            //    new HttpContextAccessor()
-            //    {
-            //        HttpContext = context,
-            //    });
-
-            // Add Autofac
-            var containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterModule<DefaultModule>();
-            containerBuilder.Populate(services);
-            container = containerBuilder.Build();
-            serviceProvider = new AutofacServiceProvider(container);
-        }
-
         [Fact]
         public void CreateContentTypeSuccess()
         {
@@ -90,7 +56,7 @@ namespace Deviser.Core.Data.DataProviders
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var contentTypes = GetContentTypes();
+            var contentTypes = TestDataProvider.GetContentTypes();
             foreach(var ct in contentTypes)
             {
                 contentTypeProvider.CreateContentType(ct);
@@ -119,7 +85,7 @@ namespace Deviser.Core.Data.DataProviders
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var contentTypes = GetContentTypes();
+            var contentTypes = TestDataProvider.GetContentTypes();
             foreach (var ct in contentTypes)
             {
                 contentTypeProvider.CreateContentType(ct);
@@ -172,7 +138,7 @@ namespace Deviser.Core.Data.DataProviders
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var contentTypes = GetContentTypes();
+            var contentTypes = TestDataProvider.GetContentTypes();
             foreach (var ct in contentTypes)
             {
                 contentTypeProvider.CreateContentType(ct);
@@ -195,7 +161,7 @@ namespace Deviser.Core.Data.DataProviders
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var contentDataTypes = GetContentDataTypes();
+            var contentDataTypes = TestDataProvider.GetContentDataTypes();
             dbContext.ContentDataType.AddRange(contentDataTypes);
             dbContext.SaveChanges();
 
@@ -248,19 +214,16 @@ namespace Deviser.Core.Data.DataProviders
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var contentTypes = GetContentTypes();
+            var contentTypes = TestDataProvider.GetContentTypes();
             foreach (var ct in contentTypes)
             {
                 contentTypeProvider.CreateContentType(ct);
             }
+
             var contentTypeToUpdate = contentTypes.First();
             contentTypeToUpdate.ContentTypeProperties = new List<ContentTypeProperty>();
-            var cssProp = new Property()
-            {
-                Id = Guid.NewGuid(),
-                Name = "cssclass",
-                Label = "Css Class"
-            };
+            var properties = TestDataProvider.GetProperties();
+            var cssProp = properties[0];
             dbContext.Property.Add(cssProp);
 
             contentTypeToUpdate.ContentTypeProperties.Add(new ContentTypeProperty
@@ -290,27 +253,19 @@ namespace Deviser.Core.Data.DataProviders
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var contentTypes = GetContentTypes();
+            var contentTypes = TestDataProvider.GetContentTypes();
             foreach (var ct in contentTypes)
             {
                 contentTypeProvider.CreateContentType(ct);
             }
             var contentTypeToUpdate = contentTypes.First();
             contentTypeToUpdate.ContentTypeProperties = new List<ContentTypeProperty>();
-            var cssProp = new Property()
-            {
-                Id = Guid.NewGuid(),
-                Name = "cssclass",
-                Label = "Css Class"
-            };
-            var heightProp = new Property()
-            {
-                Id = Guid.NewGuid(),
-                Name = "height",
-                Label = "Height"
-            };
+            var properties = TestDataProvider.GetProperties();
+            var cssProp = properties[0];
+            var heightProp = properties[1]; 
 
             dbContext.Property.Add(cssProp);
+
             dbContext.ContentTypeProperty.Add(new ContentTypeProperty
             {
                 ConentTypeId = contentTypeToUpdate.Id,
@@ -336,114 +291,5 @@ namespace Deviser.Core.Data.DataProviders
             dbContext.ContentTypeProperty.RemoveRange(dbContext.ContentTypeProperty);
             dbContext.ContentType.RemoveRange(dbContext.ContentType);
         }
-
-        private List<ContentType> GetContentTypes()
-        {   
-            var contentTypes = new List<ContentType>();
-            var stringType = new ContentDataType
-            {
-                Id = Guid.NewGuid(),
-                Name = "string",
-                Label = "string"
-            };
-            var objectType = new ContentDataType
-            {
-                Id = Guid.NewGuid(),
-                Name = "object",
-                Label = "object"
-            };
-            var arrayType = new ContentDataType
-            {
-                Id = Guid.NewGuid(),
-                Name = "array",
-                Label = "array"
-            };
-            
-            contentTypes.Add(new ContentType
-            {
-                Id = Guid.NewGuid(),
-                Name = "Text",
-                Label = "Text",
-                ContentDataTypeId = stringType.Id
-            });
-            contentTypes.Add(new ContentType
-            {
-                Id = Guid.NewGuid(),
-                Name = "Image",
-                Label = "Image",
-                ContentDataTypeId = objectType.Id
-            });
-            contentTypes.Add(new ContentType
-            {
-                Id = Guid.NewGuid(),
-                Name = "RichText",
-                Label = "Rich text",
-                ContentDataTypeId = stringType.Id
-            });
-
-            return contentTypes;
-        }
-
-        private List<ContentDataType> GetContentDataTypes()
-        {
-            var contentDataTypes = new List<ContentDataType>();
-            var stringType = new ContentDataType
-            {
-                Id = Guid.NewGuid(),
-                Name = "string",
-                Label = "string"
-            };
-            var objectType = new ContentDataType
-            {
-                Id = Guid.NewGuid(),
-                Name = "object",
-                Label = "object"
-            };
-            var arrayType = new ContentDataType
-            {
-                Id = Guid.NewGuid(),
-                Name = "array",
-                Label = "array"
-            };
-
-            contentDataTypes.Add(stringType);
-            contentDataTypes.Add(objectType);
-            contentDataTypes.Add(arrayType);
-            return contentDataTypes;
-        }
-
-        //private class TestAuthHandler : IAuthenticationHandler
-        //{
-        //    public void Authenticate(AuthenticateContext context)
-        //    {
-        //        context.NotAuthenticated();
-        //    }
-
-        //    public Task AuthenticateAsync(AuthenticateContext context)
-        //    {
-        //        context.NotAuthenticated();
-        //        return Task.FromResult(0);
-        //    }
-
-        //    public Task ChallengeAsync(ChallengeContext context)
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-
-        //    public void GetDescriptions(DescribeSchemesContext context)
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-
-        //    public Task SignInAsync(SignInContext context)
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-
-        //    public Task SignOutAsync(SignOutContext context)
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //}
     }
 }

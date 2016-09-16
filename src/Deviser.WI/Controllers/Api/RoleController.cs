@@ -1,20 +1,13 @@
 ﻿using Autofac;
+using AutoMapper;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Library;
-using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Library.Layouts;
-using Deviser.Core.Library.Modules;
+using Deviser.Core.Data.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using AutoMapper;
-using Deviser.Core.Data.Entities;
 
 namespace DeviserWI.Controllers.API
 {
@@ -38,7 +31,8 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = roleProvider.GetRoles();
+                var dbResult = roleProvider.GetRoles();
+                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.Role>>(dbResult);
                 if (result != null)
                 {
                     return Ok(result);
@@ -57,7 +51,8 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = roleProvider.GetRole(id);
+                var dbResult = roleProvider.GetRole(id);
+                var result = ConvertToDomainType(dbResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -70,11 +65,12 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]Role role)
+        public IActionResult Post([FromBody]Deviser.Core.Common.DomainTypes.Role role)
         {
             try
             {
-                var result = roleProvider.CreateRole(role);
+                var dbResult = roleProvider.CreateRole(ConvertToDbType(role));
+                var result = ConvertToDomainType(dbResult);
                 if (result != null)
                     return Ok(result);
                 return BadRequest("Invalid role");
@@ -87,13 +83,14 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody]Role role)
+        public IActionResult Put([FromBody]Deviser.Core.Common.DomainTypes.Role role)
         {
             try
             {
                 if (role != null)
                 {
-                    var result = roleProvider.UpdateRole(role);
+                    var dbResult = roleProvider.UpdateRole(ConvertToDbType(role));
+                    var result = ConvertToDomainType(dbResult);
                     if (result != null)
                         return Ok(result);
                 }
@@ -114,7 +111,8 @@ namespace DeviserWI.Controllers.API
             {
                 if (id!= Guid.Empty)
                 {
-                    var result = roleProvider.DeleteRole(id);
+                    var dbResult = roleProvider.DeleteRole(id);
+                    var result = ConvertToDomainType(dbResult);
                     if (result != null)
                         return Ok();
                 }
@@ -126,6 +124,16 @@ namespace DeviserWI.Controllers.API
                 logger.LogError(errorMessage, ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private Deviser.Core.Common.DomainTypes.Role ConvertToDomainType(Role role)
+        {
+            return Mapper.Map<Deviser.Core.Common.DomainTypes.Role>(role);
+        }
+
+        private Role ConvertToDbType(Deviser.Core.Common.DomainTypes.Role role)
+        {
+            return Mapper.Map<Role>(role);
         }
     }
 }

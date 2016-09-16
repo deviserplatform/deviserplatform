@@ -46,9 +46,41 @@
             });
         }
 
-        function getSiteLanguages() {
+        function getSiteLanguages(isOnActivate) {
             languageService.getSiteLanguages().then(function (languages) {
+
                 vm.siteLanguages = languages;
+                var activeLanguages = _.filter(languages, 'isActive');
+
+                if (isOnActivate) {
+                    console.log(pageContext);
+                    if (activeLanguages.length == 1) {
+                        showMessage('success', 'URLs has been updated based on active languages, this page will be reloaded automatically');
+                        var reloadUrl = pageContext.currentUrl;
+                        _.forEach(vm.siteLanguages, function (lang) {
+                            lang = lang.cultureCode.toLowerCase() + '/';
+                            if (_.startsWith(reloadUrl, lang)) {
+                                reloadUrl = _.replace(reloadUrl, lang, '');
+                            }
+                        });
+
+                        setTimeout(function () {
+                            window.location = '/' + reloadUrl;
+                        }, 5000);
+                    }
+                    else if (activeLanguages.length == 2) {
+                        showMessage('success', 'URLs has been updated based on active languages, this page will be reloaded automatically');
+                        var reloadUrl = pageContext.currentUrl;
+                        var lang = pageContext.currentLocale.toLowerCase() + '/';
+                        if (!_.startsWith(reloadUrl, lang)) {
+                            reloadUrl = lang + reloadUrl;
+                        }
+                        setTimeout(function () {
+                            window.location = '/' + reloadUrl;
+                        }, 5000);
+                    }
+
+                }
             }, function (error) {
                 showMessage("error", "Cannot get site languages, please contact administrator");
             });
@@ -75,19 +107,19 @@
             if (language.cultureCode !== pageContext.siteLanguage) {
                 languageService.put(language).then(function (result) {
                     console.log(result);
-                    getSiteLanguages();
-                    showMessage("success", "Role has been updated");
+                    getSiteLanguages(true);
+                    showMessage("success", "Language has been updated");
                 }, function (error) {
-                    showMessage("error", "Cannot update role, please contact administrator");
+                    showMessage("error", "Cannot update language, please contact administrator");
                 });
             }
-            
+
         }
 
         function cancel() {
             vm.currentViewState = vm.viewStates.LIST;
         }
-        
+
         function showMessage(messageType, messageContent) {
             vm.message = {
                 messageType: messageType,

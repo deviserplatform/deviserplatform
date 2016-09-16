@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Deviser.Core.Common.DomainTypes;
 using ContentResult = Deviser.Core.Common.DomainTypes.ContentResult;
+using Page = Deviser.Core.Data.Entities.Page;
 using Module = Deviser.Core.Data.Entities.Module;
 using PageModule = Deviser.Core.Data.Entities.PageModule;
 using ModuleAction = Deviser.Core.Data.Entities.ModuleAction;

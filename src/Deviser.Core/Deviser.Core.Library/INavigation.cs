@@ -12,6 +12,8 @@ namespace Deviser.Core.Library
         Page GetPageTree();
         Page GetPageTree(Guid pageId);
         Page GetPageTree(Guid currentPageId, SystemPageFilter systemFilter, Guid parentId = new Guid());
+        Page GetPage(Guid pageId);
+        List<Page> GetPages();
         List<Page> GetBreadCrumbs(Guid currentPageId);
         Page CreatePage(Page page);
         Page UpdatePageTree(Page page);

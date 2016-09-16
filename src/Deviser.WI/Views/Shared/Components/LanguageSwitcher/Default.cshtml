@@ -9,10 +9,13 @@
 }
 
 
-@foreach (var lang in Model)
+@if (Model != null && Model.Count > 1)
 {
-    string activeClass = lang.IsActive ? "active" : "";
-    <li>
-        <a href="@lang.Url" title="@lang.EnglishName" class="@activeClass"> @lang.Culture.TwoLetterISOLanguageName.ToUpper()</a>
-    </li>
+    foreach (var lang in Model)
+    {
+        string activeClass = lang.IsActive ? "active" : "";
+        <li>
+            <a href="@lang.Url" title="@lang.EnglishName" class="@activeClass"> @lang.Culture.TwoLetterISOLanguageName.ToUpper()</a>
+        </li>
+    }
 }

@@ -138,7 +138,6 @@ namespace Deviser.Core.Library.TagHelpers
                 {
                     if (placeHolder != null)
                     {
-                        //ControlData controlData = new ControlData();
                         string currentResult = "";
                         List<ContentResult> currentResults = new List<ContentResult>();
                         IHtmlContent htmlContent;
