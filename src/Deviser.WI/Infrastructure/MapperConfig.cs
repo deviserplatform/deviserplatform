@@ -35,6 +35,7 @@ namespace Deviser.WI.Infrastructure
 
                 config.CreateMap<Module, Core.Common.DomainTypes.Module>().ReverseMap();
                 config.CreateMap<ModuleAction, Core.Common.DomainTypes.ModuleAction>().ReverseMap();
+                config.CreateMap<ModuleActionType, Core.Common.DomainTypes.ModuleActionType>().ReverseMap();
                 config.CreateMap<ModulePermission, Core.Common.DomainTypes.ModulePermission>().ReverseMap();
 
                 config.CreateMap<PageContent, Core.Common.DomainTypes.PageContent>()

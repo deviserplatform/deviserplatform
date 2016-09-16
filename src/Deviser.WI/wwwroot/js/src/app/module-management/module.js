@@ -21,6 +21,7 @@
         /*Function bindings*/
         vm.add = add;
         vm.edit = edit;
+         vm.activate = activate;
         vm.isValidName = isValidName;
         vm.remove = remove;
         vm.save = save;
@@ -42,10 +43,11 @@
 
         init();
         function init() {
-            vm.module = {};
-            vm.moduleAction = {};
+            vm.modules = {};
+            vm.moduleActions = {};
             getModules();
             getModuleActions();
+            getModuleActionType();
         }
 
 
@@ -54,8 +56,7 @@
         function getModules() {
             moduleService.get().then(function (modules) {
                 vm.modules = modules;
-                vm.module = _.keyBy(modules, "name");
-                vm.module.isActive = (vm.module.isActive === "true") ? true : false;
+                
             }, function (error) {
                 showMessage("error", "Cannot get all modules, please contact administrator");
             });
@@ -65,13 +66,22 @@
         function getModuleActions() {
             moduleActionService.get().then(function (moduleActions) {
                 vm.moduleActions = moduleActions;
-                vm.moduleAction = _.keyBy(moduleActions, "name");
-                vm.moduleAction.isDefault = (vm.moduleAction.isDefault === "true") ? true : false;
             }, function (error) {
                 showMessage("error", "Cannot get all module actions, please contact administrator");
             });
         }
 
+        function getModuleActionType() {
+            moduleService.getModuleActionType().then(function (moduleActionType) {
+                vm.moduleActionType = moduleActionType;
+            }, function (error) {
+                showMessage("error", "Cannot get all module action types, please contact administrator");
+            });
+        }
+
+        function activate(module) {
+            update(module);
+        }
 
         function add() {
             vm.currentViewState = vm.viewStates.NEW;
@@ -100,8 +110,8 @@
         }
 
         function save() {
-            $scope.moduleForm.submitted = true;
-            if ($scope.moduleForm.$valid) {
+            //$scope.moduleForm.submitted = true;
+            //if ($scope.moduleForm.$valid) {
                 if (vm.currentViewState == vm.viewStates.NEW && vm.isValidName(vm.selectedModule.name)) {
                     moduleService.post(vm.selectedModule).then(function (result) {
                         console.log(result);
@@ -116,18 +126,30 @@
                 else {
                     update(vm.selectedModule);
                 }
-            }
+           
+        }
+        
+        function update(module) {
+            moduleService.put(module).then(function (result) {
+                console.log(result);
+                getModules();
+                showMessage("success", "Modulehas been updated");
+                vm.currentViewState = vm.viewStates.LIST;
+            }, function (error) {
+                showMessage("error", "Cannot update module, please contact administrator");
+            });
         }
 
         function addModuleActions() {
             vm.currentViewState = vm.viewStates.NEWMODULEACTION;
-            var actionItem = {
+            var moduleAction = {
                 displayName: ''
             }
             if (!vm.selectedModule.moduleAction) {
                 vm.selectedModule.moduleAction = [];
             }
-            vm.selectedModule.moduleAction.push(actionItem)
+            vm.selectedModule.moduleAction.push(moduleAction);
+            vm.selectedModuleAction = moduleAction;
         }
 
         function editModuleActions(moduleAction) {

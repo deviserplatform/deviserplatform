@@ -21,8 +21,8 @@
     app.factory('languageService', languageService);
     app.factory('fileService', fileService);
     app.factory('assetService', assetService);
-    
-    
+
+
     ////////////////////////////////
     /*Function declarations only*/
 
@@ -76,10 +76,10 @@
 
     function layoutTypeService($http, $q, globals) {
         var serviceUrl = '/layouttype';
-        var service = baseService($http, $q, globals, serviceUrl);       
+        var service = baseService($http, $q, globals, serviceUrl);
         return service;
     }
-    
+
     function propertyService($http, $q, globals) {
         var serviceUrl = '/property';
         var service = baseService($http, $q, globals, serviceUrl);
@@ -90,8 +90,8 @@
         var serviceUrl = '/optionlist';
         var service = baseService($http, $q, globals, serviceUrl);
         return service;
-    } 
-    
+    }
+
     function siteSettingService($http, $q, globals) {
         var serviceUrl = '/sitesetting';
         var service = baseService($http, $q, globals, serviceUrl);
@@ -190,19 +190,35 @@
     }
 
     function moduleService($http, $q, globals) {
-        var service = baseService($http, $q, globals, '/module');       
+        var serviceUrl = '/module';
+        var service = baseService($http, $q, globals, '/module');
+        service.getModuleActionType = getModuleActionType;
         return service;
+        
+
+        ////////////////////////////////
+        /*Function declarations only*/
+        function getModuleActionType() {
+            var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/moduleactiontype';
+            var request = $http({
+                method: 'GET',
+                url: getUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
     }
 
     function moduleActionService($http, $q, globals) {
         var serviceUrl = '/moduleaction';
         var service = baseService($http, $q, globals, serviceUrl);
         service.getEditActions = getEditActions;
-        service.getEditActionView = getEditActionView;       
+        service.getEditActionView = getEditActionView;
         return service;
 
         function getEditActions(id) {
-            var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/edit/'+ id;
+            var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/edit/' + id;
 
             var request = $http({
                 method: 'GET',
@@ -342,7 +358,7 @@
         var imageService = baseService($http, $q, globals, '/upload/images');
         return imageService;
     }
-    
+
     function baseService($http, $q, globals, serviceUrl) {
         var service = {
             get: get,
@@ -404,10 +420,10 @@
 
         function remove(id) {
             if (typeof (id))
-            var request = $http({
-                method: 'DELETE',
-                url: url + '/' + id
-            });
+                var request = $http({
+                    method: 'DELETE',
+                    url: url + '/' + id
+                });
             return request.then(handleSuccess, function (response) {
                 return handleError(response, $q)
             });
@@ -428,7 +444,7 @@
         // Otherwise, use expected error message.
         return ($q.reject(response.data));
     }
-    
+
     // I transform the successful response, unwrapping the application data
     // from the API response payload.
     function handleSuccess(response) {

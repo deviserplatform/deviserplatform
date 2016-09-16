@@ -15,6 +15,7 @@ namespace Deviser.Core.Data.DataProviders
         Module Get(Guid moduleId);
         ModuleAction GetModuleAction(Guid moduleActionId);
         List<ModuleAction> GetModuleActions();
+        List<ModuleActionType> GetModuleActionType();
         List<ModuleAction> GetEditModuleActions(Guid moduleId);
         Module Get(string moduleName);
         Module Create(Module module);
@@ -44,7 +45,7 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     IEnumerable<Module> returnData = context.Module
                         .Include(m => m.ModuleAction)//.ThenInclude(ma=>ma.ModuleActionType)
-                        .Where(m => m.ModuleAction.Any(ma => ma.ModuleActionType.ControlType.ToLower() == "view")) //Selecting View Actions Only
+                        
                         .ToList();
 
                     return new List<Module>(returnData);
@@ -95,6 +96,26 @@ namespace Deviser.Core.Data.DataProviders
             catch (Exception ex)
             {
                 logger.LogError("Error occured while getting ModuleActions", ex);
+            }
+            return null;
+        }
+
+        public List<ModuleActionType> GetModuleActionType()
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    var returnData = context.ModuleActionType
+                        .OrderBy(cd => cd.Id)
+                        .ToList();
+
+                    return returnData;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting Module Action Type", ex);
             }
             return null;
         }
@@ -195,12 +216,13 @@ namespace Deviser.Core.Data.DataProviders
                         }
                         else
                         {
+                            moduleAction.ModuleId = module.Id;
                             context.ModuleAction.Add(moduleAction);
                         } 
                     }
 
                     var toDelete = context.ModuleAction.Where(dbModuleAction => dbModuleAction.ModuleId == module.Id &&
-                    !module.ModuleAction.Any(moduleAction => moduleAction.Id != dbModuleAction.Id)).ToList();
+                    !moduleActions.Any(moduleAction => moduleAction.Id != dbModuleAction.Id)).ToList();
 
                     context.ModuleAction.RemoveRange(toDelete);
 

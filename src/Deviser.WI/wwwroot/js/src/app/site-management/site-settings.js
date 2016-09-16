@@ -19,11 +19,11 @@
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
-       
-        /*Function bindings*/       
+
+        /*Function bindings*/
         vm.update = updateSiteSettings;
         vm.cancel = cancel;
-        
+
         init();
 
         //////////////////////////////////
@@ -51,14 +51,12 @@
         }
         function cancel() {
             getSiteSettings();
-            //vm.setting = _.keyBy(vm.siteSettings, "settingName");
-            //vm.setting.EnableDisableRegistration.settingValue = (vm.setting.EnableDisableRegistration.settingValue === "true") ? true : false;
         }
 
         /*Private functions*/
         function getSiteSettings() {
             siteSettingService.get().then(function (siteSettings) {
-                vm.siteSettings = siteSettings;     
+                vm.siteSettings = siteSettings;
                 vm.setting = _.keyBy(siteSettings, "settingName");
                 vm.setting.SMTPEnableSSL.settingValue = (vm.setting.SMTPEnableSSL.settingValue === "true") ? true : false;
                 vm.setting.RegistrationEnabled.settingValue = (vm.setting.RegistrationEnabled.settingValue === "true") ? true : false;
@@ -80,8 +78,8 @@
 
         function getLayouts() {
             layoutService.get().then(function (layouts) {
-                vm.layouts = layouts;                
-            }) 
+                vm.layouts = layouts;
+            })
         }
         function getSkin() {
             skinService.get().then(function (skins) {
@@ -91,14 +89,14 @@
 
         function getSiteLanguages() {
             languageService.getSiteLanguages().then(function (languages) {
-                vm.languages = _.filter(languages, {isActive:true});
+                vm.languages = _.filter(languages, { isActive: true });
             }, function (error) {
                 showMessage("error", "Cannot get all languages, please contact administrator");
             });
         }
 
 
-     
+
         function showMessage(messageType, messageContent) {
             vm.message = {
                 messageType: messageType,
