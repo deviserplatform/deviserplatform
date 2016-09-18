@@ -12,7 +12,7 @@ namespace Deviser.Core.Data.DataProviders
     public interface IPageContentProvider
     {
         PageContent Get(Guid pageContentId);
-        List<PageContent> GetByContainer(Guid containerId);
+        //List<PageContent> GetByContainer(Guid containerId);
         List<PageContent> Get(Guid pageId, string cultureCode);
         PageContentTranslation GetTranslation(Guid pageConentId);
         PageContentTranslation GetTranslations(Guid pageConentId, string cultureCode);
@@ -68,30 +68,30 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
-        /// <summary>
-        /// Get page contents by container
-        /// </summary>
-        /// <param name="containerId"></param>
-        /// <returns></returns>
-        public List<PageContent> GetByContainer(Guid containerId)
-        {
-            try
-            {
-                using (var context = new DeviserDBContext(dbOptions))
-                {
-                    IEnumerable<PageContent> returnData = context.PageContent
-                               .AsNoTracking()
-                               .Where(e => e.ContainerId == containerId && !e.IsDeleted)
-                               .ToList();
-                    return new List<PageContent>(returnData);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError("Error occured while getting GetByContainer", ex);
-            }
-            return null;
-        }
+        ///// <summary>
+        ///// Get page contents by container
+        ///// </summary>
+        ///// <param name="containerId"></param>
+        ///// <returns></returns>
+        //public List<PageContent> GetByContainer(Guid containerId)
+        //{
+        //    try
+        //    {
+        //        using (var context = new DeviserDBContext(dbOptions))
+        //        {
+        //            IEnumerable<PageContent> returnData = context.PageContent
+        //                       .AsNoTracking()
+        //                       .Where(e => e.ContainerId == containerId && !e.IsDeleted)
+        //                       .ToList();
+        //            return new List<PageContent>(returnData);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.LogError("Error occured while getting GetByContainer", ex);
+        //    }
+        //    return null;
+        //}
 
         /// <summary>
         /// Get all page contents for given pageId and cultureCode.
@@ -191,8 +191,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     PageContent resultPageContent;
-                    //content.Id = Guid.NewGuid();
-                    content.CreatedDate = DateTime.Now;
+                    content.LastModifiedDate = content.CreatedDate = DateTime.Now;
                     resultPageContent = context.PageContent.Add(content).Entity;
                     context.SaveChanges();
                     return resultPageContent;
@@ -286,8 +285,10 @@ namespace Deviser.Core.Data.DataProviders
             catch (Exception ex)
             {
                 logger.LogError("Error occured while updating contents", ex);
+                throw ex;
             }
         }
+
         public PageContentTranslation UpdateTranslation(PageContentTranslation contentTranslation)
         {
             try

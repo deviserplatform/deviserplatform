@@ -36,10 +36,29 @@ namespace Deviser.TestCommon
             contentDataTypes.Add(arrayType);
             return contentDataTypes;
         }
+        
+        public static List<ContentPermission> GetContentPermissions()
+        {
+            var contentPermissions = new List<ContentPermission>();
+            contentPermissions.Add(new ContentPermission
+            {
+                PermissionId = Guid.NewGuid(),
+                RoleId = Guid.NewGuid(),
+            });
+
+            contentPermissions.Add(new ContentPermission
+            {
+                PermissionId = Guid.NewGuid(),
+                RoleId = Guid.NewGuid(),
+            });
+            return contentPermissions;
+
+        }
 
         public static List<ContentType> GetContentTypes()
         {
             var contentTypes = new List<ContentType>();
+            var properties = GetProperties();
             var stringType = new ContentDataType
             {
                 Id = Guid.NewGuid(),
@@ -59,26 +78,40 @@ namespace Deviser.TestCommon
                 Label = "array"
             };
 
+            var contentTypeProperties = new List<ContentTypeProperty>();
+
+            contentTypeProperties.Add(new ContentTypeProperty
+            {
+                Id = Guid.NewGuid(),
+                Property = properties.First(),
+            });
+
             contentTypes.Add(new ContentType
             {
                 Id = Guid.NewGuid(),
                 Name = "Text",
                 Label = "Text",
-                ContentDataTypeId = stringType.Id
+                ContentDataType = arrayType,
+                ContentTypeProperties = contentTypeProperties,
+                PageContents = null
             });
             contentTypes.Add(new ContentType
             {
                 Id = Guid.NewGuid(),
                 Name = "Image",
                 Label = "Image",
-                ContentDataTypeId = objectType.Id
+                ContentDataType = objectType,
+                ContentTypeProperties = contentTypeProperties,
+                PageContents = null
             });
             contentTypes.Add(new ContentType
             {
                 Id = Guid.NewGuid(),
                 Name = "RichText",
                 Label = "Rich text",
-                ContentDataTypeId = stringType.Id
+                ContentDataType = stringType,
+                ContentTypeProperties = contentTypeProperties,
+                PageContents = null
             });
 
             return contentTypes;
@@ -116,24 +149,6 @@ namespace Deviser.TestCommon
             return languages;
         }
 
-        public static List<Property> GetProperties()
-        {
-            var properties = new List<Property>();
-            properties.Add(new Property()
-            {
-                Id = Guid.NewGuid(),
-                Name = "cssclass",
-                Label = "Css Class"
-            });
-            properties.Add(new Property()
-            {
-                Id = Guid.NewGuid(),
-                Name = "height",
-                Label = "Height"
-            });
-            return properties;
-        }
-
         public static List<Layout> GetLayouts()
         {
             var layouts = new List<Layout>();
@@ -169,8 +184,8 @@ namespace Deviser.TestCommon
             layoutTypes.Add(new LayoutType
             {
                 Id = Guid.NewGuid(),
-                Name = "container",                
-                Label ="Container",
+                Name = "container",
+                Label = "Container",
                 LayoutTypeIds = $"{Guid.NewGuid()},{Guid.NewGuid()}",
                 IconClass = "fa fa-square-o"
             });
@@ -239,7 +254,7 @@ namespace Deviser.TestCommon
                 Id = Guid.NewGuid(),
                 Name = "Login",
                 Label = "Login",
-                Description="Login module",
+                Description = "Login module",
                 Version = "00.00.01",
                 ModuleAction = loginActions,
             });
@@ -278,7 +293,7 @@ namespace Deviser.TestCommon
                 ControllerName = "Account",
                 ControllerNamespace = "Deviser.Modules.Security.Controllers",
                 DisplayName = "Login",
-                IconClass= "fa fa-sign-in",
+                IconClass = "fa fa-sign-in",
                 ModuleActionType = viewType
 
             });
@@ -296,6 +311,179 @@ namespace Deviser.TestCommon
             });
 
             return moduleActions;
+        }
+
+        public static List<Page> GetPages()
+        {
+            var pages = new List<Page>();
+
+            pages.Add(new Page
+            {
+                Id = Guid.NewGuid(),
+                IsIncludedInMenu = true,
+                IsSystem = false,
+                PageTranslation = new List<PageTranslation>()
+                {
+                    new PageTranslation
+                    {   
+                        Name = "TestPage",
+                        Description = "Test Description",
+                        Locale = "en-US",
+                        Title = "Test Page",
+                        URL ="TestPage"
+                    }
+                },
+                PagePermissions = new List<PagePermission>()
+                {
+                    new PagePermission
+                    {
+                        Id = Guid.NewGuid(),
+                        PermissionId = Guid.NewGuid(),
+                        RoleId = Guid.NewGuid(),
+                    }
+                }
+            });
+
+            pages.Add(new Page
+            {
+                Id = Guid.NewGuid(),
+                IsIncludedInMenu = true,
+                IsSystem = false,
+                PageTranslation = new List<PageTranslation>()
+                {
+                    new PageTranslation
+                    {
+                        Name = "TestPage1",
+                        Description = "Test Description1",
+                        Locale = "en-US",
+                        Title = "Test Page1",
+                        URL ="TestPage1"
+                    }
+                },
+                PagePermissions = new List<PagePermission>()
+                {
+                    new PagePermission
+                    {
+                        Id = Guid.NewGuid(),
+                        PermissionId = Guid.NewGuid(),
+                        RoleId = Guid.NewGuid(),
+                    }
+                }
+            });
+
+            pages.Add(new Page
+            {
+                Id = Guid.NewGuid(),
+                IsIncludedInMenu = true,
+                IsSystem = false,
+                PageTranslation = new List<PageTranslation>()
+                {
+                    new PageTranslation
+                    {
+                        Name = "TestPage2",
+                        Description = "Test Description2",
+                        Locale = "en-US",
+                        Title = "Test Page2",
+                        URL ="TestPage2"
+                    }
+                },
+                PagePermissions = new List<PagePermission>()
+                {
+                    new PagePermission
+                    {
+                        Id = Guid.NewGuid(),
+                        PermissionId = Guid.NewGuid(),
+                        RoleId = Guid.NewGuid(),
+                    }
+                }
+            });
+
+            return pages;
+        }
+
+        public static List<PageContent> GetPageContents(bool includeChild = true)
+        {
+            var pageContents = new List<PageContent>();
+            var pageContentTranslations = new List<PageContentTranslation>();
+            var contentPermissions = GetContentPermissions();
+
+            pageContentTranslations.Add(new PageContentTranslation
+            {
+                Id = Guid.NewGuid(),
+                ContentData = "Sample data",
+                CultureCode = "en-US"
+            });
+            pageContentTranslations.Add(new PageContentTranslation
+            {
+                Id = Guid.NewGuid(),
+                ContentData = "Sample data1",
+                CultureCode = "en-US"
+            });
+            pageContentTranslations.Add(new PageContentTranslation
+            {
+                Id = Guid.NewGuid(),
+                ContentData = "Sample data2",
+                CultureCode = "en-US"
+            });
+
+            var containerId = Guid.NewGuid();
+            var pageId = Guid.NewGuid();
+
+            pageContents.Add(new PageContent
+            {
+                Id = Guid.NewGuid(),
+                PageContentTranslation = (includeChild) ? pageContentTranslations : null,
+                ContainerId = containerId,
+                PageId = pageId,
+                ContentType = GetContentTypes().First(),
+                Properties = "{\"cssClass\":\"column1\"}",
+                SortOrder = 1,
+                ContentPermissions = (includeChild) ? contentPermissions : null,
+            });
+
+            pageContents.Add(new PageContent
+            {
+                Id = Guid.NewGuid(),
+                PageContentTranslation = (includeChild) ? pageContentTranslations : null,
+                ContainerId = containerId,
+                PageId = pageId,
+                ContentType = GetContentTypes().First(),
+                Properties = "{\"cssClass\":\"column1\"}",
+                SortOrder = 2,
+                ContentPermissions = (includeChild) ? contentPermissions : null,
+            });
+
+            pageContents.Add(new PageContent
+            {
+                Id = Guid.NewGuid(),
+                PageContentTranslation = (includeChild) ? pageContentTranslations : null,
+                ContainerId = containerId,
+                PageId = pageId,
+                ContentType = GetContentTypes().First(),
+                Properties = "{\"cssClass\":\"column1\"}",
+                SortOrder = 3,
+                ContentPermissions = (includeChild) ? contentPermissions : null,
+            });
+
+            return pageContents;
+        }
+
+        public static List<Property> GetProperties()
+        {
+            var properties = new List<Property>();
+            properties.Add(new Property()
+            {
+                Id = Guid.NewGuid(),
+                Name = "cssclass",
+                Label = "Css Class"
+            });
+            properties.Add(new Property()
+            {
+                Id = Guid.NewGuid(),
+                Name = "height",
+                Label = "Height"
+            });
+            return properties;
         }
 
         public static List<PropertyOptionList> GetPropertyOptionLists()

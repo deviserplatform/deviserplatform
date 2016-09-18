@@ -95,6 +95,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.True(result.Count == 0);
         }
 
+        [Fact]
         public void GetOptionListSuccess()
         {
             //Arrange
