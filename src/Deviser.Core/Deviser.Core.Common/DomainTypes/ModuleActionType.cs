@@ -8,7 +8,7 @@ namespace Deviser.Core.Common.DomainTypes
     public class ModuleActionType
     {
         public Guid Id { get; set; }
-        public string ContolType { get; set; }
+        public string ControlType { get; set; }
         
     }
 }

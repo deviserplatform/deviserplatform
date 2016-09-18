@@ -117,12 +117,12 @@
                     <form class="form-horizontal" name="moduleActions" novalidate>
                         <div class="form-body">
                             <div class="row" ng-show="mmVM.currentViewState == mmVM.viewStates.NEW || mmVM.currentViewState == mmVM.viewStates.EDIT
-                            || mmVM.currentViewState == mmVM.viewStates.LISTMODULEACTION || mmVM.currentViewState == mmVM.viewStates.NEWMODULEACTION">
+                            || mmVM.currentViewState == mmVM.viewStates.LISTMODULEACTION ">
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="btn-group">
-                                                <a class="btn btn-success" ng-click="mmVM.addModuleActions()"> <i class="fa fa-plus"></i> Add Module Actions </a>
+                                                <a class="btn btn-success" ng-click="mmVM.addModuleActions()"> <i class="fa fa-plus"></i> New Module Actions </a>
                                             </div>
                                         </div>
                                     </div>
@@ -185,23 +185,17 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                        <label class="col-md-3 control-label"> Module Action TypeId</label>
-                                                        <div class="col-md-7">
-                                                            <input class="form-control" name="moduleActionTypeId" ng-model="mmVM.selectedModuleAction.moduleActionTypeId" />
-                                                        </div>
-                                                    </div>
-                                                @*<div class="form-group">
-                                                    <label class="col-md-3 control-label">Module Action Type </label>
+                                                    <label class="col-md-3 control-label">Action Type </label>
                                                     <div class="col-md-7">
                                                         <ui-select ng-model="mmVM.selectedModuleAction.moduleActionTypeId" theme="bootstrap"
                                                                    ng-disabled="mmVM.currentViewState == mmVM.viewStates.EDIT">
                                                             <ui-select-match placeholder="Select action type">{{$select.selected.controlType}}</ui-select-match>
-                                                            <ui-select-choices repeat="type.id as type in mmVM.moduleActionType | filter: $select.search">
+                                                            <ui-select-choices repeat="type.id as type in mmVM.moduleActionTypes | filter: $select.search">
                                                                 <div ng-bind-html="type.controlType | highlight: $select.search"></div>
                                                             </ui-select-choices>
                                                         </ui-select>
                                                     </div>
-                                                </div>*@
+                                                </div>
                                                 <div class="form-group">
                                                     <label class="col-md-3 control-label">Action Name</label>
                                                     <div class="col-md-7">

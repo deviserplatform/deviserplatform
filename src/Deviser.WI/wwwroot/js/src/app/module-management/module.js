@@ -4,6 +4,7 @@
         'ui.router',
         'ui.bootstrap',
         'ui.tree',
+        'ui.select',
         'sd.sdlib',
         'deviser.services',
         'deviser.config'
@@ -47,7 +48,7 @@
             vm.moduleActions = {};
             getModules();
             getModuleActions();
-            getModuleActionType();
+            getModuleActionTypes();
         }
 
 
@@ -71,9 +72,9 @@
             });
         }
 
-        function getModuleActionType() {
-            moduleService.getModuleActionType().then(function (moduleActionType) {
-                vm.moduleActionType = moduleActionType;
+        function getModuleActionTypes() {
+            moduleService.getModuleActionTypes().then(function (moduleActionType) {
+                vm.moduleActionTypes = moduleActionType;
             }, function (error) {
                 showMessage("error", "Cannot get all module action types, please contact administrator");
             });

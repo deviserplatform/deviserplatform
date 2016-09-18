@@ -192,13 +192,13 @@
     function moduleService($http, $q, globals) {
         var serviceUrl = '/module';
         var service = baseService($http, $q, globals, '/module');
-        service.getModuleActionType = getModuleActionType;
+        service.getModuleActionTypes = getModuleActionTypes;
         return service;
         
 
         ////////////////////////////////
         /*Function declarations only*/
-        function getModuleActionType() {
+        function getModuleActionTypes() {
             var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/moduleactiontype';
             var request = $http({
                 method: 'GET',
