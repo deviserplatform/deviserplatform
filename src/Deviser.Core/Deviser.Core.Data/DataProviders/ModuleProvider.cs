@@ -187,6 +187,7 @@ namespace Deviser.Core.Data.DataProviders
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
+                    module.CreatedDate = module.LastModifiedDate = DateTime.Now;
                     var resultModule = context.Module.Add(module).Entity;
                     context.SaveChanges();
                     return resultModule;
