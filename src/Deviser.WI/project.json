@@ -17,6 +17,7 @@
     "Deviser.Modules.Language": "1.0.0-*",
     "Deviser.Modules.ModuleManagement": "1.0.0-*",
     "Deviser.Modules.PageManagement": "1.0.0-*",
+    "Deviser.Modules.RecycleBin": "1.0.0-*",
     "Deviser.Modules.Security": "1.0.0-*",
     "Deviser.Modules.SecurityRoles": "1.0.0-*",
     "Deviser.Modules.SiteManagement": "1.0.0-*",

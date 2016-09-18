@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Module = Deviser.Core.Data.Entities.Module;
+using AutoMapper;
 
 namespace DeviserWI.Controllers.API
 {
@@ -63,6 +64,26 @@ namespace DeviserWI.Controllers.API
             }
         }
 
+        [HttpGet]
+        [Route("moduleactiontype/")]
+        public IActionResult GetModuleActionType()
+        {
+            try
+            {
+                var moduleActionTypes = moduleProvider.GetModuleActionType();
+                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.ModuleActionType>>(moduleActionTypes);
+
+                if (result != null)
+                    return Ok(result);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting content types"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpPost]
         public IActionResult Post([FromBody] Module module)
         {
@@ -71,7 +92,7 @@ namespace DeviserWI.Controllers.API
                 var result = moduleProvider.Create(module);
                 if (result != null)
                     return Ok(result);
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                return NotFound();
             }
             catch (Exception ex)
             {

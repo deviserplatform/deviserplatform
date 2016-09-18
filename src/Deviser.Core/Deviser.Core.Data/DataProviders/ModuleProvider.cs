@@ -11,15 +11,17 @@ namespace Deviser.Core.Data.DataProviders
 {
     public interface IModuleProvider
     {
-        Module Create(Module module);
-        ModuleAction Create(ModuleAction moduleActions);
         List<Module> Get();
         Module Get(Guid moduleId);
-        Module Get(string moduleName);
+        ModuleAction GetModuleAction(Guid moduleActionId);
         List<ModuleAction> GetModuleActions();
-        List<ModuleAction> GetEditModuleActions(Guid moduleId);        
-        Module Update(Module module);        
-        ModuleAction Update(ModuleAction moduleActions);
+        List<ModuleActionType> GetModuleActionType();
+        List<ModuleAction> GetEditModuleActions(Guid moduleId);
+        Module Get(string moduleName);
+        Module Create(Module module);
+        Module Update(Module module);
+        ModuleAction CreateModuleAction(ModuleAction moduleAction); 
+        ModuleAction UpdateModuleAction(ModuleAction moduleAction);
     }
 
     public class ModuleProvider : DataProviderBase, IModuleProvider
@@ -34,44 +36,7 @@ namespace Deviser.Core.Data.DataProviders
             logger = container.Resolve<ILogger<LayoutProvider>>();
         }
 
-        public Module Create(Module module)
-        {
-            try
-            {
-                using (var context = new DeviserDBContext(dbOptions))
-                {
-                    module.CreatedDate = module.LastModifiedDate = DateTime.Now;
-                    var result = context.Module.Add(module).Entity;
-                    context.SaveChanges();
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError("Error occured while calling Create", ex);
-            }
-            return null;
-        }
-
-        public ModuleAction Create(ModuleAction moduleActions)
-        {
-            try
-            {
-                using (var context = new DeviserDBContext(dbOptions))
-                {
-                    ModuleAction resultModuleAction;
-                    resultModuleAction = context.ModuleAction.Add(moduleActions).Entity;
-                    context.SaveChanges();
-                    return resultModuleAction;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError("Error occured while calling Create", ex);
-            }
-            return null;
-        }
-
+        //Custom Field Declaration
         public List<Module> Get()
         {
             try
@@ -80,10 +45,30 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     IEnumerable<Module> returnData = context.Module
                         .Include(m => m.ModuleAction)//.ThenInclude(ma=>ma.ModuleActionType)
-                        .Where(m => m.ModuleAction.Any(ma => ma.ModuleActionType.ControlType.ToLower() == "view")) //Selecting View Actions Only
+                        
                         .ToList();
 
                     return new List<Module>(returnData);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting Get", ex);
+            }
+            return null;
+        }
+
+        public ModuleAction GetModuleAction(Guid moduleActionId)
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    var returnData = context.ModuleAction
+                        .Where(m => m.Id == moduleActionId)
+                        .FirstOrDefault();
+                    return returnData;
+                    
                 }
             }
             catch (Exception ex)
@@ -115,6 +100,26 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
+        public List<ModuleActionType> GetModuleActionType()
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    var returnData = context.ModuleActionType
+                        .OrderBy(cd => cd.Id)
+                        .ToList();
+
+                    return returnData;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while getting Module Action Type", ex);
+            }
+            return null;
+        }
+
         public List<ModuleAction> GetEditModuleActions(Guid moduleId)
         {
             try
@@ -142,7 +147,7 @@ namespace Deviser.Core.Data.DataProviders
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
-                    Module returnData = context.Module
+                    var returnData = context.Module
                               .Where(e => e.Id == moduleId)
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) // ("ModuleActions.ModuleActionType")
                               .FirstOrDefault();
@@ -162,7 +167,7 @@ namespace Deviser.Core.Data.DataProviders
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
-                    Module returnData = context.Module
+                    var returnData = context.Module
                               .Where(e => e.Name == moduleName)
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
                               .FirstOrDefault();
@@ -176,16 +181,52 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-        
+        public Module Create(Module module)
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {
+                    var resultModule = context.Module.Add(module).Entity;
+                    context.SaveChanges();
+                    return resultModule;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while calling Create", ex);
+            }
+            return null;
+        }
         public Module Update(Module module)
         {
             try
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
-                    Module resultModule;
-                    resultModule = context.Module.Attach(module).Entity;
-                    context.Entry(module).State = EntityState.Modified;
+                    var moduleActions = module.ModuleAction;
+                    module.ModuleAction = null;                  
+                    foreach (var moduleAction in moduleActions)
+                    {
+
+                        if (context.ModuleAction.Any(pc => pc.Id == moduleAction.Id))
+                        {
+                            //content exist, therefore update the content 
+                            context.ModuleAction.Update(moduleAction);
+                        }
+                        else
+                        {
+                            moduleAction.ModuleId = module.Id;
+                            context.ModuleAction.Add(moduleAction);
+                        } 
+                    }
+
+                    var toDelete = context.ModuleAction.Where(dbModuleAction => dbModuleAction.ModuleId == module.Id &&
+                    !moduleActions.Any(moduleAction => moduleAction.Id != dbModuleAction.Id)).ToList();
+
+                    context.ModuleAction.RemoveRange(toDelete);
+
+                    var resultModule = context.Module.Update(module).Entity;
                     context.SaveChanges();
                     return resultModule;
                 }
@@ -197,15 +238,31 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
         
-        public ModuleAction Update(ModuleAction moduleActions)
+        public ModuleAction CreateModuleAction(ModuleAction moduleAction)
+        {
+            try
+            {
+                using (var context = new DeviserDBContext(dbOptions))
+                {   
+                    var resultModuleAction = context.ModuleAction.Add(moduleAction).Entity;
+                    context.SaveChanges();
+                    return resultModuleAction;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error occured while calling Create", ex);
+            }
+            return null;
+        }
+        public ModuleAction UpdateModuleAction(ModuleAction moduleAction)
         {
             try
             {
                 using (var context = new DeviserDBContext(dbOptions))
                 {
-                    ModuleAction resultModuleAction;
-                    resultModuleAction = context.ModuleAction.Attach(moduleActions).Entity;
-                    context.Entry(moduleActions).State = EntityState.Modified;
+                    var resultModuleAction = context.ModuleAction.Attach(moduleAction).Entity;
+                    context.Entry(moduleAction).State = EntityState.Modified;
                     context.SaveChanges();
                     return resultModuleAction;
                 }

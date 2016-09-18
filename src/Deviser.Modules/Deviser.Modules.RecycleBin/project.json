@@ -1,0 +1,17 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "Deviser.Modules.RecycleBin Module",
+  "authors": [ "Deepa Sundararajan" ],
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  },
+
+  "dependencies": {
+    "NETStandard.Library": "1.6.0",
+    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+    "Deviser.Core.Library": "1.0.0-*"
+  }
+}

@@ -54,46 +54,42 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.Null(result);
         }
 
-        [Fact]
-        public void CreateModuleActionSuccess()
-        {
-            //Arrange
-            var moduleProvider = new ModuleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var moduleActions = TestDataProvider.GetModuleActions();
-            var moduleAction = moduleActions.First();
+        //[Fact]
+        //public void CreateModuleActionSuccess()
+        //{
+        //    //Arrange
+        //    var moduleProvider = new ModuleProvider(container);
+        //    var moduleActions = TestDataProvider.GetModuleActions();
+        //    var moduleAction = moduleActions.First();
 
-            //Act
-            var result = moduleProvider.Create(moduleAction);
+        //    //Act
+        //    var result = moduleProvider.Create(moduleAction);
 
-            //Assert
-            Assert.NotNull(result);
-            Assert.NotEqual(result.Id, Guid.Empty);
-            Assert.True(!string.IsNullOrEmpty(result.ActionName));
-            Assert.True(!string.IsNullOrEmpty(result.ControllerName));
-            Assert.True(!string.IsNullOrEmpty(result.ControllerNamespace));
-            Assert.True(!string.IsNullOrEmpty(result.DisplayName));
-            Assert.True(!string.IsNullOrEmpty(result.IconClass));
-            Assert.NotNull(result.ModuleActionType);
-            Assert.True(result.ModuleActionTypeId!= Guid.Empty);
+        //    //Assert
+        //    Assert.NotNull(result);
+        //    Assert.NotEqual(result.Id, Guid.Empty);
+        //    Assert.True(!string.IsNullOrEmpty(result.ActionName));
+        //    Assert.True(!string.IsNullOrEmpty(result.ControllerName));
+        //    Assert.True(!string.IsNullOrEmpty(result.ControllerNamespace));
+        //    Assert.True(!string.IsNullOrEmpty(result.DisplayName));
+        //    Assert.True(!string.IsNullOrEmpty(result.IconClass));
+        //    Assert.NotNull(result.ModuleActionType);
+        //    Assert.True(result.ModuleActionTypeId!= Guid.Empty);
+        //}
 
-            //Clean
-            dbContext.ModuleAction.RemoveRange(dbContext.ModuleAction);
-        }
+        //[Fact]
+        //public void CreateModuleActionFail()
+        //{
+        //    //Arrange
+        //    var moduleProvider = new ModuleProvider(container);
+        //    ModuleAction moduleAction = null;
 
-        [Fact]
-        public void CreateModuleActionFail()
-        {
-            //Arrange
-            var moduleProvider = new ModuleProvider(container);
-            ModuleAction moduleAction = null;
+        //    //Act
+        //    var result = moduleProvider.Create(moduleAction);
 
-            //Act
-            var result = moduleProvider.Create(moduleAction);
-
-            //Assert
-            Assert.Null(result);
-        }
+        //    //Assert
+        //    Assert.Null(result);
+        //}
 
         [Fact]
         public void GetModulesSuccess()
@@ -146,37 +142,37 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.True(result.Count == 0);
         }
 
-        [Fact]
-        public void GetModuleActionsSuccess()
-        {
-            //Arrange
-            var moduleProvider = new ModuleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
-            var moduleActions = TestDataProvider.GetModuleActions();
-            foreach (var item in moduleActions)
-            {
-                moduleProvider.Create(item);
-            }
+        //public void GetModuleActionsSuccess()
+        //{
+        //    //Arrange
+        //    var moduleProvider = new ModuleProvider(container);
+        //    var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+        //    var moduleActions = TestDataProvider.GetModuleActions();
+        //    foreach (var item in moduleActions)
+        //    {
+        //        moduleProvider.Create(item);
+        //    }
 
-            //Act
-            var result = moduleProvider.GetModuleActions();
-            var resultItem = result.First();
+        //    //Act
+        //    var result = moduleProvider.GetModuleActions();
+        //    var resultItem = result.First();
 
-            //Assert
-            Assert.NotNull(result);
-            Assert.True(result.Count > 0);
-            Assert.NotNull(resultItem);
-            Assert.NotEqual(resultItem.Id, Guid.Empty);
-            Assert.True(!string.IsNullOrEmpty(resultItem.ActionName));
-            Assert.True(!string.IsNullOrEmpty(resultItem.ControllerName));
-            Assert.True(!string.IsNullOrEmpty(resultItem.ControllerNamespace));
-            Assert.True(!string.IsNullOrEmpty(resultItem.DisplayName));
-            Assert.True(!string.IsNullOrEmpty(resultItem.IconClass));
-            Assert.True(resultItem.ModuleActionTypeId != Guid.Empty);
+        //    //Assert
+        //    Assert.NotNull(result);
+        //    Assert.True(result.Count > 0);
+        //    Assert.NotNull(resultItem);
+        //    Assert.NotEqual(resultItem.Id, Guid.Empty);
+        //    Assert.True(!string.IsNullOrEmpty(resultItem.ActionName));
+        //    Assert.True(!string.IsNullOrEmpty(resultItem.ControllerName));
+        //    Assert.True(!string.IsNullOrEmpty(resultItem.ControllerNamespace));
+        //    Assert.True(!string.IsNullOrEmpty(resultItem.DisplayName));
+        //    Assert.True(!string.IsNullOrEmpty(resultItem.IconClass));
+        //    Assert.NotNull(resultItem.ModuleActionType);
+        //    Assert.True(resultItem.ModuleActionTypeId != Guid.Empty);
 
-            //Clean
-            dbContext.ModuleAction.RemoveRange(dbContext.ModuleAction);
-        }
+        //    //Clean
+        //    dbContext.ModuleAction.RemoveRange(dbContext.ModuleAction);
+        //}
 
         [Fact]
         public void GetModuleActionsFail()
