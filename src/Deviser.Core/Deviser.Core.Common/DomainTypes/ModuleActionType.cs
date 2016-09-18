@@ -9,5 +9,6 @@ namespace Deviser.Core.Common.DomainTypes
     {
         public Guid Id { get; set; }
         public string ControlType { get; set; }
+        
     }
 }

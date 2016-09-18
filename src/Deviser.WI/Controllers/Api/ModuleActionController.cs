@@ -66,7 +66,7 @@ namespace Deviser.WI.Controllers
         {
             try
             {
-                var result = moduleProvider.Create(moduleAction); 
+                var result = moduleProvider.CreateModuleAction(moduleAction); 
                 if (result != null)
                     return Ok(result);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
@@ -83,7 +83,7 @@ namespace Deviser.WI.Controllers
         {
             try
             {
-                var result = moduleProvider.Update(moduleActions);
+                var result = moduleProvider.UpdateModuleAction(moduleActions);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
@@ -100,10 +100,10 @@ namespace Deviser.WI.Controllers
         {
             try
             {
-                var moduleActions = moduleProvider.Get(id); //is it correct?
+                var moduleActions = moduleProvider.Get(id); 
                 if (moduleActions != null)
                 {
-                    moduleActions.IsActive = true; //is it correct?
+                    moduleActions.IsActive = false; //is it correct?
                     var result = moduleProvider.Update(moduleActions);
                     if (result != null)
                     {

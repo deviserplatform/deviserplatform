@@ -36,3 +36,4 @@ node_modules
 **/[Cc]ompiler/[Rr]esources/**/*.js
 *log-*.txt
 log
+src/Deviser.Core/Deviser.Core.Common/DomainTypes/ModuleActionType_BACKUP_16112.cs
