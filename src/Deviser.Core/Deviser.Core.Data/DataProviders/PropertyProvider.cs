@@ -34,7 +34,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDBContext(dbOptions))
                 {
                     Property result;
-                    //property.CreatedDate = property.LastModifiedDate = DateTime.Now;
+                    property.CreatedDate = property.LastModifiedDate = DateTime.Now;
                     result = context.Property.Add(property).Entity;
                     context.SaveChanges();
                     return result;
