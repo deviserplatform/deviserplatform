@@ -21,7 +21,7 @@ namespace Deviser.Core.Data.DataProviders
         PageTranslation GetPageTranslation(string url);
         List<PageModule> GetPageModules(Guid pageId);
         PageModule GetPageModule(Guid pageModuleId);
-        PageModule GetPageModuleByContainer(Guid containerId);
+        //PageModule GetPageModuleByContainer(Guid containerId);
         PageModule CreatePageModule(PageModule pageModule);
         PageModule UpdatePageModule(PageModule pageModule);
         void UpdatePageModules(List<PageModule> pageModules);
@@ -302,9 +302,6 @@ namespace Deviser.Core.Data.DataProviders
         {
             if (page != null && page.ChildPage != null)
             {
-                //context.UpdateGraph(page, map => map.AssociatedCollection(p => p.ChildPages)
-                //                                  .OwnedCollection(p => p.PageTranslations));
-
                 context.Page.Update(page);
                 context.SaveChanges();
 
@@ -315,13 +312,10 @@ namespace Deviser.Core.Data.DataProviders
                         {
                             if (child.ChildPage.Count > 0)
                             {
-                                //foreach (var grandChild in child.ChildPages)
                                 UpdatePageTreeTree(context, child);
                             }
                             else if (child.Id != Guid.Empty)
                             {
-                                //context.UpdateGraph(child, map => map.AssociatedCollection(p => p.ChildPages)
-                                //                  .OwnedCollection(p => p.PageTranslations));
                                 context.Page.Update(page);
                                 context.SaveChanges();
                             }
@@ -418,26 +412,26 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
-        public PageModule GetPageModuleByContainer(Guid containerId)
-        {
-            try
-            {
-                using (var context = new DeviserDBContext(dbOptions))
-                {
-                    PageModule returnData = context.PageModule
-                               .Where(e => e.ContainerId == containerId && !e.IsDeleted)
-                               .OrderBy(p => p.Id)
-                               .FirstOrDefault();
+        //public PageModule GetPageModuleByContainer(Guid containerId)
+        //{
+        //    try
+        //    {
+        //        using (var context = new DeviserDBContext(dbOptions))
+        //        {
+        //            PageModule returnData = context.PageModule
+        //                       .Where(e => e.ContainerId == containerId && !e.IsDeleted)
+        //                       .OrderBy(p => p.Id)
+        //                       .FirstOrDefault();
 
-                    return returnData;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError("Error occured while calling GetPageModule", ex);
-            }
-            return null;
-        }
+        //            return returnData;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.LogError("Error occured while calling GetPageModule", ex);
+        //    }
+        //    return null;
+        //}
 
         public PageModule CreatePageModule(PageModule pageModule)
         {
@@ -502,6 +496,7 @@ namespace Deviser.Core.Data.DataProviders
             catch (Exception ex)
             {
                 logger.LogError("Error occured while calling UpdatePageModules", ex);
+                throw ex;
             }
         }
 

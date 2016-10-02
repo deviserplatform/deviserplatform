@@ -313,6 +313,26 @@ namespace Deviser.TestCommon
             return moduleActions;
         }
 
+        public static List<ModulePermission> GetModulePermissions()
+        {
+            var pagePermissions = new List<ModulePermission>();
+            var pageModuleId = Guid.NewGuid();
+            pagePermissions.Add(new ModulePermission
+            {
+                PermissionId = Guid.NewGuid(),
+                RoleId = Guid.NewGuid(),
+                PageModuleId = pageModuleId
+            });
+
+            pagePermissions.Add(new ModulePermission
+            {
+                PermissionId = Guid.NewGuid(),
+                RoleId = Guid.NewGuid(),
+                PageModuleId = pageModuleId
+            });
+            return pagePermissions;
+        }
+
         public static List<Page> GetPages()
         {
             var pages = new List<Page>();
@@ -401,6 +421,84 @@ namespace Deviser.TestCommon
             return pages;
         }
 
+        public static List<PageModule> GetPageModules()
+        {
+
+            var pageModules = new List<PageModule>();
+            var modules = GetModules();
+            var module = modules.First();
+            var pageId = Guid.NewGuid();
+
+            pageModules.Add(new PageModule
+            {
+                Id = Guid.NewGuid(),
+                PageId = pageId,
+                ContainerId = Guid.NewGuid(),                
+                InheritViewPermissions = true,
+                InheritEditPermissions = true,
+                Module = module,
+                ModuleAction = module.ModuleAction.First(),
+                ModulePermissions = new List<ModulePermission>()
+                {
+                    new ModulePermission
+                    {
+                        Id = Guid.NewGuid(),
+                        PageModuleId = Guid.NewGuid(),
+                        PermissionId = Guid.NewGuid(),
+                        RoleId = Guid.NewGuid(),
+                    }
+                },
+                IsDeleted = false
+            });
+
+            pageModules.Add(new PageModule
+            {
+                Id = Guid.NewGuid(),
+                PageId = pageId,
+                ContainerId = Guid.NewGuid(),
+                InheritViewPermissions = true,
+                InheritEditPermissions = true,
+                Module = module,
+                ModuleAction = module.ModuleAction.First(),
+                ModulePermissions = new List<ModulePermission>()
+                {
+                    new ModulePermission
+                    {
+                        Id = Guid.NewGuid(),
+                        PageModuleId = Guid.NewGuid(),
+                        PermissionId = Guid.NewGuid(),
+                        RoleId = Guid.NewGuid(),
+                    }
+                },
+                IsDeleted = false
+            });
+
+            pageModules.Add(new PageModule
+            {
+                Id = Guid.NewGuid(),
+                PageId = pageId,
+                ContainerId = Guid.NewGuid(),
+                InheritViewPermissions = true,
+                InheritEditPermissions = true,
+                Module = module,
+                ModuleAction = module.ModuleAction.First(),
+                ModulePermissions = new List<ModulePermission>()
+                {
+                    new ModulePermission
+                    {
+                        Id = Guid.NewGuid(),
+                        PageModuleId = Guid.NewGuid(),
+                        PermissionId = Guid.NewGuid(),
+                        RoleId = Guid.NewGuid(),
+                    }
+                },
+                IsDeleted = false
+            });
+
+            return pageModules;
+
+        }
+
         public static List<PageContent> GetPageContents(bool includeChild = true)
         {
             var pageContents = new List<PageContent>();
@@ -468,6 +566,26 @@ namespace Deviser.TestCommon
             return pageContents;
         }
 
+        public static List<PagePermission> GetPagePermissions()
+        {
+            var pagePermissions = new List<PagePermission>();
+            var pageId = Guid.NewGuid();
+            pagePermissions.Add(new PagePermission
+            {
+                PermissionId = Guid.NewGuid(),
+                RoleId = Guid.NewGuid(),
+                PageId = pageId
+            });
+
+            pagePermissions.Add(new PagePermission
+            {
+                PermissionId = Guid.NewGuid(),
+                RoleId = Guid.NewGuid(),
+                PageId = pageId
+            });
+            return pagePermissions;
+        }
+
         public static List<Property> GetProperties()
         {
             var properties = new List<Property>();
@@ -475,13 +593,15 @@ namespace Deviser.TestCommon
             {
                 Id = Guid.NewGuid(),
                 Name = "cssclass",
-                Label = "Css Class"
+                Label = "Css Class",
+                Value="TEST VALUE1"
             });
             properties.Add(new Property()
             {
                 Id = Guid.NewGuid(),
                 Name = "height",
-                Label = "Height"
+                Label = "Height",
+                Value = "TEST VALUE2"
             });
             return properties;
         }
@@ -507,6 +627,48 @@ namespace Deviser.TestCommon
             });
 
             return propertyOptionList;
+        }
+
+        public static List<Role> GetRoles()
+        {
+            var roles = new List<Role>();
+            roles.Add(new Role()
+            {
+                Id = Guid.NewGuid(),
+                Name = "AllUsers"
+            });
+            roles.Add(new Role()
+            {
+                Id = Guid.NewGuid(),
+                Name = "RegisteredUsers"
+            });
+            roles.Add(new Role()
+            {
+                Id = Guid.NewGuid(),
+                Name = "Administrators"
+            });
+            return roles;
+        }
+
+        public static List<User> GetUsers()
+        {
+            var roles = new List<User>();
+            roles.Add(new User()
+            {
+                Id = Guid.NewGuid(),
+                UserName = "TestUser1"
+            });
+            roles.Add(new User()
+            {
+                Id = Guid.NewGuid(),
+                UserName = "TestUser2"
+            });
+            roles.Add(new User()
+            {
+                Id = Guid.NewGuid(),
+                UserName = "TestUser3"
+            });
+            return roles;
         }
     }
 }
