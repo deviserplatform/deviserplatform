@@ -92,7 +92,7 @@ namespace DeviserWI.Controllers.API
                     var page = pageProvider.GetPage(pageModule.Id);
                     if (pageManager.HasEditPermission(page)) //Check edit permission for the page
                     {
-                        var dbResult = moduleManager.CreateUpdatePageModule(Mapper.Map<Deviser.Core.Data.Entities.PageModule>(pageModule));
+                        var dbResult = moduleManager.CreateUpdatePageModule(pageModule);
                         var result = Mapper.Map<PageModule>(dbResult);
                         if (result != null)
                             return Ok(result);
@@ -121,7 +121,7 @@ namespace DeviserWI.Controllers.API
                 var page = pageProvider.GetPage(pageModules.First().PageId);
                 if (pageManager.HasEditPermission(page))//Check edit permission for the page
                 {
-                    moduleManager.UpdatePageModules(Mapper.Map<List<Deviser.Core.Data.Entities.PageModule>>(pageModules));
+                    moduleManager.UpdatePageModules(pageModules);
                     return Ok();
                 }
 
@@ -146,7 +146,7 @@ namespace DeviserWI.Controllers.API
                 var page = pageProvider.GetPage(pageModule.PageId);
                 if (pageManager.HasEditPermission(page)) //Check edit permission for the page
                 {
-                    moduleManager.UpdateModulePermission(Mapper.Map<Deviser.Core.Data.Entities.PageModule>(pageModule));
+                    moduleManager.UpdateModulePermission(pageModule);
                     return Ok();
                 }
                 return Unauthorized();

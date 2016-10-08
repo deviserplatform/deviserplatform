@@ -1,5 +1,5 @@
 ﻿using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.TestCommon;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -52,7 +52,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var layoutTypeProvider = new LayoutTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var layoutTypes = TestDataProvider.GetLayoutTypes();
             foreach (var item in layoutTypes)
             {
@@ -75,7 +75,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var layoutTypeProvider = new LayoutTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             dbContext.LayoutType.RemoveRange(dbContext.LayoutType);
 
             //Act
@@ -91,7 +91,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var layoutTypeProvider = new LayoutTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var layoutTypes = TestDataProvider.GetLayoutTypes();
             foreach (var item in layoutTypes)
             {
@@ -120,7 +120,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         public void GetLayoutFail()
         {//Arrange
             var layoutTypeProvider = new LayoutTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var layoutTypes = TestDataProvider.GetLayoutTypes();
             foreach (var item in layoutTypes)
             {
@@ -145,7 +145,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         public void GetLayoutTypeSuccess(string typeName)
         {
             var layoutTypeProvider = new LayoutTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var layoutTypes = TestDataProvider.GetLayoutTypes();
             foreach (var item in layoutTypes)
             {
@@ -174,7 +174,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         public void GetLayoutTypeFail(string typeName)
         {
             var layoutTypeProvider = new LayoutTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var layoutTypes = TestDataProvider.GetLayoutTypes();
             foreach (var item in layoutTypes)
             {
@@ -193,7 +193,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var layoutTypeProvider = new LayoutTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var layoutTypes = TestDataProvider.GetLayoutTypes();
             foreach (var item in layoutTypes)
             {
@@ -201,16 +201,11 @@ namespace Deviser.Core.Data.Test.DataProviders
             }
             var layoutTypeToUpdate = layoutTypes.First();
 
-            layoutTypeToUpdate.LayoutTypeProperties= new List<LayoutTypeProperty>();
+            layoutTypeToUpdate.Properties = new List<Property>();
             var properties = TestDataProvider.GetProperties();
             var cssProp = properties[0];
-            dbContext.Property.Add(cssProp);
 
-            layoutTypeToUpdate.LayoutTypeProperties.Add(new LayoutTypeProperty
-            {
-                LayoutTypeId = layoutTypeToUpdate.Id,
-                PropertyId = cssProp.Id,
-            });
+            layoutTypeToUpdate.Properties.Add(cssProp);
 
             //Act
             layoutTypeToUpdate.Label = "New Label";
@@ -219,7 +214,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Assert
             Assert.NotNull(result);
             Assert.True(result.Label == layoutTypeToUpdate.Label);
-            Assert.True(result.LayoutTypeProperties.Count > 0);
+            Assert.True(result.Properties.Count > 0);
 
             //Clean
             dbContext.Property.RemoveRange(dbContext.Property);
@@ -232,30 +227,22 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var layoutTypeProvider = new LayoutTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var layoutTypes = TestDataProvider.GetLayoutTypes();
-            foreach (var item in layoutTypes)
-            {
-                layoutTypeProvider.CreateLayoutType(item);
-            }
-            var layoutTypeToUpdate = layoutTypes.First();
-            layoutTypeToUpdate.LayoutTypeProperties = new List<LayoutTypeProperty>();
             var properties = TestDataProvider.GetProperties();
             var cssProp = properties[0];
             var heightProp = properties[1];
-            dbContext.Property.Add(cssProp);
-            dbContext.Property.Add(heightProp);
 
-            dbContext.LayoutTypeProperty.Add(new LayoutTypeProperty
+            foreach (var item in layoutTypes)
             {
-                LayoutTypeId = layoutTypeToUpdate.Id,
-                PropertyId = cssProp.Id,
-            });
-            dbContext.LayoutTypeProperty.Add(new LayoutTypeProperty
-            {
-                LayoutTypeId = layoutTypeToUpdate.Id,
-                PropertyId = heightProp.Id,
-            });
+                item.Properties = new List<Property>();
+                item.Properties.Add(cssProp);
+                item.Properties.Add(heightProp);
+                layoutTypeProvider.CreateLayoutType(item);
+            }
+            var layoutTypeToUpdate = layoutTypes.First();
+            layoutTypeToUpdate.Properties = new List<Property>();
+            
 
             //Act
             layoutTypeToUpdate.Label = "New Label";
@@ -264,7 +251,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Assert
             Assert.NotNull(result);
             Assert.True(result.Label == layoutTypeToUpdate.Label);
-            Assert.True(result.LayoutTypeProperties.Count == 0);
+            Assert.True(result.Properties.Count == 0);
 
             //Clean
             dbContext.Property.RemoveRange(dbContext.Property);

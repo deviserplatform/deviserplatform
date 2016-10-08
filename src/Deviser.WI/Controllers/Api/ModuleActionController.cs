@@ -7,8 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Autofac;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
-using ModuleAction = Deviser.Core.Data.Entities.ModuleAction;
+using Deviser.Core.Common.DomainTypes;
 
 
 namespace Deviser.WI.Controllers

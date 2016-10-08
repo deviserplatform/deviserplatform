@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Deviser.Core.Data;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library;
@@ -52,7 +53,7 @@ namespace Deviser.WI
             //ref: https://github.com/autofac/Autofac.Mvc/issues/1
             builder.RegisterType<ModuleController>().PropertiesAutowired();
 
-            builder.RegisterType<DeviserDBContext>().As<DeviserDBContext>();
+            builder.RegisterType<DeviserDbContext>().As<DeviserDbContext>();
         }
     }
 }

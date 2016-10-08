@@ -1,5 +1,5 @@
 ﻿using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.TestCommon;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -44,7 +44,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var roleProvider = new RoleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             dbContext.Roles.RemoveRange(dbContext.Roles);
 
             //Act
@@ -89,7 +89,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var roleProvider = new RoleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var roles = TestDataProvider.GetRoles();
             foreach (var item in roles)
             {

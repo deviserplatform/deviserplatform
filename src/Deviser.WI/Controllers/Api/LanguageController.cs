@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Multilingual;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

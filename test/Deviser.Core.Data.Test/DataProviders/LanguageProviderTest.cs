@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.TestCommon;
 using Deviser.WI;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +39,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var languageProvider = new LanguageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             Language language = null;
 
             //Act
@@ -54,7 +54,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var languageProvider = new LanguageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {
@@ -77,7 +77,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var languageProvider = new LanguageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             dbContext.Language.RemoveRange(dbContext.Language);
 
             //Act
@@ -93,7 +93,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var languageProvider = new LanguageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {
@@ -120,7 +120,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var languageProvider = new LanguageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             dbContext.Language.RemoveRange(dbContext.Language);
 
             //Act
@@ -136,7 +136,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var languageProvider = new LanguageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {
@@ -166,7 +166,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var languageProvider = new LanguageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {
@@ -189,7 +189,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var languageProvider = new LanguageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {
@@ -211,7 +211,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var languageProvider = new LanguageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {
@@ -239,7 +239,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var languageProvider = new LanguageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {
@@ -268,7 +268,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var languageProvider = new LanguageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var languages = TestDataProvider.GetLanguages();
             foreach (var ct in languages)
             {

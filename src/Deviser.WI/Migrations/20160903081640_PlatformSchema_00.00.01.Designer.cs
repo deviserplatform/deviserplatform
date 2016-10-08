@@ -1,4 +1,5 @@
 ﻿using System;
+using Deviser.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -7,7 +8,7 @@ using Deviser.Core.Data.Entities;
 
 namespace Deviser.WI.Migrations
 {
-    [DbContext(typeof(DeviserDBContext))]
+    [DbContext(typeof(DeviserDbContext))]
     [Migration("20160903081640_PlatformSchema_00.00.01")]
     partial class PlatformSchema_000001
     {

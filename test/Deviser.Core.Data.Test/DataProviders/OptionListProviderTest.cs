@@ -1,5 +1,5 @@
 ﻿using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.TestCommon;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -28,7 +28,8 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.False(result.IsActive);
             Assert.True(!string.IsNullOrEmpty(result.Name));
             Assert.True(!string.IsNullOrEmpty(result.Label));
-            Assert.True(!string.IsNullOrEmpty(result.List));            
+            Assert.True(result.List!=null);
+            Assert.True(result.List.Count>0);
             Assert.True(result.CreatedDate > DateTime.MinValue);
             Assert.True(result.LastModifiedDate > DateTime.MinValue);
         }
@@ -53,7 +54,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var optionListProvider = new OptionListProvider(container);
             var optionLists = TestDataProvider.GetPropertyOptionLists();
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in optionLists)
             {
                 optionListProvider.CreateOptionList(item);
@@ -71,7 +72,8 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.False(resultItem.IsActive);
             Assert.True(!string.IsNullOrEmpty(resultItem.Name));
             Assert.True(!string.IsNullOrEmpty(resultItem.Label));
-            Assert.True(!string.IsNullOrEmpty(resultItem.List));
+            Assert.True(resultItem.List != null);
+            Assert.True(resultItem.List.Count > 0);
             Assert.True(resultItem.CreatedDate > DateTime.MinValue);
             Assert.True(resultItem.LastModifiedDate > DateTime.MinValue);
 
@@ -84,7 +86,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var optionListProvider = new OptionListProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             dbContext.PropertyOptionList.RemoveRange(dbContext.PropertyOptionList);
 
             //Act
@@ -101,7 +103,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var optionListProvider = new OptionListProvider(container);
             var optionLists = TestDataProvider.GetPropertyOptionLists();
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in optionLists)
             {
                 optionListProvider.CreateOptionList(item);
@@ -119,7 +121,8 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.False(result.IsActive);
             Assert.True(!string.IsNullOrEmpty(result.Name));
             Assert.True(!string.IsNullOrEmpty(result.Label));
-            Assert.True(!string.IsNullOrEmpty(result.List));
+            Assert.True(result.List != null);
+            Assert.True(result.List.Count > 0);
             Assert.True(result.CreatedDate > DateTime.MinValue);
             Assert.True(result.LastModifiedDate > DateTime.MinValue);
 
@@ -133,7 +136,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var optionListProvider = new OptionListProvider(container);
             var optionLists = TestDataProvider.GetPropertyOptionLists();
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in optionLists)
             {
                 optionListProvider.CreateOptionList(item);
@@ -155,7 +158,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var optionListProvider = new OptionListProvider(container);
             var optionLists = TestDataProvider.GetPropertyOptionLists();
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in optionLists)
             {
                 optionListProvider.CreateOptionList(item);
@@ -171,7 +174,8 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.False(result.IsActive);
             Assert.True(!string.IsNullOrEmpty(result.Name));
             Assert.True(!string.IsNullOrEmpty(result.Label));
-            Assert.True(!string.IsNullOrEmpty(result.List));
+            Assert.True(result.List != null);
+            Assert.True(result.List.Count > 0);
             Assert.True(result.CreatedDate > DateTime.MinValue);
             Assert.True(result.LastModifiedDate > DateTime.MinValue);
 
@@ -186,7 +190,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var optionListProvider = new OptionListProvider(container);
             var optionLists = TestDataProvider.GetPropertyOptionLists();
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in optionLists)
             {
                 optionListProvider.CreateOptionList(item);

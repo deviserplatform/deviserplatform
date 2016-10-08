@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Http;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
@@ -94,7 +93,7 @@ namespace DeviserWI.Controllers.API
                 if(layoutTypeProvider.GetLayoutType(layoutType.Name)!=null)
                     return BadRequest("Layout type already exist");
 
-                var dbResult = layoutTypeProvider.CreateLayoutType(Mapper.Map<Deviser.Core.Data.Entities.LayoutType>(layoutType));
+                var dbResult = layoutTypeProvider.CreateLayoutType(layoutType);
                 var result = Mapper.Map<Deviser.Core.Common.DomainTypes.LayoutType>(dbResult);
                 if (result != null)
                     return Ok(result);
@@ -112,7 +111,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dbResult = layoutTypeProvider.UpdateLayoutType(Mapper.Map<Deviser.Core.Data.Entities.LayoutType>(layoutType));
+                var dbResult = layoutTypeProvider.UpdateLayoutType(layoutType);
                 var result = Mapper.Map<Deviser.Core.Common.DomainTypes.LayoutType>(dbResult);
                 if (result != null)
                     return Ok(result);

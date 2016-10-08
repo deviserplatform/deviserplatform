@@ -70,7 +70,7 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var dbResult = propertyProvider.CreateProperty(Mapper.Map<Deviser.Core.Data.Entities.Property>(property));
+                var dbResult = propertyProvider.CreateProperty(property);
                 var result = Mapper.Map<Deviser.Core.Common.DomainTypes.Property>(dbResult);
                 if (result != null)
                     return Ok(result);
@@ -88,7 +88,7 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var dbResult = propertyProvider.UpdateProperty(Mapper.Map<Deviser.Core.Data.Entities.Property>(property));
+                var dbResult = propertyProvider.UpdateProperty(property);
                 var result = Mapper.Map<Deviser.Core.Common.DomainTypes.Property>(dbResult);
                 if (result != null)
                     return Ok(result);

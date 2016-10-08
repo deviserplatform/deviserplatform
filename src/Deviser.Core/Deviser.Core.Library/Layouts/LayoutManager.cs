@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using AutoMapper;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using Autofac;
 using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
-using PageModule = Deviser.Core.Data.Entities.PageModule;
-using Layout = Deviser.Core.Data.Entities.Layout;
+
 
 namespace Deviser.Core.Library.Layouts
 {

@@ -1,5 +1,4 @@
-﻿using Deviser.Core.Data.Entities;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,7 +10,7 @@ namespace Deviser.Core.Common.DomainTypes
     public class PageContext
     {
         [JsonIgnore]
-        public Deviser.Core.Data.Entities.Page CurrentPage { get; set; }
+        public Page CurrentPage { get; set; }
 
         public Guid CurrentPageId { get; set; }
 
@@ -24,7 +23,7 @@ namespace Deviser.Core.Common.DomainTypes
         }
 
         [JsonIgnore]
-        public Deviser.Core.Data.Entities.PageTranslation CurrentTranslation
+        public PageTranslation CurrentTranslation
         {
             get
             {
@@ -46,7 +45,7 @@ namespace Deviser.Core.Common.DomainTypes
         public bool HasPageEditPermission { get; set; }
 
         [JsonIgnore]
-        public Deviser.Core.Data.Entities.Page HomePage { get; set; }
+        public Page HomePage { get; set; }
 
         public string HomePageUrl
         {
@@ -61,7 +60,7 @@ namespace Deviser.Core.Common.DomainTypes
         {
             get
             {
-                return SiteSetting.SiteRoot + HomePageUrl;
+                return SiteSettingInfo.SiteRoot + HomePageUrl;
             }
         }
 
@@ -71,7 +70,7 @@ namespace Deviser.Core.Common.DomainTypes
         {
             get
             {
-                return SiteSetting.SiteRoot; //Expose it to json
+                return SiteSettingInfo.SiteRoot; //Expose it to json
             }
         }
 
@@ -79,11 +78,11 @@ namespace Deviser.Core.Common.DomainTypes
         {
             get
             {
-                return SiteSetting.SiteLanguage;
+                return SiteSettingInfo.SiteLanguage;
             }
         }
 
         [JsonIgnore]
-        public SiteSetting SiteSetting { get; set; }
+        public SiteSettingInfo SiteSettingInfo { get; set; }
     }
 }

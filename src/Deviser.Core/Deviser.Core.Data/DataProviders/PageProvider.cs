@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Microsoft.Extensions.Logging;
 using Autofac;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.DataProviders
@@ -14,34 +15,34 @@ namespace Deviser.Core.Data.DataProviders
         Page GetPageTree();
         List<Page> GetPages();
         Page GetPage(Guid pageId);
-        Page CreatePage(Page page);
-        Page UpdatePage(Page page);
-        Page UpdatePageTree(Page page);
+        Page CreatePage(Page dbPage);
+        Page UpdatePage(Page dbPage);
+        Page UpdatePageTree(Page dbPage);
         List<PageTranslation> GetPageTranslations(string locale);
         PageTranslation GetPageTranslation(string url);
         List<PageModule> GetPageModules(Guid pageId);
         PageModule GetPageModule(Guid pageModuleId);
         //PageModule GetPageModuleByContainer(Guid containerId);
-        PageModule CreatePageModule(PageModule pageModule);
-        PageModule UpdatePageModule(PageModule pageModule);
-        void UpdatePageModules(List<PageModule> pageModules);
-        void UpdateModulePermission(PageModule pageModule);
-        List<PagePermission> AddPagePermissions(List<PagePermission> pagePermissions);
-        List<ModulePermission> AddModulePermissions(List<ModulePermission> modulePermissions);
+        PageModule CreatePageModule(PageModule dbPageModule);
+        PageModule UpdatePageModule(PageModule dbPageModule);
+        void UpdatePageModules(List<PageModule> dbPageModules);
+        void UpdateModulePermission(PageModule dbPageModule);
+        List<PagePermission> AddPagePermissions(List<PagePermission> dbPagePermissions);
+        List<ModulePermission> AddModulePermissions(List<ModulePermission> dbModulePermissions);
 
     }
 
     public class PageProvider : DataProviderBase, IPageProvider
     {
         //Logger
-        private readonly ILogger<LayoutProvider> logger;
+        private readonly ILogger<LayoutProvider> _logger;
 
         //Constructor
         public PageProvider(ILifetimeScope container)
             : base(container)
         {
-            this.container = container;
-            logger = container.Resolve<ILogger<LayoutProvider>>();
+            Container = container;
+            _logger = container.Resolve<ILogger<LayoutProvider>>();
         }
 
         //Custom Field Declaration
@@ -54,7 +55,7 @@ namespace Deviser.Core.Data.DataProviders
                                                                     .Where(.Where(e=>e.ParentId==null&&e.IsDeleted==false));*/
                 /*List<> returnData = new List<>();
                 returnData.Add(context.Pages.ToList().First());*/
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
                     //return context.Page
                     //.Include(p => p.PageTranslation) //("PageTranslations")  
@@ -75,21 +76,20 @@ namespace Deviser.Core.Data.DataProviders
                     //    .Where(p => p.ParentId == null).First();
 
                     var rootOnly = context.Page
-                            .Where(p => p.ParentId == null)
-                            .First();
+                            .First(p => p.ParentId == null);
                     GetPageTree(context, rootOnly);
-                    return rootOnly;
+                    return Mapper.Map<Page>(rootOnly);
                 }
 
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting GetPageTree", ex);
+                _logger.LogError("Error occured while getting page tree", ex);
             }
             return null;
         }
 
-        private void GetPageTree(DeviserDBContext context, Page page)
+        private void GetPageTree(DeviserDbContext context, Entities.Page page)
         {
             //Page resultPage = null;
 
@@ -112,9 +112,9 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    IEnumerable<Page> returnData = context.Page
+                    var result = context.Page
                                 .Where(e => e.ParentId != null)
                                 //.Include("PageTranslations").Include("ChildPages").Include("PageModules").Include("PageModules.Module")
                                 .Include(p => p.PageTranslation)
@@ -122,12 +122,12 @@ namespace Deviser.Core.Data.DataProviders
                                 .OrderBy(p => p.PageOrder)
                                 .ToList();
 
-                    return new List<Page>(returnData);
+                    return Mapper.Map<List<Page>>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting GetPages", ex);
+                _logger.LogError("Error occured while getting all pages", ex);
             }
             return null;
         }
@@ -136,9 +136,9 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    Page returnData = context.Page
+                    var result = context.Page
                                .Where(e => e.Id == pageId)
                                .Include(p => p.PageTranslation)
                                .Include(p => p.PagePermissions)
@@ -152,22 +152,22 @@ namespace Deviser.Core.Data.DataProviders
                                .OrderBy(p => p.Id)
                                .FirstOrDefault();
 
-                    if (returnData.PageModule != null)
+                    if (result.PageModule != null)
                     {
-                        returnData.PageModule = returnData.PageModule.Where(pm => !pm.IsDeleted).ToList();
+                        result.PageModule = result.PageModule.Where(pm => !pm.IsDeleted).ToList();
                     }
 
-                    if (returnData.PageContent != null)
+                    if (result.PageContent != null)
                     {
-                        returnData.PageContent = returnData.PageContent.Where(pc => !pc.IsDeleted).ToList();
+                        result.PageContent = result.PageContent.Where(pc => !pc.IsDeleted).ToList();
                     }
 
-                    return returnData;
+                    return Mapper.Map<Page>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling GetPage", ex);
+                _logger.LogError("Error occured while calling GetPage", ex);
             }
             return null;
         }
@@ -176,18 +176,18 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    Page resultPage;
-                    page.CreatedDate = DateTime.Now; page.LastModifiedDate = DateTime.Now;
-                    resultPage = context.Page.Add(page).Entity;
+                    var dbPage = Mapper.Map<Entities.Page>(page);
+                    dbPage.CreatedDate = DateTime.Now; dbPage.LastModifiedDate = DateTime.Now;
+                    var result = context.Page.Add(dbPage).Entity;
                     context.SaveChanges();
-                    return resultPage;
+                    return Mapper.Map<Page>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling CreatePage", ex);
+                _logger.LogError("Error occured while calling CreatePage", ex);
             }
             return null;
         }
@@ -201,17 +201,18 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    Page resultPage;
-                    page.LastModifiedDate = DateTime.Now;
+                    var dbPage = Mapper.Map<Entities.Page>(page);
 
-                    var pagePermissions = page.PagePermissions;
-                    var pageTranslation = page.PageTranslation;
-                    page.PagePermissions = null;
-                    page.PageTranslation = null;
+                    dbPage.LastModifiedDate = DateTime.Now;
 
-                    resultPage = context.Page.Update(page).Entity;
+                    var pagePermissions = dbPage.PagePermissions;
+                    var pageTranslation = dbPage.PageTranslation;
+                    dbPage.PagePermissions = null;
+                    dbPage.PageTranslation = null;
+
+                    var result = context.Page.Update(dbPage).Entity;
                     foreach (var translation in pageTranslation)
                     {
                         if (context.PageTranslation.Any(pt => pt.Locale == translation.Locale && pt.PageId == translation.PageId))
@@ -223,7 +224,7 @@ namespace Deviser.Core.Data.DataProviders
                         else
                         {
                             //translation.URL = GetUniqueUrl(context, translation.URL, translation.Locale);
-                            translation.PageId = page.Id;
+                            translation.PageId = dbPage.Id;
                             context.PageTranslation.Add(translation);
                         }
                     }
@@ -231,7 +232,7 @@ namespace Deviser.Core.Data.DataProviders
                     if (pagePermissions != null && pagePermissions.Count > 0)
                     {
                         //Filter deleted permissions in UI and delete all of them
-                        var toDelete = context.PagePermission.Where(dbPermission => dbPermission.PageId == page.Id &&
+                        var toDelete = context.PagePermission.Where(dbPermission => dbPermission.PageId == dbPage.Id &&
                         !pagePermissions.Any(pagePermission => pagePermission.PermissionId == dbPermission.PermissionId && pagePermission.RoleId == dbPermission.RoleId)).ToList();
                         if (toDelete != null && toDelete.Count > 0)
                             context.PagePermission.RemoveRange(toDelete);
@@ -256,12 +257,12 @@ namespace Deviser.Core.Data.DataProviders
 
                     //context.PageTranslation.UpdateRange(page.PageTranslation);
                     context.SaveChanges();
-                    return resultPage;
+                    return Mapper.Map<Page>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling UpdatePage", ex);
+                _logger.LogError("Error occured while calling UpdatePage", ex);
             }
             return null;
         }
@@ -281,24 +282,24 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    Page resultPage = null;
-                    page.LastModifiedDate = DateTime.Now;
-                    UpdatePageTreeTree(context, page);
+                    var dbPage = Mapper.Map<Entities.Page>(page);
+                    dbPage.LastModifiedDate = DateTime.Now;
+                    UpdatePageTreeTree(context, dbPage);
                     context.SaveChanges();
-                    resultPage = context.Page.ToList().First();
-                    return resultPage;
+                    var result = context.Page.ToList().First();
+                    return Mapper.Map<Page>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling UpdatePageTree", ex);
+                _logger.LogError("Error occured while calling UpdatePageTree", ex);
             }
             return null;
         }
 
-        private void UpdatePageTreeTree(DeviserDBContext context, Page page)
+        private void UpdatePageTreeTree(DeviserDbContext context, Entities.Page page)
         {
             if (page != null && page.ChildPage != null)
             {
@@ -330,18 +331,18 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    IEnumerable<PageTranslation> returnData = context.PageTranslation
+                    var result = context.PageTranslation
                     .Where(e => e.Locale.ToLower() == locale.ToLower())
                     .OrderBy(p => p.PageId)
                     .ToList();
-                    return new List<PageTranslation>(returnData);
+                    return Mapper.Map<List<PageTranslation>>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting GetPageTranslations", ex);
+                _logger.LogError("Error occured while getting GetPageTranslations", ex);
             }
             return null;
         }
@@ -350,18 +351,18 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var returnData = context.PageTranslation
-                    .Where(e => e.URL.ToLower() == url.ToLower())
+                    var result = context.PageTranslation
+                    .Where(e => string.Equals(e.URL, url, StringComparison.CurrentCultureIgnoreCase))
                     .OrderBy(p => p.PageId)
                     .FirstOrDefault();
-                    return returnData;
+                    return Mapper.Map<PageTranslation>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting GetPageTranslation", ex);
+                _logger.LogError("Error occured while getting GetPageTranslation", ex);
             }
             return null;
         }
@@ -370,9 +371,9 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    IEnumerable<PageModule> returnData = context.PageModule
+                    var result = context.PageModule
                                 .Where(e => e.PageId == pageId && !e.IsDeleted)
                                 .Include(e => e.Module)
                                 .Include(e => e.ModuleAction)
@@ -380,12 +381,12 @@ namespace Deviser.Core.Data.DataProviders
                                 .OrderBy(p => p.Id)
                                 .ToList();
 
-                    return new List<PageModule>(returnData);
+                    return Mapper.Map<List<PageModule>>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting GetPageModules", ex);
+                _logger.LogError("Error occured while getting GetPageModules", ex);
             }
             return null;
         }
@@ -394,20 +395,20 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    PageModule returnData = context.PageModule
+                    var result = context.PageModule
                         .Include(pm => pm.ModulePermissions)
                         .Where(e => e.Id == pageModuleId && !e.IsDeleted)
                         .OrderBy(p => p.Id)
                         .FirstOrDefault();
 
-                    return returnData;
+                    return Mapper.Map<PageModule>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling GetPageModule", ex);
+                _logger.LogError("Error occured while calling GetPageModule", ex);
             }
             return null;
         }
@@ -437,17 +438,17 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    PageModule resultPageModule;
-                    resultPageModule = context.PageModule.Add(pageModule).Entity;
+                    var dbPageModule = Mapper.Map<Entities.PageModule>(pageModule);
+                    var result = context.PageModule.Add(dbPageModule).Entity;
                     context.SaveChanges();
-                    return resultPageModule;
+                    return Mapper.Map<PageModule>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling CreatePageModule", ex);
+                _logger.LogError("Error occured while calling CreatePageModule", ex);
             }
             return null;
         }
@@ -456,17 +457,17 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    PageModule resultPageModule;
-                    resultPageModule = context.PageModule.Update(pageModule).Entity;
+                    var dbPageModule = Mapper.Map<Entities.PageModule>(pageModule);
+                    var result = context.PageModule.Update(dbPageModule).Entity;
                     context.SaveChanges();
-                    return resultPageModule;
+                    return Mapper.Map<PageModule>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling UpdatePageModule", ex);
+                _logger.LogError("Error occured while calling UpdatePageModule", ex);
             }
             return null;
         }
@@ -475,9 +476,10 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    foreach (var pageModule in pageModules)
+                    var dbPageModules = Mapper.Map<List<Entities.PageModule>>(pageModules);
+                    foreach (var pageModule in dbPageModules)
                     {
                         if (context.PageModule.Any(pm => pm.Id == pageModule.Id))
                         {
@@ -495,8 +497,8 @@ namespace Deviser.Core.Data.DataProviders
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling UpdatePageModules", ex);
-                throw ex;
+                _logger.LogError("Error occured while calling UpdatePageModules", ex);
+                throw;
             }
         }
 
@@ -509,12 +511,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
                     if (pagePermissions != null && pagePermissions.Count > 0)
                     {
+                        var dbPagePermissions = Mapper.Map<List<Entities.PagePermission>>(pagePermissions);
                         //Filter new permissions which are not in db and add all of them
-                        var toAdd = pagePermissions.Where(pagePermission => !context.PagePermission.Any(dbPermission =>
+                        var toAdd = dbPagePermissions.Where(pagePermission => !context.PagePermission.Any(dbPermission =>
                         dbPermission.PermissionId == pagePermission.PermissionId &&
                         dbPermission.PageId == pagePermission.PageId &&
                         dbPermission.RoleId == pagePermission.RoleId)).ToList();
@@ -530,13 +533,13 @@ namespace Deviser.Core.Data.DataProviders
                         }
 
                         context.SaveChanges();
-                        return toAdd;
+                        return Mapper.Map<List<PagePermission>>(toAdd);
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while adding page permissions", ex);
+                _logger.LogError("Error occured while adding page permissions", ex);
             }
             return null;
         }
@@ -544,18 +547,19 @@ namespace Deviser.Core.Data.DataProviders
         /// <summary>
         /// Add permissions only if its not exist in db
         /// </summary>
-        /// <param name="modulePermissions"></param>
+        /// <param name="pagePermissions"></param>
         /// <returns></returns>
-        public List<ModulePermission> AddModulePermissions(List<ModulePermission> modulePermissions)
+        public List<ModulePermission> AddModulePermissions(List<ModulePermission> pagePermissions)
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    if (modulePermissions != null && modulePermissions.Count > 0)
+                    if (pagePermissions != null && pagePermissions.Count > 0)
                     {
+                        var dbModulePermissions = Mapper.Map<List<Entities.ModulePermission>>(pagePermissions);
                         //Filter new permissions which are not in db and add all of them
-                        var toAdd = modulePermissions.Where(modulePermission => !context.ModulePermission.Any(dbPermission =>
+                        var toAdd = dbModulePermissions.Where(modulePermission => !context.ModulePermission.Any(dbPermission =>
                         dbPermission.PermissionId == modulePermission.PermissionId &&
                         dbPermission.PageModuleId == modulePermission.PageModuleId &&
                         dbPermission.RoleId == modulePermission.RoleId)).ToList();
@@ -571,13 +575,13 @@ namespace Deviser.Core.Data.DataProviders
                         }
 
                         context.SaveChanges();
-                        return toAdd;
+                        return Mapper.Map<List<ModulePermission>>(toAdd);
                     }
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while addming module persmissions", ex);
+                _logger.LogError("Error occured while addming module persmissions", ex);
             }
             return null;
         }
@@ -586,18 +590,19 @@ namespace Deviser.Core.Data.DataProviders
         {
             if (pageModule.ModulePermissions != null && pageModule.ModulePermissions.Count > 0)
             {
+                var dbPageModule = Mapper.Map<Entities.PageModule>(pageModule);
                 //Assuming all permissions have same pageModuleId
-                var pageModuleId = pageModule.Id;
-                var modulePermissions = pageModule.ModulePermissions;
+                var pageModuleId = dbPageModule.Id;
+                var modulePermissions = dbPageModule.ModulePermissions;
 
                 try
                 {
-                    using (var context = new DeviserDBContext(dbOptions))
+                    using (var context = new DeviserDbContext(DbOptions))
                     {
                         //Update InheritViewPermissions only
                         var dbPageContent = context.PageModule.First(pc => pc.Id == pageModuleId);
-                        dbPageContent.InheritViewPermissions = pageModule.InheritViewPermissions;
-                        dbPageContent.InheritEditPermissions = pageModule.InheritEditPermissions;
+                        dbPageContent.InheritViewPermissions = dbPageModule.InheritViewPermissions;
+                        dbPageContent.InheritEditPermissions = dbPageModule.InheritEditPermissions;
 
                         //Filter deleted permissions in UI and delete all of them
                         var toDelete = context.ModulePermission.Where(dbPermission => dbPermission.PageModuleId == pageModuleId &&
@@ -626,7 +631,8 @@ namespace Deviser.Core.Data.DataProviders
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError("Error occured while updating module persmissions", ex);
+                    _logger.LogError("Error occured while updating module persmissions", ex);
+                    throw;
                 }
             }
         }

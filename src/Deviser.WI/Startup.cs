@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using Deviser.Core.Data;
 
 namespace Deviser.WI
 {
@@ -57,11 +58,11 @@ namespace Deviser.WI
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddDbContext<DeviserDBContext>(options =>
+            services.AddDbContext<DeviserDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Deviser.WI")));
 
             services.AddIdentity<User, Role>()
-                .AddEntityFrameworkStores<DeviserDBContext, Guid>()
+                .AddEntityFrameworkStores<DeviserDbContext, Guid>()
                 .AddDefaultTokenProviders();
 
             services.Add(ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, SerializerSettingsSetup>());

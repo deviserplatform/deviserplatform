@@ -1,4 +1,4 @@
-﻿using Deviser.Core.Data.Entities;
+﻿using Deviser.Core.Common.DomainTypes;
 using System;
 
 namespace Deviser.Core.Library.Sites

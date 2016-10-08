@@ -2,14 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
+using Deviser.Core.Data.Entities;
 
-namespace Deviser.Core.Data.Entities
+namespace Deviser.Core.Data
 {
-    public partial class DeviserDBContext : IdentityDbContext<User, Role, Guid>
+    public partial class DeviserDbContext : IdentityDbContext<User, Role, Guid>
     {
 
 
-        public DeviserDBContext(DbContextOptions<DeviserDBContext> options)
+        public DeviserDbContext(DbContextOptions<DeviserDbContext> options)
             : base(options)
         {
             

@@ -1,7 +1,6 @@
 ﻿using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.Multilingual;
 using Deviser.Core.Library.Services;
 using Deviser.Core.Library.Sites;
@@ -15,7 +14,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Page = Deviser.Core.Data.Entities.Page;
 
 namespace Deviser.Core.Library.Middleware
 {
@@ -80,10 +78,10 @@ namespace Deviser.Core.Library.Middleware
             {                
                 pageContext.IsMultilingual = languageProvider.IsMultilingual();
                 var currentCulture = GetCurrentCulture();
-                pageContext.SiteSetting = settingManager.GetSiteSetting();
+                pageContext.SiteSettingInfo = settingManager.GetSiteSetting();
                 pageContext.CurrentCulture = currentCulture;                
 
-                Guid homePageId = pageContext.SiteSetting.HomePageId;
+                Guid homePageId = pageContext.SiteSettingInfo.HomePageId;
 
                 if (homePageId != Guid.Empty)
                 {

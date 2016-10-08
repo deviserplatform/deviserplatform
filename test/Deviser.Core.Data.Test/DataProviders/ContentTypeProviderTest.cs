@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Deviser.Core.Data.Entities;
 using Deviser.TestCommon;
 using Deviser.WI;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
+using Deviser.Core.Common.DomainTypes;
 using Xunit;
+using ContentType = Deviser.Core.Common.DomainTypes.ContentType;
 
 namespace Deviser.Core.Data.DataProviders
 {
@@ -40,7 +42,7 @@ namespace Deviser.Core.Data.DataProviders
         {
             //Arrange
             ContentTypeProvider contentTypeProvider = new ContentTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             ContentType contentType = null;
 
             //Act
@@ -55,7 +57,7 @@ namespace Deviser.Core.Data.DataProviders
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var contentTypes = TestDataProvider.GetContentTypes();
             foreach(var ct in contentTypes)
             {
@@ -84,7 +86,7 @@ namespace Deviser.Core.Data.DataProviders
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var contentTypes = TestDataProvider.GetContentTypes();
             foreach (var ct in contentTypes)
             {
@@ -137,7 +139,7 @@ namespace Deviser.Core.Data.DataProviders
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var contentTypes = TestDataProvider.GetContentTypes();
             foreach (var ct in contentTypes)
             {
@@ -160,9 +162,10 @@ namespace Deviser.Core.Data.DataProviders
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var contentDataTypes = TestDataProvider.GetContentDataTypes();
-            dbContext.ContentDataType.AddRange(contentDataTypes);
+            var dbContentDataType = Mapper.Map<Deviser.Core.Data.Entities.ContentDataType>(contentDataTypes);
+            dbContext.ContentDataType.AddRange(dbContentDataType);
             dbContext.SaveChanges();
 
             //Act
@@ -181,7 +184,7 @@ namespace Deviser.Core.Data.DataProviders
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             dbContext.RemoveRange(dbContext.ContentType);
 
             //Act
@@ -197,7 +200,7 @@ namespace Deviser.Core.Data.DataProviders
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             dbContext.RemoveRange(dbContext.ContentDataType);
 
             //Act
@@ -213,7 +216,7 @@ namespace Deviser.Core.Data.DataProviders
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var contentTypes = TestDataProvider.GetContentTypes();
             foreach (var ct in contentTypes)
             {
@@ -221,17 +224,11 @@ namespace Deviser.Core.Data.DataProviders
             }
 
             var contentTypeToUpdate = contentTypes.First();
-            contentTypeToUpdate.ContentTypeProperties = new List<ContentTypeProperty>();
+            contentTypeToUpdate.Properties = new List<Property>();
             var properties = TestDataProvider.GetProperties();
             var cssProp = properties[0];
-            dbContext.Property.Add(cssProp);
-
-            contentTypeToUpdate.ContentTypeProperties.Add(new ContentTypeProperty
-            {
-                ConentTypeId = contentTypeToUpdate.Id,
-                PropertyId = cssProp.Id,
-            });
-
+            contentTypeToUpdate.Properties.Add(cssProp);
+            
             //Act
             contentTypeToUpdate.Label = "New Label";
             var result = contentTypeProvider.UpdateContentType(contentTypeToUpdate);
@@ -239,7 +236,7 @@ namespace Deviser.Core.Data.DataProviders
             //Assert
             Assert.NotNull(result);
             Assert.True(result.Label == contentTypeToUpdate.Label);
-            Assert.True(result.ContentTypeProperties.Count > 0);
+            Assert.True(result.Properties.Count > 0);
 
             //Clean
             dbContext.Property.RemoveRange(dbContext.Property);
@@ -252,31 +249,22 @@ namespace Deviser.Core.Data.DataProviders
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var contentTypes = TestDataProvider.GetContentTypes();
+            var properties = TestDataProvider.GetProperties();
+            var cssProp = properties[0];
+            var heightProp = properties[1];
+
             foreach (var ct in contentTypes)
             {
+                ct.Properties = new List<Property>();
+                ct.Properties.Add(cssProp);
+                ct.Properties.Add(heightProp);
                 contentTypeProvider.CreateContentType(ct);
             }
             var contentTypeToUpdate = contentTypes.First();
-            contentTypeToUpdate.ContentTypeProperties = new List<ContentTypeProperty>();
-            var properties = TestDataProvider.GetProperties();
-            var cssProp = properties[0];
-            var heightProp = properties[1]; 
-
-            dbContext.Property.Add(cssProp);
-
-            dbContext.ContentTypeProperty.Add(new ContentTypeProperty
-            {
-                ConentTypeId = contentTypeToUpdate.Id,
-                PropertyId = cssProp.Id,
-            });
-            dbContext.ContentTypeProperty.Add(new ContentTypeProperty
-            {
-                ConentTypeId = contentTypeToUpdate.Id,
-                PropertyId = heightProp.Id,
-            });
-
+            contentTypeToUpdate.Properties = new List<Property>();
+            
             //Act
             contentTypeToUpdate.Label = "New Label";
             var result = contentTypeProvider.UpdateContentType(contentTypeToUpdate);
@@ -284,7 +272,7 @@ namespace Deviser.Core.Data.DataProviders
             //Assert
             Assert.NotNull(result);
             Assert.True(result.Label == contentTypeToUpdate.Label);
-            Assert.True(result.ContentTypeProperties.Count == 0);
+            Assert.True(result.Properties.Count == 0);
 
             //Clean
             dbContext.Property.RemoveRange(dbContext.Property);

@@ -7,13 +7,13 @@ namespace Deviser.Core.Data.DataProviders
     public class DataProviderBase
     {
 
-        protected DbContextOptions<DeviserDBContext> dbOptions;
-        protected ILifetimeScope container;
+        protected DbContextOptions<DeviserDbContext> DbOptions;
+        protected ILifetimeScope Container;
 
         public DataProviderBase(ILifetimeScope container)
         {
-            this.container = container;
-            dbOptions = container.Resolve<DbContextOptions<DeviserDBContext>>();
+            this.Container = container;
+            DbOptions = container.Resolve<DbContextOptions<DeviserDbContext>>();
             
         }
 

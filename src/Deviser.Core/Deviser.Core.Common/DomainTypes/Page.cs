@@ -26,7 +26,7 @@ namespace Deviser.Core.Common.DomainTypes
         public virtual ICollection<PageTranslation> PageTranslation { get; set; }
         public virtual ICollection<PagePermission> PagePermissions { get; set; }
         public virtual Layout Layout { get; set; }
-        //public virtual Page Parent { get; set; }
+        public virtual Page Parent { get; set; }
         public virtual ICollection<Page> ChildPage { get; set; }
 
         //Non DB Properties

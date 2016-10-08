@@ -106,7 +106,7 @@ namespace Deviser.Modules.Security.Controllers
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
-            if (scopeService.PageContext.SiteSetting.RegistrationEnabled)
+            if (scopeService.PageContext.SiteSettingInfo.RegistrationEnabled)
             {
                 ViewData["ReturnUrl"] = returnUrl;
                 return View();
@@ -121,7 +121,7 @@ namespace Deviser.Modules.Security.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
-            if (scopeService.PageContext.SiteSetting.RegistrationEnabled)
+            if (scopeService.PageContext.SiteSettingInfo.RegistrationEnabled)
             {
                 ViewData["ReturnUrl"] = returnUrl;
                 if (ModelState.IsValid)
@@ -481,14 +481,14 @@ namespace Deviser.Modules.Security.Controllers
         private IActionResult RedirectAfterLogin(string returnUrl = null)
         {
             if(string.IsNullOrEmpty(returnUrl))
-                returnUrl = navigation.NavigateUrl(scopeService.PageContext.SiteSetting.RedirectAfterLogin);
+                returnUrl = navigation.NavigateUrl(scopeService.PageContext.SiteSettingInfo.RedirectAfterLogin);
             return RedirectToLocal(returnUrl);
         }
 
         private IActionResult RedirectAfterLogout(string returnUrl = null)
         {
             if (string.IsNullOrEmpty(returnUrl))
-                returnUrl = navigation.NavigateUrl(scopeService.PageContext.SiteSetting.RedirectAfterLogout);
+                returnUrl = navigation.NavigateUrl(scopeService.PageContext.SiteSettingInfo.RedirectAfterLogout);
             return RedirectToLocal(returnUrl);
         }
 

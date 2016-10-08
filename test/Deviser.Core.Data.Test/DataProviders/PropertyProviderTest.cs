@@ -1,5 +1,5 @@
 ﻿using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.TestCommon;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -16,7 +16,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var propertyProvider = new PropertyProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var properties = TestDataProvider.GetProperties();
             var property = properties.First();
 
@@ -41,7 +41,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var propertyProvider = new PropertyProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var properties = TestDataProvider.GetProperties();
             Property property = null;
 
@@ -61,7 +61,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var propertyProvider = new PropertyProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var properties = TestDataProvider.GetProperties();
             foreach (var item in properties)
             {
@@ -89,7 +89,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var propertyProvider = new PropertyProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             dbContext.Property.RemoveRange(dbContext.Property);
 
             //Act
@@ -109,7 +109,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var propertyProvider = new PropertyProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var properties = TestDataProvider.GetProperties();
             var property = properties.First();
             propertyProvider.CreateProperty(property);
@@ -135,7 +135,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var propertyProvider = new PropertyProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var properties = TestDataProvider.GetProperties();
 
             //Act
@@ -153,7 +153,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var propertyProvider = new PropertyProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var properties = TestDataProvider.GetProperties();
             foreach (var item in properties)
             {
@@ -183,7 +183,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var propertyProvider = new PropertyProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var properties = TestDataProvider.GetProperties();
 
             //Act

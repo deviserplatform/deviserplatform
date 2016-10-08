@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Core.Common.DomainTypes
 {
@@ -17,7 +16,7 @@ namespace Deviser.Core.Common.DomainTypes
         public DateTime? LastModifiedDate { get; set; }
         public Guid PageId { get; set; }
         public Guid ContentTypeId { get; set; }
-        public virtual Deviser.Core.Data.Entities.Page Page { get; set; }
+        public virtual Page Page { get; set; }
         public virtual ContentType ContentType { get; set; }
         public bool InheritViewPermissions { get; set; }
         public bool InheritEditPermissions { get; set; }

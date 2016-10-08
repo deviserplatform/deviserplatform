@@ -52,10 +52,10 @@
                         <button type="submit" class="btn btn-default">Log in</button>
                     </div>
                 </div>
-                @if (pageContext.SiteSetting.RegistrationEnabled)
+                @if (pageContext.SiteSettingInfo.RegistrationEnabled)
                 {
                     <p>
-                        <a href="@navigation.NavigateUrl(pageContext.SiteSetting.RegistrationPageId)">Register as a new user?</a>
+                        <a href="@navigation.NavigateUrl(pageContext.SiteSettingInfo.RegistrationPageId)">Register as a new user?</a>
                         @*<a sd-module="Security" sd-action="Register" sd-route-returnurl="@ViewData["ReturnUrl"]" class="sd-ajax-load">Register as a new user?</a>*@
                     </p>
 

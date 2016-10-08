@@ -1,9 +1,6 @@
 ﻿using System;
-using Deviser.Core.Data.Entities;
-using System.Collections.Generic;
 using Deviser.Core.Common.DomainTypes;
-
-using Page = Deviser.Core.Data.Entities.Page;
+using System.Collections.Generic;
 
 namespace Deviser.Core.Library
 {

@@ -1,5 +1,5 @@
 ﻿using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.TestCommon;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -17,7 +17,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
             var pageContents = TestDataProvider.GetPageContents();
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in pageContents)
             {
                 pageContentProvider.Create(item);
@@ -34,11 +34,12 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.NotNull(result.PageContentTranslation);
             Assert.NotNull(result.ContentType);
             Assert.NotNull(result.ContentType.ContentDataType);
-            Assert.NotNull(result.ContentType.ContentTypeProperties);
-            Assert.True(result.ContentType.ContentTypeProperties.Count > 0);
+            Assert.NotNull(result.ContentType.Properties);
+            Assert.True(result.ContentType.Properties.Count > 0);
             Assert.NotNull(result.ContentPermissions);
             Assert.True(result.ContentPermissions.Count > 0);
-            Assert.True(!string.IsNullOrEmpty(result.Properties));
+            Assert.NotNull(result.Properties);
+            Assert.True(result.Properties.Count>0);
             Assert.True(result.SortOrder > 0);
             Assert.NotEqual(result.ContainerId, Guid.Empty);
             Assert.True(result.CreatedDate > DateTime.MinValue);
@@ -54,7 +55,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
             var pageContents = TestDataProvider.GetPageContents();
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in pageContents)
             {
                 pageContentProvider.Create(item);
@@ -135,7 +136,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
             var pageContents = TestDataProvider.GetPageContents();
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in pageContents)
             {
                 pageContentProvider.Create(item);
@@ -155,11 +156,12 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.NotNull(resultItem.PageContentTranslation);
             Assert.NotNull(resultItem.ContentType);
             Assert.NotNull(resultItem.ContentType.ContentDataType);
-            Assert.NotNull(resultItem.ContentType.ContentTypeProperties);
-            Assert.True(resultItem.ContentType.ContentTypeProperties.Count > 0);
+            Assert.NotNull(resultItem.ContentType.Properties);
+            Assert.True(resultItem.ContentType.Properties.Count > 0);
             Assert.NotNull(resultItem.ContentPermissions);
             Assert.True(resultItem.ContentPermissions.Count > 0);
-            Assert.True(!string.IsNullOrEmpty(resultItem.Properties));
+            Assert.NotNull(resultItem.Properties);
+            Assert.True(resultItem.Properties.Count > 0);
             Assert.True(resultItem.SortOrder > 0);
             Assert.NotEqual(resultItem.ContainerId, Guid.Empty);
             Assert.True(resultItem.CreatedDate > DateTime.MinValue);
@@ -175,7 +177,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
             var pageContents = TestDataProvider.GetPageContents();
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in pageContents)
             {
                 pageContentProvider.Create(item);
@@ -196,7 +198,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
             var pageContents = TestDataProvider.GetPageContents();
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in pageContents)
             {
                 pageContentProvider.Create(item);
@@ -220,7 +222,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
             var pageContents = TestDataProvider.GetPageContents();
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in pageContents)
             {
                 pageContentProvider.Create(item);
@@ -241,7 +243,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
             var pageContents = TestDataProvider.GetPageContents();
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in pageContents)
             {
                 pageContentProvider.Create(item);
@@ -264,7 +266,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
             var pageContents = TestDataProvider.GetPageContents();
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in pageContents)
             {
                 pageContentProvider.Create(item);
@@ -283,7 +285,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageContents = TestDataProvider.GetPageContents();
             var pageContent = pageContents.First();
 
@@ -298,7 +300,8 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.NotNull(result.ContentType);
             Assert.NotNull(result.ContentPermissions);
             Assert.True(result.ContentPermissions.Count > 0);
-            Assert.True(!string.IsNullOrEmpty(result.Properties));
+            Assert.NotNull(result.Properties);
+            Assert.True(result.Properties.Count > 0);
             Assert.True(result.SortOrder > 0);
             Assert.NotEqual(result.ContainerId, Guid.Empty);
             Assert.True(result.CreatedDate > DateTime.MinValue);
@@ -313,7 +316,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageContents = TestDataProvider.GetPageContents();
             PageContent pageContent = null;
 
@@ -333,7 +336,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageContents = TestDataProvider.GetPageContents();
             var pageContentTranslation = pageContents.First().PageContentTranslation.First();
 
@@ -358,7 +361,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageContents = TestDataProvider.GetPageContents();
             PageContentTranslation pageContentTranslation = null;
 
@@ -379,7 +382,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
             var pageContents = TestDataProvider.GetPageContents(false);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in pageContents)
             {
                 item.ContentPermissions = null;
@@ -397,7 +400,8 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Assert            
             Assert.NotNull(result);
             Assert.NotEqual(result.Id, Guid.Empty);
-            Assert.True(!string.IsNullOrEmpty(result.Properties));
+            Assert.NotNull(result.Properties);
+            Assert.True(result.Properties.Count > 0);
             Assert.True(result.SortOrder > 0);
             Assert.NotEqual(result.ContainerId, Guid.Empty);
             Assert.True(result.CreatedDate > DateTime.MinValue);
@@ -413,7 +417,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageContents = TestDataProvider.GetPageContents();
             PageContent pageContent = null;
 
@@ -434,7 +438,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
             var pageContents = TestDataProvider.GetPageContents(false);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in pageContents)
             {
                 pageContentProvider.Create(item);
@@ -477,7 +481,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var contentPermissions = TestDataProvider.GetContentPermissions();
 
             //Act
@@ -496,7 +500,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             List<ContentPermission> contentPermissions = null;
 
             //Act
@@ -514,7 +518,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageContent = TestDataProvider.GetPageContents(false).First();
             pageContentProvider.Create(pageContent);
             var contentPermissions = TestDataProvider.GetContentPermissions();
@@ -543,7 +547,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageContent = TestDataProvider.GetPageContents(false).First();
             pageContentProvider.Create(pageContent);
             var contentPermissions = TestDataProvider.GetContentPermissions();
@@ -574,7 +578,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageContentProvider = new PageContentProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageContent = TestDataProvider.GetPageContents(false).First();
             pageContentProvider.Create(pageContent);
             var contentPermissions = TestDataProvider.GetContentPermissions();

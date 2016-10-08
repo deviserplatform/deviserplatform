@@ -1,5 +1,5 @@
 ﻿using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.TestCommon;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -16,7 +16,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             Page parentPage = pages.First();
             pages.Remove(parentPage);
@@ -57,7 +57,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             dbContext.Page.RemoveRange(dbContext.Page);
 
@@ -76,7 +76,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             var page = pages.First();
             pageProvider.CreatePage(page);
@@ -111,7 +111,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             var page = pages.First();
             dbContext.Page.RemoveRange(dbContext.Page);
@@ -129,7 +129,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             var page = pages.First();
 
@@ -162,7 +162,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             Page page = null;
 
             //Act
@@ -180,7 +180,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             var page = pages.First();
             pageProvider.CreatePage(page);
@@ -219,7 +219,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             var page = pages.First();
             pageProvider.CreatePage(page);
@@ -258,7 +258,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             var page = pages.First();
             var pagePermissions = page.PagePermissions;
@@ -297,7 +297,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             Page page = null;
 
             //Act
@@ -315,7 +315,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             Page parentPage = pages.First();
             pages.Remove(parentPage);
@@ -363,7 +363,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             Page parentPage = pages.First();
             pages.Remove(parentPage);
@@ -393,7 +393,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             var page = pages.First();
             var pagePermissions = page.PagePermissions;
@@ -428,7 +428,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             var page = pages.First();
             var pagePermissions = page.PagePermissions;
@@ -456,7 +456,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             var page = pages.First();
             var pagePermissions = page.PagePermissions;
@@ -489,7 +489,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             var page = pages.First();
             var pagePermissions = page.PagePermissions;
@@ -517,7 +517,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageModules = TestDataProvider.GetPageModules();
             var pageModule = pageModules.First();
             pageProvider.CreatePageModule(pageModule);
@@ -532,7 +532,6 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.NotNull(result);
             Assert.True(result.Count > 0);
             Assert.NotNull(resultPageModule);
-            Assert.NotNull(resultPageModule.Module);
             Assert.NotNull(resultPageModule.ModuleAction);
             Assert.NotNull(resultPageModule.ModulePermissions);
             Assert.True(resultPageModule.ModulePermissions.Count > 0);
@@ -550,7 +549,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageModules = TestDataProvider.GetPageModules();
             foreach (var pageModule in pageModules)
             {
@@ -574,7 +573,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageModules = TestDataProvider.GetPageModules();
             var pageModule = pageModules.First();
             pageProvider.CreatePageModule(pageModule);
@@ -602,7 +601,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageModules = TestDataProvider.GetPageModules();
             foreach (var pageModule in pageModules)
             {
@@ -625,7 +624,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageModules = TestDataProvider.GetPageModules();
             var pageModule = pageModules.First();
 
@@ -635,7 +634,6 @@ namespace Deviser.Core.Data.Test.DataProviders
 
             //Assert            
             Assert.NotNull(result);
-            Assert.NotNull(result.Module);
             Assert.NotNull(result.ModuleAction);
             Assert.NotNull(result.ModulePermissions);
             Assert.True(result.ModulePermissions.Count > 0);
@@ -653,7 +651,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageModules = TestDataProvider.GetPageModules();
             var pageModule = pageModules.First();
 
@@ -672,7 +670,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageModules = TestDataProvider.GetPageModules();
             var pageModule = pageModules.First();
             var pageModuleToUpdate = pageProvider.CreatePageModule(pageModule);
@@ -696,7 +694,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageModules = TestDataProvider.GetPageModules();
             var pageModule = pageModules.First();
 
@@ -715,7 +713,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageModules = TestDataProvider.GetPageModules();
             foreach(var pageModule in pageModules)
             {
@@ -755,7 +753,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pagePermissions = TestDataProvider.GetPagePermissions();
 
             //Act
@@ -774,7 +772,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             List<PagePermission> pagePermissions = null;
 
             //Act
@@ -792,7 +790,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var modulePermissions = TestDataProvider.GetModulePermissions();
 
             //Act
@@ -811,7 +809,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             List<ModulePermission> pagePermissions = null;
 
             //Act
@@ -829,7 +827,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageModule = TestDataProvider.GetPageModules().First();
             pageProvider.CreatePageModule(pageModule);
             var modulePermissions = TestDataProvider.GetModulePermissions();
@@ -858,7 +856,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageModule = TestDataProvider.GetPageModules().First();
             pageProvider.CreatePageModule(pageModule);
             var modulePermissions = TestDataProvider.GetModulePermissions();
@@ -890,7 +888,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var pageProvider = new PageProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageModule = TestDataProvider.GetPageModules().First();
             pageProvider.CreatePageModule(pageModule);
             var modulePermissions = TestDataProvider.GetModulePermissions();

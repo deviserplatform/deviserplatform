@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Deviser.Core.Data.DataProviders;
 using Autofac;
 using Microsoft.AspNetCore.Http;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 

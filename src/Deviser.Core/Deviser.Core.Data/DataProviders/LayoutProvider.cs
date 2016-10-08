@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Microsoft.Extensions.Logging;
 using Autofac;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.DataProviders
@@ -19,30 +20,30 @@ namespace Deviser.Core.Data.DataProviders
     public class LayoutProvider : DataProviderBase, ILayoutProvider
     {
         //Logger
-        private readonly ILogger<LayoutProvider> logger;
+        private readonly ILogger<LayoutProvider> _logger;
 
         //Constructor
         public LayoutProvider(ILifetimeScope container)
             :base(container)
         {
-            logger = container.Resolve<ILogger<LayoutProvider>>();
+            _logger = container.Resolve<ILogger<LayoutProvider>>();
         }
 
         public Layout CreateLayout(Layout layout)
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    Layout resultLayout;
-                    resultLayout = context.Layout.Add(layout).Entity;
+                    var dbLayout = Mapper.Map<Entities.Layout>(layout);
+                    var result = context.Layout.Add(dbLayout).Entity;
                     context.SaveChanges();
-                    return resultLayout;
+                    return Mapper.Map<Layout>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling creating layout", ex);
+                _logger.LogError("Error occured while calling creating layout", ex);
             }
             return null;
         }
@@ -51,17 +52,17 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    IEnumerable<Layout> returnData = context.Layout
+                    var result = context.Layout
                                .ToList();
 
-                    return new List<Layout>(returnData); 
+                    return Mapper.Map<List<Layout>>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting all layouts", ex);
+                _logger.LogError("Error occured while getting all layouts", ex);
             }
             return null;
         }
@@ -71,19 +72,17 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
 
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    Layout returnData = context.Layout
+                    var result = context.Layout
+                        .FirstOrDefault(e => e.Id == layoutId);
 
-                               .Where(e => e.Id == layoutId)
-                               .FirstOrDefault();
-
-                    return returnData; 
+                    return Mapper.Map<Layout>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting a layout", ex);
+                _logger.LogError("Error occured while getting a layout", ex);
             }
             return null;
         }
@@ -92,23 +91,23 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    Layout resultLayout;
-                    resultLayout = context.Layout.Attach(layout).Entity;
+                    var dbLayout = Mapper.Map<Entities.Layout>(layout);
+
+                    var result = context.Layout.Attach(dbLayout).Entity;
                     context.Entry(layout).State = EntityState.Modified;
 
                     context.SaveChanges();
-                    return resultLayout; 
+                    return Mapper.Map<Layout>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while updating layout", ex);
+                _logger.LogError("Error occured while updating layout", ex);
             }
             return null;
         }
-
     }
 
 }//End namespace

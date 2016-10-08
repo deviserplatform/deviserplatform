@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using Module = Deviser.Core.Data.Entities.Module;
+using Module = Deviser.Core.Common.DomainTypes.Module;
 using AutoMapper;
 
 namespace DeviserWI.Controllers.API

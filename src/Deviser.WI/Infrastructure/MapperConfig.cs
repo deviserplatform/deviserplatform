@@ -71,6 +71,7 @@ namespace Deviser.WI.Infrastructure
                 .ReverseMap()
                 .ForMember(dest => dest.Roles, opt => opt.Ignore());
 
+                config.CreateMap<SiteSetting, Core.Common.DomainTypes.SiteSetting>().ReverseMap();
 
             });
 

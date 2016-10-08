@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -10,34 +10,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Deviser.Core.Common.DomainTypes;
-using ContentResult = Deviser.Core.Common.DomainTypes.ContentResult;
-using Page = Deviser.Core.Data.Entities.Page;
-using Module = Deviser.Core.Data.Entities.Module;
-using PageModule = Deviser.Core.Data.Entities.PageModule;
-using ModuleAction = Deviser.Core.Data.Entities.ModuleAction;
 using Deviser.Core.Library.Services;
+using ContentResult = Deviser.Core.Common.DomainTypes.ContentResult;
+using Module = Deviser.Core.Common.DomainTypes.Module;
 
 namespace Deviser.Core.Library.Controllers
 {
     public class DeviserControllerFactory : IDeviserControllerFactory
     {
-        private readonly ILogger<DeviserControllerFactory> logger;
+        private readonly ILogger<DeviserControllerFactory> _logger;
 
-        private IPageProvider pageProvider;
-        private IModuleProvider moduleProvider;
-        private IActionSelector actionSelector;
-        private IModuleInvokerProvider moduleInvokerProvider;
-        private IScopeService scopeService;
+        private IPageProvider _pageProvider;
+        private readonly IModuleProvider _moduleProvider;
+        private readonly IActionSelector _actionSelector;
+        private readonly IModuleInvokerProvider _moduleInvokerProvider;
+        private readonly IScopeService _scopeService;
 
         public DeviserControllerFactory(ILifetimeScope container, IScopeService scopeService)
         {
-            logger = container.Resolve<ILogger<DeviserControllerFactory>>();
-            actionSelector = container.Resolve<IActionSelector>();
-            moduleInvokerProvider = container.Resolve<IModuleInvokerProvider>();
-            pageProvider = container.Resolve<IPageProvider>();
-            moduleProvider = container.Resolve<IModuleProvider>();
-            this.scopeService = scopeService;
+            _logger = container.Resolve<ILogger<DeviserControllerFactory>>();
+            _actionSelector = container.Resolve<IActionSelector>();
+            _moduleInvokerProvider = container.Resolve<IModuleInvokerProvider>();
+            _pageProvider = container.Resolve<IPageProvider>();
+            _moduleProvider = container.Resolve<IModuleProvider>();
+            this._scopeService = scopeService;
         }
 
         /// <summary>
@@ -48,13 +44,13 @@ namespace Deviser.Core.Library.Controllers
         public async Task<Dictionary<string, List<ContentResult>>> GetPageModuleResults(ActionContext actionContext, Guid pageId)
         {
             Dictionary<string, List<ContentResult>> actionResults = new Dictionary<string, List<ContentResult>>();
-            Page currentPage = scopeService.PageContext.CurrentPage;
+            Page currentPage = _scopeService.PageContext.CurrentPage;
             if (currentPage.PageModule != null && currentPage.PageModule.Count > 0)
             {
                 currentPage.PageModule = currentPage.PageModule.Where(pm => !pm.IsDeleted).ToList();
                 foreach (var pageModule in currentPage.PageModule)
                 {
-                    Module module = moduleProvider.Get(pageModule.ModuleId);
+                    Module module = _moduleProvider.Get(pageModule.ModuleId);
                     ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == pageModule.ModuleActionId);
                     ModuleContext moduleContext = new ModuleContext();
                     moduleContext.ModuleInfo = module;
@@ -92,7 +88,7 @@ namespace Deviser.Core.Library.Controllers
                                 Result = actionResult,
                                 SortOrder = pageModule.SortOrder
                             });
-                            logger.LogError("Module load exception has been occured", ex);
+                            _logger.LogError("Module load exception has been occured", ex);
                         }
                     }
                 }
@@ -106,7 +102,7 @@ namespace Deviser.Core.Library.Controllers
             string actionResult = string.Empty;
             try
             {                   
-                var module = moduleProvider.Get(pageModule.ModuleId);
+                var module = _moduleProvider.Get(pageModule.ModuleId);
                 ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleActionType
                 ModuleContext moduleContext = new ModuleContext();
                 moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleActionType
@@ -121,7 +117,7 @@ namespace Deviser.Core.Library.Controllers
             catch (Exception ex)
             {
                 actionResult = "Module load exception has been occured";
-                logger.LogError("Module load exception has been occured", ex);
+                _logger.LogError("Module load exception has been occured", ex);
             }
 
             return actionResult;
@@ -143,14 +139,14 @@ namespace Deviser.Core.Library.Controllers
             context.RouteData.PushState(actionContext.RouteData.Routers[0], null, null);
 
 
-            var actionDescriptions = actionSelector.SelectCandidates(context);
-            var actionDescriptor = actionSelector.SelectBestCandidate(context, actionDescriptions);
+            var actionDescriptions = _actionSelector.SelectCandidates(context);
+            var actionDescriptor = _actionSelector.SelectBestCandidate(context, actionDescriptions);
             if (actionDescriptor == null)
                 throw new NullReferenceException("Action cannot be located, please check whether module has been installed properly");
 
             var moduleActionContext = new ActionContext(actionContext.HttpContext, context.RouteData, actionDescriptor);
 
-            var invoker = moduleInvokerProvider.CreateInvoker(moduleActionContext);
+            var invoker = _moduleInvokerProvider.CreateInvoker(moduleActionContext);
             var result = await invoker.InvokeAction() as ViewResult;
             string strResult = result.ExecuteResultToString(moduleActionContext);
             return strResult;

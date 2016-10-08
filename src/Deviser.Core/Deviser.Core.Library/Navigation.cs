@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -8,13 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Deviser.Core.Common;
-using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Http;
 using Deviser.Core.Library.Sites;
 
-using Page = Deviser.Core.Data.Entities.Page;
-using PagePermission = Deviser.Core.Data.Entities.PagePermission;
-using PageTranslation = Deviser.Core.Data.Entities.PageTranslation;
 using Deviser.Core.Library.Services;
 using Deviser.Core.Library.Multilingual;
 

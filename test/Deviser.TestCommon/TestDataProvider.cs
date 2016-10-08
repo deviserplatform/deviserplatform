@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.TestCommon
 {
@@ -78,22 +78,13 @@ namespace Deviser.TestCommon
                 Label = "array"
             };
 
-            var contentTypeProperties = new List<ContentTypeProperty>();
-
-            contentTypeProperties.Add(new ContentTypeProperty
-            {
-                Id = Guid.NewGuid(),
-                Property = properties.First(),
-            });
-
             contentTypes.Add(new ContentType
             {
                 Id = Guid.NewGuid(),
                 Name = "Text",
                 Label = "Text",
                 ContentDataType = arrayType,
-                ContentTypeProperties = contentTypeProperties,
-                PageContents = null
+                Properties = properties
             });
             contentTypes.Add(new ContentType
             {
@@ -101,8 +92,7 @@ namespace Deviser.TestCommon
                 Name = "Image",
                 Label = "Image",
                 ContentDataType = objectType,
-                ContentTypeProperties = contentTypeProperties,
-                PageContents = null
+                Properties = properties
             });
             contentTypes.Add(new ContentType
             {
@@ -110,8 +100,7 @@ namespace Deviser.TestCommon
                 Name = "RichText",
                 Label = "Rich text",
                 ContentDataType = stringType,
-                ContentTypeProperties = contentTypeProperties,
-                PageContents = null
+                Properties = properties
             });
 
             return contentTypes;
@@ -436,7 +425,7 @@ namespace Deviser.TestCommon
                 ContainerId = Guid.NewGuid(),                
                 InheritViewPermissions = true,
                 InheritEditPermissions = true,
-                Module = module,
+                //Module = module,
                 ModuleAction = module.ModuleAction.First(),
                 ModulePermissions = new List<ModulePermission>()
                 {
@@ -458,7 +447,7 @@ namespace Deviser.TestCommon
                 ContainerId = Guid.NewGuid(),
                 InheritViewPermissions = true,
                 InheritEditPermissions = true,
-                Module = module,
+                //Module = module,
                 ModuleAction = module.ModuleAction.First(),
                 ModulePermissions = new List<ModulePermission>()
                 {
@@ -480,7 +469,7 @@ namespace Deviser.TestCommon
                 ContainerId = Guid.NewGuid(),
                 InheritViewPermissions = true,
                 InheritEditPermissions = true,
-                Module = module,
+                //Module = module,
                 ModuleAction = module.ModuleAction.First(),
                 ModulePermissions = new List<ModulePermission>()
                 {
@@ -504,6 +493,7 @@ namespace Deviser.TestCommon
             var pageContents = new List<PageContent>();
             var pageContentTranslations = new List<PageContentTranslation>();
             var contentPermissions = GetContentPermissions();
+            var properties = GetProperties();
 
             pageContentTranslations.Add(new PageContentTranslation
             {
@@ -534,7 +524,7 @@ namespace Deviser.TestCommon
                 ContainerId = containerId,
                 PageId = pageId,
                 ContentType = GetContentTypes().First(),
-                Properties = "{\"cssClass\":\"column1\"}",
+                Properties = properties,
                 SortOrder = 1,
                 ContentPermissions = (includeChild) ? contentPermissions : null,
             });
@@ -546,7 +536,7 @@ namespace Deviser.TestCommon
                 ContainerId = containerId,
                 PageId = pageId,
                 ContentType = GetContentTypes().First(),
-                Properties = "{\"cssClass\":\"column1\"}",
+                Properties = properties,
                 SortOrder = 2,
                 ContentPermissions = (includeChild) ? contentPermissions : null,
             });
@@ -558,7 +548,7 @@ namespace Deviser.TestCommon
                 ContainerId = containerId,
                 PageId = pageId,
                 ContentType = GetContentTypes().First(),
-                Properties = "{\"cssClass\":\"column1\"}",
+                Properties = properties,
                 SortOrder = 3,
                 ContentPermissions = (includeChild) ? contentPermissions : null,
             });
@@ -606,16 +596,38 @@ namespace Deviser.TestCommon
             return properties;
         }
 
+        public static List<PropertyOption> GetPropertyOptions()
+        {
+            var propertyOptions = new List<PropertyOption>();
+
+            propertyOptions.Add(new PropertyOption
+            {
+                Id = Guid.NewGuid(),
+                Name = "Yes",
+                Label = "Yes",
+            });
+
+            propertyOptions.Add(new PropertyOption
+            {
+                Id = Guid.NewGuid(),
+                Name = "No",
+                Label = "No",
+            });
+
+            return propertyOptions;
+        }
+
         public static List<PropertyOptionList> GetPropertyOptionLists()
         {
             var propertyOptionList = new List<PropertyOptionList>();
+            var propertyOptions = GetPropertyOptions();
 
             propertyOptionList.Add(new PropertyOptionList
             {
                 Id = Guid.NewGuid(),
                 Name = "YesNo",
                 Label = "Yes No",
-                List = "[{name:\"yes\"},{name:\"no\"}]"
+                List = propertyOptions
             });
 
             propertyOptionList.Add(new PropertyOptionList
@@ -623,7 +635,7 @@ namespace Deviser.TestCommon
                 Id = Guid.NewGuid(),
                 Name = "YesNoNa",
                 Label = "Yes No Na",
-                List = "[{name:\"yes\"},{name:\"no\"},{name:\"na\"}]"
+                List = propertyOptions
             });
 
             return propertyOptionList;
@@ -656,17 +668,17 @@ namespace Deviser.TestCommon
             roles.Add(new User()
             {
                 Id = Guid.NewGuid(),
-                UserName = "TestUser1"
+                Email = "user1@email.com"
             });
             roles.Add(new User()
             {
                 Id = Guid.NewGuid(),
-                UserName = "TestUser2"
+                Email = "user2@email.com"
             });
             roles.Add(new User()
             {
                 Id = Guid.NewGuid(),
-                UserName = "TestUser3"
+                Email = "user3@email.com"
             });
             return roles;
         }

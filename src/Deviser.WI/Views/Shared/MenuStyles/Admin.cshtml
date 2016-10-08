@@ -7,7 +7,7 @@
     Layout = null;
     var pageContext = scopeService.PageContext;
     var translation = Model.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
-    var siteRoot = pageContext.SiteSetting.SiteRoot;
+    var siteRoot = pageContext.SiteSettingInfo.SiteRoot;
 }
 
 @if (Model.PageLevel == 0)
@@ -24,7 +24,7 @@
         string activeClass = (page.IsActive || page.IsBreadCrumb) ? "active open" : "";
         if (translation != null)
         {
-            translation.URL = pageContext.SiteSetting.SiteRoot + translation.URL;
+            translation.URL = pageContext.SiteSettingInfo.SiteRoot + translation.URL;
             <li class=" @activeClass ">
                 <a href="#"> @translation.Name<span class="fa arrow"></span></a>
                 @if (page.ChildPage != null && page.ChildPage.Count > 0)

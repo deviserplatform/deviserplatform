@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Microsoft.Extensions.Logging;
 using Autofac;
+using AutoMapper;
 
 namespace Deviser.Core.Data.DataProviders
 {
@@ -18,13 +19,13 @@ namespace Deviser.Core.Data.DataProviders
     public class SiteSettingProvider : DataProviderBase, ISiteSettingProvider
     {
         //Logger
-        private readonly ILogger<LayoutProvider> logger;
+        private readonly ILogger<LayoutProvider> _logger;
 
         //Constructor
         public SiteSettingProvider(ILifetimeScope container)
             :base(container)
         {
-            logger = container.Resolve<ILogger<LayoutProvider>>();
+            _logger = container.Resolve<ILogger<LayoutProvider>>();
         }
 
         //Custom Field Declaration
@@ -32,15 +33,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    IEnumerable<SiteSetting> returnData = context.SiteSetting.ToList();
-                    return new List<SiteSetting>(returnData); 
+                    var result = context.SiteSetting.ToList();
+                    return Mapper.Map<List<SiteSetting>>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting GetSettings", ex);
+                _logger.LogError("Error occured while getting GetSettings", ex);
             }
             return null;
         }
@@ -49,7 +50,7 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
                     var setting = context.SiteSetting.FirstOrDefault(s=>s.SettingName==settingName);
                     if (setting != null)
@@ -58,7 +59,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting GetSettings", ex);
+                _logger.LogError("Error occured while getting GetSettings", ex);
             }
             return null;
         }
@@ -67,18 +68,19 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    context.SiteSetting.UpdateRange(settings);
+                    var dbSettings = Mapper.Map<List<Entities.SiteSetting>>(settings);
+                    context.SiteSetting.UpdateRange(dbSettings);
                     context.SaveChanges();
                     var result = context.SiteSetting.ToList();
                     if (result != null)
-                        return result;
+                        return Mapper.Map<List<SiteSetting>>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while updating settings", ex);
+                _logger.LogError("Error occured while updating settings", ex);
             }
             return null;
         }

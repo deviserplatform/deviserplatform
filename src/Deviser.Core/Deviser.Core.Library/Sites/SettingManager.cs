@@ -50,7 +50,7 @@ namespace Deviser.Core.Library.Sites
             return null;
         }
 
-        public SiteSetting GetSiteSetting()
+        public SiteSettingInfo GetSiteSetting()
         {
             try
             {
@@ -63,7 +63,7 @@ namespace Deviser.Core.Library.Sites
                 var strRedirectAfterLogout = settings.First(s => s.SettingName == "RedirectAfterLogout").SettingValue;
                 var strRegistrationPageId = settings.First(s => s.SettingName == "RegistrationPageId").SettingValue;
                 var strDefaultLayoutId = settings.First(s => s.SettingName == "DefaultLayoutId").SettingValue;
-                var result = new SiteSetting()
+                var result = new SiteSettingInfo()
                 {
                     DefaultAdminLayoutId = string.IsNullOrEmpty(strDefaultAdminLayoutId) ? Guid.Parse(strDefaultAdminLayoutId) : Guid.Empty,
                     DefaultLayoutId = !string.IsNullOrEmpty(strDefaultLayoutId) ? Guid.Parse(strDefaultLayoutId) : Guid.Empty,

@@ -1,53 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Microsoft.Extensions.Logging;
 using Autofac;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.DataProviders
 {
     public interface ILanguageProvider
     {
-        Language CreateLanguage(Language language);
+        Language CreateLanguage(Language dbLanguage);
         List<Language> GetLanguages();
         List<Language> GetActiveLanguages();
         Language GetLanguage(Guid languageId);
         bool IsMultilingual();
-        Language UpdateLanguage(Language language);        
+        Language UpdateLanguage(Language dbLanguage);        
     }
 
     public class LanguageProvider : DataProviderBase, ILanguageProvider
     {
         //Logger
-        private readonly ILogger<LanguageProvider> logger;
+        private readonly ILogger<LanguageProvider> _logger;
 
         //Constructor
         public LanguageProvider(ILifetimeScope container)
             :base(container)
         {            
-            logger = container.Resolve<ILogger<LanguageProvider>>();
+            _logger = container.Resolve<ILogger<LanguageProvider>>();
         }
 
         public Language CreateLanguage(Language language)
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    Language resultLayout;
-                    language.CreatedDate = language.LastModifiedDate = DateTime.Now;
-                    language.IsActive = true;
+                    var dbLanguage = Mapper.Map<Entities.Language>(language);
+                    dbLanguage.CreatedDate = dbLanguage.LastModifiedDate = DateTime.Now;
+                    dbLanguage.IsActive = true;
 
-                    resultLayout = context.Language.Add(language).Entity;
+                    var result = context.Language.Add(dbLanguage).Entity;
                     context.SaveChanges();
-                    return resultLayout;
+                    return Mapper.Map<Language>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while creating Language", ex);
+                _logger.LogError("Error occured while creating Language", ex);
             }
             return null;
         }
@@ -57,17 +58,17 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    IEnumerable<Language> returnData = context.Language
+                    var result = context.Language
                                 .ToList();
 
-                    return new List<Language>(returnData); 
+                    return Mapper.Map<List<Language>>(result); 
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting Language", ex);
+                _logger.LogError("Error occured while getting Language", ex);
             }
             return null;
         }
@@ -76,19 +77,18 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    IEnumerable<Language> returnData = context.Language
-                        .Where(l=>l.IsActive)
-                        .ToList();
+                    var result = context.Language
+                        .Where(l => l.IsActive)
+                                .ToList();
 
-                    return new List<Language>(returnData);
+                    return Mapper.Map<List<Language>>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting active languages", ex);
-                throw ex;
+                _logger.LogError("Error occured while getting active languages", ex);
             }
             return null;
         }
@@ -97,18 +97,17 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    Language returnData = context.Language
-                              .Where(e => e.Id == languageId)
-                              .FirstOrDefault();
+                    var result = context.Language
+                        .FirstOrDefault(e => e.Id == languageId);
 
-                    return returnData; 
+                    return Mapper.Map<Language>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting Language", ex);
+                _logger.LogError("Error occured while getting Language", ex);
             }
             return null;
         }
@@ -123,18 +122,18 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    Language resultLayout;
-                    resultLayout = context.Language.Attach(language).Entity;
-                    context.Entry(language).State = EntityState.Modified;
+                    var dbLanguage = Mapper.Map<Entities.Language>(language);
+                    var result = context.Language.Attach(dbLanguage).Entity;
+                    context.Entry(dbLanguage).State = EntityState.Modified;
                     context.SaveChanges();
-                    return resultLayout;
+                    return Mapper.Map<Language>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while updating Language", ex);
+                _logger.LogError("Error occured while updating Language", ex);
             }
             return null;
         }

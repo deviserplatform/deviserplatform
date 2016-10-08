@@ -1,5 +1,5 @@
 ﻿using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.TestCommon;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -48,7 +48,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var layoutProvider = new LayoutProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var layouts = TestDataProvider.GetLayouts();
             foreach (var item in layouts)
             {
@@ -71,7 +71,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var layoutProvider = new LayoutProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             dbContext.Layout.RemoveRange(dbContext.Layout);
 
             //Act
@@ -87,7 +87,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var layoutProvider = new LayoutProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var layouts = TestDataProvider.GetLayouts();
             foreach (var item in layouts)
             {
@@ -113,7 +113,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var layoutProvider = new LayoutProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var layouts = TestDataProvider.GetLayouts();
             foreach (var item in layouts)
             {
@@ -136,7 +136,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var layoutProvider = new LayoutProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var layouts = TestDataProvider.GetLayouts();
             foreach (var item in layouts)
             {
@@ -167,7 +167,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var layoutProvider = new LayoutProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var layouts = TestDataProvider.GetLayouts();
             foreach (var item in layouts)
             {

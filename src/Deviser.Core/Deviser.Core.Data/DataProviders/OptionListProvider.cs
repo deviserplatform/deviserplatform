@@ -1,51 +1,51 @@
 ﻿using Autofac;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
 
 namespace Deviser.Core.Data.DataProviders
 {
     public interface IOptionListProvider
     {
-        PropertyOptionList CreateOptionList(PropertyOptionList optionList);
+        PropertyOptionList CreateOptionList(PropertyOptionList dbPropertyOptionList);
         List<PropertyOptionList> GetOptionLists();
         PropertyOptionList GetOptionList(Guid optionListId);
         PropertyOptionList GetOptionList(string listName);
-        PropertyOptionList UpdateOptionList(PropertyOptionList contentType);
+        PropertyOptionList UpdateOptionList(PropertyOptionList dbContentType);
     }
 
     public class OptionListProvider : DataProviderBase, IOptionListProvider
     {
         //Logger
-        private readonly ILogger<OptionListProvider> logger;
+        private readonly ILogger<OptionListProvider> _logger;
 
         //Constructor
         public OptionListProvider(ILifetimeScope container)
             :base(container)
         {
-            logger = container.Resolve<ILogger<OptionListProvider>>();
+            _logger = container.Resolve<ILogger<OptionListProvider>>();
         }
 
-        public PropertyOptionList CreateOptionList(PropertyOptionList optionList)
+        public PropertyOptionList CreateOptionList(PropertyOptionList propertyOptionList)
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    PropertyOptionList result;
-                    optionList.CreatedDate = optionList.LastModifiedDate = DateTime.Now;
-                    result = context.PropertyOptionList.Add(optionList).Entity;
+                    var dbPropertyOptionList = Mapper.Map<Entities.PropertyOptionList>(propertyOptionList);
+                    dbPropertyOptionList.CreatedDate = dbPropertyOptionList.LastModifiedDate = DateTime.Now;
+                    var result = context.PropertyOptionList.Add(dbPropertyOptionList).Entity;
                     context.SaveChanges();
-                    return result;
+                    return Mapper.Map<PropertyOptionList>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while creating PropertyOptionList", ex);
+                _logger.LogError("Error occured while creating PropertyOptionList", ex);
             }
             return null;
         }
@@ -54,15 +54,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var returnData = context.PropertyOptionList.ToList();
-                    return returnData;
+                    var result = context.PropertyOptionList.ToList();
+                    return Mapper.Map<List<PropertyOptionList>>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting PropertyOptionList", ex);
+                _logger.LogError("Error occured while getting PropertyOptionList", ex);
             }
             return null;
         }
@@ -72,16 +72,16 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
 
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var returnData = context.PropertyOptionList.Where(e => e.Id == optionListId)
-                               .FirstOrDefault();
-                    return returnData;
+                    var result = context.PropertyOptionList
+                               .FirstOrDefault(e => e.Id == optionListId);
+                    return Mapper.Map<PropertyOptionList>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting PropertyOptionList by id", ex);
+                _logger.LogError("Error occured while getting PropertyOptionList by id", ex);
             }
             return null;
         }
@@ -91,38 +91,40 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
 
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var returnData = context.PropertyOptionList.Where(e => e.Name.ToLower() == listName.ToLower())
-                               .FirstOrDefault();
-                    return returnData;
+                    var result = context.PropertyOptionList
+                               .FirstOrDefault(e => e.Name.ToLower() == listName.ToLower());
+                    return Mapper.Map<PropertyOptionList>(result);
                 }
             }
+
+
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting PropertyOptionList by id", ex);
+                _logger.LogError("Error occured while getting PropertyOptionList by id", ex);
             }
             return null;
         }
         
 
-        public PropertyOptionList UpdateOptionList(PropertyOptionList contentType)
+        public PropertyOptionList UpdateOptionList(PropertyOptionList propertyOptionList)
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    PropertyOptionList result;
-                    contentType.LastModifiedDate = DateTime.Now;
-                    result = context.PropertyOptionList.Attach(contentType).Entity;
-                    context.Entry(contentType).State = EntityState.Modified;
+                    var dbPropertyOptionList = Mapper.Map<Entities.PropertyOptionList>(propertyOptionList);
+                    dbPropertyOptionList.LastModifiedDate = DateTime.Now;
+                    var result = context.PropertyOptionList.Attach(dbPropertyOptionList).Entity;
+                    context.Entry(dbPropertyOptionList).State = EntityState.Modified;
                     context.SaveChanges();
-                    return result;
+                    return Mapper.Map<PropertyOptionList>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while updating PropertyOptionList", ex);
+                _logger.LogError("Error occured while updating PropertyOptionList", ex);
             }
             return null;
         }

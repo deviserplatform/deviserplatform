@@ -12,8 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Deviser.Core.Library;
-using Deviser.Core.Data.Entities;
-using Role = Deviser.Core.Common.DomainTypes.Role;
 
 namespace Deviser.WI.Controllers.Api
 {
@@ -42,24 +40,24 @@ namespace Deviser.WI.Controllers.Api
                 var users = userProvider.GetUsers();
                 if (users != null)
                 {
-                    List<Deviser.Core.Common.DomainTypes.User> result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.User>>(users);
-                    //Roles workarround
-                    foreach (var user in users)
-                    {
-                        if (user.Roles != null && user.Roles.Count > 0)
-                        {
-                            var targetUser = result.First(u => u.Id == user.Id);
-                            targetUser.Roles = new List<Role>();
-                            foreach (var userRole in user.Roles)
-                            {
-                                if (userRole != null)
-                                {
-                                    var role = roleProvider.GetRole(userRole.RoleId);
-                                    targetUser.Roles.Add(Mapper.Map<Role>(role));
-                                }
-                            }
-                        }
-                    }
+                    var result = users;
+                    ////Roles workarround
+                    //foreach (var user in users)
+                    //{
+                    //    if (user.Roles != null && user.Roles.Count > 0)
+                    //    {
+                    //        var targetUser = result.First(u => u.Id == user.Id);
+                    //        targetUser.Roles = new List<Role>();
+                    //        foreach (var userRole in user.Roles)
+                    //        {
+                    //            if (userRole != null)
+                    //            {
+                    //                var role = roleProvider.GetRole(userRole.RoleId);
+                    //                targetUser.Roles.Add(Mapper.Map<Role>(role));
+                    //            }
+                    //        }
+                    //    }
+                    //}
                     return Ok(result);
                 }
                 return NotFound();
@@ -208,8 +206,7 @@ namespace Deviser.WI.Controllers.Api
                     if (result.Succeeded)
                     {
                         var resultUser = userProvider.GetUser(userId); //userManager.Users.FirstOrDefault(u => u.Id == userId);
-                        var userDTO = ConvertToUserDTO(resultUser); 
-                        return Ok(userDTO);
+                        return Ok(resultUser);
                     }
                 }
                 return BadRequest();
@@ -233,8 +230,7 @@ namespace Deviser.WI.Controllers.Api
                     if (result.Succeeded)
                     {
                         var resultUser = userProvider.GetUser(userId);
-                        var userDTO = ConvertToUserDTO(resultUser);
-                        return Ok(userDTO);
+                        return Ok(resultUser);
                     }
                 }
 
@@ -247,23 +243,23 @@ namespace Deviser.WI.Controllers.Api
             }
         }
 
-        private Core.Common.DomainTypes.User ConvertToUserDTO(Core.Data.Entities.User user)
-        {
-            var userDTO = Mapper.Map<Core.Common.DomainTypes.User>(user);
-            if (user.Roles != null && user.Roles.Count > 0)
-            {
-                userDTO.Roles = new List<Role>();
-                foreach (var userRole in user.Roles)
-                {
-                    if (userRole != null)
-                    {
-                        var role = roleProvider.GetRole(userRole.RoleId);
-                        userDTO.Roles.Add(Mapper.Map<Role>(role));
-                    }
+        //private Core.Common.DomainTypes.User ConvertToUserDTO(Core.Data.Entities.User user)
+        //{
+        //    var userDTO = Mapper.Map<Core.Common.DomainTypes.User>(user);
+        //    if (user.Roles != null && user.Roles.Count > 0)
+        //    {
+        //        userDTO.Roles = new List<Role>();
+        //        foreach (var userRole in user.Roles)
+        //        {
+        //            if (userRole != null)
+        //            {
+        //                var role = roleProvider.GetRole(userRole.RoleId);
+        //                userDTO.Roles.Add(Mapper.Map<Role>(role));
+        //            }
 
-                }
-            }
-            return userDTO;
-        }
+        //        }
+        //    }
+        //    return userDTO;
+        //}
     }
 }

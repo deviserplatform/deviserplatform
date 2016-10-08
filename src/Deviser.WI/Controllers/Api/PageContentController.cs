@@ -78,7 +78,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dataResult = contentManager.AddOrUpdatePageContent(Mapper.Map<Deviser.Core.Data.Entities.PageContent>(pageContent));
+                var dataResult = contentManager.AddOrUpdatePageContent(pageContent);
                 var result = Mapper.Map<PageContent>(dataResult);
                 if (result != null)
                     return Ok(result);
@@ -96,7 +96,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dataResult = contentManager.AddOrUpdatePageContent(Mapper.Map<Deviser.Core.Data.Entities.PageContent>(pageContent));
+                var dataResult = contentManager.AddOrUpdatePageContent(pageContent);
                 var result = Mapper.Map<PageContent>(dataResult);
                 if (result != null)
                     return Ok(result);
@@ -118,8 +118,7 @@ namespace DeviserWI.Controllers.API
                 if (pageContents == null || pageContents.Count() == 0)
                     return BadRequest();
 
-                var dataPageContent = Mapper.Map<IEnumerable<Deviser.Core.Data.Entities.PageContent>>(pageContents);
-                contentManager.AddOrUpdatePageContents(new List<Deviser.Core.Data.Entities.PageContent>(dataPageContent));
+                contentManager.AddOrUpdatePageContents(new List<PageContent>(pageContents));
                 return Ok();
             }
             catch (Exception ex)
@@ -138,7 +137,7 @@ namespace DeviserWI.Controllers.API
                 if (pageContent == null || pageContent.ContentPermissions ==null || pageContent.ContentPermissions.Count() == 0)
                     return BadRequest();
                 
-                contentManager.UpdateContentPermission(Mapper.Map<Deviser.Core.Data.Entities.PageContent>(pageContent));
+                contentManager.UpdateContentPermission(Mapper.Map<PageContent>(pageContent));
                 return Ok();
             }
             catch (Exception ex)

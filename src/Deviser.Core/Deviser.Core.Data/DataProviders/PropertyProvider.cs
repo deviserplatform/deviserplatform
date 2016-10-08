@@ -1,48 +1,50 @@
 ﻿using Autofac;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
+
 namespace Deviser.Core.Data.DataProviders
 {
     public interface IPropertyProvider
     {
-        Property CreateProperty(Property property);
+        Property CreateProperty(Property dbProperty);
         List<Property> GetProperties();
         Property GetProperty(Guid propertyId);
-        Property UpdateProperty(Property property);
+        Property UpdateProperty(Property dbProperty);
     }
 
     public class PropertyProvider : DataProviderBase, IPropertyProvider
     {
         //Logger
-        private readonly ILogger<PropertyProvider> logger;
+        private readonly ILogger<PropertyProvider> _logger;
 
         //Constructor
         public PropertyProvider(ILifetimeScope container)
             :base(container)
         {
-            logger = container.Resolve<ILogger<PropertyProvider>>();
+            _logger = container.Resolve<ILogger<PropertyProvider>>();
         }
 
         public Property CreateProperty(Property property)
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    Property result;
-                    property.CreatedDate = property.LastModifiedDate = DateTime.Now;
-                    result = context.Property.Add(property).Entity;
+                    var dbProperty = Mapper.Map<Entities.Property>(property);
+                    dbProperty.CreatedDate = dbProperty.LastModifiedDate = DateTime.Now;
+                    var result = context.Property.Add(dbProperty).Entity;
                     context.SaveChanges();
-                    return result;
+                    return Mapper.Map<Property>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while creating a property", ex);
+                _logger.LogError("Error occured while creating a property", ex);
             }
             return null;
         }
@@ -51,18 +53,17 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var returnData = context.Property.Where(e => e.Id == propertyId)
+                    var result = context.Property.Where(e => e.Id == propertyId)
                         .Include(p=>p.PropertyOptionList)
                                .FirstOrDefault();
-                    return returnData;
+                    return Mapper.Map<Property>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting Property by id", ex);
+                _logger.LogError("Error occured while getting Property by id", ex);
             }
             return null;
         }
@@ -71,17 +72,17 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var returnData = context.Property
+                    var result = context.Property
                         .Include(p => p.PropertyOptionList)
                         .ToList();
-                    return returnData;
+                    return Mapper.Map<List<Property>>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting Properties", ex);
+                _logger.LogError("Error occured while getting Properties", ex);
             }
             return null;
         }
@@ -90,19 +91,19 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    Property result;
+                    var dbProperty = Mapper.Map<Entities.Property>(property);
                     //property.LastModifiedDate = DateTime.Now;
-                    result = context.Property.Attach(property).Entity;
-                    context.Entry(property).State = EntityState.Modified;
+                    var result = context.Property.Attach(dbProperty).Entity;
+                    context.Entry(dbProperty).State = EntityState.Modified;
                     context.SaveChanges();
-                    return result;
+                    return Mapper.Map<Property>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while updating PropertyOptionList", ex);
+                _logger.LogError("Error occured while updating PropertyOptionList", ex);
             }
             return null;
         }

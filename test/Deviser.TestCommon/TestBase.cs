@@ -1,12 +1,14 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.WI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Deviser.Core.Data;
+using Deviser.Core.Data.Entities;
 using Xunit;
 
 namespace Deviser.TestCommon
@@ -23,7 +25,7 @@ namespace Deviser.TestCommon
             var services = new ServiceCollection();
             services.AddOptions();
             services
-                .AddDbContext<DeviserDBContext>(b => b.UseInMemoryDatabase().UseInternalServiceProvider(efServiceProvider));
+                .AddDbContext<DeviserDbContext>(b => b.UseInMemoryDatabase().UseInternalServiceProvider(efServiceProvider));
 
             //services.AddIdentity<User, Role>()
             //        .AddEntityFrameworkStores<DeviserDBContext>();

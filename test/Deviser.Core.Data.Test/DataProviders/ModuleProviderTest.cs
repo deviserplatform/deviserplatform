@@ -1,5 +1,5 @@
 ﻿using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Deviser.TestCommon;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -16,7 +16,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var moduleProvider = new ModuleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var modules = TestDataProvider.GetModules();
             var module = modules.First();
 
@@ -96,7 +96,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var moduleProvider = new ModuleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var modules = TestDataProvider.GetModules();
             foreach (var item in modules)
             {
@@ -131,7 +131,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var moduleProvider = new ModuleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             dbContext.Module.RemoveRange(dbContext.Module);
 
             //Act
@@ -179,7 +179,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var moduleProvider = new ModuleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             dbContext.ModuleAction.RemoveRange(dbContext.ModuleAction);
 
             //Act
@@ -195,7 +195,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var moduleProvider = new ModuleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var modules = TestDataProvider.GetModules();
             foreach (var item in modules)
             {
@@ -229,7 +229,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var moduleProvider = new ModuleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var modules = TestDataProvider.GetModules();
             foreach (var item in modules)
             {
@@ -253,7 +253,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var moduleProvider = new ModuleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var modules = TestDataProvider.GetModules();
             foreach (var item in modules)
             {
@@ -286,7 +286,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         public void GetModuleFail()
         {//Arrange
             var moduleProvider = new ModuleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var modules = TestDataProvider.GetModules();
             foreach (var item in modules)
             {
@@ -308,7 +308,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var moduleProvider = new ModuleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var modules = TestDataProvider.GetModules();
             foreach (var item in modules)
             {
@@ -334,7 +334,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var moduleProvider = new ModuleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDBContext>();
+            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var modules = TestDataProvider.GetModules();
             foreach (var item in modules)
             {

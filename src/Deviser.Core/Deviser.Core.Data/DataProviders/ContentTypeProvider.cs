@@ -1,11 +1,13 @@
 ﻿using Autofac;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace Deviser.Core.Data.DataProviders
 {
@@ -14,9 +16,9 @@ namespace Deviser.Core.Data.DataProviders
         List<ContentType> GetContentTypes();
         List<ContentDataType> GetContentDataTypes();
         ContentType GetContentType(Guid contentTypeId);
-        ContentType CreateContentType(ContentType contentType);
+        ContentType CreateContentType(ContentType dbContentType);
         ContentType GetContentType(string contentTypeName);
-        ContentType UpdateContentType(ContentType contentType);
+        ContentType UpdateContentType(ContentType dbContentType);
 
     }
 
@@ -26,13 +28,13 @@ namespace Deviser.Core.Data.DataProviders
     public class ContentTypeProvider : DataProviderBase, IContentTypeProvider
     {
         //Logger
-        private readonly ILogger<ContentTypeProvider> logger;
+        private readonly ILogger<ContentTypeProvider> _logger;
 
         //Constructor
         public ContentTypeProvider(ILifetimeScope container)
             : base(container)
         {
-            logger = container.Resolve<ILogger<ContentTypeProvider>>();
+            _logger = container.Resolve<ILogger<ContentTypeProvider>>();
         }
 
         /// <summary>
@@ -44,27 +46,27 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    ContentType result;
-                    contentType.Id = Guid.NewGuid();
-                    contentType.ContentDataType = null;
-                    if (contentType.ContentTypeProperties!=null && contentType.ContentTypeProperties.Count > 0)
+                    var dbContentType = Mapper.Map<Entities.ContentType>(contentType);
+                    dbContentType.Id = Guid.NewGuid();
+                    dbContentType.ContentDataType = null;
+                    if (dbContentType.ContentTypeProperties!=null && dbContentType.ContentTypeProperties.Count > 0)
                     {
-                        foreach(var ctp in contentType.ContentTypeProperties)
+                        foreach(var ctp in dbContentType.ContentTypeProperties)
                         {
-                            ctp.ConentTypeId = contentType.Id;
+                            ctp.ConentTypeId = dbContentType.Id;
                         }
                     }
-                    contentType.CreatedDate = contentType.LastModifiedDate = DateTime.Now;
-                    result = context.ContentType.Add(contentType).Entity;
+                    dbContentType.CreatedDate = dbContentType.LastModifiedDate = DateTime.Now;
+                    var result = context.ContentType.Add(dbContentType).Entity;
                     context.SaveChanges();
-                    return result;
+                    return Mapper.Map<ContentType>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while creating ContentType", ex);
+                _logger.LogError("Error occured while creating ContentType", ex);
             }
             return null;
         }
@@ -79,18 +81,17 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
 
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var returnData = context.ContentType
-                               .Where(e => e.Id == contentTypeId)
-                               .FirstOrDefault();
+                    var result = context.ContentType
+                               .FirstOrDefault(e => e.Id == contentTypeId);
 
-                    return returnData;
+                    return Mapper.Map<ContentType>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting ContentType by id", ex);
+                _logger.LogError("Error occured while getting ContentType by id", ex);
             }
             return null;
         }
@@ -103,18 +104,17 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var returnData = context.ContentDataType
+                    var result = context.ContentDataType
                         .OrderBy(cd=>cd.Name)
                         .ToList();
-
-                    return returnData;
+                    return Mapper.Map<List<ContentDataType>>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting ContentDataTypes", ex);
+                _logger.LogError("Error occured while getting ContentDataTypes", ex);
             }
             return null;
         }
@@ -129,19 +129,19 @@ namespace Deviser.Core.Data.DataProviders
             try
             {
 
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var returnData = context.ContentType
-                               .Where(e => e.Name.ToLower() == contentTypeName.ToLower())
+                    var result = context.ContentType
+                               .Where(e => String.Equals(e.Name, contentTypeName, StringComparison.CurrentCultureIgnoreCase))
                                .OrderBy(ct => ct.Name)
                                .FirstOrDefault();
 
-                    return returnData;
+                    return Mapper.Map<ContentType>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting ContentType by id", ex);
+                _logger.LogError("Error occured while getting ContentType by id", ex);
             }
             return null;
         }
@@ -154,19 +154,19 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var returnData = context.ContentType
+                    var result = context.ContentType
                         .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.PropertyOptionList)
                         .Include(c => c.ContentDataType)
                         .OrderBy(c=>c.Name)
                         .ToList();
-                    return new List<ContentType>(returnData);
+                    return Mapper.Map<List<ContentType>>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting all ContentTypes", ex);
+                _logger.LogError("Error occured while getting all ContentTypes", ex);
             }
             return null;
         }
@@ -181,21 +181,23 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    if (contentType.ContentTypeProperties != null && contentType.ContentTypeProperties.Count > 0)
+                    var dbContentType = Mapper.Map<Entities.ContentType>(contentType);
+
+                    if (dbContentType.ContentTypeProperties != null && dbContentType.ContentTypeProperties.Count > 0)
                     {
 
-                        var toRemoveFromClient = contentType.ContentTypeProperties.Where(clientProp => context.ContentTypeProperty.Any(dbProp =>
+                        var toRemoveFromClient = dbContentType.ContentTypeProperties.Where(clientProp => context.ContentTypeProperty.Any(dbProp =>
                          clientProp.ConentTypeId == dbProp.ConentTypeId && clientProp.PropertyId == dbProp.PropertyId)).ToList();
 
-                        var currentTypeProperties = context.ContentTypeProperty.Where(ctp => ctp.ConentTypeId == contentType.Id).ToList();
+                        var currentTypeProperties = context.ContentTypeProperty.Where(ctp => ctp.ConentTypeId == dbContentType.Id).ToList();
 
-                        List<ContentTypeProperty> toRemoveFromDb = null;
+                        List<Entities.ContentTypeProperty> toRemoveFromDb = null;
 
                         if (currentTypeProperties != null && currentTypeProperties.Count > 0)
                         {
-                            toRemoveFromDb = currentTypeProperties.Where(dbProp => !contentType.ContentTypeProperties.Any(clientProp => dbProp.PropertyId == clientProp.PropertyId)).ToList();
+                            toRemoveFromDb = currentTypeProperties.Where(dbProp => !dbContentType.ContentTypeProperties.Any(clientProp => dbProp.PropertyId == clientProp.PropertyId)).ToList();
                         }
 
                         if (toRemoveFromClient != null && toRemoveFromClient.Count > 0)
@@ -203,7 +205,7 @@ namespace Deviser.Core.Data.DataProviders
                             foreach (var contentTypeProp in toRemoveFromClient)
                             {
                                 //ContentTypeProperty exist in db, therefore remove it from contentType (client source)
-                                contentType.ContentTypeProperties.Remove(contentTypeProp);
+                                dbContentType.ContentTypeProperties.Remove(contentTypeProp);
                             }
                         }
 
@@ -214,17 +216,17 @@ namespace Deviser.Core.Data.DataProviders
                         }
                     }
 
-                    ContentType result;
-                    contentType.LastModifiedDate = DateTime.Now;
-                    result = context.ContentType.Attach(contentType).Entity;
-                    context.Entry(contentType).State = EntityState.Modified;
+                    
+                    dbContentType.LastModifiedDate = DateTime.Now;
+                    var result = context.ContentType.Attach(dbContentType).Entity;
+                    context.Entry(dbContentType).State = EntityState.Modified;
                     context.SaveChanges();
-                    return result;
+                    return Mapper.Map<ContentType>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while updating ContentType", ex);
+                _logger.LogError("Error occured while updating ContentType", ex);
             }
             return null;
         }

@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using Microsoft.Extensions.Logging;
 using Autofac;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.DataProviders
@@ -19,13 +20,13 @@ namespace Deviser.Core.Data.DataProviders
     public class UserProvider : DataProviderBase, IUserProvider
     {
         //Logger
-        private readonly ILogger<LayoutProvider> logger;
+        private readonly ILogger<LayoutProvider> _logger;
 
         //Constructor
         public UserProvider(ILifetimeScope container)
             :base(container)
         {
-            logger = container.Resolve<ILogger<LayoutProvider>>();
+            _logger = container.Resolve<ILogger<LayoutProvider>>();
         }
 
         //Custom Field Declaration
@@ -33,17 +34,17 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    IEnumerable<User> returnData = context.Users
+                    var result = context.Users
                                 .Include(u => u.Roles)
                                 .ToList();
-                    return new List<User>(returnData); 
+                    return Mapper.Map<List<User>>(result); 
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting GetUsers", ex);
+                _logger.LogError("Error occured while getting GetUsers", ex);
             }
             return null;
         }
@@ -52,18 +53,18 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDBContext(dbOptions))
+                using (var context = new DeviserDbContext(DbOptions))
                 {
-                    User returnData = context.Users
+                    var result = context.Users
                                .Where(e => e.Id == userId)
                                .Include(u => u.Roles)
                                .FirstOrDefault();
-                    return returnData; 
+                    return Mapper.Map<User>(result);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling GetUser", ex);
+                _logger.LogError("Error occured while calling GetUser", ex);
             }
             return null;
         }

@@ -59,7 +59,7 @@ namespace Deviser.WI.Controllers.Api
                 if (optionListProvider.GetOptionList(optionList.Name) != null)
                     return BadRequest("Option list already exist");
 
-                var dbResult = optionListProvider.CreateOptionList(Mapper.Map<Deviser.Core.Data.Entities.PropertyOptionList>(optionList));
+                var dbResult = optionListProvider.CreateOptionList(optionList);
                 var result = Mapper.Map<Deviser.Core.Common.DomainTypes.PropertyOptionList>(dbResult);
                 if (result != null)
                     return Ok(result);
@@ -77,7 +77,7 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var dbResult = optionListProvider.UpdateOptionList(Mapper.Map<Deviser.Core.Data.Entities.PropertyOptionList>(contentType));
+                var dbResult = optionListProvider.UpdateOptionList(contentType);
                 var result = Mapper.Map<Deviser.Core.Common.DomainTypes.PropertyOptionList>(dbResult);
                 if (result != null)
                     return Ok(result);

@@ -51,8 +51,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dbResult = roleProvider.GetRole(id);
-                var result = ConvertToDomainType(dbResult);
+                var result = roleProvider.GetRole(id);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -69,8 +68,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dbResult = roleProvider.CreateRole(ConvertToDbType(role));
-                var result = ConvertToDomainType(dbResult);
+                var result = roleProvider.CreateRole(role);
                 if (result != null)
                     return Ok(result);
                 return BadRequest("Invalid role");
@@ -89,8 +87,7 @@ namespace DeviserWI.Controllers.API
             {
                 if (role != null)
                 {
-                    var dbResult = roleProvider.UpdateRole(ConvertToDbType(role));
-                    var result = ConvertToDomainType(dbResult);
+                    var result = roleProvider.UpdateRole(role);
                     if (result != null)
                         return Ok(result);
                 }
@@ -111,8 +108,7 @@ namespace DeviserWI.Controllers.API
             {
                 if (id!= Guid.Empty)
                 {
-                    var dbResult = roleProvider.DeleteRole(id);
-                    var result = ConvertToDomainType(dbResult);
+                    var result = roleProvider.DeleteRole(id);
                     if (result != null)
                         return Ok();
                 }

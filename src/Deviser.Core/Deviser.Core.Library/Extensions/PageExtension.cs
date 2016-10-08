@@ -1,5 +1,5 @@
 ﻿using Deviser.Core.Common;
-using Deviser.Core.Data.Entities;
+using Deviser.Core.Common.DomainTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
