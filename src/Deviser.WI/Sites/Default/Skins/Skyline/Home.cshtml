@@ -9,8 +9,25 @@
     var pageContext = scopeService.PageContext;
     var loggedInClass = pageContext.HasPageEditPermission ? "logged-in" : "";
 }
+<require type="Css" priority="10" path="//fonts.googleapis.com/css?family=Open+Sans:400,600,300|Lato:400,700|Titillium+Web:400,600" test="test"></require>
+<require type="Css" priority="10" path="~/lib/font-awesome/css/font-awesome.css" test="test"></require>
+<require type="Css" priority="10" path="~/lib/bootstrap/dist/css/bootstrap.css" test="test"></require>
+<require type="Css" priority="10" path="~/lib/magnific-popup/dist/magnific-popup.css" test="test"></require>
+<require type="Css" priority="10" path="~/css/site.css" test="test"></require>
+
+<require type="Script" priority="10" path="~/lib/jquery/dist/jquery.js" test="test"></require>
+<require type="Script" priority="11" path="~/lib/jquery-ui/jquery-ui.js"></require>
+<require type="Script" priority="12" path="~/lib/bootstrap/dist/js/bootstrap.js"></require>
+<require type="Script" priority="12" path="~/lib/magnific-popup/dist/jquery.magnific-popup.js"></require>
+<require type="Script" priority="15" path="~/js/src/app/sd-form-helper.js"></require>
+<require type="Script" priority="15" path="//maps.googleapis.com/maps/api/js?key=AIzaSyDXVNBX9Jhd_CB2UUcRa897oD6rWzRhupQ"></require>
+<require type="Script" priority="15" path="~/js/infobox.js"></require>
+
+<require type="Script" priority="16" path="~/js/sd-maps.js"></require>
+<require type="Script" priority="16" path="~/js/site.js"></require>
 
 @await Component.InvokeAsync("ControlBar")
+
 <nav class="navbar navbar-default navbar-fixed-top @loggedInClass">
     <div class="container">
         <div>

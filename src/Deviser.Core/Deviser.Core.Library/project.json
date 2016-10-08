@@ -9,7 +9,7 @@
     "AutoMapper": "5.1.1",
     "Deviser.Core.Data": "1.0.0-*",
     "MailKit": "1.4.2",
-    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Mvc": "1.0.1",
     "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
     "Microsoft.AspNetCore.Mvc.Core": "1.0.1",
     "NETStandard.Library": "1.6.0",

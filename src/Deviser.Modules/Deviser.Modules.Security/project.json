@@ -11,8 +11,8 @@
 
   "dependencies": {
     "NETStandard.Library": "1.6.0",
-    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
-    "MailKit": "1.4.0",
+    "Microsoft.AspNetCore.Mvc": "1.0.1",
+    "MailKit": "1.4.2",
     "Deviser.Core.Library": "1.0.0-*"
   }
 }

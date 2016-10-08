@@ -3,6 +3,8 @@
     //Layout = "~/_Layout.cshtml";
 }
 
+<require type="Script" priority="106" path="~/js/src/app/content-management/contentType.js"></require>
+
 <div ng-app="deviser.contentTypes" ng-controller="ContentTypesCtrl as ctVM">
 
     <div class="alert alert-dismissable" ng-class="{'alert-danger':ctVM.message.messageType=='error',
