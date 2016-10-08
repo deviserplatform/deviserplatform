@@ -56,7 +56,7 @@ namespace DeviserWI.Controllers.API
             try
             {
                 var dbResult = contentTypeProvider.GetContentDataTypes();
-                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.ContentDataType>(dbResult);
+                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.ContentDataType>>(dbResult);
 
                 if (result != null)
                     return Ok(result);
