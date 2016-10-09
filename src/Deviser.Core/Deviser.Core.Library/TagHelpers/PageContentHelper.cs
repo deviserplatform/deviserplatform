@@ -1,5 +1,4 @@
-﻿using Deviser.Core.Data.Entities;
-using Microsoft.AspNetCore.Html;
+﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -18,7 +17,7 @@ using Deviser.Core.Library.Services;
 using System.Globalization;
 
 using PageContent = Deviser.Core.Common.DomainTypes.PageContent;
-using Page = Deviser.Core.Data.Entities.Page;
+//using Page = Deviser.Core.Data.Entities.Page;
 
 namespace Deviser.Core.Library.TagHelpers
 {

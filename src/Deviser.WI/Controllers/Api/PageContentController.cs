@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
 using Deviser.Core.Data.DataProviders;
-//using Deviser.Core.Data.Entities;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Modules;

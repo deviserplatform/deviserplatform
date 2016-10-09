@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Data;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
 using Deviser.Core.Library;
 using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.FileManagement;

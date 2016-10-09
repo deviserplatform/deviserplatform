@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Html;

@@ -39,7 +39,25 @@ namespace Deviser.Core.Data.DataProviders
                     var result = context.Users
                                 .Include(u => u.Roles)
                                 .ToList();
-                    return Mapper.Map<List<User>>(result); 
+                    var resturnResult = Mapper.Map<List<User>>(result);
+                    foreach (var user in result)
+                    {
+                        if (user.Roles != null && user.Roles.Count > 0)
+                        {
+                            var targetUser = resturnResult.First(u => u.Id == user.Id);
+                            targetUser.Roles = new List<Role>();
+                            foreach (var userRole in user.Roles)
+                            {
+                                if (userRole != null)
+                                {
+                                    var role = context.Roles.FirstOrDefault(e => e.Id == userRole.RoleId); 
+                                    targetUser.Roles.Add(Mapper.Map<Role>(role));
+                                }
+                            }
+                        }
+                    }
+
+                    return resturnResult;
                 }
             }
             catch (Exception ex)
@@ -59,7 +77,22 @@ namespace Deviser.Core.Data.DataProviders
                                .Where(e => e.Id == userId)
                                .Include(u => u.Roles)
                                .FirstOrDefault();
-                    return Mapper.Map<User>(result);
+                    var returnResult = Mapper.Map<User>(result);
+
+                    if (result.Roles != null && result.Roles.Count > 0)
+                    {
+                        returnResult.Roles = new List<Role>();
+                        foreach (var userRole in result.Roles)
+                        {
+                            if (userRole != null)
+                            {
+                                var role = context.Roles.FirstOrDefault(e => e.Id == userRole.RoleId);
+                                returnResult.Roles.Add(Mapper.Map<Role>(role));
+                            }
+                        }
+                    }
+
+                    return returnResult;
                 }
             }
             catch (Exception ex)
@@ -68,7 +101,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-
+        
     }
 
 }//End namespace

@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -120,16 +119,6 @@ namespace DeviserWI.Controllers.API
                 logger.LogError(errorMessage, ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        private Deviser.Core.Common.DomainTypes.Role ConvertToDomainType(Role role)
-        {
-            return Mapper.Map<Deviser.Core.Common.DomainTypes.Role>(role);
-        }
-
-        private Role ConvertToDbType(Deviser.Core.Common.DomainTypes.Role role)
-        {
-            return Mapper.Map<Role>(role);
         }
     }
 }

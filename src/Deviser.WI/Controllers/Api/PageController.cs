@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-//using Page = Deviser.Core.Data.Entities.Page;
 
 namespace DeviserWI.Controllers.API
 {

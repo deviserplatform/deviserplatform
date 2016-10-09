@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;

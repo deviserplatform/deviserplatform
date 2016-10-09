@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Http;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.DataProviders;
-using Deviser.Core.Data.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
