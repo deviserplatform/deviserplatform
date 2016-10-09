@@ -385,12 +385,14 @@ namespace Deviser.Core.Data.Test.DataProviders
             var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in pageContents)
             {
+                item.ContentType.Properties = null;
                 item.ContentPermissions = null;
                 item.PageContentTranslation = null;
                 pageContentProvider.Create(item);
             }
+            var pageContent = pageContents.First();
 
-            var itemToUpdate = pageContents.First();
+            var itemToUpdate = pageContentProvider.Get(pageContent.Id);
             itemToUpdate.IsDeleted = true;
 
 
@@ -441,6 +443,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in pageContents)
             {
+                item.ContentType.Properties = null;
                 pageContentProvider.Create(item);
             }
 
@@ -472,7 +475,7 @@ namespace Deviser.Core.Data.Test.DataProviders
 
             List<PageContent> itemToUpdate = null;
 
-            //Act //Addert
+            //Act //Assert
             Assert.Throws(typeof(NullReferenceException), () => pageContentProvider.AddOrUpdate(itemToUpdate));
         }
 

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Deviser.Core.Data;
 using Deviser.Core.Data.Entities;
+using Deviser.WI.Infrastructure;
 using Xunit;
 
 namespace Deviser.TestCommon
@@ -42,12 +43,15 @@ namespace Deviser.TestCommon
             //        HttpContext = context,
             //    });
 
+            MapperConfig.CreateMaps();
+
             // Add Autofac
             var containerBuilder = new ContainerBuilder();
             containerBuilder.RegisterModule<DefaultModule>();
             containerBuilder.Populate(services);
             container = containerBuilder.Build();
             serviceProvider = new AutofacServiceProvider(container);
+
         }
     }
 }

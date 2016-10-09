@@ -183,14 +183,14 @@ namespace Deviser.Core.Data.Test.DataProviders
             var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             var page = pages.First();
-            pageProvider.CreatePage(page);
-            var pageTranslation = page.PageTranslation.First();
-            var pagePermissions = page.PagePermissions;
+            var pageToUpdate = pageProvider.CreatePage(page);
+            var pageTranslation = pageToUpdate.PageTranslation.First();
+            var pagePermissions = pageToUpdate.PagePermissions;
             pageTranslation.Name = "TestUpdate";
 
             //Act
-            pageProvider.UpdatePage(page);
-            var result = pageProvider.GetPage(page.Id);
+            pageProvider.UpdatePage(pageToUpdate);
+            var result = pageProvider.GetPage(pageToUpdate.Id);
             var resultPageTranslation = result.PageTranslation.First();
 
             //Assert            
@@ -222,19 +222,19 @@ namespace Deviser.Core.Data.Test.DataProviders
             var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             var page = pages.First();
-            pageProvider.CreatePage(page);
-            var pagePermissions = page.PagePermissions;
-            var initialCount = page.PagePermissions.Count;
+            var pageToUpdate = pageProvider.CreatePage(page);
+            var pagePermissions = pageToUpdate.PagePermissions;
+            var initialCount = pageToUpdate.PagePermissions.Count;
             pagePermissions.Add(new PagePermission
             {
                 Id = Guid.NewGuid(),
                 PermissionId = Guid.NewGuid(),
                 RoleId = Guid.NewGuid(),
-                PageId = page.Id,
+                PageId = pageToUpdate.Id,
             });
 
             //Act
-            pageProvider.UpdatePage(page);
+            pageProvider.UpdatePage(pageToUpdate);
             var result = pageProvider.GetPage(page.Id);
             var afterCount = result.PagePermissions.Count;
 
@@ -261,20 +261,22 @@ namespace Deviser.Core.Data.Test.DataProviders
             var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var pages = TestDataProvider.GetPages();
             var page = pages.First();
-            var pagePermissions = page.PagePermissions;
+            var pageToUpdate = pageProvider.CreatePage(page);
+            var pagePermissions = pageToUpdate.PagePermissions;
             pagePermissions.Add(new PagePermission
             {
                 Id = Guid.NewGuid(),
                 PermissionId = Guid.NewGuid(),
                 RoleId = Guid.NewGuid(),
+                PageId = pageToUpdate.Id
             });
-            pageProvider.CreatePage(page);
-            var initialCount = page.PagePermissions.Count;
+            
+            var initialCount = pageToUpdate.PagePermissions.Count;
 
             //Act
-            page.PagePermissions.Remove(page.PagePermissions.First());
-            pageProvider.UpdatePage(page);
-            var result = pageProvider.GetPage(page.Id);
+            pageToUpdate.PagePermissions.Remove(pageToUpdate.PagePermissions.First());
+            pageProvider.UpdatePage(pageToUpdate);
+            var result = pageProvider.GetPage(pageToUpdate.Id);
             var afterCount = result.PagePermissions.Count;
 
             //Assert            
@@ -316,26 +318,24 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var pageProvider = new PageProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
-            var pages = TestDataProvider.GetPages();
-            Page parentPage = pages.First();
-            pages.Remove(parentPage);
-            pageProvider.CreatePage(parentPage);
+            var parentPage = TestDataProvider.GetPages().First();
+            var childPages = TestDataProvider.GetPages();
+            parentPage = pageProvider.CreatePage(parentPage);
             parentPage.ChildPage = new List<Page>();
-            foreach (var page in pages)
+            foreach (var page in childPages)
             {
                 page.ParentId = parentPage.Id;
-                pageProvider.CreatePage(page);
-                parentPage.ChildPage.Add(page);
+                var resultChildPage = pageProvider.CreatePage(page);
+                parentPage.ChildPage.Add(resultChildPage);
             }
 
             //Act
             var pageToUpdate = parentPage.ChildPage.First();
             pageToUpdate.PageOrder = 5;
             var pageTranslation = pageToUpdate.PageTranslation.First();
-            var pagePermissions = pageToUpdate.PagePermissions;
             pageTranslation.Name = "TestUpdate";
 
-            var result = pageProvider.UpdatePage(parentPage);
+            var result = pageProvider.UpdatePageTree(parentPage);
             var resultPage = result.ChildPage.First(p => p.Id == pageToUpdate.Id);
             var resultPageTranslation = resultPage.PageTranslation.First();
 
@@ -379,7 +379,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Act
             Page pageToUpdate = null;
 
-            var result = pageProvider.UpdatePage(pageToUpdate);
+            var result = pageProvider.UpdatePageTree(pageToUpdate);
 
             //Assert            
             Assert.Null(result);
@@ -678,7 +678,7 @@ namespace Deviser.Core.Data.Test.DataProviders
 
 
             //Act
-            var result = pageProvider.UpdatePageModule(pageModule);
+            var result = pageProvider.UpdatePageModule(pageModuleToUpdate);
             var resultPermission = result.ModulePermissions.First();
 
             //Assert            
@@ -723,9 +723,13 @@ namespace Deviser.Core.Data.Test.DataProviders
 
             var pageModuleToUpdate = pageModules.First();
             pageModuleToUpdate.SortOrder = 10;
+            var pageModulesToUpdate = new List<PageModule>
+            {
+                pageModuleToUpdate
+            };
 
             //Act
-            pageProvider.UpdatePageModules(pageModules);
+            pageProvider.UpdatePageModules(pageModulesToUpdate);
             var result = pageProvider.GetPageModule(pageModuleToUpdate.Id);
 
             //Assert            

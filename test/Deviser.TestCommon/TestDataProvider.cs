@@ -325,10 +325,13 @@ namespace Deviser.TestCommon
         public static List<Page> GetPages()
         {
             var pages = new List<Page>();
+            var pageId1 = Guid.NewGuid();
+            var pageId2 = Guid.NewGuid();
+            var pageId3 = Guid.NewGuid();
 
             pages.Add(new Page
             {
-                Id = Guid.NewGuid(),
+                Id = pageId1,
                 IsIncludedInMenu = true,
                 IsSystem = false,
                 PageTranslation = new List<PageTranslation>()
@@ -339,7 +342,8 @@ namespace Deviser.TestCommon
                         Description = "Test Description",
                         Locale = "en-US",
                         Title = "Test Page",
-                        URL ="TestPage"
+                        URL ="TestPage",
+                        //PageId = pageId1
                     }
                 },
                 PagePermissions = new List<PagePermission>()
@@ -349,13 +353,14 @@ namespace Deviser.TestCommon
                         Id = Guid.NewGuid(),
                         PermissionId = Guid.NewGuid(),
                         RoleId = Guid.NewGuid(),
+                        //PageId = pageId1
                     }
                 }
             });
 
             pages.Add(new Page
             {
-                Id = Guid.NewGuid(),
+                Id = pageId2,
                 IsIncludedInMenu = true,
                 IsSystem = false,
                 PageTranslation = new List<PageTranslation>()
@@ -366,7 +371,8 @@ namespace Deviser.TestCommon
                         Description = "Test Description1",
                         Locale = "en-US",
                         Title = "Test Page1",
-                        URL ="TestPage1"
+                        URL ="TestPage1",
+                        //PageId = pageId2
                     }
                 },
                 PagePermissions = new List<PagePermission>()
@@ -376,13 +382,14 @@ namespace Deviser.TestCommon
                         Id = Guid.NewGuid(),
                         PermissionId = Guid.NewGuid(),
                         RoleId = Guid.NewGuid(),
+                        //PageId = pageId2
                     }
                 }
             });
 
             pages.Add(new Page
             {
-                Id = Guid.NewGuid(),
+                Id = pageId3,
                 IsIncludedInMenu = true,
                 IsSystem = false,
                 PageTranslation = new List<PageTranslation>()
@@ -393,7 +400,8 @@ namespace Deviser.TestCommon
                         Description = "Test Description2",
                         Locale = "en-US",
                         Title = "Test Page2",
-                        URL ="TestPage2"
+                        URL ="TestPage2",
+                        //PageId = pageId3
                     }
                 },
                 PagePermissions = new List<PagePermission>()
@@ -403,6 +411,7 @@ namespace Deviser.TestCommon
                         Id = Guid.NewGuid(),
                         PermissionId = Guid.NewGuid(),
                         RoleId = Guid.NewGuid(),
+                        //PageId = pageId3
                     }
                 }
             });
@@ -491,10 +500,52 @@ namespace Deviser.TestCommon
         public static List<PageContent> GetPageContents(bool includeChild = true)
         {
             var pageContents = new List<PageContent>();
-            var pageContentTranslations = new List<PageContentTranslation>();
-            var contentPermissions = GetContentPermissions();
-            var properties = GetProperties();
 
+            var containerId = Guid.NewGuid();
+            var pageId = Guid.NewGuid();
+
+            pageContents.Add(new PageContent
+            {
+                Id = Guid.NewGuid(),
+                PageContentTranslation = (includeChild) ? GetPageContentTranslations() : null,
+                ContainerId = containerId,
+                PageId = pageId,
+                ContentType = GetContentTypes().First(),
+                Properties = GetProperties(),
+                SortOrder = 1,
+                ContentPermissions = (includeChild) ? GetContentPermissions() : null,
+            });
+
+            pageContents.Add(new PageContent
+            {
+                Id = Guid.NewGuid(),
+                PageContentTranslation = (includeChild) ? GetPageContentTranslations() : null,
+                ContainerId = containerId,
+                PageId = pageId,
+                ContentType = GetContentTypes().First(),
+                Properties = GetProperties(),
+                SortOrder = 2,
+                ContentPermissions = (includeChild) ? GetContentPermissions() : null,
+            });
+
+            pageContents.Add(new PageContent
+            {
+                Id = Guid.NewGuid(),
+                PageContentTranslation = (includeChild) ? GetPageContentTranslations() : null,
+                ContainerId = containerId,
+                PageId = pageId,
+                ContentType = GetContentTypes().First(),
+                Properties = GetProperties(),
+                SortOrder = 3,
+                ContentPermissions = (includeChild) ? GetContentPermissions() : null,
+            });
+
+            return pageContents;
+        }
+
+        public static List<PageContentTranslation> GetPageContentTranslations()
+        {
+            var pageContentTranslations = new List<PageContentTranslation>();
             pageContentTranslations.Add(new PageContentTranslation
             {
                 Id = Guid.NewGuid(),
@@ -513,47 +564,7 @@ namespace Deviser.TestCommon
                 ContentData = "Sample data2",
                 CultureCode = "en-US"
             });
-
-            var containerId = Guid.NewGuid();
-            var pageId = Guid.NewGuid();
-
-            pageContents.Add(new PageContent
-            {
-                Id = Guid.NewGuid(),
-                PageContentTranslation = (includeChild) ? pageContentTranslations : null,
-                ContainerId = containerId,
-                PageId = pageId,
-                ContentType = GetContentTypes().First(),
-                Properties = properties,
-                SortOrder = 1,
-                ContentPermissions = (includeChild) ? contentPermissions : null,
-            });
-
-            pageContents.Add(new PageContent
-            {
-                Id = Guid.NewGuid(),
-                PageContentTranslation = (includeChild) ? pageContentTranslations : null,
-                ContainerId = containerId,
-                PageId = pageId,
-                ContentType = GetContentTypes().First(),
-                Properties = properties,
-                SortOrder = 2,
-                ContentPermissions = (includeChild) ? contentPermissions : null,
-            });
-
-            pageContents.Add(new PageContent
-            {
-                Id = Guid.NewGuid(),
-                PageContentTranslation = (includeChild) ? pageContentTranslations : null,
-                ContainerId = containerId,
-                PageId = pageId,
-                ContentType = GetContentTypes().First(),
-                Properties = properties,
-                SortOrder = 3,
-                ContentPermissions = (includeChild) ? contentPermissions : null,
-            });
-
-            return pageContents;
+            return pageContentTranslations;
         }
 
         public static List<PagePermission> GetPagePermissions()

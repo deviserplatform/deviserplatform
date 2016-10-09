@@ -54,7 +54,7 @@ namespace Deviser.Core.Data.DataProviders
                                 .AsNoTracking()
                                 .Include(pc => pc.PageContentTranslation)
                                 .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentDataType)
-                                .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentTypeProperties)
+                                .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentTypeProperties).ThenInclude(ctp=>ctp.Property)
                                 .Include(pc => pc.ContentPermissions)
                                 .Where(e => e.Id == pageContentId && !e.IsDeleted)
                                 .AsNoTracking()

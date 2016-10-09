@@ -96,7 +96,7 @@ namespace Deviser.Core.Data.DataProviders
                     var dbLayout = Mapper.Map<Entities.Layout>(layout);
 
                     var result = context.Layout.Attach(dbLayout).Entity;
-                    context.Entry(layout).State = EntityState.Modified;
+                    context.Entry(dbLayout).State = EntityState.Modified;
 
                     context.SaveChanges();
                     return Mapper.Map<Layout>(result);

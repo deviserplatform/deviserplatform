@@ -18,11 +18,17 @@ namespace Deviser.WI.Infrastructure
 
                 config.CreateMap<Core.Common.DomainTypes.ContentType, ContentType>()
                 .ForMember(dest => dest.ContentDataTypeId, opt => opt.MapFrom(src => src.ContentDataType.Id))
-                .ForMember(dest => dest.ContentTypeProperties, opt => opt.MapFrom(src =>
-                    src.Properties != null ? src.Properties.Select(ctp => new ContentTypeProperty { PropertyId = ctp.Id, ConentTypeId = src.Id }) : null))
+                .ForMember(dest => dest.ContentTypeProperties, opt => opt.MapFrom(src => src.Properties.Select(ctp => new ContentTypeProperty
+                {
+                    PropertyId = ctp.Id,
+                    ConentTypeId = src.Id,
+                    Property = Mapper.Map<Property>(ctp)
+                }
+                )))
+                .ForMember(dest => dest.ContentTypeProperties, opt => opt.Condition(src => src.Properties != null))
                 .ReverseMap()
-                .ForMember(dest => dest.Properties, opt => opt.MapFrom(src =>
-                    src.ContentTypeProperties != null ? src.ContentTypeProperties.Select(ctp => ctp.Property) : null))
+                .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.ContentTypeProperties.Select(ctp => ctp.Property)))
+                .ForMember(dest => dest.Properties, opt => opt.Condition(src => src.ContentTypeProperties != null && src.ContentTypeProperties.All(cp => cp.Property != null)))
                 .ForMember(dest => dest.DataType, opt => opt.MapFrom(src =>
                    src.ContentDataType != null ? src.ContentDataType.Name : null));
 
@@ -35,7 +41,7 @@ namespace Deviser.WI.Infrastructure
 
                 config.CreateMap<Module, Core.Common.DomainTypes.Module>().ReverseMap();
                 config.CreateMap<ModuleAction, Core.Common.DomainTypes.ModuleAction>().ReverseMap();
-                config.CreateMap<ModuleActionType, Core.Common.DomainTypes.ModuleActionType>().ReverseMap(); 
+                config.CreateMap<ModuleActionType, Core.Common.DomainTypes.ModuleActionType>().ReverseMap();
                 config.CreateMap<ModulePermission, Core.Common.DomainTypes.ModulePermission>().ReverseMap();
 
                 config.CreateMap<PageContent, Core.Common.DomainTypes.PageContent>()
@@ -48,11 +54,20 @@ namespace Deviser.WI.Infrastructure
                 config.CreateMap<Language, Core.Common.DomainTypes.Language>().ReverseMap();
                 config.CreateMap<Layout, Core.Common.DomainTypes.Layout>().ReverseMap();
                 config.CreateMap<Layout, Core.Common.DomainTypes.PageLayout>().ReverseMap();
-                config.CreateMap<Page, Core.Common.DomainTypes.Page>().ReverseMap();
-                config.CreateMap<PageContentTranslation, Core.Common.DomainTypes.PageContentTranslation>().ReverseMap(); 
+                config.CreateMap<Page, Core.Common.DomainTypes.Page>()
+                    .MaxDepth(10)
+                    .ReverseMap()
+                    .MaxDepth(10);
+
+                config.CreateMap<PageContentTranslation, Core.Common.DomainTypes.PageContentTranslation>().ReverseMap();
                 config.CreateMap<PageModule, Core.Common.DomainTypes.PageModule>().ReverseMap();
-                config.CreateMap<PagePermission, Core.Common.DomainTypes.PagePermission>().ReverseMap();
-                config.CreateMap<PageTranslation, Core.Common.DomainTypes.PageTranslation>().ReverseMap();
+                config.CreateMap<PagePermission, Core.Common.DomainTypes.PagePermission>()
+                    .ReverseMap();
+                //.ForMember(dest => dest.Page, opt => opt.Ignore());
+                config.CreateMap<PageTranslation, Core.Common.DomainTypes.PageTranslation>()
+                    .ReverseMap();
+                //.ForMember(dest => dest.Page, opt => opt.Ignore());
+
                 config.CreateMap<Permission, Core.Common.DomainTypes.Permission>().ReverseMap();
                 config.CreateMap<Property, Core.Common.DomainTypes.Property>().ReverseMap();
 

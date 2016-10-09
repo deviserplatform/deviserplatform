@@ -143,7 +143,7 @@ namespace Deviser.Core.Data.Test.DataProviders
                 layoutProvider.CreateLayout(item);
             }
 
-            var layoutToUpdate = layouts.First();
+            var layoutToUpdate = layoutProvider.GetLayouts().First();
 
             //Act
             layoutToUpdate.IsDeleted = true;

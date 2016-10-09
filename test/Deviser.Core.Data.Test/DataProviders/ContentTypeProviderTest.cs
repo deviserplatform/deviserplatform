@@ -63,7 +63,7 @@ namespace Deviser.Core.Data.DataProviders
             {
                 contentTypeProvider.CreateContentType(ct);
             }
-            var id = contentTypes.First().Id;
+            var id = contentTypeProvider.GetContentTypes().First().Id;
 
             //Act
             var result = contentTypeProvider.GetContentType(id);
@@ -164,7 +164,7 @@ namespace Deviser.Core.Data.DataProviders
             var contentTypeProvider = new ContentTypeProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             var contentDataTypes = TestDataProvider.GetContentDataTypes();
-            var dbContentDataType = Mapper.Map<Deviser.Core.Data.Entities.ContentDataType>(contentDataTypes);
+            var dbContentDataType = Mapper.Map<List<Entities.ContentDataType>>(contentDataTypes);
             dbContext.ContentDataType.AddRange(dbContentDataType);
             dbContext.SaveChanges();
 
@@ -223,7 +223,7 @@ namespace Deviser.Core.Data.DataProviders
                 contentTypeProvider.CreateContentType(ct);
             }
 
-            var contentTypeToUpdate = contentTypes.First();
+            var contentTypeToUpdate = contentTypeProvider.GetContentTypes().First();
             contentTypeToUpdate.Properties = new List<Property>();
             var properties = TestDataProvider.GetProperties();
             var cssProp = properties[0];
@@ -262,7 +262,7 @@ namespace Deviser.Core.Data.DataProviders
                 ct.Properties.Add(heightProp);
                 contentTypeProvider.CreateContentType(ct);
             }
-            var contentTypeToUpdate = contentTypes.First();
+            var contentTypeToUpdate = contentTypeProvider.GetContentTypes().First();
             contentTypeToUpdate.Properties = new List<Property>();
             
             //Act

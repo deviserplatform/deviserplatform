@@ -159,7 +159,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             {
                 propertyProvider.CreateProperty(item);
             }
-            var propertyToUpdate = properties.First();
+            var propertyToUpdate = propertyProvider.GetProperties().First();
             propertyToUpdate.Value = "Updated Value";
 
             //Act
