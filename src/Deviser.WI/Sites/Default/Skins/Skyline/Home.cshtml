@@ -15,15 +15,15 @@
 <require type="Css" priority="10" path="~/lib/magnific-popup/dist/magnific-popup.css" test="test"></require>
 <require type="Css" priority="10" path="~/css/site.css" test="test"></require>
 
-<require type="Script" priority="10" path="~/lib/jquery/dist/jquery.js" test="test"></require>
-<require type="Script" priority="11" path="~/lib/jquery-ui/jquery-ui.js"></require>
+<require type="Script" priority="10" location="Head" path="~/lib/jquery/dist/jquery.js" test="test"></require>
+<require type="Script" priority="11" location="Head" path="~/lib/jquery-ui/jquery-ui.js"></require>
 <require type="Script" priority="12" path="~/lib/bootstrap/dist/js/bootstrap.js"></require>
 <require type="Script" priority="12" path="~/lib/magnific-popup/dist/jquery.magnific-popup.js"></require>
 <require type="Script" priority="15" path="~/js/src/app/sd-form-helper.js"></require>
-<require type="Script" priority="15" path="//maps.googleapis.com/maps/api/js?key=AIzaSyDXVNBX9Jhd_CB2UUcRa897oD6rWzRhupQ"></require>
-<require type="Script" priority="15" path="~/js/infobox.js"></require>
+<require type="Script" priority="15" location="Head" path="//maps.googleapis.com/maps/api/js?key=AIzaSyDXVNBX9Jhd_CB2UUcRa897oD6rWzRhupQ"></require>
+<require type="Script" priority="15" location="Head" path="~/js/infobox.js"></require>
 
-<require type="Script" priority="16" path="~/js/sd-maps.js"></require>
+<require type="Script" priority="16" location="Head" path="~/js/sd-maps.js"></require>
 <require type="Script" priority="16" path="~/js/site.js"></require>
 
 @await Component.InvokeAsync("ControlBar")

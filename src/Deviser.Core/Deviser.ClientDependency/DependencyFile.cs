@@ -10,6 +10,7 @@ namespace Deviser.ClientDependency
     {
         public string FilePath { get; set; }
         public DependencyType DependencyType { get; set; }
+        public ScriptLocation ScriptLocation { get; set; }
         public int Priority { get; set; }
         public Dictionary<string, object> Attributes { get; set; }
     }

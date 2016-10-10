@@ -53,7 +53,7 @@ namespace Deviser.WI.Infrastructure
 
                 config.CreateMap<Language, Core.Common.DomainTypes.Language>().ReverseMap();
                 config.CreateMap<Layout, Core.Common.DomainTypes.Layout>().ReverseMap();
-                config.CreateMap<Layout, Core.Common.DomainTypes.PageLayout>().ReverseMap();
+                config.CreateMap<Core.Common.DomainTypes.Layout, Core.Common.DomainTypes.PageLayout>().ReverseMap();
                 config.CreateMap<Page, Core.Common.DomainTypes.Page>()
                     .MaxDepth(10)
                     .ReverseMap()

@@ -17,9 +17,11 @@ using Microsoft.Extensions.Caching.Memory;
 namespace Deviser.ClientDependency
 {
     [HtmlTargetElement("render", Attributes = DependencyTypeAttributeName)]
+    [HtmlTargetElement("render", Attributes = ScriptLocationAttributeName)]
     public class RenderTagHelper : UrlResolutionTagHelper
     {
         private const string DependencyTypeAttributeName = "type";
+        private const string ScriptLocationAttributeName = "location";
 
         private IHttpContextAccessor httpContextAccessor;
         private IHostingEnvironment hostingEnvironment;
@@ -27,6 +29,9 @@ namespace Deviser.ClientDependency
 
         [HtmlAttributeName(DependencyTypeAttributeName)]
         public DependencyType DependencyType { get; set; }
+
+        [HtmlAttributeName(ScriptLocationAttributeName)]
+        public ScriptLocation ScriptLocation { get; set; }
 
 
         public override int Order
@@ -92,7 +97,9 @@ namespace Deviser.ClientDependency
                 }
                 else if (DependencyType == DependencyType.Script)
                 {
-                    foreach (var file in dependencyFiles)
+                    var filteredFiles = dependencyFiles.Where(df => df.ScriptLocation == ScriptLocation).ToList();
+
+                    foreach (var file in filteredFiles)
                     {
                         TagBuilder itemBuilder = new TagBuilder("script");
                         string resolvedPath;

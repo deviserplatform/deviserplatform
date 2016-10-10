@@ -10,9 +10,11 @@ using Microsoft.AspNetCore.Http;
 namespace Deviser.ClientDependency
 {
     [HtmlTargetElement("require", Attributes = DependencyTypeAttributeName)]
+    [HtmlTargetElement("require", Attributes = ScriptLocationAttributeName)]
     public class RequireTagHelper : TagHelper
     {
         private const string DependencyTypeAttributeName = "type";
+        private const string ScriptLocationAttributeName = "location";
         private const string PathAttributeName = "path";
 
         private IHttpContextAccessor httpContextAccessor;
@@ -23,6 +25,9 @@ namespace Deviser.ClientDependency
         public string Path { get; set; }
 
         public int Priority { get; set; }
+
+        [HtmlAttributeName(ScriptLocationAttributeName)]
+        public ScriptLocation ScriptLocation { get; set; }
 
         public override int Order
         {
@@ -55,6 +60,7 @@ namespace Deviser.ClientDependency
                     dependencyLoader.DependencyFiles.Add(new ClientDependency.DependencyFile
                     {
                         DependencyType = DependencyType,
+                        ScriptLocation = ScriptLocation != null ? (ClientDependency.ScriptLocation)ScriptLocation : ClientDependency.ScriptLocation.BodyEnd,
                         FilePath = Path,
                         Priority = Priority > 0 ? Priority : Priority + 100,
                         Attributes = output.Attributes.ToDictionary(k => k.Name, v => v.Value)

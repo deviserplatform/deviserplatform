@@ -9,4 +9,9 @@ namespace Deviser.ClientDependency
     {
         Script, Css
     }
+
+    public enum ScriptLocation
+    {
+        BodyEnd = 0, BodyStart = 1, Head = 2
+    }
 }
