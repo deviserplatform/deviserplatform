@@ -11,6 +11,8 @@ using Deviser.Core.Data;
 using Deviser.Core.Data.Entities;
 using Deviser.WI.Infrastructure;
 using Xunit;
+using User = Deviser.Core.Data.Entities.User;
+using Role = Deviser.Core.Data.Entities.Role;
 
 namespace Deviser.TestCommon
 {
@@ -28,8 +30,8 @@ namespace Deviser.TestCommon
             services
                 .AddDbContext<DeviserDbContext>(b => b.UseInMemoryDatabase().UseInternalServiceProvider(efServiceProvider));
 
-            //services.AddIdentity<User, Role>()
-            //        .AddEntityFrameworkStores<DeviserDBContext>();
+            services.AddIdentity<User, Role>()
+                    .AddEntityFrameworkStores<DeviserDbContext, Guid>();
 
             services.AddLogging();
             services.AddOptions();
