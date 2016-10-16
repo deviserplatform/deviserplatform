@@ -39,9 +39,9 @@ namespace Deviser.Core.Library.Controllers
         /// <summary>
         /// This method gets current page "View" actions of all modules
         /// </summary>
-        /// <param name="pageId"></param>
+        /// <param name="actionContext"></param>
         /// <returns></returns>
-        public async Task<Dictionary<string, List<ContentResult>>> GetPageModuleResults(ActionContext actionContext, Guid pageId)
+        public async Task<Dictionary<string, List<ContentResult>>> GetPageModuleResults(ActionContext actionContext)
         {
             Dictionary<string, List<ContentResult>> actionResults = new Dictionary<string, List<ContentResult>>();
             Page currentPage = _scopeService.PageContext.CurrentPage;

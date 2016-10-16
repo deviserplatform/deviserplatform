@@ -226,6 +226,17 @@ namespace Deviser.TestCommon
                 ModuleActionType = viewType
             });
 
+            loginActions.Add(new ModuleAction()
+            {
+                Id = Guid.NewGuid(),
+                ActionName = "Index",
+                ControllerName = "Edit",
+                ControllerNamespace = "Deviser.Modules.Security.Controllers",
+                DisplayName = "Login Edit",
+                IconClass = "fa fa-sign-in",
+                ModuleActionType = viewType
+            });
+
             registerActions.Add(new ModuleAction()
             {
                 Id = Guid.NewGuid(),
@@ -434,7 +445,7 @@ namespace Deviser.TestCommon
                 ContainerId = Guid.NewGuid(),                
                 InheritViewPermissions = true,
                 InheritEditPermissions = true,
-                //Module = module,
+                ModuleId = module.Id,
                 ModuleAction = module.ModuleAction.First(),
                 ModulePermissions = new List<ModulePermission>()
                 {
@@ -456,7 +467,7 @@ namespace Deviser.TestCommon
                 ContainerId = Guid.NewGuid(),
                 InheritViewPermissions = true,
                 InheritEditPermissions = true,
-                //Module = module,
+                ModuleId = module.Id,
                 ModuleAction = module.ModuleAction.First(),
                 ModulePermissions = new List<ModulePermission>()
                 {
@@ -478,7 +489,7 @@ namespace Deviser.TestCommon
                 ContainerId = Guid.NewGuid(),
                 InheritViewPermissions = true,
                 InheritEditPermissions = true,
-                //Module = module,
+                ModuleId = module.Id,
                 ModuleAction = module.ModuleAction.First(),
                 ModulePermissions = new List<ModulePermission>()
                 {

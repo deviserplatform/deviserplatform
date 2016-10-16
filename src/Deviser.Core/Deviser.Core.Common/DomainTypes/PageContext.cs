@@ -10,7 +10,7 @@ namespace Deviser.Core.Common.DomainTypes
     public class PageContext
     {
         [JsonIgnore]
-        public Page CurrentPage { get; set; }
+        public virtual Page CurrentPage { get; set; }
 
         public Guid CurrentPageId { get; set; }
 

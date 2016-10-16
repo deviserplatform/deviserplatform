@@ -54,7 +54,7 @@ namespace Deviser.WI.Controllers
                 {
                     if (scopeService.PageContext.HasPageViewPermission)
                     {
-                        Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(Context, currentPage.Id);
+                        Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(Context);
                         ViewBag.ModuleActionResults = moduleActionResults;
                         return View(currentPage);
                     }

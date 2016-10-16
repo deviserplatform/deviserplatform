@@ -9,8 +9,8 @@ namespace Deviser.Core.Library.Services
 {
     public class IScopeService
     {
-        public PageContext PageContext { get; set; }
+        public virtual PageContext PageContext { get; set; }
 
-        public ModuleContext ModuleContext { get; set; }
+        public virtual ModuleContext ModuleContext { get; set; }
     }
 }

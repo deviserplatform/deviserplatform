@@ -9,7 +9,7 @@ namespace Deviser.Core.Library.Controllers
 {
     public interface IDeviserControllerFactory
     {        
-        Task<Dictionary<string, List<ContentResult>>> GetPageModuleResults(ActionContext actionContext, Guid pageId);
+        Task<Dictionary<string, List<ContentResult>>> GetPageModuleResults(ActionContext actionContext);
         Task<string> GetModuleEditResult(ActionContext actionContext, PageModule pageModule, Guid moduleActionid);
     }
 }

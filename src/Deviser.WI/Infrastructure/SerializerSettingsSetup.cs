@@ -18,18 +18,18 @@ namespace Deviser.WI.Infrastructure
     /// </summary>
     public class SerializerSettingsSetup : IConfigureOptions<MvcOptions>
     {
-        private readonly ILoggerFactory _loggerFactory;
+        //private readonly ILoggerFactory _loggerFactory;
         private readonly ArrayPool<char> _charPool;
-        private readonly ObjectPoolProvider _objectPoolProvider;
+        //private readonly ObjectPoolProvider _objectPoolProvider;
 
         public SerializerSettingsSetup(
-            ILoggerFactory loggerFactory,
-            ArrayPool<char> charPool,
-            ObjectPoolProvider objectPoolProvider)
+            //ILoggerFactory loggerFactory,
+            ArrayPool<char> charPool)
+            //,ObjectPoolProvider objectPoolProvider)
         {
-            _loggerFactory = loggerFactory;
+            //_loggerFactory = loggerFactory;
             _charPool = charPool;
-            _objectPoolProvider = objectPoolProvider;
+            //_objectPoolProvider = objectPoolProvider;
         }
 
         public void Configure(MvcOptions options)
