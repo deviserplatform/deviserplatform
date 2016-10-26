@@ -36,6 +36,8 @@ namespace Deviser.Core.Common
             }
         }
 
+        public static string ApplicationEntryPoint => "Deviser.WI";
+
         public static string DefaultSitePath
         {
             get

@@ -235,7 +235,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             {
                 moduleProvider.Create(item);
             }
-            var moduleId = modules.First().Id;
+            var moduleId = Guid.NewGuid();
 
             //Act
             var result = moduleProvider.GetEditModuleActions(moduleId);

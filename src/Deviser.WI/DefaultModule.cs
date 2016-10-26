@@ -4,6 +4,7 @@ using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Library;
 using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.FileManagement;
+using Deviser.Core.Library.Internal;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Modules;
 using Deviser.Core.Library.Multilingual;
@@ -20,6 +21,7 @@ namespace Deviser.WI
             //In 6.0.0.rc1 Custom ViewEngine is not working. In future, we can change the implementation.
             //builder.RegisterType<DeviserViewEngine>().As<IRazorViewEngine>();
             builder.RegisterType<ModuleActionInvoker>().As<IModuleActionInvoker>();
+            builder.RegisterType<ActionInvoker>().As<IActionInvoker>(); 
             builder.RegisterType<ModuleInvokerProvider>().As<IModuleInvokerProvider>();
             builder.RegisterType<PageUrlConstraint>().As<IRouteConstraint>();
             builder.RegisterType<DeviserControllerFactory>().As<IDeviserControllerFactory>();

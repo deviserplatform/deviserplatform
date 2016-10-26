@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Deviser.Core.Library.Internal;
 using Deviser.Core.Library.Services;
 using ContentResult = Deviser.Core.Common.DomainTypes.ContentResult;
 using Module = Deviser.Core.Common.DomainTypes.Module;
@@ -21,6 +22,7 @@ namespace Deviser.Core.Library.Controllers
         private readonly ILogger<DeviserControllerFactory> _logger;
 
         private IPageProvider _pageProvider;
+        private readonly IActionInvoker _actionInvoker;
         private readonly IModuleProvider _moduleProvider;
         private readonly IActionSelector _actionSelector;
         private readonly IModuleInvokerProvider _moduleInvokerProvider;
@@ -29,6 +31,7 @@ namespace Deviser.Core.Library.Controllers
         public DeviserControllerFactory(ILifetimeScope container, IScopeService scopeService)
         {
             _logger = container.Resolve<ILogger<DeviserControllerFactory>>();
+            _actionInvoker = container.Resolve<IActionInvoker>();
             _actionSelector = container.Resolve<IActionSelector>();
             _moduleInvokerProvider = container.Resolve<IModuleInvokerProvider>();
             _pageProvider = container.Resolve<IPageProvider>();
@@ -129,7 +132,7 @@ namespace Deviser.Core.Library.Controllers
             {
                 return null;
             }
-
+            
             RouteContext context = new RouteContext(actionContext.HttpContext);
             context.RouteData = new RouteData();
             context.RouteData.Values.Add("area", moduleContext.ModuleInfo.Name);
@@ -148,6 +151,9 @@ namespace Deviser.Core.Library.Controllers
 
             var invoker = _moduleInvokerProvider.CreateInvoker(moduleActionContext);
             var result = await invoker.InvokeAction() as ViewResult;
+            var result1 = await _actionInvoker.InvokeAction(actionContext.HttpContext, moduleAction, moduleActionContext) as ViewResult;
+
+
             string strResult = result.ExecuteResultToString(moduleActionContext);
             return strResult;
 

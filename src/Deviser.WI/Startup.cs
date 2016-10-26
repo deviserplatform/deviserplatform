@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Serilog;
@@ -22,6 +23,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using Deviser.Core.Data;
+using Deviser.Core.Library.Internal;
 
 namespace Deviser.WI
 {
@@ -96,6 +98,8 @@ namespace Deviser.WI
             services.AddTransient<IEmailSender, MessageSender>();
             services.AddTransient<ISmsSender, MessageSender>();
             services.AddScoped<IScopeService, ScopeService>();
+            services.TryAddSingleton<ObjectMethodExecutorCache>();
+            services.TryAddSingleton<ITypeActivatorCache, TypeActivatorCache>();
 
             // Add Autofac
             var containerBuilder = new ContainerBuilder();

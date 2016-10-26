@@ -234,7 +234,7 @@ namespace Deviser.TestCommon
                 ControllerNamespace = "Deviser.Modules.Security.Controllers",
                 DisplayName = "Login Edit",
                 IconClass = "fa fa-sign-in",
-                ModuleActionType = viewType
+                ModuleActionType = editType
             });
 
             registerActions.Add(new ModuleAction()
