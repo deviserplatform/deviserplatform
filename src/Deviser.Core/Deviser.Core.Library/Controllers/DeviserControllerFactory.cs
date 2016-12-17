@@ -25,7 +25,7 @@ namespace Deviser.Core.Library.Controllers
         private readonly IActionInvoker _actionInvoker;
         private readonly IModuleProvider _moduleProvider;
         private readonly IActionSelector _actionSelector;
-        private readonly IModuleInvokerProvider _moduleInvokerProvider;
+        //private readonly IModuleInvokerProvider _moduleInvokerProvider;
         private readonly IScopeService _scopeService;
 
         public DeviserControllerFactory(ILifetimeScope container, IScopeService scopeService)
@@ -33,7 +33,7 @@ namespace Deviser.Core.Library.Controllers
             _logger = container.Resolve<ILogger<DeviserControllerFactory>>();
             _actionInvoker = container.Resolve<IActionInvoker>();
             _actionSelector = container.Resolve<IActionSelector>();
-            _moduleInvokerProvider = container.Resolve<IModuleInvokerProvider>();
+            //_moduleInvokerProvider = container.Resolve<IModuleInvokerProvider>();
             _pageProvider = container.Resolve<IPageProvider>();
             _moduleProvider = container.Resolve<IModuleProvider>();
             this._scopeService = scopeService;
@@ -149,9 +149,9 @@ namespace Deviser.Core.Library.Controllers
 
             var moduleActionContext = new ActionContext(actionContext.HttpContext, context.RouteData, actionDescriptor);
 
-            var invoker = _moduleInvokerProvider.CreateInvoker(moduleActionContext);
-            var result = await invoker.InvokeAction() as ViewResult;
-            var result1 = await _actionInvoker.InvokeAction(actionContext.HttpContext, moduleAction, moduleActionContext) as ViewResult;
+            //var invoker = _moduleInvokerProvider.CreateInvoker(moduleActionContext);
+            //var result = await invoker.InvokeAction() as ViewResult;
+            var result = await _actionInvoker.InvokeAction(actionContext.HttpContext, moduleAction, moduleActionContext) as ViewResult;
 
 
             string strResult = result.ExecuteResultToString(moduleActionContext);

@@ -151,7 +151,7 @@ namespace Deviser.Core.Library.Middleware
 
             if (routeContext.RouteData.Values.TryGetValue("pageModuleId", out pageModuleId))
             {
-                moduleContext.PageModuleId = (Guid)pageModuleId;
+                moduleContext.PageModuleId = Guid.Parse((string)pageModuleId);
             }
 
             if (moduleContext.ModuleInfo != null || moduleContext.PageModuleId != null)

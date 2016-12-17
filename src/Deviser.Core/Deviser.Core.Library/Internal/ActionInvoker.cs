@@ -10,6 +10,7 @@ using System.Reflection;
 using Deviser.Core.Library.Controllers;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Internal;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Deviser.Core.Library.Internal
 {
@@ -56,17 +57,15 @@ namespace Deviser.Core.Library.Internal
                     allControllers.AddRange(controllerTypes);
             }
 
-            var targetController = allControllers.FirstOrDefault(c => c.Namespace == moduleAction.ControllerNamespace);
+            var targetController = allControllers.FirstOrDefault(c => c.Namespace == moduleAction.ControllerNamespace && c.Name == moduleAction.ControllerName + ControllerTypeNameSuffix);
 
-            if(targetController==null)
+            if (targetController == null)
                 throw new Exception("Module Controller not found");
 
             var targetAction = targetController.GetMethods().FirstOrDefault(m => m.Name == moduleAction.ActionName);
 
-            if(targetAction== null)
+            if (targetAction == null)
                 throw new Exception("Module Action not found");
-
-            var actionPath = $"{targetController.FullName}.{targetAction}";
 
             var executor = _cache.GetExecutor(targetAction, targetController);
 
@@ -76,8 +75,8 @@ namespace Deviser.Core.Library.Internal
 
             var returnType = executor.MethodReturnType;
 
-            var controllerContext = new ControllerContext();
-            var controller1 = _controllerFactory.CreateController(controllerContext);
+            var controllerContext = new ControllerContext(actionContext);
+            //var controller1 = _controllerFactory.CreateController(controllerContext);
 
             var serviceProvider = httpContext.RequestServices;
             var controller = _typeActivatorCache.CreateInstance<object>(serviceProvider, targetController.AsType()); //Returns 
@@ -86,6 +85,8 @@ namespace Deviser.Core.Library.Internal
             {
                 propertyActivator.Activate(controllerContext, controller);
             }
+
+            //((Deviser.Core.Library.Controllers.DeviserController)controller).TempData = new TempDataDictionary()
 
             if (returnType == typeof(void))
             {
@@ -99,7 +100,7 @@ namespace Deviser.Core.Library.Internal
             }
             else if (executor.TaskGenericType == typeof(IActionResult))
             {
-                result = await(Task<IActionResult>)executor.Execute(controller, arguments);
+                result = await (Task<IActionResult>)executor.Execute(controller, arguments);
                 if (result == null)
                 {
                     throw new InvalidOperationException(

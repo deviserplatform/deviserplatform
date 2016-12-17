@@ -252,9 +252,9 @@ namespace Deviser.TestCommon
             modules.Add(new Module()
             {
                 Id = Guid.NewGuid(),
-                Name = "Login",
-                Label = "Login",
-                Description = "Login module",
+                Name = "Security",
+                Label = "Security",
+                Description = "Security module",
                 Version = "00.00.01",
                 ModuleAction = loginActions,
             });

@@ -99,13 +99,15 @@ namespace Deviser.Core.Library.Test.Controllers
             var pageId = SetupPageAndModules();
             var currentPage = pageManager.GetPage(pageId);
             scopeServiceMock.Setup(s => s.PageContext.CurrentPage).Returns(currentPage);
-            var httpMock = new Mock<HttpContext>();
 
-            var router = new Mock<IRouter>();
+
+            var httpContext = CreateHttpContext("GET");
+
+            var router = new Mock<IRouter>(MockBehavior.Strict).Object;
             var actionContext = new ActionContext();
-            actionContext.HttpContext = new Mock<HttpContext>().Object;
+            actionContext.HttpContext = httpContext;
             actionContext.RouteData = new RouteData();
-            actionContext.RouteData.Routers.Add(router.Object);
+            actionContext.RouteData.Routers.Add(router);
 
             //actionContextMock.Setup(ac => ac.RouteData).Returns(new RouteData());
             //actionContextMock.Setup(ac => ac.RouteData.Routers).Returns(new List<IRouter>());

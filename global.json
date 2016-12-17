@@ -3,9 +3,10 @@
     "src",
     "test",
     "src/Deviser.Core",
-    "src/Deviser.Modules"
+    "src/Deviser.Modules",
+    "../../OpenSource/aspnet/Mvc/src"
   ],
   "sdk": {
-    "version": "1.0.0-preview1-002702"
+    "version": "1.0.0-preview2-003131"
   }
 }

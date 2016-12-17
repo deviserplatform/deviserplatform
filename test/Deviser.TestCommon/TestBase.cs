@@ -20,6 +20,13 @@ using Microsoft.Extensions.Options;
 using Xunit;
 using User = Deviser.Core.Data.Entities.User;
 using Role = Deviser.Core.Data.Entities.Role;
+using Microsoft.AspNetCore.Routing;
+using Moq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using System.Reflection;
+using Deviser.Core.Library.Internal;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Deviser.TestCommon
 {
@@ -33,6 +40,11 @@ namespace Deviser.TestCommon
             var efServiceProvider = new ServiceCollection().AddEntityFrameworkInMemoryDatabase().BuildServiceProvider();
 
             var services = new ServiceCollection();
+
+            var hostingEnvMock = new Mock<IHostingEnvironment>(MockBehavior.Strict);
+            var currentAssemblyName = this.GetType().GetTypeInfo().Assembly.GetName().Name;
+            hostingEnvMock.Setup(he => he.ApplicationName).Returns(currentAssemblyName);
+
             services.AddOptions();
             services
                 .AddDbContext<DeviserDbContext>(b => b.UseInMemoryDatabase().UseInternalServiceProvider(efServiceProvider));
@@ -41,12 +53,17 @@ namespace Deviser.TestCommon
                     .AddEntityFrameworkStores<DeviserDbContext, Guid>();
 
             services.AddSingleton<DiagnosticSource>(new DiagnosticListener("Microsoft.AspNetCore"));
+            services.AddSingleton<IHostingEnvironment>(hostingEnvMock.Object);
             services.Add(ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, SerializerSettingsSetup>());
             services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
+            services.TryAddSingleton<ObjectMethodExecutorCache>();
+            services.TryAddSingleton<ITempDataDictionaryFactory, TempDataDictionaryFactory>();
             //services.AddSingleton<ILoggerFactory>(NullLoggerFactory.Instance)
 
             services.AddLogging();
             services.AddOptions();
+
+            
 
             services.AddMvc(option =>
             {
@@ -89,6 +106,25 @@ namespace Deviser.TestCommon
             container = containerBuilder.Build();
             serviceProvider = new AutofacServiceProvider(container);
 
+        }
+
+        protected static HttpContext CreateHttpContext(string httpMethod)
+        {
+            var routeData = new RouteData();
+            routeData.Routers.Add(new Mock<IRouter>(MockBehavior.Strict).Object);
+
+            var serviceProvider = new ServiceCollection().BuildServiceProvider();
+
+            var httpContext = new Mock<HttpContext>(MockBehavior.Strict);
+
+            var request = new Mock<HttpRequest>(MockBehavior.Strict);
+            request.SetupGet(r => r.Method).Returns(httpMethod);
+            request.SetupGet(r => r.Path).Returns(new PathString());
+            request.SetupGet(r => r.Headers).Returns(new HeaderDictionary());
+            httpContext.SetupGet(c => c.Request).Returns(request.Object);
+            httpContext.SetupGet(c => c.RequestServices).Returns(serviceProvider);
+
+            return httpContext.Object;
         }
     }
 }

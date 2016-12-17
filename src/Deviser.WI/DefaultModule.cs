@@ -21,7 +21,9 @@ namespace Deviser.WI
             //In 6.0.0.rc1 Custom ViewEngine is not working. In future, we can change the implementation.
             //builder.RegisterType<DeviserViewEngine>().As<IRazorViewEngine>();
             builder.RegisterType<ModuleActionInvoker>().As<IModuleActionInvoker>();
-            builder.RegisterType<ActionInvoker>().As<IActionInvoker>(); 
+            builder.RegisterType<ActionInvoker>().As<IActionInvoker>();
+            builder.RegisterType<TypeActivatorCache>().As<ITypeActivatorCache>();
+            
             builder.RegisterType<ModuleInvokerProvider>().As<IModuleInvokerProvider>();
             builder.RegisterType<PageUrlConstraint>().As<IRouteConstraint>();
             builder.RegisterType<DeviserControllerFactory>().As<IDeviserControllerFactory>();
