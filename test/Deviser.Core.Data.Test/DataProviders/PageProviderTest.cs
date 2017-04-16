@@ -28,7 +28,8 @@ namespace Deviser.Core.Data.Test.DataProviders
             }
 
             //Act
-            var result = pageProvider.GetPageTree();
+            var root = pageProvider.GetPageTree();
+            var result = root.ChildPage.First();
             var pageTranslation = result.PageTranslation.First();
 
             //Assert            
@@ -45,8 +46,8 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.True(!string.IsNullOrEmpty(pageTranslation.Locale));
             Assert.True(!string.IsNullOrEmpty(pageTranslation.Title));
             Assert.True(!string.IsNullOrEmpty(pageTranslation.URL));
-            Assert.NotNull(result.ChildPage);
-            Assert.True(result.ChildPage.Count > 0);
+            Assert.NotNull(root.ChildPage);
+            Assert.True(root.ChildPage.Count > 0);
 
             //Clean
             dbContext.Page.RemoveRange(dbContext.Page);

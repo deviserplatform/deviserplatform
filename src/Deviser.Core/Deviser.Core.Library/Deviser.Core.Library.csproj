@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>    
+    <TargetFramework>netstandard1.6</TargetFramework>    
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Deviser.Core.Data\Deviser.Core.Data.csproj" />
+    <ProjectReference Include="..\Deviser.Core.Common\Deviser.Core.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.1.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.0.0" />
+    <PackageReference Include="AutoMapper" Version="5.1.1" />
+    <PackageReference Include="MailKit" Version="1.4.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.1" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Update="NETStandard.Library" Version="1.6.1" />
+  </ItemGroup>
+
+</Project>

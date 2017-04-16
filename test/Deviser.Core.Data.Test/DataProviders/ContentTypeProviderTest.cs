@@ -53,7 +53,7 @@ namespace Deviser.Core.Data.DataProviders
         }
 
         [Fact]
-        public void GetContentTypeSuccess()
+        public void GetContentTypeByIdSuccess()
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
@@ -82,7 +82,7 @@ namespace Deviser.Core.Data.DataProviders
         [InlineData("Text")]
         [InlineData("Image")]
         [InlineData("RichText")]
-        public void GetContentTypeSuccess(string typeName)
+        public void GetContentTypeByNameSuccess(string typeName)
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
@@ -107,7 +107,7 @@ namespace Deviser.Core.Data.DataProviders
         }
 
         [Fact]
-        public void GetContentTypeFail()
+        public void GetContentTypeByIdFail()
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);
@@ -122,7 +122,7 @@ namespace Deviser.Core.Data.DataProviders
 
         [Theory]
         [InlineData("SkyType")]
-        public void GetContentTypeFail(string typeName)
+        public void GetContentTypeByNameFail(string typeName)
         {
             //Arrange
             var contentTypeProvider = new ContentTypeProvider(container);

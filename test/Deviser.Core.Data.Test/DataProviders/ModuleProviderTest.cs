@@ -302,9 +302,9 @@ namespace Deviser.Core.Data.Test.DataProviders
         }
 
         [Theory]
-        [InlineData("Login")]
+        [InlineData("Security")]
         [InlineData("Language")]
-        public void GetContentTypeSuccess(string typeName)
+        public void GetModleByNameSuccess(string moduleName)
         {
             //Arrange
             var moduleProvider = new ModuleProvider(container);
@@ -316,7 +316,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             }
 
             //Act
-            var result = moduleProvider.Get(typeName);
+            var result = moduleProvider.Get(moduleName);
 
             //Assert
             Assert.NotNull(result);

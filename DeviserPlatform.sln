@@ -1,90 +1,57 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{91BD4D35-CFF1-48D1-BAF6-BA0E3FB96B3B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8AB798F0-0360-4C0F-8DAD-E9F858824478}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deviser.Core", "Deviser.Core", "{F3FFE0B0-32B0-4867-AA80-7FB130E72263}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Core.Library", "src\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.xproj", "{0EAB64DC-9DD5-475F-A20A-06EEB5FBCA55}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Modules.RichText", "src\Deviser.Modules\Deviser.Modules.RichText\Deviser.Modules.RichText.xproj", "{8B9A6DCD-D98C-484C-9035-B2341A1DB17C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deviser.Modules", "Deviser.Modules", "{88901A99-F73F-4CF2-8038-A5E98BAF73FF}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Core.Data", "src\Deviser.Core\Deviser.Core.Data\Deviser.Core.Data.xproj", "{1428E49D-B6CC-4F23-A321-0381DF4BFAE4}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Modules.PageManagement", "src\Deviser.Modules\Deviser.Modules.PageManagement\Deviser.Modules.PageManagement.xproj", "{A91098F9-A4A3-479F-9354-B65DC81A7421}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Modules.UserManagement", "src\Deviser.Modules\Deviser.Modules.UserManagement\Deviser.Modules.UserManagement.xproj", "{B8A9D773-0F31-47B9-8CA5-254203FBDEB6}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Modules.SecurityRoles", "src\Deviser.Modules\Deviser.Modules.SecurityRoles\Deviser.Modules.SecurityRoles.xproj", "{685C486D-2BC3-4DA2-A85D-CED05EFA407B}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Modules.Language", "src\Deviser.Modules\Deviser.Modules.Language\Deviser.Modules.Language.xproj", "{CAB08A21-2766-4A8A-BB97-569DAE8C9D49}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Modules.FileManager", "src\Deviser.Modules\Deviser.Modules.FileManager\Deviser.Modules.FileManager.xproj", "{8CBD1FFC-7BC1-4D5C-88BF-050631CDA744}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.WI", "src\Deviser.WI\Deviser.WI.xproj", "{457342F7-A13A-4C6D-AF4A-C457ACEDD365}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Modules.Security", "src\Deviser.Modules\Deviser.Modules.Security\Deviser.Modules.Security.xproj", "{07DC4E90-16E7-4357-B692-103EF1B89CBD}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Modules.ContentManagement", "src\Deviser.Modules\Deviser.Modules.ContentManagement\Deviser.Modules.ContentManagement.xproj", "{CD1A5AAC-F892-45F0-8C11-D9353C10A11A}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Core.Common", "src\Deviser.Core\Deviser.Core.Common\Deviser.Core.Common.xproj", "{6CA6A9E5-B940-4ABB-87B1-403C680A49AC}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Modules.SiteManagement", "src\Deviser.Modules\Deviser.Modules.SiteManagement\Deviser.Modules.SiteManagement.xproj", "{432E2E3C-DE3C-4C5B-8571-5A3F97AC2E28}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Modules.ModuleManagement", "src\Deviser.Modules\Deviser.Modules.ModuleManagement\Deviser.Modules.ModuleManagement.xproj", "{C85D8297-F253-46E7-A477-1B2EBDFD5497}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{ABAC3B89-50D7-427E-9D89-7202E2A95569}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.WI.Test", "test\Deviser.WI.Test\Deviser.WI.Test.xproj", "{ED3A801D-BB09-44AC-992B-012FE09C7F27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Core.Library", "src\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj", "{0EAB64DC-9DD5-475F-A20A-06EEB5FBCA55}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Core.Data.Test", "test\Deviser.Core.Data.Test\Deviser.Core.Data.Test.xproj", "{9965E246-A53E-4C89-991E-0B703FD8F2BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.RichText", "src\Deviser.Modules\Deviser.Modules.RichText\Deviser.Modules.RichText.csproj", "{8B9A6DCD-D98C-484C-9035-B2341A1DB17C}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.TestCommon", "test\Deviser.TestCommon\Deviser.TestCommon.xproj", "{62EF0B7A-9DE3-437C-8636-48E9417758FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.PageManagement", "src\Deviser.Modules\Deviser.Modules.PageManagement\Deviser.Modules.PageManagement.csproj", "{A91098F9-A4A3-479F-9354-B65DC81A7421}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Modules.RecycleBin", "src\Deviser.Modules\Deviser.Modules.RecycleBin\Deviser.Modules.RecycleBin.xproj", "{BA744D80-B42A-4F38-8DD2-FFFBE89B7181}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.UserManagement", "src\Deviser.Modules\Deviser.Modules.UserManagement\Deviser.Modules.UserManagement.csproj", "{B8A9D773-0F31-47B9-8CA5-254203FBDEB6}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.ClientDependency", "src\Deviser.Core\Deviser.ClientDependency\Deviser.ClientDependency.xproj", "{D91F4907-EF2B-4ED5-8F04-5C437B06A674}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.SecurityRoles", "src\Deviser.Modules\Deviser.Modules.SecurityRoles\Deviser.Modules.SecurityRoles.csproj", "{685C486D-2BC3-4DA2-A85D-CED05EFA407B}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Deviser.Core.Library.Test", "test\Deviser.Core.Library.Test\Deviser.Core.Library.Test.xproj", "{05BBC4B6-ED34-492F-AD39-BA491183EDB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.Language", "src\Deviser.Modules\Deviser.Modules.Language\Deviser.Modules.Language.csproj", "{CAB08A21-2766-4A8A-BB97-569DAE8C9D49}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Mvc.Core", "..\..\OpenSource\aspnet\Mvc\src\Microsoft.AspNetCore.Mvc.Core\Microsoft.AspNetCore.Mvc.Core.xproj", "{C48DA9D7-ACB5-4408-AA79-27ECB60A67EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.FileManager", "src\Deviser.Modules\Deviser.Modules.FileManager\Deviser.Modules.FileManager.csproj", "{8CBD1FFC-7BC1-4D5C-88BF-050631CDA744}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Mvc.Abstractions", "..\..\OpenSource\aspnet\Mvc\src\Microsoft.AspNetCore.Mvc.Abstractions\Microsoft.AspNetCore.Mvc.Abstractions.xproj", "{1154203C-7579-4525-906E-BC55268421C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.WI", "src\Deviser.WI\Deviser.WI.csproj", "{457342F7-A13A-4C6D-AF4A-C457ACEDD365}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Mvc", "..\..\OpenSource\aspnet\Mvc\src\Microsoft.AspNetCore.Mvc\Microsoft.AspNetCore.Mvc.xproj", "{079EFA1F-0B0A-4853-B27B-5780D111CD85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.Security", "src\Deviser.Modules\Deviser.Modules.Security\Deviser.Modules.Security.csproj", "{07DC4E90-16E7-4357-B692-103EF1B89CBD}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Mvc.ApiExplorer", "..\..\OpenSource\aspnet\Mvc\src\Microsoft.AspNetCore.Mvc.ApiExplorer\Microsoft.AspNetCore.Mvc.ApiExplorer.xproj", "{A2B72833-5D70-4C42-AE85-E0319926FB8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.ContentManagement", "src\Deviser.Modules\Deviser.Modules.ContentManagement\Deviser.Modules.ContentManagement.csproj", "{CD1A5AAC-F892-45F0-8C11-D9353C10A11A}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Mvc.Cors", "..\..\OpenSource\aspnet\Mvc\src\Microsoft.AspNetCore.Mvc.Cors\Microsoft.AspNetCore.Mvc.Cors.xproj", "{9A07EEA2-942E-4969-9D41-799B6E2D1FF5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Core.Common", "src\Deviser.Core\Deviser.Core.Common\Deviser.Core.Common.csproj", "{6CA6A9E5-B940-4ABB-87B1-403C680A49AC}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Mvc.DataAnnotations", "..\..\OpenSource\aspnet\Mvc\src\Microsoft.AspNetCore.Mvc.DataAnnotations\Microsoft.AspNetCore.Mvc.DataAnnotations.xproj", "{2DD786CA-7AF7-437A-B499-801A589B9A1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.SiteManagement", "src\Deviser.Modules\Deviser.Modules.SiteManagement\Deviser.Modules.SiteManagement.csproj", "{432E2E3C-DE3C-4C5B-8571-5A3F97AC2E28}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Mvc.Formatters.Json", "..\..\OpenSource\aspnet\Mvc\src\Microsoft.AspNetCore.Mvc.Formatters.Json\Microsoft.AspNetCore.Mvc.Formatters.Json.xproj", "{3FC8D9D6-9352-43A3-8E81-422F270085B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.ModuleManagement", "src\Deviser.Modules\Deviser.Modules.ModuleManagement\Deviser.Modules.ModuleManagement.csproj", "{C85D8297-F253-46E7-A477-1B2EBDFD5497}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Mvc.Localization", "..\..\OpenSource\aspnet\Mvc\src\Microsoft.AspNetCore.Mvc.Localization\Microsoft.AspNetCore.Mvc.Localization.xproj", "{50893B10-5735-4F35-9995-F81DA3F0189E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.WI.Test", "test\Deviser.WI.Test\Deviser.WI.Test.csproj", "{ED3A801D-BB09-44AC-992B-012FE09C7F27}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Mvc.Razor", "..\..\OpenSource\aspnet\Mvc\src\Microsoft.AspNetCore.Mvc.Razor\Microsoft.AspNetCore.Mvc.Razor.xproj", "{314E9AD6-2FFC-4A92-A8AD-510658C64F1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Core.Data.Test", "test\Deviser.Core.Data.Test\Deviser.Core.Data.Test.csproj", "{9965E246-A53E-4C89-991E-0B703FD8F2BF}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Mvc.Razor.Host", "..\..\OpenSource\aspnet\Mvc\src\Microsoft.AspNetCore.Mvc.Razor.Host\Microsoft.AspNetCore.Mvc.Razor.Host.xproj", "{520B3AA4-363A-497C-8C15-80423C5AFC85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.TestCommon", "test\Deviser.TestCommon\Deviser.TestCommon.csproj", "{62EF0B7A-9DE3-437C-8636-48E9417758FE}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Mvc.TagHelpers", "..\..\OpenSource\aspnet\Mvc\src\Microsoft.AspNetCore.Mvc.TagHelpers\Microsoft.AspNetCore.Mvc.TagHelpers.xproj", "{B2347320-308E-4D2B-AEC8-005DFA68B0C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.RecycleBin", "src\Deviser.Modules\Deviser.Modules.RecycleBin\Deviser.Modules.RecycleBin.csproj", "{BA744D80-B42A-4F38-8DD2-FFFBE89B7181}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Mvc.ViewFeatures", "..\..\OpenSource\aspnet\Mvc\src\Microsoft.AspNetCore.Mvc.ViewFeatures\Microsoft.AspNetCore.Mvc.ViewFeatures.xproj", "{3F8B8FC1-9FE4-4788-8991-367113E8D7AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.ClientDependency", "src\Deviser.Core\Deviser.ClientDependency\Deviser.ClientDependency.csproj", "{D91F4907-EF2B-4ED5-8F04-5C437B06A674}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Routing", "..\..\OpenSource\aspnet\Routing\src\Microsoft.AspNetCore.Routing\Microsoft.AspNetCore.Routing.xproj", "{1EE54D32-6CED-4206-ACF5-3DC1DD39D228}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Core.Library.Test", "test\Deviser.Core.Library.Test\Deviser.Core.Library.Test.csproj", "{05BBC4B6-ED34-492F-AD39-BA491183EDB1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Routing.Abstractions", "..\..\OpenSource\aspnet\Routing\src\Microsoft.AspNetCore.Routing.Abstractions\Microsoft.AspNetCore.Routing.Abstractions.xproj", "{ED253B01-24F1-43D1-AA0B-079391E105A9}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.AspNetCore.Routing.DecisionTree.Sources", "..\..\OpenSource\aspnet\Routing\src\Microsoft.AspNetCore.Routing.DecisionTree.Sources\Microsoft.AspNetCore.Routing.DecisionTree.Sources.xproj", "{ABD5AA59-6000-4A3D-A54F-4B636F725AE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Core.Data", "src\Deviser.Core\Deviser.Core.Data\Deviser.Core.Data.csproj", "{8BE40D0D-1995-4705-A71D-F4B884CC4ACD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -100,10 +67,6 @@ Global
 		{8B9A6DCD-D98C-484C-9035-B2341A1DB17C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B9A6DCD-D98C-484C-9035-B2341A1DB17C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B9A6DCD-D98C-484C-9035-B2341A1DB17C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1428E49D-B6CC-4F23-A321-0381DF4BFAE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1428E49D-B6CC-4F23-A321-0381DF4BFAE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1428E49D-B6CC-4F23-A321-0381DF4BFAE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1428E49D-B6CC-4F23-A321-0381DF4BFAE4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A91098F9-A4A3-479F-9354-B65DC81A7421}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A91098F9-A4A3-479F-9354-B65DC81A7421}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A91098F9-A4A3-479F-9354-B65DC81A7421}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -172,76 +135,19 @@ Global
 		{05BBC4B6-ED34-492F-AD39-BA491183EDB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05BBC4B6-ED34-492F-AD39-BA491183EDB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05BBC4B6-ED34-492F-AD39-BA491183EDB1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C48DA9D7-ACB5-4408-AA79-27ECB60A67EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C48DA9D7-ACB5-4408-AA79-27ECB60A67EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C48DA9D7-ACB5-4408-AA79-27ECB60A67EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C48DA9D7-ACB5-4408-AA79-27ECB60A67EF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1154203C-7579-4525-906E-BC55268421C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1154203C-7579-4525-906E-BC55268421C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1154203C-7579-4525-906E-BC55268421C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1154203C-7579-4525-906E-BC55268421C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{079EFA1F-0B0A-4853-B27B-5780D111CD85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{079EFA1F-0B0A-4853-B27B-5780D111CD85}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{079EFA1F-0B0A-4853-B27B-5780D111CD85}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{079EFA1F-0B0A-4853-B27B-5780D111CD85}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A2B72833-5D70-4C42-AE85-E0319926FB8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A2B72833-5D70-4C42-AE85-E0319926FB8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A2B72833-5D70-4C42-AE85-E0319926FB8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A2B72833-5D70-4C42-AE85-E0319926FB8A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9A07EEA2-942E-4969-9D41-799B6E2D1FF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9A07EEA2-942E-4969-9D41-799B6E2D1FF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9A07EEA2-942E-4969-9D41-799B6E2D1FF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9A07EEA2-942E-4969-9D41-799B6E2D1FF5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2DD786CA-7AF7-437A-B499-801A589B9A1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2DD786CA-7AF7-437A-B499-801A589B9A1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2DD786CA-7AF7-437A-B499-801A589B9A1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2DD786CA-7AF7-437A-B499-801A589B9A1C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3FC8D9D6-9352-43A3-8E81-422F270085B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3FC8D9D6-9352-43A3-8E81-422F270085B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3FC8D9D6-9352-43A3-8E81-422F270085B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3FC8D9D6-9352-43A3-8E81-422F270085B7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{50893B10-5735-4F35-9995-F81DA3F0189E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{50893B10-5735-4F35-9995-F81DA3F0189E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{50893B10-5735-4F35-9995-F81DA3F0189E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{50893B10-5735-4F35-9995-F81DA3F0189E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{314E9AD6-2FFC-4A92-A8AD-510658C64F1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{314E9AD6-2FFC-4A92-A8AD-510658C64F1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{314E9AD6-2FFC-4A92-A8AD-510658C64F1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{314E9AD6-2FFC-4A92-A8AD-510658C64F1E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{520B3AA4-363A-497C-8C15-80423C5AFC85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{520B3AA4-363A-497C-8C15-80423C5AFC85}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{520B3AA4-363A-497C-8C15-80423C5AFC85}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{520B3AA4-363A-497C-8C15-80423C5AFC85}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B2347320-308E-4D2B-AEC8-005DFA68B0C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2347320-308E-4D2B-AEC8-005DFA68B0C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2347320-308E-4D2B-AEC8-005DFA68B0C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2347320-308E-4D2B-AEC8-005DFA68B0C9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3F8B8FC1-9FE4-4788-8991-367113E8D7AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F8B8FC1-9FE4-4788-8991-367113E8D7AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F8B8FC1-9FE4-4788-8991-367113E8D7AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F8B8FC1-9FE4-4788-8991-367113E8D7AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1EE54D32-6CED-4206-ACF5-3DC1DD39D228}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1EE54D32-6CED-4206-ACF5-3DC1DD39D228}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1EE54D32-6CED-4206-ACF5-3DC1DD39D228}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1EE54D32-6CED-4206-ACF5-3DC1DD39D228}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ED253B01-24F1-43D1-AA0B-079391E105A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED253B01-24F1-43D1-AA0B-079391E105A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED253B01-24F1-43D1-AA0B-079391E105A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED253B01-24F1-43D1-AA0B-079391E105A9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ABD5AA59-6000-4A3D-A54F-4B636F725AE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABD5AA59-6000-4A3D-A54F-4B636F725AE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABD5AA59-6000-4A3D-A54F-4B636F725AE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABD5AA59-6000-4A3D-A54F-4B636F725AE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BE40D0D-1995-4705-A71D-F4B884CC4ACD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BE40D0D-1995-4705-A71D-F4B884CC4ACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BE40D0D-1995-4705-A71D-F4B884CC4ACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BE40D0D-1995-4705-A71D-F4B884CC4ACD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F3FFE0B0-32B0-4867-AA80-7FB130E72263} = {91BD4D35-CFF1-48D1-BAF6-BA0E3FB96B3B}
+		{88901A99-F73F-4CF2-8038-A5E98BAF73FF} = {91BD4D35-CFF1-48D1-BAF6-BA0E3FB96B3B}
 		{0EAB64DC-9DD5-475F-A20A-06EEB5FBCA55} = {F3FFE0B0-32B0-4867-AA80-7FB130E72263}
 		{8B9A6DCD-D98C-484C-9035-B2341A1DB17C} = {88901A99-F73F-4CF2-8038-A5E98BAF73FF}
-		{88901A99-F73F-4CF2-8038-A5E98BAF73FF} = {91BD4D35-CFF1-48D1-BAF6-BA0E3FB96B3B}
-		{1428E49D-B6CC-4F23-A321-0381DF4BFAE4} = {F3FFE0B0-32B0-4867-AA80-7FB130E72263}
 		{A91098F9-A4A3-479F-9354-B65DC81A7421} = {88901A99-F73F-4CF2-8038-A5E98BAF73FF}
 		{B8A9D773-0F31-47B9-8CA5-254203FBDEB6} = {88901A99-F73F-4CF2-8038-A5E98BAF73FF}
 		{685C486D-2BC3-4DA2-A85D-CED05EFA407B} = {88901A99-F73F-4CF2-8038-A5E98BAF73FF}
@@ -259,5 +165,6 @@ Global
 		{BA744D80-B42A-4F38-8DD2-FFFBE89B7181} = {88901A99-F73F-4CF2-8038-A5E98BAF73FF}
 		{D91F4907-EF2B-4ED5-8F04-5C437B06A674} = {F3FFE0B0-32B0-4867-AA80-7FB130E72263}
 		{05BBC4B6-ED34-492F-AD39-BA491183EDB1} = {ABAC3B89-50D7-427E-9D89-7202E2A95569}
+		{8BE40D0D-1995-4705-A71D-F4B884CC4ACD} = {F3FFE0B0-32B0-4867-AA80-7FB130E72263}
 	EndGlobalSection
 EndGlobal

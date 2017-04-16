@@ -153,7 +153,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         [Theory]
         [InlineData("YesNo")]
         [InlineData("YesNoNa")]
-        public void GetOptionListSuccess(string typeName)
+        public void GetOptionListByNameSuccess(string typeName)
         {
             //Arrange
             var optionListProvider = new OptionListProvider(container);
@@ -185,7 +185,7 @@ namespace Deviser.Core.Data.Test.DataProviders
 
         [Theory]
         [InlineData("UnknownType")]
-        public void GetOptionListFail(string typeName)
+        public void GetOptionListByNameFail(string typeName)
         {
             //Arrange
             var optionListProvider = new OptionListProvider(container);
