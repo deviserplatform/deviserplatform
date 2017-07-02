@@ -11,11 +11,11 @@ namespace Deviser.Core.Data.DataProviders
 {
     public interface IOptionListProvider
     {
-        PropertyOptionList CreateOptionList(PropertyOptionList dbPropertyOptionList);
-        List<PropertyOptionList> GetOptionLists();
-        PropertyOptionList GetOptionList(Guid optionListId);
-        PropertyOptionList GetOptionList(string listName);
-        PropertyOptionList UpdateOptionList(PropertyOptionList dbContentType);
+        OptionList CreateOptionList(OptionList dbOptionList);
+        List<OptionList> GetOptionLists();
+        OptionList GetOptionList(Guid optionListId);
+        OptionList GetOptionList(string listName);
+        OptionList UpdateOptionList(OptionList dbContentType);
     }
 
     public class OptionListProvider : DataProviderBase, IOptionListProvider
@@ -30,101 +30,101 @@ namespace Deviser.Core.Data.DataProviders
             _logger = container.Resolve<ILogger<OptionListProvider>>();
         }
 
-        public PropertyOptionList CreateOptionList(PropertyOptionList propertyOptionList)
+        public OptionList CreateOptionList(OptionList optionList)
         {
             try
             {
                 using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var dbPropertyOptionList = Mapper.Map<Entities.PropertyOptionList>(propertyOptionList);
-                    dbPropertyOptionList.CreatedDate = dbPropertyOptionList.LastModifiedDate = DateTime.Now;
-                    var result = context.PropertyOptionList.Add(dbPropertyOptionList).Entity;
+                    var dbOptionList = Mapper.Map<Entities.OptionList>(optionList);
+                    dbOptionList.CreatedDate = dbOptionList.LastModifiedDate = DateTime.Now;
+                    var result = context.OptionList.Add(dbOptionList).Entity;
                     context.SaveChanges();
-                    return Mapper.Map<PropertyOptionList>(result);
+                    return Mapper.Map<OptionList>(result);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error occured while creating PropertyOptionList", ex);
+                _logger.LogError("Error occured while creating OptionList", ex);
             }
             return null;
         }
 
-        public List<PropertyOptionList> GetOptionLists()
+        public List<OptionList> GetOptionLists()
         {
             try
             {
                 using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var result = context.PropertyOptionList.ToList();
-                    return Mapper.Map<List<PropertyOptionList>>(result);
+                    var result = context.OptionList.ToList();
+                    return Mapper.Map<List<OptionList>>(result);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error occured while getting PropertyOptionList", ex);
+                _logger.LogError("Error occured while getting OptionList", ex);
             }
             return null;
         }
 
-        public PropertyOptionList GetOptionList(Guid optionListId)
+        public OptionList GetOptionList(Guid optionListId)
         {
             try
             {
 
                 using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var result = context.PropertyOptionList
+                    var result = context.OptionList
                                .FirstOrDefault(e => e.Id == optionListId);
-                    return Mapper.Map<PropertyOptionList>(result);
+                    return Mapper.Map<OptionList>(result);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error occured while getting PropertyOptionList by id", ex);
+                _logger.LogError("Error occured while getting OptionList by id", ex);
             }
             return null;
         }
 
-        public PropertyOptionList GetOptionList(string listName)
+        public OptionList GetOptionList(string listName)
         {
             try
             {
 
                 using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var result = context.PropertyOptionList
+                    var result = context.OptionList
                                .FirstOrDefault(e => e.Name.ToLower() == listName.ToLower());
-                    return Mapper.Map<PropertyOptionList>(result);
+                    return Mapper.Map<OptionList>(result);
                 }
             }
 
 
             catch (Exception ex)
             {
-                _logger.LogError("Error occured while getting PropertyOptionList by id", ex);
+                _logger.LogError("Error occured while getting OptionList by id", ex);
             }
             return null;
         }
         
 
-        public PropertyOptionList UpdateOptionList(PropertyOptionList propertyOptionList)
+        public OptionList UpdateOptionList(OptionList optionList)
         {
             try
             {
                 using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var dbPropertyOptionList = Mapper.Map<Entities.PropertyOptionList>(propertyOptionList);
-                    dbPropertyOptionList.LastModifiedDate = DateTime.Now;
-                    var result = context.PropertyOptionList.Attach(dbPropertyOptionList).Entity;
-                    context.Entry(dbPropertyOptionList).State = EntityState.Modified;
+                    var dboptionList = Mapper.Map<Entities.OptionList>(optionList);
+                    dboptionList.LastModifiedDate = DateTime.Now;
+                    var result = context.OptionList.Attach(dboptionList).Entity;
+                    context.Entry(dboptionList).State = EntityState.Modified;
                     context.SaveChanges();
-                    return Mapper.Map<PropertyOptionList>(result);
+                    return Mapper.Map<OptionList>(result);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error occured while updating PropertyOptionList", ex);
+                _logger.LogError("Error occured while updating OptionList", ex);
             }
             return null;
         }

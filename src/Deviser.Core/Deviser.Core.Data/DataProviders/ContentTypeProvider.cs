@@ -157,7 +157,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDbContext(DbOptions))
                 {
                     var result = context.ContentType
-                        .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.PropertyOptionList)
+                        .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
                         .Include(c => c.ContentDataType)
                         .OrderBy(c=>c.Name)
                         .ToList();

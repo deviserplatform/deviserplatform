@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Layouts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

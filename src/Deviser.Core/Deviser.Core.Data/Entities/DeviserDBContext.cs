@@ -260,10 +260,10 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
 
-                entity.HasOne(d => d.PropertyOptionList).WithMany(p => p.Properties).HasForeignKey(d => d.PropertyOptionListId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(d => d.OptionList).WithMany(p => p.Properties).HasForeignKey(d => d.OptionListId).OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<PropertyOptionList>(entity =>
+            modelBuilder.Entity<OptionList>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
@@ -272,6 +272,13 @@ namespace Deviser.Core.Data
             modelBuilder.Entity<ContentDataType>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<ContentControl>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.IsActive).HasDefaultValue(true);                
             });
 
             modelBuilder.Entity<LayoutTypeProperty>(entity =>
@@ -315,6 +322,15 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Role).WithMany(p => p.ContentPermissions).HasForeignKey(d => d.RoleId).OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<ContentTypeControl>(entity =>
+            {
+                entity.HasOne(d => d.ContentControl).WithMany(p => p.ContentTypeControls).HasForeignKey(d => d.ContentControlId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.ContentType).WithMany(p => p.ContentTypeControls).HasForeignKey(d => d.ContentTypeId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.OptionList).WithMany(p => p.ContentTypeControls).HasForeignKey(d => d.OptionListId).OnDelete(DeleteBehavior.Restrict);
+            });
+
             modelBuilder.Entity<sysdiagrams>(entity =>
             {
                 entity.HasKey(e => e.diagram_id)
@@ -329,29 +345,32 @@ namespace Deviser.Core.Data
                     .HasColumnType("sysname");
             });
         }
-
+        
+        public virtual DbSet<ContentControl> ContentControl { get; set; }
+        public virtual DbSet<ContentDataType> ContentDataType { get; set; }
+        public virtual DbSet<ContentPermission> ContentPermission { get; set; }
+        public virtual DbSet<ContentType> ContentType { get; set; }
+        public virtual DbSet<ContentTypeControl> ContentTypeControl { get; set; }        
+        public virtual DbSet<ContentTypeProperty> ContentTypeProperty { get; set; }
+        public virtual DbSet<Language> Language { get; set; }
         public virtual DbSet<Layout> Layout { get; set; }
+        public virtual DbSet<LayoutType> LayoutType { get; set; }
+        public virtual DbSet<LayoutTypeProperty> LayoutTypeProperty { get; set; }        
         public virtual DbSet<Module> Module { get; set; }
         public virtual DbSet<ModuleAction> ModuleAction { get; set; }
         public virtual DbSet<ModuleActionType> ModuleActionType { get; set; }
+        public virtual DbSet<ModulePermission> ModulePermission { get; set; }
+        public virtual DbSet<OptionList> OptionList { get; set; }
+        public virtual DbSet<Permission> Permission { get; set; }        
         public virtual DbSet<Page> Page { get; set; }
         public virtual DbSet<PageContent> PageContent { get; set; }
         public virtual DbSet<PageModule> PageModule { get; set; }
+        public virtual DbSet<Property> Property { get; set; }
+        public virtual DbSet<PagePermission> PagePermission { get; set; }
         public virtual DbSet<PageTranslation> PageTranslation { get; set; }
         public virtual DbSet<PageContentTranslation> PageContentTranslation { get; set; }
         public virtual DbSet<SiteSetting> SiteSetting { get; set; }
-        public virtual DbSet<Language> Language { get; set; }
-        public virtual DbSet<LayoutType> LayoutType { get; set; }
-        public virtual DbSet<ContentType> ContentType { get; set; }
-        public virtual DbSet<Property> Property { get; set; }
-        public virtual DbSet<PropertyOptionList> PropertyOptionList { get; set; }
-        public virtual DbSet<ContentDataType> ContentDataType { get; set; }
-        public virtual DbSet<LayoutTypeProperty> LayoutTypeProperty { get; set; }
-        public virtual DbSet<ContentTypeProperty> ContentTypeProperty { get; set; }
-        public virtual DbSet<PagePermission> PagePermission { get; set; }
-        public virtual DbSet<Permission> Permission { get; set; }
-        public virtual DbSet<ModulePermission> ModulePermission { get; set; }
-        public virtual DbSet<ContentPermission> ContentPermission { get; set; }
+        
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         //public DbSet<ApplicationUser> ApplicationUser { get; set; }
         //public DbSet<ApplicationUser> ApplicationUser { get; set; }

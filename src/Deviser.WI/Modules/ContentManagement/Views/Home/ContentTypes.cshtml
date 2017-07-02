@@ -92,107 +92,162 @@
                     </div>
                 </div>
                 <div class="portlet-body form">
-                    <form class="form-horizontal" name="contentTypeForm" novalidate>
-                        <div class="form-body">
-                            <div class="form-group" ng-class="{'has-error':ctVM.hasError(contentTypeForm, 'label', 'required')}">
-                                <label class="col-md-3 control-label">Label</label>
-                                <div class="col-md-6">
-                                    <input class="form-control" name="label" ng-model="ctVM.selectedContentType.label" required />
-                                </div>
-                            </div>
-                            <div class="form-group"
-                                 ng-class="{'has-error': (ctVM.hasError(contentTypeForm, 'label', 'required') || !ctVM.isValidName(ctVM.selectedContentType.name)) &&
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#tab_general" data-toggle="tab" aria-expanded="true">
+                                General
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#tab_fields" data-toggle="tab" aria-expanded="false">
+                                Fields
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade active in" id="tab_general">
+                            <form class="form-horizontal" name="contentTypeForm" novalidate>
+                                <div class="form-body">
+                                    <div class="form-group" ng-class="{'has-error':ctVM.hasError(contentTypeForm, 'label', 'required')}">
+                                        <label class="col-md-3 control-label">Label</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" name="label" ng-model="ctVM.selectedContentType.label" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group"
+                                         ng-class="{'has-error': (ctVM.hasError(contentTypeForm, 'label', 'required') || !ctVM.isValidName(ctVM.selectedContentType.name)) &&
                                  ctVM.currentViewState == ctVM.viewStates.NEW }">
-                                <label class="col-md-3 control-label">Name</label>
-                                <div class="col-md-6">
-                                    <input class="form-control"
-                                           name="name"
-                                           ng-model="ctVM.selectedContentType.name"
-                                           ng-disabled="ctVM.currentViewState == ctVM.viewStates.EDIT"
-                                           sd-to-lower-case />
-                                </div>
-                            </div>
+                                        <label class="col-md-3 control-label">Name</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control"
+                                                   name="name"
+                                                   ng-model="ctVM.selectedContentType.name"
+                                                   ng-disabled="ctVM.currentViewState == ctVM.viewStates.EDIT"
+                                                   sd-to-lower-case />
+                                        </div>
+                                    </div>
 
-                            <div class="form-group"
-                                 ng-class="{'has-error': !ctVM.selectedContentType.contentDataType && contentTypeForm.submitted}">
-                                <label class="col-md-3 control-label">Data Type</label>
-                                <div class="col-md-6">
-                                    <ui-select ng-model="ctVM.selectedContentType.contentDataType" theme="bootstrap" 
-                                               ng-disabled="ctVM.currentViewState == ctVM.viewStates.EDIT || ctVM.contentDataTypes.length<=0">
-                                        <ui-select-match placeholder="Select data type">{{$select.selected.label}}</ui-select-match>
-                                        <ui-select-choices repeat="language in ctVM.contentDataTypes | filter: $select.search">
-                                            <div ng-bind-html="language.label | highlight: $select.search"></div>
-                                        </ui-select-choices>
-                                    </ui-select>
-                                </div>
-                            </div>                            
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Icon Class</label>
-                                <div class="col-md-6">
-                                    <input class="form-control" ng-model="ctVM.selectedContentType.iconClass" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Properties</label>
-                                <div class="col-md-6">
-                                    <ui-select tagging="ctVM.propertyTransform" ng-model="ctVM.selectedProperty" theme="bootstrap" ng-disabled="ctVM.properties.length<=0">
-                                        <ui-select-match placeholder="Select property">{{$select.selected.label}}</ui-select-match>
-                                        <ui-select-choices repeat="property in ctVM.properties | filter: $select.search">
-                                            <div ng-if="property.isTag" ng-bind-html="(property.label | highlight: $select.search) +' (New Property)'"></div>
-                                            <div ng-if="!property.isTag" ng-bind-html="property.label | highlight: $select.search"></div>
-                                        </ui-select-choices>
-                                    </ui-select>
-                                </div>
-                                <div class="col-md-3">
-                                    <a class="btn btn-primary" ng-click="ctVM.addProperty()" ng-disabled="(ctVM.properties.length<=0 || !ctVM.selectedProperty || ctVM.isPropExist())">Add Property</a>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-6 col-md-offset-3">
-                                    <div class="table-scrollable">
-                                        <table class="table table-striped table-bordered table-advance table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>
-                                                        Label
-                                                    </th>
-                                                    <th>
-                                                        Name
-                                                    </th>
-                                                    <th>
+                                    <div class="form-group"
+                                         ng-class="{'has-error': !ctVM.selectedContentType.contentDataType && contentTypeForm.submitted}">
+                                        <label class="col-md-3 control-label">Data Type</label>
+                                        <div class="col-md-6">
+                                            <ui-select ng-model="ctVM.selectedContentType.contentDataType" theme="bootstrap"
+                                                       ng-disabled="ctVM.currentViewState == ctVM.viewStates.EDIT || ctVM.contentDataTypes.length<=0">
+                                                <ui-select-match placeholder="Select data type">{{$select.selected.label}}</ui-select-match>
+                                                <ui-select-choices repeat="language in ctVM.contentDataTypes | filter: $select.search">
+                                                    <div ng-bind-html="language.label | highlight: $select.search"></div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Icon Class</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" ng-model="ctVM.selectedContentType.iconClass" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Properties</label>
+                                        <div class="col-md-6">
+                                            <ui-select tagging="ctVM.propertyTransform" ng-model="ctVM.selectedProperty" theme="bootstrap" ng-disabled="ctVM.properties.length<=0">
+                                                <ui-select-match placeholder="Select property">{{$select.selected.label}}</ui-select-match>
+                                                <ui-select-choices repeat="property in ctVM.properties | filter: $select.search">
+                                                    <div ng-if="property.isTag" ng-bind-html="(property.label | highlight: $select.search) +' (New Property)'"></div>
+                                                    <div ng-if="!property.isTag" ng-bind-html="property.label | highlight: $select.search"></div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a class="btn btn-primary" ng-click="ctVM.addProperty()" ng-disabled="(ctVM.properties.length<=0 || !ctVM.selectedProperty || ctVM.isPropExist())">Add Property</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-6 col-md-offset-3">
+                                            <div class="table-scrollable">
+                                                <table class="table table-striped table-bordered table-advance table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>
+                                                                Label
+                                                            </th>
+                                                            <th>
+                                                                Name
+                                                            </th>
+                                                            <th>
 
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr ng-repeat="property in ctVM.selectedContentType.properties">
-                                                    <td>
-                                                        {{property.label}}
-                                                    </td>
-                                                    <td>
-                                                        {{property.name}}
-                                                    </td>
-                                                    <td>
-                                                        <a href="" class="btn btn-default btn-xs" ng-click="ctVM.removeProperty(property)">
-                                                            <i class="fa fa-trash-o"></i> Delete
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="property in ctVM.selectedContentType.properties">
+                                                            <td>
+                                                                {{property.label}}
+                                                            </td>
+                                                            <td>
+                                                                {{property.name}}
+                                                            </td>
+                                                            <td>
+                                                                <a href="" class="btn btn-default btn-xs" ng-click="ctVM.removeProperty(property)">
+                                                                    <i class="fa fa-trash-o"></i> Delete
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>                            
-                        </div>
-                        <div class="form-actions">
-                            <div class="row">
-                                <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn btn-success" ng-click="ctVM.save()" ng-disabled="!ctVM.selectedContentType">Save</button>
-                                    <button type="button" class="btn btn-default" ng-click="ctVM.cancel()">Cancel</button>
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-md-offset-3 col-md-9">
+                                            <button type="submit" class="btn btn-success" ng-click="ctVM.save()" ng-disabled="!ctVM.selectedContentType">Save</button>
+                                            <button type="button" class="btn btn-default" ng-click="ctVM.cancel()">Cancel</button>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
-                    </form>
+                        <div class="tab-pane fade active in" id="tab_fields">
+                            <form class="form-horizontal" name="contentTypeForm" novalidate>
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Content Controls</label>
+                                        <div class="col-md-6">
+                                            <ui-select tagging="ctVM.propertyTransform" ng-model="ctVM.selectedControl" theme="bootstrap" ng-disabled="ctVM.contentControls.length<=0">
+                                                <ui-select-match placeholder="Select property">{{$select.selected.label}}</ui-select-match>
+                                                <ui-select-choices repeat="property in ctVM.properties | filter: $select.search">
+                                                    <div ng-if="property.isTag" ng-bind-html="(property.label | highlight: $select.search) +' (New Property)'"></div>
+                                                    <div ng-if="!property.isTag" ng-bind-html="property.label | highlight: $select.search"></div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a class="btn btn-primary" ng-click="ctVM.addProperty()" ng-disabled="(ctVM.properties.length<=0 || !ctVM.selectedProperty || ctVM.isPropExist())">Add Property</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-6 col-md-offset-3">
+                                            <div class="table-scrollable">
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-md-offset-3 col-md-9">
+                                            <button type="submit" class="btn btn-success" ng-click="ctVM.save()" ng-disabled="!ctVM.selectedContentType">Save</button>
+                                            <button type="button" class="btn btn-default" ng-click="ctVM.cancel()">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+
                 </div>
             </div>
         </div>

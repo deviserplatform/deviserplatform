@@ -190,12 +190,12 @@
                             <div class="col-md-6">
                                 {{property.label}}
                             </div>
-                            <div class="col-md-6" ng-show="!property.propertyOptionList">
+                            <div class="col-md-6" ng-show="!property.optionList">
                                 <input type="text" class="form-control input-sm" ng-model="property.value" />
                             </div>
-                            <div class="col-md-6" ng-show="property.propertyOptionList">
+                            <div class="col-md-6" ng-show="property.optionList">
                                 <select class="form-control input-sm" name="repeatSelect" id="repeatSelect" ng-model="property.value">
-                                    <option ng-repeat="option in property.propertyOptionList" value="{{option.id}}">{{option.label}}</option>
+                                    <option ng-repeat="option in property.optionList" value="{{option.id}}">{{option.label}}</option>
                                 </select>
                             </div>
                         </div>

@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Net.Http.Headers;
 using System.Threading.Tasks;
 using Deviser.Core.Common;
-using Deviser.Core.Common.DomainTypes;
 
 namespace DeviserWI.Controllers.API
 {

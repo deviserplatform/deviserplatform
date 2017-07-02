@@ -99,7 +99,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDbContext(DbOptions))
                 {
                     var result = context.LayoutType
-                        .Include(c => c.LayoutTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p=>p.PropertyOptionList)
+                        .Include(c => c.LayoutTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p=>p.OptionList)
                         .ToList();
 
                     return Mapper.Map<List<LayoutType>>(result);

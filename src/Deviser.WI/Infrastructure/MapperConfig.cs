@@ -71,7 +71,7 @@ namespace Deviser.WI.Infrastructure
                 config.CreateMap<Permission, Core.Common.DomainTypes.Permission>().ReverseMap();
                 config.CreateMap<Property, Core.Common.DomainTypes.Property>().ReverseMap();
 
-                config.CreateMap<PropertyOptionList, Core.Common.DomainTypes.PropertyOptionList>()
+                config.CreateMap<OptionList, Core.Common.DomainTypes.OptionList>()
                 .ForMember(dest => dest.List, opt =>
                 opt.MapFrom(src => !string.IsNullOrEmpty(src.List) ? SDJsonConvert.DeserializeObject<List<Core.Common.DomainTypes.PropertyOption>>(src.List) : null))
                 .ReverseMap()

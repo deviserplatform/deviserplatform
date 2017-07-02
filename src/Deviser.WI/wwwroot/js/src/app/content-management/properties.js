@@ -56,7 +56,7 @@
         function edit(property) {
             vm.currentViewState = vm.viewStates.EDIT;
             vm.selectedProperty = property;
-            if(vm.selectedProperty.propertyOptionListId){
+            if(vm.selectedProperty.optionListId){
                 vm.selectedProperty.moreOption = true;
             }
             
@@ -69,14 +69,14 @@
         function save() {
             $scope.propertyForm.submitted = true;
             if ($scope.propertyForm.$valid) {                
-                if (vm.selectedProperty.moreOption && vm.selectedProperty.propertyOptionList) {
-                    vm.selectedProperty.propertyOptionListId = vm.selectedProperty.propertyOptionList.id;
+                if (vm.selectedProperty.moreOption && vm.selectedProperty.optionList) {
+                    vm.selectedProperty.optionListId = vm.selectedProperty.optionList.id;
                 }
                 else {
-                    vm.selectedProperty.propertyOptionListId = null;
+                    vm.selectedProperty.optionListId = null;
                 }
 
-                vm.selectedProperty.propertyOptionList = null;
+                vm.selectedProperty.optionList = null;
 
                 if (vm.currentViewState == vm.viewStates.NEW && vm.isValidName(vm.selectedProperty.name)) {
                     propertyService.post(vm.selectedProperty).then(function (result) {

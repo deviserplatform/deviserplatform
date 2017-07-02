@@ -99,8 +99,8 @@ namespace Deviser.Core.Library.TagHelpers
                             var propValue = pageContent.Properties.FirstOrDefault(p => p.Id == prop.Id);
                             if (propValue != null)
                             {
-                                propValue.PropertyOptionListId = prop.PropertyOptionListId;
-                                propValue.PropertyOptionList = prop.PropertyOptionList;
+                                propValue.OptionListId = prop.OptionListId;
+                                propValue.OptionList = prop.OptionList;
                             }
                         }
                     }

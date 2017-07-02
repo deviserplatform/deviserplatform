@@ -119,7 +119,7 @@
                             <div class="form-group" ng-show="pVM.selectedProperty.moreOption">
                                 <label class="col-md-3 control-label">Option List</label>
                                 <div class="col-md-6">
-                                    <ui-select ng-model="pVM.selectedProperty.propertyOptionList" theme="bootstrap"
+                                    <ui-select ng-model="pVM.selectedProperty.optionList" theme="bootstrap"
                                                ng-disabled="pVM.optionLists.length<=0">
                                         <ui-select-match placeholder="Select option list">{{$select.selected.label}}</ui-select-match>
                                         <ui-select-choices repeat="optionList in pVM.optionLists | filter: $select.search">

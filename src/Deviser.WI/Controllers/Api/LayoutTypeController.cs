@@ -41,9 +41,9 @@ namespace DeviserWI.Controllers.API
                 //TODO: Move it to SiteSettings
                 rootAllowedTypes = contentConfig.SelectToken("rootLayoutTypes").ToObject<List<string>>();
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                logger.LogError(string.Format("Error occured while initializing LayoutTypeController"), ex);
             }
         }
 
@@ -53,7 +53,7 @@ namespace DeviserWI.Controllers.API
             try
             {
                 var layoutTypes = layoutTypeProvider.GetLayoutTypes();
-                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.LayoutType>>(layoutTypes);
+                var result = Mapper.Map<List<LayoutType>>(layoutTypes);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -83,7 +83,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpPost]
-        public IActionResult CreateLayoutType([FromBody]Deviser.Core.Common.DomainTypes.LayoutType layoutType)
+        public IActionResult CreateLayoutType([FromBody]LayoutType layoutType)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace DeviserWI.Controllers.API
                     return BadRequest("Layout type already exist");
 
                 var dbResult = layoutTypeProvider.CreateLayoutType(layoutType);
-                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.LayoutType>(dbResult);
+                var result = Mapper.Map<LayoutType>(dbResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -107,12 +107,12 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpPut]
-        public IActionResult UpdateLayoutType([FromBody]Deviser.Core.Common.DomainTypes.LayoutType layoutType)
+        public IActionResult UpdateLayoutType([FromBody]LayoutType layoutType)
         {
             try
             {
                 var dbResult = layoutTypeProvider.UpdateLayoutType(layoutType);
-                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.LayoutType>(dbResult);
+                var result = Mapper.Map<LayoutType>(dbResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();

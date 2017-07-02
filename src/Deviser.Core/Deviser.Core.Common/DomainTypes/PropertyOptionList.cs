@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Common.DomainTypes
 {
-    public class PropertyOptionList
+    public class OptionList
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

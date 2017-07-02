@@ -8,9 +8,10 @@ using Deviser.Core.Data;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDbContext))]
-    partial class DeviserDBContextModelSnapshot : ModelSnapshot
+    [Migration("20170701203414_PlatformSchema_00.00.04")]
+    partial class PlatformSchema_000004
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -40,6 +41,8 @@ namespace Deviser.WI.Migrations
                     b.Property<Guid?>("OptionListId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OptionListId");
 
                     b.ToTable("ContentControl");
                 });
@@ -121,15 +124,11 @@ namespace Deviser.WI.Migrations
 
                     b.Property<Guid>("ContentTypeId");
 
-                    b.Property<Guid>("OptionListId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ContentControlId");
 
                     b.HasIndex("ContentTypeId");
-
-                    b.HasIndex("OptionListId");
 
                     b.ToTable("ContentTypeControl");
                 });
@@ -833,6 +832,13 @@ namespace Deviser.WI.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ContentControl", b =>
+                {
+                    b.HasOne("Deviser.Core.Data.Entities.OptionList", "OptionList")
+                        .WithMany("ContentControls")
+                        .HasForeignKey("OptionListId");
+                });
+
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentPermission", b =>
                 {
                     b.HasOne("Deviser.Core.Data.Entities.PageContent", "PageContent")
@@ -864,10 +870,6 @@ namespace Deviser.WI.Migrations
                     b.HasOne("Deviser.Core.Data.Entities.ContentType", "ContentType")
                         .WithMany("ContentTypeControls")
                         .HasForeignKey("ContentTypeId");
-
-                    b.HasOne("Deviser.Core.Data.Entities.OptionList", "OptionList")
-                        .WithMany("ContentTypeControls")
-                        .HasForeignKey("OptionListId");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeProperty", b =>

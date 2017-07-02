@@ -13,7 +13,7 @@ namespace Deviser.Core.Common.DomainTypes
         public string Label { get; set; }
         //Value property is not in DB, It is here to maintain JSON strucuture
         public string Value { get; set; }
-        public Guid? PropertyOptionListId { get; set; }
+        public Guid? OptionListId { get; set; }
         //SelectedOption property is not in DB, It is here to maintain JSON strucuture. 
         //In addtion, value will be assigned only if property is optionlist
         [JsonIgnore]
@@ -23,12 +23,12 @@ namespace Deviser.Core.Common.DomainTypes
             {
                 Guid selectedOptionId;
 
-                var option = (PropertyOptionListId != null &&
+                var option = (OptionListId != null &&
                     !string.IsNullOrEmpty(Value) &&
                     Guid.TryParse(Value, out selectedOptionId) &&
                     selectedOptionId != Guid.Empty &&
-                    PropertyOptionList != null &&
-                    PropertyOptionList.List != null) ? PropertyOptionList.List.FirstOrDefault(o => o.Id == selectedOptionId):null;
+                    OptionList != null &&
+                    OptionList.List != null) ? OptionList.List.FirstOrDefault(o => o.Id == selectedOptionId):null;
                 return option;
             }
         }
@@ -37,11 +37,11 @@ namespace Deviser.Core.Common.DomainTypes
         {
             get
             {
-                return PropertyOptionListId != null && PropertyOptionListId != Guid.Empty;
+                return OptionListId != null && OptionListId != Guid.Empty;
             }
         }
 
-        public PropertyOptionList PropertyOptionList { get; set; }
+        public OptionList OptionList { get; set; }
         public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }

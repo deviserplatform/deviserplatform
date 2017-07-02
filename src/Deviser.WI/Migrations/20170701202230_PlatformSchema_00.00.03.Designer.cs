@@ -8,9 +8,10 @@ using Deviser.Core.Data;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDbContext))]
-    partial class DeviserDBContextModelSnapshot : ModelSnapshot
+    [Migration("20170701202230_PlatformSchema_00.00.03")]
+    partial class PlatformSchema_000003
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -36,8 +37,6 @@ namespace Deviser.WI.Migrations
                     b.Property<DateTime?>("LastModifiedDate");
 
                     b.Property<string>("Name");
-
-                    b.Property<Guid?>("OptionListId");
 
                     b.HasKey("Id");
 
@@ -121,15 +120,11 @@ namespace Deviser.WI.Migrations
 
                     b.Property<Guid>("ContentTypeId");
 
-                    b.Property<Guid>("OptionListId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ContentControlId");
 
                     b.HasIndex("ContentTypeId");
-
-                    b.HasIndex("OptionListId");
 
                     b.ToTable("ContentTypeControl");
                 });
@@ -864,10 +859,6 @@ namespace Deviser.WI.Migrations
                     b.HasOne("Deviser.Core.Data.Entities.ContentType", "ContentType")
                         .WithMany("ContentTypeControls")
                         .HasForeignKey("ContentTypeId");
-
-                    b.HasOne("Deviser.Core.Data.Entities.OptionList", "OptionList")
-                        .WithMany("ContentTypeControls")
-                        .HasForeignKey("OptionListId");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeProperty", b =>

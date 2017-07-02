@@ -17,6 +17,7 @@ namespace Deviser.Core.Data.Entities
         public ContentDataType ContentDataType { get; set; }
         public ICollection<ContentTypeProperty> ContentTypeProperties { get; set; }
         public ICollection<PageContent> PageContents { get; set; }
+        public ICollection<ContentTypeControl> ContentTypeControls { get; set; }
         public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }

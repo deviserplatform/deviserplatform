@@ -512,8 +512,8 @@
                 if (propVal) {
                     prop.value = propVal.value;
                 }
-                if (prop.propertyOptionList && prop.propertyOptionList.list) {
-                    prop.propertyOptionList = angular.fromJson(prop.propertyOptionList.list);
+                if (prop.optionList && prop.optionList.list) {
+                    prop.optionList = angular.fromJson(prop.optionList.list);
                 }
             });
 

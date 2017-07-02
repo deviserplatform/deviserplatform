@@ -145,21 +145,21 @@ namespace Deviser.TestCommon
             layouts.Add(new Layout
             {
                 Id = Guid.NewGuid(),
-                Config = "[{\"Id\":\"0fcf04a2 - 3d71 - 26b0 - c371 - 6d936c6c65d8\",\"Type\":\"container\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"9341f92e-83d8 - 4afe - ad4a - a95deeda9ae3\",\"Properties\":[{\"Id\":\"f5031c31 - 778b - 45dd - bd33 - eeb2a088d2bc\",\"Name\":\"cssclass\",\"Label\":\"Css Class\",\"Value\":null,\"PropertyOptionListId\":null,\"PropertyOptionList\":null,\"IsActive\":true}],\"PlaceHolders\":[]}]",
+                Config = "[{\"Id\":\"0fcf04a2 - 3d71 - 26b0 - c371 - 6d936c6c65d8\",\"Type\":\"container\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"9341f92e-83d8 - 4afe - ad4a - a95deeda9ae3\",\"Properties\":[{\"Id\":\"f5031c31 - 778b - 45dd - bd33 - eeb2a088d2bc\",\"Name\":\"cssclass\",\"Label\":\"Css Class\",\"Value\":null,\"OptionListId\":null,\"OptionList\":null,\"IsActive\":true}],\"PlaceHolders\":[]}]",
                 Name = "Home Page Layout"
             });
 
             layouts.Add(new Layout
             {
                 Id = Guid.NewGuid(),
-                Config = "[{\"Id\":\"0fcf04a2 - 3d71 - 26b0 - c371 - 6d936c6c65d8\",\"Type\":\"container\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"9341f92e-83d8 - 4afe - ad4a - a95deeda9ae3\",\"Properties\":[{\"Id\":\"f5031c31 - 778b - 45dd - bd33 - eeb2a088d2bc\",\"Name\":\"cssclass\",\"Label\":\"Css Class\",\"Value\":null,\"PropertyOptionListId\":null,\"PropertyOptionList\":null,\"IsActive\":true}],\"PlaceHolders\":[]}]",
+                Config = "[{\"Id\":\"0fcf04a2 - 3d71 - 26b0 - c371 - 6d936c6c65d8\",\"Type\":\"container\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"9341f92e-83d8 - 4afe - ad4a - a95deeda9ae3\",\"Properties\":[{\"Id\":\"f5031c31 - 778b - 45dd - bd33 - eeb2a088d2bc\",\"Name\":\"cssclass\",\"Label\":\"Css Class\",\"Value\":null,\"OptionListId\":null,\"OptionList\":null,\"IsActive\":true}],\"PlaceHolders\":[]}]",
                 Name = "Admin Layout"
             });
 
             layouts.Add(new Layout
             {
                 Id = Guid.NewGuid(),
-                Config = "[{\"Id\":\"0fcf04a2 - 3d71 - 26b0 - c371 - 6d936c6c65d8\",\"Type\":\"container\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"9341f92e-83d8 - 4afe - ad4a - a95deeda9ae3\",\"Properties\":[{\"Id\":\"f5031c31 - 778b - 45dd - bd33 - eeb2a088d2bc\",\"Name\":\"cssclass\",\"Label\":\"Css Class\",\"Value\":null,\"PropertyOptionListId\":null,\"PropertyOptionList\":null,\"IsActive\":true}],\"PlaceHolders\":[]}]",
+                Config = "[{\"Id\":\"0fcf04a2 - 3d71 - 26b0 - c371 - 6d936c6c65d8\",\"Type\":\"container\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"9341f92e-83d8 - 4afe - ad4a - a95deeda9ae3\",\"Properties\":[{\"Id\":\"f5031c31 - 778b - 45dd - bd33 - eeb2a088d2bc\",\"Name\":\"cssclass\",\"Label\":\"Css Class\",\"Value\":null,\"OptionListId\":null,\"OptionList\":null,\"IsActive\":true}],\"PlaceHolders\":[]}]",
                 Name = "Inner Layout"
             });
 
@@ -618,7 +618,7 @@ namespace Deviser.TestCommon
             return properties;
         }
 
-        public static List<PropertyOption> GetPropertyOptions()
+        public static List<PropertyOption> GetOptions()
         {
             var propertyOptions = new List<PropertyOption>();
 
@@ -639,28 +639,28 @@ namespace Deviser.TestCommon
             return propertyOptions;
         }
 
-        public static List<PropertyOptionList> GetPropertyOptionLists()
+        public static List<OptionList> GetOptionLists()
         {
-            var propertyOptionList = new List<PropertyOptionList>();
-            var propertyOptions = GetPropertyOptions();
+            var optionList = new List<OptionList>();
+            var options = GetOptions();
 
-            propertyOptionList.Add(new PropertyOptionList
+            optionList.Add(new OptionList
             {
                 Id = Guid.NewGuid(),
                 Name = "YesNo",
                 Label = "Yes No",
-                List = propertyOptions
+                List = options
             });
 
-            propertyOptionList.Add(new PropertyOptionList
+            optionList.Add(new OptionList
             {
                 Id = Guid.NewGuid(),
                 Name = "YesNoNa",
                 Label = "Yes No Na",
-                List = propertyOptions
+                List = options
             });
 
-            return propertyOptionList;
+            return optionList;
         }
 
         public static List<Role> GetRoles()

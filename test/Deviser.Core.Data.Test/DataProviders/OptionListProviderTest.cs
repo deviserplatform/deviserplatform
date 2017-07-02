@@ -16,7 +16,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var optionListProvider = new OptionListProvider(container);
-            var optionLists = TestDataProvider.GetPropertyOptionLists();
+            var optionLists = TestDataProvider.GetOptionLists();
             var optionList = optionLists.First();
 
             //Act
@@ -39,7 +39,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var optionListProvider = new OptionListProvider(container);
-            PropertyOptionList optionList = null;
+            OptionList optionList = null;
 
             //Act
             var result = optionListProvider.CreateOptionList(optionList);
@@ -53,7 +53,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var optionListProvider = new OptionListProvider(container);
-            var optionLists = TestDataProvider.GetPropertyOptionLists();
+            var optionLists = TestDataProvider.GetOptionLists();
             var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in optionLists)
             {
@@ -78,7 +78,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.True(resultItem.LastModifiedDate > DateTime.MinValue);
 
             //Clean
-            dbContext.PropertyOptionList.RemoveRange(dbContext.PropertyOptionList);
+            dbContext.OptionList.RemoveRange(dbContext.OptionList);
         }
 
         [Fact]
@@ -87,7 +87,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             //Arrange
             var optionListProvider = new OptionListProvider(container);
             var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
-            dbContext.PropertyOptionList.RemoveRange(dbContext.PropertyOptionList);
+            dbContext.OptionList.RemoveRange(dbContext.OptionList);
 
             //Act
             var result = optionListProvider.GetOptionLists();
@@ -102,7 +102,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var optionListProvider = new OptionListProvider(container);
-            var optionLists = TestDataProvider.GetPropertyOptionLists();
+            var optionLists = TestDataProvider.GetOptionLists();
             var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in optionLists)
             {
@@ -127,7 +127,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.True(result.LastModifiedDate > DateTime.MinValue);
 
             //Clean
-            dbContext.PropertyOptionList.RemoveRange(dbContext.PropertyOptionList);
+            dbContext.OptionList.RemoveRange(dbContext.OptionList);
         }
 
         [Fact]
@@ -135,7 +135,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var optionListProvider = new OptionListProvider(container);
-            var optionLists = TestDataProvider.GetPropertyOptionLists();
+            var optionLists = TestDataProvider.GetOptionLists();
             var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in optionLists)
             {
@@ -157,7 +157,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var optionListProvider = new OptionListProvider(container);
-            var optionLists = TestDataProvider.GetPropertyOptionLists();
+            var optionLists = TestDataProvider.GetOptionLists();
             var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in optionLists)
             {
@@ -180,7 +180,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.True(result.LastModifiedDate > DateTime.MinValue);
 
             //Clean
-            dbContext.PropertyOptionList.RemoveRange(dbContext.PropertyOptionList);
+            dbContext.OptionList.RemoveRange(dbContext.OptionList);
         }
 
         [Theory]
@@ -189,7 +189,7 @@ namespace Deviser.Core.Data.Test.DataProviders
         {
             //Arrange
             var optionListProvider = new OptionListProvider(container);
-            var optionLists = TestDataProvider.GetPropertyOptionLists();
+            var optionLists = TestDataProvider.GetOptionLists();
             var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
             foreach (var item in optionLists)
             {
@@ -203,7 +203,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.Null(result);
 
             //Clean
-            dbContext.PropertyOptionList.RemoveRange(dbContext.PropertyOptionList);
+            dbContext.OptionList.RemoveRange(dbContext.OptionList);
         }
     }
 }

@@ -8,9 +8,10 @@ using Deviser.Core.Data;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDbContext))]
-    partial class DeviserDBContextModelSnapshot : ModelSnapshot
+    [Migration("20170701184514_PlatformSchema_00.00.02")]
+    partial class PlatformSchema_000002
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -36,8 +37,6 @@ namespace Deviser.WI.Migrations
                     b.Property<DateTime?>("LastModifiedDate");
 
                     b.Property<string>("Name");
-
-                    b.Property<Guid?>("OptionListId");
 
                     b.HasKey("Id");
 
@@ -121,15 +120,11 @@ namespace Deviser.WI.Migrations
 
                     b.Property<Guid>("ContentTypeId");
 
-                    b.Property<Guid>("OptionListId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ContentControlId");
 
                     b.HasIndex("ContentTypeId");
-
-                    b.HasIndex("OptionListId");
 
                     b.ToTable("ContentTypeControl");
                 });
@@ -352,30 +347,6 @@ namespace Deviser.WI.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("ModulePermission");
-                });
-
-            modelBuilder.Entity("Deviser.Core.Data.Entities.OptionList", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime?>("CreatedDate");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Label");
-
-                    b.Property<DateTime?>("LastModifiedDate");
-
-                    b.Property<string>("List");
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OptionList");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Page", b =>
@@ -624,13 +595,37 @@ namespace Deviser.WI.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<Guid?>("OptionListId");
+                    b.Property<Guid?>("PropertyOptionListId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OptionListId");
+                    b.HasIndex("PropertyOptionListId");
 
                     b.ToTable("Property");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.PropertyOptionList", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("CreatedDate");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Label");
+
+                    b.Property<DateTime?>("LastModifiedDate");
+
+                    b.Property<string>("List");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PropertyOptionList");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Role", b =>
@@ -864,10 +859,6 @@ namespace Deviser.WI.Migrations
                     b.HasOne("Deviser.Core.Data.Entities.ContentType", "ContentType")
                         .WithMany("ContentTypeControls")
                         .HasForeignKey("ContentTypeId");
-
-                    b.HasOne("Deviser.Core.Data.Entities.OptionList", "OptionList")
-                        .WithMany("ContentTypeControls")
-                        .HasForeignKey("OptionListId");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeProperty", b =>
@@ -986,9 +977,9 @@ namespace Deviser.WI.Migrations
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Property", b =>
                 {
-                    b.HasOne("Deviser.Core.Data.Entities.OptionList", "OptionList")
+                    b.HasOne("Deviser.Core.Data.Entities.PropertyOptionList", "PropertyOptionList")
                         .WithMany("Properties")
-                        .HasForeignKey("OptionListId");
+                        .HasForeignKey("PropertyOptionListId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<System.Guid>", b =>

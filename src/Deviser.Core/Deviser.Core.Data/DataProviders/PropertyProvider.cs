@@ -56,7 +56,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDbContext(DbOptions))
                 {
                     var result = context.Property.Where(e => e.Id == propertyId)
-                        .Include(p=>p.PropertyOptionList)
+                        .Include(p=>p.OptionList)
                                .FirstOrDefault();
                     return Mapper.Map<Property>(result);
                 }
@@ -75,7 +75,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDbContext(DbOptions))
                 {
                     var result = context.Property
-                        .Include(p => p.PropertyOptionList)
+                        .Include(p => p.OptionList)
                         .ToList();
                     return Mapper.Map<List<Property>>(result);
                 }
@@ -103,7 +103,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error occured while updating PropertyOptionList", ex);
+                _logger.LogError("Error occured while updating OptionList", ex);
             }
             return null;
         }

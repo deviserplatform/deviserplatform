@@ -35,7 +35,7 @@ namespace Deviser.WI.Controllers.Api
                 //return NotFound();
 
                 var dbOptionList = optionListProvider.GetOptionLists();
-                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.PropertyOptionList>>(dbOptionList);
+                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.OptionList>>(dbOptionList);
 
                 if (result != null)
                     return Ok(result);
@@ -49,7 +49,7 @@ namespace Deviser.WI.Controllers.Api
         }
 
         [HttpPost]
-        public IActionResult CreateOptionList([FromBody]Deviser.Core.Common.DomainTypes.PropertyOptionList optionList)
+        public IActionResult CreateOptionList([FromBody]Deviser.Core.Common.DomainTypes.OptionList optionList)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace Deviser.WI.Controllers.Api
                     return BadRequest("Option list already exist");
 
                 var dbResult = optionListProvider.CreateOptionList(optionList);
-                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.PropertyOptionList>(dbResult);
+                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.OptionList>(dbResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -73,12 +73,12 @@ namespace Deviser.WI.Controllers.Api
         }
 
         [HttpPut]
-        public IActionResult UpdateOptionList([FromBody]Deviser.Core.Common.DomainTypes.PropertyOptionList contentType)
+        public IActionResult UpdateOptionList([FromBody]Deviser.Core.Common.DomainTypes.OptionList contentType)
         {
             try
             {
                 var dbResult = optionListProvider.UpdateOptionList(contentType);
-                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.PropertyOptionList>(dbResult);
+                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.OptionList>(dbResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();

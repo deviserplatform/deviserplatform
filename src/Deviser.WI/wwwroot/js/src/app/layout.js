@@ -236,8 +236,8 @@
                     if (propVal) {
                         //Property exist, update property label
                         propVal.label = prop.label;
-                        if (prop.propertyOptionList && prop.propertyOptionList.list) {
-                            propVal.propertyOptionList = angular.fromJson(prop.propertyOptionList);
+                        if (prop.optionList && prop.optionList.list) {
+                            propVal.optionList = angular.fromJson(prop.optionList);
                         }
                     }
                     else {
