@@ -8,9 +8,10 @@ using Deviser.Core.Data;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDbContext))]
-    partial class DeviserDBContextModelSnapshot : ModelSnapshot
+    [Migration("20170703210142_PlatformSchema_00.00.06")]
+    partial class PlatformSchema_000006
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -151,10 +152,6 @@ namespace Deviser.WI.Migrations
                     b.Property<Guid>("OptionListId");
 
                     b.Property<string>("Placeholder");
-
-                    b.Property<string>("Properties");
-
-                    b.Property<int>("SortOrder");
 
                     b.Property<Guid?>("ValidatorId");
 

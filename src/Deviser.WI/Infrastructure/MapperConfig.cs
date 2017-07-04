@@ -13,6 +13,7 @@ namespace Deviser.WI.Infrastructure
         {
             Mapper.Initialize(config =>
             {
+                config.CreateMap<ContentControl, Core.Common.DomainTypes.ContentControl>().ReverseMap();
                 config.CreateMap<ContentDataType, Core.Common.DomainTypes.ContentDataType>().ReverseMap();
                 config.CreateMap<ContentPermission, Core.Common.DomainTypes.ContentPermission>().ReverseMap();
 
@@ -31,6 +32,8 @@ namespace Deviser.WI.Infrastructure
                 .ForMember(dest => dest.Properties, opt => opt.Condition(src => src.ContentTypeProperties != null && src.ContentTypeProperties.All(cp => cp.Property != null)))
                 .ForMember(dest => dest.DataType, opt => opt.MapFrom(src =>
                    src.ContentDataType != null ? src.ContentDataType.Name : null));
+
+                config.CreateMap<FieldType, Core.Common.DomainTypes.FieldType>().ReverseMap();
 
                 config.CreateMap<Core.Common.DomainTypes.LayoutType, LayoutType>()
                 .ForMember(dest => dest.LayoutTypeProperties, opt => opt.MapFrom(src =>
