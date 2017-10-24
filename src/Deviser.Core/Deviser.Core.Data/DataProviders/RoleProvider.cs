@@ -64,7 +64,7 @@ namespace Deviser.Core.Data.DataProviders
                     if (user != null)
                     {
                         var result = context.Roles
-                       .Where(r => r.Users.Any(u => u.UserId == user.Id))
+                       .Where(r => r.UserRoles.Any(u => u.UserId == user.Id))
                        .OrderBy(r => r.Name)
                        .ToList();
                         return Mapper.Map<List<Role>>(result);

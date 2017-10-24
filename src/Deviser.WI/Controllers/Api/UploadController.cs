@@ -92,7 +92,7 @@ namespace DeviserWI.Controllers.API
                     {
                         if (file.Length > 0)
                         {
-                            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.ToString().Trim('"');
                             var path = Path.Combine(localImageUploadPath, fileName);
                             
                             using (var fileStream = System.IO.File.Create(path))

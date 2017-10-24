@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 
@@ -16,6 +16,7 @@ namespace Deviser.Core.Data.Entities
             Name = roleName;
         }
 
+        public virtual ICollection<UserRole> UserRoles { get; } = new List<UserRole>();
         public virtual ICollection<PagePermission> PagePermissions { get; set; }
         public virtual ICollection<ModulePermission> ModulePermissions { get; set; }
         public virtual ICollection<ContentPermission> ContentPermissions { get; set; }

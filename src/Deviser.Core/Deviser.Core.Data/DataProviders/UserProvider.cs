@@ -24,7 +24,7 @@ namespace Deviser.Core.Data.DataProviders
 
         //Constructor
         public UserProvider(ILifetimeScope container)
-            :base(container)
+            : base(container)
         {
             _logger = container.Resolve<ILogger<LayoutProvider>>();
         }
@@ -37,20 +37,20 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDbContext(DbOptions))
                 {
                     var result = context.Users
-                                .Include(u => u.Roles)
+                                .Include(u => u.UserRoles)
                                 .ToList();
                     var resturnResult = Mapper.Map<List<User>>(result);
                     foreach (var user in result)
                     {
-                        if (user.Roles != null && user.Roles.Count > 0)
+                        if (user.UserRoles!= null && user.UserRoles.Count > 0)
                         {
                             var targetUser = resturnResult.First(u => u.Id == user.Id);
                             targetUser.Roles = new List<Role>();
-                            foreach (var userRole in user.Roles)
+                            foreach (var userRole in user.UserRoles)
                             {
                                 if (userRole != null)
                                 {
-                                    var role = context.Roles.FirstOrDefault(e => e.Id == userRole.RoleId); 
+                                    var role = context.Roles.FirstOrDefault(e => e.Id == userRole.RoleId);
                                     targetUser.Roles.Add(Mapper.Map<Role>(role));
                                 }
                             }
@@ -75,14 +75,14 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     var result = context.Users
                                .Where(e => e.Id == userId)
-                               .Include(u => u.Roles)
+                               .Include(u => u.UserRoles)
                                .FirstOrDefault();
                     var returnResult = Mapper.Map<User>(result);
 
-                    if (result.Roles != null && result.Roles.Count > 0)
+                    if (result.UserRoles != null && result.UserRoles.Count > 0)
                     {
                         returnResult.Roles = new List<Role>();
-                        foreach (var userRole in result.Roles)
+                        foreach (var userRole in result.UserRoles)
                         {
                             if (userRole != null)
                             {
@@ -101,7 +101,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-        
+
     }
 
 }//End namespace

@@ -1,5 +1,6 @@
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 
 namespace Deviser.Core.Data.Entities
 {
@@ -24,5 +25,20 @@ namespace Deviser.Core.Data.Entities
 
         public string FirstName { get; set; }       
         public string LastName { get; set; }
+
+        /// <summary>
+        /// Navigation property for the roles this user belongs to.
+        /// </summary>
+        public virtual ICollection<UserRole> UserRoles { get; } = new List<UserRole> ();
+
+        /// <summary>
+        /// Navigation property for the claims this user possesses.
+        /// </summary>
+        public virtual ICollection<IdentityUserClaim<Guid>> UserClaims { get; } = new List<IdentityUserClaim<Guid>>();
+
+        /// <summary>
+        /// Navigation property for this users login accounts.
+        /// </summary>
+        public virtual ICollection<IdentityUserLogin<Guid>> UserLogins { get; } = new List<IdentityUserLogin<Guid>>();
     }
 }
