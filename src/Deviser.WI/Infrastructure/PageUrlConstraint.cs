@@ -12,18 +12,28 @@ using Deviser.Core.Common.DomainTypes;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Deviser.Core.Library.Multilingual;
+using Deviser.Core.Common;
+using Autofac;
 
 namespace Deviser.WI.Infrastructure
 {
     public class PageUrlConstraint : IRouteConstraint
     {
-        IPageProvider pageProvider;
-        private ILanguageProvider languageProvider;
+        protected IPageProvider pageProvider;
+        protected ILanguageProvider languageProvider;
+        protected ILifetimeScope container;
 
-        public PageUrlConstraint(IPageProvider pageProvider, ILanguageProvider languageProvider)
+        //public PageUrlConstraint(IPageProvider pageProvider, ILanguageProvider languageProvider)
+        //{
+        //    this.pageProvider = pageProvider;
+        //    this.languageProvider = languageProvider;
+        //}
+
+        public PageUrlConstraint(ILifetimeScope container)
         {
-            this.pageProvider = pageProvider;
-            this.languageProvider = languageProvider;
+            this.container = container;
+            pageProvider = container.Resolve<IPageProvider>();
+            languageProvider = container.Resolve<ILanguageProvider>();
         }
 
         public bool Match(HttpContext httpContext, IRouter route, string routeKey, RouteValueDictionary values, RouteDirection routeDirection)
@@ -31,9 +41,9 @@ namespace Deviser.WI.Infrastructure
             if (values[routeKey] != null)
             {
                 var permalink = values[routeKey].ToString();
-                var currentCulture = GetCurrentCulture(httpContext, permalink);
-                var pages = pageProvider.GetPageTranslations(currentCulture.ToString().ToLower());
-                if(pages != null && pages.Count > 0)
+                var currentCulture = Globals.CurrentCulture; //GetCurrentCulture(httpContext, permalink);
+                var pages = pageProvider.GetPageTranslations(currentCulture.ToString());
+                if (pages != null && pages.Count > 0)
                 {
                     var result = pages.Any(p => (p != null && p.URL.ToLower() == permalink.ToLower()));
                     return result;

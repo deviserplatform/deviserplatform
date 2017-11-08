@@ -29,7 +29,7 @@ namespace Deviser.Core.Data.Entities
         /// <summary>
         /// Navigation property for the roles this user belongs to.
         /// </summary>
-        public virtual ICollection<UserRole> UserRoles { get; } = new List<UserRole> ();
+        public virtual ICollection<IdentityUserRole<Guid>> UserRoles { get; } = new List<IdentityUserRole<Guid>> ();
 
         /// <summary>
         /// Navigation property for the claims this user possesses.

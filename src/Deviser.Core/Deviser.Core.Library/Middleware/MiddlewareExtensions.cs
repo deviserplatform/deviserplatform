@@ -27,8 +27,8 @@ namespace Deviser.Core.Library.Middleware
             // We use the MvcMarkerService to make sure if all the services were added.
             if (builder.ApplicationServices.GetService(typeof(MvcMarkerService)) == null)
             {
-                throw new InvalidOperationException("FormatUnableToFindServices" + 
-                    "AddMvc" + 
+                throw new InvalidOperationException("FormatUnableToFindServices" +
+                    "AddMvc" +
                     "ConfigureServices(...)");
             }
 
@@ -43,6 +43,12 @@ namespace Deviser.Core.Library.Middleware
 
             return builder.UseMiddleware<PageContextMiddleware>(routes.Build());
         }
+
+        //public static IApplicationBuilder UsePageContext(
+        //    this IApplicationBuilder builder)
+        //{
+        //    return builder.UseMiddleware<PageContextMiddleware>();
+        //}
 
         //public static IApplicationBuilder UseRouteMiddleware(this IApplicationBuilder builder)
         //{

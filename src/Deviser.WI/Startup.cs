@@ -25,17 +25,20 @@ using System.Globalization;
 using System.IO;
 using Deviser.Core.Data;
 using Deviser.Core.Library.Internal;
+using Microsoft.AspNetCore.Localization;
 
 namespace Deviser.WI
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        private const string enUSCulture = "en-US";
+
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+            //var builder = new ConfigurationBuilder()
+            //    .SetBasePath(env.ContentRootPath)
+            //    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            //    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
             Log.Logger = new LoggerConfiguration()
                 //.Enrich.FromLogContext()
@@ -43,18 +46,13 @@ namespace Deviser.WI
                 .WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "log", "log-{Date}.txt"))
                 .CreateLogger();
 
+            //builder.AddEnvironmentVariables();
+            //Configuration = builder.Build();
 
-            if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                //builder.AddUserSecrets();
-            }
-
-            builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
 
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
         public IContainer ApplicationContainer { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -89,7 +87,8 @@ namespace Deviser.WI
             .AddRazorOptions(options =>
             {
                 options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
-            });
+            })
+            .AddControllersAsServices();
 
             services.AddSession();
 
@@ -102,23 +101,48 @@ namespace Deviser.WI
             services.TryAddSingleton<ObjectMethodExecutorCache>();
             services.TryAddSingleton<ITypeActivatorCache, TypeActivatorCache>();
 
-            // Add Autofac
-            var containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterModule<DefaultModule>();
-            containerBuilder.Populate(services);
-            ApplicationContainer = containerBuilder.Build();
+            //// Add Autofac
+            //var containerBuilder = new ContainerBuilder();
+            //containerBuilder.RegisterModule<DefaultModule>();            
+            //containerBuilder.Populate(services);
+            //ApplicationContainer = containerBuilder.Build();
+
+            //// Create the IServiceProvider based on the container.
+            //return new  AutofacServiceProvider(ApplicationContainer);
+
+
+            // Create the container builder.
+            var builder = new ContainerBuilder();
+
+            builder.RegisterModule<DefaultModule>();
+            // Register dependencies, populate the services from
+            // the collection, and build the container. If you want
+            // to dispose of the container at the end of the app,
+            // be sure to keep a reference to it as a property or field.
+            //
+            // Note that Populate is basically a foreach to add things
+            // into Autofac that are in the collection. If you register
+            // things in Autofac BEFORE Populate then the stuff in the
+            // ServiceCollection can override those things; if you register
+            // AFTER Populate those registrations can override things
+            // in the ServiceCollection. Mix and match as needed.
+            builder.Populate(services);
+            //builder.RegisterType<MyType>().As<IMyType>();
+            this.ApplicationContainer = builder.Build();
 
             // Create the IServiceProvider based on the container.
-            return new AutofacServiceProvider(ApplicationContainer);
+            return new AutofacServiceProvider(this.ApplicationContainer);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
-            IApplicationBuilder app, 
-            IHostingEnvironment env, 
-            ILoggerFactory loggerFactory, 
+            IApplicationBuilder app,
+            IHostingEnvironment env,
+            ILoggerFactory loggerFactory,
             ILifetimeScope container,
-            IApplicationLifetime appLifetime)
+            IApplicationLifetime appLifetime
+            )
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -135,23 +159,20 @@ namespace Deviser.WI
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            //var defaultRequestCulture = new RequestCulture(new CultureInfo("en-US"));
+            //var defaultRequestCulture = new RequestCulture(new CultureInfo(enUSCulture));
+            var supportedCultures = new[]
+            {
+                new CultureInfo("en-US"),
+                new CultureInfo("de-CH"),
+                new CultureInfo("fr-CH"),
+                new CultureInfo("it-CH")
+            };
+
             var requestLocalizationOptions = new RequestLocalizationOptions
             {
-                SupportedCultures = new List<CultureInfo>
-                {
-                    new CultureInfo("en-US"),
-                    new CultureInfo("de-CH"),
-                    new CultureInfo("fr-CH"),
-                    new CultureInfo("it-CH")
-                },
-                SupportedUICultures = new List<CultureInfo>
-                {
-                    new CultureInfo("en-US"),
-                    new CultureInfo("de-CH"),
-                    new CultureInfo("fr-CH"),
-                    new CultureInfo("it-CH")
-                }
+                //DefaultRequestCulture = defaultRequestCulture,
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
             };
 
             app.UseRequestLocalization(requestLocalizationOptions);
@@ -193,11 +214,11 @@ namespace Deviser.WI
 
             app.UsePageContext(routeBuilder);
 
-            app.UseMvc(routeBuilder);
+           app.UseMvc(routeBuilder);
 
             // If you want to dispose of resources that have been resolved in the
             // application container, register for the "ApplicationStopped" event.
-            appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
+            //appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
 
         }
     }

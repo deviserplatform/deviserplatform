@@ -49,8 +49,7 @@ namespace Deviser.Core.Data.DataProviders
                 using (var context = new DeviserDbContext(DbOptions))
                 {
                     var dbContentType = Mapper.Map<Entities.ContentType>(contentType);
-                    dbContentType.Id = Guid.NewGuid();
-                    dbContentType.ContentDataType = null;
+                    dbContentType.Id = Guid.NewGuid();                    
                     if (dbContentType.ContentTypeProperties!=null && dbContentType.ContentTypeProperties.Count > 0)
                     {
                         foreach(var ctp in dbContentType.ContentTypeProperties)
@@ -160,7 +159,7 @@ namespace Deviser.Core.Data.DataProviders
                         .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
                         .Include(c => c.ContentDataType)
                         .OrderBy(c=>c.Name)
-                        .ToList();
+                        .ToList();   
                     return Mapper.Map<List<ContentType>>(result);
                 }
             }

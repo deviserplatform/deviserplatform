@@ -6,14 +6,16 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 using System;
 
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDbContext))]
-    partial class DeviserDBContextModelSnapshot : ModelSnapshot
+    [Migration("20171107223231_PlatformSchema_00.00.08")]
+    partial class PlatformSchema_000008
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -892,11 +894,14 @@ namespace Deviser.WI.Migrations
 
                     b.Property<Guid>("RoleId");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
                     b.HasKey("UserId", "RoleId");
 
-                    b.HasIndex("RoleId");
-
                     b.ToTable("UserRole");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUserRole<Guid>");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -912,6 +917,18 @@ namespace Deviser.WI.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.UserRole", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>");
+
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRole");
+
+                    b.HasDiscriminator().HasValue("UserRole");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentControl", b =>
@@ -1157,25 +1174,25 @@ namespace Deviser.WI.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
-                {
-                    b.HasOne("Deviser.Core.Data.Entities.Role")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Deviser.Core.Data.Entities.User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
                     b.HasOne("Deviser.Core.Data.Entities.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.UserRole", b =>
+                {
+                    b.HasOne("Deviser.Core.Data.Entities.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Deviser.Core.Data.Entities.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

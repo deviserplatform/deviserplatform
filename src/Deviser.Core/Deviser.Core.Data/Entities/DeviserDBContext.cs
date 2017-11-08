@@ -54,6 +54,12 @@ namespace Deviser.Core.Data
 
             modelBuilder.Entity<Role>(entity =>
             {
+                entity.HasMany(e => e.UserRoles)
+                .WithOne()
+                .HasForeignKey(e => e.RoleId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
                 entity.ToTable("Role");
             });
 
@@ -67,9 +73,16 @@ namespace Deviser.Core.Data
                 entity.ToTable("RoleClaim");
             });
 
+            //modelBuilder.Entity<UserRole>(entity =>
+            //{
+            //    entity.HasOne(d => d.Role).WithMany(r => r.UserRoles).HasForeignKey(d => d.RoleId).OnDelete(DeleteBehavior.Restrict);
+
+            //    entity.HasOne(d => d.User).WithMany(p => p.UserRoles).HasForeignKey(d => d.UserId).OnDelete(DeleteBehavior.Restrict);
+            //});
+
             modelBuilder.Entity<IdentityUserRole<Guid>>(entity =>
             {
-                entity.ToTable("UserRole");
+                entity.ToTable("UserRole");                
             });
 
             modelBuilder.Entity<IdentityUserLogin<Guid>>(entity =>
@@ -419,7 +432,9 @@ namespace Deviser.Core.Data
         public virtual DbSet<SiteSetting> SiteSetting { get; set; }
         
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
-        //public DbSet<ApplicationUser> ApplicationUser { get; set; }
-        //public DbSet<ApplicationUser> ApplicationUser { get; set; }
+
+        public DbSet<User> User { get; set; }
+        public DbSet<Role> Role { get; set; }
+        public DbSet<IdentityUserRole<Guid>> UserRole { get; set; }
     }
 }

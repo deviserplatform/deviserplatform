@@ -11,9 +11,10 @@ using System;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDbContext))]
-    partial class DeviserDBContextModelSnapshot : ModelSnapshot
+    [Migration("20171107225049_PlatformSchema_00.00.09")]
+    partial class PlatformSchema_000009
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -892,9 +893,13 @@ namespace Deviser.WI.Migrations
 
                     b.Property<Guid>("RoleId");
 
+                    b.Property<Guid?>("RoleId1");
+
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
+
+                    b.HasIndex("RoleId1");
 
                     b.ToTable("UserRole");
                 });
@@ -1160,9 +1165,13 @@ namespace Deviser.WI.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
                     b.HasOne("Deviser.Core.Data.Entities.Role")
-                        .WithMany("UserRoles")
+                        .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Deviser.Core.Data.Entities.Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId1");
 
                     b.HasOne("Deviser.Core.Data.Entities.User")
                         .WithMany("UserRoles")

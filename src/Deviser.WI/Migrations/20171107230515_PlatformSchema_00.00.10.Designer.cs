@@ -11,9 +11,10 @@ using System;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDbContext))]
-    partial class DeviserDBContextModelSnapshot : ModelSnapshot
+    [Migration("20171107230515_PlatformSchema_00.00.10")]
+    partial class PlatformSchema_000010
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

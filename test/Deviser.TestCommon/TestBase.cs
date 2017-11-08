@@ -47,10 +47,10 @@ namespace Deviser.TestCommon
 
             services.AddOptions();
             services
-                .AddDbContext<DeviserDbContext>(b => b.UseInMemoryDatabase().UseInternalServiceProvider(efServiceProvider));
+                .AddDbContext<DeviserDbContext>(b => b.UseInMemoryDatabase("DeviserWI").UseInternalServiceProvider(efServiceProvider));
 
             services.AddIdentity<User, Role>()
-                    .AddEntityFrameworkStores<DeviserDbContext, Guid>();
+                    .AddEntityFrameworkStores<DeviserDbContext>();
 
             services.AddSingleton<DiagnosticSource>(new DiagnosticListener("Microsoft.AspNetCore"));
             services.AddSingleton<IHostingEnvironment>(hostingEnvMock.Object);

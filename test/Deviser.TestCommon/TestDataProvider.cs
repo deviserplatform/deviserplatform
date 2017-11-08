@@ -58,7 +58,7 @@ namespace Deviser.TestCommon
         public static List<ContentType> GetContentTypes()
         {
             var contentTypes = new List<ContentType>();
-            var properties = GetProperties();
+            //var properties = GetProperties();
             var stringType = new ContentDataType
             {
                 Id = Guid.NewGuid(),
@@ -84,7 +84,7 @@ namespace Deviser.TestCommon
                 Name = "Text",
                 Label = "Text",
                 ContentDataType = arrayType,
-                Properties = properties
+                Properties = GetProperties()
             });
             contentTypes.Add(new ContentType
             {
@@ -92,7 +92,7 @@ namespace Deviser.TestCommon
                 Name = "Image",
                 Label = "Image",
                 ContentDataType = objectType,
-                Properties = properties
+                Properties = GetProperties()
             });
             contentTypes.Add(new ContentType
             {
@@ -100,7 +100,7 @@ namespace Deviser.TestCommon
                 Name = "RichText",
                 Label = "Rich text",
                 ContentDataType = stringType,
-                Properties = properties
+                Properties = GetProperties()
             });
 
             return contentTypes;
@@ -445,6 +445,31 @@ namespace Deviser.TestCommon
                 ContainerId = Guid.NewGuid(),                
                 InheritViewPermissions = true,
                 InheritEditPermissions = true,
+                Module = module,
+                ModuleId = module.Id,
+                ModuleAction = module.ModuleAction.First(),
+                
+            ModulePermissions = new List<ModulePermission>()
+                {
+                    new ModulePermission
+                    {
+                        Id = Guid.NewGuid(),
+                        PageModuleId = Guid.NewGuid(),
+                        PermissionId = Guid.NewGuid(),
+                        RoleId = Guid.NewGuid(),
+                    }
+                },
+                IsDeleted = false
+            });
+
+            pageModules.Add(new PageModule
+            {
+                Id = Guid.NewGuid(),
+                PageId = pageId,
+                ContainerId = Guid.NewGuid(),
+                InheritViewPermissions = true,
+                InheritEditPermissions = true,
+                Module = module,
                 ModuleId = module.Id,
                 ModuleAction = module.ModuleAction.First(),
                 ModulePermissions = new List<ModulePermission>()
@@ -467,28 +492,7 @@ namespace Deviser.TestCommon
                 ContainerId = Guid.NewGuid(),
                 InheritViewPermissions = true,
                 InheritEditPermissions = true,
-                ModuleId = module.Id,
-                ModuleAction = module.ModuleAction.First(),
-                ModulePermissions = new List<ModulePermission>()
-                {
-                    new ModulePermission
-                    {
-                        Id = Guid.NewGuid(),
-                        PageModuleId = Guid.NewGuid(),
-                        PermissionId = Guid.NewGuid(),
-                        RoleId = Guid.NewGuid(),
-                    }
-                },
-                IsDeleted = false
-            });
-
-            pageModules.Add(new PageModule
-            {
-                Id = Guid.NewGuid(),
-                PageId = pageId,
-                ContainerId = Guid.NewGuid(),
-                InheritViewPermissions = true,
-                InheritEditPermissions = true,
+                Module = module,
                 ModuleId = module.Id,
                 ModuleAction = module.ModuleAction.First(),
                 ModulePermissions = new List<ModulePermission>()
@@ -601,19 +605,32 @@ namespace Deviser.TestCommon
         public static List<Property> GetProperties()
         {
             var properties = new List<Property>();
+            
             properties.Add(new Property()
             {
                 Id = Guid.NewGuid(),
                 Name = "cssclass",
                 Label = "Css Class",
-                Value="TEST VALUE1"
+                Value="TEST VALUE1",
+                OptionList = new OptionList
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Test List",
+                    Label = "Test List"
+                }
             });
             properties.Add(new Property()
             {
                 Id = Guid.NewGuid(),
                 Name = "height",
                 Label = "Height",
-                Value = "TEST VALUE2"
+                Value = "TEST VALUE2",
+                OptionList = new OptionList
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Test List1",
+                    Label = "Test List1"
+                }
             });
             return properties;
         }

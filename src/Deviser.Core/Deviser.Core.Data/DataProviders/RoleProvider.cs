@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Autofac;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.DataProviders
 {
@@ -64,9 +65,10 @@ namespace Deviser.Core.Data.DataProviders
                     if (user != null)
                     {
                         var result = context.Roles
-                       .Where(r => r.UserRoles.Any(u => u.UserId == user.Id))
-                       .OrderBy(r => r.Name)
-                       .ToList();
+                            .Include(r=>r.UserRoles)
+                            .Where(r => r.UserRoles.Any(u => u.UserId == user.Id))
+                            .OrderBy(r => r.Name)
+                            .ToList();
                         return Mapper.Map<List<Role>>(result);
                     }
                 }
