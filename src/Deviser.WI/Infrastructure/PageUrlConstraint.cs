@@ -41,7 +41,7 @@ namespace Deviser.WI.Infrastructure
             if (values[routeKey] != null)
             {
                 var permalink = values[routeKey].ToString();
-                var currentCulture = Globals.CurrentCulture; //GetCurrentCulture(httpContext, permalink);
+                var currentCulture = GetCurrentCulture(httpContext, permalink); // Have  to use this since it will be clled before InitPageContext()
                 var pages = pageProvider.GetPageTranslations(currentCulture.ToString());
                 if (pages != null && pages.Count > 0)
                 {
