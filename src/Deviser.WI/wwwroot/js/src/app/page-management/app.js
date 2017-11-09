@@ -130,11 +130,14 @@
 
         function changeLanguage() {
             var currentPageTranslation = _.find(vm.selectedItem.pageTranslation, { locale: vm.currentLocale });
-            var defaultPageTranslation = _.find(vm.selectedItem.pageTranslation, { locale: vm.siteLanguage });
-            defaultPageTranslation = JSON.parse(angular.toJson(defaultPageTranslation));
             if (!currentPageTranslation) {
+                var defaultPageTranslation = _.find(vm.selectedItem.pageTranslation, { locale: vm.siteLanguage });
+                defaultPageTranslation = JSON.parse(angular.toJson(defaultPageTranslation));           
                 defaultPageTranslation.locale = vm.currentLocale;
-                defaultPageTranslation.name += vm.currentLocale.replace('-', '').toLowerCase();
+                defaultPageTranslation.name = '';
+                defaultPageTranslation.title = '';
+                defaultPageTranslation.description = '';
+                defaultPageTranslation.keywords = '';                              
                 vm.selectedItem.pageTranslation.push(defaultPageTranslation);
             }
         }

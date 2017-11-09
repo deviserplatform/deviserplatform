@@ -83,7 +83,7 @@
                                             <option value="">-- Coose a language --</option>
                                         </select>*@
                                     <ui-select ng-model="pmVM.currentLocale" theme="bootstrap" ng-disabled="lVM.languages.length<=0" ng-change="pmVM.changeLanguage()">
-                                        <ui-select-match placeholder="Coose a language">{{$select.selected.englishName}}</ui-select-match>
+                                        <ui-select-match placeholder="Choose a language">{{$select.selected.englishName}}</ui-select-match>
                                         <ui-select-choices repeat="language.cultureCode as language in pmVM.languages | filter: $select.search">
                                             <div ng-bind-html="language.englishName | highlight: $select.search"></div>
                                             <small ng-bind-html="language.nativeName | highlight: $select.search"></small>
@@ -157,7 +157,7 @@
                                 <label class="col-sm-2 control-label">Skin</label>
                                 <div class="col-sm-6">
                                     <select ng-model="pmVM.selectedItem.skinSrc" ng-options="skin.value as skin.key for skin in pmVM.skins" class="form-control">
-                                        <option value="">-- Coose a skin --</option>
+                                        <option value="">-- Choose a skin --</option>
                                     </select>
                                 </div>
                             </div>
