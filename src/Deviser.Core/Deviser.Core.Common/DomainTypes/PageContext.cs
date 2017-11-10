@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Deviser.Core.Common.DomainTypes
@@ -79,6 +80,15 @@ namespace Deviser.Core.Common.DomainTypes
             get
             {
                 return SiteSettingInfo.SiteLanguage;
+            }
+        }
+
+        public string SelectedTheme
+        {
+            get
+            {
+                var selectedTheme = CurrentPage != null ? Regex.Match(CurrentPage.SkinSrc, @"\/([^)]*)\/").Groups[1].Value : "";
+                return selectedTheme;
             }
         }
 

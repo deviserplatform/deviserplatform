@@ -29,7 +29,8 @@ namespace Deviser.Core.Library.TagHelpers
 
         private INavigation navigation;
         private IHtmlHelper htmlHelper;
-        IHostingEnvironment hostingEnvironment;
+        private IHostingEnvironment hostingEnvironment;
+        private IScopeService scopeService;
 
         [HtmlAttributeName(ContentEditsAttribute)]
         public string ContentEditViews { get; set; }
@@ -43,6 +44,7 @@ namespace Deviser.Core.Library.TagHelpers
         {
             this.htmlHelper = container.Resolve<IHtmlHelper>();
             this.navigation = container.Resolve<INavigation>();
+            this.scopeService = scopeService;
             hostingEnvironment = container.Resolve<IHostingEnvironment>();
         }
 
@@ -64,13 +66,14 @@ namespace Deviser.Core.Library.TagHelpers
         private string GetAllEditViews()
         {
             StringBuilder sb = new StringBuilder();
-            string editViewDir = editViewDir = Path.Combine(hostingEnvironment.ContentRootPath, Globals.ContentTypesEditPath.Replace("~/", "").Replace("/", @"\"));
+            string editPath = string.Format(Globals.ContentTypesEditPath, scopeService.PageContext.SelectedTheme);
+            string editViewDir = editViewDir = Path.Combine(hostingEnvironment.ContentRootPath, editPath.Replace("~/", "").Replace("/", @"\"));
             DirectoryInfo dir = new DirectoryInfo(editViewDir);
             foreach (var file in dir.GetFiles())
             {
                 if (file != null)
                 {
-                    var htmlContent = htmlHelper.Partial(Path.Combine(Globals.ContentTypesEditPath, file.Name));
+                    var htmlContent = htmlHelper.Partial(Path.Combine(editPath, file.Name));
                     var contentResult = GetString(htmlContent);
                     sb.Append(contentResult);
                 }

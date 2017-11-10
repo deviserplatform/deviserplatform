@@ -50,7 +50,7 @@ namespace Deviser.Core.Common
         {
             get
             {
-                return "~/Views/Shared/LayoutTypes/{0}.cshtml";
+                return "~/Sites/Default/Themes/{0}/LayoutTypes/{1}.cshtml";
             }
         }
 
@@ -58,7 +58,7 @@ namespace Deviser.Core.Common
         {
             get
             {
-                return "~/Views/Shared/ContentTypes/View/{0}.cshtml";
+                return "~/Sites/Default/Themes/{0}/ContentTypes/View/{1}.cshtml";
             }
         }
 
@@ -66,7 +66,7 @@ namespace Deviser.Core.Common
         {
             get
             {
-                return "~/Views/Shared/ContentTypes/Edit/";
+                return "~/Sites/Default/Themes/{0}/ContentTypes/Edit/";
             }
         }
 

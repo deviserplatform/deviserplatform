@@ -180,7 +180,8 @@ namespace Deviser.Core.Library.TagHelpers
                                     PageContent = pageContent,
                                     Content = content
                                 };
-                                htmlContent = htmlHelper.Partial(string.Format(Globals.ContentTypesViewPath, typeName), dynamicContent);
+                                string contentTypesViewPath = string.Format(Globals.ContentTypesViewPath, scopeService.PageContext.SelectedTheme, typeName);
+                                htmlContent = htmlHelper.Partial(contentTypesViewPath, dynamicContent);
                                 var contentResult = GetString(htmlContent);
                                 currentResults.Add(new ContentResult
                                 {
@@ -216,7 +217,7 @@ namespace Deviser.Core.Library.TagHelpers
                             ContentResult = currentResult
                         };
 
-                        htmlContent = htmlHelper.Partial(string.Format(Globals.LayoutTypesPath, layoutType), layoutContent);
+                        htmlContent = htmlHelper.Partial(string.Format(Globals.LayoutTypesPath, scopeService.PageContext.SelectedTheme, layoutType), layoutContent);
                         var layoutResult = GetString(htmlContent);
                         sb.Append(layoutResult);
 
