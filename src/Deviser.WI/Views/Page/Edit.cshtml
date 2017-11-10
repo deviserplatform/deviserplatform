@@ -1,8 +1,8 @@
 ﻿@inject IScopeService scopeService
 @{
-    if (ViewBag.Skin != null)
+    if (ViewBag.Theme != null)
     {
-        Layout = "~/Sites/Default/Skins/Skyline/LayoutDesigner.cshtml";
+        Layout = "~/Sites/Default/Themes/Skyline/LayoutDesigner.cshtml";
     }
     var currentPage = scopeService.PageContext.CurrentPage;
 }
@@ -14,17 +14,17 @@
 <div class="layout-wrapper" ng-app="deviserEdit" ng-controller="EditCtrl as editVM">
     <div class="row">
         <div class="col-md-2">
-            <h3 class="page-title">
+            <h2 class="page-title">
                 Page Editor
                 <small>edit the page</small>
-            </h3>
-        </div>
-        <div class="col-md-8">
-            <h3>Layout Name: {{editVM.pageLayout.name}}</h3>
+            </h2>
         </div>
         <div class="col-md-2">
-            <h3> Page name: @currentPage.PageTranslation.Get().Title</h3>
+            <h3> Page : @currentPage.PageTranslation.Get().Title</h3>
         </div>
+        <div class="col-md-2">
+            <h3>Layout : {{editVM.pageLayout.name}}</h3>
+        </div>        
     </div>
 
     <div class="row">
@@ -163,44 +163,49 @@
         @await Html.PartialAsync("_NgComponents")
 
 
-        <div class="row">
-            <div class="col-md-2">
-                <div class="toolbox box box-grey box-padding">
-                    <h3>Content Elements</h3>
-                    <div>
-                        <!-- The toolbox only allows to copy objects, not move it. After a new
-                        element was created, dnd-copied is invoked and we generate the next id -->
-                        <div ng-repeat="contentType in editVM.contentTypes | orderBy:'contentType.sortOrder'"
-                             dnd-type="contentType.type"
-                             dnd-draggable="contentType"
-                             dnd-effect-allowed="copy"
-                             dnd-copied="editVM.copyElement(contentType)">
-                            <button type="button" class="btn btn-default">
-                                <i class="{{contentType.contentType.iconClass}}" ng-show="contentType.contentType.iconClass"></i>
-                                <img src="{{contentType.contentType.iconImage}}" ng-show="contentType.contentType.iconImage" alt="{{contentType.contentType.name}}" />
-                                {{contentType.contentType.label}}
-                            </button>
+        <div class="row">           
+                <div class="col-md-2">
+                    <div class="pre-scrollable">
+                        <div class="toolbox box box-grey box-padding">
+                            <h3>Components</h3>
+                            <div class="toolbox box box-grey box-padding">
+                                <h3>Content Elements</h3>
+                                <div>
+                                    <!-- The toolbox only allows to copy objects, not move it. After a new
+                    element was created, dnd-copied is invoked and we generate the next id -->
+                                    <div ng-repeat="contentType in editVM.contentTypes | orderBy:'contentType.sortOrder'"
+                                         dnd-type="contentType.type"
+                                         dnd-draggable="contentType"
+                                         dnd-effect-allowed="copy"
+                                         dnd-copied="editVM.copyElement(contentType)">
+                                        <button type="button" class="btn btn-default">
+                                            <i class="{{contentType.contentType.iconClass}}" ng-show="contentType.contentType.iconClass"></i>
+                                            <img src="{{contentType.contentType.iconImage}}" ng-show="contentType.contentType.iconImage" alt="{{contentType.contentType.name}}" />
+                                            {{contentType.contentType.label}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="toolbox box box-grey box-padding">
+                                <h3>Modules</h3>
+                                <div>
+                                    <!-- The toolbox only allows to copy objects, not move it. After a new
+                    element was created, dnd-copied is invoked and we generate the next id -->
+                                    <div ng-repeat="item in editVM.modules"
+                                         dnd-type="item.type"
+                                         dnd-draggable="item"
+                                         dnd-effect-allowed="copy"
+                                         dnd-copied="editVM.copyElement(item)">
+                                        <button type="button" class="btn btn-default">
+                                            <i class="{{item.moduleAction.iconClass}}" ng-show="item.moduleAction.iconClass"></i>
+                                            <img src="{{item.moduleAction.iconImage}}" ng-show="item.moduleAction.iconImage" alt="{{item.moduleAction.name}}" />
+                                            {{item.moduleAction.displayName}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="toolbox box box-grey box-padding">
-                    <h3>Modules</h3>
-                    <div>
-                        <!-- The toolbox only allows to copy objects, not move it. After a new
-                        element was created, dnd-copied is invoked and we generate the next id -->
-                        <div ng-repeat="item in editVM.modules"
-                             dnd-type="item.type"
-                             dnd-draggable="item"
-                             dnd-effect-allowed="copy"
-                             dnd-copied="editVM.copyElement(item)">
-                            <button type="button" class="btn btn-default">
-                                <i class="{{item.moduleAction.iconClass}}" ng-show="item.moduleAction.iconClass"></i>
-                                <img src="{{item.moduleAction.iconImage}}" ng-show="item.moduleAction.iconImage" alt="{{item.moduleAction.name}}" />
-                                {{item.moduleAction.displayName}}
-                            </button>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="col-md-8">
 

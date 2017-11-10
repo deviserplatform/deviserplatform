@@ -17,16 +17,16 @@ using System.Net.Http;
 namespace DeviserWI.Controllers.API
 {
     [Route("api/[controller]")]
-    public class SkinController : Controller
+    public class ThemeController : Controller
     {
         //Logger
-        private readonly ILogger<SkinController> logger;
-        private ISkinManager skinManager;
+        private readonly ILogger<ThemeController> logger;
+        private IThemeManager themeManager;
 
-        public SkinController(ILifetimeScope container)
+        public ThemeController(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<SkinController>>();
-            skinManager = container.Resolve<ISkinManager>();
+            logger = container.Resolve<ILogger<ThemeController>>();
+            themeManager = container.Resolve<IThemeManager>();
         }
         
         [HttpGet]
@@ -34,14 +34,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var page = skinManager.GetHostSkins();
+                var page = themeManager.GetHostThemes();
                 if (page != null)
                     return Ok(page);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting skins"), ex);
+                logger.LogError(string.Format("Error occured while getting themes"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
             

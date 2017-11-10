@@ -68,7 +68,7 @@ namespace Deviser.Core.Library.Middleware
             }
 
             logger.LogInformation("Handling request: " + context.Request.Path);
-            await next.Invoke(context);
+             await next.Invoke(context);
             logger.LogInformation("Finished handling request.");
         }
 

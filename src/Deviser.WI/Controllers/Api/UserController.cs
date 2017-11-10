@@ -64,7 +64,7 @@ namespace Deviser.WI.Controllers.Api
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting skins"), ex);
+                logger.LogError(string.Format("Error occured while getting themes"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

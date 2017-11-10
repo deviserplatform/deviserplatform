@@ -1,9 +1,9 @@
 ﻿@model Deviser.Core.Common.DomainTypes.Page
 @inject IScopeService scopeService
 @{
-    if (ViewBag.Skin != null)
+    if (ViewBag.Theme != null)
     {
-        Layout = ViewBag.Skin;
+        Layout = ViewBag.Theme;
     }
 
     var pageContext = scopeService.PageContext;

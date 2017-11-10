@@ -12,7 +12,7 @@
     app.factory('moduleService', moduleService);
     app.factory('moduleActionService', moduleActionService);
     app.factory('pageModuleService', pageModuleService);
-    app.factory('skinService', skinService);
+    app.factory('themeService', themeService);
     app.factory('userService', userService);
     app.factory('userExistService', userExistService);
     app.factory('passwordResetService', passwordResetService);
@@ -50,8 +50,8 @@
         }
     }
 
-    function skinService($http, $q, globals) {
-        return baseService($http, $q, globals, '/skin');
+    function themeService($http, $q, globals) {
+        return baseService($http, $q, globals, '/theme');
     }
 
     function contentTypeService($http, $q, globals) {

@@ -10,12 +10,12 @@
     ]);
 
     app.controller('SiteSettingsCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'sdUtil',
-        'siteSettingService', 'pageService', 'layoutService', 'skinService', 'languageService', siteSettingsCtrl]);
+        'siteSettingService', 'pageService', 'layoutService', 'themeService', 'languageService', siteSettingsCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
     function siteSettingsCtrl($scope, $timeout, $filter, $q, globals, sdUtil,
-        siteSettingService, pageService, layoutService, skinService, languageService) {
+        siteSettingService, pageService, layoutService, themeService, languageService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
@@ -35,7 +35,7 @@
             getSiteSettings();
             getPages();
             getLayouts();
-            getSkin();
+            getThemes();
             getSiteLanguages();
         }
 
@@ -81,9 +81,9 @@
                 vm.layouts = layouts;
             })
         }
-        function getSkin() {
-            skinService.get().then(function (skins) {
-                vm.skins = skins;
+        function getThemes() {
+            themeService.get().then(function (themes) {
+                vm.themes = themes;
             })
         }
 

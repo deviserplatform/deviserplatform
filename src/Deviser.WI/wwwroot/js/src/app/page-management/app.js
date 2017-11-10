@@ -11,7 +11,7 @@
     ]);
 
     app.controller('PageManagementCtrl', ['$scope', '$timeout', '$filter', '$q',
-        'globals', 'pageService', 'skinService', 'languageService', 'roleService', editCtrl]);
+        'globals', 'pageService', 'themeService', 'languageService', 'roleService', editCtrl]);
 
     app.filter('selectLanguage', function () {
 
@@ -33,7 +33,7 @@
     ////////////////////////////////
     /*Function declarations only*/
     function editCtrl($scope, $timeout, $filter, $q,
-    globals, pageService, skinService, languageService, roleService) {
+    globals, pageService, themeService, languageService, roleService) {
         var vm = this;
         var SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         var pageViewPermissionId = globals.appSettings.permissions.pageView;
@@ -89,7 +89,7 @@
             vm.accordion = {};
             getPages();
             getRoles();
-            getSkins();
+            getThemes();
             getLanguages();
         }
 
@@ -104,11 +104,11 @@
 
         }
 
-        function getSkins() {
-            skinService.get().then(function (data) {
-                vm.skins = data;
+        function getThemes() {
+            themeService.get().then(function (data) {
+                vm.themes = data;
             }, function (error) {
-                showMessage("error", "Cannot load skin, please contact administrator");
+                showMessage("error", "Cannot load theme, please contact administrator");
             });
         }
 
@@ -183,7 +183,7 @@
 
         function selectPage(page) {
             vm.currentLocale = vm.siteLanguage;
-            if (!page.pageTranslation || page.pageTranslation.length == 0) {
+            if (!page.pageTranslation || page.pageTranslation.length === 0) {
                 page.pageTranslation = [
                 {
                     locale: vm.currentLocale

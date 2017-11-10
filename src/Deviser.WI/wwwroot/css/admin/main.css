@@ -1,4 +1,4 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 /*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.
@@ -1496,7 +1496,7 @@ pre {
     border-radius: 0; }
 
 .pre-scrollable {
-  max-height: 340px;
+  max-height: 1100px;
   overflow-y: scroll; }
 
 .container {

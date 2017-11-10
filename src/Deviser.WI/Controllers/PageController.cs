@@ -78,7 +78,7 @@ namespace Deviser.WI.Controllers
             FilterPageElements(currentPage);
             if (scopeService.PageContext != null)
             {
-                ViewBag.Skin = Globals.AdminSkin;
+                ViewBag.Theme = Globals.AdminTheme;
                 RouteData.Values.Add("permalink", permalink);
                 return View(ViewBag);
             }
@@ -93,7 +93,7 @@ namespace Deviser.WI.Controllers
             {
                 if (scopeService.PageContext.HasPageEditPermission)
                 {
-                    ViewBag.Skin = Globals.AdminSkin;
+                    ViewBag.Theme = Globals.AdminTheme;
                     RouteData.Values.Add("permalink", permalink);
                     return View(scopeService.PageContext.CurrentPage);
                 }
@@ -163,16 +163,16 @@ namespace Deviser.WI.Controllers
                     currentPage.PageModule = filteredPageModules;
                 }
 
-                //Skins are not used for sometime period
-                string skin = "";
+                //Themes are not used for sometime period
+                string theme = "";
                 if (!string.IsNullOrEmpty(currentPage.SkinSrc))
-                    skin = currentPage.SkinSrc;
+                    theme = currentPage.SkinSrc;
                 else
-                    skin = Globals.DefaultSkin;
+                    theme = Globals.DefaultTheme;
 
-                skin = skin.Replace("[G]", "~/Sites/Default/");
+                theme = theme.Replace("[G]", "~/Sites/Default/");
 
-                ViewBag.Skin = skin;
+                ViewBag.Theme = theme;
             }
         }
     }

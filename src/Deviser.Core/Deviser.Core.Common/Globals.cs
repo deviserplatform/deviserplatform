@@ -12,7 +12,7 @@ namespace Deviser.Core.Common
         private static string applicationMapPath;
         private static string hostMapPath;
 
-        public const string glbHostSkinFolder = "_default";
+        public const string glbHostThemeFolder = "_default";
 
         public const string moduleRoute = "moduleRoute";
 
@@ -134,19 +134,19 @@ namespace Deviser.Core.Common
         //    }
         //}
 
-        public static string DefaultSkin
+        public static string DefaultTheme
         {
             get
             {
-                return "~/Sites/Default/Skins/Skyline/Home.cshtml";
+                return "~/Sites/Default/Themes/Skyline/Home.cshtml";
             }
         }
 
-        public static string AdminSkin
+        public static string AdminTheme
         {
             get
             {
-                return "~/Sites/Default/Skins/Skyline/Admin.cshtml";
+                return "~/Sites/Default/Themes/Skyline/Admin.cshtml";
             }
         }
 
