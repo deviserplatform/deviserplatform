@@ -87,7 +87,7 @@ namespace Deviser.Core.Common.DomainTypes
         {
             get
             {
-                var selectedTheme = CurrentPage != null ? Regex.Match(CurrentPage.SkinSrc, @"\/([^)]*)\/").Groups[1].Value : "";
+                var selectedTheme = CurrentPage != null ? Regex.Match(CurrentPage.ThemeSrc, @"\/([^)]*)\/").Groups[1].Value : "";
                 return selectedTheme;
             }
         }

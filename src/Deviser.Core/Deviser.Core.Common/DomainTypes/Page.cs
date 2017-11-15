@@ -18,7 +18,7 @@ namespace Deviser.Core.Common.DomainTypes
         public int? PageLevel { get; set; }
         public int? PageOrder { get; set; }
         public Guid? ParentId { get; set; }
-        public string SkinSrc { get; set; }
+        public string ThemeSrc { get; set; }
         public DateTime? StartDate { get; set; }
 
         public virtual ICollection<PageContent> PageContent { get; set; }

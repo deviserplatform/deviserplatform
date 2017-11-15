@@ -131,7 +131,7 @@
         }
         
         function update(module) {
-            moduleService.put(module).then(function (result) {
+            moduleService.put(module, module.id).then(function (result) {
                 console.log(result);
                 getModules();
                 showMessage("success", "Modulehas been updated");

@@ -87,7 +87,7 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     var result = context.ModuleAction
                         .Include(ma => ma.Module)//.ThenInclude(ma=>ma.ModuleActionType)
-                        .Where(m => m.ModuleActionType.ControlType.ToLower() == "view") //Selecting View Actions Only
+                        .Where(m => m.ModuleActionType.ControlType.ToLower() == "view" && m.Module.IsActive ) //Selecting View Actions Only
                         .OrderBy(ma=>ma.DisplayName)
                         .ToList();
 
@@ -226,10 +226,12 @@ namespace Deviser.Core.Data.DataProviders
                         } 
                     }
 
-                    var toDelete = context.ModuleAction.Where(dbModuleAction => dbModuleAction.ModuleId == dbModule.Id &&
-                    !moduleActions.Any(moduleAction => moduleAction.Id != dbModuleAction.Id)).ToList();
+                    //No need to delte a row from dbo.ModuleAction since the key s referred in dbo.pagemodule.
 
-                    context.ModuleAction.RemoveRange(toDelete);
+                    //var toDelete = context.ModuleAction.Where(dbModuleAction => dbModuleAction.ModuleId == dbModule.Id &&
+                    //!moduleActions.Any(moduleAction => moduleAction.Id != dbModuleAction.Id)).ToList();
+
+                    //context.ModuleAction.RemoveRange(toDelete);
 
                     var result = context.Module.Update(dbModule).Entity;
                     context.SaveChanges();

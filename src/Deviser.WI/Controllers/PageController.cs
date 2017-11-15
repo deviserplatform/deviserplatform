@@ -165,8 +165,8 @@ namespace Deviser.WI.Controllers
 
                 //Themes are not used for sometime period
                 string theme = "";
-                if (!string.IsNullOrEmpty(currentPage.SkinSrc))
-                    theme = currentPage.SkinSrc;
+                if (!string.IsNullOrEmpty(currentPage.ThemeSrc))
+                    theme = currentPage.ThemeSrc;
                 else
                     theme = Globals.DefaultTheme;
 

@@ -6,6 +6,7 @@ namespace Deviser.Core.Data.Entities
     public partial class PageContent
     {
         public Guid Id { get; set; }
+        public string Title { get; set; }
         public Guid ContainerId { get; set; }
         public string Properties { get; set; }
         public int SortOrder { get; set; }

@@ -100,7 +100,7 @@ namespace DeviserWI.Controllers.API
             }
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult Put([FromBody]Module module)
         {
             try

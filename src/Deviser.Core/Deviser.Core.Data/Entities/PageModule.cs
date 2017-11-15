@@ -6,6 +6,7 @@ namespace Deviser.Core.Data.Entities
     public partial class PageModule
     {
         public Guid Id { get; set; }
+        public string Title { get; set; }
         public Guid ContainerId { get; set; }
         public bool IsDeleted { get; set; }
         public Guid ModuleId { get; set; }

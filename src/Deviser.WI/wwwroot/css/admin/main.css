@@ -1,4 +1,4 @@
-﻿@charset "UTF-8";
+@charset "UTF-8";
 /*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.
@@ -1496,7 +1496,7 @@ pre {
     border-radius: 0; }
 
 .pre-scrollable {
-  max-height: 1100px;
+  max-height: 340px;
   overflow-y: scroll; }
 
 .container {
@@ -5942,8 +5942,10 @@ body {
   padding: 15px; }
 
 .box-padding > h3 {
-  margin: -15px;
-  margin-bottom: 15px; }
+  margin: -15px; }
+
+.box-content {
+  margin-top: 15px; }
 
 .box-grey {
   border-color: #ddd; }
@@ -6051,6 +6053,10 @@ body {
   width: 50%; }
 
 /***************************** Toolbox *****************************/
+.toolbox-container {
+  overflow-y: scroll;
+  max-height: 80vh; }
+
 .nestedDemo .toolbox ul {
   list-style: none;
   padding-left: 0px;

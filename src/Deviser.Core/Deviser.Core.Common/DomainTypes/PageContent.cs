@@ -8,6 +8,7 @@ namespace Deviser.Core.Common.DomainTypes
     public class PageContent
     {
         public Guid Id { get; set; }
+        public string Title { get; set; }
         public Guid ContainerId { get; set; }
         public List<Property> Properties { get; set; }
         public int SortOrder { get; set; }

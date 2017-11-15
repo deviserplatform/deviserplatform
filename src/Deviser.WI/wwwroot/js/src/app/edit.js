@@ -672,7 +672,7 @@
                 }
                 else {
                     //newely created module                    
-                    module.moduleId = item.element.moduleAction.module.id;
+                    module.moduleId = item.element.moduleAction.moduleId;
                     module.moduleActionId = item.element.moduleAction.id;
                     module.hasEditPermission = true; //New content always has edit permission
                     item.element.pageModule = module;

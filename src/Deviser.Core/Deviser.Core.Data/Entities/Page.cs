@@ -23,7 +23,7 @@ namespace Deviser.Core.Data.Entities
         public int? PageLevel { get; set; }
         public int? PageOrder { get; set; }
         public Guid? ParentId { get; set; }
-        public string SkinSrc { get; set; }
+        public string ThemeSrc { get; set; }
         public DateTime? StartDate { get; set; }
 
         public virtual ICollection<PageContent> PageContent { get; set; }

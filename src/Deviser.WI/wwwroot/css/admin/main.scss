@@ -184,7 +184,7 @@ body {
 
 .box-layout > h3 {
     padding: 5px 10px;
-}
+} 
 
 .box .content-title, .box .module-title {
     float: left;
@@ -209,7 +209,10 @@ body {
 
 .box-padding > h3 {
     margin: -15px;
-    margin-bottom: 15px;
+}
+
+.box-content{
+    margin-top:15px;
 }
 
 .box-grey {
@@ -340,7 +343,10 @@ body {
 }
 
 /***************************** Toolbox *****************************/
-
+.toolbox-container {
+    overflow-y: scroll;
+    max-height:80vh;
+}
 .nestedDemo .toolbox ul {
     list-style: none;
     padding-left: 0px;

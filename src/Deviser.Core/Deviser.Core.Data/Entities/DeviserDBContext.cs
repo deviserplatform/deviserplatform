@@ -158,7 +158,7 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
 
-                entity.Property(e => e.SkinSrc).HasMaxLength(200);
+                entity.Property(e => e.ThemeSrc).HasMaxLength(200);
 
                 entity.Property(e => e.StartDate).HasColumnType("datetime");
 
