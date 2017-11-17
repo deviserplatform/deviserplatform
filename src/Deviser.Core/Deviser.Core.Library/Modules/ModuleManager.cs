@@ -65,6 +65,21 @@ namespace Deviser.Core.Library.Modules
             return null;
         }
 
+        public List<PageModule> GetDeletedPageModules()
+        {
+            try
+            {
+                var pageModules = pageProvider.GetDeletedPageModules();               
+                return pageModules;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting deleted pageModules"), ex);
+            }
+
+            return null;
+
+        }
         public PageModule CreateUpdatePageModule(PageModule pageModule)
         {
             try

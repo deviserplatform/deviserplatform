@@ -1,5 +1,6 @@
 ﻿using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.Modules;
+using Deviser.Core.Library.Services;
 using Deviser.Modules.Security.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,6 +13,12 @@ namespace Deviser.Modules.Security.Controllers
     [Module("Security")]
     public class EditController : DeviserController
     {
+        IScopeService scopeService;
+        public EditController(IScopeService scopeService)
+        {
+            this.scopeService = scopeService;
+        }
+
         public async Task<IActionResult> Index()
         {
             return View();

@@ -59,17 +59,17 @@ ViewData["Title"] = "Index";
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr ng-repeat="role in rbVM.pages">
-                                                    <td>
-                                                        {{page.name}}
+                                                <tr ng-repeat="page in rbVM.pages">
+                                                    <td>                                                     
+                                                           {{ page.pageTranslation.title }}                                                      
                                                     </td>
                                                     <td>
-                                                        <a href="" class="btn btn-default btn-xs" ng-click="rbVM.restore(page)">
+                                                        <a href="" class="btn btn-default btn-xs" ng-click="rbVM.restorePage(page.id)">
                                                             <i class="fa fa-refresh"></i> Restore
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        <a href="" class="btn btn-default btn-xs" ng-click="rbVM.remove(page)">
+                                                        <a href="" class="btn btn-default btn-xs" ng-click="rbVM.deletePage(page.id)">
                                                             <i class="fa fa-trash-o"></i> Delete
                                                         </a>
                                                     </td>
@@ -91,6 +91,9 @@ ViewData["Title"] = "Index";
                                                         Title
                                                     </th>
                                                     <th>
+                                                        Page
+                                                    </th>
+                                                    <th>
                                                         Restore
                                                     </th>
                                                     <th>
@@ -99,17 +102,20 @@ ViewData["Title"] = "Index";
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr ng-repeat="role in rbVM.pageContents">
+                                                <tr ng-repeat="pageContent in rbVM.pageContents">
                                                     <td>
-                                                        {{pageContent.name}}
+                                                        {{pageContent.title}}
+                                                    </td>
+                                                    <td>                                                                                                                
+                                                        {{pageContent.page.pageTranslation.title}}                                                       
                                                     </td>
                                                     <td>
-                                                        <a href="" class="btn btn-default btn-xs" ng-click="rbVM.restore(pageContent)">
+                                                        <a href="" class="btn btn-default btn-xs" ng-click="rbVM.restorePageContent(pageContent.id)">
                                                             <i class="fa fa-refresh"></i> Restore
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        <a href="" class="btn btn-default btn-xs" ng-click="rbVM.remove(pageContent)">
+                                                        <a href="" class="btn btn-default btn-xs" ng-click="rbVM.deletePageContent(pageContent.id)">
                                                             <i class="fa fa-trash-o"></i> Delete
                                                         </a>
                                                     </td>
@@ -131,6 +137,9 @@ ViewData["Title"] = "Index";
                                                         Title
                                                     </th>
                                                     <th>
+                                                        Page
+                                                    </th>
+                                                    <th>
                                                         Restore
                                                     </th>
                                                     <th>
@@ -139,17 +148,20 @@ ViewData["Title"] = "Index";
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr ng-repeat="role in rbVM.pageModules">
+                                                <tr ng-repeat="pageModule in rbVM.pageModules">
                                                     <td>
-                                                        {{pageModule.name}}
+                                                        {{pageModule.title}}
                                                     </td>
                                                     <td>
-                                                        <a href="" class="btn btn-default btn-xs" ng-click="rbVM.restore(pageModule)">
+                                                        {{pageModule.page.pageTranslation.title}}
+                                                    </td>
+                                                    <td>
+                                                        <a href="" class="btn btn-default btn-xs" ng-click="rbVM.restorePageModule(pageModule.id)">
                                                             <i class="fa fa-refresh"></i> Restore
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        <a href="" class="btn btn-default btn-xs" ng-click="rbVM.remove(pageModule)">
+                                                        <a href="" class="btn btn-default btn-xs" ng-click="rbVM.deletePageModule(pageModule.id)">
                                                             <i class="fa fa-trash-o"></i> Delete
                                                         </a>
                                                     </td>

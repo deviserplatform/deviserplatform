@@ -34,6 +34,9 @@
         var serviceUrl = '/page';
         var service = baseService($http, $q, globals, serviceUrl);
         service.getPages = getPages;
+        service.getDeletedPages = getDeletedPages;
+        service.restorePage = restorePage;
+        service.deletePage = deletePage;
         return service;
 
         ////////////////////////////////
@@ -43,6 +46,40 @@
             var request = $http({
                 method: 'GET',
                 url: getUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
+
+        function getDeletedPages() {
+            var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/deletedlist';
+            var request = $http({
+                method: 'GET',
+                url: getUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
+
+        function restorePage(id) {
+            var putUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/restore/' + id;
+            var request = $http({
+                method: 'PUT',
+                url: putUrl,                
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response,$q)
+            });
+
+        }
+
+        function deletePage(id) {
+            var deleteUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/delete/' + id;
+            var request = $http({
+                method: 'DELETE',
+                url: deleteUrl,
             });
             return request.then(handleSuccess, function (response) {
                 return handleError(response, $q)
@@ -103,8 +140,11 @@
         var service = baseService($http, $q, globals, serviceUrl);
         var url = globals.appSettings.serviceBaseUrl + serviceUrl;
         service.get = get;
+        service.getDeletedPageContents = getDeletedPageContents;
         service.putContents = putContents;
         service.putPermission = putPermission;
+        service.restorePageContent = restorePageContent;
+        service.deletePageContent = deletePageContent;
         return service;
 
         ////////////////////////////////
@@ -132,6 +172,18 @@
             });
         }
 
+        function getDeletedPageContents() {
+            var getUrl = url + '/list';
+            var request = $http({
+                method: 'GET',
+                url: getUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+
+        }
+
         function putContents(data) {
             var putUrl = url + '/list';
             var request = $http({
@@ -156,6 +208,29 @@
             return request.then(handleSuccess, function (response) {
                 return handleError(response, $q)
             });
+        }
+
+        function restorePageContent(id) {
+            var putUrl = url + '/restore/' + id;
+            var request = $http({
+                method: 'PUT',
+                url: putUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
+
+        function deletePageContent(id) {
+            var deleteUrl = url + '/delete/' + id;
+            var request = $http({
+                method: 'DELETE',
+                url: deleteUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+
         }
     }
 
@@ -247,9 +322,12 @@
         var url = globals.appSettings.serviceBaseUrl + serviceUrl;
         var service = baseService($http, $q, globals, serviceUrl);
         service.getByPage = getByPage;
+        service.getDeletedPageModules = getDeletedPageModules;
         service.post = null;
         service.putModules = putModules;
         service.putPermission = putPermission;
+        service.restorePageModule = restorePageModule;
+        service.deletePageModule = deletePageModule;
 
         return service;
 
@@ -260,6 +338,19 @@
                 method: 'GET',
                 url: getUrl
             });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });           
+        }
+
+        function getDeletedPageModules() {
+            var getUrl = url + '/list';
+
+            var request = $http({
+                method: 'GET',
+                url: getUrl
+            });
+
             return request.then(handleSuccess, function (response) {
                 return handleError(response, $q)
             });
@@ -284,6 +375,30 @@
                 method: 'PUT',
                 url: putUrl,
                 data: angular.toJson(data)
+            });
+
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
+
+        function restorePageModule(id) {
+            var putUrl = url + '/restore/' + id;
+            var request = $http({
+                method: 'PUT',
+                url: putUrl
+            });
+
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
+
+        function deletePageModule(id) {
+            var deleteUrl = url + '/delete/' + id;
+            var request = $http({
+                method: 'DELETE',
+                url: deleteUrl
             });
 
             return request.then(handleSuccess, function (response) {

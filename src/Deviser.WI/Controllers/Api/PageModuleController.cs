@@ -82,6 +82,27 @@ namespace DeviserWI.Controllers.API
             }
         }
 
+        [HttpGet]
+        [Route("list/")]
+        public IActionResult Get()
+        {
+            try
+            {
+                var dbResult = moduleManager.GetDeletedPageModules();
+                if (dbResult != null)
+                {
+                    var result = Mapper.Map<List<PageModule>>(dbResult);
+                    return Ok(result);
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting deleted pageModules"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpPut]
         public IActionResult Post([FromBody]PageModule pageModule)
         {
@@ -158,6 +179,26 @@ namespace DeviserWI.Controllers.API
             }
         }
 
+        [HttpPut]
+        [Route("restore/{id}")]
+        public IActionResult PutPageModule(Guid id)
+        {
+            try
+            {
+                var result = pageProvider.RestorePageModule(id);
+                if (result != null)
+                    return Ok(result);
+
+                return NotFound();
+            }
+            catch(Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while updating pageModule permissions"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+            }
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
@@ -178,6 +219,26 @@ namespace DeviserWI.Controllers.API
                 return BadRequest();
             }
             catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while deleting page module"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public IActionResult DeletePageModule(Guid id)
+        {
+            try
+            {
+                bool result = pageProvider.DeletePageModule(id);
+                if (result)
+                    return Ok();
+
+                return BadRequest();
+
+            }
+            catch(Exception ex)
             {
                 logger.LogError(string.Format("Error occured while deleting page module"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);

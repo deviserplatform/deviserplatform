@@ -15,6 +15,8 @@ namespace Deviser.Core.Data.DataProviders
         PageContent Get(Guid pageContentId);
         //List<PageContent> GetByContainer(Guid containerId);
         List<PageContent> Get(Guid pageId, string cultureCode);
+        List<PageContent> Get();
+        PageContent RestorePageContent(Guid id);
         PageContentTranslation GetTranslation(Guid pageConentId);
         PageContentTranslation GetTranslations(Guid pageConentId, string cultureCode);
         PageContent Create(PageContent dbPageContent);
@@ -24,6 +26,7 @@ namespace Deviser.Core.Data.DataProviders
         PageContentTranslation UpdateTranslation(PageContentTranslation dbPageContentTranslation);
         List<ContentPermission> AddContentPermissions(List<ContentPermission> dbContentPermissions);
         void UpdateContentPermission(PageContent dbPageContentSrc);
+        bool DeletePageContent(Guid id);
 
     }
 
@@ -133,6 +136,28 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
+        public List<PageContent> Get()
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var result = context.PageContent
+                                .Include(p => p.Page).ThenInclude(p => p.PageTranslation)
+                                .Where(p => p.IsDeleted)
+                                .OrderBy(p => p.Id)
+                                .ToList();
+
+                    return Mapper.Map<List<PageContent>>(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while getting deleted page contents", ex);
+            }
+            return null;        
+        }
+      
         /// <summary>
         /// Get page content translation for given pageContentId and cultureCode
         /// </summary>
@@ -411,6 +436,85 @@ namespace Deviser.Core.Data.DataProviders
                     throw;
                 }
             }
+        }
+
+        public PageContent RestorePageContent(Guid id)
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var dbpageContent = GetDeletedPageContent(id);
+
+                    if (dbpageContent != null)
+                    {                        
+                        dbpageContent.IsDeleted = false;
+                        var result = context.PageContent.Update(dbpageContent).Entity;
+                        context.SaveChanges();
+                        return Mapper.Map<PageContent>(result);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while restoring page content", ex);
+            }
+            return null;
+        }
+
+        public bool DeletePageContent(Guid id)
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var dbpageContent = GetDeletedPageContent(id);
+
+                    if(dbpageContent != null)
+                    {
+                        context.PageContent.Remove(dbpageContent);
+
+                        //ContentPermission
+                        var contentPermission = context.ContentPermission
+                                            .Where(p => p.PageContentId == id)
+                                            .ToList();
+                        context.ContentPermission.RemoveRange(contentPermission);
+
+                        //PageContentTranslation
+                        var contentTranslation = context.PageContentTranslation
+                                            .Where(p => p.PageContentId == dbpageContent.Id)
+                                            .ToList();
+                        context.PageContentTranslation.RemoveRange(contentTranslation);
+
+                        context.SaveChanges();
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while deleting page content", ex);
+            }
+            return false;
+        }
+
+        private Entities.PageContent GetDeletedPageContent(Guid id)
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var pageContent = context.PageContent
+                       .Where(p => p.Id == id && p.IsDeleted).First();
+
+                    return pageContent;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while accessing page content", ex);
+            }
+            return null;
         }
 
     }

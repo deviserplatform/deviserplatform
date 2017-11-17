@@ -14,13 +14,16 @@ namespace Deviser.Core.Data.DataProviders
     {
         Page GetPageTree();
         List<Page> GetPages();
+        List<Page> GetDeletedPages();
         Page GetPage(Guid pageId);
         Page CreatePage(Page dbPage);
         Page UpdatePage(Page dbPage);
         Page UpdatePageTree(Page dbPage);
+        Page RestorePage(Guid id);
         List<PageTranslation> GetPageTranslations(string locale);
         PageTranslation GetPageTranslation(string url);
         List<PageModule> GetPageModules(Guid pageId);
+        List<PageModule> GetDeletedPageModules();
         PageModule GetPageModule(Guid pageModuleId);
         //PageModule GetPageModuleByContainer(Guid containerId);
         PageModule CreatePageModule(PageModule dbPageModule);
@@ -29,7 +32,9 @@ namespace Deviser.Core.Data.DataProviders
         void UpdateModulePermission(PageModule dbPageModule);
         List<PagePermission> AddPagePermissions(List<PagePermission> dbPagePermissions);
         List<ModulePermission> AddModulePermissions(List<ModulePermission> dbModulePermissions);
-
+        PageModule RestorePageModule(Guid id);
+        bool DeletePageModule(Guid id);
+        bool DeletePage(Guid id);
     }
 
     public class PageProvider : DataProviderBase, IPageProvider
@@ -128,6 +133,27 @@ namespace Deviser.Core.Data.DataProviders
             catch (Exception ex)
             {
                 _logger.LogError("Error occured while getting all pages", ex);
+            }
+            return null;
+        }
+
+        public List<Page> GetDeletedPages()
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var result = context.Page
+                                .Include(p => p.PageTranslation)
+                                .Where(e => e.ParentId != null && e.IsDeleted)                                
+                                .ToList();
+                   
+                    return Mapper.Map<List<Page>>(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while getting deleted pages", ex);
             }
             return null;
         }
@@ -325,7 +351,7 @@ namespace Deviser.Core.Data.DataProviders
                 }
 
             }
-        }
+        }      
 
         public List<PageTranslation> GetPageTranslations(string locale)
         {
@@ -409,6 +435,28 @@ namespace Deviser.Core.Data.DataProviders
             catch (Exception ex)
             {
                 _logger.LogError("Error occured while calling GetPageModule", ex);
+            }
+            return null;
+        }
+
+        public List<PageModule>  GetDeletedPageModules()
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var result = context.PageModule                               
+                               .Include(P => P.Page).ThenInclude(P => P.PageTranslation)
+                               .Where(e => e.IsDeleted)
+                               .OrderBy(p => p.Id)
+                               .ToList();
+
+                    return Mapper.Map<List<PageModule>>(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while getting GetPageModules", ex);
             }
             return null;
         }
@@ -635,6 +683,213 @@ namespace Deviser.Core.Data.DataProviders
                     throw;
                 }
             }
+        }
+
+        public PageModule RestorePageModule(Guid id)
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var dbpageModule = GetDeletedPageModule(id);
+
+                    if(dbpageModule != null)
+                    {                       
+                        dbpageModule.IsDeleted = false;
+                        var result = context.PageModule.Update(dbpageModule).Entity;
+                        context.SaveChanges();
+                        return Mapper.Map<PageModule>(result);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while restoring page module", ex);
+            }
+            return null;
+        }
+
+        public bool DeletePageModule(Guid id)
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var dbpageModule = GetDeletedPageModule(id);
+
+                    if (dbpageModule != null)
+                    {                       
+                        context.PageModule.Remove(dbpageModule);
+                        var pageModulePermissions = context.ModulePermission
+                           .Where(p => p.PageModuleId == id)
+                           .ToList();
+                        context.ModulePermission.RemoveRange(pageModulePermissions);
+                        context.SaveChanges();
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while deleting page module", ex);
+            }
+
+            return false;
+        }
+
+        private Entities.PageModule GetDeletedPageModule(Guid id)
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var pageModule = context.PageModule
+                        .Where(p => p.Id == id && p.IsDeleted).First();
+
+                    return pageModule;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while accessing deleted page module", ex);
+            }
+            return null;
+        }
+
+        public Page RestorePage(Guid id)
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var dbpage = GetDeletedPage(id);
+
+                    if (dbpage != null)
+                    {                      
+                        dbpage.IsDeleted = false;
+                        var result = context.Update(dbpage).Entity;
+                        context.SaveChanges();
+                        return Mapper.Map<Page>(result);
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while getting GetPageTranslations", ex);
+            }
+            return null;
+        }
+
+        public bool DeletePage(Guid id)
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    //Page
+                    var dbpage = GetDeletedPage(id);
+                    if(dbpage != null)
+                    {
+                        context.Page.Remove(dbpage);
+                    }
+
+                    //PageTranslation
+                    var dbpageTranslation = context.PageTranslation
+                                        .Where(p => p.PageId == id)
+                                        .ToList();
+                    if(dbpageTranslation != null)
+                    {
+                        context.PageTranslation.RemoveRange(dbpageTranslation);
+                    }
+
+                    //PagePermission
+                    var dbPagePermission = context.PagePermission
+                        .Where(p => p.PageId == id)
+                        .ToList();
+                    if(dbPagePermission != null)
+                    {
+                        context.PagePermission.RemoveRange(dbPagePermission);
+                    }
+
+                    //PageContent
+                    var dbpagecontent = context.PageContent
+                                    .Where(p => p.PageId == id)
+                                    .ToList();
+
+                    if(dbpagecontent != null)
+                    {
+                        context.PageContent.RemoveRange(dbpagecontent);
+                    }
+
+                    //ContentPermission
+                    foreach (var pageContent in dbpagecontent)
+                    {
+                        var dbcontentPermission = context.ContentPermission
+                                                .Where(p => p.PageContentId == pageContent.Id)
+                                                .ToList();
+                        if(dbcontentPermission != null)
+                            context.ContentPermission.RemoveRange(dbcontentPermission);
+
+                        //PageContentTranslation
+                        var dbpagecontentTranslation = context.PageContentTranslation
+                                                    .Where(p => p.PageContentId == pageContent.Id)
+                                                    .ToList();
+                        if (dbpagecontentTranslation != null)
+                            context.PageContentTranslation.RemoveRange(dbpagecontentTranslation);      
+
+
+                    }                    
+
+                    //PageModule
+                    var dbpageModule = context.PageModule
+                                    .Where(p => p.PageId == id)
+                                    .ToList();
+
+                    if(dbpageModule != null)
+                    {
+                        context.PageModule.RemoveRange(dbpageModule);
+                    }
+
+                    //ModulePermission
+                    foreach (var pageModule in dbpageModule)
+                    {
+                        var dbmodulePermission = context.ModulePermission
+                                                .Where(p => p.PageModuleId == pageModule.Id)
+                                                .ToList();
+                        if (dbmodulePermission != null)
+                            context.ModulePermission.RemoveRange(dbmodulePermission);
+                    }
+
+                    context.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while deleting the page", ex);
+            }
+            return false;
+        }
+
+        private Entities.Page GetDeletedPage(Guid id)
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var page = context.Page
+                        .Where(p => p.Id == id && p.IsDeleted).First();
+
+                    return page;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while accessing deleted page", ex);
+            }
+            return null;
+
         }
     }
 }

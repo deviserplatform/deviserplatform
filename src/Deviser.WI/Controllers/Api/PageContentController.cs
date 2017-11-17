@@ -59,7 +59,7 @@ namespace DeviserWI.Controllers.API
             {
                 var dbResult = contentManager.Get(pageId, cultureCode);
                 if (dbResult != null)
-                {   
+                {
                     var result = Mapper.Map<List<PageContent>>(dbResult);
                     return Ok(result);
                 }
@@ -68,6 +68,27 @@ namespace DeviserWI.Controllers.API
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting page content, pageId: {0}, cultureCode: {1}", pageId, cultureCode), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("list/")]
+        public IActionResult Get()
+        {
+            try
+            {
+                var dbResult = contentManager.Get();
+                if (dbResult != null)
+                {
+                    var result = Mapper.Map<List<PageContent>>(dbResult);
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting deleted page contents"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -133,11 +154,30 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                if (pageContent == null || pageContent.ContentPermissions ==null || pageContent.ContentPermissions.Count() == 0)
+                if (pageContent == null || pageContent.ContentPermissions == null || pageContent.ContentPermissions.Count() == 0)
                     return BadRequest();
-                
+
                 contentManager.UpdateContentPermission(Mapper.Map<PageContent>(pageContent));
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while updating page content permissions"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        [Route("restore/{id}")]
+        public IActionResult PutPageContent(Guid id)
+        {
+            try
+            {
+                var result = contentManager.RestorePageContent(id);
+                if (result != null)
+                    return Ok(result);
+
+                return NotFound();
             }
             catch (Exception ex)
             {
@@ -151,11 +191,30 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var deleteResult = contentManager.DeletePageContent(id);
+                var deleteResult = contentManager.RemovePageContent(id);
                 if (deleteResult)
-                {                    
+                {
                     return Ok();
                 }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while removing page content"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public IActionResult DeletePageContent(Guid id)
+        {
+            try
+            {
+                bool result = contentManager.DeletePageContent(id);
+                if (result)
+                    return Ok();
+
                 return BadRequest();
             }
             catch (Exception ex)
@@ -166,3 +225,5 @@ namespace DeviserWI.Controllers.API
         }
     }
 }
+
+

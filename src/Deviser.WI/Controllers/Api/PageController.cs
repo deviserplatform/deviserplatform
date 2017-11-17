@@ -2,6 +2,7 @@
 using AutoMapper;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Library;
+using Deviser.Core.Library.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -62,6 +63,27 @@ namespace DeviserWI.Controllers.API
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
+
+
+        [HttpGet]
+        [Route("deletedlist/")]
+        public IActionResult GetDeletedPages()
+        {
+            try
+            {
+                var result = pageProvider.GetDeletedPages();
+                if (result != null)
+                    return Ok(result);
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting all pages"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
@@ -138,6 +160,24 @@ namespace DeviserWI.Controllers.API
             }
         }
 
+        [HttpPut("restore/{id}")]
+        public IActionResult PutPage(Guid id)
+        {
+            try
+            {                
+                var result = pageProvider.RestorePage(id);
+                if (result != null)
+                    return Ok(result);
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while restoring a page", ex));
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
@@ -155,6 +195,25 @@ namespace DeviserWI.Controllers.API
             {
                 string errorMessage = string.Format("Error occured while deleting page, PageId: ", id);
                 logger.LogError(errorMessage, ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public IActionResult DeletePage(Guid id)
+        {
+            try
+            {
+                bool result = pageProvider.DeletePage(id);
+                if (result)
+                    return Ok();
+
+                return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while deleting the page", ex));
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

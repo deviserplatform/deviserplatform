@@ -82,12 +82,12 @@ namespace Deviser.WI
                 //    option.OutputFormatters.Remove(jsonOutputFormatterOld);
                 //}
                 ////options.OutputFormatters.RemoveAll(formatter => formatter.Instance.GetType() == typeof(JsonOutputFormatter));
-                //option.OutputFormatters.Insert(0, jsonOutputFormatter);
+                //option.OutputFormatters.Insert(0, jsonOutputFormatter);                
             })
             .AddRazorOptions(options =>
             {
                 options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
-            })
+            })           
             .AddControllersAsServices();
 
             services.AddSession();

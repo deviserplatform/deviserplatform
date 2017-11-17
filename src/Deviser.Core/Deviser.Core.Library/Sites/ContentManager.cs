@@ -62,6 +62,35 @@ namespace Deviser.Core.Library.Sites
             return null;
         }
 
+        public List<PageContent> Get()
+        {
+            try
+            {
+                var result = pageContentProvider.Get();
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                logger.LogError("Error occured while getting deleted page contents", ex);
+            }
+            return null;
+
+        }
+
+        public PageContent RestorePageContent(Guid id)
+        {
+            try
+            {
+                var result = pageContentProvider.RestorePageContent(id);
+                return result;
+            }
+            catch(Exception ex)
+            {
+                logger.LogError("Error occured while restoring page content", ex);
+            }
+            return null;
+        }
         public PageContent AddOrUpdatePageContent(PageContent pageContent)
         {
             try
@@ -131,7 +160,7 @@ namespace Deviser.Core.Library.Sites
             }
         }
 
-        public bool DeletePageContent(Guid id)
+        public bool RemovePageContent(Guid id)
         {
             var content = pageContentProvider.Get(id);
             if (content != null)
@@ -140,6 +169,15 @@ namespace Deviser.Core.Library.Sites
                 pageContentProvider.Update(content);
                 return true;
             }
+            return false;
+        }
+
+        public bool DeletePageContent(Guid id)
+        {
+            bool result = pageContentProvider.DeletePageContent(id);
+            if (result)
+                return true;
+
             return false;
         }
 

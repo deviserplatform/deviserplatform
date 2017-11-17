@@ -7,7 +7,8 @@ namespace Deviser.Core.Library.Modules
     public interface IModuleManager
     {
         PageModule GetPageModule(Guid pageModuleId);
-        List<PageModule> GetPageModuleByPage(Guid pageId);        
+        List<PageModule> GetPageModuleByPage(Guid pageId);
+        List<PageModule> GetDeletedPageModules();
         PageModule CreateUpdatePageModule(PageModule pageModule);
         void UpdatePageModules(List<PageModule> pageModules);
         void UpdateModulePermission(PageModule pageModule);
