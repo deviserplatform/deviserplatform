@@ -11,8 +11,7 @@ namespace Deviser.Core.Data.Entities
         public string Name { get; set; }
         public string Label { get; set; }
         public string List { get; set; }
-        public ICollection<Property> Properties { get; set; }
-        public ICollection<ContentTypeControl> ContentTypeControls { get; set; }
+        public ICollection<Property> Properties { get; set; }       
         public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }

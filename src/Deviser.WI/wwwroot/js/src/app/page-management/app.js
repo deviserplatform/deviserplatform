@@ -1,16 +1,18 @@
 ﻿(function () {
 
     var app = angular.module('deviser.pageMangement', [
-    'ui.router',
-    'ui.bootstrap',
-    'ui.tree',
-    'ui.select',
-    'sd.sdlib',
-    'deviser.services',
-    'deviser.config'
+        'ui.router',
+        'ui.bootstrap',
+        'ui.tree',
+        'ui.select',
+        'sd.modal',
+        'sd.sdlib',
+        'deviser.services',
+        'deviser.config'
     ]);
 
-    app.controller('PageManagementCtrl', ['$scope', '$timeout', '$filter', '$q',
+
+    app.controller('PageManagementCtrl', ['$scope', '$timeout', '$filter', '$q', 'modalService',
         'globals', 'pageService', 'themeService', 'languageService', 'roleService', editCtrl]);
 
     app.filter('selectLanguage', function () {
@@ -30,10 +32,12 @@
 
     });
 
+
+
     ////////////////////////////////
     /*Function declarations only*/
-    function editCtrl($scope, $timeout, $filter, $q,
-    globals, pageService, themeService, languageService, roleService) {
+    function editCtrl($scope, $timeout, $filter, $q, modalService,
+        globals, pageService, themeService, languageService, roleService) {
         var vm = this;
         var SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         var pageViewPermissionId = globals.appSettings.permissions.pageView;
@@ -45,7 +49,6 @@
         vm.liveTill = {};
         vm.liveFrom = {};
         vm.administratorRoleId = administratorRoleId;
-
 
         vm.options = {
             accept: accept,
@@ -67,8 +70,9 @@
             vm.isChanged = true;
         }, true);
 
+
         /*Function binding*/
-        vm.delete = remove;
+        //vm.delete = remove;
         vm.toggle = toggle;
         vm.selectPage = selectPage;
         vm.newSubPage = newSubPage;
@@ -79,6 +83,8 @@
         vm.changeViewPermission = changeViewPermission;
         vm.changeEditPermission = changeEditPermission;
         vm.siteLanguage = "en-US";
+        vm.openConfirmDialog = openConfirmDialog;
+        //vm.cancel = cancel;
 
         init();
 
@@ -132,12 +138,12 @@
             var currentPageTranslation = _.find(vm.selectedItem.pageTranslation, { locale: vm.currentLocale });
             if (!currentPageTranslation) {
                 var defaultPageTranslation = _.find(vm.selectedItem.pageTranslation, { locale: vm.siteLanguage });
-                defaultPageTranslation = JSON.parse(angular.toJson(defaultPageTranslation));           
+                defaultPageTranslation = JSON.parse(angular.toJson(defaultPageTranslation));
                 defaultPageTranslation.locale = vm.currentLocale;
                 defaultPageTranslation.name = '';
                 defaultPageTranslation.title = '';
                 defaultPageTranslation.description = '';
-                defaultPageTranslation.keywords = '';                              
+                defaultPageTranslation.keywords = '';
                 vm.selectedItem.pageTranslation.push(defaultPageTranslation);
             }
         }
@@ -165,16 +171,31 @@
             }
         }
 
-        function remove(page) {
-            if (page) {
-                var pageId = page.id;
-                pageService.remove(pageId).then(function (data) {
-                    page.isDeleted = true;
-                    showMessage("success", "Page has been removed");
-                }, function (error) {
-                    showMessage("error", "'Cannot remove page, please contact administrator");
-                });
-            }
+        function openConfirmDialog(page) {
+            var labels = {
+                title: 'Delete Confirmation',
+                body: 'Are you sure to delete the ' + page.pageTranslation[0].name + ' page?',
+                okLabel: 'Yes',
+                cancelLabel: 'No'
+            };
+
+            var modalInstance = modalService.showConfirmation(labels);
+
+            modalInstance.then(function (selectedItem) {
+                console.log('Modal agreed at: ' + new Date());
+                if (page) {
+                    var pageId = page.id;
+                    pageService.remove(pageId).then(function (data) {
+                        page.isDeleted = true;
+                        showMessage("success", "Page has been removed");
+                    }, function (error) {
+                        showMessage("error", "'Cannot remove page, please contact administrator");
+                    });
+                }
+
+            }, function () {
+                console.log('Modal dismissed at: ' + new Date());
+            });
         }
 
         function toggle(scope) {
@@ -185,9 +206,9 @@
             vm.currentLocale = vm.siteLanguage;
             if (!page.pageTranslation || page.pageTranslation.length === 0) {
                 page.pageTranslation = [
-                {
-                    locale: vm.currentLocale
-                }];
+                    {
+                        locale: vm.currentLocale
+                    }];
             }
             vm.selectedItem = page;
             vm.accordion.common = !vm.accordion.permissions;
@@ -261,14 +282,14 @@
                 childPage: [],
                 pageLevel: parentPage.pageLevel + 1,
                 pageTranslation: [
-                      {
-                          locale: vm.currentLocale,
-                          name: "",
-                          url: "",
-                          title: null,
-                          description: null,
-                          keywords: null
-                      }
+                    {
+                        locale: vm.currentLocale,
+                        name: "",
+                        url: "",
+                        title: null,
+                        description: null,
+                        keywords: null
+                    }
                 ]
             };
 
@@ -291,23 +312,23 @@
 
         function savePage(page) {
             pageService.put(page, page.id)
-                    .then(function (data) {
-                        vm.selectedItem = data;
-                        getPages();
-                        showMessage("success", "Page updated successfully");
-                    }, function (error) {
-                        showMessage("error", "'Cannot update page, please contact administrator");
-                    });
+                .then(function (data) {
+                    vm.selectedItem = data;
+                    getPages();
+                    showMessage("success", "Page updated successfully");
+                }, function (error) {
+                    showMessage("error", "'Cannot update page, please contact administrator");
+                });
         }
 
         function savePageTree() {
             pageService.put(vm.pages[0])
-                   .then(function (data) {
-                       getPages();
-                       showMessage("success", "All pages updated successfully");
-                   }, function (error) {
-                       showMessage("error", "'Cannot update all pages, please contact administrator");
-                   });
+                .then(function (data) {
+                    getPages();
+                    showMessage("success", "All pages updated successfully");
+                }, function (error) {
+                    showMessage("error", "'Cannot update all pages, please contact administrator");
+                });
         }
 
         function reSortPages(page) {

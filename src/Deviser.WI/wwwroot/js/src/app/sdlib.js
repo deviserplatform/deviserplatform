@@ -11,7 +11,7 @@
 
     app.directive("sdEdit", ['$compile', '$templateCache', sdContenteditable]);
 
-    app.directive('contenteditable', ['$sce', contenteditable]);
+    app.directive('contenteditable', ['$sce', contenteditable]); 
 
     app.factory('sdUtil', [sdUtil]);
 
@@ -183,7 +183,7 @@
                 }
             }
         };
-    }
+    }   
 
     function sdUtil() {
         var service = {

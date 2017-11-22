@@ -196,6 +196,19 @@
     </div>
 </script>
 
+<script type="text/ng-template" id="app/components/confirmdialog.tpl.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{mVM.labels.title}}</h3>
+    </div>
+    <div class="modal-body">
+        <p>{{mVM.labels.body}}</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="mVM.ok()">{{mVM.labels.okLabel}}</button>
+        <button class="btn btn-danger" type="button" ng-click="mVM.cancel()">{{mVM.labels.cancelLabel}}</button>
+    </div>
+</script>
+
 <script type="text/ng-template" id="app/components/languageSelector.tpl.html">
     <div class="language-selector">
         <ui-select ng-model="locVM.selectedLocale" theme="bootstrap" ng-disabled="locVM.languages.length<=0" on-select="locVM.changeLocalLanguage()">

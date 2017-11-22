@@ -309,28 +309,6 @@ namespace Deviser.Core.Data
                 entity.Property(e => e.Name).IsRequired();
             });
 
-            modelBuilder.Entity<ContentControl>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                entity.Property(e => e.IsActive).HasDefaultValue(true);                
-                entity.HasOne(d=>d.FieldType).WithMany(p=>p.ContentControls).HasForeignKey(d => d.FieldTypeId).OnDelete(DeleteBehavior.Restrict);
-            });
-
-            modelBuilder.Entity<FieldType>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                entity.Property(e => e.Name).IsRequired();
-                
-            });
-            modelBuilder.Entity<Validator>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                entity.Property(e => e.Name).IsRequired();
-                entity.Property(e => e.RegExp).IsRequired();
-                entity.HasOne(d => d.FieldType).WithMany(p => p.Validators).HasForeignKey(d => d.FieldTypeId).OnDelete(DeleteBehavior.Restrict);
-
-            });
-
             modelBuilder.Entity<LayoutTypeProperty>(entity =>
             {
                 entity.HasOne(d => d.LayoutType).WithMany(p => p.LayoutTypeProperties).HasForeignKey(d => d.LayoutTypeId).OnDelete(DeleteBehavior.Restrict);
@@ -372,24 +350,6 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Role).WithMany(p => p.ContentPermissions).HasForeignKey(d => d.RoleId).OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<ContentTypeControl>(entity =>
-            {
-                entity.HasOne(d => d.ContentControl).WithMany(p => p.ContentTypeControls).HasForeignKey(d => d.ContentControlId).OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(d => d.ContentType).WithMany(p => p.ContentTypeControls).HasForeignKey(d => d.ContentTypeId).OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(d => d.OptionList).WithMany(p => p.ContentTypeControls).HasForeignKey(d => d.OptionListId).OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(d => d.Validator).WithMany(p => p.ContentTypeControls).HasForeignKey(d => d.ValidatorId).OnDelete(DeleteBehavior.Restrict);
-            });
-
-            modelBuilder.Entity<ContentControlProperty>(entity =>
-            {
-                entity.HasOne(d => d.ContentControl).WithMany(p => p.ContentControlProperties).HasForeignKey(d => d.ContentControlId).OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(d => d.Property).WithMany(p => p.ContentControlProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);
-            });
-
             modelBuilder.Entity<sysdiagrams>(entity =>
             {
                 entity.HasKey(e => e.diagram_id)
@@ -405,13 +365,10 @@ namespace Deviser.Core.Data
             });
         }
         
-        public virtual DbSet<ContentControl> ContentControl { get; set; }
         public virtual DbSet<ContentDataType> ContentDataType { get; set; }
         public virtual DbSet<ContentPermission> ContentPermission { get; set; }
         public virtual DbSet<ContentType> ContentType { get; set; }
-        public virtual DbSet<ContentTypeControl> ContentTypeControl { get; set; }        
         public virtual DbSet<ContentTypeProperty> ContentTypeProperty { get; set; }
-        public virtual DbSet<FieldType> FieldType { get; set; }
         public virtual DbSet<Language> Language { get; set; }
         public virtual DbSet<Layout> Layout { get; set; }
         public virtual DbSet<LayoutType> LayoutType { get; set; }

@@ -47,7 +47,7 @@
                         <a data-nodrag ng-click="pmVM.newSubPage(page)" title="Add new page">
                             <i class="fa fa-plus"></i>
                         </a>
-                        <a data-nodrag ng-click="pmVM.delete(page)" ng-show="depth()!=1" title="Remove this page">
+                        <a data-nodrag ng-click="pmVM.openConfirmDialog(page)" ng-show="depth()!=1" title="Remove this page">
                             <i class="fa fa-trash-o"></i>
                         </a>
                     </div>
@@ -259,7 +259,7 @@
 
     </div>
 
-
+    @await Html.PartialAsync("_NgComponents")
 
     @*<div class="row">
             <div class="col-lg-6">
