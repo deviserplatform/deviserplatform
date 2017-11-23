@@ -297,6 +297,7 @@
                 });
                 pageContent.id = vm.selectedItem.pageContent.id;
                 pageContent.pageId = vm.selectedItem.pageContent.pageId;
+                pageContent.title = vm.selectedItem.title;
                 pageContent.contentTypeId = vm.selectedItem.pageContent.contentTypeId;
                 pageContent.properties = properties;
                 pageContent.containerId = vm.selectedItem.pageContent.containerId;
@@ -308,6 +309,9 @@
                 }, function (response) {
                     console.log(response);
                 },true);
+            }
+            else if (vm.selectedItem.layoutTemplate === "module"){
+
             }
         }
 
@@ -468,6 +472,9 @@
                         _.forEach(pageContents, function (pageContent) {
                             var content = getPageContentWithProperties(pageContent);
                             //item.placeHolders.splice(index, 0, contentTypeInfo); //Insert placeHolder into specified index
+                            if (!content.title) {
+                                content.title = content.contentType.label + ' ' + item.placeHolders.length + 1;
+                            }
                             item.placeHolders.push(content);
                         });
                     }
@@ -481,11 +488,17 @@
                                 id: pageModule.id,
                                 layoutTemplate: "module",
                                 type: "module",
+                                title: pageModule.title,
                                 moduleAction: pageModule.moduleAction,
                                 pageModule: pageModule,
                                 sortOrder: pageModule.sortOrder
                             };//JSON.parse(pageModule.module);
                             //item.placeHolders.splice(index, 0, module); //Insert placeHolder into specified index
+
+                            if (!module.title) {
+                                module.title = item.moduleAction.displayName + ' ' + item.placeHolders.length + 1;
+                            }
+
                             item.placeHolders.push(module);
                         })
                     }
@@ -521,12 +534,13 @@
                 id: pageContent.id,
                 layoutTemplate: 'content',
                 type: 'content',
+                title: pageContent.title,
                 properties: properties,
                 pageContent: pageContent,
                 contentType: pageContent.contentType,
                 sortOrder: pageContent.sortOrder
             }
-
+            
             return content;
         }
 

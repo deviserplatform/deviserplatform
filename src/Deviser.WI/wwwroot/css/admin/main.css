@@ -1,4 +1,4 @@
-﻿@charset "UTF-8";
+@charset "UTF-8";
 /*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.
@@ -5917,8 +5917,8 @@ body {
   border-bottom: 1px solid transparent;
   background-repeat: repeat-x;
   display: block;
-  font-size: 16px;
-  padding: 10px 15px;
+  font-size: 14px;
+  padding: 8px 16px;
   margin-top: 0;
   margin-bottom: 0; }
 
@@ -5927,7 +5927,8 @@ body {
 
 .box .content-title, .box .module-title {
   float: left;
-  padding: 6px 15px; }
+  padding: 2px 6px;
+  font-size: 12px; }
 
 .box .content-controls, .box .module-controls {
   float: right; }
@@ -5945,7 +5946,7 @@ body {
   margin: -15px; }
 
 .box-content {
-  margin-top: 15px; }
+  margin-top: 20px; }
 
 .box-grey {
   border-color: #ddd; }
@@ -6077,7 +6078,8 @@ body {
 /***************************** Trashcan *****************************/
 .nestedDemo .trashcan ul {
   list-style: none;
-  padding-left: 0px; }
+  padding-left: 0px;
+  padding-top: 20px; }
 
 .nestedDemo .trashcan img {
   width: 100%;
@@ -6172,6 +6174,9 @@ body {
 div.edit-page.form-horizontal .control-label {
   text-align: left; }
 
+.page-layout-name {
+  margin-top: 20px; }
+
 /*Layout Designer*/
 .layout-designer-container {
   background: #fff;
@@ -6194,19 +6199,47 @@ div.edit-page.form-horizontal .control-label {
 .layout-controls .layout-name input {
   width: 100%; }
 
-.box.properties .row {
-  padding: 10px 0 10px 0;
-  border-bottom: 1px solid #ddd;
-  display: flex;
-  align-items: center; }
+.box.properties {
+  font-size: 12px; }
+  .box.properties .row {
+    margin-left: -5px;
+    margin-right: -5px;
+    padding: 2px 0 2px 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center; }
+    .box.properties .row:first-of-type {
+      padding-top: 0px; }
+    .box.properties .row:last-of-type {
+      padding-bottom: 0px;
+      border-bottom: none; }
+  .box.properties .box-content {
+    margin: 20px -10px 0 -10px; }
+  .box.properties .form-control, .box.properties select.input-sm, .box.properties .input-group-sm > select.form-control, .box.properties
+  .input-group-sm > select.input-group-addon, .box.properties
+  .input-group-sm > .input-group-btn > select.btn {
+    height: 20px;
+    padding: 2px; }
+  .box.properties .col-md-6 {
+    padding-left: 5px;
+    padding-right: 2px; }
+  .box.properties .btn-xs, .box.properties .btn-group-xs > .btn {
+    width: 100%; }
 
-.box.properties .row:first-of-type {
-  padding-top: 0px; }
+/*.box.properties .row {
+    padding: 10px 0 10px 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+}*/
+/*.box.properties .row:first-of-type {
+    padding-top: 0px;
+}
 
 .box.properties .row:last-of-type {
-  padding-bottom: 0px;
-  border-bottom: none; }
-
+    padding-bottom: 0px;
+    border-bottom: none;
+}*/
 /*Edit mode*/
 body.edit-content-modal {
   overflow: hidden; }

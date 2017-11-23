@@ -7,7 +7,7 @@
         'ui.select',
         'sd.sdlib',
         'deviser.services',
-        'deviser.config'
+        'deviser.config'        
     ]);
 
     app.controller('ModuleManagementCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'moduleService', 'moduleActionService', editCtrl]);

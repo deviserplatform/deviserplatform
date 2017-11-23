@@ -78,13 +78,15 @@
                     </div>
                 </div>
                 <div class="portlet-body form">
-                    <form class="form-horizontal" name="moduleFrom" novalidate>
+
+                    <form name="newModuleForm" class="form-horizontal" novalidate>
                         <div class="form-body">
-                            <div class="form-group">
+                            <div class="form-group" ng-class="{'has-error' : newModuleForm.label.$invalid&&!newModuleForm.label.$pristine}">
                                 <label class="col-md-3 control-label">Label</label>
                                 <div class="col-md-6">
-                                    <input class="form-control" name="label" ng-model="mmVM.selectedModule.label" required />
+                                    <input type="text" name="label" class="form-control" ng-model="mmVM.selectedModule.label" required />
                                 </div>
+                                <p ng-show=" newModuleForm.label.$invalid && !newModuleForm.label.$pristine" class="help-block">Please enter the label.</p>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Name</label>
@@ -172,7 +174,7 @@
                     <div class="row" ng-show="mmVM.currentViewState == mmVM.viewStates.EDITMODULEACTION || mmVM.currentViewState == mmVM.viewStates.NEWMODULEACTION ">
                         <div class="col-md-8 col-md-offset-2">
                             <div class="portlet-body form">
-                                <form class="form-horizontal" name="moduleFrom" novalidate>
+                                <form class="form-horizontal" name="editModuleForm" novalidate>
                                     <div class="form-body">
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
@@ -249,7 +251,7 @@
                     <div class="form-actions">
                         <div class="row">
                             <div class="col-md-offset-3 col-md-9">
-                                <button type="submit" class="btn btn-success" ng-click="mmVM.save()" ng-disabled="!mmVM.selectedModule">Save</button>
+                                <button type="submit" class="btn btn-success" ng-click="mmVM.save()" ng-disabled="!mmVM.selectedModule">Save1</button>
                                 <button type="button" class="btn btn-default" ng-click="mmVM.cancel()">Cancel</button>
                             </div>
                         </div>

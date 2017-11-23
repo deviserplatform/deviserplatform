@@ -115,6 +115,7 @@ namespace Deviser.Core.Library.Sites
                 else
                 {
                     pageContent.IsDeleted = false;
+                    result.Title = pageContent.Title;
                     result.ContainerId = pageContent.ContainerId;
                     result.SortOrder = pageContent.SortOrder;
                     result.LastModifiedDate = DateTime.Now;
