@@ -111,8 +111,7 @@
         }
 
         function save() {
-            //$scope.moduleForm.submitted = true;
-            //if ($scope.moduleForm.$valid) {
+            //$scope.moduleForm.submitted = true;          
                 if (vm.currentViewState == vm.viewStates.NEW && vm.isValidName(vm.selectedModule.name)) {
                     moduleService.post(vm.selectedModule).then(function (result) {
                         console.log(result);
@@ -126,8 +125,7 @@
                 }
                 else {
                     update(vm.selectedModule);
-                }
-           
+                }          
         }
         
         function update(module) {
@@ -165,9 +163,8 @@
             vm.selectedModule.moduleAction.splice(index, 1);
         }
 
-        function saveModuleAction() {
+        function saveModuleAction() {           
             vm.currentViewState = vm.viewStates.LISTMODULEACTION;
-
         }
 
 
