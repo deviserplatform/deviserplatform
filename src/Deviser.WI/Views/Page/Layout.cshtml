@@ -9,6 +9,11 @@
 <script type="text/javascript">
     var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
     console.log(pageContext);
+    (function () {
+        $(function () {
+            $('body').addClass('page-edit');
+        });
+    }());
 </script>
 
 <div class="layout-wrapper" ng-app="deviserLayout" ng-controller="LayoutCtrl as layoutVM">
@@ -119,7 +124,7 @@
                     {{layoutVM.message.content}}
                 </div>
             </div>
-            <div class="row layout-container nestedDemo">
+            <div class="row layout-container">
                 <div class="col-md-2">
                     <div class="toolbox box box-grey box-padding">
                         <h3>Layout Elements</h3>

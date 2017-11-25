@@ -4,15 +4,19 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>@ViewData["Title"] - Deviser.WI</title>
-
         <render type="Css"></render>
+
         <link rel="stylesheet" href="~/css/admin/controlbar.css" asp-append-version="true" />
-        <!-- END THEME LAYOUT STYLES -->
+
+        <render type="Script" location="Head"></render>
     </head>
     <body>
+        <render type="Script" location="BodyStart"></render>
+
         @RenderBody()
 
-        <render type="Script"></render>
+
         @RenderSection("scripts", required: false)
+        <render type="Script" location="BodyEnd"></render>
     </body>
 </html>
