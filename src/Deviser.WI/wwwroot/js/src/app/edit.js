@@ -17,6 +17,8 @@
 
     app.config(['$provide', config]);
 
+    app.directive("sdContentPreview", ['$compile', '$templateCache', sdContentPreviewDir]);
+
     app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$uibModal', 'globals', 'sdUtil', 'layoutService', 'pageService',
         'contentTypeService', 'pageContentService', 'moduleService', 'moduleActionService', 'pageModuleService', editCtrl]);
 
@@ -44,6 +46,83 @@
             ];
             return taOptions;
         }]);
+    }
+
+    function sdContentPreviewDir($compile, $templateCache) {
+        var returnObject = {
+            restrict: "A",
+            controller: ['$scope', '$uibModal', ctrl],
+            controllerAs: 'ecVM',
+            bindToController: true,
+            link: link,
+            scope: {
+                content: '='
+            }
+        };
+
+        return returnObject;
+        /////////////////////////////////////////////
+        /*Function declarations only*/
+        function link(scope, element, attrs) {
+            template = $templateCache.get('contenttypes/' + scope.ecVM.content.contentType.name + '.html',);
+            element.html(template);
+            $compile(element.contents())(scope);
+        }
+
+        function ctrl($scope, $uibModal) {
+            var vm = this;
+            
+            init();
+
+            /////////////////////////////////////////////
+            /*Function declarations only*/
+            function init() {
+                vm.templateMode = 'PREVIEW';
+                vm.contentType = vm.content.contentType;
+                vm.contentTranslations = vm.content.pageContentTranslation;
+                var currentCultureCode = pageContext.currentLocale;                
+                //load correct translation
+                var translation = getTranslationForLocale(currentCultureCode);
+                vm.contentTranslation = translation;
+                deserializeContentTranslation();
+            }
+
+            function getTranslationForLocale(locale) {
+                var translation = _.find(vm.contentTranslations, { cultureCode: locale });
+                if (!translation) {
+                    if (vm.contentType.dataType === 'string') {
+                        translation = {
+                            cultureCode: locale,
+                            contentData: ''
+                        };
+                    }
+                    else if (vm.contentType.dataType === 'object') {
+                        translation = {
+                            cultureCode: locale,
+                            contentData: {}
+                        };
+                    }
+                    else {
+                        translation = {
+                            cultureCode: locale,
+                            contentData: {
+                                items: []
+                            }
+                        };
+                    }
+
+                }
+                return translation;
+            }
+
+            function deserializeContentTranslation() {
+                if (vm.contentType.dataType &&
+                    (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object') &&
+                    typeof (vm.contentTranslation.contentData) === 'string') {
+                    vm.contentTranslation.contentData = JSON.parse(vm.contentTranslation.contentData);
+                }
+            }
+        }
     }
 
     function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, sdUtil, layoutService, pageService,
@@ -768,6 +847,13 @@
         var vm = this;
         vm.contentId = contentInfo.id;
         vm.properties = contentInfo.properties;
+        vm.viewStates = {
+            NEW: "NEW",
+            EDIT: "EDIT",
+            LIST: "LIST"
+        };
+        vm.currentViewState = vm.viewStates.LIST;
+
         vm.changeLanguage = changeLanguage;
         vm.save = save;
         vm.cancel = cancel;
@@ -788,6 +874,22 @@
 
         /////////////////////////////////////////////
         /*Function declarations only*/
+        function init() {
+            vm.templateMode = 'EDITCONTENT';
+            $q.all([
+                getPageContents(),
+                getSiteLanguages()
+            ]).then(function () {
+                var currentCultureCode = pageContext.currentLocale;
+                vm.selectedLocale = _.find(vm.languages, { cultureCode: currentCultureCode });
+                //load correct translation
+                var translation = getTranslationForLocale(vm.selectedLocale.cultureCode);
+                vm.contentTranslation = translation;
+                deserializeContentTranslation();
+
+            });
+        }
+
         //Event handlers
         function changeLanguage() {
             var translation = getTranslationForLocale(vm.selectedLocale.cultureCode);
@@ -825,7 +927,7 @@
 
         function newItem() {
             vm.selectedItem = {};
-            vm.isDetailView = true;
+            vm.currentViewState = vm.viewStates.NEW;
         }
 
         function updateItem() {
@@ -834,12 +936,12 @@
                 vm.selectedItem.viewOrder = vm.contentTranslation.contentData.items.length + 1;
                 vm.contentTranslation.contentData.items.push(vm.selectedItem);
             }
-            vm.isDetailView = false;
+            vm.currentViewState = vm.viewStates.LIST;
         }
 
         function editItem(item) {
             vm.selectedItem = item;
-            vm.isDetailView = true;
+            vm.currentViewState = vm.viewStates.EDIT;
         }
 
         function removeItem(item) {
@@ -849,25 +951,10 @@
         }
 
         function cancelDetailView() {
-            vm.isDetailView = false;
+            vm.currentViewState = vm.viewStates.LIST;
         }
 
-        //Private functions
-        function init() {
-            $q.all([
-                getPageContents(),
-                getSiteLanguages()
-            ]).then(function () {
-                var currentCultureCode = pageContext.currentLocale;
-                vm.selectedLocale = _.find(vm.languages, { cultureCode: currentCultureCode });
-                //load correct translation
-                var translation = getTranslationForLocale(vm.selectedLocale.cultureCode);
-                vm.contentTranslation = translation;
-                deserializeContentTranslation();
-
-            });
-        }
-
+        //Private functions        
         function getSiteLanguages() {
             var defer = $q.defer();
             languageService.getSiteLanguages().then(function (languages) {

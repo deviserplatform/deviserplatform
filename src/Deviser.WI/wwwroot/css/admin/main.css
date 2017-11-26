@@ -5918,6 +5918,8 @@ body.page-edit {
       float: right; }
     body.page-edit .box .module-header {
       background-color: #d9edf7; }
+    body.page-edit .box .content-header {
+      border-bottom: 1px solid #bce8f1; }
   body.page-edit .box > h3, body.page-edit .box-layout > h3 {
     color: #333;
     border-color: #ddd;
@@ -6002,15 +6004,17 @@ body.page-edit {
         position: relative; }
       body.page-edit .layout-container .dropzone .col-md-3 {
         padding: 0; }
-      body.page-edit .layout-container .dropzone .selected .item {
-        color: #3c763d;
-        background-color: #dff0d8; }
-      body.page-edit .layout-container .dropzone .selected .box {
-        border-color: #2e6da4; }
-        body.page-edit .layout-container .dropzone .selected .box > h3 {
-          color: #fff;
-          background-color: #337ab7;
+      body.page-edit .layout-container .dropzone .selected {
+        /*.item {
+                    color: #3c763d;
+                    background-color: #dff0d8;
+                }*/ }
+        body.page-edit .layout-container .dropzone .selected .box {
           border-color: #2e6da4; }
+          body.page-edit .layout-container .dropzone .selected .box > h3 {
+            color: #fff;
+            background-color: #337ab7;
+            border-color: #2e6da4; }
       body.page-edit .layout-container .dropzone .item {
         padding: 10px 15px; }
       body.page-edit .layout-container .dropzone .container-element {
@@ -6018,6 +6022,17 @@ body.page-edit {
         body.page-edit .layout-container .dropzone .container-element .column {
           float: left;
           width: 50%; }
+      body.page-edit .layout-container .dropzone .edit-content-preview {
+        padding: 4px; }
+        body.page-edit .layout-container .dropzone .edit-content-preview img {
+          width: 100%; }
+        body.page-edit .layout-container .dropzone .edit-content-preview h1, body.page-edit .layout-container .dropzone .edit-content-preview h2, body.page-edit .layout-container .dropzone .edit-content-preview h3, body.page-edit .layout-container .dropzone .edit-content-preview h4, body.page-edit .layout-container .dropzone .edit-content-preview li, body.page-edit .layout-container .dropzone .edit-content-preview a, body.page-edit .layout-container .dropzone .edit-content-preview th, body.page-edit .layout-container .dropzone .edit-content-preview td {
+          font-size: 11px; }
+        body.page-edit .layout-container .dropzone .edit-content-preview ul li, body.page-edit .layout-container .dropzone .edit-content-preview ol li {
+          background: none;
+          border: none;
+          display: list-item;
+          padding: inherit; }
     body.page-edit .layout-container .edit-wrapper {
       overflow-y: auto;
       max-height: 80vh; }

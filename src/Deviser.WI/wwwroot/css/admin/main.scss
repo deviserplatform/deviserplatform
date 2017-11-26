@@ -179,6 +179,10 @@ body.page-edit {
         .module-header {
             background-color: #d9edf7;
         }
+
+        .content-header {
+            border-bottom: 1px solid #bce8f1;
+        }
     }
 
     .box > h3, .box-layout > h3 {
@@ -301,10 +305,10 @@ body.page-edit {
             }
             /***************************** Element Selection *****************************/
             .selected {
-                .item {
+                /*.item {
                     color: #3c763d;
                     background-color: #dff0d8;
-                }
+                }*/
 
                 .box {
                     border-color: #2e6da4;
@@ -327,6 +331,25 @@ body.page-edit {
                 .column {
                     float: left;
                     width: 50%;
+                }
+            }
+
+            .edit-content-preview {
+                padding: 4px;
+
+                img {
+                    width: 100%;
+                }
+
+                h1, h2, h3, h4, li, a, th, td {
+                    font-size: 11px;
+                }
+
+                ul li, ol li {
+                    background: none;
+                    border: none;
+                    display: list-item;
+                    padding: inherit;
                 }
             }
         }
