@@ -48,7 +48,7 @@ namespace DeviserWI.Controllers.API
                 var dbResult = moduleManager.GetPageModule(id);                
                 if (dbResult != null && moduleManager.HasEditPermission(dbResult))
                 {
-                    var result = Mapper.Map<List<PageModule>>(dbResult);
+                    var result = Mapper.Map<PageModule>(dbResult);
                     return Ok(result);
                 }
 
@@ -104,13 +104,13 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpPut]
-        public IActionResult Post([FromBody]PageModule pageModule)
+        public IActionResult CreateUpdatePageModule([FromBody]PageModule pageModule)
         {
             try
             {
                 if (pageModule != null)
                 {
-                    var page = pageProvider.GetPage(pageModule.Id);
+                    var page = pageProvider.GetPage(pageModule.PageId);
                     if (pageManager.HasEditPermission(page)) //Check edit permission for the page
                     {
                         var dbResult = moduleManager.CreateUpdatePageModule(pageModule);
@@ -132,7 +132,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpPut]
         [Route("list/")]
-        public IActionResult Put([FromBody]List<PageModule> pageModules)
+        public IActionResult UpdatePageModules([FromBody]List<PageModule> pageModules)
         {
             try
             {
@@ -157,7 +157,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpPut]
         [Route("permission/")]
-        public IActionResult Put([FromBody] PageModule pageModule)
+        public IActionResult UpdatePermission([FromBody] PageModule pageModule)
         {
             try
             {
@@ -181,7 +181,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpPut]
         [Route("restore/{id}")]
-        public IActionResult PutPageModule(Guid id)
+        public IActionResult RestorePageModule(Guid id)
         {
             try
             {
@@ -231,10 +231,19 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                bool result = pageProvider.DeletePageModule(id);
-                if (result)
-                    return Ok();
+                var pageModule = pageProvider.GetPageModule(id);
+                if (pageModule != null)
+                {
+                    var page = pageProvider.GetPage(pageModule.PageId);
+                    if (pageManager.HasEditPermission(page)) //Check edit permission for the page
+                    {
+                        bool result = pageProvider.DeletePageModule(id);
+                        if (result)
+                            return Ok();
 
+                    }
+                    return Unauthorized();
+                }   
                 return BadRequest();
 
             }

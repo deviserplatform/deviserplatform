@@ -86,35 +86,36 @@ namespace Deviser.Core.Library.Modules
             {
                 if (pageModule != null)
                 {
-                    PageModule result = pageProvider.GetPageModule(pageModule.Id);
-                    if (result == null)
+                    PageModule dbPageModule = pageProvider.GetPageModule(pageModule.Id);
+                    if (dbPageModule == null)
                     {
-                        result = pageProvider.CreatePageModule(pageModule);
-                        List<ModulePermission> adminPermissions = AddAdminPermissions(result);
+                        dbPageModule = pageProvider.CreatePageModule(pageModule);
+                        List<ModulePermission> adminPermissions = AddAdminPermissions(dbPageModule);
 
-                        if (result.ModulePermissions == null)
+                        if (dbPageModule.ModulePermissions == null)
                         {
-                            result.ModulePermissions = adminPermissions;
+                            dbPageModule.ModulePermissions = adminPermissions;
                         }
                         else
                         {
-                            adminPermissions.AddRange(result.ModulePermissions);
-                            result.ModulePermissions = adminPermissions;
+                            adminPermissions.AddRange(dbPageModule.ModulePermissions);
+                            dbPageModule.ModulePermissions = adminPermissions;
                         }
                     }
 
                     else
                     {
-                        result.IsDeleted = false;
-                        result.ContainerId = pageModule.ContainerId;
-                        result.SortOrder = pageModule.SortOrder;
-                        result.ModulePermissions = pageModule.ModulePermissions;
-                        result = pageProvider.UpdatePageModule(result);
+                        dbPageModule.Title = pageModule.Title;
+                        dbPageModule.IsDeleted = false;
+                        dbPageModule.ContainerId = pageModule.ContainerId;
+                        dbPageModule.SortOrder = pageModule.SortOrder;
+                        dbPageModule.ModulePermissions = pageModule.ModulePermissions;
+                        dbPageModule = pageProvider.UpdatePageModule(dbPageModule);
                     }
 
-                    result.HasEditPermission = HasEditPermission(pageModule);
+                    dbPageModule.HasEditPermission = HasEditPermission(pageModule);
 
-                    return result;
+                    return dbPageModule;
                 }
             }
             catch (Exception ex)

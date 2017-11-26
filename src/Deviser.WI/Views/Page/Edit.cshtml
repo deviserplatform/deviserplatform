@@ -41,6 +41,10 @@
                      'alert alert-info':editVM.message.messageType=='info',
                      'alert alert-success':editVM.message.messageType=='success',
                      'alert alert-warning':editVM.message.messageType=='warning'}" role="alert">
+                <button type="button" class="close" ng-click="editVM.message = {}">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+
                 {{editVM.message.content}}
             </div>
         </div>
@@ -270,13 +274,21 @@
                 <div class="edit-wrapper">
                     <div class="box box-grey box-padding properties">
                         <h3>Selected</h3>
-                        <div class="box-content">
-                            <div class="row">
+                        <div class="box-content" ng-show="editVM.selectedItem.id">
+                            <div class="row" ng-show="editVM.selectedItem.pageContent">
                                 <div class="col-md-12">
                                     <strong>Content Type</strong>
                                 </div>
                                 <div class="col-md-12">
                                     {{editVM.selectedItem.contentType.label}}
+                                </div>
+                            </div>
+                            <div class="row" ng-show="editVM.selectedItem.pageModule">
+                                <div class="col-md-12">
+                                    <strong>Module</strong>
+                                </div>
+                                <div class="col-md-12">
+                                    {{editVM.selectedItem.moduleAction.displayName}}
                                 </div>
                             </div>
                             <div class="row">
@@ -287,27 +299,29 @@
                                     <input type="text" class="form-control input-sm" ng-model="editVM.selectedItem.title" />
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <strong>Properties</strong>
+                            <div class="properties-content" ng-show="editVM.selectedItem.contentType">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <strong>Properties</strong>
+                                    </div>
+                                </div>
+                                <div class="row" ng-repeat="property in editVM.selectedItem.properties track by $index">
+                                    <div class="col-md-6">
+                                        {{property.label}}
+                                    </div>
+                                    <div class="col-md-6" ng-show="!property.optionList">
+                                        <input type="text" class="form-control input-sm" ng-model="property.value" />
+                                    </div>
+                                    <div class="col-md-6" ng-show="property.optionList">
+                                        <select class="form-control input-sm" name="repeatSelect" id="repeatSelect" ng-model="property.value">
+                                            <option ng-repeat="option in property.optionList" value="{{option.id}}">{{option.label}}</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row" ng-repeat="property in editVM.selectedItem.properties track by $index">
-                                <div class="col-md-6">
-                                    {{property.label}}
-                                </div>
-                                <div class="col-md-6" ng-show="!property.optionList">
-                                    <input type="text" class="form-control input-sm" ng-model="property.value" />
-                                </div>
-                                <div class="col-md-6" ng-show="property.optionList">
-                                    <select class="form-control input-sm" name="repeatSelect" id="repeatSelect" ng-model="property.value">
-                                        <option ng-repeat="option in property.optionList" value="{{option.id}}">{{option.label}}</option>
-                                    </select>
-                                </div>
-                            </div>
                             <div class="row">
-                                <div class="col-md-6 col-md-offset-6" ng-show="editVM.selectedItem.contentType">
-                                    <a class="btn btn-xs btn-primary" ng-click="editVM.saveProperties()" ng-disabled="!editVM.selectedItem.isPropertyChanged">Save</a>
+                                <div class="col-md-6 col-md-offset-6">
+                                    <a class="btn btn-xs btn-primary" ng-click="editVM.saveProperties()">Save</a>
                                 </div>
                             </div>
                         </div>

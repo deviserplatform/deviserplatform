@@ -1,18 +1,18 @@
 ﻿(function () {
 
     var app = angular.module('deviserEdit', [
-    'ui.router',
-    'ui.sortable',
-    'ui.bootstrap',
-    'ui.select',
-    'dndLists',
-    'textAngular',
-    'sd.sdlib',
-    'deviser.services',
-    'deviser.config',
-    'modules.app.imageManager',
-    'modules.app.languageSelector',
-    'modules.app.linkSelector'
+        'ui.router',
+        'ui.sortable',
+        'ui.bootstrap',
+        'ui.select',
+        'dndLists',
+        'textAngular',
+        'sd.sdlib',
+        'deviser.services',
+        'deviser.config',
+        'modules.app.imageManager',
+        'modules.app.languageSelector',
+        'modules.app.linkSelector'
     ]);
 
     app.config(['$provide', config]);
@@ -39,10 +39,10 @@
     function config($provide) {
         $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function (taRegisterTool, taOptions) {
             taOptions.toolbar = [
-                 ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
-                 ['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo', 'clear'],
-                 ['justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'outdent'],
-                 ['html', 'wordcount', 'charcount']
+                ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
+                ['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo', 'clear'],
+                ['justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'outdent'],
+                ['html', 'wordcount', 'charcount']
             ];
             return taOptions;
         }]);
@@ -64,14 +64,14 @@
         /////////////////////////////////////////////
         /*Function declarations only*/
         function link(scope, element, attrs) {
-            template = $templateCache.get('contenttypes/' + scope.ecVM.content.contentType.name + '.html',);
+            template = $templateCache.get('contenttypes/' + scope.ecVM.content.contentType.name + '.html', );
             element.html(template);
             $compile(element.contents())(scope);
         }
 
         function ctrl($scope, $uibModal) {
             var vm = this;
-            
+
             init();
 
             /////////////////////////////////////////////
@@ -80,7 +80,7 @@
                 vm.templateMode = 'PREVIEW';
                 vm.contentType = vm.content.contentType;
                 vm.contentTranslations = vm.content.pageContentTranslation;
-                var currentCultureCode = pageContext.currentLocale;                
+                var currentCultureCode = pageContext.currentLocale;
                 //load correct translation
                 var translation = getTranslationForLocale(currentCultureCode);
                 vm.contentTranslation = translation;
@@ -387,10 +387,20 @@
                     vm.selectedItem.isPropertyChanged = false;
                 }, function (response) {
                     console.log(response);
-                },true);
+                }, true);
             }
-            else if (vm.selectedItem.layoutTemplate === "module"){
+            else if (vm.selectedItem.layoutTemplate === "module") {
+                var pageModule = vm.selectedItem.pageModule;
+                                
+                pageModule.title = vm.selectedItem.title;
+                pageModule.containerId = vm.selectedItem.pageModule.containerId;                
+                pageModule.sortOrder = vm.selectedItem.sortOrder;
 
+                pageModuleService.put(pageModule).then(function (response) {
+                    console.log(response);
+                }, function (response) {
+                    console.log(response);
+                }, true);
             }
         }
 
@@ -398,97 +408,97 @@
         function getCurrentPage() {
             var defer = $q.defer();
             pageService.get(pageContext.currentPageId)
-            .then(function (data) {
-                vm.currentPage = data;
-                defer.resolve(data);
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-                defer.reject(SYS_ERROR_MSG);
-            });
+                .then(function (data) {
+                    vm.currentPage = data;
+                    defer.resolve(data);
+                }, function (error) {
+                    showMessage("error", SYS_ERROR_MSG);
+                    defer.reject(SYS_ERROR_MSG);
+                });
             return defer.promise;
         }
 
         function getPageModules() {
             var defer = $q.defer();
             pageModuleService.getByPage(pageContext.currentPageId)
-            .then(function (data) {
-                vm.pageModules = data;
-                defer.resolve(data);
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-                defer.reject(SYS_ERROR_MSG);
-            });
+                .then(function (data) {
+                    vm.pageModules = data;
+                    defer.resolve(data);
+                }, function (error) {
+                    showMessage("error", SYS_ERROR_MSG);
+                    defer.reject(SYS_ERROR_MSG);
+                });
             return defer.promise;
         }
 
         function getLayout() {
             var defer = $q.defer();
             layoutService.get(vm.currentPage.layoutId)
-            .then(function (layout) {
-                //console.log(layout);
-                //vm.pageLayout = layout;
-                pageLayout = layout;
-                defer.resolve('data received');
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-                defer.reject(SYS_ERROR_MSG);
-            });
+                .then(function (layout) {
+                    //console.log(layout);
+                    //vm.pageLayout = layout;
+                    pageLayout = layout;
+                    defer.resolve('data received');
+                }, function (error) {
+                    showMessage("error", SYS_ERROR_MSG);
+                    defer.reject(SYS_ERROR_MSG);
+                });
             return defer.promise;
         }
 
         function getContentTypes() {
             var defer = $q.defer();
             contentTypeService.get()
-            .then(function (data) {
-                var contentTypes = data;
-                vm.contentTypes = [];
-                _.forEach(contentTypes, function (contentType) {
-                    vm.contentTypes.push({
-                        layoutTemplate: "content",
-                        type: "content",
-                        contentType: contentType,
-                        properties: contentType.properties
+                .then(function (data) {
+                    var contentTypes = data;
+                    vm.contentTypes = [];
+                    _.forEach(contentTypes, function (contentType) {
+                        vm.contentTypes.push({
+                            layoutTemplate: "content",
+                            type: "content",
+                            contentType: contentType,
+                            properties: contentType.properties
+                        });
                     });
+                    defer.resolve('data received!');
+                }, function (error) {
+                    showMessage("error", SYS_ERROR_MSG);
+                    defer.reject(SYS_ERROR_MSG);
                 });
-                defer.resolve('data received!');
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-                defer.reject(SYS_ERROR_MSG);
-            });
             return defer.promise;
         }
 
         function getModuleActions() {
             var defer = $q.defer();
             moduleActionService.get()
-            .then(function (data) {
-                var moduleActions = data;
-                vm.modules = [];
-                _.forEach(moduleActions, function (moduleAction) {
-                    vm.modules.push({
-                        layoutTemplate: "module",
-                        type: "module",
-                        moduleAction: moduleAction
+                .then(function (data) {
+                    var moduleActions = data;
+                    vm.modules = [];
+                    _.forEach(moduleActions, function (moduleAction) {
+                        vm.modules.push({
+                            layoutTemplate: "module",
+                            type: "module",
+                            moduleAction: moduleAction
+                        });
                     });
+                    defer.resolve('data received!');
+                }, function (error) {
+                    showMessage("error", SYS_ERROR_MSG);
+                    deferred.reject(SYS_ERROR_MSG);
                 });
-                defer.resolve('data received!');
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-                deferred.reject(SYS_ERROR_MSG);
-            });
             return defer.promise;
         }
 
         function getPageContents() {
             var defer = $q.defer();
             pageContentService.get(pageContext.currentPageId, pageContext.currentLocale)
-            .then(function (pageContents) {
-                vm.pageContents = pageContents;
-                defer.resolve(pageContents);
-            }, function (error) {
-                showMessage("error", SYS_ERROR_MSG);
-                defer.reject(SYS_ERROR_MSG);
-            });
+                .then(function (pageContents) {
+                    vm.pageContents = pageContents;
+                    defer.resolve(pageContents);
+                }, function (error) {
+                    showMessage("error", SYS_ERROR_MSG);
+                    defer.reject(SYS_ERROR_MSG);
+                });
             return defer.promise;
         }
 
@@ -575,7 +585,7 @@
                             //item.placeHolders.splice(index, 0, module); //Insert placeHolder into specified index
 
                             if (!module.title) {
-                                module.title = item.moduleAction.displayName + ' ' + item.placeHolders.length + 1;
+                                module.title = module.moduleAction.displayName + ' ' + item.placeHolders.length + 1;
                             }
 
                             item.placeHolders.push(module);
@@ -619,7 +629,7 @@
                 contentType: pageContent.contentType,
                 sortOrder: pageContent.sortOrder
             }
-            
+
             return content;
         }
 

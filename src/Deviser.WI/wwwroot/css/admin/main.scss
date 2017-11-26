@@ -151,6 +151,15 @@ body {
     box-shadow: none;
 }
 
+/***********************************************************/
+/*Alerts*/
+/***********************************************************/
+
+.alert {
+    position: absolute;
+    top: 30px;
+    width: 100%;
+}
 
 
 body.page-edit {
@@ -573,8 +582,8 @@ div.form-horizontal .control-label {
             height: 20px;
             padding: 2px;
         }
-
-        .col-md-6 {
+        
+        .col-md-12, .col-md-6 {
             padding-left: 5px;
             padding-right: 2px;
         }

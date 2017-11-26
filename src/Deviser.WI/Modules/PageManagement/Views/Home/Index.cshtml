@@ -6,11 +6,15 @@
 
 <div ng-app="deviser.pageMangement" ng-controller="PageManagementCtrl as pmVM">
 
-    <div class="row">
+    <div class="row" ng-show="pmVM.message.content">
         <div ng-class="{'alert alert-danger':pmVM.message.messageType=='error',
                      'alert alert-info':pmVM.message.messageType=='info',
                      'alert alert-success':pmVM.message.messageType=='success',
                      'alert alert-warning':pmVM.message.messageType=='warning'}" role="alert">
+            <button type="button" class="close" ng-click="pmVM.message = {}">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+
             {{pmVM.message.content}}
         </div>
     </div>
