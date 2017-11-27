@@ -314,13 +314,17 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.LayoutType).WithMany(p => p.LayoutTypeProperties).HasForeignKey(d => d.LayoutTypeId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(d => d.Property).WithMany(p => p.LayoutTypeProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasKey(d => new { d.LayoutTypeId, d.PropertyId });
             });
 
             modelBuilder.Entity<ContentTypeProperty>(entity =>
             {
-                entity.HasOne(d => d.ContentType).WithMany(p => p.ContentTypeProperties).HasForeignKey(d => d.ConentTypeId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(d => d.ContentType).WithMany(p => p.ContentTypeProperties).HasForeignKey(d => d.ContentTypeId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(d => d.Property).WithMany(p => p.ContentTypeProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasKey(d => new { d.ContentTypeId, d.PropertyId });
             });
 
             modelBuilder.Entity<PagePermission>(entity =>

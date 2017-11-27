@@ -16,7 +16,7 @@ namespace Deviser.Core.Common.DomainTypes
         public int SortOrder { get; set; }
         public string DataType { get; set; }
         public ContentDataType ContentDataType { get; set; }
-        public ICollection<Property> Properties { get; set; }
+        public ICollection<Property> Properties { get; set; }       
         public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }

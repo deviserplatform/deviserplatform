@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 namespace Deviser.Core.Data.Entities
 {
     public class LayoutTypeProperty
-    {
-        public Guid Id { get; set; }
+    {   
         public Guid PropertyId { get; set; }
         public Guid LayoutTypeId { get; set; }
         public virtual Property Property { get; set; }

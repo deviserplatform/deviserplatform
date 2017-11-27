@@ -269,7 +269,8 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     var dbPageContent = Mapper.Map<Entities.PageContent>(pageContent);
                     dbPageContent.LastModifiedDate = DateTime.Now;
-                    var result = context.PageContent.Update(dbPageContent).Entity;
+                    dbPageContent.ContentType.ContentTypeProperties = null;
+                    var result = context.PageContent.Update(dbPageContent).Entity;                  
                     context.SaveChanges();
                     return Mapper.Map<PageContent>(result);
                 }

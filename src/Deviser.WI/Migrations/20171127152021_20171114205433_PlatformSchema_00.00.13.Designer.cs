@@ -11,9 +11,10 @@ using System;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDbContext))]
-    partial class DeviserDBContextModelSnapshot : ModelSnapshot
+    [Migration("20171127152021_20171114205433_PlatformSchema_00.00.13")]
+    partial class _20171114205433_PlatformSchema_000013
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -91,11 +92,16 @@ namespace Deviser.WI.Migrations
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeProperty", b =>
                 {
-                    b.Property<Guid>("ContentTypeId");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("ConentTypeId");
 
                     b.Property<Guid>("PropertyId");
 
-                    b.HasKey("ContentTypeId", "PropertyId");
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("ConentTypeId", "PropertyId");
 
                     b.HasIndex("PropertyId");
 
@@ -179,11 +185,16 @@ namespace Deviser.WI.Migrations
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.LayoutTypeProperty", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
                     b.Property<Guid>("LayoutTypeId");
 
                     b.Property<Guid>("PropertyId");
 
-                    b.HasKey("LayoutTypeId", "PropertyId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("LayoutTypeId");
 
                     b.HasIndex("PropertyId");
 
@@ -815,7 +826,7 @@ namespace Deviser.WI.Migrations
                 {
                     b.HasOne("Deviser.Core.Data.Entities.ContentType", "ContentType")
                         .WithMany("ContentTypeProperties")
-                        .HasForeignKey("ContentTypeId")
+                        .HasForeignKey("ConentTypeId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Deviser.Core.Data.Entities.Property", "Property")

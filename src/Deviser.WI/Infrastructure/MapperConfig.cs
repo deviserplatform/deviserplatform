@@ -21,7 +21,7 @@ namespace Deviser.WI.Infrastructure
                 .ForMember(dest => dest.ContentTypeProperties, opt => opt.MapFrom(src => src.Properties.Select(ctp => new ContentTypeProperty
                 {
                     PropertyId = ctp.Id,
-                    ConentTypeId = src.Id,
+                    ContentTypeId = src.Id,
                     Property = Mapper.Map<Property>(ctp)
                 }
                 )))

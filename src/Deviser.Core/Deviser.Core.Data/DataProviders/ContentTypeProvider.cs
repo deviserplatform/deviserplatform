@@ -54,7 +54,7 @@ namespace Deviser.Core.Data.DataProviders
                     {
                         foreach(var ctp in dbContentType.ContentTypeProperties)
                         {
-                            ctp.ConentTypeId = dbContentType.Id;
+                            ctp.ContentTypeId = dbContentType.Id;
                         }
                     }
                     dbContentType.CreatedDate = dbContentType.LastModifiedDate = DateTime.Now;
@@ -188,9 +188,9 @@ namespace Deviser.Core.Data.DataProviders
                     {
 
                         var toRemoveFromClient = dbContentType.ContentTypeProperties.Where(clientProp => context.ContentTypeProperty.Any(dbProp =>
-                         clientProp.ConentTypeId == dbProp.ConentTypeId && clientProp.PropertyId == dbProp.PropertyId)).ToList();
+                         clientProp.ContentTypeId == dbProp.ContentTypeId && clientProp.PropertyId == dbProp.PropertyId)).ToList();
 
-                        var currentTypeProperties = context.ContentTypeProperty.Where(ctp => ctp.ConentTypeId == dbContentType.Id).ToList();
+                        var currentTypeProperties = context.ContentTypeProperty.Where(ctp => ctp.ContentTypeId == dbContentType.Id).ToList();
 
                         List<Entities.ContentTypeProperty> toRemoveFromDb = null;
 
