@@ -5,252 +5,257 @@
 <require type="Script" priority="107" path="~/js/src/app/site-management/site-settings.js"></require>
 
 <div ng-app="deviser.siteSettings" ng-controller="SiteSettingsCtrl as ssVM">
-
-    <div class="alert alert-dismissable" ng-class="{'alert-danger':ssVM.message.messageType=='error',
+    <div class="row" ng-show="ssVM.message.content">
+        <div class="alert alert-dismissable" ng-class="{'alert-danger':ssVM.message.messageType=='error',
                               'alert-info':ssVM.message.messageType=='info',
                               'alert-success':ssVM.message.messageType=='success',
-                              'alert-warning':ssVM.message.messageType=='warning'}" role="alert" ng-show="ssVM.message.messageType">
-        {{ssVM.message.content}}
+                              'alert-warning':ssVM.message.messageType=='warning'}" role="alert">
+            <button type="button" class="close" ng-click="ssVM.message = {}">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+            {{ssVM.message.content}}
+        </div>
     </div>
-    <script type="text/ng-template" id="group-template.html">
-        <div class="panel-heading">
-            <h4 class="panel-title" style="color:#fa39c3">
-                <a  tabindex="0" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading">
-                    <span uib-accordion-header ng-class="{'text-muted': isDisabled}">
-                        {{heading}}
-                    </span>
-                </a>
-            </h4>
-        </div>
-        <div class="panel-collapse collapse" uib-collapse="!isOpen">
-            <div class="panel-body" style="text-align: right" ng-transclude></div>
-        </div>
-    </script>
 
-    @await Html.PartialAsync("_NgComponents")
+        <script type="text/ng-template" id="group-template.html">
+            <div class="panel-heading">
+                <h4 class="panel-title" style="color:#fa39c3">
+                    <a tabindex="0" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading">
+                        <span uib-accordion-header ng-class="{'text-muted': isDisabled}">
+                            {{heading}}
+                        </span>
+                    </a>
+                </h4>
+            </div>
+            <div class="panel-collapse collapse" uib-collapse="!isOpen">
+                <div class="panel-body" style="text-align: right" ng-transclude></div>
+            </div>
+        </script>
 
-    <div class="row" ng-show="ssVM.currentViewState == ssVM.viewStates.LIST">
-        <div class="col-md-12">
-            <div class="portlet box blue" id="form_wizard_1">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-cog" aria-hidden="true"></i> Site Settings
-                    </div>
-                </div>
-                <div class="portlet-body form">
-                    <form class="form-horizontal" name="propertyForm" novalidate>
-                        <div class="form-body">
-                            <uib-accordion -others="oneAtATcloseime">
-                                <div uib-accordion-group class="panel-default" heading="General">
-                                    <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
-                                        <label class="col-md-3 control-label">Site Name</label>
-                                        <div class="col-md-6">
-                                            <input class="form-control" name="SiteName" ng-model="ssVM.setting.SiteName.settingValue" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
-                                        <label class="col-md-3 control-label">Site Desctiption</label>
-                                        <div class="col-md-6">
-                                            <textarea class="form-control" rows="5" ng-model="ssVM.setting.SiteDescription.settingValue"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
-                                        <label class="col-md-3 control-label">Site Admin Email</label>
-                                        <div class="col-md-6">
-                                            <input type="text" class="form-control"  ng-model="ssVM.setting.SiteAdminEmail.settingValue"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
-                                        <label class="col-md-3 control-label">Site Root</label>
-                                        <div class="col-md-6">
-                                            <input class="form-control" name="SiteRoot" ng-model="ssVM.setting.SiteRoot.settingValue" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Enable/Disable Registration</label>
-                                        <div class="col-md-6">
-                                            <input type="checkbox" ng-model="ssVM.setting.RegistrationEnabled.settingValue" />
-                                        </div>
-                                    </div>
+        @await Html.PartialAsync("_NgComponents")
 
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Site Language</label>
-                                        <div class="col-md-6">
-                                            <ui-select ng-model="ssVM.setting.SiteLanguage.settingValue" theme="bootstrap" ng-disabled="ssVM.languages.length<=0">
-                                                <ui-select-match placeholder="Coose a language">{{$select.selected.englishName}}</ui-select-match>
-                                                <ui-select-choices repeat="language.cultureCode as language in ssVM.languages | filter: $select.search">
-                                                    <div ng-bind-html="language.englishName | highlight: $select.search"></div>
-                                                    <small ng-bind-html="language.nativeName | highlight: $select.search"></small>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
-                                    </div>
-                                    
-                                    
-
-                                </div>
-                                <div uib-accordion-group class="panel-default" heading="Page Configuration">
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Home Page</label>
-                                        <div class="col-md-6">
-                                            <ui-select ng-model="ssVM.setting.HomePageId.settingValue" theme="bootstrap">
-                                                <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
-                                                <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
-                                                    <div ng-bind-html="page.pageName | highlight: $select.search"></div>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Login Page</label>
-                                        <div class="col-md-6">
-                                            <ui-select ng-model="ssVM.setting.LoginPageId.settingValue" theme="bootstrap">
-                                                <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
-                                                <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
-                                                    <div ng-bind-html="page.pageName | highlight: $select.search"></div>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Registration Page</label>
-                                        <div class="col-md-6">
-                                            <ui-select ng-model="ssVM.setting.RegistrationPageId.settingValue" theme="bootstrap">
-                                                <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
-                                                <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
-                                                    <div ng-bind-html="page.pageName | highlight: $select.search"></div>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Redirect After Logout</label>
-                                        <div class="col-md-6">
-                                            <ui-select ng-model="ssVM.setting.RedirectAfterLogout.settingValue" theme="bootstrap">
-                                                <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
-                                                <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
-                                                    <div ng-bind-html=" page.pageName | highlight: $select.search"></div>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Redirect After Login</label>
-                                        <div class="col-md-6">
-                                            <ui-select ng-model="ssVM.setting.RedirectAfterLogin.settingValue" theme="bootstrap">
-                                                <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
-                                                <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
-                                                    <div ng-bind-html="page.pageName | highlight: $select.search"></div>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div uib-accordion-group class="panel-default" heading="SMTP Settings">
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">SMTP Server and Port</label>
-                                        <div class="col-md-6">
-                                            <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.SMTPServerAndPort.settingValue"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Connection Limit</label>
-                                        <div class="col-md-6">
-                                            <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.ConnectionLimit.settingValue"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Max Idle Time</label>
-                                        <div class="col-md-6">
-                                            <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.MaxIdleTime.settingValue"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">SMTP Authentication</label>
-                                        <div class="col-md-6">
-                                            <input type="radio" checked="checked" name="SMTPAuthentication" value="Anonymous" ng-model="ssVM.setting.SMTPAuthentication.settingValue">Anonymous
-                                            <input type="radio" name="SMTPAuthentication" value="Basic" ng-model="ssVM.setting.SMTPAuthentication.settingValue">Basic
-                                            <input type="radio" name="SMTPAuthentication" value="NTML" ng-model="ssVM.setting.SMTPAuthentication.settingValue">NTML
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">SMTP Enable SSL</label>
-                                        <div class="col-md-6">
-                                            <input type="checkbox" ng-model="ssVM.setting.SMTPEnableSSL.settingValue" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group" ng-show="ssVM.setting.SMTPAuthentication.settingValue=='Basic'">
-                                        <label class="col-md-3 control-label">SMTP Username</label>
-                                        <div class="col-md-6">
-                                            <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.SMTPUsername.settingValue"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group" ng-show="ssVM.setting.SMTPAuthentication.settingValue=='Basic'">
-                                        <label class="col-md-3 control-label">SMTP Password</label>
-                                        <div class="col-md-6">
-                                            <input type="password" class="form-control" name="SMTPSettings" ng-model="ssVM.setting.SMTPPassword.settingValue"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div uib-accordion-group class="panel-default" heading="Appearance">
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Site Default Layout</label>
-                                        <div class="col-md-6">
-                                            <ui-select ng-model="ssVM.setting.DefaultLayoutId.settingValue" theme="bootstrap">
-                                                <ui-select-match placeholder="Select Layout">{{$select.selected.name}}</ui-select-match>
-                                                <ui-select-choices repeat="layout.id as layout in ssVM.layouts | filter: $select.search">
-                                                    <div ng-bind-html="layout.name | highlight: $select.search"></div>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Site Default Theme</label>
-                                        <div class="col-md-6">
-                                            <ui-select ng-model="ssVM.setting.DefaultTheme.settingValue" theme="bootstrap">
-                                                <ui-select-match placeholder="Select Theme">{{$select.selected.key}}</ui-select-match>
-                                                <ui-select-choices repeat="theme.value as theme in ssVM.theme | filter: $select.search">
-                                                    <div ng-bind-html="theme.key | highlight: $select.search"></div>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Default Admin Layout</label>
-                                        <div class="col-md-6">
-                                            <ui-select ng-model="ssVM.setting.DefaultAdminLayoutId.settingValue" theme="bootstrap">
-                                                <ui-select-match placeholder="Select Layout">{{$select.selected.name}}</ui-select-match>
-                                                <ui-select-choices repeat="layout.id as layout in ssVM.layouts | filter: $select.search">
-                                                    <div ng-bind-html="layout.name | highlight: $select.search"></div>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Default Admin Theme</label>
-                                        <div class="col-md-6">
-                                            <ui-select ng-model="ssVM.setting.DefaultAdminTheme.settingValue" theme="bootstrap">
-                                                <ui-select-match placeholder="Select Theme">{{$select.selected.key}}</ui-select-match>
-                                                <ui-select-choices repeat="theme.value as theme in ssVM.themes | filter: $select.search">
-                                                    <div ng-bind-html="theme.key | highlight: $select.search"></div>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </uib-accordion>
+        <div class="row" ng-show="ssVM.currentViewState == ssVM.viewStates.LIST">
+            <div class="col-md-12">
+                <div class="portlet box blue" id="form_wizard_1">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-cog" aria-hidden="true"></i> Site Settings
                         </div>
-                        <div class="form-actions">
-                            <div class="row">
-                                <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn btn-success" ng-click="ssVM.update()">Update</button>
-                                    <button type="button" class="btn btn-default" ng-click="ssVM.cancel()">Cancel</button>
+                    </div>
+                    <div class="portlet-body form">
+                        <form class="form-horizontal" name="propertyForm" novalidate>
+                            <div class="form-body">
+                                <uib-accordion -others="oneAtATcloseime">
+                                    <div uib-accordion-group class="panel-default" heading="General">
+                                        <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
+                                            <label class="col-md-3 control-label">Site Name</label>
+                                            <div class="col-md-6">
+                                                <input class="form-control" name="SiteName" ng-model="ssVM.setting.SiteName.settingValue" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
+                                            <label class="col-md-3 control-label">Site Desctiption</label>
+                                            <div class="col-md-6">
+                                                <textarea class="form-control" rows="5" ng-model="ssVM.setting.SiteDescription.settingValue"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
+                                            <label class="col-md-3 control-label">Site Admin Email</label>
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control" ng-model="ssVM.setting.SiteAdminEmail.settingValue" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
+                                            <label class="col-md-3 control-label">Site Root</label>
+                                            <div class="col-md-6">
+                                                <input class="form-control" name="SiteRoot" ng-model="ssVM.setting.SiteRoot.settingValue" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Enable/Disable Registration</label>
+                                            <div class="col-md-6">
+                                                <input type="checkbox" ng-model="ssVM.setting.RegistrationEnabled.settingValue" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Site Language</label>
+                                            <div class="col-md-6">
+                                                <ui-select ng-model="ssVM.setting.SiteLanguage.settingValue" theme="bootstrap" ng-disabled="ssVM.languages.length<=0">
+                                                    <ui-select-match placeholder="Coose a language">{{$select.selected.englishName}}</ui-select-match>
+                                                    <ui-select-choices repeat="language.cultureCode as language in ssVM.languages | filter: $select.search">
+                                                        <div ng-bind-html="language.englishName | highlight: $select.search"></div>
+                                                        <small ng-bind-html="language.nativeName | highlight: $select.search"></small>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                    <div uib-accordion-group class="panel-default" heading="Page Configuration">
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Home Page</label>
+                                            <div class="col-md-6">
+                                                <ui-select ng-model="ssVM.setting.HomePageId.settingValue" theme="bootstrap">
+                                                    <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
+                                                    <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
+                                                        <div ng-bind-html="page.pageName | highlight: $select.search"></div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Login Page</label>
+                                            <div class="col-md-6">
+                                                <ui-select ng-model="ssVM.setting.LoginPageId.settingValue" theme="bootstrap">
+                                                    <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
+                                                    <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
+                                                        <div ng-bind-html="page.pageName | highlight: $select.search"></div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Registration Page</label>
+                                            <div class="col-md-6">
+                                                <ui-select ng-model="ssVM.setting.RegistrationPageId.settingValue" theme="bootstrap">
+                                                    <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
+                                                    <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
+                                                        <div ng-bind-html="page.pageName | highlight: $select.search"></div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Redirect After Logout</label>
+                                            <div class="col-md-6">
+                                                <ui-select ng-model="ssVM.setting.RedirectAfterLogout.settingValue" theme="bootstrap">
+                                                    <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
+                                                    <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
+                                                        <div ng-bind-html=" page.pageName | highlight: $select.search"></div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Redirect After Login</label>
+                                            <div class="col-md-6">
+                                                <ui-select ng-model="ssVM.setting.RedirectAfterLogin.settingValue" theme="bootstrap">
+                                                    <ui-select-match placeholder="Select Page">{{$select.selected.pageName}}</ui-select-match>
+                                                    <ui-select-choices repeat="page.id as page in ssVM.pages | filter: $select.search">
+                                                        <div ng-bind-html="page.pageName | highlight: $select.search"></div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div uib-accordion-group class="panel-default" heading="SMTP Settings">
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">SMTP Server and Port</label>
+                                            <div class="col-md-6">
+                                                <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.SMTPServerAndPort.settingValue" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Connection Limit</label>
+                                            <div class="col-md-6">
+                                                <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.ConnectionLimit.settingValue" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Max Idle Time</label>
+                                            <div class="col-md-6">
+                                                <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.MaxIdleTime.settingValue" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">SMTP Authentication</label>
+                                            <div class="col-md-6">
+                                                <input type="radio" checked="checked" name="SMTPAuthentication" value="Anonymous" ng-model="ssVM.setting.SMTPAuthentication.settingValue">Anonymous
+                                                <input type="radio" name="SMTPAuthentication" value="Basic" ng-model="ssVM.setting.SMTPAuthentication.settingValue">Basic
+                                                <input type="radio" name="SMTPAuthentication" value="NTML" ng-model="ssVM.setting.SMTPAuthentication.settingValue">NTML
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">SMTP Enable SSL</label>
+                                            <div class="col-md-6">
+                                                <input type="checkbox" ng-model="ssVM.setting.SMTPEnableSSL.settingValue" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group" ng-show="ssVM.setting.SMTPAuthentication.settingValue=='Basic'">
+                                            <label class="col-md-3 control-label">SMTP Username</label>
+                                            <div class="col-md-6">
+                                                <input class="form-control" name="SMTPSettings" ng-model="ssVM.setting.SMTPUsername.settingValue" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group" ng-show="ssVM.setting.SMTPAuthentication.settingValue=='Basic'">
+                                            <label class="col-md-3 control-label">SMTP Password</label>
+                                            <div class="col-md-6">
+                                                <input type="password" class="form-control" name="SMTPSettings" ng-model="ssVM.setting.SMTPPassword.settingValue" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div uib-accordion-group class="panel-default" heading="Appearance">
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Site Default Layout</label>
+                                            <div class="col-md-6">
+                                                <ui-select ng-model="ssVM.setting.DefaultLayoutId.settingValue" theme="bootstrap">
+                                                    <ui-select-match placeholder="Select Layout">{{$select.selected.name}}</ui-select-match>
+                                                    <ui-select-choices repeat="layout.id as layout in ssVM.layouts | filter: $select.search">
+                                                        <div ng-bind-html="layout.name | highlight: $select.search"></div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Site Default Theme</label>
+                                            <div class="col-md-6">
+                                                <ui-select ng-model="ssVM.setting.DefaultTheme.settingValue" theme="bootstrap">
+                                                    <ui-select-match placeholder="Select Theme">{{$select.selected.key}}</ui-select-match>
+                                                    <ui-select-choices repeat="theme.value as theme in ssVM.theme | filter: $select.search">
+                                                        <div ng-bind-html="theme.key | highlight: $select.search"></div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Default Admin Layout</label>
+                                            <div class="col-md-6">
+                                                <ui-select ng-model="ssVM.setting.DefaultAdminLayoutId.settingValue" theme="bootstrap">
+                                                    <ui-select-match placeholder="Select Layout">{{$select.selected.name}}</ui-select-match>
+                                                    <ui-select-choices repeat="layout.id as layout in ssVM.layouts | filter: $select.search">
+                                                        <div ng-bind-html="layout.name | highlight: $select.search"></div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Default Admin Theme</label>
+                                            <div class="col-md-6">
+                                                <ui-select ng-model="ssVM.setting.DefaultAdminTheme.settingValue" theme="bootstrap">
+                                                    <ui-select-match placeholder="Select Theme">{{$select.selected.key}}</ui-select-match>
+                                                    <ui-select-choices repeat="theme.value as theme in ssVM.themes | filter: $select.search">
+                                                        <div ng-bind-html="theme.key | highlight: $select.search"></div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </uib-accordion>
+                            </div>
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button type="submit" class="btn btn-success" ng-click="ssVM.update()">Update</button>
+                                        <button type="button" class="btn btn-default" ng-click="ssVM.cancel()">Cancel</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>

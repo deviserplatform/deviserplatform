@@ -164,6 +164,12 @@ body {
 
 body.page-edit {
     overflow-y: hidden;
+
+    .alert{
+        top:50px;
+        z-index:10;
+    }
+
     /***********************************************************/
     /*Layout*/
     /***********************************************************/
@@ -190,6 +196,7 @@ body.page-edit {
         }
 
         .content-header {
+            background-color: #d9edf7;
             border-bottom: 1px solid #bce8f1;
         }
     }
@@ -318,7 +325,6 @@ body.page-edit {
                     color: #3c763d;
                     background-color: #dff0d8;
                 }*/
-
                 .box {
                     border-color: #2e6da4;
 

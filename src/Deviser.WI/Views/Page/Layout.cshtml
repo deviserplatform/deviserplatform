@@ -17,33 +17,51 @@
 </script>
 
 <div class="layout-wrapper" ng-app="deviserLayout" ng-controller="LayoutCtrl as layoutVM">
+    <div class="row" ng-show="layoutVM.message.content">
+        <div class="col-md-12">
+            <div ng-class="{'alert alert-danger':layoutVM.message.messageType=='error',
+                     'alert alert-info':layoutVM.message.messageType=='info',
+                     'alert alert-success':layoutVM.message.messageType=='success',
+                     'alert alert-warning':layoutVM.message.messageType=='warning'}" role="alert">
+                <button type="button" class="close" ng-click="layoutVM.message = {}">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+
+                {{layoutVM.message.content}}
+            </div>
+        </div>
+    </div>
+
     <div class="row layout-controls">
         <div class="col-md-2">
             <h3 class="layout-title">
                 Layout Designer
-                <small>layout the page</small>
             </h3>
         </div>
         <div class="col-md-8 form-inline">
-            <div class="form-group">
-                <div class="btn-group layout-dropdown" uib-dropdown is-open="status.isopen">
-                    <button type="button" class="btn btn-primary dropdown-toggle" uib-dropdown-toggle ng-disabled="disabled">
-                        <span class="pull-left" ng-show="layoutVM.pageLayout.name">{{layoutVM.pageLayout.name}}</span>
-                        <span class="pull-left" ng-show="!layoutVM.pageLayout.name">Choose Layout</span> <i class="fa fa-angle-down pull-right"></i>
-                    </button>
-                    <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-                        <li ng-repeat="layout in layoutVM.layouts track by $index"><a ng-click="layoutVM.selectLayout(layout)">{{layout.name}}</a></li>
-                    </ul>
-                </div>
-                <button type="button" class="layout-control btn btn-success" ng-click="layoutVM.newLayout()">
-                    <i class="fa fa-plus"></i> New
+            <button type="button" class="layout-control btn btn-success" ng-click="layoutVM.newLayout()">
+                <i class="fa fa-plus"></i> New
+            </button> 
+
+            <div class="btn-group layout-dropdown" uib-dropdown is-open="status.isopen">
+                <button type="button" class="btn btn-primary dropdown-toggle" uib-dropdown-toggle ng-disabled="disabled">
+                    <span class="pull-left" ng-show="layoutVM.pageLayout.name">{{layoutVM.pageLayout.name}}</span>
+                    <span class="pull-left" ng-show="!layoutVM.pageLayout.name">Choose Layout</span> <i class="fa fa-angle-down pull-right"></i>
                 </button>
-                <button type="button" class="layout-control btn btn-default" ng-click="layoutVM.copyLayout()">
-                    <i class="fa fa-clone" aria-hidden="true"></i> Copy
-                </button>
+                <ul class="dropdown-menu" uib-dropdown-menu role="menu">
+                    <li ng-repeat="layout in layoutVM.layouts track by $index"><a ng-click="layoutVM.selectLayout(layout)">{{layout.name}}</a></li>
+                </ul>
             </div>
 
-            <div class="form-group layout-name">
+            <button type="button" class="layout-control btn btn-default" ng-click="layoutVM.copyLayout()">
+                <i class="fa fa-clone" aria-hidden="true"></i> Copy
+            </button>
+
+            <button type="button" class="layout-control btn btn-default" ng-click="layoutVM.isLayoutEdit=true">
+                <i class="fa fa-pencil" aria-hidden="true"></i> Update
+            </button>
+
+            <div class="form-group layout-name" ng-show="layoutVM.isLayoutEdit">
                 <input type="text" class="form-control" placeholder="Enter layout name" ng-model="layoutVM.pageLayout.name" />
             </div>
 
@@ -116,19 +134,11 @@
                 </div>
             </script>
 
-            <div>
-                <div ng-class="{'alert alert-danger':layoutVM.message.messageType=='error',
-                     'alert alert-info':layoutVM.message.messageType=='info',
-                     'alert alert-success':layoutVM.message.messageType=='success',
-                     'alert alert-warning':layoutVM.message.messageType=='warning'}" role="alert">
-                    {{layoutVM.message.content}}
-                </div>
-            </div>
             <div class="row layout-container">
                 <div class="col-md-2">
                     <div class="toolbox box box-grey box-padding">
                         <h3>Layout Elements</h3>
-                        <div>
+                        <div class="box-content">
                             <!-- The toolbox only allows to copy objects, not move it. After a new
                             element was created, dnd-copied is invoked and we generate the next id -->
                             <div ng-repeat="layoutType in layoutVM.layoutTypes track by $index"
@@ -177,34 +187,35 @@
                 <div class="col-md-2">
                     <div class="box box-grey box-padding properties">
                         <h3>Selected</h3>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>Layout Type</strong>
+                        <div class="box-content">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>Layout Type</strong>
+                                </div>
+                                <div class="col-md-6">
+                                    {{layoutVM.selectedItem.label}}
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                {{layoutVM.selectedItem.label}}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>Properties</strong>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>Properties</strong>
-                            </div>
-                        </div>
 
-                        <div class="row" ng-repeat="property in layoutVM.selectedItem.properties track by $index">
-                            <div class="col-md-6">
-                                {{property.label}}
-                            </div>
-                            <div class="col-md-6" ng-show="!property.optionList">
-                                <input type="text" class="form-control input-sm" ng-model="property.value" />
-                            </div>
-                            <div class="col-md-6" ng-show="property.optionList">
-                                <select class="form-control input-sm" name="repeatSelect" id="repeatSelect" ng-model="property.value">
-                                    <option ng-repeat="option in property.optionList" value="{{option.id}}">{{option.label}}</option>
-                                </select>
+                            <div class="row" ng-repeat="property in layoutVM.selectedItem.properties track by $index">
+                                <div class="col-md-6">
+                                    {{property.label}}
+                                </div>
+                                <div class="col-md-6" ng-show="!property.optionList">
+                                    <input type="text" class="form-control input-sm" ng-model="property.value" />
+                                </div>
+                                <div class="col-md-6" ng-show="property.optionList">
+                                    <select class="form-control input-sm" name="repeatSelect" id="repeatSelect" ng-model="property.value">
+                                        <option ng-repeat="option in property.optionList" value="{{option.id}}">{{option.label}}</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="trashcan box box-grey box-padding">
                         <!-- If you use [] as referenced list, the dropped elements will be lost -->

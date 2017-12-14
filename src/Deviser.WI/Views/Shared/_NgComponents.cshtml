@@ -23,14 +23,19 @@
     <div class="modal-body">
         <div class="row">
             <div class="col-md-12">
-                <div ng-class="{'alert alert-danger':imVM.message.messageType=='error',
+                <div class="row" ng-show="imVM.message.content">
+                    <div ng-class="{'alert alert-danger':imVM.message.messageType=='error',
                      'alert alert-info':imVM.message.messageType=='info',
                      'alert alert-success':imVM.message.messageType=='success',
                      'alert alert-warning':imVM.message.messageType=='warning'}" role="alert">
-                    {{imVM.message.content}}
+                        <button type="button" class="close" ng-click="imVM.message = {}">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                        {{imVM.message.content}}
+                    </div>
                 </div>
-            </div>
-        </div>
+             </div>
+         </div>
         <div class="row">
             <div class="col-md-12">
                 <div ngf-drop="imVM.onFileSelect($files)" ngf-select="imVM.onFileSelect($files)" ng-model="files" class="drop-box"

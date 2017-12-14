@@ -385,8 +385,10 @@
                 pageContentService.put(pageContent).then(function (response) {
                     console.log(response);
                     vm.selectedItem.isPropertyChanged = false;
+                    showMessage("success", "Content Element properities have been saved successfully.");
                 }, function (response) {
                     console.log(response);
+                    showMessage("error", "Cannot save the content element properities,please contact administrator");
                 }, true);
             }
             else if (vm.selectedItem.layoutTemplate === "module") {
@@ -398,8 +400,10 @@
 
                 pageModuleService.put(pageModule).then(function (response) {
                     console.log(response);
+                    showMessage("success", "Module properities have been saved successfully.")
                 }, function (response) {
                     console.log(response);
+                    showMessage("error", "Cannot save the module properities,please contact administrator");
                 }, true);
             }
         }

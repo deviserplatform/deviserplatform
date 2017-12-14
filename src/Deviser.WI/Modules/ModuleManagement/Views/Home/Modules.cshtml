@@ -1,12 +1,16 @@
 ﻿<require type="Script" priority="107" path="~/js/src/app/module-management/module.js"></require>
 
 <div ng-app="deviser.module" ng-controller="ModuleManagementCtrl as mmVM">
-
-    <div class="alert alert-dismissable" ng-class="{'alert-danger':mmVM.message.messageType=='error',
+    <div class="row" ng-show="mmVM.message.content">
+        <div class="alert alert-dismissable" ng-class="{'alert-danger':mmVM.message.messageType=='error',
                               'alert-info':mmVM.message.messageType=='info',
                               'alert-success':mmVM.message.messageType=='success',
-                              'alert-warning':mmVM.message.messageType=='warning'}" role="alert" ng-show="mmVM.message.messageType">
-        {{mmVM.message.content}}
+                              'alert-warning':mmVM.message.messageType=='warning'}" role="alert">
+            <button type="button" class="close" ng-click="mmVM.message = {}">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+            {{mmVM.message.content}}
+        </div>
     </div>
 
     <div class="row" ng-show="mmVM.currentViewState == mmVM.viewStates.LIST">
@@ -85,16 +89,16 @@
                                 <label class="col-md-3 control-label">Label*</label>
                                 <div class="col-md-6">
                                     <input type="text" name="label" class="form-control" ng-model="mmVM.selectedModule.label" required />
-                                </div>                               
+                                </div>
                             </div>
-                            <div class="form-group"  ng-class="{'has-error' : newModuleForm.name.$invalid && newModuleForm.name.$dirty}">
+                            <div class="form-group" ng-class="{'has-error' : newModuleForm.name.$invalid && newModuleForm.name.$dirty}">
                                 <label class="col-md-3 control-label">Name*</label>
                                 <div class="col-md-6">
                                     <input class="form-control"
                                            name="name"
                                            ng-model="mmVM.selectedModule.name"
                                            ng-disabled="mmVM.currentViewState == mmVM.viewStates.EDIT" required />
-                                </div>                               
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Module Desctiption</label>
@@ -112,7 +116,7 @@
                                 <label class="col-md-3 control-label">Version*</label>
                                 <div class="col-md-6">
                                     <input class="form-control" name="version" ng-model="mmVM.selectedModule.version" required />
-                                </div>                              
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -184,7 +188,7 @@
                                                     <label class="col-md-3 control-label">Display Name*</label>
                                                     <div class="col-md-7">
                                                         <input class="form-control" name="displayName" ng-model="mmVM.selectedModuleAction.displayName" ng-disabled="mmVM.currentViewState == mmVM.viewStates.EDITMODULEACTION" required />
-                                                    </div>                                                   
+                                                    </div>
                                                 </div>
                                                 <div class="form-group" ng-class="{'has-error' : editModuleForm.actionType.$invalid && editModuleForm.actionType.$dirty}">
                                                     <label class="col-md-3 control-label">Action Type* </label>
@@ -196,25 +200,25 @@
                                                                 <div ng-bind-html="type.controlType | highlight: $select.search"></div>
                                                             </ui-select-choices>
                                                         </ui-select>
-                                                    </div>                                                   
+                                                    </div>
                                                 </div>
                                                 <div class="form-group" ng-class="{'has-error' : editModuleForm.actionName.$invalid && editModuleForm.actionName.$dirty}">
                                                     <label class="col-md-3 control-label">Action Name*</label>
                                                     <div class="col-md-7">
                                                         <input class="form-control" name="actionName" ng-model="mmVM.selectedModuleAction.actionName" required />
-                                                    </div>                                                  
+                                                    </div>
                                                 </div>
                                                 <div class="form-group" ng-class="{'has-error' : editModuleForm.controllerName.$invalid && editModuleForm.controllerName.$dirty}">
                                                     <label class="col-md-3 control-label">Controller Name*</label>
                                                     <div class="col-md-7">
                                                         <input class="form-control" name="controllerName" ng-model="mmVM.selectedModuleAction.controllerName" required />
-                                                    </div>                                                   
+                                                    </div>
                                                 </div>
                                                 <div class="form-group" ng-class="{'has-error' : editModuleForm.controllerNamespace.$invalid && editModuleForm.controllerNamespace.$dirty}">
                                                     <label class="col-md-3 control-label">Controller Namespace*</label>
                                                     <div class="col-md-7">
                                                         <input class="form-control" name="controllerNamespace" ng-model="mmVM.selectedModuleAction.controllerNamespace" required />
-                                                    </div>                                                  
+                                                    </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-md-3 control-label">Icon Image</label>
@@ -236,7 +240,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <div class="col-md-5 col-md-offset-5">
-                                                        <button type="submit" class="btn btn-success" ng-click="mmVM.saveModuleAction()" ng-disabled="editModuleForm.$invalid">Save Module Action</button>                                                       
+                                                        <button type="submit" class="btn btn-success" ng-click="mmVM.saveModuleAction()" ng-disabled="editModuleForm.$invalid">Save Module Action</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -250,8 +254,8 @@
                     <div class="form-actions">
                         <div class="row">
                             <div class="col-md-offset-3 col-md-9">
-                                <button type="submit" class="btn btn-success" ng-click="mmVM.save()" ng-disabled="!mmVM.selectedModule || newModuleForm.$invalid">Save</button>                               
-                                <button type="button" class="btn btn-default" ng-click="mmVM.cancel()">Cancel</button>                                
+                                <button type="submit" class="btn btn-success" ng-click="mmVM.save()" ng-disabled="!mmVM.selectedModule || newModuleForm.$invalid">Save</button>
+                                <button type="button" class="btn btn-default" ng-click="mmVM.cancel()">Cancel</button>
                             </div>
                         </div>
                     </div>

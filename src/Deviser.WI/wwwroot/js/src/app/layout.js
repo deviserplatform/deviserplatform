@@ -175,6 +175,7 @@
                     vm.pageLayout.isChanged = false;
                     showMessage("success", "Layout has been saved");
                     processplaceHolders(vm.pageLayout.placeHolders);
+                    vm.isLayoutEdit = false;
                 }, function (error) {
                     showMessage("error", SYS_ERROR_MSG);
                 });
@@ -191,6 +192,7 @@
                     getLayouts().then(function () {
                         processplaceHolders(vm.pageLayout.placeHolders);
                     });
+                    vm.isLayoutEdit = false;
                 }, function (error) {
                     showMessage("error", SYS_ERROR_MSG);
                 });

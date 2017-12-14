@@ -17,6 +17,19 @@
 </script>
 
 <div class="layout-wrapper" ng-app="deviserEdit" ng-controller="EditCtrl as editVM">
+    <div class="row" ng-show="editVM.message.content">
+        <div ng-class="{'alert alert-danger':editVM.message.messageType=='error',
+                     'alert alert-info':editVM.message.messageType=='info',
+                     'alert alert-success':editVM.message.messageType=='success',
+                     'alert alert-warning':editVM.message.messageType=='warning'}" role="alert">
+            <button type="button" class="close" ng-click="editVM.message = {}">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+
+            {{editVM.message.content}}
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-2">
             <h3 class="page-title">
@@ -34,22 +47,6 @@
             </div>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div ng-class="{'alert alert-danger':editVM.message.messageType=='error',
-                     'alert alert-info':editVM.message.messageType=='info',
-                     'alert alert-success':editVM.message.messageType=='success',
-                     'alert alert-warning':editVM.message.messageType=='warning'}" role="alert">
-                <button type="button" class="close" ng-click="editVM.message = {}">
-                    <i class="fa fa-times" aria-hidden="true"></i>
-                </button>
-
-                {{editVM.message.content}}
-            </div>
-        </div>
-    </div>
-
 
     <div class="layout-container">
         <script type="text/ng-template" id="placeHolders.html">
