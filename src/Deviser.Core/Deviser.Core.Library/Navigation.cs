@@ -140,9 +140,16 @@ namespace Deviser.Core.Library
         {
             try
             {
+                var pageTranslation = page.PageTranslation;
                 page.PageTranslation = null;
-                var result = pageProvider.CreatePage(page);
-                return result;
+                var newPage = pageProvider.CreatePage(page);
+                if (newPage != null)
+                {
+                    page.Id = newPage.Id;
+                    page.PageTranslation = pageTranslation;
+                    var result = UpdateSinglePage(page);
+                    return result;
+                }                    
             }
             catch (Exception ex)
             {
@@ -463,11 +470,11 @@ namespace Deviser.Core.Library
 
         private string getUniqueUrl(PageTranslation pageTranslation, string pageUrl, Guid pageId)
         {
-            var duplicateTranslation = pageProvider.GetPageTranslation(pageUrl);
+            var duplicateTranslation = pageProvider.GetPageTranslation(pageUrl.ToLower());
 
             if (duplicateTranslation != null && duplicateTranslation.PageId != pageId)
             {
-                while (duplicateTranslation != null && duplicateTranslation.URL == pageUrl)
+                while (duplicateTranslation != null && duplicateTranslation.URL.ToLower() == pageUrl.ToLower())
                 {
                     pageUrl += "1";
                     pageTranslation.Name += "1";

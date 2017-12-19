@@ -245,12 +245,14 @@ namespace Deviser.Core.Data.DataProviders
                         {
                             //translation.URL = GetUniqueUrl(context, translation.URL, translation.Locale);
                             //translation exist
+                            translation.URL = translation.URL.ToLower();
                             context.PageTranslation.Update(translation);
                         }
                         else
                         {
                             //translation.URL = GetUniqueUrl(context, translation.URL, translation.Locale);
                             translation.PageId = dbPage.Id;
+                            translation.URL = translation.URL.ToLower();
                             context.PageTranslation.Add(translation);
                         }
                     }

@@ -6121,7 +6121,8 @@ body.page-edit {
   margin-left: 10px; }
 
 .draggable-content {
-  margin-left: 10px; }
+  margin-left: 10px;
+  width: 50%; }
 
 .tree-node a.expander i {
   font-size: 1.3em;

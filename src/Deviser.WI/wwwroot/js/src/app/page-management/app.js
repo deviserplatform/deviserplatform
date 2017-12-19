@@ -47,8 +47,9 @@
         vm.pages = [];
         vm.selectedItem = {};
         vm.liveTill = {};
-        vm.liveFrom = {};
+        vm.liveFrom = {};       
         vm.administratorRoleId = administratorRoleId;
+        var isNewChildPage = false;
 
         vm.options = {
             accept: accept,
@@ -277,7 +278,8 @@
         }
 
         function newSubPage(parentPage) {
-            var newPage = {
+            isNewChildPage = true;
+            var newPage = {                
                 parentId: parentPage.id,
                 childPage: [],
                 pageLevel: parentPage.pageLevel + 1,
@@ -291,17 +293,12 @@
                         keywords: null
                     }
                 ]
-            };
-
-            pageService.post(newPage).then(function (data) {
-                if (!parentPage.childPage) {
+            };                      
+             if (!parentPage.childPage) {
                     parentPage.childPage = [];
-                }
-                parentPage.childPage.push(data);
-                showMessage("success", "Page created successfully");
-            }, function (error) {
-                showMessage("error", "'Cannot update page, please contact administrator");
-            });
+             }
+             parentPage.childPage.push(newPage);
+             selectPage(newPage);
         }
 
         function save() {
@@ -311,14 +308,27 @@
         }
 
         function savePage(page) {
-            pageService.put(page, page.id)
+            if (isNewChildPage) {
+                pageService.post(page).then(function (data) {
+                    isNewChildPage = false;                    
+                    vm.selectedItem = data;
+                    getPages();
+                    showMessage("success", "Page created successfully");                    
+                }, function (error) {
+                    showMessage("error", "'Cannot create page, please contact administrator");
+                });
+            }
+            else {
+                pageService.put(page, page.id)
                 .then(function (data) {
                     vm.selectedItem = data;
                     getPages();
                     showMessage("success", "Page updated successfully");
                 }, function (error) {
                     showMessage("error", "'Cannot update page, please contact administrator");
-                });
+                    });
+            }            
+            
         }
 
         function savePageTree() {
