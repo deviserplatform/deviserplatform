@@ -486,7 +486,13 @@ body.page-edit {
 
 .draggable-content {
     margin-left: 10px;
-    width:50%;
+    width: 50%;
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 }
 
 .tree-node a.expander i {

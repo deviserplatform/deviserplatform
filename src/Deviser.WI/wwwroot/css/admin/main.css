@@ -6123,6 +6123,10 @@ body.page-edit {
 .draggable-content {
   margin-left: 10px;
   width: 50%; }
+  .draggable-content span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; }
 
 .tree-node a.expander i {
   font-size: 1.3em;
