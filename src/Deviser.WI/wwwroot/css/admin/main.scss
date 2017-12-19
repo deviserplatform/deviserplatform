@@ -520,6 +520,12 @@ body.page-edit {
 }
 
 
+.tree-scroll {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+
 /*Form elements*/
 div.form-horizontal .control-label {
     text-align: left;

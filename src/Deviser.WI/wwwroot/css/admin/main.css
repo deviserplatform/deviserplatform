@@ -6150,6 +6150,10 @@ body.page-edit {
   box-sizing: border-box;
   -moz-box-sizing: border-box; }
 
+.tree-scroll {
+  max-height: 80vh;
+  overflow-y: auto; }
+
 /*Form elements*/
 div.form-horizontal .control-label {
   text-align: left; }
