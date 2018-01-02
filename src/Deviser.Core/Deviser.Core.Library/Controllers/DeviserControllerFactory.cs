@@ -79,7 +79,8 @@ namespace Deviser.Core.Library.Controllers
                             moduleStringResult = $"<div class=\"sd-module-container\" data-module=\"{moduleContext.ModuleInfo.Name}\" data-page-module-id=\"{moduleContext.PageModuleId}\">{moduleStringResult}</div>";
                             contentResults.Add(new ContentResult
                             {
-                                Result = moduleStringResult,
+                                //Result = moduleStringResult,
+                                HtmlResult = new Microsoft.AspNetCore.Html.HtmlString(moduleStringResult),
                                 SortOrder = pageModule.SortOrder
                             });
                         }
@@ -88,7 +89,8 @@ namespace Deviser.Core.Library.Controllers
                             var actionResult = "Module load exception has been occured";
                             contentResults.Add(new ContentResult
                             {
-                                Result = actionResult,
+                                //Result = actionResult,
+                                HtmlResult = new Microsoft.AspNetCore.Html.HtmlString(actionResult),
                                 SortOrder = pageModule.SortOrder
                             });
                             _logger.LogError("Module load exception has been occured", ex);
@@ -111,8 +113,7 @@ namespace Deviser.Core.Library.Controllers
                 moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleActionType
                 moduleContext.PageModuleId = pageModule.Id;
                 if (module != null && moduleAction != null)
-                {
-                    List<ContentResult> contentResults = new List<ContentResult>();
+                {   
                     actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleAction);
                     actionResult = $"<div class=\"sd-module-container\" data-module=\"{moduleContext.ModuleInfo.Name}\" data-page-module-id=\"{moduleContext.PageModuleId}\">{actionResult}</div>";
                 }

@@ -23,7 +23,6 @@ namespace Deviser.Core.Library.Extensions
         {
             if (pageTranslations != null && pageTranslations.Count > 0)
             {
-                var currentCulture = Globals.CurrentCulture;
                 return pageTranslations.FirstOrDefault(t => t.Locale.ToLower() == locale.ToLower());
             }
             return null;

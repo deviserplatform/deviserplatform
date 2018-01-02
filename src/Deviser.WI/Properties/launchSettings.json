@@ -12,6 +12,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
+        "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

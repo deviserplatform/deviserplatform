@@ -20,6 +20,7 @@ namespace Deviser.Core.Data.DataProviders
         List<ModuleActionType> GetModuleActionType();
         List<ModuleAction> GetEditModuleActions(Guid moduleId);
         Module Get(string moduleName);
+        Module GetModuleByPageModuleId(Guid pageModuleId);
         Module Create(Module dbModule);
         Module Update(Module dbModule);
         ModuleAction CreateModuleAction(ModuleAction moduleAction); 
@@ -183,6 +184,28 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
+
+        public Module GetModuleByPageModuleId(Guid pageModuleId)
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var result = context.Module
+                              .Where(e => e.PageModule.Any(pm => pm.Id==pageModuleId))
+                              .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
+                              .FirstOrDefault();
+
+                    return Mapper.Map<Module>(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while calling Get", ex);
+            }
+            return null;
+        }
+
         public Module Create(Module module)
         {
             try

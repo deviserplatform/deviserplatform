@@ -3,5 +3,6 @@
     var properties = Model.PlaceHolder.Properties;
 }
 <div class="@properties.Get("cssclass").Value">    
-    @Html.Raw(Model.ContentResult)
+    @*@Html.Raw(Model.ContentResult)*@
+    @Model.ContentResult
 </div>

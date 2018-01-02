@@ -11,11 +11,11 @@ namespace Deviser.Core.Library.Middleware
 {
     public static class MiddlewareExtensions
     {
-        public static IApplicationBuilder UsePageContext(this IApplicationBuilder builder, Action<IRouteBuilder> configureRoutes)
+        public static IApplicationBuilder UsePageContext(this IApplicationBuilder app, Action<IRouteBuilder> configureRoutes)
         {
-            if (builder == null)
+            if (app == null)
             {
-                throw new ArgumentNullException(nameof(builder));
+                throw new ArgumentNullException(nameof(app));
             }
 
             if (configureRoutes == null)
@@ -25,23 +25,23 @@ namespace Deviser.Core.Library.Middleware
 
             // Verify if AddMvc was done before calling UseMvc
             // We use the MvcMarkerService to make sure if all the services were added.
-            if (builder.ApplicationServices.GetService(typeof(MvcMarkerService)) == null)
+            if (app.ApplicationServices.GetService(typeof(MvcMarkerService)) == null)
             {
                 throw new InvalidOperationException("FormatUnableToFindServices" +
                     "AddMvc" +
                     "ConfigureServices(...)");
             }
 
-            var routes = new RouteBuilder(builder)
+            var routes = new RouteBuilder(app)
             {
-                DefaultHandler = builder.ApplicationServices.GetRequiredService<MvcRouteHandler>(),
+                DefaultHandler = app.ApplicationServices.GetRequiredService<MvcRouteHandler>(),
             };
 
             configureRoutes(routes);
 
-            routes.Routes.Insert(0, AttributeRouting.CreateAttributeMegaRoute(builder.ApplicationServices));
+            routes.Routes.Insert(0, AttributeRouting.CreateAttributeMegaRoute(app.ApplicationServices));
 
-            return builder.UseMiddleware<PageContextMiddleware>(routes.Build());
+            return app.UseMiddleware<PageContextMiddleware>(routes.Build());
         }
 
         //public static IApplicationBuilder UsePageContext(

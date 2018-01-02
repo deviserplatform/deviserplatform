@@ -107,7 +107,7 @@ namespace Deviser.WI.Controllers
         }
 
         [HttpGet]
-        [Route("[controller]/[action]/{pageModuleId}/{moduleActionId}")]
+        [Route("[controller]/[action]/pageModuleId/{pageModuleId}/moduleActionId/{moduleActionId}")]
         public IActionResult EditModule(string currentLink, Guid pageModuleId, Guid moduleActionId)
         {
             if (pageModuleId != Guid.Empty)

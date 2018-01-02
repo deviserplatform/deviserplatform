@@ -109,7 +109,7 @@ namespace Deviser.Core.Library.TagHelpers
 
             if (pageLayout.PlaceHolders != null && pageLayout.PlaceHolders.Count > 0)
             {
-                string result = RenderContentItems(pageLayout.PlaceHolders, ModuleActionResults);
+                HtmlContentBuilder result = RenderContentItems(pageLayout.PlaceHolders, ModuleActionResults);
                 if (ModuleActionResults.Count > 0)
                 {
                     //One or more modules are not added in containers
@@ -119,7 +119,8 @@ namespace Deviser.Core.Library.TagHelpers
                         {
                             foreach(var contentResult in moduleActionResult.Value)
                             {
-                                result += contentResult.Result;
+                                //result += contentResult.HtmlResult;
+                                result.AppendHtml(contentResult.HtmlResult);
                             }
                         }
                     }
@@ -128,16 +129,19 @@ namespace Deviser.Core.Library.TagHelpers
             }
         }
 
-        private string RenderContentItems(List<PlaceHolder> placeHolders, Dictionary<string, List<ContentResult>> moduleActionResults)
+        private HtmlContentBuilder RenderContentItems(List<PlaceHolder> placeHolders, Dictionary<string, List<ContentResult>> moduleActionResults)
         {
-            StringBuilder sb = new StringBuilder();
+            //StringBuilder sb = new StringBuilder();
+            HtmlContentBuilder contentBuilder = new HtmlContentBuilder();
             if (placeHolders != null)
             {
                 foreach (var placeHolder in placeHolders)
                 {
                     if (placeHolder != null)
                     {
-                        string currentResult = "";
+                        //string currentResult = "";
+                        var htmlCurrentResult = new HtmlContentBuilder();
+
                         List<ContentResult> currentResults = new List<ContentResult>();
                         IHtmlContent htmlContent;
                         List<ContentResult> moduleResult = null;
@@ -182,10 +186,11 @@ namespace Deviser.Core.Library.TagHelpers
                                 };
                                 string contentTypesViewPath = string.Format(Globals.ContentTypesViewPath, scopeService.PageContext.SelectedTheme, typeName);
                                 htmlContent = htmlHelper.Partial(contentTypesViewPath, dynamicContent);
-                                var contentResult = GetString(htmlContent);
+                                //var contentResult = GetString(htmlContent);
                                 currentResults.Add(new ContentResult
                                 {
-                                    Result = contentResult,
+                                    //Result = contentResult,
+                                    HtmlResult = htmlContent,
                                     SortOrder = pageContent.SortOrder
                                 });
                             }
@@ -195,14 +200,16 @@ namespace Deviser.Core.Library.TagHelpers
                         var placeHolderResult = RenderContentItems(placeHolder.PlaceHolders, moduleActionResults);
                         currentResults.Add(new ContentResult
                         {
-                            Result = placeHolderResult,
+                            //Result = placeHolderResult,
+                            HtmlResult = placeHolderResult,
                             SortOrder = placeHolder.SortOrder
                         });
 
                         var sortedResult = currentResults.OrderBy(r => r.SortOrder).ToList();
                         foreach (var contentResult in sortedResult)
-                        {
-                            currentResult += contentResult.Result;
+                        {                            
+                            //currentResult += contentResult.Result;
+                            htmlCurrentResult.AppendHtml(contentResult.HtmlResult);
                         }
 
                         //TODO: Sort order (1. within module, 2.within contents, 3. mix of modules, contents and placeholders) will not work, later it should be implemented
@@ -214,17 +221,19 @@ namespace Deviser.Core.Library.TagHelpers
                         var layoutContent = new LayoutContent
                         {
                             PlaceHolder = placeHolder,
-                            ContentResult = currentResult
+                            ContentResult = htmlCurrentResult
                         };
 
                         htmlContent = htmlHelper.Partial(string.Format(Globals.LayoutTypesPath, scopeService.PageContext.SelectedTheme, layoutType), layoutContent);
-                        var layoutResult = GetString(htmlContent);
-                        sb.Append(layoutResult);
+                        //var layoutResult = GetString(htmlContent);
+                        contentBuilder.AppendHtml(htmlContent);
+                        //sb.Append(layoutResult);
 
                     }
                 }
             }
-            return sb.ToString();
+            //return sb.ToString();
+            return contentBuilder;
         }
 
         private static string GetString(IHtmlContent content)

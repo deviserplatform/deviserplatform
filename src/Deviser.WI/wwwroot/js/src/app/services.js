@@ -305,7 +305,7 @@
         }
 
         function getEditActionView(currentUrl, pageModuleId, moduleActionId) {
-            var getUrl = '/page/editmodule/' + pageModuleId + '/' + moduleActionId + '?currentLink=' + currentUrl;
+            var getUrl = '/page/editmodule/pageModuleId/' + pageModuleId + '/moduleActionId/' + moduleActionId + '?currentLink=' + currentUrl;
 
             var request = $http({
                 method: 'GET',
