@@ -165,11 +165,10 @@ body {
 body.page-edit {
     overflow-y: hidden;
 
-    .alert{
-        top:50px;
-        z-index:10;
+    .alert {
+        top: 50px;
+        z-index: 10;
     }
-
     /***********************************************************/
     /*Layout*/
     /***********************************************************/
@@ -316,9 +315,14 @@ body.page-edit {
                 position: relative;
             }
 
-            .col-md-3 {
-                padding: 0;
+
+            [class*=" col-md-"]{
+                padding:0px;
             }
+            
+            /*.col-md-3 {
+                padding: 0;
+            }*/
             /***************************** Element Selection *****************************/
             .selected {
                 /*.item {

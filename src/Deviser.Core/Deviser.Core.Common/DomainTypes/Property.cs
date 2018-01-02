@@ -28,7 +28,7 @@ namespace Deviser.Core.Common.DomainTypes
                     Guid.TryParse(Value, out selectedOptionId) &&
                     selectedOptionId != Guid.Empty &&
                     OptionList != null &&
-                    OptionList.List != null) ? OptionList.List.FirstOrDefault(o => o.Id == selectedOptionId):null;
+                    OptionList.List != null) ? OptionList.List.FirstOrDefault(o => o.Id == selectedOptionId) : null;
                 return option;
             }
         }
@@ -45,5 +45,14 @@ namespace Deviser.Core.Common.DomainTypes
         public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }
+
+        public override string ToString()
+        {
+            if (!IsMoreOption)
+                return Value;
+
+            var optionVal = OptionList.List.FirstOrDefault(li => li.Id == Guid.Parse(Value));
+            return optionVal != null ? optionVal.Name : string.Empty;
+        }
     }
 }

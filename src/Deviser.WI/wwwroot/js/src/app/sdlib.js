@@ -15,6 +15,7 @@
 
     app.factory('sdUtil', [sdUtil]);
 
+    app.factory('editLayoutUtil', [editLayoutUtil])
     /////////////////////////////////////////////
     /*Function declarations only*/
     function sdEnterDir() {
@@ -207,6 +208,38 @@
             return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(guid);
         }
 
+    }
+
+    function editLayoutUtil() {
+        var defaultWidth = 'col-md-4';
+        var service = {
+            const: {
+                defaultWidth: defaultWidth
+            },
+            setColumnWidth: setColumnWidth,
+            getColumnWidthProperty: getColumnWidthProperty
+        };
+
+        return service;
+
+        function setColumnWidth(properties) {
+            var columnWidth;
+
+            var columnWidthProp = getColumnWidthProperty(properties);
+            if (columnWidthProp && columnWidthProp.value) {
+                var width = _.find(columnWidthProp.optionList.list, { id: columnWidthProp.value });
+                columnWidth = width.name;
+            }
+            else {
+                columnWidth = defaultWidth;
+            }
+
+            return columnWidth;
+        }
+
+        function getColumnWidthProperty(properties) {
+            return _.find(properties, { name: 'columnwidth' });
+        }
     }
 
 }());

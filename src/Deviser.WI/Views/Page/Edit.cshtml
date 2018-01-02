@@ -85,7 +85,7 @@
             </div>
         </script>
         <script type="text/ng-template" id="column.html">
-            <div class="col-md-3">
+            <div ng-class="editVM.setColumnWidth(item.properties)">
                 <div class="container-element box-layout box-grey">
                     <h3>{{item.type}} {{$index+1}}</h3>
                     <div class="container-content" ng-include="'placeHolders.html'">

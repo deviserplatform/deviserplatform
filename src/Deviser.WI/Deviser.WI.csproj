@@ -6,6 +6,10 @@
   </PropertyGroup>
 
 <ItemGroup>
+  <Content Remove="wwwroot\assets\images\DSC_5892.JPG" />
+</ItemGroup>
+
+<ItemGroup>
   <None Remove="Properties\PublishProfiles\release-to-folder.pubxml" />
   <None Remove="Properties\PublishProfiles\skydevise - web deploy.pubxml" />
 </ItemGroup>
@@ -64,6 +68,7 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2" />
     <PackageReference Include="Serilog.Sinks.Literate" Version="3.0.0" />
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
+    <PackageReference Include="System.IO" Version="4.3.0" />
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">

@@ -17,8 +17,7 @@
 </script>
 
 <div class="layout-wrapper" ng-app="deviserLayout" ng-controller="LayoutCtrl as layoutVM">
-    <div class="row" ng-show="layoutVM.message.content">
-        <div class="col-md-12">
+    <div class="row" ng-show="layoutVM.message.content">       
             <div ng-class="{'alert alert-danger':layoutVM.message.messageType=='error',
                      'alert alert-info':layoutVM.message.messageType=='info',
                      'alert alert-success':layoutVM.message.messageType=='success',
@@ -28,8 +27,7 @@
                 </button>
 
                 {{layoutVM.message.content}}
-            </div>
-        </div>
+            </div>       
     </div>
 
     <div class="row layout-controls">
@@ -41,17 +39,7 @@
         <div class="col-md-8 form-inline">
             <button type="button" class="layout-control btn btn-success" ng-click="layoutVM.newLayout()">
                 <i class="fa fa-plus"></i> New
-            </button> 
-
-            <div class="btn-group layout-dropdown" uib-dropdown is-open="status.isopen">
-                <button type="button" class="btn btn-primary dropdown-toggle" uib-dropdown-toggle ng-disabled="disabled">
-                    <span class="pull-left" ng-show="layoutVM.pageLayout.name">{{layoutVM.pageLayout.name}}</span>
-                    <span class="pull-left" ng-show="!layoutVM.pageLayout.name">Choose Layout</span> <i class="fa fa-angle-down pull-right"></i>
-                </button>
-                <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-                    <li ng-repeat="layout in layoutVM.layouts track by $index"><a ng-click="layoutVM.selectLayout(layout)">{{layout.name}}</a></li>
-                </ul>
-            </div>
+            </button>
 
             <button type="button" class="layout-control btn btn-default" ng-click="layoutVM.copyLayout()">
                 <i class="fa fa-clone" aria-hidden="true"></i> Copy
@@ -69,12 +57,22 @@
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Save
             </button>
 
-            <button type="button" class="layout-control btn btn-danger pull-right" ng-click="layoutVM.deleteLayout()" ng-disabled="!layoutVM.pageLayout.id">
+            <button type="button" class="layout-control btn btn-danger" ng-click="layoutVM.deleteLayout()" ng-disabled="!layoutVM.pageLayout.id">
                 <i class="fa fa-trash"></i> Delete
             </button>
+
+            <div class="btn-group layout-dropdown  pull-right" uib-dropdown is-open="status.isopen">
+                <button type="button" class="btn btn-default dropdown-toggle" uib-dropdown-toggle ng-disabled="disabled">
+                    <span class="pull-left" ng-show="layoutVM.pageLayout.name">{{layoutVM.pageLayout.name}}</span>
+                    <span class="pull-left" ng-show="!layoutVM.pageLayout.name">Choose Layout</span> <i class="fa fa-angle-down pull-right"></i>
+                </button>
+                <ul class="dropdown-menu" uib-dropdown-menu role="menu">
+                    <li ng-repeat="layout in layoutVM.layouts track by $index"><a ng-click="layoutVM.selectLayout(layout)">{{layout.name}}</a></li>
+                </ul>
+            </div>
         </div>
         <div class="col-md-2">
-            <h4> Page name: <b>@currentPage.PageTranslation.Get().Title</b></h4>
+            <b> Page:</b> @currentPage.PageTranslation.Get().Title
         </div>
     </div>
 
@@ -115,15 +113,15 @@
                     </div>
                 </div>
             </script>
-            <script type="text/ng-template" id="column.html">
-                <div class="col-md-3">
-                    <div class="container-element box box-blue">
-                        <h3>{{item.label}} {{$index+1}}</h3>
-                        <div class="container-content" ng-include="'placeHolders.html'">
+            <script type="text/ng-template" id="column.html">               
+                <div ng-class="layoutVM.setColumnWidth(item.properties)">                    
+                        <div class="container-element box box-blue">
+                            <h3>{{item.label}} {{$index+1}}</h3>
+                            <div class="container-content" ng-include="'placeHolders.html'">
 
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </div>               
             </script>
             <script type="text/ng-template" id="repeater.html">
                 <div class="container-element box box-blue">
@@ -187,7 +185,7 @@
                 <div class="col-md-2">
                     <div class="box box-grey box-padding properties">
                         <h3>Selected</h3>
-                        <div class="box-content">
+                        <div class="box-content" ng-show="layoutVM.selectedItem.id">
                             <div class="row">
                                 <div class="col-md-6">
                                     <strong>Layout Type</strong>
@@ -211,10 +209,10 @@
                                 </div>
                                 <div class="col-md-6" ng-show="property.optionList">
                                     <select class="form-control input-sm" name="repeatSelect" id="repeatSelect" ng-model="property.value">
-                                        <option ng-repeat="option in property.optionList" value="{{option.id}}">{{option.label}}</option>
+                                        <option ng-repeat="option in property.optionList.list" value="{{option.id}}">{{option.label}}</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div>                           
                         </div>
                     </div>
                     <div class="trashcan box box-grey box-padding">

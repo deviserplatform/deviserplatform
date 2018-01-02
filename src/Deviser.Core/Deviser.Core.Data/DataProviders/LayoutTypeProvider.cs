@@ -128,6 +128,8 @@ namespace Deviser.Core.Data.DataProviders
 
                         var layoutTypeProperties = context.LayoutTypeProperty.Where(ctp => ctp.LayoutTypeId == dbLayoutType.Id).ToList();
 
+                        List<Entities.LayoutTypeProperty> newLayoutTypeProperities = dbLayoutType.LayoutTypeProperties.Where(newProp => context.LayoutTypeProperty.Any(ctp => ctp.LayoutTypeId == newProp.LayoutTypeId && ctp.PropertyId != newProp.PropertyId)).ToList();
+
                         List<Entities.LayoutTypeProperty> toRemoveFromDb = null;
 
                         if (layoutTypeProperties != null && layoutTypeProperties.Count > 0)
@@ -148,6 +150,10 @@ namespace Deviser.Core.Data.DataProviders
                         {
                             //ContentTypeProperty is not exist in contentType (client source), because client has been removed it. Therefor, remove it from db.
                             context.LayoutTypeProperty.RemoveRange(toRemoveFromDb);
+                        }
+                        if(newLayoutTypeProperities != null && newLayoutTypeProperities.Count > 0)
+                        {
+                            context.LayoutTypeProperty.AddRange(newLayoutTypeProperities);
                         }
                     }
                     

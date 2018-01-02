@@ -9,24 +9,24 @@
     'deviser.config'
     ]);
 
-    app.controller('LayoutCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'sdUtil', 'layoutService', 'pageService',
+    app.controller('LayoutCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'sdUtil','editLayoutUtil', 'layoutService', 'pageService',
         'layoutTypeService', 'pageContentService', 'moduleService', 'pageModuleService', layoutCtrl]);
 
 
     ////////////////////////////////
     /*Function declarations only*/
 
-    function layoutCtrl($scope, $timeout, $filter, $q, globals, sdUtil, layoutService, pageService,
+    function layoutCtrl($scope, $timeout, $filter, $q, globals, sdUtil, editLayoutUtil, layoutService, pageService,
         layoutTypeService, pageContentService, moduleService, pageModuleService) {
         var vm = this;
 
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
         vm.pageLayout = {};
-        vm.selectedItem = {}
+        vm.selectedItem = {};
         vm.deletedElements = [];
-        vm.layoutAllowedTypes = ["9341f92e-83d8-4afe-ad4a-a95deeda9ae3", "5a0a5884-da84-4922-a02f-5828b55d5c92"] //Id of container and wrapper;
-
+        vm.layoutAllowedTypes = ["9341f92e-83d8-4afe-ad4a-a95deeda9ae3", "5a0a5884-da84-4922-a02f-5828b55d5c92"]; //Id of container and wrapper;     
+       
         //Function binding
         vm.newGuid = sdUtil.getGuid;
         vm.dragoverCallback = dragoverCallback;
@@ -41,7 +41,7 @@
         vm.selectItem = selectItem;
         vm.itemMoved = itemMoved;
         vm.deleteElement = deleteElement;
-
+        vm.setColumnWidth = editLayoutUtil.setColumnWidth;
         //Init
         init();
 
@@ -197,7 +197,7 @@
                     showMessage("error", SYS_ERROR_MSG);
                 });
             }
-        }
+        }       
 
         function processplaceHolders(placeHolders) {
             if (placeHolders) {
@@ -238,16 +238,23 @@
                     if (propVal) {
                         //Property exist, update property label
                         propVal.label = prop.label;
-                        if (prop.optionList && prop.optionList.list) {
-                            propVal.optionList = angular.fromJson(prop.optionList);
-                        }
+                        propVal.optionList = prop.optionList;
+                        propVal.optionListId = prop.optionListId;
                     }
                     else {
-                        //Property not exist, add the property
+                        //Property not exist, add the property                      
                         item.properties.push(angular.copy(prop));
                     }
                 }
             });
+
+            //columnwidth update - hard coded behaviour only for property 'columnwidth'
+            var columnWidthProp = editLayoutUtil.getColumnWidthProperty(propertiesValue);            
+            if (columnWidthProp && !columnWidthProp.value) {
+                var columnWidth = _.find(columnWidthProp.optionList.list, { name: editLayoutUtil.const.defaultWidth })
+                columnWidthProp.value = columnWidth.id;
+            }                
+
             vm.selectedItem = item;
         }
 
