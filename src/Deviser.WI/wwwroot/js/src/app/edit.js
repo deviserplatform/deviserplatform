@@ -19,7 +19,7 @@
 
     app.directive("sdContentPreview", ['$compile', '$templateCache', sdContentPreviewDir]);
 
-    app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$uibModal', 'globals', 'sdUtil', 'layoutService', 'pageService',
+    app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$uibModal', 'globals', 'sdUtil', 'editLayoutUtil', 'layoutService', 'pageService',
         'contentTypeService', 'pageContentService', 'moduleService', 'moduleActionService', 'pageModuleService', editCtrl]);
 
     app.controller('EditContentCtrl', ['$scope', '$uibModalInstance', '$q', 'sdUtil', 'languageService',
@@ -125,7 +125,7 @@
         }
     }
 
-    function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, sdUtil, layoutService, pageService,
+    function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, sdUtil, editLayoutUtil,layoutService, pageService,
         contentTypeService, pageContentService, moduleService, moduleActionService, pageModuleService) {
         var vm = this;
 
@@ -153,8 +153,8 @@
         vm.openModuleActionEdit = openModuleActionEdit;
         vm.changeModulePermission = changeModulePermission;
         vm.changeContentPermission = changeContentPermission;
-        vm.saveProperties = saveProperties;
-
+        vm.saveProperties = saveProperties; 
+        vm.setColumnWidth = editLayoutUtil.setColumnWidth;
         init();
 
         /////////////////////////////////////////////
@@ -406,8 +406,8 @@
                     showMessage("error", "Cannot save the module properities,please contact administrator");
                 }, true);
             }
-        }
-
+        }       
+        
         /*Private functions*/
         function getCurrentPage() {
             var defer = $q.defer();

@@ -126,7 +126,7 @@ namespace Deviser.Core.Library.Middleware
             pageContext.CurrentPage = currentPage;
             pageContext.HasPageViewPermission = pageManager.HasViewPermission(currentPage);
             pageContext.HasPageEditPermission = pageManager.HasEditPermission(currentPage);
-
+                                   
 
             if (!httpContext.Items.ContainsKey("PageContext"))
             {
@@ -152,6 +152,11 @@ namespace Deviser.Core.Library.Middleware
             if (routeContext.RouteData.Values.TryGetValue("pageModuleId", out pageModuleId))
             {
                 moduleContext.PageModuleId = Guid.Parse((string)pageModuleId);
+
+                if (moduleContext.ModuleInfo == null)
+                {
+                    moduleContext.ModuleInfo = moduleProvider.GetModuleByPageModuleId(moduleContext.PageModuleId);
+                }
             }
 
             if (moduleContext.ModuleInfo != null || moduleContext.PageModuleId != null)

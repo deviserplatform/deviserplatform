@@ -91,6 +91,8 @@
         }
 
         function edit(module) {
+            $scope.editModuleForm.submitted = false;
+            $scope.newModuleForm.submitted = false;
             vm.currentViewState = vm.viewStates.EDIT;
             vm.selectedModule = module;
         }
@@ -111,7 +113,9 @@
         }
 
         function save() {
-            //$scope.moduleForm.submitted = true;          
+            $scope.newModuleForm.submitted = true;
+            if ($scope.newModuleForm.$valid) {
+                $scope.newModuleForm.submitted = false;
                 if (vm.currentViewState == vm.viewStates.NEW && vm.isValidName(vm.selectedModule.name)) {
                     moduleService.post(vm.selectedModule).then(function (result) {
                         console.log(result);
@@ -125,7 +129,8 @@
                 }
                 else {
                     update(vm.selectedModule);
-                }          
+                }   
+            }
         }
         
         function update(module) {
@@ -163,8 +168,12 @@
             vm.selectedModule.moduleAction.splice(index, 1);
         }
 
-        function saveModuleAction() {           
-            vm.currentViewState = vm.viewStates.LISTMODULEACTION;
+        function saveModuleAction() {
+            $scope.editModuleForm.submitted = true;
+            if ($scope.editModuleForm.$valid) {
+                $scope.editModuleForm.submitted = false;
+                vm.currentViewState = vm.viewStates.LISTMODULEACTION;
+            }               
         }
 
 

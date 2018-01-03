@@ -114,8 +114,18 @@ namespace Deviser.Core.Data.DataProviders
         
         public bool IsMultilingual()
         {
-            var result = GetActiveLanguages();
-            return result != null && result.Count > 1;
+
+            using (var context = new DeviserDbContext(DbOptions))
+            {
+                var result = context.Language
+                    .Where(l => l.IsActive)
+                    .Count()>1;
+
+                return result;
+            }
+
+            //var result = GetActiveLanguages();
+            //return result != null && result.Count > 1;
         }
 
         public Language UpdateLanguage(Language language)

@@ -5998,6 +5998,9 @@ body.page-edit {
     * An element with .dndPlaceholder class will be added as child of the dnd-list
     * while the user is dragging over it.
     */
+      /*.col-md-3 {
+                padding: 0;
+            }*/
       /***************************** Element Selection *****************************/
       /***************************** Element type specific styles *****************************/ }
       body.page-edit .layout-container .dropzone li {
@@ -6014,8 +6017,8 @@ body.page-edit {
         min-height: 30px;
         display: block;
         position: relative; }
-      body.page-edit .layout-container .dropzone .col-md-3 {
-        padding: 0; }
+      body.page-edit .layout-container .dropzone [class*=" col-md-"] {
+        padding: 0px; }
       body.page-edit .layout-container .dropzone .selected {
         /*.item {
                     color: #3c763d;
@@ -6123,6 +6126,10 @@ body.page-edit {
 .draggable-content {
   margin-left: 10px;
   width: 50%; }
+  .draggable-content span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; }
 
 .tree-node a.expander i {
   font-size: 1.3em;
@@ -6149,6 +6156,10 @@ body.page-edit {
   border: 1px dashed #b6bcbf;
   box-sizing: border-box;
   -moz-box-sizing: border-box; }
+
+.tree-scroll {
+  max-height: 80vh;
+  overflow-y: auto; }
 
 /*Form elements*/
 div.form-horizontal .control-label {

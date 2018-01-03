@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using Xunit;
+using Microsoft.AspNetCore.Html;
+using System.Text.Encodings.Web;
 
 namespace Deviser.Core.Library.Test.Controllers
 {
@@ -49,13 +51,20 @@ namespace Deviser.Core.Library.Test.Controllers
             Assert.NotNull(contentResults);
             Assert.NotNull(contentResults.Count > 0);
             Assert.NotNull(resultItem);
-            Assert.True(!string.IsNullOrEmpty(resultItem.Result));
-            Assert.True(!resultItem.Result.Contains("Module load exception"));
+            Assert.NotNull(resultItem.HtmlResult);
+            Assert.True(!GetString(resultItem.HtmlResult).Contains("Module load exception"));
 
             //Clean
             dbContext.PageModule.RemoveRange(dbContext.PageModule);
             dbContext.Module.RemoveRange(dbContext.Module);
             dbContext.Page.RemoveRange(dbContext.Page);
+        }
+
+        public static string GetString(IHtmlContent content)
+        {
+            var writer = new System.IO.StringWriter();
+            content.WriteTo(writer, HtmlEncoder.Default);
+            return writer.ToString();
         }
 
         [Fact]

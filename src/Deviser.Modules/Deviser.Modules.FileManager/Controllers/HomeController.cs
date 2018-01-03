@@ -8,11 +8,11 @@ namespace Deviser.Modules.FileManager.Controllers
     [Module("FileManager")]
     public class HomeController : ModuleController
     {
-        public HomeController(ILifetimeScope container)
-            : base(container)
-        {
+        //public HomeController(ILifetimeScope container)
+        //    : base(container)
+        //{
 
-        }
+        //}
         public IActionResult Index()
         {
             return View();

@@ -92,7 +92,7 @@
         //////////////////////////////////
         ///*Function declarations only*/
         function init() {
-            vm.currentLocale = pageContext.currentLocale; //to be replaced as language feature in future
+            vm.currentLocale = pageContext.currentLocale; //to be replaced as language feature in future           
             vm.accordion = {};
             getPages();
             getRoles();
@@ -302,7 +302,7 @@
         }
 
         function save() {
-            if (vm.selectedItem) {
+            if (vm.selectedItem && $scope.managePage.$valid) {
                 savePage(vm.selectedItem);
             }
         }

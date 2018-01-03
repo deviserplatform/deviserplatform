@@ -80,7 +80,7 @@ namespace Deviser.ClientDependency
                         if (file.FilePath.StartsWith("~"))
                         {
                             TryResolveUrl(file.FilePath, out resolvedPath);
-                            resolvedPath = fileVersionProvider.AddFileVersionToPath(resolvedPath);
+                            //resolvedPath = fileVersionProvider.AddFileVersionToPath(resolvedPath);
                         }
                         else
                         {
@@ -107,7 +107,7 @@ namespace Deviser.ClientDependency
                         if (file.FilePath.StartsWith("~"))
                         {
                             TryResolveUrl(file.FilePath, out resolvedPath);
-                            resolvedPath = fileVersionProvider.AddFileVersionToPath(resolvedPath);
+                            //resolvedPath = fileVersionProvider.AddFileVersionToPath(resolvedPath);
                         }
                         else
                         {

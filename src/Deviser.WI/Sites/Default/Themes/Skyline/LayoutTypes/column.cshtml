@@ -1,7 +1,14 @@
 ﻿@model LayoutContent
 @{
     var properties = Model.PlaceHolder.Properties;
+    var colWidth = properties.Get("columnwidth").ToString();
+
+    if (string.IsNullOrEmpty(colWidth))
+    {
+        colWidth = "col-md-4";
+    }
 }
-<div class="@properties.Get("cssclass").Value">
-    @Html.Raw(Model.ContentResult)
+<div class="@colWidth @properties.Get("cssclass")">
+    @*@Html.Raw(Model.ContentResult)*@
+    @Model.ContentResult
 </div>

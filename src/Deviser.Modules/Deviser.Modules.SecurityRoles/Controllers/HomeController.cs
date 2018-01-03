@@ -12,11 +12,11 @@ namespace Deviser.Modules.SecurityRoles.Controllers
     [Module("SecurityRoles")]
     public class HomeController: ModuleController
     {
-        public HomeController(ILifetimeScope container)
-            : base(container)
-        {
+        //public HomeController(ILifetimeScope container)
+        //    : base(container)
+        //{
 
-        }
+        //}
 
         public IActionResult Index()
         {

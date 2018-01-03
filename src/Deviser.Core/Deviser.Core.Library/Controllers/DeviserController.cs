@@ -11,26 +11,14 @@ using System.Threading.Tasks;
 using Deviser.Core.Common;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Primitives;
+using Deviser.Core.Library.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Deviser.Core.Library.Controllers
 {
     public class DeviserController : Controller
     {
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            Globals.CurrentCulture = GetCurrentCulture();
-            //string permalink = "";
-            //permalink = RouteData.Values["permalink"] as string;
-            //if (string.IsNullOrEmpty(permalink))
-            //    permalink = context.HttpContext.Request.Query["permalink"];
-
-            //if (!string.IsNullOrEmpty(permalink))
-            //{
-
-            //}
-
-            base.OnActionExecuting(context);
-        }
+        private IScopeService _scopeService;
 
         protected bool IsAjaxRequest
         {
@@ -46,11 +34,23 @@ namespace Deviser.Core.Library.Controllers
             }
         }
 
+        protected IScopeService ScoperService
+        {
+            get
+            {
+                if (_scopeService == null)
+                {
+                    _scopeService = HttpContext.RequestServices.GetService<IScopeService>();
+                }
+                return _scopeService;
+            }
+        }
+
         public CultureInfo CurrentCulture
         {
             get
             {
-                return GetCurrentCulture();
+                return ScoperService.PageContext.CurrentCulture;
             }
         }
 
@@ -76,24 +76,6 @@ namespace Deviser.Core.Library.Controllers
         public override ViewResult View(string viewName, object model)
         {
             return base.View(viewName, model);
-        }
-
-        private CultureInfo GetCurrentCulture()
-        {
-            var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
-            CultureInfo requestCulture = null;
-            string cultureKey = "culture";
-            if (RouteData.Values.ContainsKey(cultureKey) && !string.IsNullOrEmpty(RouteData.Values[cultureKey].ToString()))
-            {
-                requestCulture = new CultureInfo(RouteData.Values[cultureKey].ToString());
-            }
-            else
-            {
-                requestCulture = requestCultureFeature.RequestCulture.UICulture;
-            }
-
-            Globals.CurrentCulture = requestCulture;
-            return requestCulture;
         }
 
 

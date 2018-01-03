@@ -9,11 +9,11 @@ namespace Deviser.Modules.PageManagement.Controllers
     [Module("PageManagement")]
     public class HomeController : ModuleController
     {
-        public HomeController(ILifetimeScope container)
-            : base(container)
-        {
+        //public HomeController(ILifetimeScope container)
+        //    : base(container)
+        //{
 
-        }
+        //}
         public IActionResult Index()
         {
             return View();

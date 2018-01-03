@@ -73,7 +73,7 @@
         function save() {
             $scope.layoutForm.submitted = true;
             if ($scope.layoutForm.$valid) {
-                if (vm.currentViewState == vm.viewStates.NEW && vm.isValidName(vm.selectedLayoutType.name)) {
+                if (vm.currentViewState === vm.viewStates.NEW && vm.isValidName(vm.selectedLayoutType.name)) {
                     layoutTypeService.post(vm.selectedLayoutType).then(function (result) {
                         console.log(result);
                         vm.currentViewState = vm.viewStates.LIST;

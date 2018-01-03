@@ -165,11 +165,10 @@ body {
 body.page-edit {
     overflow-y: hidden;
 
-    .alert{
-        top:50px;
-        z-index:10;
+    .alert {
+        top: 50px;
+        z-index: 10;
     }
-
     /***********************************************************/
     /*Layout*/
     /***********************************************************/
@@ -316,9 +315,14 @@ body.page-edit {
                 position: relative;
             }
 
-            .col-md-3 {
-                padding: 0;
+
+            [class*=" col-md-"]{
+                padding:0px;
             }
+            
+            /*.col-md-3 {
+                padding: 0;
+            }*/
             /***************************** Element Selection *****************************/
             .selected {
                 /*.item {
@@ -486,7 +490,13 @@ body.page-edit {
 
 .draggable-content {
     margin-left: 10px;
-    width:50%;
+    width: 50%;
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 }
 
 .tree-node a.expander i {
@@ -517,6 +527,12 @@ body.page-edit {
     border: 1px dashed #b6bcbf;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
+}
+
+
+.tree-scroll {
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 

@@ -9,11 +9,11 @@ namespace Deviser.Modules.ContentManagement.Controllers
     [Module("ContentManagement")]
     public class HomeController : ModuleController
     {
-        public HomeController(ILifetimeScope container)
-            :base(container)
-        {
+        //public HomeController(ILifetimeScope container)
+        //    :base(container)
+        //{
 
-        }
+        //}
         public IActionResult ContentTypes()
         {
             return View();

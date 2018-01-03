@@ -12,11 +12,11 @@ namespace Deviser.Modules.SiteManagement.Controllers
     [Module("SiteManagement")]
     public class HomeController: ModuleController
     {
-        public HomeController(ILifetimeScope container)
-            : base(container)
-        {
+        //public HomeController(ILifetimeScope container)
+        //    : base(container)
+        //{
 
-        }
+        //}
 
         public IActionResult SiteSettings()
         {
