@@ -49,6 +49,20 @@ namespace Deviser.Core.Library.Layouts
             return null;
         }
 
+        public List<Layout> GetDeletedLayouts()
+        {
+            try
+            {
+                var result = layoutProvider.GetDeletedLayouts();
+                return result;
+            }
+            catch(Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting deleted layouts"), ex);
+            }
+            return null;
+        }
+
         public PageLayout GetPageLayout(Guid layoutId)
         {
             try
@@ -156,6 +170,21 @@ namespace Deviser.Core.Library.Layouts
                     pageContentProvider.Update(content);
                 }
             }
+        }
+
+        public Layout UpdateLayout(Layout layout)
+        {
+            try
+            {
+                layout.IsDeleted = false;
+                var result = layoutProvider.UpdateLayout(layout);
+                return result;
+            }
+            catch(Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while restoring the layout"), ex);
+            }
+            return null;
         }
 
         //private void CreateElement(List<PlaceHolder> placeHolders, Guid pageId)

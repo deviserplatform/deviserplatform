@@ -9,23 +9,27 @@
         'deviser.config'
     ]);
 
-    app.controller('RecycleBinCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'pageService', 'pageContentService', 'pageModuleService', editCtrl]);
+    app.controller('RecycleBinCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'pageService', 'layoutService','pageContentService', 'pageModuleService', editCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
-    function editCtrl($scope, $timeout, $filter, $q, globals, pageService, pageContentService, pageModuleService) {
+    function editCtrl($scope, $timeout, $filter, $q, globals, pageService, layoutService, pageContentService, pageModuleService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
         vm.restorePage = restorePage;
         vm.restorePageContent = restorePageContent;
         vm.restorePageModule = restorePageModule;
+        vm.restoreLayout = restoreLayout;
         vm.deletePage = deletePage;
         vm.deletePageContent = deletePageContent;
         vm.deletePageModule = deletePageModule;
+        vm.deleteLayout = deleteLayout;
         getDeletedPages();
+        getDeletedLayouts();
         getDeletedPageContents();
         getDeletedPageModules();
+        
         //////////////////////////////////
         ///*Function declarations only*/       
 
@@ -38,6 +42,14 @@
                 vm.pages = pages;
             }, function (error) {
                 showMessage("error", "Cannot get the pages, please contact administrator");
+            });
+        }
+
+        function getDeletedLayouts() {
+            layoutService.getDeletedLayouts().then(function (layouts) {
+                vm.layouts = layouts;
+            }, function (error) {
+                showMessage("error", "Cannot get the layouts, please contact administrator");
             });
         }
 
@@ -72,6 +84,16 @@
                 showMessage("success", "The page has been restored");
             },function(error){
                 showMessage("error", "Cannot restore the page, please contact administrator");
+            });
+        }
+
+        function restoreLayout(layout) {
+            layoutService.restoreLayout(layout).then(function (layout) {
+                if (layout.isDeleted === false)
+                    getDeletedLayouts();
+                showMessage("success", "The layout has been restored");
+            }, function (error) {
+                showMessage("error", "Cannot restore the layout, please contact administrator");
             });
         }
 
@@ -123,6 +145,15 @@
                 showMessage("error", "Cannot delete the page module, please contact administrator")
             });
 
+        }
+
+        function deleteLayout(id) {
+            layoutService.remove(id).then(function (result) {
+                getDeletedLayouts();
+                showMessage("success", "The layout has been deleted");
+            }, function (error) {
+                showMessage("error", "Cannot delete the layout, please contact administrator")
+            });
         }
 
         function showMessage(messageType, messageContent) {

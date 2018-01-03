@@ -35,13 +35,31 @@ namespace DeviserWI.Controllers.API
             try
             {
                 var result = layoutManager.GetPageLayouts();
-                if (result!= null)
+                if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
                 logger.LogError(string.Format("Error occured while getting all page layouts"), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("deletedlist/")]
+        public IActionResult GetDeletedLayouts()
+        {
+            try
+            {
+                var result = layoutManager.GetDeletedLayouts();
+                if (result != null)
+                    return Ok(result);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while getting deleted layouts"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -84,8 +102,25 @@ namespace DeviserWI.Controllers.API
         public IActionResult Put([FromBody]PageLayout layout)
         {
             try
-            {               
+            {
                 var result = layoutManager.UpdatePageLayout(layout);
+                if (result != null)
+                    return Ok(result);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while updating page layout, LayoutName: ", layout.Name), ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Restore([FromBody]Layout layout)
+        {
+            try
+            {
+                var result = layoutManager.UpdateLayout(layout);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
@@ -103,20 +138,31 @@ namespace DeviserWI.Controllers.API
             try
             {
                 var layout = layoutProvider.GetLayout(id);
+                
                 if (layout != null)
                 {
-                    layout.IsDeleted = true;
-                    var result = layoutProvider.UpdateLayout(layout);                    
-                    if (result != null)
+                    if (layout.IsDeleted)
                     {
-                        return Ok(result);
+                         bool result = layoutProvider.DeleteLayout(id);
+                        if (result)
+                            return Ok();
                     }
+                    else
+                    {
+                        layout.IsDeleted = true;
+                        var result = layoutProvider.UpdateLayout(layout);
+                        if (result != null)
+                        {
+                            return Ok(result);
+                        }
+                    }                                       
+                    
                 }   
                 return BadRequest();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while deleting page layout"), ex);
+                logger.LogError(string.Format("Error occured while deleting the layout"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
