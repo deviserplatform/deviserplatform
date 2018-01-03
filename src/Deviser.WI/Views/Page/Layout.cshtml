@@ -16,18 +16,20 @@
     }());
 </script>
 
+
+
 <div class="layout-wrapper" ng-app="deviserLayout" ng-controller="LayoutCtrl as layoutVM">
-    <div class="row" ng-show="layoutVM.message.content">       
-            <div ng-class="{'alert alert-danger':layoutVM.message.messageType=='error',
+    <div class="row" ng-show="layoutVM.message.content">
+        <div ng-class="{'alert alert-danger':layoutVM.message.messageType=='error',
                      'alert alert-info':layoutVM.message.messageType=='info',
                      'alert alert-success':layoutVM.message.messageType=='success',
                      'alert alert-warning':layoutVM.message.messageType=='warning'}" role="alert">
-                <button type="button" class="close" ng-click="layoutVM.message = {}">
-                    <i class="fa fa-times" aria-hidden="true"></i>
-                </button>
+            <button type="button" class="close" ng-click="layoutVM.message = {}">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
 
-                {{layoutVM.message.content}}
-            </div>       
+            {{layoutVM.message.content}}
+        </div>
     </div>
 
     <div class="row layout-controls">
@@ -41,12 +43,16 @@
                 <i class="fa fa-plus"></i> New
             </button>
 
-            <button type="button" class="layout-control btn btn-default" ng-click="layoutVM.copyLayout()">
+            <button type="button" class="layout-control btn btn-default" 
+                    ng-show="!layoutVM.isLayoutEdit"
+                    ng-click="layoutVM.copyLayout()">
                 <i class="fa fa-clone" aria-hidden="true"></i> Copy
             </button>
 
-            <button type="button" class="layout-control btn btn-default" ng-click="layoutVM.isLayoutEdit=true">
-                <i class="fa fa-pencil" aria-hidden="true"></i> Update
+            <button type="button" class="layout-control btn btn-default" 
+                    ng-show="!layoutVM.isLayoutEdit"
+                    ng-click="layoutVM.isLayoutEdit=true">
+                <i class="fa fa-pencil" aria-hidden="true"></i> Change Layout Name
             </button>
 
             <div class="form-group layout-name" ng-show="layoutVM.isLayoutEdit">
@@ -57,7 +63,10 @@
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Save
             </button>
 
-            <button type="button" class="layout-control btn btn-danger" ng-click="layoutVM.deleteLayout()" ng-disabled="!layoutVM.pageLayout.id">
+            <button type="button" class="layout-control btn btn-danger" 
+                    ng-show="!layoutVM.isLayoutEdit"
+                    ng-click="layoutVM.deleteLayout()" 
+                    ng-disabled="!layoutVM.pageLayout.id">
                 <i class="fa fa-trash"></i> Delete
             </button>
 
@@ -84,7 +93,7 @@
                      dnd-list="item.placeHolders"
                      dnd-allowed-types="item.allowedTypes"
                      dnd-drop="layoutVM.dropCallback(event, index, item)"
-                     ng-init="placeHolders = item.placeHolders">                    
+                     ng-init="placeHolders = item.placeHolders">
                     <div class="content-item"
                          ng-repeat="item in placeHolders"
                          dnd-draggable="item"
@@ -113,15 +122,15 @@
                     </div>
                 </div>
             </script>
-            <script type="text/ng-template" id="column.html">               
-                <div ng-class="layoutVM.setColumnWidth(item.properties)">                    
-                        <div class="container-element box box-blue">
-                            <h3>{{item.label}} {{$index+1}}</h3>
-                            <div class="container-content" ng-include="'placeHolders.html'">
+            <script type="text/ng-template" id="column.html">
+                <div ng-class="layoutVM.setColumnWidth(item.properties)">
+                    <div class="container-element box box-blue">
+                        <h3>{{item.label}} {{$index+1}}</h3>
+                        <div class="container-content" ng-include="'placeHolders.html'">
 
-                            </div>
                         </div>
-                    </div>               
+                    </div>
+                </div>
             </script>
             <script type="text/ng-template" id="repeater.html">
                 <div class="container-element box box-blue">
@@ -212,13 +221,13 @@
                                         <option ng-repeat="option in property.optionList.list" value="{{option.id}}">{{option.label}}</option>
                                     </select>
                                 </div>
-                            </div>                           
+                            </div>
                         </div>
                     </div>
                     <div class="trashcan box box-grey box-padding">
                         <!-- If you use [] as referenced list, the dropped elements will be lost -->
-                        <h3>Trashcan</h3>
-                        <ul dnd-list="[]" dnd-drop="layoutVM.deleteElement(event, index, item)">
+                        <h3>Trashcan -  Delete Layout Elements</h3>
+                        <ul dnd-list="[]" dnd-drop="layoutVM.deleteElement(event, index, item)" title="Drag and Drop the unwanted elements in the layout.">
                             <li><i class="fa fa-trash"></i></li>
                         </ul>
                     </div>
@@ -233,5 +242,7 @@
                 </div>*@
         </div>
     </div>
+    @await Html.PartialAsync("_NgComponents")
 </div>
+
 

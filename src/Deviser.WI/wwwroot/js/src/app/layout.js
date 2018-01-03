@@ -4,20 +4,21 @@
     'ui.router',
     'ui.bootstrap',
     'dndLists',
-    'sd.sdlib',
+    'sd.modal',
+    'sd.sdlib',    
     'deviser.services',
     'deviser.config'
     ]);
 
     app.controller('LayoutCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'sdUtil','editLayoutUtil', 'layoutService', 'pageService',
-        'layoutTypeService', 'pageContentService', 'moduleService', 'pageModuleService', layoutCtrl]);
+        'layoutTypeService', 'pageContentService', 'moduleService', 'pageModuleService','modalService', layoutCtrl]);
 
 
     ////////////////////////////////
     /*Function declarations only*/
 
     function layoutCtrl($scope, $timeout, $filter, $q, globals, sdUtil, editLayoutUtil, layoutService, pageService,
-        layoutTypeService, pageContentService, moduleService, pageModuleService) {
+        layoutTypeService, pageContentService, moduleService, pageModuleService, modalService) {
         var vm = this;
 
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
@@ -145,6 +146,7 @@
             vm.pageLayout.id = undefined;
             vm.pageLayout.name = "";
             vm.pageLayout.isChanged = false;
+            vm.isLayoutEdit = true;
             vm.pageLayout.placeHolders = [];
         }
 
@@ -218,14 +220,28 @@
         }
 
         function deleteLayout() {
-            layoutService.remove(vm.pageLayout.id).then(function (data) {
-                console.log(data);
+            var labels = {
+                title: 'Delete Confirmation',
+                body: 'Are you sure to delete the layout',
+                okLabel: 'Yes',
+                cancelLabel: 'No'
+            };
+
+            var modalInstance = modalService.showConfirmation(labels);
+
+            modalInstance.then(function () {
+                layoutService.remove(vm.pageLayout.id).then(function (data) {
+                console.log('Layout deletion agreed at:' + new Date());
                 showMessage("success", "Layout has been removed");
                 getLayouts();
                 newLayout();
             }, function (error) {
                 showMessage("error", SYS_ERROR_MSG);
-            });
+                    })
+            },           
+                function () {
+                    console.log('Layout deletion disagreed at:' + new Date());
+                });
         }
 
         function selectItem(item) {
