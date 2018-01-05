@@ -27,7 +27,34 @@
     /*Function declarations only*/
 
     function layoutService($http, $q, globals) {
-        return baseService($http, $q, globals, '/layout');
+        var serviceUrl = '/layout';
+        var service = baseService($http, $q, globals, serviceUrl);
+        service.getDeletedLayouts = getDeletedLayouts;
+        service.restoreLayout = restoreLayout;
+        return service;
+
+        function getDeletedLayouts() {
+            var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/deletedlist';
+            var request = $http({
+                method: 'GET',
+                url: getUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q);
+            });
+        }
+
+        function restoreLayout(data) {
+            var putUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/' + data.id;
+            var request = $http({
+                method: 'PUT',
+                url: putUrl,
+                data: angular.toJson(data)
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q);
+            });
+        }
     }
 
     function pageService($http, $q, globals) {

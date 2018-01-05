@@ -13,8 +13,10 @@ namespace Deviser.Core.Data.DataProviders
     {
         Layout CreateLayout(Layout layout);
         List<Layout> GetLayouts();
+        List<Layout> GetDeletedLayouts();
         Layout GetLayout(Guid layoutId);        
         Layout UpdateLayout(Layout layout);
+        bool DeleteLayout(Guid layoutId);
     }
 
     public class LayoutProvider : DataProviderBase, ILayoutProvider
@@ -67,6 +69,26 @@ namespace Deviser.Core.Data.DataProviders
             return null;
         }
 
+        public List<Layout> GetDeletedLayouts()
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var result = context.Layout
+                               .Where(e => e.IsDeleted)
+                               .ToList();
+
+                    return Mapper.Map<List<Layout>>(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while getting deleted layouts", ex);
+            }
+            return null;
+        }
+
         public Layout GetLayout(Guid layoutId)
         {
             try
@@ -95,8 +117,7 @@ namespace Deviser.Core.Data.DataProviders
                 {
                     var dbLayout = Mapper.Map<Entities.Layout>(layout);
 
-                    var result = context.Layout.Attach(dbLayout).Entity;
-                    context.Entry(dbLayout).State = EntityState.Modified;
+                    var result = context.Layout.Update(dbLayout).Entity;                   
 
                     context.SaveChanges();
                     return Mapper.Map<Layout>(result);
@@ -104,10 +125,31 @@ namespace Deviser.Core.Data.DataProviders
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error occured while updating layout", ex);
+                _logger.LogError("Error occured while updating the layout", ex);
             }
             return null;
         }
-    }
+
+        public bool DeleteLayout(Guid layoutId)
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var layout = GetLayout(layoutId);
+                    var dbLayout = Mapper.Map<Entities.Layout>(layout);
+
+                    context.Layout.Remove(dbLayout);
+                    context.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while deleting the layout", ex);
+            }
+            return false;
+        }
+    }  
 
 }//End namespace
