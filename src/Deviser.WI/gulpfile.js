@@ -1,62 +1,149 @@
-﻿/// <binding Clean='clean' />
-"use strict";
+﻿/// <binding />
 
-var del = require('del'),
-    gulp = require("gulp"),
-    rimraf = require("rimraf"),
-    concat = require("gulp-concat"),
-    cssmin = require("gulp-cssmin"),
-    sass = require('gulp-sass'),
-    uglify = require("gulp-uglify");
+'use strict';
 
-var webroot = "./wwwroot/";
-
+/*------------------------------------------------------------------
+    Configuration section
+-------------------------------------------------------------------*/
 var paths = {
-    js: webroot + "js/**/*.js",
-    minJs: webroot + "js/**/*.min.js",
-    css: webroot + "css/**/*.css",
-    minCss: webroot + "css/**/*.min.css",
-    concatJsDest: webroot + "js/site.min.js",
-    concatCssDest: webroot + "css/site.min.css",
-    sassPath: webroot + "css/admin/**/*.scss",
-    sassDest: webroot + "css/admin"
+    webroot: './wwwroot/',
+    sassPath: './wwwroot/css/admin/main.scss',
+    sassDest: './wwwroot/css/admin'
 };
 
-gulp.task("clean:js", function () {    
-    return del(paths.concatJsDest, { force: true });
-});
 
-gulp.task("clean:css", function () {
-    return del(paths.concatCssDest, { force: true });
-});
 
-gulp.task("clean:sass", function () {    
-    return del(paths.sassDest +'/main.css', { force: true });
+paths.bowerRoot = paths.webroot + 'lib/';
+paths.appRoot = paths.webroot + 'js/src/app/';
+paths.releaseRoot = paths.webroot + 'release/';
+
+//Bower files selection
+paths.bowerFiles = {
+    js: [
+        paths.bowerRoot + 'jquery/dist/jquery.js',
+        paths.bowerRoot + 'jquery-ui/jquery-ui.js',
+        paths.bowerRoot + 'bootstrap/dist/js/bootstrap.js',
+        paths.bowerRoot + 'metisMenu/dist/metisMenu.js',
+        paths.bowerRoot + 'lodash/dist/lodash.js',
+        paths.bowerRoot + 'angular/angular.js',
+        paths.webroot +'js/admin/main.js',
+        paths.bowerRoot + 'angular-sanitize/angular-sanitize.js',
+        paths.bowerRoot + 'angular-ui-router/release/angular-ui-router.js',
+        paths.bowerRoot + 'angular-ui-sortable/sortable.js',
+        paths.bowerRoot + 'angular-bootstrap/ui-bootstrap.js',
+        paths.bowerRoot + 'angular-bootstrap/ui-bootstrap.js',
+        paths.bowerRoot + 'angular-bootstrap/ui-bootstrap-tpls.js',
+        paths.webroot + 'js/src/lib-fixes/select.js',
+        paths.bowerRoot + 'angular-ui-tree/dist/angular-ui-tree.js',
+        paths.bowerRoot + 'angular-drag-and-drop-lists/angular-drag-and-drop-lists.js',
+        paths.bowerRoot + 'ng-file-upload/ng-file-upload-all.js',
+        paths.bowerRoot + 'angular-img-cropper/dist/angular-img-cropper.min.js',
+        paths.bowerRoot + 'textAngular/dist/textAngular-rangy.min.js',
+        paths.bowerRoot + 'textAngular/dist/textAngularSetup.js',
+        paths.bowerRoot + 'textAngular/dist/textAngular-sanitize.js',
+        paths.bowerRoot + 'textAngular/dist/textAngular.js'
+    ],
+    css: [
+        paths.bowerRoot + 'angular-ui-tree/dist/angular-ui-tree.min.css',
+        paths.bowerRoot + 'angular-ui-select/dist/select.css',
+        paths.bowerRoot + 'metismenu/dist/metismenu.css',
+        paths.bowerRoot + 'textAngular/dist/textAngular.css',
+    ],
+    assets: [
+        paths.bowerRoot + 'bootstrap/dist/fonts/**'
+    ]
+}
+
+//App files selection
+paths.appFiles = {
+    js: [paths.appRoot + '**/*.js'],    
+    assets: [paths.appRoot + 'assets/**/*.*']
+}
+
+//Minify file configuration
+paths.concatLibJsDest = paths.releaseRoot + 'deviserlib.min.js';
+paths.concatAppJsDest = paths.releaseRoot + 'deviserapp.min.js';
+paths.concatCssDest = paths.releaseRoot + 'deviser.min.css';
+
+/*-------------------------------------------------------------------
+    Module Import
+/*------------------------------------------------------------------*/
+var es = require('event-stream'),
+    del = require('del'),
+    filelog = require('gulp-filelog'),
+    gulp = require('gulp'),
+    concat = require('gulp-concat'),
+    cssmin = require('gulp-cssmin'),
+    sass = require('gulp-sass'),
+    uglify = require('gulp-uglify');
+
+
+gulp.task("clean:sass", function () {
+    return del(paths.sassDest + '/main.css', { force: true });
 });
 
 gulp.task('sass', function () {
     return gulp.src(paths.sassPath)
-      .pipe(sass().on('error', sass.logError))
-      .pipe(gulp.dest(paths.sassDest));
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest(paths.sassDest));
 });
 
-gulp.task("min:js", function () {
-    return gulp.src([paths.js, "!" + paths.minJs], { base: "." })
-        .pipe(concat(paths.concatJsDest))
+gulp.task('clean:min', function () {    
+    return del(paths.releaseRoot, { force: true });
+});
+
+gulp.task('clean', ['clean:min']);
+
+
+gulp.task('min:libjs', function () {
+    var scripts = paths.bowerFiles.js;
+    return gulp.src(paths.bowerFiles.js)
+        .pipe(concat(paths.concatLibJsDest))
         .pipe(uglify())
-        .pipe(gulp.dest("."));
+        .pipe(gulp.dest('.'));
 });
 
-gulp.task("min:css", function () {
-    return gulp.src([paths.css, "!" + paths.minCss])
+gulp.task('min:appjs', function () {
+    var scripts = paths.appFiles.js;
+    //var templates = paths.tempFolder + '**/*.js';
+    //scripts.push(templates);
+    return gulp.src(scripts, { base: paths.appRoot })
+        //.pipe(angularFilesort())
+        .pipe(concat(paths.concatAppJsDest))
+        .pipe(uglify())
+        .pipe(gulp.dest('.'));
+});
+
+gulp.task('min:css', function () {
+
+    var vendorFiles = gulp.src(paths.bowerFiles.css);
+    var appFiles = gulp.src(paths.sassPath)
+        .pipe(sass().on('error', sass.logError));
+
+    var css = paths.bowerFiles.css;
+    css = css.concat(paths.sassPath);
+    return es.concat(vendorFiles, appFiles)
         .pipe(concat(paths.concatCssDest))
         .pipe(cssmin())
-        .pipe(gulp.dest("."));
+        .pipe(gulp.dest('.'));
 });
+
+gulp.task('test',
+    function () {
+        var css = paths.bowerFiles.css;
+        css.push(paths.sassPath);
+
+        return gulp.src(paths.sassPath)
+            .pipe(filelog());
+
+});
+
+gulp.task('clean', ['clean:min']);
+
+gulp.task('min', ['min:libjs', 'min:appjs', 'min:css']);
 
 gulp.task('watch', ['sass'], function () {
     gulp.watch(paths.sassPath, ['sass']);
 });
 
-gulp.task("clean", ["clean:js", "clean:css", "clean:sass"]);
-gulp.task("min", ["min:js", "min:css"]);
+

@@ -64,7 +64,7 @@
         /////////////////////////////////////////////
         /*Function declarations only*/
         function link(scope, element, attrs) {
-            template = $templateCache.get('contenttypes/' + scope.ecVM.content.contentType.name + '.html', );
+            template = $templateCache.get('contenttypes/' + scope.ecVM.content.contentType.name + '.html');
             element.html(template);
             $compile(element.contents())(scope);
         }

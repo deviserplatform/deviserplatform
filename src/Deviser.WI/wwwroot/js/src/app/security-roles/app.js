@@ -13,7 +13,7 @@
 
     ////////////////////////////////
     /*Function declarations only*/
-    function editCtrl($scope, $timeout, $filter, $q, globals, roleService, ) {
+    function editCtrl($scope, $timeout, $filter, $q, globals, roleService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];

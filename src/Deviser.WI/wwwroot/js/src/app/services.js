@@ -1,26 +1,26 @@
 ﻿(function () {
     var app = angular.module('deviser.services', ['deviser.config']);
-    app.factory('layoutService', layoutService);
-    app.factory('pageService', pageService);
-    app.factory('contentTypeService', contentTypeService);
-    app.factory('layoutTypeService', layoutTypeService);
-    app.factory('propertyService', propertyService);
-    app.factory('optionListService', optionListService);
-    app.factory('siteSettingService', siteSettingService);
-    app.factory('pageContentService', pageContentService);
-    app.factory('contentTranslationService', contentTranslationService);
-    app.factory('moduleService', moduleService);
-    app.factory('moduleActionService', moduleActionService);
-    app.factory('pageModuleService', pageModuleService);
-    app.factory('themeService', themeService);
-    app.factory('userService', userService);
-    app.factory('userExistService', userExistService);
-    app.factory('passwordResetService', passwordResetService);
-    app.factory('roleService', roleService);
-    app.factory('userRoleService', userRoleService);
-    app.factory('languageService', languageService);
-    app.factory('fileService', fileService);
-    app.factory('assetService', assetService);
+    app.factory('layoutService', ['$http', '$q', 'globals',layoutService]);
+    app.factory('pageService', ['$http', '$q', 'globals',pageService]);
+    app.factory('contentTypeService', ['$http', '$q', 'globals',contentTypeService]);
+    app.factory('layoutTypeService', ['$http', '$q', 'globals',layoutTypeService]);
+    app.factory('propertyService', ['$http', '$q', 'globals',propertyService]);
+    app.factory('optionListService', ['$http', '$q', 'globals',optionListService]);
+    app.factory('siteSettingService', ['$http', '$q', 'globals',siteSettingService]);
+    app.factory('pageContentService', ['$http', '$q', 'globals',pageContentService]);
+    app.factory('contentTranslationService', ['$http', '$q', 'globals',contentTranslationService]);
+    app.factory('moduleService', ['$http', '$q', 'globals',moduleService]);
+    app.factory('moduleActionService', ['$http', '$q', 'globals',moduleActionService]);
+    app.factory('pageModuleService', ['$http', '$q', 'globals',pageModuleService]);
+    app.factory('themeService', ['$http', '$q', 'globals',themeService]);
+    app.factory('userService', ['$http', '$q', 'globals',userService]);
+    app.factory('userExistService', ['$http', '$q', 'globals',userExistService]);
+    app.factory('passwordResetService', ['$http', '$q', 'globals',passwordResetService]);
+    app.factory('roleService', ['$http', '$q', 'globals',roleService]);
+    app.factory('userRoleService', ['$http', '$q', 'globals',userRoleService]);
+    app.factory('languageService', ['$http', '$q', 'globals',languageService]);
+    app.factory('fileService', ['$http', '$q', 'globals',fileService]);
+    app.factory('assetService', ['$http', '$q', 'globals',assetService]);
 
 
     ////////////////////////////////

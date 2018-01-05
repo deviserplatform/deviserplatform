@@ -1,12 +1,17 @@
 ﻿(function () {
     var app = angular.module('deviser.config', []);
 
-    app.config(function (globalsProvider) {
+
+    app.config(['globalsProvider', config]);
+
+    app.provider('globals', globalProvider);
+
+    function config(globalsProvider) {
         globalsProvider.appSettings.serviceBaseUrl = "/api";
         globalsProvider.appSettings.systemErrorMsg = "Unexpected error has been occured, Please contact system administrator";
-    });
+    }
 
-    app.provider('globals', function () {
+    function globalProvider() {
         this.$get = function () {
             // code to initialize/configure the SERVICE goes here (executed during `run` stage)
             return {
@@ -32,5 +37,8 @@
             }
 
         };
-    });
+    }
+
+
+
 }());

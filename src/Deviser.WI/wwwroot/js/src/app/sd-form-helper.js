@@ -1,7 +1,7 @@
-﻿var sdFormHelper = (function () {
+﻿(function (window,$) {
 
-    init();
-
+    window.sdFormHelper = init();
+    
     //////////////////////////////////
     /*Function declarations only*/
     function init() {
@@ -78,9 +78,5 @@
         });
 
     }
-
-    return {
-        init:init
-    }
-
-})();
+    
+}(window,$));
