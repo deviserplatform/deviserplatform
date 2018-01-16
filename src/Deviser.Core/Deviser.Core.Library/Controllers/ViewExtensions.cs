@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -51,6 +52,116 @@ namespace Deviser.Core.Library.Controllers
                 throw;
             }
             return "Module cannot be loaded";
+        }
+
+        public static IHtmlContent ExecuteResultToHTML(this ViewResult viewResult, ActionContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            var services = context.HttpContext.RequestServices;
+            var executor = services.GetRequiredService<ViewResultExecutor>();
+
+            var resultView = executor.FindView(context, viewResult);
+            resultView.EnsureSuccessful(originalLocations: null);
+
+            var view = resultView.View;
+            try
+            {
+                using (view as IDisposable)
+                {
+                    var result = executor.ExecuteToHTML(context, view,
+                        viewResult.Model,
+                        viewResult.ViewData,
+                        viewResult.TempData,
+                        viewResult.ContentType,
+                        viewResult.StatusCode);
+                    if (result != null)
+                        return result;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return new HtmlString("Module cannot be loaded");
+        }
+
+
+        public static IHtmlContent ExecuteToHTML(this ViewExecutor viewExecutor,
+            ActionContext actionContext,
+            IView view,
+            object Model,
+            ViewDataDictionary viewData,
+            ITempDataDictionary tempData,
+            string contentType,
+            int? statusCode)
+        {
+            if (actionContext == null)
+            {
+                throw new ArgumentNullException(nameof(actionContext));
+            }
+
+            if (view == null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            var services = actionContext.HttpContext.RequestServices;
+
+            var viewOption = services.GetRequiredService<IOptions<MvcViewOptions>>();
+            var executor = services.GetRequiredService<ViewResultExecutor>();
+            var htmlHelper = services.GetRequiredService<IHtmlHelper>();
+
+            if (viewData == null)
+            {
+                var metadataProvider = services.GetRequiredService<IModelMetadataProvider>();
+                viewData = new ViewDataDictionary(metadataProvider, actionContext.ModelState);
+            }
+
+            if (tempData == null)
+            {
+                tempData = services.GetRequiredService<ITempDataDictionary>();
+            }
+
+            var response = actionContext.HttpContext.Response;
+
+            string resolvedContentType = null;
+            Encoding resolvedContentTypeEncoding = null;
+            ResolveContentTypeAndEncoding(
+                contentType,
+                response.ContentType,
+                DefaultContentType,
+                out resolvedContentType,
+                out resolvedContentTypeEncoding);
+
+            response.ContentType = resolvedContentType;
+
+            if (statusCode != null)
+            {
+                response.StatusCode = statusCode.Value;
+            }
+
+            using (var writer = new StringWriter())
+            {
+                var viewContext = new ViewContext(
+                    actionContext,
+                    view,
+                    viewData,
+                    tempData,
+                    writer,
+                    viewOption.Value.HtmlHelperOptions);
+
+                ((HtmlHelper)htmlHelper).Contextualize(viewContext);
+
+                var result = htmlHelper.Partial(view.Path, Model, viewData);
+
+                writer.FlushAsync();
+
+                return result;
+            }
         }
 
 
@@ -129,18 +240,6 @@ namespace Deviser.Core.Library.Controllers
 
                 return writer.GetStringBuilder().ToString();
             }
-
-            //using (var sw = new StringWriter())
-            //{
-            //    var viewResult = ViewEngines.Engines.FindPartialView(ControllerContext,
-            //                                                             viewName);
-            //    var viewContext = new ViewContext(ControllerContext, viewResult.View,
-            //                                 ViewData, TempData, sw);
-            //    viewResult.View.Render(viewContext, sw);
-            //    viewResult.ViewEngine.ReleaseView(ControllerContext, viewResult.View);
-            //    return sw.GetStringBuilder().ToString();
-            //}
-
         }
 
 

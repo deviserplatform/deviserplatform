@@ -14,6 +14,8 @@ using Deviser.Core.Library.Internal;
 using Deviser.Core.Library.Services;
 using ContentResult = Deviser.Core.Common.DomainTypes.ContentResult;
 using Module = Deviser.Core.Common.DomainTypes.Module;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Html;
 
 namespace Deviser.Core.Library.Controllers
 {
@@ -27,6 +29,7 @@ namespace Deviser.Core.Library.Controllers
         private readonly IActionSelector _actionSelector;
         //private readonly IModuleInvokerProvider _moduleInvokerProvider;
         private readonly IScopeService _scopeService;
+        private readonly IHtmlHelper _htmlHelper;
 
         public DeviserControllerFactory(ILifetimeScope container, IScopeService scopeService)
         {
@@ -36,6 +39,7 @@ namespace Deviser.Core.Library.Controllers
             //_moduleInvokerProvider = container.Resolve<IModuleInvokerProvider>();
             _pageProvider = container.Resolve<IPageProvider>();
             _moduleProvider = container.Resolve<IModuleProvider>();
+            _htmlHelper = container.Resolve<IHtmlHelper>();
             this._scopeService = scopeService;
         }
 
@@ -75,12 +79,21 @@ namespace Deviser.Core.Library.Controllers
 
                         try
                         {
-                            string moduleStringResult = await ExecuteModuleController(actionContext, moduleContext, moduleAction);
-                            moduleStringResult = $"<div class=\"sd-module-container\" data-module=\"{moduleContext.ModuleInfo.Name}\" data-page-module-id=\"{moduleContext.PageModuleId}\">{moduleStringResult}</div>";
+                            //string moduleStringResult = await ExecuteModuleControllerAsString(actionContext, moduleContext, moduleAction);
+                            //moduleStringResult = $"<div class=\"sd-module-container\" data-module=\"{moduleContext.ModuleInfo.Name}\" data-page-module-id=\"{moduleContext.PageModuleId}\">{moduleStringResult}</div>";
+                            //contentResults.Add(new ContentResult
+                            //{
+                            //    //Result = moduleStringResult,
+                            //    HtmlResult = new Microsoft.AspNetCore.Html.HtmlString(moduleStringResult),
+                            //    SortOrder = pageModule.SortOrder
+                            //});
+
+                            IHtmlContent actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleAction);
+                            IHtmlContent moduleResult = GetModuleResult(actionResult, moduleContext);
                             contentResults.Add(new ContentResult
                             {
                                 //Result = moduleStringResult,
-                                HtmlResult = new Microsoft.AspNetCore.Html.HtmlString(moduleStringResult),
+                                HtmlResult = moduleResult,
                                 SortOrder = pageModule.SortOrder
                             });
                         }
@@ -90,7 +103,7 @@ namespace Deviser.Core.Library.Controllers
                             contentResults.Add(new ContentResult
                             {
                                 //Result = actionResult,
-                                HtmlResult = new Microsoft.AspNetCore.Html.HtmlString(actionResult),
+                                HtmlResult = new HtmlString(actionResult),
                                 SortOrder = pageModule.SortOrder
                             });
                             _logger.LogError("Module load exception has been occured", ex);
@@ -102,19 +115,19 @@ namespace Deviser.Core.Library.Controllers
             return actionResults;
         }
 
-        public async Task<string> GetModuleEditResult(ActionContext actionContext, PageModule pageModule, Guid moduleEditActionId)
+        public async Task<string> GetModuleEditResultAsString(ActionContext actionContext, PageModule pageModule, Guid moduleEditActionId)
         {
             string actionResult = string.Empty;
             try
-            {                   
+            {
                 var module = _moduleProvider.Get(pageModule.ModuleId);
                 ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleActionType
                 ModuleContext moduleContext = new ModuleContext();
                 moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleActionType
                 moduleContext.PageModuleId = pageModule.Id;
                 if (module != null && moduleAction != null)
-                {   
-                    actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleAction);
+                {
+                    actionResult = await ExecuteModuleControllerAsString(actionContext, moduleContext, moduleAction);
                     actionResult = $"<div class=\"sd-module-container\" data-module=\"{moduleContext.ModuleInfo.Name}\" data-page-module-id=\"{moduleContext.PageModuleId}\">{actionResult}</div>";
                 }
             }
@@ -126,14 +139,79 @@ namespace Deviser.Core.Library.Controllers
 
             return actionResult;
         }
-        
-        private async Task<string> ExecuteModuleController(ActionContext actionContext, ModuleContext moduleContext, ModuleAction moduleAction)
-        {          
+
+        public async Task<IHtmlContent> GetModuleEditResult(ActionContext actionContext, PageModule pageModule, Guid moduleEditActionId)
+        {
+            IHtmlContent editResult = new HtmlString(string.Empty);
+            try
+            {
+                var module = _moduleProvider.Get(pageModule.ModuleId);
+                ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleActionType
+                ModuleContext moduleContext = new ModuleContext();
+                moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleActionType
+                moduleContext.PageModuleId = pageModule.Id;
+                if (module != null && moduleAction != null)
+                {
+                    
+                    IHtmlContent actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleAction);
+                    editResult = GetModuleResult(actionResult, moduleContext);
+                }
+            }
+            catch (Exception ex)
+            {
+                editResult = new HtmlString("Module load exception has been occured");
+                _logger.LogError("Module load exception has been occured", ex);
+            }
+
+            return editResult;
+        }
+
+        public IHtmlContent GetModuleResult(IHtmlContent actionResult, ModuleContext moduleContext)
+        {
+            var moduleContainer = new TagBuilder("div");
+            moduleContainer.Attributes.Add("class", "sd-module-container");
+            moduleContainer.Attributes.Add("data-module", moduleContext.ModuleInfo.Name);
+            moduleContainer.Attributes.Add("data-page-module-id", moduleContext.PageModuleId.ToString());
+            moduleContainer.InnerHtml.AppendHtml(actionResult);
+            return moduleContainer;
+        }
+
+        private async Task<string> ExecuteModuleControllerAsString(ActionContext actionContext, ModuleContext moduleContext, ModuleAction moduleAction)
+        {
             if (actionContext == null)
             {
                 return null;
             }
-            
+
+            ActionContext moduleActionContext = GetModuleActionContext(actionContext, moduleContext, moduleAction);
+
+            //var invoker = _moduleInvokerProvider.CreateInvoker(moduleActionContext);
+            //var result = await invoker.InvokeAction() as ViewResult;
+            var result = await _actionInvoker.InvokeAction(actionContext.HttpContext, moduleAction, moduleActionContext) as ViewResult;
+
+            string strResult = result.ExecuteResultToString(moduleActionContext);
+            return strResult;
+        }
+
+        private async Task<IHtmlContent> ExecuteModuleController(ActionContext actionContext, ModuleContext moduleContext, ModuleAction moduleAction)
+        {
+            if (actionContext == null)
+            {
+                return null;
+            }
+
+            ActionContext moduleActionContext = GetModuleActionContext(actionContext, moduleContext, moduleAction);
+
+            //var invoker = _moduleInvokerProvider.CreateInvoker(moduleActionContext);
+            //var result = await invoker.InvokeAction() as ViewResult;
+            var result = await _actionInvoker.InvokeAction(actionContext.HttpContext, moduleAction, moduleActionContext) as ViewResult;
+
+            IHtmlContent htmlResult = result.ExecuteResultToHTML(moduleActionContext);
+            return htmlResult;
+        }
+
+        private ActionContext GetModuleActionContext(ActionContext actionContext, ModuleContext moduleContext, ModuleAction moduleAction)
+        {
             RouteContext context = new RouteContext(actionContext.HttpContext);
             context.RouteData = new RouteData();
             context.RouteData.Values.Add("area", moduleContext.ModuleInfo.Name);
@@ -149,15 +227,7 @@ namespace Deviser.Core.Library.Controllers
                 throw new NullReferenceException("Action cannot be located, please check whether module has been installed properly");
 
             var moduleActionContext = new ActionContext(actionContext.HttpContext, context.RouteData, actionDescriptor);
-
-            //var invoker = _moduleInvokerProvider.CreateInvoker(moduleActionContext);
-            //var result = await invoker.InvokeAction() as ViewResult;
-            var result = await _actionInvoker.InvokeAction(actionContext.HttpContext, moduleAction, moduleActionContext) as ViewResult;
-
-
-            string strResult = result.ExecuteResultToString(moduleActionContext);
-            return strResult;
-
+            return moduleActionContext;
         }
     }
 }

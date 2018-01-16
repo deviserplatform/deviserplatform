@@ -129,7 +129,7 @@ namespace Deviser.Core.Library.Test.Controllers
             var pageModule = currentPage.PageModule.First(pm => pm.ModuleId == editModule.Id);
 
             //Act
-            var result = deviserControllerFactory.GetModuleEditResult(actionContext, pageModule, editModuleAction.Id).Result;
+            var result = deviserControllerFactory.GetModuleEditResultAsString(actionContext, pageModule, editModuleAction.Id).Result;
             
             //Assert
             Assert.NotNull(result);
@@ -159,7 +159,7 @@ namespace Deviser.Core.Library.Test.Controllers
             var deviserControllerFactory = new DeviserControllerFactory(container, scopeServiceMock.Object);
 
             //Act
-            var result = deviserControllerFactory.GetModuleEditResult(actionContextMock.Object, new PageModule(), Guid.NewGuid()).Result;
+            var result = deviserControllerFactory.GetModuleEditResultAsString(actionContextMock.Object, new PageModule(), Guid.NewGuid()).Result;
 
             //Assert
             Assert.NotNull(result);

@@ -1,7 +1,8 @@
-﻿@model String
+﻿@model IHtmlContent
 @{ 
     Layout = null;
 }
 <div class="edit-module-container">
-    @Html.Raw(Model)
+    @*@Html.Raw(Model)*@
+    @Model
 </div>

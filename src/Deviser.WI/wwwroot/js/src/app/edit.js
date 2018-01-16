@@ -155,6 +155,7 @@
         vm.changeContentPermission = changeContentPermission;
         vm.saveProperties = saveProperties; 
         vm.setColumnWidth = editLayoutUtil.setColumnWidth;
+        vm.positionPageContents = positionPageContents;
         init();
 
         /////////////////////////////////////////////
@@ -512,7 +513,7 @@
                 unAssignedModules = [];
 
             //First, position elements in correct order and then assign the pageLayout to VM.
-            positionPageContents(pageLayout.placeHolders);
+            vm.positionPageContents(pageLayout.placeHolders);
             vm.pageLayout = pageLayout;
             vm.pageLayout.pageId = vm.currentPage.id;
 
@@ -593,13 +594,13 @@
                             }
 
                             item.placeHolders.push(module);
-                        })
+                        });
                     }
 
                     item.placeHolders = _.sortBy(item.placeHolders, ['sortOrder']);
 
                     if (item.placeHolders) {
-                        positionPageContents(item.placeHolders);
+                        vm.positionPageContents(item.placeHolders);
                     }
                 });
             }

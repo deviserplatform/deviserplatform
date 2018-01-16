@@ -11,8 +11,5 @@
     "gulp-filelog": "^0.4.1",
     "gulp-sass": "^3.1.0",
     "gulp-uglify": "^3.0.0"
-  },
-  "dependencies": {
-    "gulp-cli": "^1.4.0"
   }
 }
