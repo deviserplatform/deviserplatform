@@ -64,6 +64,8 @@
         service.getDeletedPages = getDeletedPages;
         service.restorePage = restorePage;
         service.deletePage = deletePage;
+        service.draftPage = draftPage;
+        service.publishPage = publishPage;
         return service;
 
         ////////////////////////////////
@@ -107,6 +109,28 @@
             var request = $http({
                 method: 'DELETE',
                 url: deleteUrl,
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
+
+        function draftPage(id) {
+            var draftUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/draft/' + id;
+            var request = $http({
+                method: 'POST',
+                url: draftUrl,
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q)
+            });
+        }
+
+        function publishPage(id) {
+            var publishUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/publish/' + id;
+            var request = $http({
+                method: 'POST',
+                url: publishUrl,
             });
             return request.then(handleSuccess, function (response) {
                 return handleError(response, $q)

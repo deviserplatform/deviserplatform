@@ -119,6 +119,44 @@ namespace DeviserWI.Controllers.API
             }
         }
 
+        [HttpPost]
+        [Route("draft/{id}")]
+        public IActionResult DraftPage(Guid id)
+        {
+            try
+            {
+                bool result = pageProvider.DraftPage(id);
+                if (result)
+                    return Ok();
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while drafting the page", ex));
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("publish/{id}")]
+        public IActionResult PublishPage(Guid id)
+        {
+            try
+            {
+                bool result = pageProvider.PublishPage(id);
+                if (result)
+                    return Ok();
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(string.Format("Error occured while publishing the page", ex));
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpPut]
         public IActionResult Put([FromBody] Deviser.Core.Common.DomainTypes.Page page)
         {
@@ -218,5 +256,6 @@ namespace DeviserWI.Controllers.API
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
+      
     }
 }

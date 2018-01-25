@@ -2,7 +2,7 @@
     ViewData["Title"] = "Index";
     //Layout = "~/_Layout.cshtml";
 }
-@*<require type="Script" priority="101" path="~/js/src/app/page-management/app.js"></require>*@
+<require type="Script" priority="101" include="Development" path="~/js/src/app/page-management/app.js"></require>
 
 <div ng-app="deviser.pageMangement" ng-controller="PageManagementCtrl as pmVM">
 
@@ -20,8 +20,8 @@
     </div>
 
 
-    <div class="row transition"> 
-        
+    <div class="row transition">
+
         <div class="col-lg-4">
             <div class="tree-scroll">
                 <!-- Nested list template -->
@@ -29,10 +29,10 @@
                     <div ng-click="pmVM.selectPage(page)" class="tree-node tree-node-content"
                          ng-class="{'selected' : pmVM.selectedItem.id === page.id}">
                         @*<div ui-tree-handle class="draggable-bar-container">
-                        <div class="draggable-bar">
-                            <i class="fa fa-bars"></i>
-                        </div>
-                    </div>*@
+                                <div class="draggable-bar">
+                                    <i class="fa fa-bars"></i>
+                                </div>
+                            </div>*@
 
                         <a class="expander pull-left" ng-click="pmVM.toggle(this)" ng-show="page.childPage.length>0">
                             <!--<span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span>-->
@@ -72,7 +72,7 @@
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
         <div class="col-lg-8" ng-show="pmVM.selectedItem.pageLevel && pmVM.selectedItem.pageLevel!=0">
             <form name="managePage" novalidate>
                 <uib-accordion>
@@ -89,8 +89,8 @@
                                     <div class="col-sm-6">
                                         @*<input type="text" class="form-control" placeholder="Enter page title" value="{{currentLocale}}" ng-model="translation.locale" readonly>*@
                                         @*<select ng-model="pmVM.currentLocale" ng-options="language.cultureCode as language.englishName for language in pmVM.languages" class="form-control" ng-change="pmVM.changeLanguage()">
-                                    <option value="">-- Coose a language --</option>
-                                </select>*@
+                                                <option value="">-- Coose a language --</option>
+                                            </select>*@
                                         <ui-select name="locale" ng-model="pmVM.currentLocale" theme="bootstrap" ng-disabled="lVM.languages.length<=0" ng-change="pmVM.changeLanguage()">
                                             <ui-select-match placeholder="Choose a language">{{$select.selected.englishName}}</ui-select-match>
                                             <ui-select-choices repeat="language.cultureCode as language in pmVM.languages | filter: $select.search">
@@ -98,7 +98,7 @@
                                                 <small ng-bind-html="language.nativeName | highlight: $select.search"></small>
                                             </ui-select-choices>
                                         </ui-select>
-                                    </div> 
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-horizontal edit-page" ng-repeat="translation in pmVM.selectedItem.pageTranslation | selectLanguage:pmVM.currentLocale">
@@ -115,11 +115,11 @@
                                     </div>
                                 </div>
                                 @*<div class="form-group">
-                            <label class="col-sm-2 control-label">Locale</label>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control" placeholder="Enter page title" value="{{currentLocale}}" ng-model="translation.locale" readonly>
-                            </div>
-                        </div>*@
+                                        <label class="col-sm-2 control-label">Locale</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" placeholder="Enter page title" value="{{currentLocale}}" ng-model="translation.locale" readonly>
+                                        </div>
+                                    </div>*@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">Description</label>
                                     <div class="col-sm-6">
@@ -144,8 +144,8 @@
                                         </a>
 
                                         @*<div class="checkbox-list">
-                                    <input type="checkbox" ng-model="">
-                                </div>*@
+                                                <input type="checkbox" ng-model="">
+                                            </div>*@
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -158,11 +158,11 @@
                                         </a>
 
                                         @*<div class="checkbox-list">
-                                    <input type="checkbox" ng-model="pmVM.selectedItem.isIncludedInMenu">
-                                </div>*@
+                                                <input type="checkbox" ng-model="pmVM.selectedItem.isIncludedInMenu">
+                                            </div>*@
                                     </div>
                                 </div>
-                                <div class="form-group"  ng-class="{'has-error': managePage.theme.$invalid && (managePage.theme.$dirty || managePage.$submitted)}">
+                                <div class="form-group" ng-class="{'has-error': managePage.theme.$invalid && (managePage.theme.$dirty || managePage.$submitted)}">
                                     <label class="col-sm-2 control-label">Theme *</label>
                                     <div class="col-sm-6">
                                         <select name="theme" ng-model="pmVM.selectedItem.themeSrc" ng-options="theme.value as theme.key for theme in pmVM.themes" class="form-control" required>
@@ -171,43 +171,43 @@
                                     </div>
                                 </div>
                                 @*<div class="form-group">
-                            <label class="col-sm-2 control-label">Live from</label>
-                            <div class="col-sm-6">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Live from"
-                                           datepicker-popup="{{pmVM.dateFormat}}"
-                                           is-open="pmVM.liveFrom.opened"
-                                           datepicker-options="pmVM.dateOptions"
-                                           date-disabled="pmVM.disabledDatePicker(date, mode)"
-                                           close-text="Close"
-                                           ng-model="pmVM.selectedItem.startDate">
-                                    <span class="input-group-btn">
-                                        <a class="btn btn-default" ng-click="pmVM.openDatePicker($event, pmVM.liveFrom)">
-                                            <i class="glyphicon glyphicon-calendar"></i>
-                                        </a>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">Live till</label>
-                            <div class=" col-sm-6">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Live till"
-                                           datepicker-popup="{{pmVM.dateFormat}}"
-                                           is-open="pmVM.liveTill.opened"
-                                           datepicker-options="pmVM.dateOptions"
-                                           date-disabled="pmVM.disabledDatePicker(date, mode)"
-                                           close-text="Close"
-                                           ng-model="pmVM.selectedItem.endDate">
-                                    <span class="input-group-btn">
-                                        <a class="btn btn-default" ng-click="pmVM.openDatePicker($event, pmVM.liveTill)">
-                                            <i class="glyphicon glyphicon-calendar"></i>
-                                        </a>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>*@
+                                        <label class="col-sm-2 control-label">Live from</label>
+                                        <div class="col-sm-6">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" placeholder="Live from"
+                                                       datepicker-popup="{{pmVM.dateFormat}}"
+                                                       is-open="pmVM.liveFrom.opened"
+                                                       datepicker-options="pmVM.dateOptions"
+                                                       date-disabled="pmVM.disabledDatePicker(date, mode)"
+                                                       close-text="Close"
+                                                       ng-model="pmVM.selectedItem.startDate">
+                                                <span class="input-group-btn">
+                                                    <a class="btn btn-default" ng-click="pmVM.openDatePicker($event, pmVM.liveFrom)">
+                                                        <i class="glyphicon glyphicon-calendar"></i>
+                                                    </a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Live till</label>
+                                        <div class=" col-sm-6">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" placeholder="Live till"
+                                                       datepicker-popup="{{pmVM.dateFormat}}"
+                                                       is-open="pmVM.liveTill.opened"
+                                                       datepicker-options="pmVM.dateOptions"
+                                                       date-disabled="pmVM.disabledDatePicker(date, mode)"
+                                                       close-text="Close"
+                                                       ng-model="pmVM.selectedItem.endDate">
+                                                <span class="input-group-btn">
+                                                    <a class="btn btn-default" ng-click="pmVM.openDatePicker($event, pmVM.liveTill)">
+                                                        <i class="glyphicon glyphicon-calendar"></i>
+                                                    </a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>*@
                             </div>
                         </div>
 

@@ -38,14 +38,22 @@
         </div>
         <div class="col-md-8">
             <div class="row page-layout-name">
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <strong>Page:</strong> @currentPage.PageTranslation.Get().Title
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <strong>Layout:</strong> {{editVM.pageLayout.name}}
                 </div>
-            </div>
-        </div>
+                <div class="col-md-1">
+                    <button class="btn btn-default pull-right" ng-show="editVM.currentPage.state == 'Published'" ng-click="editVM.draft()">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>Draft
+                    </button>
+                 </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-primary" ng-click="editVM.publish()">{{editVM.currentPage.state}}</button>
+                    </div>
+                </div>
+            </div>        
     </div>
 
     <div class="layout-container">

@@ -33,7 +33,8 @@
                 contentEdit: '461b37d9-b801-4235-b74f-0c51f35d170f'
             },
             roles: {
-                administrator: '9b461499-c49e-4398-bfed-4364a176ebbd'
+                administrator: '9b461499-c49e-4398-bfed-4364a176ebbd',
+                allUsers: '086357bf-01b1-494c-a8b8-54fdfa7c4c9e'
             }
 
         };

@@ -135,8 +135,8 @@
 
         vm.alerts = [];
         vm.pageLayout = {};
-        vm.selectedItem = {}
-        vm.deletedElements = [];
+        vm.selectedItem = {};
+        vm.deletedElements = [];       
         vm.layoutAllowedTypes = ["container"];
 
         //Method binding
@@ -156,6 +156,8 @@
         vm.saveProperties = saveProperties; 
         vm.setColumnWidth = editLayoutUtil.setColumnWidth;
         vm.positionPageContents = positionPageContents;
+        vm.draft = draft;
+        vm.publish = publish;
         init();
 
         /////////////////////////////////////////////
@@ -415,6 +417,13 @@
             pageService.get(pageContext.currentPageId)
                 .then(function (data) {
                     vm.currentPage = data;
+                    var permission = _.find(vm.currentPage.pagePermissions, { roleId: globals.appSettings.roles.allUsers });
+
+                    if (permission)
+                        vm.currentPage.state = "Published";                    
+                    else 
+                        vm.currentPage.state = "Publish";
+                                         
                     defer.resolve(data);
                 }, function (error) {
                     showMessage("error", SYS_ERROR_MSG);
@@ -855,6 +864,26 @@
                     content: ""
                 };
             }, globals.appSettings.alertLifeTime);
+        }
+
+        function draft() {
+            pageService.draftPage(vm.currentPage.id).then(function (data) {
+                vm.currentPage.state = "Publish";
+                showMessage("success", "The Page has been drafted.");                
+            }, function (error) {
+                showMessage("error", "Cannot draft the page, please contact the administrator.");
+            });
+        }
+
+        function publish() {
+            if (vm.currentPage.state == 'Publish') {
+                pageService.publishPage(vm.currentPage.id).then(function (data) {
+                    vm.currentPage.state = "Published";
+                    showMessage("success", "The Page has been published.");
+                }, function (error) {
+                    showMessage("error", "Cannot publish the page, please contact the administrator.");
+                });
+            }
         }
     }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Common;
 using Microsoft.Extensions.Logging;
 using Autofac;
 using AutoMapper;
@@ -35,6 +36,8 @@ namespace Deviser.Core.Data.DataProviders
         PageModule RestorePageModule(Guid id);
         bool DeletePageModule(Guid id);
         bool DeletePage(Guid id);
+        bool DraftPage(Guid id);
+        bool PublishPage(Guid id);
     }
 
     public class PageProvider : DataProviderBase, IPageProvider
@@ -186,7 +189,7 @@ namespace Deviser.Core.Data.DataProviders
                     if (result.PageContent != null)
                     {
                         result.PageContent = result.PageContent.Where(pc => !pc.IsDeleted).ToList();
-                    }
+                    }                 
 
                     return Mapper.Map<Page>(result);
                 }
@@ -892,6 +895,58 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
 
+        }
+
+        public bool DraftPage(Guid id)
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var permission = context.PagePermission
+                        .Where(p => p.PageId == id && p.RoleId == Globals.AllUsersRoleId).FirstOrDefault();
+                   
+                    if (permission != null)
+                        context.PagePermission.Remove(permission);
+
+                    context.SaveChanges();
+                    return true;
+                }
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError("Error occured while drafting the page", ex);
+                return false;
+            }            
+        }
+
+        public bool PublishPage(Guid id)
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var permission = context.PagePermission
+                     .Where(p => p.PageId == id && p.RoleId == Globals.AllUsersRoleId).FirstOrDefault();
+
+                    if (permission == null)
+                    {
+                        Entities.PagePermission addpermission = new Entities.PagePermission();
+                        addpermission.PageId = id;
+                        addpermission.PermissionId = Globals.PageViewPermissionId;
+                        addpermission.RoleId = Globals.AllUsersRoleId;                       
+                        context.PagePermission.Add(addpermission);
+                    }                        
+                    context.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while publishing the page", ex);
+                return false;
+            }
+            
         }
     }
 }
