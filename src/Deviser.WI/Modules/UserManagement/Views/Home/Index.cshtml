@@ -2,7 +2,7 @@
     ViewData["Title"] = "Index";
     //Layout = "~/_Layout.cshtml";
 }
-@*<require type="Script" priority="102" path="~/js/src/app/user-management/app.js"></require>*@
+<require type="Script" priority="102" include="Development" path="~/js/src/app/user-management/app.js"></require>
 
 <div ng-app="deviser.userManagement" ng-controller="UserManagementCtrl as umVM">
     <div class="row" ng-show="umVM.message.content">
@@ -16,370 +16,370 @@
             {{umVM.message.content}}
         </div>
     </div>
-        <div class="row" ng-show="umVM.currentViewState == umVM.viewStates.LIST">
-            <div class="col-md-12">
-                <div class="portlet box blue" id="form_wizard_1">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-users"></i> Users
-                        </div>
-                    </div>
-                    <div class="portlet-body form">
-                        <form action="#" class="form-horizontal" id="submit_form" method="POST">
-
-                            <div class="form-body">
-                                <div class="table-toolbar">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="btn-group">
-                                                <a class="btn btn-success" ng-click="umVM.add()"> New user <i class="fa fa-plus"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="table-scrollable">
-                                    <table class="table table-striped table-bordered table-advance table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    First Name
-                                                </th>
-                                                <th class="hidden-xs">
-                                                    Last Name
-                                                </th>
-                                                <th>
-                                                    Email
-                                                </th>
-                                                <th>
-                                                </th>
-                                                <th>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="user in umVM.users">
-                                                <td>
-                                                    {{user.firstName}}
-                                                </td>
-                                                <td class="hidden-xs">
-                                                    {{user.lastName}}
-                                                </td>
-                                                <td>
-                                                    {{user.email}}
-                                                </td>
-                                                <td>
-                                                    <a href="" class="btn btn-default btn-xs" ng-click="umVM.edit(user)">
-                                                        <i class="fa fa-edit"></i> Edit
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    <a href="" class="btn btn-default btn-xs" ng-click="umVM.remove(user)">
-                                                        <i class="fa fa-trash-o"></i> Delete
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                            </div>
-
-                        </form>
+    <div class="row" ng-show="umVM.currentViewState == umVM.viewStates.LIST">
+        <div class="col-md-12">
+            <div class="portlet box blue" id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-users"></i> Users
                     </div>
                 </div>
-            </div>
-        </div>
+                <div class="portlet-body form">
+                    <form action="#" class="form-horizontal" id="submit_form" method="POST">
 
-        <div class="row" ng-show="umVM.currentViewState == umVM.viewStates.EDIT">
-            <div class="col-md-12">
-                <div class="portlet box blue" id="form_wizard_1">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-users"></i> Edit user
-                        </div>
-                    </div>
-                    <div class="portlet-body form">
-                        <ul class="nav nav-tabs">
-                            <li class="active">
-                                <a href="#tab_profile" data-toggle="tab" aria-expanded="true">
-                                    Profile
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="#tab_passwordReset" data-toggle="tab" aria-expanded="false">
-                                    Password Reset
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="#tab_Roles" data-toggle="tab" aria-expanded="false">
-                                    Roles
-                                </a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane fade active in" id="tab_profile">
-                                <form class="form-horizontal" name="editUserForm">
-                                    <div class="form-body">
-                                        <div class="form-group" ng-class="{'has-error':umVM.hasError(editUserForm, 'firstName', 'required')}">
-                                            <label class="col-md-3 control-label">First Name<span class="required" aria-required="true">*</span></label>
-                                            <div class="col-md-4">
-                                                <input type="text" class="form-control" placeholder="Enter first name" name="firstName" ng-model="umVM.selectedUser.firstName" required>
-                                                <p class="help-block" ng-show="umVM.hasError(editUserForm, 'firstName', 'required')">
-                                                    First name is required.
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group" ng-class="{'has-error':umVM.hasError(editUserForm, 'lastName', 'required')}">
-                                            <label class="col-md-3 control-label">Last Name<span class="required" aria-required="true">*</span></label>
-                                            <div class="col-md-4">
-                                                <input type="text" class="form-control" placeholder="Enter last name" name="lastName" ng-model="umVM.selectedUser.lastName" required>
-                                                <p class="help-block" ng-show="umVM.hasError(editUserForm, 'lastName', 'required')">
-                                                    Last name is required.
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-3 control-label">Email Address</label>
-                                            <div class="col-md-4">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-envelope"></i>
-                                                    </span>
-                                                    <input type="email" class="form-control" placeholder="Enter email address" readonly ng-model="umVM.selectedUser.email">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-actions">
-                                        <div class="row">
-                                            <div class="col-md-offset-3 col-md-9">
-                                                <button type="submit" class="btn btn-success" ng-click="umVM.save()">Submit</button>
-                                                <button type="button" class="btn btn-default" ng-click="umVM.cancel()">Cancel</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="tab-pane fade" id="tab_passwordReset">
-                                <form class="form-horizontal" name="passwordResetForm">
-                                    <div class="form-body">
-                                        <div class="form-group" ng-class="{'has-error':umVM.hasError(passwordResetForm, 'currentPassword', 'required')}">
-                                            <label class="col-md-3 control-label">Current Password<span class="required" aria-required="true">*</span></label>
-                                            <div class="col-md-4">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-user"></i>
-                                                    </span>
-                                                    <input type="password" class="form-control" placeholder="Enter current password" name="currentPassword" ng-model="umVM.passwordReset.currentPassword" required>
-                                                </div>
-                                                <p class="help-block" ng-show="umVM.hasError(passwordResetForm, 'currentPassword', 'required')">
-                                                    Current password is required.
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="form-group" ng-class="{'has-error':umVM.hasError(passwordResetForm, 'newPassword', 'required') || newPasswordStrength<=80}">
-                                            <label class="col-md-3 control-label">Password<span class="required" aria-required="true">*</span></label>
-                                            <div class="col-md-4">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-user"></i>
-                                                    </span>
-                                                    <input type="password" class="form-control" placeholder="Enter password" name="newPassword" ng-model="umVM.passwordReset.newPassword" required>
-                                                </div>
-                                                <div ng-password-strength="umVM.passwordReset.newPassword" strength="newPasswordStrength" mode="bootstrap"
-                                                     inner-class="progress-bar"
-                                                     inner-class-prefix="progress-bar-"
-                                                     outter-class-prefix="progress-bar-"></div>
-                                                <p class="help-block" ng-show="umVM.hasError(passwordResetForm, 'newPassword', 'required')">
-                                                    New password is required.
-                                                </p>
-                                                <p class="help-block" ng-show="umVM.hasError(passwordResetForm, 'newPassword', 'required') && newPasswordStrength<=80">
-                                                    New password does not meet the minimum requirement.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-actions">
-                                        <div class="row">
-                                            <div class="col-md-offset-3 col-md-9">
-                                                <button type="submit" class="btn btn-success" ng-click="umVM.resetPassword()">Reset Password</button>
-                                                <button type="button" class="btn btn-default" ng-click="umVM.cancel()">Cancel</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="tab-pane fade" id="tab_Roles">
-                                <div class="form-body">
-                                    <form class="form-horizontal" name="rolesForm">
-                                        <div class="form-group">
-                                            <label class="col-md-3 control-label">Roles</label>
-                                            <div class="col-md-6">
-                                                <ui-select ng-model="umVM.selectedRole" theme="bootstrap" ng-disabled="umVM.roles.length<=0">
-                                                    <ui-select-match placeholder="Select role">{{$select.selected.name}}</ui-select-match>
-                                                    <ui-select-choices repeat="role in umVM.roles | filter: $select.search">
-                                                        <div ng-bind-html="role.name | highlight: $select.search"></div>
-                                                    </ui-select-choices>
-                                                </ui-select>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <a class="btn btn-primary" ng-click="umVM.addRole()" ng-disabled="(umVM.roles.length<=0 || !umVM.selectedRole)">Add Role</a>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="col-md-6 col-md-offset-3">
-                                                <div class="table-scrollable">
-                                                    <table class="table table-striped table-bordered table-advance table-hover">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>
-                                                                    Roles
-                                                                </th>
-                                                                <th>
-
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr ng-repeat="role in umVM.selectedUser.roles">
-                                                                <td>
-                                                                    {{role.name}}
-                                                                </td>
-                                                                <td>
-                                                                    <a href="" class="btn btn-default btn-xs" ng-click="umVM.removeRole(role)">
-                                                                        <i class="fa fa-trash-o"></i> Delete
-                                                                    </a>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-
-
-                            </div>
-                        </div>
-
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row" ng-show="umVM.currentViewState == umVM.viewStates.NEW">
-            <div class="col-md-12">
-                <div class="portlet box blue" id="form_wizard_1">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-user"></i> Add new user
-                        </div>
-                    </div>
-                    <div class="portlet-body form">
-                        <form class="form-horizontal" name="userForm" novalidate>
-                            <div class="form-body">
-                                <div class="form-group" ng-class="{'has-error':umVM.hasError(userForm, 'firstName', 'required')}">
-                                    <label class="col-md-3 control-label">First Name<span class="required" aria-required="true">*</span></label>
-                                    <div class="col-md-4">
-                                        <input type="text" class="form-control" placeholder="Enter first name" name="firstName" ng-model="umVM.newUser.firstName" required>
-                                        <p class="help-block" ng-show="umVM.hasError(userForm, 'firstName', 'required')">
-                                            First name is required.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="form-group" ng-class="{'has-error':umVM.hasError(userForm, 'lastName', 'required')}">
-                                    <label class="col-md-3 control-label">Last Name<span class="required" aria-required="true">*</span></label>
-                                    <div class="col-md-4">
-                                        <input type="text" class="form-control" placeholder="Enter last name" name="lastName" ng-model="umVM.newUser.lastName" required>
-                                        <p class="help-block" ng-show="umVM.hasError(userForm, 'lastName', 'required')">
-                                            Last name is required.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="form-group" ng-class="{'has-error':umVM.hasError(userForm, 'email', 'required') || userForm.email.$error.email}">
-                                    <label class="col-md-3 control-label">Email Address<span class="required" aria-required="true">*</span></label>
-                                    <div class="col-md-4">
-                                        <div class="input-group" style="text-align:left">
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-envelope"></i>
-                                            </span>
-                                            <input type="email" class="form-control" placeholder="Enter email address" name="email"
-                                                   ng-model="umVM.newUser.email" ng-blur="umVM.checkUserExist(umVM.newUser.email)" required>
-                                            <span class="input-group-btn" ng-show="!umVM.isUserExist">
-                                                <a href="javascript:;" class="btn btn-success" id="username1_checker">
-                                                    <i class="fa fa-check"></i> Avaliable
-                                                </a>
-                                            </span>
-                                            <span class="input-group-btn" ng-show="umVM.isUserExist">
-                                                <a href="javascript:;" class="btn btn-danger" id="username1_checker">
-                                                    <i class="fa fa-times"></i> Not available
-                                                </a>
-                                            </span>
-                                        </div>
-
-                                        <p class="help-block" ng-show="umVM.hasError(userForm, 'email', 'required')">
-                                            Email is required.
-                                        </p>
-                                        <p class="help-block" ng-show="umVM.hasError(userForm, 'email', 'email')">
-                                            Invalid email address.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="form-group" ng-class="{'has-error':umVM.hasError(userForm, 'password', 'required') || passStrength<=80}">
-                                    <label class="col-md-3 control-label">Password<span class="required" aria-required="true">*</span></label>
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-user"></i>
-                                            </span>
-                                            <input type="password" class="form-control" placeholder="Enter password" name="password" ng-model="umVM.newUser.password" required>
-                                        </div>
-                                        @*<div ng-password-strength="umVM.newUser.password" strength="passStrength" mode="bootstrap"
-                                            inner-class="progress-bar"
-                                            inner-class-prefix="progress-bar-"
-                                            outter-class-prefix="progress-bar-"></div>*@
-                                        <p class="help-block" ng-show="umVM.hasError(userForm, 'password', 'required')">
-                                            Password is required.
-                                        </p>
-                                        <p class="help-block" ng-show="umVM.hasError(userForm, 'password', 'required') && passStrength<=80">
-                                            Password does not meet the minimum requirement.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="form-group" ng-class="{'has-error':umVM.hasError(userForm, 'passwordConfirm', 'required') || umVM.newUser.password !== umVM.newUser.passwordConfirm}">
-                                    <label class="col-md-3 control-label">Re-enter password<span class="required" aria-required="true">*</span></label>
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-user"></i>
-                                            </span>
-                                            <input type="password" class="form-control" placeholder="Re-enter password" name="passwordConfirm" ng-model="umVM.newUser.passwordConfirm" required>
-                                        </div>
-                                        <p class="help-block" ng-show="umVM.hasError(userForm, 'passwordConfirm', 'required')">
-                                            Re-enter password.
-                                        </p>
-                                        <p class="help-block" ng-show="umVM.newUser.password !== umVM.newUser.passwordConfirm">
-                                            Password must match.
-                                        </p>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-actions">
+                        <div class="form-body">
+                            <div class="table-toolbar">
                                 <div class="row">
-                                    <div class="col-md-offset-3 col-md-9">
-                                        <button type="submit" class="btn btn-success" ng-click="umVM.save()">Submit</button>
-                                        <button type="button" class="btn btn-default" ng-click="umVM.cancel()">Cancel</button>
+                                    <div class="col-md-6">
+                                        <div class="btn-group">
+                                            <a class="btn btn-success" ng-click="umVM.add()"> New user <i class="fa fa-plus"></i></a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </form>
-                    </div>
+                            <div class="table-scrollable">
+                                <table class="table table-striped table-bordered table-advance table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                First Name
+                                            </th>
+                                            <th class="hidden-xs">
+                                                Last Name
+                                            </th>
+                                            <th>
+                                                Email
+                                            </th>
+                                            <th>
+                                            </th>
+                                            <th>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="user in umVM.users">
+                                            <td>
+                                                {{user.firstName}}
+                                            </td>
+                                            <td class="hidden-xs">
+                                                {{user.lastName}}
+                                            </td>
+                                            <td>
+                                                {{user.email}}
+                                            </td>
+                                            <td>
+                                                <a href="" class="btn btn-default btn-xs" ng-click="umVM.edit(user)">
+                                                    <i class="fa fa-edit"></i> Edit
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="" class="btn btn-default btn-xs" ng-click="umVM.remove(user)">
+                                                    <i class="fa fa-trash-o"></i> Delete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </form>
                 </div>
             </div>
         </div>
-
     </div>
+
+    <div class="row" ng-show="umVM.currentViewState == umVM.viewStates.EDIT">
+        <div class="col-md-12">
+            <div class="portlet box blue" id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-users"></i> Edit user
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#tab_profile" data-toggle="tab" aria-expanded="true">
+                                Profile
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#tab_passwordReset" data-toggle="tab" aria-expanded="false">
+                                Password Reset
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#tab_Roles" data-toggle="tab" aria-expanded="false">
+                                Roles
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade active in" id="tab_profile">
+                            <form class="form-horizontal" name="editUserForm">
+                                <div class="form-body">
+                                    <div class="form-group" ng-class="{'has-error':umVM.hasError(editUserForm, 'firstName', 'required')}">
+                                        <label class="col-md-3 control-label">First Name<span class="required" aria-required="true">*</span></label>
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" placeholder="Enter first name" name="firstName" ng-model="umVM.selectedUser.firstName" required>
+                                            <p class="help-block" ng-show="umVM.hasError(editUserForm, 'firstName', 'required')">
+                                                First name is required.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-class="{'has-error':umVM.hasError(editUserForm, 'lastName', 'required')}">
+                                        <label class="col-md-3 control-label">Last Name<span class="required" aria-required="true">*</span></label>
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control" placeholder="Enter last name" name="lastName" ng-model="umVM.selectedUser.lastName" required>
+                                            <p class="help-block" ng-show="umVM.hasError(editUserForm, 'lastName', 'required')">
+                                                Last name is required.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Email Address</label>
+                                        <div class="col-md-4">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-envelope"></i>
+                                                </span>
+                                                <input type="email" class="form-control" placeholder="Enter email address" readonly ng-model="umVM.selectedUser.email">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-md-offset-3 col-md-9">
+                                            <button type="submit" class="btn btn-success" ng-click="umVM.save()">Submit</button>
+                                            <button type="button" class="btn btn-default" ng-click="umVM.cancel()">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="tab_passwordReset">
+                            <form class="form-horizontal" name="passwordResetForm">
+                                <div class="form-body">
+                                    <div class="form-group" ng-class="{'has-error':umVM.hasError(passwordResetForm, 'currentPassword', 'required')}">
+                                        <label class="col-md-3 control-label">Current Password<span class="required" aria-required="true">*</span></label>
+                                        <div class="col-md-4">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-user"></i>
+                                                </span>
+                                                <input type="password" class="form-control" placeholder="Enter current password" name="currentPassword" ng-model="umVM.passwordReset.currentPassword" required>
+                                            </div>
+                                            <p class="help-block" ng-show="umVM.hasError(passwordResetForm, 'currentPassword', 'required')">
+                                                Current password is required.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-class="{'has-error':umVM.hasError(passwordResetForm, 'newPassword', 'required') || newPasswordStrength<=80}">
+                                        <label class="col-md-3 control-label">Password<span class="required" aria-required="true">*</span></label>
+                                        <div class="col-md-4">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-user"></i>
+                                                </span>
+                                                <input type="password" class="form-control" placeholder="Enter password" name="newPassword" ng-model="umVM.passwordReset.newPassword" required>
+                                            </div>
+                                            <div ng-password-strength="umVM.passwordReset.newPassword" strength="newPasswordStrength" mode="bootstrap"
+                                                 inner-class="progress-bar"
+                                                 inner-class-prefix="progress-bar-"
+                                                 outter-class-prefix="progress-bar-"></div>
+                                            <p class="help-block" ng-show="umVM.hasError(passwordResetForm, 'newPassword', 'required')">
+                                                New password is required.
+                                            </p>
+                                            <p class="help-block" ng-show="umVM.hasError(passwordResetForm, 'newPassword', 'required') && newPasswordStrength<=80">
+                                                New password does not meet the minimum requirement.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-md-offset-3 col-md-9">
+                                            <button type="submit" class="btn btn-success" ng-click="umVM.resetPassword()">Reset Password</button>
+                                            <button type="button" class="btn btn-default" ng-click="umVM.cancel()">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="tab_Roles">
+                            <div class="form-body">
+                                <form class="form-horizontal" name="rolesForm">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Roles</label>
+                                        <div class="col-md-6">
+                                            <ui-select ng-model="umVM.selectedRole" theme="bootstrap" ng-disabled="umVM.roles.length<=0">
+                                                <ui-select-match placeholder="Select role">{{$select.selected.name}}</ui-select-match>
+                                                <ui-select-choices repeat="role in umVM.roles | filter: $select.search">
+                                                    <div ng-bind-html="role.name | highlight: $select.search"></div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a class="btn btn-primary" ng-click="umVM.addRole()" ng-disabled="(umVM.roles.length<=0 || !umVM.selectedRole)">Add Role</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-6 col-md-offset-3">
+                                            <div class="table-scrollable">
+                                                <table class="table table-striped table-bordered table-advance table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>
+                                                                Roles
+                                                            </th>
+                                                            <th>
+
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="role in umVM.selectedUser.roles">
+                                                            <td>
+                                                                {{role.name}}
+                                                            </td>
+                                                            <td>
+                                                                <a href="" class="btn btn-default btn-xs" ng-click="umVM.removeRole(role)">
+                                                                    <i class="fa fa-trash-o"></i> Delete
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-show="umVM.currentViewState == umVM.viewStates.NEW">
+        <div class="col-md-12">
+            <div class="portlet box blue" id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i> Add new user
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <form class="form-horizontal" name="userForm" novalidate>
+                        <div class="form-body">
+                            <div class="form-group" ng-class="{'has-error':umVM.hasError(userForm, 'firstName', 'required')}">
+                                <label class="col-md-3 control-label">First Name<span class="required" aria-required="true">*</span></label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" placeholder="Enter first name" name="firstName" ng-model="umVM.newUser.firstName" required>
+                                    <p class="help-block" ng-show="umVM.hasError(userForm, 'firstName', 'required')">
+                                        First name is required.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-class="{'has-error':umVM.hasError(userForm, 'lastName', 'required')}">
+                                <label class="col-md-3 control-label">Last Name<span class="required" aria-required="true">*</span></label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" placeholder="Enter last name" name="lastName" ng-model="umVM.newUser.lastName" required>
+                                    <p class="help-block" ng-show="umVM.hasError(userForm, 'lastName', 'required')">
+                                        Last name is required.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-class="{'has-error':umVM.hasError(userForm, 'email', 'required') || userForm.email.$error.email}">
+                                <label class="col-md-3 control-label">Email Address<span class="required" aria-required="true">*</span></label>
+                                <div class="col-md-4">
+                                    <div class="input-group" style="text-align:left">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-envelope"></i>
+                                        </span>
+                                        <input type="email" class="form-control" placeholder="Enter email address" name="email"
+                                               ng-model="umVM.newUser.email" ng-blur="umVM.checkUserExist(umVM.newUser.email)" required>
+                                        <span class="input-group-btn" ng-show="!umVM.isUserExist">
+                                            <a href="javascript:;" class="btn btn-success" id="username1_checker">
+                                                <i class="fa fa-check"></i> Avaliable
+                                            </a>
+                                        </span>
+                                        <span class="input-group-btn" ng-show="umVM.isUserExist">
+                                            <a href="javascript:;" class="btn btn-danger" id="username1_checker">
+                                                <i class="fa fa-times"></i> Not available
+                                            </a>
+                                        </span>
+                                    </div>
+
+                                    <p class="help-block" ng-show="umVM.hasError(userForm, 'email', 'required')">
+                                        Email is required.
+                                    </p>
+                                    <p class="help-block" ng-show="umVM.hasError(userForm, 'email', 'email')">
+                                        Invalid email address.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-class="{'has-error':umVM.hasError(userForm, 'password', 'required') || passStrength<=80}">
+                                <label class="col-md-3 control-label">Password<span class="required" aria-required="true">*</span></label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-user"></i>
+                                        </span>
+                                        <input type="password" class="form-control" placeholder="Enter password" name="password" ng-model="umVM.newUser.password" required>
+                                    </div>
+                                    @*<div ng-password-strength="umVM.newUser.password" strength="passStrength" mode="bootstrap"
+                                        inner-class="progress-bar"
+                                        inner-class-prefix="progress-bar-"
+                                        outter-class-prefix="progress-bar-"></div>*@
+                                    <p class="help-block" ng-show="umVM.hasError(userForm, 'password', 'required')">
+                                        Password is required.
+                                    </p>
+                                    <p class="help-block" ng-show="umVM.hasError(userForm, 'password', 'required') && passStrength<=80">
+                                        Password does not meet the minimum requirement.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-class="{'has-error':umVM.hasError(userForm, 'passwordConfirm', 'required') || umVM.newUser.password !== umVM.newUser.passwordConfirm}">
+                                <label class="col-md-3 control-label">Re-enter password<span class="required" aria-required="true">*</span></label>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-user"></i>
+                                        </span>
+                                        <input type="password" class="form-control" placeholder="Re-enter password" name="passwordConfirm" ng-model="umVM.newUser.passwordConfirm" required>
+                                    </div>
+                                    <p class="help-block" ng-show="umVM.hasError(userForm, 'passwordConfirm', 'required')">
+                                        Re-enter password.
+                                    </p>
+                                    <p class="help-block" ng-show="umVM.newUser.password !== umVM.newUser.passwordConfirm">
+                                        Password must match.
+                                    </p>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <button type="submit" class="btn btn-success" ng-click="umVM.save()">Submit</button>
+                                    <button type="button" class="btn btn-default" ng-click="umVM.cancel()">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

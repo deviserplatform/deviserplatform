@@ -3,7 +3,7 @@
     //Layout = "~/_Layout.cshtml";
 }
 
-@*<require type="Script" priority="106" path="~/js/src/app/content-management/layoutTypes.js"></require>*@
+<require type="Script" priority="106" include="Development" path="~/js/src/app/content-management/layoutTypes.js"></require>
 
 <div ng-app="deviser.layoutTypes" ng-controller="LayoutTypesCtrl as ltVM">
     <div class="row" ng-show="ltVM.message.content">
@@ -18,187 +18,187 @@
         </div>
     </div>
 
-        <div class="row" ng-show="ltVM.currentViewState == ltVM.viewStates.LIST">
-            <div class="col-md-12">
-                <div class="portlet box blue" id="form_wizard_1">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-columns"></i> Layout Types
-                        </div>
-                    </div>
-                    <div class="portlet-body form">
-                        <form action="#" class="form-horizontal" id="submit_form" method="POST">
-
-                            <div class="form-body">
-                                <div class="table-toolbar">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="btn-group">
-                                                <a class="btn btn-success" ng-click="ltVM.newContentType()"><i class="fa fa-plus"></i> New </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="table-scrollable">
-                                    <table class="table table-striped table-bordered table-advance table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    Label
-                                                </th>
-                                                <th>
-                                                    Name
-                                                </th>
-                                                <th>
-                                                    Edit
-                                                </th>
-                                                <th>
-                                                    Is Active
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="layoutType in ltVM.layoutTypes">
-                                                <td>
-                                                    <i class="{{layoutType.iconClass}}"></i>
-                                                    {{layoutType.label}}
-                                                </td>
-                                                <td>
-                                                    {{layoutType.name}}
-                                                </td>
-                                                <td>
-                                                    <a href="" class="btn btn-default btn-xs" ng-click="ltVM.edit(layoutType)">
-                                                        <i class="fa fa-edit"></i> Edit
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    <input type="checkbox" ng-model="layoutType.isActive" ng-click="ltVM.activate(layoutType)" />
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                            </div>
-
-                        </form>
+    <div class="row" ng-show="ltVM.currentViewState == ltVM.viewStates.LIST">
+        <div class="col-md-12">
+            <div class="portlet box blue" id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-columns"></i> Layout Types
                     </div>
                 </div>
-            </div>
-        </div>
+                <div class="portlet-body form">
+                    <form action="#" class="form-horizontal" id="submit_form" method="POST">
 
-        <div class="row" ng-show="ltVM.currentViewState == ltVM.viewStates.NEW || ltVM.currentViewState == ltVM.viewStates.EDIT">
-            <div class="col-md-12">
-                <div class="portlet box blue" id="form_wizard_1">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-columns"></i> Layout Types
-                        </div>
-                    </div>
-                    <div class="portlet-body form">
-                        <form class="form-horizontal" name="layoutForm" novalidate>
-                            <div class="form-body">
-                                <div class="form-group" ng-class="{'has-error':ltVM.hasError(layoutForm, 'label', 'required')}">
-                                    <label class="col-md-3 control-label">Label</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" name="label" ng-model="ltVM.selectedLayoutType.label" required />
-                                    </div>
-                                </div>
-                                <div class="form-group"
-                                     ng-class="{'has-error': (ltVM.hasError(layoutForm, 'label', 'required') || !ltVM.isValidName(ltVM.selectedLayoutType.name)) &&
-                                 ltVM.currentViewState == ltVM.viewStates.NEW }">
-                                    <label class="col-md-3 control-label">Name</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control"
-                                               name="name"
-                                               ng-model="ltVM.selectedLayoutType.name"
-                                               ng-disabled="ltVM.currentViewState == ltVM.viewStates.EDIT"
-                                               sd-to-lower-case />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Icon Class</label>
-                                    <div class="col-md-6">
-                                        <input class="form-control" ng-model="ltVM.selectedLayoutType.iconClass" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Allowed Layout Types</label>
-                                    <div class="col-md-6">
-
-                                        <ui-select multiple ng-model="ltVM.selectedLayoutType.allowedLayoutTypes" theme="bootstrap" ng-disabled="lVM.layoutTypes.length<=0">
-                                            <ui-select-match placeholder="Select Layout Type">{{$item.label}}</ui-select-match>
-                                            <ui-select-choices repeat="layoutType in ltVM.layoutTypes | filter: $select.search">
-                                                <div ng-bind-html="layoutType.label | highlight: $select.search"></div>
-                                            </ui-select-choices>
-                                        </ui-select>
-
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Properties</label>
-                                    <div class="col-md-6">
-                                        <ui-select tagging="ltVM.propertyTransform" ng-model="ltVM.selectedProperty" theme="bootstrap" ng-disabled="ltVM.properties.length<=0">
-                                            <ui-select-match placeholder="Select property">{{$select.selected.label}}</ui-select-match>
-                                            <ui-select-choices repeat="property in ltVM.properties | filter: $select.search">
-                                                <div ng-if="property.isTag" ng-bind-html="(property.label | highlight: $select.search) +' (New Property)'"></div>
-                                                <div ng-if="!property.isTag" ng-bind-html="property.label | highlight: $select.search"></div>
-                                            </ui-select-choices>
-                                        </ui-select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <a class="btn btn-primary" ng-click="ltVM.addProperty()" ng-disabled="(ltVM.properties.length<=0 || !ltVM.selectedProperty || ltVM.isPropExist())">Add Property</a>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-md-6 col-md-offset-3">
-                                        <div class="table-scrollable">
-                                            <table class="table table-striped table-bordered table-advance table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>
-                                                            Label
-                                                        </th>
-                                                        <th>
-                                                            Name
-                                                        </th>
-                                                        <th>
-
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr ng-repeat="property in ltVM.selectedLayoutType.properties">
-                                                        <td>
-                                                            {{property.label}}
-                                                        </td>
-                                                        <td>
-                                                            {{property.name}}
-                                                        </td>
-                                                        <td>
-                                                            <a href="" class="btn btn-default btn-xs" ng-click="ltVM.removeProperty(property)">
-                                                                <i class="fa fa-trash-o"></i> Delete
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-actions">
+                        <div class="form-body">
+                            <div class="table-toolbar">
                                 <div class="row">
-                                    <div class="col-md-offset-3 col-md-9">
-                                        <button type="submit" class="btn btn-success" ng-click="ltVM.save()" ng-disabled="!ltVM.selectedLayoutType">Save</button>
-                                        <button type="button" class="btn btn-default" ng-click="ltVM.cancel()">Cancel</button>
+                                    <div class="col-md-6">
+                                        <div class="btn-group">
+                                            <a class="btn btn-success" ng-click="ltVM.newContentType()"><i class="fa fa-plus"></i> New </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </form>
-                    </div>
+                            <div class="table-scrollable">
+                                <table class="table table-striped table-bordered table-advance table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Label
+                                            </th>
+                                            <th>
+                                                Name
+                                            </th>
+                                            <th>
+                                                Edit
+                                            </th>
+                                            <th>
+                                                Is Active
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="layoutType in ltVM.layoutTypes">
+                                            <td>
+                                                <i class="{{layoutType.iconClass}}"></i>
+                                                {{layoutType.label}}
+                                            </td>
+                                            <td>
+                                                {{layoutType.name}}
+                                            </td>
+                                            <td>
+                                                <a href="" class="btn btn-default btn-xs" ng-click="ltVM.edit(layoutType)">
+                                                    <i class="fa fa-edit"></i> Edit
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" ng-model="layoutType.isActive" ng-click="ltVM.activate(layoutType)" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </form>
                 </div>
             </div>
         </div>
-
     </div>
+
+    <div class="row" ng-show="ltVM.currentViewState == ltVM.viewStates.NEW || ltVM.currentViewState == ltVM.viewStates.EDIT">
+        <div class="col-md-12">
+            <div class="portlet box blue" id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-columns"></i> Layout Types
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <form class="form-horizontal" name="layoutForm" novalidate>
+                        <div class="form-body">
+                            <div class="form-group" ng-class="{'has-error':ltVM.hasError(layoutForm, 'label', 'required')}">
+                                <label class="col-md-3 control-label">Label</label>
+                                <div class="col-md-6">
+                                    <input class="form-control" name="label" ng-model="ltVM.selectedLayoutType.label" required />
+                                </div>
+                            </div>
+                            <div class="form-group"
+                                 ng-class="{'has-error': (ltVM.hasError(layoutForm, 'label', 'required') || !ltVM.isValidName(ltVM.selectedLayoutType.name)) &&
+                                 ltVM.currentViewState == ltVM.viewStates.NEW }">
+                                <label class="col-md-3 control-label">Name</label>
+                                <div class="col-md-6">
+                                    <input class="form-control"
+                                           name="name"
+                                           ng-model="ltVM.selectedLayoutType.name"
+                                           ng-disabled="ltVM.currentViewState == ltVM.viewStates.EDIT"
+                                           sd-to-lower-case />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Icon Class</label>
+                                <div class="col-md-6">
+                                    <input class="form-control" ng-model="ltVM.selectedLayoutType.iconClass" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Allowed Layout Types</label>
+                                <div class="col-md-6">
+
+                                    <ui-select multiple ng-model="ltVM.selectedLayoutType.allowedLayoutTypes" theme="bootstrap" ng-disabled="lVM.layoutTypes.length<=0">
+                                        <ui-select-match placeholder="Select Layout Type">{{$item.label}}</ui-select-match>
+                                        <ui-select-choices repeat="layoutType in ltVM.layoutTypes | filter: $select.search">
+                                            <div ng-bind-html="layoutType.label | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Properties</label>
+                                <div class="col-md-6">
+                                    <ui-select tagging="ltVM.propertyTransform" ng-model="ltVM.selectedProperty" theme="bootstrap" ng-disabled="ltVM.properties.length<=0">
+                                        <ui-select-match placeholder="Select property">{{$select.selected.label}}</ui-select-match>
+                                        <ui-select-choices repeat="property in ltVM.properties | filter: $select.search">
+                                            <div ng-if="property.isTag" ng-bind-html="(property.label | highlight: $select.search) +' (New Property)'"></div>
+                                            <div ng-if="!property.isTag" ng-bind-html="property.label | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                                <div class="col-md-3">
+                                    <a class="btn btn-primary" ng-click="ltVM.addProperty()" ng-disabled="(ltVM.properties.length<=0 || !ltVM.selectedProperty || ltVM.isPropExist())">Add Property</a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-md-offset-3">
+                                    <div class="table-scrollable">
+                                        <table class="table table-striped table-bordered table-advance table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        Label
+                                                    </th>
+                                                    <th>
+                                                        Name
+                                                    </th>
+                                                    <th>
+
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="property in ltVM.selectedLayoutType.properties">
+                                                    <td>
+                                                        {{property.label}}
+                                                    </td>
+                                                    <td>
+                                                        {{property.name}}
+                                                    </td>
+                                                    <td>
+                                                        <a href="" class="btn btn-default btn-xs" ng-click="ltVM.removeProperty(property)">
+                                                            <i class="fa fa-trash-o"></i> Delete
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <button type="submit" class="btn btn-success" ng-click="ltVM.save()" ng-disabled="!ltVM.selectedLayoutType">Save</button>
+                                    <button type="button" class="btn btn-default" ng-click="ltVM.cancel()">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
