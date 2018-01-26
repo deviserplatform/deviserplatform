@@ -2,8 +2,8 @@
     ViewData["Title"] = "Index";
     //Layout = "~/_Layout.cshtml";
 }
+<require type="Script" include="Development" priority="106" path="~/js/src/app/content-management/contentType.js"></require>
 
-<require type="Script" priority="106" include="Development" path="~/js/src/app/content-management/contentType.js"></require>
 
 <div ng-app="deviser.contentTypes" ng-controller="ContentTypesCtrl as ctVM">
     <div class="row" ng-show="ctVM.message.content">
@@ -109,11 +109,12 @@
                                  ctVM.currentViewState == ctVM.viewStates.NEW }">
                                 <label class="col-md-3 control-label">Name</label>
                                 <div class="col-md-6">
-                                    <input class="form-control"
+                                    <input sd-alphabets-only class="form-control"
                                            name="name"
                                            ng-model="ctVM.selectedContentType.name"
+                                            ng-trim ="true"
                                            ng-disabled="ctVM.currentViewState == ctVM.viewStates.EDIT"
-                                           sd-to-lower-case />
+                                            />
                                 </div>
                             </div>
 
