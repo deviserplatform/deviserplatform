@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Contact";
+}
+<require type="Script" priority="109" path="~/lib/angular/angular.js"></require>
+<require type="Script" priority="110" path="~/js/src/app/config.js"></require>
+<require type="Script" priority="111" path="~/js/src/app/contact/contact.js"></require>
+
+<div ng-app="deviser.contact" ng-controller="ContactCtrl as cVM">
+    <div class="row" ng-show="cVM.message.content">
+        <div class="alert alert-dismissable" ng-class="{'alert-danger':cVM.message.messageType=='error',
+                            'alert-info':cVM.message.messageType=='info',
+                            'alert-success':cVM.message.messageType=='success',
+                            'alert-warning':cVM.message.messageType=='warning'}" role="alert">
+            <button type="button" class="close" ng-click="cVM.message = {}">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+            {{cVM.message.content}}
+        </div>
+    </div>
+
+    <form name="ContactForm" role="form" novalidate>
+        <h2><b>@ViewData["Title"]</b></h2>
+        <br />
+        <div class="form-group">
+            <label>FirstName *</label>
+            <input type="text" id="FirstName" name="FirstName" ng-model="cVM.form.FirstName"  maxlength="50" class="form-control" placeholder="Enter Your First Name" required />
+            <span ng-show="ContactForm.FirstName.$error.required && ContactForm.FirstName.$touched">Please enter your first name!</span>
+        </div>
+        <div class="form-group">
+            <label>LastName *</label>
+            <input type="text" id="LastName" name="LastName" ng-model="cVM.form.LastName"  maxlength="50" class="form-control" placeholder="Enter Your Last Name" required />
+            <span ng-show="ContactForm.LastName.$error.required && ContactForm.LastName.$touched">Please enter your last name!</span>
+        </div>
+        <div class="form-group">
+            <label>Email *</label>
+            <input type="text" id="Email" name="Email" ng-pattern="/^[^\s@@]+@@[^\s@@]+\.[^\s@@]{2,}$/" 
+                   ng-model="cVM.form.Email"  maxlength="50"
+                   autocomplete="off" placeholder="Enter Your Mail id" class="form-control" required />
+            <span ng-show="ContactForm.Email.$error.pattern || ContactForm.LastName.$touched">Invalid Email!</span>
+        </div>
+        <div class="form-group">
+            <label>Company</label>
+            <input type="text" id="Company" name="Company"  
+                   ng-model="cVM.form.Company" maxlength="50"
+                   class="form-control" placeholder="Enter Your Company Name" />
+        </div>
+        <div class="form-group">
+            <label>Message</label>
+            <textarea id="Message" name="Message" 
+                      ng-model="cVM.form.Message" maxlength="300"
+                      class="form-control" placeholder="Enter Your Message"></textarea>
+        </div>
+        <br />
+        <input type="submit" class="btn btn-primary" value="Send" />
+    </form>
+
+
+    
+</div>
