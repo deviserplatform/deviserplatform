@@ -9,6 +9,21 @@ namespace Deviser.WI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Contact",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedBy = table.Column<Guid>(nullable: true),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    Data = table.Column<string>(nullable: false),
+                    PageModuleId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Contact", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ContentDataType",
                 columns: table => new
                 {
@@ -853,6 +868,9 @@ namespace Deviser.WI.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Contact");
 
             migrationBuilder.DropTable(
                 name: "ContentPermission");
