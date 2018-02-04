@@ -7,7 +7,7 @@
 
     app.directive('sdNumberOnly', sdNumberOnlyDir);
 
-    app.directive('sdToLowerCase', sdToLowerCaseDir);
+    app.directive('sdAlphabetsOnly', sdAlphabetsOnlyDir);
 
     app.directive("sdEdit", ['$compile', '$templateCache', sdContenteditable]);
 
@@ -54,7 +54,7 @@
         }
     }
 
-    function sdToLowerCaseDir() {
+    function sdAlphabetsOnlyDir() {
         var returnObject = {
             require: 'ngModel',
             link: link
@@ -65,7 +65,8 @@
 
             modelCtrl.$parsers.push(function (inputValue) {
                 if (inputValue == undefined) return '';
-                var transformedInput = inputValue.toLowerCase();
+               
+                var transformedInput = inputValue.replace(/[^a-z]/g, '');
                 if (transformedInput != inputValue) {
                     modelCtrl.$setViewValue(transformedInput);
                     modelCtrl.$render();

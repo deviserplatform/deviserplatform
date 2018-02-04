@@ -23,6 +23,7 @@
     "metisMenu": "~2.5.2",
     "ng-file-upload": "~12.0.4",
     "simple-line-icons": "~2.3.1",
+    "swiper": "^4.1.0",
     "textAngular": "1.5.5"
   },
   "resolutions": {

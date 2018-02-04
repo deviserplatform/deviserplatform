@@ -354,6 +354,15 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Role).WithMany(p => p.ContentPermissions).HasForeignKey(d => d.RoleId).OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<Contact>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.PageModuleId).IsRequired();
+                entity.Property(e => e.Data).IsRequired();
+                entity.Property(e => e.CreatedOn).IsRequired();
+                entity.Property(e => e.CreatedBy);
+            });
+
             modelBuilder.Entity<sysdiagrams>(entity =>
             {
                 entity.HasKey(e => e.diagram_id)

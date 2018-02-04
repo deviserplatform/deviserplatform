@@ -6345,6 +6345,10 @@ body.page-edit {
   body.page-edit .alert {
     top: 50px;
     z-index: 10; }
+  body.page-edit .edit-top-bar {
+    background: #f5f5f5;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd; }
   body.page-edit .box {
     margin-bottom: 20px;
     background-color: #fff;
@@ -6596,7 +6600,9 @@ div.form-horizontal .control-label {
   text-align: left; }
 
 .page-layout-name {
-  margin-top: 20px; }
+  margin-top: 12px; }
+  .page-layout-name .col-md-5 {
+    padding: 8px; }
 
 /*Layout Designer*/
 .layout-designer-container {

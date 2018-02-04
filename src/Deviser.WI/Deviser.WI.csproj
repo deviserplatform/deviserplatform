@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Deviser.Modules.Contact\Deviser.Modules.ContactForm.csproj" />
     <ProjectReference Include="..\Deviser.Core\Deviser.Core.Common\Deviser.Core.Common.csproj" />
     <ProjectReference Include="..\Deviser.Core\Deviser.Core.Data\Deviser.Core.Data.csproj" />
     <ProjectReference Include="..\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj" />
