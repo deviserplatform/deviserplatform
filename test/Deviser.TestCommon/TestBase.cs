@@ -11,7 +11,6 @@ using System.Linq;
 using Deviser.Core.Data;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Library.Modules;
-using Deviser.WI.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -27,6 +26,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.Reflection;
 using Deviser.Core.Library.Internal;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Deviser.Core.Library.Infrastructure;
 
 namespace Deviser.TestCommon
 {

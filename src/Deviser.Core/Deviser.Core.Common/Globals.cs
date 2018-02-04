@@ -15,6 +15,8 @@ namespace Deviser.Core.Common
         public const string glbHostThemeFolder = "_default";
 
         public const string moduleRoute = "moduleRoute";
+        
+        public const string InstallConfigFile = "installconfig.json";
 
         public static string HostMapPath
         {

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Deviser.Core.Data.DataProviders
 {
 
-    public interface IPageProvider
+    public interface IPageProvider : IDataProviderBase
     {
         Page GetPageTree();
         List<Page> GetPages();

@@ -1,0 +1,242 @@
+﻿@model Deviser.Core.Common.DomainTypes.InstallModel
+
+@{
+    Layout = "_InstallLayout";
+    ViewData["Title"] = "Installation";
+}
+
+<h2>Deviser Platform - Installation</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="AdminEmail" class="control-label"></label>
+                <input asp-for="AdminEmail" class="form-control" />
+                <span asp-validation-for="AdminEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdminPassword" class="control-label"></label>
+                <input asp-for="AdminPassword" class="form-control" />
+                <span asp-validation-for="AdminPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdminConfirmPassword" class="control-label"></label>
+                <input asp-for="AdminConfirmPassword" class="form-control" />
+                <span asp-validation-for="AdminConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SiteName" class="control-label"></label>
+                <input asp-for="SiteName" class="form-control" />
+                <span asp-validation-for="SiteName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DatabaseProvider" class="control-label"></label>
+                <select asp-for="DatabaseProvider" class="form-control">
+                    <option value="1">SQL Server LocalDb</option>
+                    <option value="2">SQL Server</option>
+                    <option value="3">SQLite</option>
+                    <option value="4">PostgreSQL</option>
+                </select>
+            </div>
+            <div id="fldServerName" class="form-group connection-string">
+                <label asp-for="ServerName" class="control-label"></label>
+                <input asp-for="ServerName" class="form-control" />
+                <span asp-validation-for="ServerName" class="text-danger"></span>
+            </div>
+            <div id="fldDatabaseName" class="form-group connection-string">
+                <label asp-for="DatabaseName" class="control-label"></label>
+                <input asp-for="DatabaseName" class="form-control" />
+                <span asp-validation-for="DatabaseName" class="text-danger"></span>
+            </div>
+            <div id="fldIsIntegratedSecurity" class="checkbox connection-string">
+                <label>
+                    <input asp-for="IsIntegratedSecurity" /> @Html.DisplayNameFor(t => t.IsIntegratedSecurity)
+                </label>
+                <span asp-validation-for="IsIntegratedSecurity" class="text-danger"></span>
+            </div>
+            <div id="fldDBUserName" class="form-group connection-string">
+                <label asp-for="DBUserName" class="control-label"></label>
+                <input asp-for="DBUserName" class="form-control" />
+                <span asp-validation-for="DBUserName" class="text-danger"></span>
+            </div>
+            <div id="fldDBPassword" class="form-group connection-string">
+                <label asp-for="DBPassword" class="control-label"></label>
+                <input asp-for="DBPassword" class="form-control" />
+                <span asp-validation-for="DBPassword" class="text-danger"></span>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input asp-for="AcceptLicense" />  <a asp-action="Terms" target="_blank">@Html.DisplayNameFor(t => t.AcceptLicense)</a> 
+                </label>
+                <span asp-validation-for="AcceptLicense" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Install" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        (function () {
+            var $inputDatabaseProvider = $('#DatabaseProvider'),
+                $inputIsIntegratedSecurity = $('#IsIntegratedSecurity'),
+                $inputAcceptLicense = $('#AcceptLicense');
+
+            $(function () {
+
+                $inputDatabaseProvider.on('change', onDBProviderISChange)
+                $inputIsIntegratedSecurity.on('change', onDBProviderISChange)
+
+                changeDbProvider(parseInt($inputDatabaseProvider.val()), $inputIsIntegratedSecurity.prop('checked'));
+
+                $inputAcceptLicense.rules("add", {
+                        required: true,
+                        messages: {
+                            required: "Accept the license to install.",
+                        }
+                    });
+
+                //console.log($inputDatabaseProvider.val());
+                //console.log($inputIsIntegratedSecurity.prop('checked'));
+            });
+
+            function onDBProviderISChange() {
+                //console.log($inputDatabaseProvider.val());
+                //console.log($inputIsIntegratedSecurity.prop('checked'));
+                changeDbProvider(parseInt($inputDatabaseProvider.val()), $inputIsIntegratedSecurity.prop('checked'));
+            }
+
+            function changeDbProvider(dbProvider, isIntegratedSecurity) {
+
+                var $inputServerName = $("#ServerName"),
+                    $inputDatabaseName = $("#DatabaseName"),
+                    $inputDBUserName = $("#DBUserName"),
+                    $inputDBPassword =  $("#DBPassword");
+
+                //Hide all
+                $('.connection-string').hide();
+
+
+                //Remove all rules in connectionstring
+                $inputServerName.rules("remove");
+                $inputDatabaseName.rules("remove");
+                $inputDBUserName.rules("remove");
+                $inputDBPassword.rules("remove");
+
+                if (dbProvider === 1) {
+                    //SQL LocalDb
+                    $('#fldServerName').show();
+                    $('#fldDatabaseName').show();
+
+                    $inputServerName.rules("add", {
+                        required: true,
+                        messages: {
+                            required: "The @Html.DisplayNameFor(t => t.ServerName) field is required.",
+                        }
+                    });
+
+                    $inputDatabaseName.rules("add", {
+                        required: true,
+                        messages: {
+                            required: "The @Html.DisplayNameFor(t => t.DatabaseName) field is required.",
+                        }
+                    });
+                }
+                else if (dbProvider === 2) {
+                    //SQL Server
+                    $('#fldServerName').show();
+                    $('#fldDatabaseName').show();
+                    $('#fldIsIntegratedSecurity').show();
+
+                    $inputServerName.rules("add", {
+                        required: true,
+                        messages: {
+                            required: "The @Html.DisplayNameFor(t => t.ServerName) field is required.",
+                        }
+                    });
+
+                    $inputDatabaseName.rules("add", {
+                        required: true,
+                        messages: {
+                            required: "The @Html.DisplayNameFor(t => t.DatabaseName) field is required.",
+                        }
+                    });
+
+                    if (isIntegratedSecurity === false) {
+                        $('#fldDBUserName').show();
+                        $('#fldDBPassword').show();
+
+                         $inputDBUserName.rules("add", {
+                            required: true,
+                            messages: {
+                                required: "The @Html.DisplayNameFor(t => t.DBUserName) field is required.",
+                            }
+                        });
+
+                         $inputDBPassword.rules("add", {
+                            required: true,
+                            messages: {
+                                required: "The @Html.DisplayNameFor(t => t.DBPassword) field is required.",
+                            }
+                        });
+                    }
+                }
+                else if (dbProvider === 3) {
+                    //SQLite
+                    $('#fldDatabaseName').show();
+
+                    $inputDatabaseName.rules("add", {
+                        required: true,
+                        messages: {
+                            required: "The @Html.DisplayNameFor(t => t.DatabaseName) field is required.",
+                        }
+                    });
+                }
+                else if (dbProvider === 4) {
+                    //PostgreSQL
+                    $('#fldServerName').show();
+                    $('#fldDatabaseName').show();
+                    $('#fldDBUserName').show();
+                    $('#fldDBPassword').show();
+
+                    $inputServerName.rules("add", {
+                        required: true,
+                        messages: {
+                            required: "The @Html.DisplayNameFor(t => t.ServerName) field is required.",
+                        }
+                    });
+
+                    $inputDatabaseName.rules("add", {
+                        required: true,
+                        messages: {
+                            required: "The @Html.DisplayNameFor(t => t.DatabaseName) field is required.",
+                        }
+                     });
+
+                    $inputDBUserName.rules("add", {
+                        required: true,
+                        messages: {
+                            required: "The @Html.DisplayNameFor(t => t.DBUserName) field is required.",
+                        }
+                    });
+
+                    $inputDBPassword.rules("add", {
+                        required: true,
+                        messages: {
+                            required: "The @Html.DisplayNameFor(t => t.DBPassword) field is required.",
+                        }
+                    });
+
+                }
+
+            }
+
+        }());
+    </script>
+}

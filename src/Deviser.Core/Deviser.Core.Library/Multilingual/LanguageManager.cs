@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Deviser.Core.Common;
+using System.Globalization;
 
 namespace Deviser.Core.Library.Multilingual
 {
@@ -34,7 +35,7 @@ namespace Deviser.Core.Library.Multilingual
             try
             {
                 string culuresJsonPath = hostingEnvironment.ContentRootPath + "\\cultures.json";
-                List<Language> cultures = SDJsonConvert.DeserializeObject<List<Language>>(File.ReadAllText(culuresJsonPath));
+                List<Language> cultures = SDJsonConvert.DeserializeObject<List<Language>>(System.IO.File.ReadAllText(culuresJsonPath));
 
                 cultures.ForEach(c => c.FallbackCulture = Globals.FallbackLanguage);
 

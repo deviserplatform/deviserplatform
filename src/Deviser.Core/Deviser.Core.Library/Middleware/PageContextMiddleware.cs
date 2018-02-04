@@ -1,9 +1,11 @@
-﻿using Deviser.Core.Common;
+﻿using Autofac;
+using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Library.Multilingual;
 using Deviser.Core.Library.Services;
 using Deviser.Core.Library.Sites;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Routing;
@@ -11,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -32,21 +35,47 @@ namespace Deviser.Core.Library.Middleware
         private ISettingManager settingManager;
         private PageContext pageContext;
         private ILanguageProvider languageProvider;
+        private IInstallationProvider installationManager;
+
+
+        //public PageContextMiddleware(RequestDelegate next,
+        //    ILoggerFactory loggerFactory,
+        //    IPageManager pageManager,
+        //    IModuleProvider moduleProvider,
+        //    ISettingManager settingManager,
+        //    ILanguageProvider languageProvider,
+        //    IInstallationProvider installationManager,
+        //    IRouter router)
+        //{
+        //    this.next = next;
+        //    this.router = router;
+        //    this.pageManager = pageManager;
+        //    this.moduleProvider = moduleProvider;
+        //    this.settingManager = settingManager;
+        //    this.languageProvider = languageProvider;
+        //    this.installationManager = installationManager;
+
+        //    logger = loggerFactory.CreateLogger<PageContextMiddleware>();
+        //    pageContext = new PageContext();
+        //}
 
         public PageContextMiddleware(RequestDelegate next,
+            ILifetimeScope container,
             ILoggerFactory loggerFactory,
-            IPageManager pageManager,
-            IModuleProvider moduleProvider,
-            ISettingManager settingManager,
-            ILanguageProvider languageProvider,
             IRouter router)
         {
             this.next = next;
-            this.router = router;
-            this.pageManager = pageManager;
-            this.moduleProvider = moduleProvider;
-            this.settingManager = settingManager;
-            this.languageProvider = languageProvider;
+            this.router = router;            
+
+            installationManager = container.Resolve<IInstallationProvider>();
+
+            if (installationManager.IsPlatformInstalled)
+            {
+                settingManager = container.Resolve<ISettingManager>();
+                pageManager = container.Resolve<IPageManager>(); 
+                moduleProvider = container.Resolve<IModuleProvider>(); ;
+                languageProvider = container.Resolve<ILanguageProvider>();
+            }
 
             logger = loggerFactory.CreateLogger<PageContextMiddleware>();
             pageContext = new PageContext();
@@ -56,30 +85,35 @@ namespace Deviser.Core.Library.Middleware
         {
             httpContext = context;
 
-            if (!context.Request.Path.Value.Contains("/api"))
-            {
-                routeContext = new RouteContext(context);
-                routeContext.RouteData.Routers.Add(router);
-                await router.RouteAsync(routeContext);
+            bool isInstalled = installationManager.IsPlatformInstalled;
 
-                InitFirstLevel();
-                InitPageContext();
-                InitModuleContext();
+            if (isInstalled)
+            {
+                if (!context.Request.Path.Value.Contains("/api"))
+                {
+                    routeContext = new RouteContext(context);
+                    routeContext.RouteData.Routers.Add(router);
+                    await router.RouteAsync(routeContext);
+
+                    InitFirstLevel();
+                    InitPageContext();
+                    InitModuleContext();
+                }
             }
 
             logger.LogInformation("Handling request: " + context.Request.Path);
-             await next.Invoke(context);
+            await next.Invoke(context);
             logger.LogInformation("Finished handling request.");
         }
 
         private void InitFirstLevel()
         {
             try
-            {                
+            {
                 pageContext.IsMultilingual = languageProvider.IsMultilingual();
                 var currentCulture = GetCurrentCulture();
                 pageContext.SiteSettingInfo = settingManager.GetSiteSetting();
-                pageContext.CurrentCulture = currentCulture;                
+                pageContext.CurrentCulture = currentCulture;
 
                 Guid homePageId = pageContext.SiteSettingInfo.HomePageId;
 
@@ -126,7 +160,7 @@ namespace Deviser.Core.Library.Middleware
             pageContext.CurrentPage = currentPage;
             pageContext.HasPageViewPermission = pageManager.HasViewPermission(currentPage);
             pageContext.HasPageEditPermission = pageManager.HasEditPermission(currentPage);
-                                   
+
 
             if (!httpContext.Items.ContainsKey("PageContext"))
             {
@@ -201,7 +235,7 @@ namespace Deviser.Core.Library.Middleware
             return requestCulture;
         }
 
-        private string getPermalink(bool forPageContext=false)
+        private string getPermalink(bool forPageContext = false)
         {
             //permalink in the url has first preference
             string permalink = (routeContext.RouteData.Values["permalink"] != null) ? routeContext.RouteData.Values["permalink"].ToString() : "";

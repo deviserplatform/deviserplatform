@@ -11,7 +11,7 @@ using Module = Deviser.Core.Common.DomainTypes.Module;
 
 namespace Deviser.Core.Data.DataProviders
 {
-    public interface IModuleProvider
+    public interface IModuleProvider : IDataProviderBase
     {
         List<Module> Get();
         Module Get(Guid moduleId);

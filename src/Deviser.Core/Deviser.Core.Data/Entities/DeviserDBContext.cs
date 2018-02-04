@@ -11,7 +11,7 @@ namespace Deviser.Core.Data
     {
 
 
-        public DeviserDbContext(DbContextOptions<DeviserDbContext> options)
+        public DeviserDbContext(DbContextOptions options)
             : base(options)
         {
             

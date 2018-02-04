@@ -37,3 +37,5 @@ node_modules
 *log-*.txt
 log
 src/Deviser.Core/Deviser.Core.Common/DomainTypes/ModuleActionType_BACKUP_16112.cs
+/src/Deviser.WI/Deviser.db
+/src/Deviser.WI/installconfig.json

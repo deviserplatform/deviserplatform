@@ -31,16 +31,22 @@ namespace Deviser.WI.Controllers
         private IScopeService scopeService;
         private IContentManager contentManager;
         private IModuleManager moduleManager;
+        private IInstallationProvider installationManager;
 
         public PageController(ILifetimeScope container, IScopeService scopeService)
         {
             this.container = container;
+            installationManager = container.Resolve<IInstallationProvider>();
             logger = container.Resolve<ILogger<PageController>>();
-            pageProvider = container.Resolve<IPageProvider>();
-            pageManager = container.Resolve<IPageManager>();
-            deviserControllerFactory = container.Resolve<IDeviserControllerFactory>();
-            contentManager = container.Resolve<IContentManager>();
-            moduleManager = container.Resolve<IModuleManager>();
+
+            if (installationManager.IsPlatformInstalled)
+            {
+                pageProvider = container.Resolve<IPageProvider>();
+                pageManager = container.Resolve<IPageManager>();
+                deviserControllerFactory = container.Resolve<IDeviserControllerFactory>();
+                contentManager = container.Resolve<IContentManager>();
+                moduleManager = container.Resolve<IModuleManager>();
+            }   
             this.scopeService = scopeService;
         }
 
@@ -48,21 +54,40 @@ namespace Deviser.WI.Controllers
         {
             try
             {
-                Page currentPage = scopeService.PageContext.CurrentPage;
-                FilterPageElements(currentPage);
-                if (currentPage != null)
+                bool isInstalled = installationManager.IsPlatformInstalled;
+                bool isDbExist = installationManager.IsDatabaseExist;
+
+                if(!isInstalled)
                 {
-                    if (scopeService.PageContext.HasPageViewPermission)
-                    {
-                        Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(Context);
-                        ViewBag.ModuleActionResults = moduleActionResults;
-                        return View(currentPage);
-                    }
-                    else
-                    {
-                        return View("UnAuthorized");
-                    }
+                    //Not installed, start installation wizzard
+                    return RedirectToAction("Index", "Install");
                 }
+
+                if(isInstalled && !isDbExist)
+                {
+                    //Platform properly installed, but Database not found. Kindly check the connection string
+                    return View("DbNotInstalled");
+                }
+                                
+                if (isInstalled && isDbExist)
+                {
+                    //Platform is properly installed
+                    Page currentPage = scopeService.PageContext.CurrentPage;
+                    FilterPageElements(currentPage);
+                    if (currentPage != null)
+                    {
+                        if (scopeService.PageContext.HasPageViewPermission)
+                        {
+                            Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(Context);
+                            ViewBag.ModuleActionResults = moduleActionResults;
+                            return View(currentPage);
+                        }
+                        else
+                        {
+                            return View("UnAuthorized");
+                        }
+                    }
+                }   
             }
             catch (Exception ex)
             {
