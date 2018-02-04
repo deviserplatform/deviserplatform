@@ -15,39 +15,70 @@
 
 @if (rootObj != null)
 {
-    <!-- Carousel
-    ================================================== -->
-    <div id="myCarousel" class="carousel slide" data-ride="carousel">
-        <!-- Indicators -->
-        <ol class="carousel-indicators">
-            @for (var i = 0; i < totalItems; i++)
-            {
-                <li data-target="#myCarousel" data-slide-to="@i" @(i == 0 ? "class=active" : "")></li>
-            }
-        </ol>
-        <div class="carousel-inner" role="listbox">
-            @foreach (var item in rootObj.items)
-            {
-                <div class="item @(item.viewOrder == 1 ? "active" : "")">                    
-                    <img src="@item.imageUrl" alt="@item.imageAltText" />
-                    <div class="container">
-                        <div class="carousel-caption">
-                            <h1>@item.title</h1>
-                            <p>@item.description</p>
+    @*<!-- Carousel
+        ================================================== -->
+        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                @for (var i = 0; i < totalItems; i++)
+                {
+                    <li data-target="#myCarousel" data-slide-to="@i" @(i == 0 ? "class=active" : "")></li>
+                }
+            </ol>
+            <div class="carousel-inner" role="listbox">
+                @foreach (var item in rootObj.items)
+                {
+                    <div class="item @(item.viewOrder == 1 ? "active" : "")">
+                        <img src="@item.imageUrl" alt="@item.imageAltText" />
+                        <div class="container">
+                            <div class="carousel-caption">
+                                <h1>@item.title</h1>
+                                <p>@item.description</p>
+                            </div>
                         </div>
                     </div>
+                }
+            </div>
+            <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div><!-- /.carousel -->*@
+    <!-- Slider main container -->
+    <div class="swiper-container">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper">
+            <!-- Slides -->
+            @foreach (var item in rootObj.items)
+            {
+                <div class="swiper-slide">
+                    <img src="@item.imageUrl" alt="@item.imageAltText" />
+
+                    <div class="carousel-caption">
+                        <h1>@item.title</h1>
+                        <p>@item.description</p>
+                    </div>
+
                 </div>
             }
+
+
+            @*<div class="swiper-slide">Slide 1</div>
+                <div class="swiper-slide">Slide 2</div>
+                <div class="swiper-slide">Slide 3</div>*@
         </div>
-        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
-    </div><!-- /.carousel -->
+        <!-- If we need pagination -->
+        <div class="swiper-pagination"></div>
+
+        <!-- If we need navigation buttons -->
+        <div class="swiper-button-prev swiper-button-white"></div>
+        <div class="swiper-button-next swiper-button-white"></div>
+    </div>
+
 }
 else
 {

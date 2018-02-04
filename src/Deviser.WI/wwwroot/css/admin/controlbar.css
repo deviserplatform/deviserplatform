@@ -118,3 +118,7 @@ Page Header
 .logged-in {
     margin-top: 50px;
 }
+
+.page-content-logged-in {
+    margin-top: 150px;
+}

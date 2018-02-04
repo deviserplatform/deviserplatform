@@ -15,33 +15,63 @@
 
 @if (rootObj != null)
 {
-    <div class="teaser-box-wrapper">
-        @foreach (var item in rootObj.items)
-        {
-            var itemId = "pane" + item.id;
-            var url = "";
-            var target = "";
-            if (item.link != null && item.link.linkType != null)
+    @*<div class="teaser-box-wrapper">
+            @foreach (var item in rootObj.items)
             {
-                var linkType = (string)item.link.linkType;
-                target = ((bool)item.link.isNewWindow) ? "target=\"_blank\"" : "";
-                url = linkType == "PAGE" ? navigation.NavigateUrl((string)item.link.pageId) : (string)item.link.url;
-            }
-            <div class="col-md-4">
-                <div class="teaser-item">
-                    <img src="@item.imageUrl" alt="@item.imageAltText" />
-                    <div class="mask">
-                        <a href="@url" role="button" class="info" aria-expanded="true" @target>
-                            Read more
-                        </a>
-                        <div>
-                            @item.description
+                var itemId = "pane" + item.id;
+                var url = "";
+                var target = "";
+                if (item.link != null && item.link.linkType != null)
+                {
+                    var linkType = (string)item.link.linkType;
+                    target = ((bool)item.link.isNewWindow) ? "target=\"_blank\"" : "";
+                    url = linkType == "PAGE" ? navigation.NavigateUrl((string)item.link.pageId) : (string)item.link.url;
+                }
+                <div class="col-md-4">
+                    <div class="teaser-item">
+                        <img src="@item.imageUrl" alt="@item.imageAltText" />
+                        <div class="mask">
+                            <a href="@url" role="button" class="info" aria-expanded="true" @target>
+                                Read more
+                            </a>
+                            <div>
+                                @item.description
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
+        </div>*@
+
+
+    @foreach (var item in rootObj.items)
+    {
+        var itemId = "pane" + item.id;
+        var url = "";
+        var target = "";
+        if (item.link != null && item.link.linkType != null)
+        {
+            var linkType = (string)item.link.linkType;
+            target = ((bool)item.link.isNewWindow) ? "target=\"_blank\"" : "";
+            url = linkType == "PAGE" ? navigation.NavigateUrl((string)item.link.pageId) : (string)item.link.url;
         }
-    </div>
+
+        <div class="col-md-4 my-4">
+            <div class="card">
+                <img class="card-img-top" src="@item.imageUrl" alt="@item.imageAltText">
+                <div class="card-body">
+                    <h4 class="card-title">@item.title</h4>
+                    <p class="card-text">@item.description</p>
+                </div>
+                <div class="card-footer">
+                    <a href="@url" role="button" class="info" aria-expanded="true" @target>
+                        Read more
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+
 }
 else
 {

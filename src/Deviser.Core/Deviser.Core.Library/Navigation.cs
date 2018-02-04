@@ -423,7 +423,7 @@ namespace Deviser.Core.Library
                     string fallbackParentURL = parentURLs[Globals.FallbackLanguage];
                     foreach (var pageTranslation in page.PageTranslation)
                     {
-                        if (!string.IsNullOrEmpty(parentURLs[pageTranslation.Locale]))
+                        if (parentURLs.ContainsKey(pageTranslation.Locale) && !string.IsNullOrEmpty(parentURLs[pageTranslation.Locale]))
                         {
                             parentURLs[pageTranslation.Locale] += "/" + pageTranslation.Name.Replace(" ", "");
                             var pageUrl = parentURLs[pageTranslation.Locale];

@@ -122,6 +122,12 @@
                     vm.contentTranslation.contentData = JSON.parse(vm.contentTranslation.contentData);
                 }
             }
+
+            $scope.$watch(function () {
+                return vm.content.pageContentTranslation;
+            }, function (newValue, oldValue) {
+                init();
+            }, true);
         }
     }
 
@@ -230,23 +236,25 @@
 
         function editContent(content) {
             var defer = $q.defer();
+            var currentContent = content;
             var modalInstance = $uibModal.open({
                 animation: true,
                 size: 'lg',
                 openedClass: 'edit-content-modal',
                 backdrop: 'static',
-                templateUrl: 'contenttypes/' + content.contentType.name + '.html',
+                templateUrl: 'contenttypes/' + currentContent.contentType.name + '.html',
                 controller: 'EditContentCtrl as ecVM',
                 resolve: {
                     contentInfo: function () {
-                        var returnObject = content;
+                        var returnObject = currentContent;
                         return returnObject;
                     }
                 }
             });
 
-            modalInstance.result.then(function (selectedItem) {
+            modalInstance.result.then(function (translationResult) {
                 //$log.info('Modal Oked at: ' + new Date());
+                content.pageContent.pageContentTranslation[0] = angular.fromJson(translationResult);
                 defer.resolve('data received!');
             }, function () {
                 //$log.info('Modal dismissed at: ' + new Date());
@@ -946,8 +954,9 @@
                 serializeContentTranslation();
                 contentTranslationService.put(vm.contentTranslation).then(
                     function (data) {
+                        data.contentData = angular.fromJson(data.contentData);
                         console.log(data);
-                        $uibModalInstance.close('ok');
+                        $uibModalInstance.close(data);
                     }, function (error) {
                         showMessage("error", SYS_ERROR_MSG);
                     });
@@ -957,8 +966,9 @@
                 serializeContentTranslation();
                 contentTranslationService.post(vm.contentTranslation).then(
                     function (data) {
+                        data.contentData = angular.fromJson(data.contentData);
                         console.log(data);
-                        $uibModalInstance.close('ok');
+                        $uibModalInstance.close(data);
                     }, function (error) {
                         showMessage("error", SYS_ERROR_MSG);
                     });
@@ -989,7 +999,7 @@
         }
 
         function removeItem(item) {
-            var index = vm.contentTranslation.contentData.items.indexOf(slideItem);
+            var index = vm.contentTranslation.contentData.items.indexOf(item);
             vm.contentTranslation.contentData.items.splice(index, 1);
             vm.isChanged = true;
         }

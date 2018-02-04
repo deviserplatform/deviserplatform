@@ -714,6 +714,12 @@ body.page-edit {
     /***********************************************************/
     /*Layout*/
     /***********************************************************/
+    .edit-top-bar {
+        background: #f5f5f5;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
     .box {
         margin-bottom: 20px;
         background-color: #fff;
@@ -858,10 +864,9 @@ body.page-edit {
             }
 
 
-            [class*=" col-md-"]{
-                padding:0px;
+            [class*=" col-md-"] {
+                padding: 0px;
             }
-            
             /*.col-md-3 {
                 padding: 0;
             }*/
@@ -1084,7 +1089,10 @@ div.form-horizontal .control-label {
 }
 
 .page-layout-name {
-    margin-top: 20px;
+    margin-top: 12px;
+    .col-md-5 {
+        padding: 8px;
+    }
 }
 
 
