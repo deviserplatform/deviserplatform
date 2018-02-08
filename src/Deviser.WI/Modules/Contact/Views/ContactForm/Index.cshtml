@@ -3,6 +3,7 @@
 }
 <require type="Script" priority="109" path="~/lib/angular/angular.js"></require>
 <require type="Script" priority="110" path="~/js/src/app/config.js"></require>
+<require type="Script" priority="110" path="~/js/src/app/services.js"></require>
 <require type="Script" priority="111" path="~/js/src/app/contact/contact.js"></require>
 
 <div ng-app="deviser.contact" ng-controller="ContactCtrl as cVM">
@@ -18,7 +19,7 @@
         </div>
     </div>
 
-    <form name="ContactForm" role="form" novalidate>
+    <form name="ContactForm" role="form" ng-submit="cVM.submit()"novalidate>
         <h2><b>@ViewData["Title"]</b></h2>
         <br />
         <div class="form-group">
@@ -36,7 +37,7 @@
             <input type="text" id="Email" name="Email" ng-pattern="/^[^\s@@]+@@[^\s@@]+\.[^\s@@]{2,}$/" 
                    ng-model="cVM.form.Email"  maxlength="50"
                    autocomplete="off" placeholder="Enter Your Mail id" class="form-control" required />
-            <span ng-show="ContactForm.Email.$error.pattern || ContactForm.LastName.$touched">Invalid Email!</span>
+            <span ng-show="ContactForm.Email.$error.pattern && ContactForm.LastName.$touched">Invalid Email!</span>
         </div>
         <div class="form-group">
             <label>Company</label>
@@ -51,7 +52,7 @@
                       class="form-control" placeholder="Enter Your Message"></textarea>
         </div>
         <br />
-        <input type="submit" class="btn btn-primary" value="Send" />
+        <input type="submit" class="btn btn-primary" value="Send Message"  />
     </form>
 
 

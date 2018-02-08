@@ -51,7 +51,7 @@ namespace Deviser.Core.Library.Internal
             List<TypeInfo> allControllers = new List<TypeInfo>();
             foreach (var assembly in assemblies)
             {
-                var controllerTypes = assembly.DefinedTypes.Where(t => IsController(t)).ToList();
+                var controllerTypes = assembly.DefinedTypes.Where(t => t.Namespace == moduleAction.ControllerNamespace && IsController(t)).ToList();
 
                 if (controllerTypes != null && controllerTypes.Count > 0)
                     allControllers.AddRange(controllerTypes);

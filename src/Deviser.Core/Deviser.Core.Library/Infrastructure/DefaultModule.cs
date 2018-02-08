@@ -39,7 +39,8 @@ namespace Deviser.Core.Library.Infrastructure
             builder.RegisterType<UserProvider>().As<IUserProvider>();
             builder.RegisterType<LanguageProvider>().As<ILanguageProvider>();
             builder.RegisterType<OptionListProvider>().As<IOptionListProvider>();
-            builder.RegisterType<PropertyProvider>().As<IPropertyProvider>(); 
+            builder.RegisterType<PropertyProvider>().As<IPropertyProvider>();
+            builder.RegisterType<ContactProvider>().As<IContactProvider>();
                         
             builder.RegisterType<PageManager>().As<IPageManager>();
             builder.RegisterType<ModuleManager>().As<IModuleManager>();

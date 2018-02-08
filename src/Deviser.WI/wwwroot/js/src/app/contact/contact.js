@@ -1,18 +1,19 @@
 ﻿(function () {
 
     var app = angular.module('deviser.contact', [
-        'deviser.config'
+        'deviser.config',
+        'deviser.services'
     ]);
 
-    app.controller('ContactCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', editCtrl]);
+    app.controller('ContactCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals','conatctFormService', editCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
-    function editCtrl($scope, $timeout, $filter, $q, globals) {
+    function editCtrl($scope, $timeout, $filter, $q, globals, conatctFormService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
-
+        vm.submit = submit;
         init();
 
 
@@ -22,7 +23,14 @@
             vm.form = {};
         }
 
-
+        function submit() {
+            var data = vm.form;
+            conatctFormService.post(data).then(function (success) {
+                showMessage(success,"Your message have been successfully sent.")
+            }, function (error) {
+                showMessage(error,"Couldnt send your message, please try after sometime.")
+            });
+        }
 
         function showMessage(messageType, messageContent) {
             vm.message = {

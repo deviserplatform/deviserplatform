@@ -21,7 +21,7 @@
     app.factory('languageService', ['$http', '$q', 'globals',languageService]);
     app.factory('fileService', ['$http', '$q', 'globals',fileService]);
     app.factory('assetService', ['$http', '$q', 'globals',assetService]);
-
+    app.factory('conatctFormService', ['$http', '$q', 'globals', conatctFormService]);
 
     ////////////////////////////////
     /*Function declarations only*/
@@ -523,6 +523,11 @@
     function assetService($http, $q, globals) {
         var imageService = baseService($http, $q, globals, '/upload/images');
         return imageService;
+    }
+
+    function conatctFormService($http, $q, globals) {
+        var contactservice = baseService($http, $q, globals, '/contactform');
+        return contactservice;
     }
 
     function baseService($http, $q, globals, serviceUrl) {

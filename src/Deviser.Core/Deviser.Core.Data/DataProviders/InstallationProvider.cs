@@ -4,6 +4,7 @@ using Deviser.Core.Data;
 using Deviser.Core.Data.DataProviders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -27,8 +28,8 @@ namespace Deviser.Core.Data.DataProviders
         void InstallPlatform(InstallModel installModel);
         void InsertData(DbContextOptions dbOption);
         string GetConnectionString(InstallModel model);
-        DbContextOptions GetDbContextOptions();
-        DbContextOptionsBuilder GetDbContextOptionsBuilder();
+        //DbContextOptions GetDbContextOptions();
+        //DbContextOptionsBuilder GetDbContextOptionsBuilder();
         DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder);
     }
 
@@ -37,26 +38,28 @@ namespace Deviser.Core.Data.DataProviders
         private IHostingEnvironment _hostingEnvironment;
         private DbContextOptions _dbContextOptions;
         private DbContextOptionsBuilder _dbContextOptionsBuilder;
+        private IConfiguration _configuration;
 
         private InstallModel _installModel;
-        private bool _isPlarformInstalled;
+        private bool _isPlatformInstalled;
         private bool _isDbExist;
 
-        public InstallationProvider(IHostingEnvironment hostingEnvironment)
+        public InstallationProvider(IHostingEnvironment hostingEnvironment, IConfiguration configuration)
         {
             _hostingEnvironment = hostingEnvironment;
+            _configuration = configuration;
         }
 
         public bool IsPlatformInstalled
         {
             get
             {
-                if (!_isPlarformInstalled)
+                if (!_isPlatformInstalled)
                 {
                     var installModel = GetInstallationModel();
-                    _isPlarformInstalled = installModel != null ? true : false;
+                    _isPlatformInstalled = installModel != null ? true : false;
                 }
-                return _isPlarformInstalled;
+                return _isPlatformInstalled;
             }
         }
 
@@ -73,7 +76,7 @@ namespace Deviser.Core.Data.DataProviders
                     var connectionString = GetConnectionString(installModel);
                     _isDbExist = IsDatabaseExistsFor(connectionString);
                 }
-                return _isPlarformInstalled;
+                return _isPlatformInstalled;
             }
         }
 
@@ -143,33 +146,33 @@ namespace Deviser.Core.Data.DataProviders
             }
         }
 
-        public DbContextOptions GetDbContextOptions()
-        {
-            if (_dbContextOptions == null)
-            {
-                InstallModel installModel = GetInstallationModel();
-                _dbContextOptions = GetDbContextOptions(installModel);
-            }
+        //public DbContextOptions GetDbContextOptions()
+        //{
+        //    if (_dbContextOptions == null)
+        //    {
+        //        InstallModel installModel = GetInstallationModel();
+        //        _dbContextOptions = GetDbContextOptions(installModel);
+        //    }
 
-            if (_dbContextOptions == null)
-                throw new NullReferenceException("Platform is not installed properly. Kindly install it properly");
+        //    if (_dbContextOptions == null)
+        //        throw new NullReferenceException("Platform is not installed properly. Kindly install it properly");
 
-            return _dbContextOptions;
-        }
+        //    return _dbContextOptions;
+        //}
 
-        public DbContextOptionsBuilder GetDbContextOptionsBuilder()
-        {
-            if (_dbContextOptionsBuilder == null)
-            {
-                InstallModel installModel = GetInstallationModel();
-                _dbContextOptionsBuilder = GetDbContextOptionsBuilder(installModel);
-            }
+        //public DbContextOptionsBuilder GetDbContextOptionsBuilder()
+        //{
+        //    if (_dbContextOptionsBuilder == null)
+        //    {
+        //        InstallModel installModel = GetInstallationModel();
+        //        _dbContextOptionsBuilder = GetDbContextOptionsBuilder(installModel);
+        //    }
 
-            if (_dbContextOptionsBuilder == null)
-                throw new NullReferenceException("Platform is not installed properly. Kindly install it properly");
+        //    if (_dbContextOptionsBuilder == null)
+        //        throw new NullReferenceException("Platform is not installed properly. Kindly install it properly");
 
-            return _dbContextOptionsBuilder;
-        }
+        //    return _dbContextOptionsBuilder;
+        //}
 
         public DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder)
         {   
@@ -196,7 +199,7 @@ namespace Deviser.Core.Data.DataProviders
 
         private DbContextOptionsBuilder GetDbContextOptionsBuilder(InstallModel installModel, DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = GetConnectionString(installModel);
+            string connectionString = IsPlatformInstalled? _configuration.GetConnectionString("DefaultConnection"): GetConnectionString(installModel);
             if (installModel.DatabaseProvider == DatabaseProvider.SQLServer)
             {
                 optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly("Deviser.WI"));

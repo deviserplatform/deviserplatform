@@ -400,7 +400,7 @@ namespace Deviser.Core.Data
         public virtual DbSet<PageTranslation> PageTranslation { get; set; }
         public virtual DbSet<PageContentTranslation> PageContentTranslation { get; set; }
         public virtual DbSet<SiteSetting> SiteSetting { get; set; }
-        
+        public virtual DbSet<Contact> Contact { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
 
         public DbSet<User> User { get; set; }
