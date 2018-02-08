@@ -10,6 +10,7 @@ using Autofac;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Deviser.Modules.ContactForm.Data;
 
 namespace Deviser.Modules.ContactForm.Controllers
 {

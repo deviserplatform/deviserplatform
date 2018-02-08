@@ -12,20 +12,23 @@ namespace Deviser.Core.Library.Internal
     {
         internal static HashSet<string> ReferenceAssemblies { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            "Microsoft.AspNetCore.Mvc",
-            "Microsoft.AspNetCore.Mvc.Abstractions",
-            "Microsoft.AspNetCore.Mvc.ApiExplorer",
-            "Microsoft.AspNetCore.Mvc.Core",
-            "Microsoft.AspNetCore.Mvc.Cors",
-            "Microsoft.AspNetCore.Mvc.DataAnnotations",
-            "Microsoft.AspNetCore.Mvc.Formatters.Json",
-            "Microsoft.AspNetCore.Mvc.Formatters.Xml",
-            "Microsoft.AspNetCore.Mvc.Localization",
-            "Microsoft.AspNetCore.Mvc.Razor",
-            "Microsoft.AspNetCore.Mvc.Razor.Extensions",
-            "Microsoft.AspNetCore.Mvc.RazorPages",
-            "Microsoft.AspNetCore.Mvc.TagHelpers",
-            "Microsoft.AspNetCore.Mvc.ViewFeatures"
+            "Deviser.Core.Library",
+            "Deviser.Core.Common",
+            "Deviser.Core.Data",
+            //"Microsoft.AspNetCore.Mvc",
+            //"Microsoft.AspNetCore.Mvc.Abstractions",
+            //"Microsoft.AspNetCore.Mvc.ApiExplorer",
+            //"Microsoft.AspNetCore.Mvc.Core",
+            //"Microsoft.AspNetCore.Mvc.Cors",
+            //"Microsoft.AspNetCore.Mvc.DataAnnotations",
+            //"Microsoft.AspNetCore.Mvc.Formatters.Json",
+            //"Microsoft.AspNetCore.Mvc.Formatters.Xml",
+            //"Microsoft.AspNetCore.Mvc.Localization",
+            //"Microsoft.AspNetCore.Mvc.Razor",
+            //"Microsoft.AspNetCore.Mvc.Razor.Extensions",
+            //"Microsoft.AspNetCore.Mvc.RazorPages",
+            //"Microsoft.AspNetCore.Mvc.TagHelpers",
+            //"Microsoft.AspNetCore.Mvc.ViewFeatures"
         };
 
         public static IEnumerable<Assembly> DiscoverAssemblyParts(string entryPointAssemblyName)

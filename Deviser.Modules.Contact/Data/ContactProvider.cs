@@ -5,9 +5,10 @@ using Microsoft.Extensions.Logging;
 using Autofac;
 using Deviser.Core.Common.DomainTypes;
 using AutoMapper;
+using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data;
 
-
-namespace Deviser.Core.Data.DataProviders
+namespace Deviser.Modules.ContactForm.Data
 {
     public interface IContactProvider: IDataProviderBase
     {
@@ -31,7 +32,7 @@ namespace Deviser.Core.Data.DataProviders
             {
                 using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var dbContact = Mapper.Map<Entities.Contact>(contact);
+                    var dbContact = Mapper.Map<Core.Data.Entities.Contact>(contact);
                     dbContact.CreatedOn = DateTime.Now;
                     context.Contact.Add(dbContact);
                     return true;

@@ -23,6 +23,8 @@ using Microsoft.AspNetCore.Routing;
 using Deviser.Core.Common;
 using Autofac;
 using Deviser.Core.Data.DataProviders;
+using System.Reflection;
+using System.Linq;
 
 namespace Deviser.Core.Library.DependencyInjection
 {
@@ -47,6 +49,8 @@ namespace Deviser.Core.Library.DependencyInjection
                 .AddDefaultTokenProviders();
 
             services.Add(ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, SerializerSettingsSetup>());
+
+            RegisterModuleDependencies(services);
 
             services.AddMvc(option =>
             {
@@ -142,6 +146,32 @@ namespace Deviser.Core.Library.DependencyInjection
             app.UsePageContext(routeBuilder);
 
             return app.UseMvc(routeBuilder);
+        }
+
+        private static void RegisterModuleDependencies(IServiceCollection serviceCollection)
+        {
+            var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.ApplicationEntryPoint);
+            List<TypeInfo> moduleServiceCollectors = new List<TypeInfo>();
+
+            Type moduleServiceCollectionType = typeof(IModuleConfigurator);
+            MethodInfo registerServiceMethodInfo = moduleServiceCollectionType.GetMethod("ConfigureServices");
+            foreach (var assembly in assemblies)
+            {
+                var controllerTypes = assembly.DefinedTypes.Where(t => moduleServiceCollectionType.IsAssignableFrom(t)).ToList();
+
+                if (controllerTypes != null && controllerTypes.Count > 0)
+                    moduleServiceCollectors.AddRange(controllerTypes);
+            }
+
+            if (moduleServiceCollectors.Count > 0)
+            {
+                foreach (var serviceCollectorType in moduleServiceCollectors)
+                {
+                    var obj = Activator.CreateInstance(serviceCollectorType);
+                    registerServiceMethodInfo.Invoke(obj, new object[] { serviceCollection });
+                }
+            }
+            
         }
     }
 }
