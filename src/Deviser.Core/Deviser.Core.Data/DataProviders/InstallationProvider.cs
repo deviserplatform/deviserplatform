@@ -2,8 +2,10 @@
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data;
 using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Extension;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -28,9 +30,7 @@ namespace Deviser.Core.Data.DataProviders
         void InstallPlatform(InstallModel installModel);
         void InsertData(DbContextOptions dbOption);
         string GetConnectionString(InstallModel model);
-        //DbContextOptions GetDbContextOptions();
-        //DbContextOptionsBuilder GetDbContextOptionsBuilder();
-        DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder);
+        DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder, string moduleAssembly=null);
     }
 
     public class InstallationProvider : IInstallationProvider
@@ -38,16 +38,18 @@ namespace Deviser.Core.Data.DataProviders
         private IHostingEnvironment _hostingEnvironment;
         private DbContextOptions _dbContextOptions;
         private DbContextOptionsBuilder _dbContextOptionsBuilder;
+        private IServiceProvider _serviceProvider;
         private IConfiguration _configuration;
 
         private InstallModel _installModel;
         private bool _isPlatformInstalled;
         private bool _isDbExist;
 
-        public InstallationProvider(IHostingEnvironment hostingEnvironment, IConfiguration configuration)
+        public InstallationProvider(IHostingEnvironment hostingEnvironment, IConfiguration configuration, IServiceProvider serviceProvider)
         {
             _hostingEnvironment = hostingEnvironment;
             _configuration = configuration;
+            _serviceProvider = serviceProvider;
         }
 
         public bool IsPlatformInstalled
@@ -145,39 +147,11 @@ namespace Deviser.Core.Data.DataProviders
                 return $"Data Source={model.DatabaseName}.db";
             }
         }
-
-        //public DbContextOptions GetDbContextOptions()
-        //{
-        //    if (_dbContextOptions == null)
-        //    {
-        //        InstallModel installModel = GetInstallationModel();
-        //        _dbContextOptions = GetDbContextOptions(installModel);
-        //    }
-
-        //    if (_dbContextOptions == null)
-        //        throw new NullReferenceException("Platform is not installed properly. Kindly install it properly");
-
-        //    return _dbContextOptions;
-        //}
-
-        //public DbContextOptionsBuilder GetDbContextOptionsBuilder()
-        //{
-        //    if (_dbContextOptionsBuilder == null)
-        //    {
-        //        InstallModel installModel = GetInstallationModel();
-        //        _dbContextOptionsBuilder = GetDbContextOptionsBuilder(installModel);
-        //    }
-
-        //    if (_dbContextOptionsBuilder == null)
-        //        throw new NullReferenceException("Platform is not installed properly. Kindly install it properly");
-
-        //    return _dbContextOptionsBuilder;
-        //}
-
-        public DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder)
+        
+        public DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder, string moduleAssembly=null)
         {   
             InstallModel installModel = GetInstallationModel();
-            _dbContextOptionsBuilder = GetDbContextOptionsBuilder(installModel, optionsBuilder);
+            _dbContextOptionsBuilder = GetDbContextOptionsBuilder(installModel, optionsBuilder, moduleAssembly);
 
             if (_dbContextOptionsBuilder == null)
                 throw new NullReferenceException("Platform is not installed properly. Kindly install it properly");
@@ -197,24 +171,59 @@ namespace Deviser.Core.Data.DataProviders
             return GetDbContextOptionsBuilder(installModel, optionsBuilder);
         }
 
-        private DbContextOptionsBuilder GetDbContextOptionsBuilder(InstallModel installModel, DbContextOptionsBuilder optionsBuilder)
+        private DbContextOptionsBuilder GetDbContextOptionsBuilder(InstallModel installModel, DbContextOptionsBuilder optionsBuilder, string moduleAssembly=null)
         {
             string connectionString = IsPlatformInstalled? _configuration.GetConnectionString("DefaultConnection"): GetConnectionString(installModel);
-            if (installModel.DatabaseProvider == DatabaseProvider.SQLServer)
+
+
+            if (installModel.DatabaseProvider == DatabaseProvider.SQLServer || installModel.DatabaseProvider == DatabaseProvider.SQLLocalDb)
             {
-                optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly("Deviser.WI"));
-            }
-            else if (installModel.DatabaseProvider == DatabaseProvider.SQLLocalDb)
-            {
-                optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly("Deviser.WI"));
+                if (string.IsNullOrEmpty(moduleAssembly))
+                {
+                    optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                }
+                else
+                {
+                    optionsBuilder.UseSqlServer(connectionString, (x) =>
+                    {
+                        x.MigrationsAssembly(moduleAssembly);
+                        x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
+                    })
+                    .ReplaceService<IHistoryRepository, SqlServerModuleHistoryRepository>();
+                }
+                
             }
             else if (installModel.DatabaseProvider == DatabaseProvider.PostgreSQL)
             {
-                optionsBuilder.UseNpgsql(connectionString, b => b.MigrationsAssembly("Deviser.WI"));
+                if (string.IsNullOrEmpty(moduleAssembly))
+                {
+                    optionsBuilder.UseNpgsql(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                }
+                else
+                {
+                    optionsBuilder.UseNpgsql(connectionString, (x) =>
+                    {
+                        x.MigrationsAssembly(moduleAssembly);
+                        x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
+                    })
+                    .ReplaceService<IHistoryRepository, NpgsqlModuleHistoryRepository>();
+                }
             }
             else
             {
-                optionsBuilder.UseSqlite(connectionString, b => b.MigrationsAssembly("Deviser.WI"));
+                if (string.IsNullOrEmpty(moduleAssembly))
+                {
+                    optionsBuilder.UseSqlite(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                }
+                else
+                {
+                    optionsBuilder.UseSqlite(connectionString, (x) =>
+                    {
+                        x.MigrationsAssembly(moduleAssembly);
+                        x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
+                    })
+                    .ReplaceService<IHistoryRepository, SqliteModuleHistoryRepository>();
+                }
             }
 
             return optionsBuilder;

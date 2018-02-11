@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Deviser.Core.Data.Entities
+namespace Deviser.Modules.ContactForm.Data
 {
     public class Contact
     {

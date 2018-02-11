@@ -25,6 +25,7 @@ using Autofac;
 using Deviser.Core.Data.DataProviders;
 using System.Reflection;
 using System.Linq;
+using Deviser.Core.Data.Extension;
 
 namespace Deviser.Core.Library.DependencyInjection
 {
@@ -38,11 +39,25 @@ namespace Deviser.Core.Library.DependencyInjection
             var sp = services.BuildServiceProvider();
             IInstallationProvider installationProvider = sp.GetRequiredService<IInstallationProvider>();
 
+            ModuleDbContext.ServiceProvider = sp;
+
             // Add framework services.            
             //services.AddDbContext<DeviserDbContext>(options =>
             //    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Deviser.WI")));
 
-            services.AddDbContext<DeviserDbContext>(options => installationProvider.GetDbContextOptionsBuilder(options));
+            services.AddDbContext<DeviserDbContext>(
+                (internalServiceProvider, dbContextOptionBuilder) =>
+                {
+                    //dbContextOptionBuilder.UseInternalServiceProvider(sp);                    
+                    installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder);
+                });
+
+            //services.AddDbContext<ModuleDbContext>(
+            //    (internalServiceProvider, dbContextOptionBuilder) =>
+            //    {
+            //        //dbContextOptionBuilder.UseInternalServiceProvider(sp);                    
+            //        installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder);
+            //    });
 
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<DeviserDbContext>()
@@ -171,7 +186,7 @@ namespace Deviser.Core.Library.DependencyInjection
                     registerServiceMethodInfo.Invoke(obj, new object[] { serviceCollection });
                 }
             }
-            
+
         }
     }
 }

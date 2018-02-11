@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Autofac;
 using Deviser.Core.Common.DomainTypes;
 using AutoMapper;
@@ -10,19 +11,21 @@ using Deviser.Core.Data;
 
 namespace Deviser.Modules.ContactForm.Data
 {
-    public interface IContactProvider: IDataProviderBase
+    public interface IContactProvider
     {
         bool submitData(Contact contact);
     }
     public class ContactProvider: DataProviderBase, IContactProvider
     {
+        private IServiceProvider _serviceProvider;
         private readonly ILogger<ContactProvider> _logger;
 
 
-        public ContactProvider(ILifetimeScope container)
-         : base(container)
+        public ContactProvider(IServiceProvider serviceProvider, ILifetimeScope container)
+            :base(container)
         {
-            _logger = container.Resolve<ILogger<ContactProvider>>();
+            _serviceProvider = serviceProvider;
+            _logger = serviceProvider.GetService<ILogger<ContactProvider>>();
         }
 
 
@@ -30,11 +33,10 @@ namespace Deviser.Modules.ContactForm.Data
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new ContactDbContext())
                 {
-                    var dbContact = Mapper.Map<Core.Data.Entities.Contact>(contact);
-                    dbContact.CreatedOn = DateTime.Now;
-                    context.Contact.Add(dbContact);
+                    contact.CreatedOn = DateTime.Now;
+                    context.Contact.Add(contact);
                     return true;
                 }
             }

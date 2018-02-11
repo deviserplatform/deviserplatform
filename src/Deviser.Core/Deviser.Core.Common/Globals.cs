@@ -18,6 +18,10 @@ namespace Deviser.Core.Common
         
         public const string InstallConfigFile = "installconfig.json";
 
+        public const string PlatformAssembly = "Deviser.WI";
+
+        public const string ModuleMigrationTableName = "__ModuleMigrationsHistory";
+
         public static string HostMapPath
         {
             get

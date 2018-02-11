@@ -90,8 +90,6 @@ namespace Deviser.Core.Library.Infrastructure
 
                 config.CreateMap<SiteSetting, Core.Common.DomainTypes.SiteSetting>().ReverseMap();
 
-                config.CreateMap<Contact, Core.Common.DomainTypes.Contact>().ReverseMap();
-
 
             });
 
