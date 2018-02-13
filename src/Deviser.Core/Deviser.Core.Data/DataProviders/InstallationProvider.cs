@@ -1,5 +1,6 @@
 ﻿using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Common.Internal;
 using Deviser.Core.Data;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Data.Extension;
@@ -13,6 +14,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Deviser.Core.Data.DataProviders
@@ -99,6 +102,9 @@ namespace Deviser.Core.Data.DataProviders
 
                 //Insert data
                 InsertData(dbOption);
+
+                //Migrate module
+                MigrateModuleContexts();
             }
 
             //Write intall settings
@@ -271,6 +277,37 @@ namespace Deviser.Core.Data.DataProviders
             string filePath = Path.Combine(contentRootPath, Globals.InstallConfigFile);
             //Save setting
             File.WriteAllText(filePath, JsonConvert.SerializeObject(model));
+        }
+
+        private void MigrateModuleContexts()
+        {
+            var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.PlatformAssembly);
+            List<TypeInfo> moduleDbContextTypes = new List<TypeInfo>();
+
+            Type moduleDbContextType = typeof(ModuleDbContext);
+            PropertyInfo databaseField = moduleDbContextType.GetProperty("Database");
+            MethodInfo registerServiceMethodInfo = typeof(Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions).GetMethod("Migrate");
+            foreach (var assembly in assemblies)
+            {
+                var controllerTypes = assembly.DefinedTypes.Where(t => moduleDbContextType.IsAssignableFrom(t)).ToList();
+
+                if (controllerTypes != null && controllerTypes.Count > 0)
+                    moduleDbContextTypes.AddRange(controllerTypes);
+            }
+
+            if (moduleDbContextTypes.Count > 0)
+            {
+                foreach (var serviceCollectorType in moduleDbContextTypes)
+                {
+                    var moduleDbContextObj = Activator.CreateInstance(serviceCollectorType);
+
+                    var databaseObj = databaseField.GetValue(moduleDbContextObj);
+
+                    registerServiceMethodInfo.Invoke(databaseObj, new object[] { databaseObj });
+                    //registerServiceMethodInfo.Invoke(obj, new object[] { serviceCollection });
+
+                }
+            }
         }
     }
 }

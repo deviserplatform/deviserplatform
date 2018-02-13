@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Deviser.Core.Common;
+using Deviser.Core.Common.Internal;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using Deviser.Core.Library.Controllers;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using DefaultAssemblyPartDiscoveryProvider = Deviser.Core.Common.Internal.DefaultAssemblyPartDiscoveryProvider;
 
 namespace Deviser.Core.Library.Internal
 {

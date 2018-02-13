@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Internal;
+using Deviser.Core.Common.Internal;
 
 namespace Deviser.Core.Data.Extension
 {
@@ -26,9 +27,7 @@ namespace Deviser.Core.Data.Extension
         //{
         //    _installationProvider = serviceProvider.GetService<InstallationProvider>();
         //}
-
-        public static ServiceProvider ServiceProvider { get; set; }
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {
             //var _serviceScope = ServiceProviderCache.Instance.GetOrAdd(optionBuilder.Options, providerRequired: true)
@@ -44,7 +43,7 @@ namespace Deviser.Core.Data.Extension
 
             //var scopedServiceProvider = ((IInfrastructure<IServiceProvider>)this).Instance;
 
-            var _installationProvider = ServiceProvider.GetService<IInstallationProvider>();
+            var _installationProvider = SharedObjects.ServiceProvider.GetService<IInstallationProvider>();
 
             if (ModuleMetaInfo == null)
                 throw new ArgumentNullException(nameof(ModuleMetaInfo));

@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Deviser Platform - @ViewData["Title"]</title>
 
+    <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#ec3d28">
+    <meta name="theme-color" content="#ffffff">
+
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link href="~/css/bootstrap-datepicker.css" rel="stylesheet" />
@@ -20,12 +28,12 @@
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
     <style>
-        .navbar-brand{
-            height:90px;
+        .navbar-brand {
+            height: 90px;
         }
 
-        .body-content{
-            margin-top:90px;
+        .body-content {
+            margin-top: 90px;
         }
     </style>
 </head>
@@ -37,7 +45,8 @@
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header page-scroll">                    
                     <a class="navbar-brand">
-                        <img src="/images/DeviserLogoDark.png" alt="DEVISER">
+                        <img src="/images/DeviserLogoDark.svg" onerror="this.src='/images/DeviserLogoDark.png'; this.onerror=null;" alt="DEVISER">
+                        @*<img src="/images/DeviserLogoDark.png" alt="DEVISER">*@
                     </a>
                 </div>
             </div>
