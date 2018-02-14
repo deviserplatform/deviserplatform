@@ -14,7 +14,8 @@ namespace Deviser.Core.Data.DataProviders
     {
         List<User> GetUsers();
         User GetUser(Guid userId);
-
+        Guid GetUser(string userName);
+      
     }
 
     public class UserProvider : DataProviderBase, IUserProvider
@@ -101,6 +102,26 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
+
+        public Guid GetUser(string userName)
+        {
+            try
+            {
+                using (var context = new DeviserDbContext(DbOptions))
+                {
+                    var userId = context.User
+                        .Where(u => u.UserName == userName)
+                        .Select(u => u.Id).FirstOrDefault();
+                    return userId;
+                }
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError("Error occured while retrieving user details", ex);
+            }
+            return Guid.Empty;
+        }
+
 
     }
 

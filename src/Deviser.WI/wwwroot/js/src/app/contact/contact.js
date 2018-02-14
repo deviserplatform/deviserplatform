@@ -11,6 +11,7 @@
     /*Function declarations only*/
     function editCtrl($scope, $timeout, $filter, $q, globals, conatctFormService) {
         var vm = this;
+        var contact = {};
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
         vm.submit = submit;
@@ -24,11 +25,12 @@
         }
 
         function submit() {
-            var data = vm.form;
-            conatctFormService.post(data).then(function (success) {
-                showMessage(success,"Your message have been successfully sent.")
+            contact.data = angular.toJson(vm.form);
+            contact.pageModuleId = $('#ContactForm').closest('.sd-module-container').data('pageModuleId');
+            conatctFormService.post(contact).then(function (success) {
+                showMessage("success", "Your message have been successfully sent.");
             }, function (error) {
-                showMessage(error,"Couldnt send your message, please try after sometime.")
+                showMessage("error", "Couldnt send your message, please try after sometime.");
             });
         }
 

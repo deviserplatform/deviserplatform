@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Autofac;
+using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.Modules;
 using Deviser.Core.Library.Services;
 using Deviser.Core.Library.Sites;
-using Deviser.Core.Common.DomainTypes;
-using Microsoft.AspNetCore.Mvc;
-using Deviser.Core.Data.DataProviders;
-using Autofac;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Deviser.Modules.ContactForm.Data;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace Deviser.Modules.ContactForm.Controllers
 {
@@ -25,12 +25,15 @@ namespace Deviser.Modules.ContactForm.Controllers
 
         IPageManager pageManager;
 
+        IUserProvider userProvider;
+
         public ContactFormController(IServiceProvider serviceProvider)
         {
             logger = serviceProvider.GetService<ILogger<ContactFormController>>();
             ContactProvider = serviceProvider.GetService<IContactProvider>();
             scopeService = serviceProvider.GetService<IScopeService>();
             pageManager = serviceProvider.GetService<IPageManager>();
+            userProvider = serviceProvider.GetService<IUserProvider>();
 
         }
 
@@ -42,17 +45,20 @@ namespace Deviser.Modules.ContactForm.Controllers
 
         [HttpPost]
         [Route("api/[controller]")]
-        public IActionResult Submit([FromBody]dynamic contactData)
+        public IActionResult Submit([FromBody]Contact contact)
         {
             try
-            {
-                Contact contact = new Contact();
-                contact.PageModuleId = scopeService.ModuleContext.PageModuleId;
-                contact.Data = contactData;
-                var user = HttpContext.User.Identity.Name;
-                var result = ContactProvider.submitData(contact);
-                if (result)
-                    return Ok();
+            {  
+                if(contact != null)
+                {
+                    var userName = HttpContext.User.Identity.Name;
+                    contact.CreatedBy = userProvider.GetUser(userName);
+                    contact.CreatedOn = DateTime.Now;
+                    var result = ContactProvider.submitData(contact);
+                    if (result)
+                        return Ok();
+                }        
+                
                 return NotFound();
             }
             catch (Exception ex)
