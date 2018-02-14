@@ -26,6 +26,7 @@ using Deviser.Core.Data.DataProviders;
 using System.Reflection;
 using System.Linq;
 using Deviser.Core.Data.Extension;
+using Deviser.Core.Common.Internal;
 
 namespace Deviser.Core.Library.DependencyInjection
 {
@@ -39,7 +40,7 @@ namespace Deviser.Core.Library.DependencyInjection
             var sp = services.BuildServiceProvider();
             IInstallationProvider installationProvider = sp.GetRequiredService<IInstallationProvider>();
 
-            ModuleDbContext.ServiceProvider = sp;
+            SharedObjects.ServiceProvider = sp;
 
             // Add framework services.            
             //services.AddDbContext<DeviserDbContext>(options =>

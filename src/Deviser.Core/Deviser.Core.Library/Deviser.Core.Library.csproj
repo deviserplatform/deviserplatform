@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Internal\DefaultAssemblyPartDiscoveryProvider.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Deviser.Core.Data\Deviser.Core.Data.csproj" />
     <ProjectReference Include="..\Deviser.Core.Common\Deviser.Core.Common.csproj" />
   </ItemGroup>

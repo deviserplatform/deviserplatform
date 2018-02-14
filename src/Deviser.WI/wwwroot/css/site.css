@@ -84,11 +84,12 @@ a {
 /*Nav*/
 .navbar-brand {
     height: 100px;
-    /*padding:0;*/
+    padding:0;
 }
 
     .navbar-brand > img {
         height: 60px;
+        margin-top: 20px;
     }
 
 @media (min-width: 768px) {
