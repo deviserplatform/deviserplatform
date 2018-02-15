@@ -53,10 +53,10 @@ namespace Deviser.Core.Library.Infrastructure
             {
                 var permalink = values[routeKey].ToString();
                 var currentCulture = GetCurrentCulture(httpContext, permalink); // Have  to use this since it will be clled before InitPageContext()
-                var pages = pageProvider.GetPageTranslations(currentCulture.ToString());
-                if (pages != null && pages.Count > 0)
+                var pageTranslations = pageProvider.GetPageTranslations(currentCulture.ToString());
+                if (pageTranslations != null && pageTranslations.Count > 0)
                 {
-                    var result = pages.Any(p => (p != null && p.URL.ToLower() == permalink.ToLower()));
+                    var result = pageTranslations.Any(p => (p != null && p.URL.ToLower() == permalink.ToLower()));
                     return result;
                 }
             }

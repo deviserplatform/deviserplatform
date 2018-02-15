@@ -37,7 +37,6 @@ namespace Deviser.Core.Library.Middleware
         private ILanguageProvider languageProvider;
         private IInstallationProvider installationManager;
 
-
         //public PageContextMiddleware(RequestDelegate next,
         //    ILoggerFactory loggerFactory,
         //    IPageManager pageManager,
@@ -65,14 +64,14 @@ namespace Deviser.Core.Library.Middleware
             IRouter router)
         {
             this.next = next;
-            this.router = router;            
+            this.router = router;
 
             installationManager = container.Resolve<IInstallationProvider>();
 
             if (installationManager.IsPlatformInstalled)
             {
                 settingManager = container.Resolve<ISettingManager>();
-                pageManager = container.Resolve<IPageManager>(); 
+                pageManager = container.Resolve<IPageManager>();
                 moduleProvider = container.Resolve<IModuleProvider>(); ;
                 languageProvider = container.Resolve<ILanguageProvider>();
             }
@@ -84,17 +83,16 @@ namespace Deviser.Core.Library.Middleware
         public async Task Invoke(HttpContext context)
         {
             httpContext = context;
-
             bool isInstalled = installationManager.IsPlatformInstalled;
 
             if (isInstalled)
             {
-                if (!context.Request.Path.Value.Contains("/api"))
-                {
-                    routeContext = new RouteContext(context);
-                    routeContext.RouteData.Routers.Add(router);
-                    await router.RouteAsync(routeContext);
+                routeContext = new RouteContext(context);
+                routeContext.RouteData.Routers.Add(router);
+                await router.RouteAsync(routeContext);
 
+                if (!context.Request.Path.Value.Contains("/api") && routeContext.RouteData.Values.Values.Count > 0)
+                {
                     InitFirstLevel();
                     InitPageContext();
                     InitModuleContext();
