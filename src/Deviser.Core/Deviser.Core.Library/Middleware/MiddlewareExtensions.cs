@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Deviser.Core.Library.Internal;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +35,8 @@ namespace Deviser.Core.Library.Middleware
 
             var routes = new RouteBuilder(app)
             {
-                DefaultHandler = app.ApplicationServices.GetRequiredService<MvcRouteHandler>(),
+                DefaultHandler = app.ApplicationServices.GetRequiredService<DeviserRouteHandler>(),
+                //DefaultHandler = app.ApplicationServices.GetRequiredService<MvcRouteHandler>(),
             };
 
             configureRoutes(routes);

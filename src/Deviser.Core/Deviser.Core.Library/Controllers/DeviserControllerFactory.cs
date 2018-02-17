@@ -229,5 +229,10 @@ namespace Deviser.Core.Library.Controllers
             var moduleActionContext = new ActionContext(actionContext.HttpContext, context.RouteData, actionDescriptor);
             return moduleActionContext;
         }
+
+        public void Dispose()
+        {
+            _actionInvoker.Dispose();
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Data;
 using Deviser.Core.Data.DataProviders;
 using Deviser.Core.Library.Multilingual;
 using Deviser.Core.Library.Services;
@@ -17,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Deviser.Core.Common.Extensions;
 
 namespace Deviser.Core.Library.Middleware
 {
@@ -36,6 +38,10 @@ namespace Deviser.Core.Library.Middleware
         private PageContext pageContext;
         private ILanguageProvider languageProvider;
         private IInstallationProvider installationManager;
+
+        //private IScopeService scopeService;
+
+        //private DeviserDbContext deviserDbContext;
 
         //public PageContextMiddleware(RequestDelegate next,
         //    ILoggerFactory loggerFactory,
@@ -60,20 +66,21 @@ namespace Deviser.Core.Library.Middleware
 
         public PageContextMiddleware(RequestDelegate next,
             ILifetimeScope container,
-            ILoggerFactory loggerFactory,
+            ILoggerFactory loggerFactory,            
             IRouter router)
         {
             this.next = next;
             this.router = router;
 
             installationManager = container.Resolve<IInstallationProvider>();
-
+            //scopeService = container.Resolve<IScopeService>();
             if (installationManager.IsPlatformInstalled)
             {
                 settingManager = container.Resolve<ISettingManager>();
                 pageManager = container.Resolve<IPageManager>();
                 moduleProvider = container.Resolve<IModuleProvider>(); ;
                 languageProvider = container.Resolve<ILanguageProvider>();
+                //deviserDbContext = container.Resolve<DeviserDbContext>();
             }
 
             logger = loggerFactory.CreateLogger<PageContextMiddleware>();
@@ -101,6 +108,9 @@ namespace Deviser.Core.Library.Middleware
 
             logger.LogInformation("Handling request: " + context.Request.Path);
             await next.Invoke(context);
+
+            //deviserDbContext.RegisterForDispose(httpContext);
+
             logger.LogInformation("Finished handling request.");
         }
 
@@ -109,8 +119,10 @@ namespace Deviser.Core.Library.Middleware
             try
             {
                 pageContext.IsMultilingual = languageProvider.IsMultilingual();
-                var currentCulture = GetCurrentCulture();
                 pageContext.SiteSettingInfo = settingManager.GetSiteSetting();
+
+                var currentCulture = GetCurrentCulture();
+                
                 pageContext.CurrentCulture = currentCulture;
 
                 Guid homePageId = pageContext.SiteSettingInfo.HomePageId;
@@ -175,6 +187,9 @@ namespace Deviser.Core.Library.Middleware
             object moduleName;
             object pageModuleId;
             var moduleContext = new ModuleContext();
+
+            //scopeService.ModuleContext = moduleContext;
+
 
             if (routeContext.RouteData.Values.TryGetValue("area", out moduleName))
             {

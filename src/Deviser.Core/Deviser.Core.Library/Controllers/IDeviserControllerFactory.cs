@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Html;
 
 namespace Deviser.Core.Library.Controllers
 {
-    public interface IDeviserControllerFactory
+    public interface IDeviserControllerFactory: IDisposable
     {        
         Task<Dictionary<string, List<ContentResult>>> GetPageModuleResults(ActionContext actionContext);
         Task<string> GetModuleEditResultAsString(ActionContext actionContext, PageModule pageModule, Guid moduleActionid);

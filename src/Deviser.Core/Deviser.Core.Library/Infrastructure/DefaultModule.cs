@@ -26,7 +26,8 @@ namespace Deviser.Core.Library.Infrastructure
             //builder.RegisterType<ModuleInvokerProvider>().As<IModuleInvokerProvider>();
             builder.RegisterType<PageUrlConstraint>().As<IRouteConstraint>().SingleInstance();
             builder.RegisterType<DeviserControllerFactory>().As<IDeviserControllerFactory>();
-            
+            builder.RegisterType<DeviserRouteHandler>().As<DeviserRouteHandler>();
+
 
             builder.RegisterType<LayoutProvider>().As<ILayoutProvider>();
             builder.RegisterType<LayoutTypeProvider>().As<ILayoutTypeProvider>();
@@ -57,7 +58,8 @@ namespace Deviser.Core.Library.Infrastructure
             //ref: https://github.com/autofac/Autofac.Mvc/issues/1
             builder.RegisterType<ModuleController>().PropertiesAutowired();
 
-            builder.RegisterType<DeviserDbContext>().As<DeviserDbContext>();
+            //builder.RegisterType<DeviserDbContext>().As<DeviserDbContext>();
+                        
         }
     }
 }

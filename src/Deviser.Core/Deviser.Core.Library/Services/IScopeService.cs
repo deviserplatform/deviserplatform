@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.Services
 {
-    public class IScopeService
+    public interface IScopeService
     {
-        public virtual PageContext PageContext { get; set; }
+        PageContext PageContext { get; }
 
-        public virtual ModuleContext ModuleContext { get; set; }
+        ModuleContext ModuleContext { get;}
     }
 }

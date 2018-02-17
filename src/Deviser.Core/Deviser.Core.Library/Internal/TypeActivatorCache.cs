@@ -29,5 +29,13 @@ namespace Deviser.Core.Library.Internal
             var createFactory = _typeActivatorCache.GetOrAdd(implementationType, _createFactory);
             return (TInstance)createFactory(serviceProvider, arguments: null);
         }
+
+        public void Dispose()
+        {
+            if(_typeActivatorCache!=null && _typeActivatorCache.Count > 0)
+            {
+                _typeActivatorCache.GetEnumerator().Dispose();
+            }
+        }
     }
 }

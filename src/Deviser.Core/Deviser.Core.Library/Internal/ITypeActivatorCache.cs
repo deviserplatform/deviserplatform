@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.Internal
 {
-    public interface ITypeActivatorCache
+    public interface ITypeActivatorCache: IDisposable
     {
         TInstance CreateInstance<TInstance>(IServiceProvider serviceProvider, Type optionType);
     }

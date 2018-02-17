@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.Internal
 {
-    public class ObjectMethodExecutorCache
+    public class ObjectMethodExecutorCache: IDisposable
     {
         public ConcurrentDictionary<string, ObjectMethodExecutor> Entries { get; } =
                 new ConcurrentDictionary<string, ObjectMethodExecutor>();
-
-
+       
         public ObjectMethodExecutor GetExecutor(MethodInfo methodInfo, TypeInfo typeInfo)
         {
             ObjectMethodExecutor executor;
@@ -27,6 +26,15 @@ namespace Deviser.Core.Library.Internal
             Entries.TryAdd(actionFullPath, executor);
             return executor;
         }
+
+        public void Dispose()
+        {
+            if (Entries != null&& Entries.Values.Count>0)
+            {
+                Entries.Values.GetEnumerator().Dispose();
+            }
+        }
+
 
     }
 }

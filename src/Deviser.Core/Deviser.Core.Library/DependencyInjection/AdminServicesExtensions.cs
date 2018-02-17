@@ -42,9 +42,6 @@ namespace Deviser.Core.Library.DependencyInjection
 
             SharedObjects.ServiceProvider = sp;
 
-            // Add framework services.            
-            //services.AddDbContext<DeviserDbContext>(options =>
-            //    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Deviser.WI")));
 
             services.AddDbContext<DeviserDbContext>(
                 (internalServiceProvider, dbContextOptionBuilder) =>
@@ -53,12 +50,13 @@ namespace Deviser.Core.Library.DependencyInjection
                     installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder);
                 });
 
-            //services.AddDbContext<ModuleDbContext>(
-            //    (internalServiceProvider, dbContextOptionBuilder) =>
-            //    {
-            //        //dbContextOptionBuilder.UseInternalServiceProvider(sp);                    
-            //        installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder);
-            //    });
+
+            //Add framework services.
+            //services.AddDbContext<DeviserDbContext>(options =>
+            //    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Deviser.WI")));
+
+
+
 
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<DeviserDbContext>()

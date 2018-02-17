@@ -6,11 +6,13 @@ namespace Deviser.Core.Library.Services
 {
     public class ScopeService : IScopeService
     {
+        public PageContext PageContext { get; }
+        public ModuleContext ModuleContext { get; }
         public ScopeService(IHttpContextAccessor httpContextAccessor)
         {
             object pageContext;
             object moduleContext;
-            if(httpContextAccessor.HttpContext.Items.TryGetValue("PageContext", out pageContext))
+            if (httpContextAccessor.HttpContext.Items.TryGetValue("PageContext", out pageContext))
             {
                 PageContext = pageContext as PageContext;
             }
@@ -28,5 +30,6 @@ namespace Deviser.Core.Library.Services
                 ModuleContext = new ModuleContext();
             }
         }
+
     }
 }

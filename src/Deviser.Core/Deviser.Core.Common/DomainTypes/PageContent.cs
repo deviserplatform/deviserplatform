@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Common.DomainTypes
 {
-    public class PageContent
+    public class PageContent : IDisposable
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
@@ -33,5 +33,24 @@ namespace Deviser.Core.Common.DomainTypes
             }
             return null;
         }
+
+        public void Dispose()
+        {
+            if (Properties != null)
+            {
+                Properties.GetEnumerator().Dispose();
+            }
+
+            if (PageContentTranslation != null)
+            {
+                PageContentTranslation.GetEnumerator().Dispose();
+            }
+
+            if (ContentPermissions != null)
+            {
+                ContentPermissions.GetEnumerator().Dispose();
+            }
+        }
+
     }
 }

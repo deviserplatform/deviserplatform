@@ -12,6 +12,7 @@ using Deviser.Core.Library.Controllers;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Deviser.Core.Common.Extensions;
 using DefaultAssemblyPartDiscoveryProvider = Deviser.Core.Common.Internal.DefaultAssemblyPartDiscoveryProvider;
 
 namespace Deviser.Core.Library.Internal
@@ -20,14 +21,16 @@ namespace Deviser.Core.Library.Internal
     {
         private readonly ObjectMethodExecutorCache _cache;
         private readonly ITypeActivatorCache _typeActivatorCache;
-        private readonly IControllerFactory _controllerFactory;
+        //private readonly IControllerFactory _controllerFactory;
 
         private const string ControllerTypeNameSuffix = "Controller";
         private readonly IControllerPropertyActivator[] _propertyActivators;
+        private List<TypeInfo> allControllers;
+
 
         public ActionInvoker(
             ITypeActivatorCache typeActivatorCache,
-            IControllerFactory controllerFactory,
+            /*IControllerFactory controllerFactory,*/
             ObjectMethodExecutorCache cache,
             IEnumerable<IControllerPropertyActivator> propertyActivators)
         {
@@ -39,25 +42,25 @@ namespace Deviser.Core.Library.Internal
             _typeActivatorCache = typeActivatorCache;
             _propertyActivators = propertyActivators.ToArray();
 
-            _controllerFactory = controllerFactory;
+            //_controllerFactory = controllerFactory;
 
             _cache = cache;
-        }
 
-        public async Task<IActionResult> InvokeAction(HttpContext httpContext, ModuleAction moduleAction, ActionContext actionContext)
-        {
+
             var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.ApplicationEntryPoint);
-
-            IActionResult result = null;
-
-            List<TypeInfo> allControllers = new List<TypeInfo>();
+            allControllers = new List<TypeInfo>();
             foreach (var assembly in assemblies)
             {
-                var controllerTypes = assembly.DefinedTypes.Where(t => t.Namespace == moduleAction.ControllerNamespace && IsController(t)).ToList();
+                var controllerTypes = assembly.DefinedTypes.Where(t => IsController(t)).ToList();
 
                 if (controllerTypes != null && controllerTypes.Count > 0)
                     allControllers.AddRange(controllerTypes);
             }
+        }
+
+        public async Task<IActionResult> InvokeAction(HttpContext httpContext, ModuleAction moduleAction, ActionContext actionContext)
+        {
+            IActionResult result = null;
 
             var targetController = allControllers.FirstOrDefault(c => c.Namespace == moduleAction.ControllerNamespace && c.Name == moduleAction.ControllerName + ControllerTypeNameSuffix);
 
@@ -150,6 +153,8 @@ namespace Deviser.Core.Library.Internal
                     executor.MethodInfo.DeclaringType));
             }
 
+            ((IDisposable)controller).RegisterForDispose(httpContext);
+
             return result;
         }
 
@@ -219,6 +224,17 @@ namespace Deviser.Core.Library.Internal
             return arguments;
         }
 
+        public void Dispose()
+        {
+            if(allControllers!=null)
+            {
+                allControllers.GetEnumerator().Dispose();
+            }
 
+            _cache.Dispose();
+            _typeActivatorCache.Dispose();
+
+
+        }
     }
 }

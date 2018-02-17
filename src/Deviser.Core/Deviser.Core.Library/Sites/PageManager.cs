@@ -21,6 +21,10 @@ namespace Deviser.Core.Library.Sites
         protected IHttpContextAccessor httpContextAccessor;
         protected IRoleProvider roleProvider;
 
+        private bool _isAuthenticated;
+        private string _currentUserName;
+        private List<Role> _currentUserRoles;
+
         public PageManager(ILifetimeScope container)
         {
             this.container = container;
@@ -34,7 +38,10 @@ namespace Deviser.Core.Library.Sites
         {
             get
             {
-                return httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
+                if(!_isAuthenticated)
+                    _isAuthenticated = httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
+
+                return _isAuthenticated; 
             }
         }
 
@@ -42,7 +49,10 @@ namespace Deviser.Core.Library.Sites
         {
             get
             {
-                return (httpContextAccessor.HttpContext.User.Identity.IsAuthenticated) ? httpContextAccessor.HttpContext.User.Identity.Name : "";
+                if(string.IsNullOrEmpty(_currentUserName))
+                    _currentUserName = (httpContextAccessor.HttpContext.User.Identity.IsAuthenticated) ? httpContextAccessor.HttpContext.User.Identity.Name : "";
+
+                return _currentUserName;
             }
         }
 
@@ -50,7 +60,10 @@ namespace Deviser.Core.Library.Sites
         {
             get
             {
-                return roleProvider.GetRoles(CurrentUserName);
+                if(_currentUserRoles==null)
+                    _currentUserRoles = roleProvider.GetRoles(CurrentUserName);
+
+                return _currentUserRoles;
             }
         }
 

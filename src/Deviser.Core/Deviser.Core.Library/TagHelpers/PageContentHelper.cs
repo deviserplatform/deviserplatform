@@ -15,6 +15,7 @@ using Deviser.Core.Common.DomainTypes;
 using AutoMapper;
 using Deviser.Core.Library.Services;
 using System.Globalization;
+using Deviser.Core.Common.Extensions;
 
 using PageContent = Deviser.Core.Common.DomainTypes.PageContent;
 //using Page = Deviser.Core.Data.Entities.Page;
@@ -109,7 +110,7 @@ namespace Deviser.Core.Library.TagHelpers
 
             if (pageLayout.PlaceHolders != null && pageLayout.PlaceHolders.Count > 0)
             {
-                HtmlContentBuilder result = RenderContentItems(pageLayout.PlaceHolders, ModuleActionResults);
+                HtmlContentBuilder result = RenderContentItems(pageLayout.PlaceHolders);
                 if (ModuleActionResults.Count > 0)
                 {
                     //One or more modules are not added in containers
@@ -126,10 +127,16 @@ namespace Deviser.Core.Library.TagHelpers
                     }
                 }
                 output.Content.SetHtmlContent(result);
+
+                //Release all resources
+                pageLayout.RegisterForDispose(ViewContext.HttpContext);
+                PageContents.GetEnumerator().RegisterForDispose(ViewContext.HttpContext);                
+                ModuleActionResults.GetEnumerator().RegisterForDispose(ViewContext.HttpContext);
+                pageLayout.RegisterForDispose(ViewContext.HttpContext);
             }
         }
 
-        private HtmlContentBuilder RenderContentItems(List<PlaceHolder> placeHolders, Dictionary<string, List<ContentResult>> moduleActionResults)
+        private HtmlContentBuilder RenderContentItems(List<PlaceHolder> placeHolders)
         {
             //StringBuilder sb = new StringBuilder();
             HtmlContentBuilder contentBuilder = new HtmlContentBuilder();
@@ -148,13 +155,13 @@ namespace Deviser.Core.Library.TagHelpers
                         var layoutType = placeHolder.Type.ToLower();
                         ViewContext.ViewData["isEditMode"] = false;
 
-                        if (moduleActionResults.ContainsKey(placeHolder.Id.ToString()))
+                        if (ModuleActionResults.ContainsKey(placeHolder.Id.ToString()))
                         {
                             //Modules                            
-                            if (moduleActionResults.TryGetValue(placeHolder.Id.ToString(), out moduleResult))
+                            if (ModuleActionResults.TryGetValue(placeHolder.Id.ToString(), out moduleResult))
                             {
                                 //sb.Append(moduleResult);
-                                moduleActionResults.Remove(placeHolder.Id.ToString());
+                                ModuleActionResults.Remove(placeHolder.Id.ToString());
                                 currentResults.AddRange(moduleResult);
                             }
                         }
@@ -184,7 +191,9 @@ namespace Deviser.Core.Library.TagHelpers
                                     PageContent = pageContent,
                                     Content = content
                                 };
+
                                 string contentTypesViewPath = string.Format(Globals.ContentTypesViewPath, scopeService.PageContext.SelectedTheme, typeName);
+
                                 htmlContent = htmlHelper.Partial(contentTypesViewPath, dynamicContent);
                                 //var contentResult = GetString(htmlContent);
                                 currentResults.Add(new ContentResult
@@ -197,7 +206,7 @@ namespace Deviser.Core.Library.TagHelpers
                         }
 
 
-                        var placeHolderResult = RenderContentItems(placeHolder.PlaceHolders, moduleActionResults);
+                        var placeHolderResult = RenderContentItems(placeHolder.PlaceHolders);
                         currentResults.Add(new ContentResult
                         {
                             //Result = placeHolderResult,

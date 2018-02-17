@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Common.DomainTypes
 {
-    public class PageLayout
+    public class PageLayout : IDisposable
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -15,5 +15,12 @@ namespace Deviser.Core.Common.DomainTypes
         public bool IsChanged { get; set; }
         public bool IsDeleted { get; set; }
 
+        public void Dispose()
+        {
+            if (PlaceHolders != null)
+            {
+                PlaceHolders.GetEnumerator().Dispose();
+            }
+        }
     }
 }

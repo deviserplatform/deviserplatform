@@ -16,7 +16,7 @@ using Deviser.Core.Library.Modules;
 
 namespace Deviser.WI.Controllers
 {
-    public class PageController : DeviserController
+    public class PageController : DeviserController, IDisposable
     {
         private readonly ILogger<PageController> logger;
 
@@ -80,7 +80,7 @@ namespace Deviser.WI.Controllers
                         {
                             Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(Context);
                             ViewBag.ModuleActionResults = moduleActionResults;
-                            return View(currentPage);
+                            return View(currentPage);                            
                         }
                         else
                         {
@@ -200,5 +200,13 @@ namespace Deviser.WI.Controllers
                 ViewBag.Theme = theme;
             }
         }
+
+        public new void Dispose()
+        {
+            deviserControllerFactory.Dispose();
+            base.Dispose();
+        }
+
+
     }
 }
