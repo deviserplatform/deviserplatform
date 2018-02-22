@@ -8,8 +8,13 @@ namespace Deviser.Core.Library.Services
     {
         public PageContext PageContext { get; }
         public ModuleContext ModuleContext { get; }
+
+        public Guid ScopeId { get; }
+
         public ScopeService(IHttpContextAccessor httpContextAccessor)
         {
+            ScopeId = Guid.NewGuid();
+
             object pageContext;
             object moduleContext;
             if (httpContextAccessor.HttpContext.Items.TryGetValue("PageContext", out pageContext))

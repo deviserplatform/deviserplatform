@@ -33,11 +33,11 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.SiteSetting.ToList();
                     return Mapper.Map<List<SiteSetting>>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -50,12 +50,12 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var setting = context.SiteSetting.FirstOrDefault(s=>s.SettingName==settingName);
                     if (setting != null)
                         return setting.SettingValue;
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -68,15 +68,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbSettings = Mapper.Map<List<Entities.SiteSetting>>(settings);
                     context.SiteSetting.UpdateRange(dbSettings);
                     context.SaveChanges();
                     var result = context.SiteSetting.ToList();
                     if (result != null)
                         return Mapper.Map<List<SiteSetting>>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {

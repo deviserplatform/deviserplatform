@@ -30,14 +30,16 @@ namespace Deviser.Core.Library.Middleware
         private readonly RequestDelegate next;
         private readonly ILogger logger;
         private IRouter router;
-        private RouteContext routeContext;
-        private HttpContext httpContext;
-        private IPageManager pageManager;
-        private IModuleProvider moduleProvider;
-        private ISettingManager settingManager;
-        private PageContext pageContext;
-        private ILanguageProvider languageProvider;
-        private IInstallationProvider installationManager;
+
+        //private RouteContext routeContext;
+        //private HttpContext httpContext;
+
+        //private IPageManager pageManager;
+        //private IModuleProvider moduleProvider;
+        //private ISettingManager settingManager;
+        //private PageContext pageContext;
+        //private ILanguageProvider languageProvider;
+        //private IInstallationProvider installationManager;
 
         //private IScopeService scopeService;
 
@@ -65,169 +67,193 @@ namespace Deviser.Core.Library.Middleware
         //}
 
         public PageContextMiddleware(RequestDelegate next,
-            ILifetimeScope container,
-            ILoggerFactory loggerFactory,            
+            ILoggerFactory loggerFactory,
             IRouter router)
         {
             this.next = next;
             this.router = router;
 
-            installationManager = container.Resolve<IInstallationProvider>();
-            //scopeService = container.Resolve<IScopeService>();
-            if (installationManager.IsPlatformInstalled)
-            {
-                settingManager = container.Resolve<ISettingManager>();
-                pageManager = container.Resolve<IPageManager>();
-                moduleProvider = container.Resolve<IModuleProvider>(); ;
-                languageProvider = container.Resolve<ILanguageProvider>();
-                //deviserDbContext = container.Resolve<DeviserDbContext>();
-            }
-
             logger = loggerFactory.CreateLogger<PageContextMiddleware>();
-            pageContext = new PageContext();
+
+
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext httpContext,
+            ILifetimeScope container)
         {
-            httpContext = context;
+
+            IPageManager pageManager;
+            IModuleProvider moduleProvider;
+            ISettingManager settingManager;
+            PageContext pageContext;
+            ILanguageProvider languageProvider;
+            IInstallationProvider installationManager;
+
+            pageContext = new PageContext();
+
+            installationManager = container.Resolve<IInstallationProvider>();
+
             bool isInstalled = installationManager.IsPlatformInstalled;
 
             if (isInstalled)
             {
-                routeContext = new RouteContext(context);
+                RouteContext routeContext = new RouteContext(httpContext);
                 routeContext.RouteData.Routers.Add(router);
                 await router.RouteAsync(routeContext);
 
-                if (!context.Request.Path.Value.Contains("/api") && routeContext.RouteData.Values.Values.Count > 0)
+                if (!httpContext.Request.Path.Value.Contains("/api") && routeContext.RouteData.Values.Values.Count > 0)
                 {
-                    InitFirstLevel();
-                    InitPageContext();
-                    InitModuleContext();
+                    try
+                    {
+                        settingManager = container.Resolve<ISettingManager>();
+                        pageManager = container.Resolve<IPageManager>();
+                        moduleProvider = container.Resolve<IModuleProvider>(); ;
+                        languageProvider = container.Resolve<ILanguageProvider>();
+                        //deviserDbContext = container.Resolve<DeviserDbContext>();
+
+                        pageContext.IsMultilingual = languageProvider.IsMultilingual();
+                        pageContext.SiteSettingInfo = settingManager.GetSiteSetting();
+
+                        var currentCulture = GetCurrentCulture(routeContext, httpContext, pageContext.IsMultilingual);
+
+                        pageContext.CurrentCulture = currentCulture;
+
+                        Guid homePageId = pageContext.SiteSettingInfo.HomePageId;
+
+                        if (homePageId != Guid.Empty)
+                        {
+                            pageContext.HomePage = pageManager.GetPage(homePageId);
+                        }
+
+
+                        //This method initilizes the PageContext based on the RouteData or Query "permalink"
+                        //permalink in the url has first preference
+                        string permalink = getPermalink(routeContext, httpContext);
+                        if (string.IsNullOrEmpty(permalink))
+                        {
+                            permalink = pageContext.HomePageUrl;
+                        }
+
+                        Page currentPage = null;
+
+                        if (string.IsNullOrEmpty(permalink))
+                        {
+                            currentPage = pageContext.HomePage;
+                        }
+                        else
+                        {
+                            string requestCulture = pageContext.CurrentCulture.ToString().ToLower();
+
+                            if (permalink.Contains(requestCulture) && !pageContext.IsMultilingual)
+                                permalink = permalink.Replace(requestCulture + "/", "");
+
+                            currentPage = pageManager.GetPageByUrl(permalink, pageContext.CurrentCulture.ToString());
+                        }
+
+                        pageContext.CurrentPageId = currentPage.Id;
+                        pageContext.CurrentUrl = permalink;
+                        pageContext.CurrentPage = currentPage;
+                        pageContext.HasPageViewPermission = pageManager.HasViewPermission(currentPage);
+                        pageContext.HasPageEditPermission = pageManager.HasEditPermission(currentPage);
+
+
+                        if (!httpContext.Items.ContainsKey("PageContext"))
+                        {
+                            httpContext.Items.Add("PageContext", pageContext);
+                        }
+                        else
+                        {
+                            httpContext.Items["PageContext"] = pageContext;
+                        }
+
+                        object moduleName;
+                        object pageModuleId;
+                        var moduleContext = new ModuleContext();
+
+                        //scopeService.ModuleContext = moduleContext;
+
+
+                        if (routeContext.RouteData.Values.TryGetValue("area", out moduleName))
+                        {
+                            moduleContext.ModuleInfo = moduleProvider.Get((string)moduleName);
+                        }
+
+                        if (routeContext.RouteData.Values.TryGetValue("pageModuleId", out pageModuleId))
+                        {
+                            moduleContext.PageModuleId = Guid.Parse((string)pageModuleId);
+
+                            if (moduleContext.ModuleInfo == null)
+                            {
+                                moduleContext.ModuleInfo = moduleProvider.GetModuleByPageModuleId(moduleContext.PageModuleId);
+                            }
+                        }
+
+                        if (moduleContext.ModuleInfo != null || moduleContext.PageModuleId != null)
+                        {
+                            if (!httpContext.Items.ContainsKey("ModuleContext"))
+                            {
+                                httpContext.Items.Add("ModuleContext", moduleContext);
+                            }
+                            else
+                            {
+                                httpContext.Items["ModuleContext"] = moduleContext;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        string errorMessage = string.Format("Error occured while initializing site ");
+                        logger.LogError(errorMessage, ex);
+                    }
+
+                    //InitPageContext();
+                    //InitModuleContext();
                 }
             }
 
-            logger.LogInformation("Handling request: " + context.Request.Path);
-            await next.Invoke(context);
+
+            installationManager = null;
+
+            settingManager = null;
+            pageManager = null;
+            moduleProvider = null;
+            languageProvider = null;
+            pageContext = null;
+
+            logger.LogInformation("Handling request: " + httpContext.Request.Path);
+            await next.Invoke(httpContext);
 
             //deviserDbContext.RegisterForDispose(httpContext);
 
             logger.LogInformation("Finished handling request.");
         }
 
-        private void InitFirstLevel()
-        {
-            try
-            {
-                pageContext.IsMultilingual = languageProvider.IsMultilingual();
-                pageContext.SiteSettingInfo = settingManager.GetSiteSetting();
+        //private void InitFirstLevel()
+        //{
+        //}
 
-                var currentCulture = GetCurrentCulture();
-                
-                pageContext.CurrentCulture = currentCulture;
+        ///// <summary>
+        ///// This method initilizes the PageContext based on the RouteData or Query "permalink"
+        ///// </summary>
+        ///// <returns></returns>
+        //private void InitPageContext()
+        //{
 
-                Guid homePageId = pageContext.SiteSettingInfo.HomePageId;
+        //}
 
-                if (homePageId != Guid.Empty)
-                {
-                    pageContext.HomePage = pageManager.GetPage(homePageId);
-                }
-            }
-            catch (Exception ex)
-            {
-                string errorMessage = string.Format("Error occured while initializing site ");
-                logger.LogError(errorMessage, ex);
-            }
+        //private void InitModuleContext()
+        //{
 
-        }
+        //}
 
-        /// <summary>
-        /// This method initilizes the PageContext based on the RouteData or Query "permalink"
-        /// </summary>
-        /// <returns></returns>
-        private void InitPageContext()
-        {
-            //permalink in the url has first preference
-            string permalink = getPermalink(true);
-
-            Page currentPage = null;
-
-            if (string.IsNullOrEmpty(permalink))
-            {
-                currentPage = pageContext.HomePage;
-            }
-            else
-            {
-                string requestCulture = pageContext.CurrentCulture.ToString().ToLower();
-
-                if (permalink.Contains(requestCulture) && !pageContext.IsMultilingual)
-                    permalink = permalink.Replace(requestCulture + "/", "");
-
-                currentPage = pageManager.GetPageByUrl(permalink, pageContext.CurrentCulture.ToString());
-            }
-
-            pageContext.CurrentPageId = currentPage.Id;
-            pageContext.CurrentUrl = permalink;
-            pageContext.CurrentPage = currentPage;
-            pageContext.HasPageViewPermission = pageManager.HasViewPermission(currentPage);
-            pageContext.HasPageEditPermission = pageManager.HasEditPermission(currentPage);
-
-
-            if (!httpContext.Items.ContainsKey("PageContext"))
-            {
-                httpContext.Items.Add("PageContext", pageContext);
-            }
-            else
-            {
-                httpContext.Items["PageContext"] = pageContext;
-            }
-        }
-
-        private void InitModuleContext()
-        {
-            object moduleName;
-            object pageModuleId;
-            var moduleContext = new ModuleContext();
-
-            //scopeService.ModuleContext = moduleContext;
-
-
-            if (routeContext.RouteData.Values.TryGetValue("area", out moduleName))
-            {
-                moduleContext.ModuleInfo = moduleProvider.Get((string)moduleName);
-            }
-
-            if (routeContext.RouteData.Values.TryGetValue("pageModuleId", out pageModuleId))
-            {
-                moduleContext.PageModuleId = Guid.Parse((string)pageModuleId);
-
-                if (moduleContext.ModuleInfo == null)
-                {
-                    moduleContext.ModuleInfo = moduleProvider.GetModuleByPageModuleId(moduleContext.PageModuleId);
-                }
-            }
-
-            if (moduleContext.ModuleInfo != null || moduleContext.PageModuleId != null)
-            {
-                if (!httpContext.Items.ContainsKey("ModuleContext"))
-                {
-                    httpContext.Items.Add("ModuleContext", moduleContext);
-                }
-                else
-                {
-                    httpContext.Items["ModuleContext"] = moduleContext;
-                }
-            }
-
-        }
-
-        private CultureInfo GetCurrentCulture()
+        private CultureInfo GetCurrentCulture(RouteContext routeContext, HttpContext httpContext, bool isSiteMultilingual)
         {
             var requestCultureFeature = httpContext.Features.Get<IRequestCultureFeature>();
             CultureInfo requestCulture = null;
 
-            if (pageContext.IsMultilingual)
+            if (isSiteMultilingual)
             {
-                string permalink = getPermalink();
+                string permalink = getPermalink(routeContext, httpContext);
                 var match = Regex.Match(permalink, @"[a-z]{2}-[a-z]{2}", RegexOptions.IgnoreCase);
                 if (match.Success)
                 {
@@ -248,7 +274,7 @@ namespace Deviser.Core.Library.Middleware
             return requestCulture;
         }
 
-        private string getPermalink(bool forPageContext = false)
+        private string getPermalink(RouteContext routeContext, HttpContext httpContext)
         {
             //permalink in the url has first preference
             string permalink = (routeContext.RouteData.Values["permalink"] != null) ? routeContext.RouteData.Values["permalink"].ToString() : "";
@@ -256,11 +282,6 @@ namespace Deviser.Core.Library.Middleware
             {
                 //if permalink is null, check for querystring
                 permalink = httpContext.Request.Query["permalink"].ToString();
-            }
-
-            if (string.IsNullOrEmpty(permalink) && forPageContext)
-            {
-                permalink = pageContext.HomePageUrl;
             }
             return permalink;
         }

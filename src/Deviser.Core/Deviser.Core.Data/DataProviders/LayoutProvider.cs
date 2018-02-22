@@ -35,13 +35,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbLayout = Mapper.Map<Entities.Layout>(layout);
                     var result = context.Layout.Add(dbLayout).Entity;
                     context.SaveChanges();
                     return Mapper.Map<Layout>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -54,13 +54,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.Layout
                                .ToList();
 
                     return Mapper.Map<List<Layout>>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -73,14 +73,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.Layout
                                .Where(e => e.IsDeleted)
                                .ToList();
 
                     return Mapper.Map<List<Layout>>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -93,14 +93,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.Layout
                         .FirstOrDefault(e => e.Id == layoutId);
 
                     return Mapper.Map<Layout>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -113,15 +112,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbLayout = Mapper.Map<Entities.Layout>(layout);
 
                     var result = context.Layout.Update(dbLayout).Entity;                   
 
                     context.SaveChanges();
                     return Mapper.Map<Layout>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -134,15 +133,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var layout = GetLayout(layoutId);
                     var dbLayout = Mapper.Map<Entities.Layout>(layout);
 
                     context.Layout.Remove(dbLayout);
                     context.SaveChanges();
                     return true;
-                }
+                //}
             }
             catch (Exception ex)
             {

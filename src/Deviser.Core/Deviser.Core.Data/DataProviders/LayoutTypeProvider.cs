@@ -35,14 +35,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbLayoutType = Mapper.Map<Entities.LayoutType>(layoutType);
                     dbLayoutType.CreatedDate = dbLayoutType.LastModifiedDate = DateTime.Now;
                     var result = context.LayoutType.Add(dbLayoutType).Entity;
                     context.SaveChanges();
                     return Mapper.Map<LayoutType>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -55,14 +55,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.LayoutType
                         .Include(lt => lt.LayoutTypeProperties)
                         .FirstOrDefault(e => e.Id == layoutTypeId);
 
                     return Mapper.Map<LayoutType>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -75,15 +75,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.LayoutType
                         .Include(lt => lt.LayoutTypeProperties)
                         .FirstOrDefault(e => e.Name.ToLower() == layoutTypeName.ToLower());
 
                     return Mapper.Map<LayoutType>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -96,14 +95,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.LayoutType
                         .Include(c => c.LayoutTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p=>p.OptionList)
                         .ToList();
 
                     return Mapper.Map<List<LayoutType>>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -116,8 +115,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbLayoutType = Mapper.Map<Entities.LayoutType>(layoutType);
 
                     if (dbLayoutType.LayoutTypeProperties != null && dbLayoutType.LayoutTypeProperties.Count > 0)
@@ -162,7 +161,7 @@ namespace Deviser.Core.Data.DataProviders
                     context.Entry(dbLayoutType).State = EntityState.Modified;
                     context.SaveChanges();
                     return Mapper.Map<LayoutType>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {

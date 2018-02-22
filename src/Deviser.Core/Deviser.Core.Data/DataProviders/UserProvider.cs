@@ -35,8 +35,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.Users
                                 .Include(u => u.UserRoles)
                                 .ToList();
@@ -59,7 +59,7 @@ namespace Deviser.Core.Data.DataProviders
                     }
 
                     return resturnResult;
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -72,8 +72,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.Users
                                .Where(e => e.Id == userId)
                                .Include(u => u.UserRoles)
@@ -94,7 +94,7 @@ namespace Deviser.Core.Data.DataProviders
                     }
 
                     return returnResult;
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -107,13 +107,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var userId = context.User
                         .Where(u => u.UserName == userName)
                         .Select(u => u.Id).FirstOrDefault();
                     return userId;
-                }
+                //}
             }
             catch(Exception ex)
             {

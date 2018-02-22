@@ -44,14 +44,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.Module
                         .Include(m => m.ModuleAction)//.ThenInclude(ma=>ma.ModuleActionType)
                         .ToList();
 
                     return Mapper.Map<List<Module>>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -64,14 +64,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.ModuleAction
                         .FirstOrDefault(m => m.Id == moduleActionId);
 
                     return Mapper.Map<ModuleAction>(result);
 
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -84,8 +84,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.ModuleAction
                         .Include(ma => ma.Module)//.ThenInclude(ma=>ma.ModuleActionType)
                         .Where(m => m.ModuleActionType.ControlType.ToLower() == "view" && m.Module.IsActive ) //Selecting View Actions Only
@@ -93,7 +93,7 @@ namespace Deviser.Core.Data.DataProviders
                         .ToList();
 
                     return Mapper.Map<List<ModuleAction>>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -106,14 +106,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.ModuleActionType
                         .OrderBy(cd => cd.Id)
                         .ToList();
 
                     return Mapper.Map<List<ModuleActionType>>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -126,15 +126,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.ModuleAction
                         .Include(ma => ma.Module)//.ThenInclude(ma=>ma.ModuleActionType)
                         .Where(m => m.ModuleId== moduleId && m.ModuleActionType.ControlType.ToLower() == "edit") //Selecting View Actions Only
                         .ToList();
 
                     return Mapper.Map<List<ModuleAction>>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -147,15 +147,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.Module
                               .Where(e => e.Id == moduleId)
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) // ("ModuleActions.ModuleActionType")
                               .FirstOrDefault();
 
                     return Mapper.Map<Module>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -168,15 +168,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.Module
                               .Where(e => e.Name == moduleName)
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
                               .FirstOrDefault();
 
                     return Mapper.Map<Module>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -189,15 +189,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.Module
                               .Where(e => e.PageModule.Any(pm => pm.Id==pageModuleId))
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
                               .FirstOrDefault();
 
                     return Mapper.Map<Module>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -210,14 +210,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbModule = Mapper.Map<Entities.Module>(module);
                     dbModule.CreatedDate = dbModule.LastModifiedDate = DateTime.Now;
                     var result = context.Module.Add(dbModule).Entity;
                     context.SaveChanges();
                     return Mapper.Map<Module>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -229,8 +229,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbModule = Mapper.Map<Entities.Module>(module);
                     var moduleActions = dbModule.ModuleAction;
                     dbModule.ModuleAction = null;                  
@@ -259,7 +259,7 @@ namespace Deviser.Core.Data.DataProviders
                     var result = context.Module.Update(dbModule).Entity;
                     context.SaveChanges();
                     return Mapper.Map<Module>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -272,13 +272,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbmoduleAction = Mapper.Map<Entities.ModuleAction>(moduleAction);
                     var result = context.ModuleAction.Add(dbmoduleAction).Entity;
                     context.SaveChanges();
                     return Mapper.Map<ModuleAction>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -290,14 +290,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbmoduleAction = Mapper.Map<Entities.ModuleAction>(moduleAction);
                     var result = context.ModuleAction.Attach(dbmoduleAction).Entity;
                     context.Entry(moduleAction).State = EntityState.Modified;
                     context.SaveChanges();
                     return Mapper.Map<ModuleAction>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {

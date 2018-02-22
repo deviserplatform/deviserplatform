@@ -63,31 +63,13 @@ namespace Deviser.Core.Data.DataProviders
                                                                     .Where(.Where(e=>e.ParentId==null&&e.IsDeleted==false));*/
                 /*List<> returnData = new List<>();
                 returnData.Add(context.Pages.ToList().First());*/
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    //return context.Page
-                    //.Include(p => p.PageTranslation) //("PageTranslations")  
-                    //.ToList().First();
-
-                    //return context.Page                        
-                    //    .Include(p=>p.ChildPage)
-                    //    .ThenInclude(p=>p.ChildPage)
-                    //    .ThenInclude(p => p.ChildPage)
-                    //    .ThenInclude(p => p.ChildPage)
-                    //    .ThenInclude(p => p.ChildPage)
-                    //    .ThenInclude(p => p.ChildPage)
-                    //    .ThenInclude(p => p.ChildPage)
-                    //    .ThenInclude(p => p.ChildPage)
-                    //    .ThenInclude(p => p.ChildPage)
-                    //    .ThenInclude(p => p.ChildPage)
-                    //    .Include(p => p.PageTranslation)
-                    //    .Where(p => p.ParentId == null).First();
-
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var rootOnly = context.Page
                             .First(p => p.ParentId == null);
                     GetPageTree(context, rootOnly);
                     return Mapper.Map<Page>(rootOnly);
-                }
+                //}
 
             }
             catch (Exception ex)
@@ -120,8 +102,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.Page
                                 .Where(e => e.ParentId != null)
                                 //.Include("PageTranslations").Include("ChildPages").Include("PageModules").Include("PageModules.Module")
@@ -131,7 +113,7 @@ namespace Deviser.Core.Data.DataProviders
                                 .ToList();
 
                     return Mapper.Map<List<Page>>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -144,15 +126,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.Page
                                 .Include(p => p.PageTranslation)
                                 .Where(e => e.ParentId != null && e.IsDeleted)                                
                                 .ToList();
                    
                     return Mapper.Map<List<Page>>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -165,8 +147,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.Page
                                .Where(e => e.Id == pageId)
                                .Include(p => p.PageTranslation)
@@ -192,7 +174,7 @@ namespace Deviser.Core.Data.DataProviders
                     }                 
 
                     return Mapper.Map<Page>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -205,14 +187,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbPage = Mapper.Map<Entities.Page>(page);
                     dbPage.CreatedDate = DateTime.Now; dbPage.LastModifiedDate = DateTime.Now;
                     var result = context.Page.Add(dbPage).Entity;
                     context.SaveChanges();
                     return Mapper.Map<Page>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -230,8 +212,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbPage = Mapper.Map<Entities.Page>(page);
 
                     dbPage.LastModifiedDate = DateTime.Now;
@@ -289,7 +271,7 @@ namespace Deviser.Core.Data.DataProviders
                     //context.PageTranslation.UpdateRange(page.PageTranslation);
                     context.SaveChanges();
                     return Mapper.Map<Page>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -313,15 +295,15 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbPage = Mapper.Map<Entities.Page>(page);
                     dbPage.LastModifiedDate = DateTime.Now;
                     UpdatePageTreeTree(context, dbPage);
                     context.SaveChanges();
                     var result = context.Page.ToList().First();
                     return Mapper.Map<Page>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -382,14 +364,14 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.PageTranslation
                     .Where(e => string.Equals(e.URL, url, StringComparison.CurrentCultureIgnoreCase))
                     .OrderBy(p => p.PageId)
                     .FirstOrDefault();
                     return Mapper.Map<PageTranslation>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -402,8 +384,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.PageModule
                                 .Where(e => e.PageId == pageId && !e.IsDeleted)
                                 .Include(e => e.Module)
@@ -413,7 +395,7 @@ namespace Deviser.Core.Data.DataProviders
                                 .ToList();
 
                     return Mapper.Map<List<PageModule>>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -426,8 +408,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.PageModule
                         .Include(pm => pm.ModulePermissions)
                         .Where(e => e.Id == pageModuleId && !e.IsDeleted)
@@ -435,7 +417,7 @@ namespace Deviser.Core.Data.DataProviders
                         .FirstOrDefault();
 
                     return Mapper.Map<PageModule>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -448,8 +430,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var result = context.PageModule                               
                                .Include(P => P.Page).ThenInclude(P => P.PageTranslation)
                                .Where(e => e.IsDeleted)
@@ -457,7 +439,7 @@ namespace Deviser.Core.Data.DataProviders
                                .ToList();
 
                     return Mapper.Map<List<PageModule>>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -491,13 +473,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbPageModule = Mapper.Map<Entities.PageModule>(pageModule);
                     var result = context.PageModule.Add(dbPageModule).Entity;
                     context.SaveChanges();
                     return Mapper.Map<PageModule>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -510,13 +492,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbPageModule = Mapper.Map<Entities.PageModule>(pageModule);
                     var result = context.PageModule.Update(dbPageModule).Entity;
                     context.SaveChanges();
                     return Mapper.Map<PageModule>(result);
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -529,8 +511,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbPageModules = Mapper.Map<List<Entities.PageModule>>(pageModules);
                     foreach (var pageModule in dbPageModules)
                     {
@@ -546,7 +528,7 @@ namespace Deviser.Core.Data.DataProviders
                         }
                     }
                     context.SaveChanges();
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -564,8 +546,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     if (pagePermissions != null && pagePermissions.Count > 0)
                     {
                         var dbPagePermissions = Mapper.Map<List<Entities.PagePermission>>(pagePermissions);
@@ -588,7 +570,7 @@ namespace Deviser.Core.Data.DataProviders
                         context.SaveChanges();
                         return Mapper.Map<List<PagePermission>>(toAdd);
                     }
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -606,8 +588,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     if (pagePermissions != null && pagePermissions.Count > 0)
                     {
                         var dbModulePermissions = Mapper.Map<List<Entities.ModulePermission>>(pagePermissions);
@@ -630,7 +612,7 @@ namespace Deviser.Core.Data.DataProviders
                         context.SaveChanges();
                         return Mapper.Map<List<ModulePermission>>(toAdd);
                     }
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -650,8 +632,8 @@ namespace Deviser.Core.Data.DataProviders
 
                 try
                 {
-                    using (var context = new DeviserDbContext(DbOptions))
-                    {
+                    //using (var context = new DeviserDbContext(DbOptions))
+                    //{
                         //Update InheritViewPermissions only
                         var dbPageContent = context.PageModule.First(pc => pc.Id == pageModuleId);
                         dbPageContent.InheritViewPermissions = dbPageModule.InheritViewPermissions;
@@ -680,7 +662,7 @@ namespace Deviser.Core.Data.DataProviders
                         }
 
                         context.SaveChanges();
-                    }
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -694,8 +676,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbpageModule = GetDeletedPageModule(id);
 
                     if(dbpageModule != null)
@@ -705,7 +687,7 @@ namespace Deviser.Core.Data.DataProviders
                         context.SaveChanges();
                         return Mapper.Map<PageModule>(result);
                     }
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -718,8 +700,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbpageModule = GetDeletedPageModule(id);
 
                     if (dbpageModule != null)
@@ -732,7 +714,7 @@ namespace Deviser.Core.Data.DataProviders
                         context.SaveChanges();
                         return true;
                     }
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -746,13 +728,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var pageModule = context.PageModule
                         .Where(p => p.Id == id && p.IsDeleted).First();
 
                     return pageModule;
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -765,8 +747,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var dbpage = GetDeletedPage(id);
 
                     if (dbpage != null)
@@ -777,7 +759,7 @@ namespace Deviser.Core.Data.DataProviders
                         return Mapper.Map<Page>(result);
                     }
 
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -790,8 +772,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     //Page
                     var dbpage = GetDeletedPage(id);
                     if(dbpage != null)
@@ -868,7 +850,7 @@ namespace Deviser.Core.Data.DataProviders
 
                     context.SaveChanges();
                     return true;
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -881,13 +863,13 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var page = context.Page
                         .Where(p => p.Id == id && p.IsDeleted).First();
 
                     return page;
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -901,8 +883,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var permission = context.PagePermission
                         .Where(p => p.PageId == id && p.RoleId == Globals.AllUsersRoleId).FirstOrDefault();
                    
@@ -911,7 +893,7 @@ namespace Deviser.Core.Data.DataProviders
 
                     context.SaveChanges();
                     return true;
-                }
+                //}
             }
             catch(Exception ex)
             {
@@ -924,8 +906,8 @@ namespace Deviser.Core.Data.DataProviders
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
+                //using (var context = new DeviserDbContext(DbOptions))
+                //{
                     var permission = context.PagePermission
                      .Where(p => p.PageId == id && p.RoleId == Globals.AllUsersRoleId).FirstOrDefault();
 
@@ -939,7 +921,7 @@ namespace Deviser.Core.Data.DataProviders
                     }                        
                     context.SaveChanges();
                     return true;
-                }
+                //}
             }
             catch (Exception ex)
             {

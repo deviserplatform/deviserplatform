@@ -18,6 +18,7 @@
 <script type="text/javascript">
     var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
     console.log(pageContext);
+    console.log('@scopeService.ScopeId');
 </script>
 
 <div sde-page="@Model" sde-module-results="@moduleActionResults" class="page-content">

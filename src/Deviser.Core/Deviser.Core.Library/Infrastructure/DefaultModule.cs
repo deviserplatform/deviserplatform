@@ -10,6 +10,7 @@ using Deviser.Core.Library.Modules;
 using Deviser.Core.Library.Multilingual;
 using Deviser.Core.Library.Sites;
 using Microsoft.AspNetCore.Routing;
+using Deviser.Core.Library.Services;
 
 namespace Deviser.Core.Library.Infrastructure
 {
@@ -17,30 +18,32 @@ namespace Deviser.Core.Library.Infrastructure
     {
         protected override void Load(ContainerBuilder builder)
         {
-            //In 6.0.0.rc1 Custom ViewEngine is not working. In future, we can change the implementation.
             //builder.RegisterType<DeviserViewEngine>().As<IRazorViewEngine>();
+
             //builder.RegisterType<ModuleActionInvoker>().As<IModuleActionInvoker>();
+            
+            builder.RegisterType<ScopeService>().As<IScopeService>().InstancePerDependency();
+
             builder.RegisterType<ActionInvoker>().As<IActionInvoker>();
             builder.RegisterType<TypeActivatorCache>().As<ITypeActivatorCache>();
-            
+
             //builder.RegisterType<ModuleInvokerProvider>().As<IModuleInvokerProvider>();
-            builder.RegisterType<PageUrlConstraint>().As<IRouteConstraint>().SingleInstance();
+            builder.RegisterType<PageUrlConstraint>().As<IRouteConstraint>();//.SingleInstance();
             builder.RegisterType<DeviserControllerFactory>().As<IDeviserControllerFactory>();
             builder.RegisterType<DeviserRouteHandler>().As<DeviserRouteHandler>();
-
-
-            builder.RegisterType<LayoutProvider>().As<ILayoutProvider>();
-            builder.RegisterType<LayoutTypeProvider>().As<ILayoutTypeProvider>();
-            builder.RegisterType<ContentTypeProvider>().As<IContentTypeProvider>();
-            builder.RegisterType<ModuleProvider>().As<IModuleProvider>();
-            builder.RegisterType<PageContentProvider>().As<IPageContentProvider>();
-            builder.RegisterType<PageProvider>().As<IPageProvider>();
-            builder.RegisterType<RoleProvider>().As<IRoleProvider>();
-            builder.RegisterType<SiteSettingProvider>().As<ISiteSettingProvider>();
-            builder.RegisterType<UserProvider>().As<IUserProvider>();
-            builder.RegisterType<LanguageProvider>().As<ILanguageProvider>();
-            builder.RegisterType<OptionListProvider>().As<IOptionListProvider>();
-            builder.RegisterType<PropertyProvider>().As<IPropertyProvider>();
+            
+            builder.RegisterType<LayoutProvider>().As<ILayoutProvider>().InstancePerDependency();
+            builder.RegisterType<LayoutTypeProvider>().As<ILayoutTypeProvider>().InstancePerDependency();
+            builder.RegisterType<ContentTypeProvider>().As<IContentTypeProvider>().InstancePerDependency();
+            builder.RegisterType<ModuleProvider>().As<IModuleProvider>().InstancePerDependency();
+            builder.RegisterType<PageContentProvider>().As<IPageContentProvider>().InstancePerDependency();
+            builder.RegisterType<PageProvider>().As<IPageProvider>().InstancePerDependency();
+            builder.RegisterType<RoleProvider>().As<IRoleProvider>().InstancePerDependency();
+            builder.RegisterType<SiteSettingProvider>().As<ISiteSettingProvider>().InstancePerDependency();
+            builder.RegisterType<UserProvider>().As<IUserProvider>().InstancePerDependency();
+            builder.RegisterType<LanguageProvider>().As<ILanguageProvider>().InstancePerDependency();
+            builder.RegisterType<OptionListProvider>().As<IOptionListProvider>().InstancePerDependency();
+            builder.RegisterType<PropertyProvider>().As<IPropertyProvider>().InstancePerDependency();
 
             //builder.RegisterType<ContactProvider>().As<IContactProvider>();
                         

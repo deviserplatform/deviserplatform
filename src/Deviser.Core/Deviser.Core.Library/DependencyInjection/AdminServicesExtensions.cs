@@ -94,8 +94,7 @@ namespace Deviser.Core.Library.DependencyInjection
 
             // Add application services.
             services.AddTransient<IEmailSender, MessageSender>();
-            services.AddTransient<ISmsSender, MessageSender>();
-            services.AddScoped<IScopeService, ScopeService>();
+            services.AddTransient<ISmsSender, MessageSender>();            
             services.TryAddSingleton<ObjectMethodExecutorCache>();
             services.TryAddSingleton<ITypeActivatorCache, TypeActivatorCache>();
 

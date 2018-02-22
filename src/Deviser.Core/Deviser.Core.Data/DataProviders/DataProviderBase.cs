@@ -15,12 +15,16 @@ namespace Deviser.Core.Data.DataProviders
         protected DbContextOptions<DeviserDbContext> DbOptions;
         protected ILifetimeScope Container;
         private readonly ILogger<DataProviderBase> _logger;
+        protected readonly DeviserDbContext context;
 
         public DataProviderBase(ILifetimeScope container)
         {
             this.Container = container;
             DbOptions = container.Resolve<DbContextOptions<DeviserDbContext>>();
             _logger = container.Resolve<ILogger<DataProviderBase>>();
+
+            context = container.Resolve<DeviserDbContext>();
+            context.ChangeTracker.AutoDetectChangesEnabled = false;
 
         }
 

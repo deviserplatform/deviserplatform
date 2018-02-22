@@ -12,5 +12,7 @@ namespace Deviser.Core.Library.Services
         PageContext PageContext { get; }
 
         ModuleContext ModuleContext { get;}
+
+        Guid ScopeId { get; }
     }
 }
