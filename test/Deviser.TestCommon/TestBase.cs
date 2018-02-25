@@ -27,6 +27,7 @@ using System.Reflection;
 using Deviser.Core.Library.Internal;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Deviser.Core.Library.Infrastructure;
+using AutoMapper;
 
 namespace Deviser.TestCommon
 {
@@ -95,8 +96,8 @@ namespace Deviser.TestCommon
             //        HttpContext = context,
             //    });
 
-            
 
+            //Mapper.Reset();
             MapperConfig.CreateMaps();
 
             // Add Autofac

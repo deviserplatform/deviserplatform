@@ -62,6 +62,7 @@ Page Header
                 font-size: 13px;
                 font-weight: 300;
                 color: #79869a;
+                text-decoration:none;
             }
 
                 .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > a span {

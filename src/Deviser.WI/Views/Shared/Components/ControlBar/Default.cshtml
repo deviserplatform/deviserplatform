@@ -7,7 +7,17 @@
     Layout = null;
     var pageContext = scopeService.PageContext;
     var culture = pageContext.CurrentCulture.Name;
-    var permalink = ViewContext.RouteData.Values["permalink"];
+    string permalink = (string)ViewContext.RouteData.Values["permalink"];
+    var requestPath = ViewContext.HttpContext.Request.Path.ToString();
+    var mode = "view";
+    if (requestPath.ToLower().Contains("edit"))
+    {
+        mode = "edit";
+    }
+    else if (requestPath.ToLower().Contains("layout"))
+    {
+        mode = "layout";
+    }
 }
 
 @if (pageContext.HasPageEditPermission)
@@ -27,20 +37,20 @@
         <div class="top-menu">
             <form sd-module="Security" sd-controller="Account" sd-action="LogOff" method="post" id="logoutForm">
                 <ul class="sd-navbar-nav">
-                    <li class="dropdown dropdown-quick-sidebar-toggler">
+                    <li class="dropdown dropdown-quick-sidebar-toggler @(mode=="view"?"active":"")">
                         <a href="/@pageContext.CurrentUrl" class="dropdown-toggle">
                             <i class="fa fa-desktop"></i>
                             <span>View</span>
                         </a>
                     </li>
-                    <li class="dropdown dropdown-quick-sidebar-toggler">
+                    <li class="dropdown dropdown-quick-sidebar-toggler @(mode=="edit"?"active":"")">
                         <a href="@Url.Action("Edit", "Page", new { culture=culture, permalink=permalink })" class="dropdown-toggle">
                             <i class="fa fa-pencil-square-o"></i>
                             <span>Edit</span>
                         </a>
                     </li>
 
-                    <li class="dropdown dropdown-quick-sidebar-toggler">
+                    <li class="dropdown dropdown-quick-sidebar-toggler @(mode=="layout"?"active":"")">
                         <a href="@Url.Action("Layout", "Page", new { culture=culture, permalink=permalink })" class="dropdown-toggle">
                             <i class="fa fa-columns"></i>
                             <span>Layout</span>

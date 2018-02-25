@@ -27,6 +27,7 @@ using System.Reflection;
 using System.Linq;
 using Deviser.Core.Data.Extension;
 using Deviser.Core.Common.Internal;
+using AutoMapper;
 
 namespace Deviser.Core.Library.DependencyInjection
 {
