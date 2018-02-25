@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Common;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -14,12 +14,12 @@ namespace Deviser.Core.Library.Sites
     public class PageManager : IPageManager
     {
         //Logger
-        private readonly ILogger<PageManager> logger;
+        private readonly ILogger<PageManager> _logger;
 
-        protected ILifetimeScope container;
-        protected IPageProvider pageProvider;
-        protected IHttpContextAccessor httpContextAccessor;
-        protected IRoleProvider roleProvider;
+        protected readonly ILifetimeScope _container;
+        protected readonly IPageRepository _pageRepository;
+        protected readonly IHttpContextAccessor _httpContextAccessor;
+        protected readonly IRoleRepository _roleRepository;
 
         private bool _isAuthenticated;
         private string _currentUserName;
@@ -27,11 +27,11 @@ namespace Deviser.Core.Library.Sites
 
         public PageManager(ILifetimeScope container)
         {
-            this.container = container;
-            logger = container.Resolve<ILogger<PageManager>>();
-            pageProvider = container.Resolve<IPageProvider>();
-            roleProvider = container.Resolve<IRoleProvider>();
-            httpContextAccessor = container.Resolve<IHttpContextAccessor>();
+            _container = container;
+            _logger = container.Resolve<ILogger<PageManager>>();
+            _pageRepository = container.Resolve<IPageRepository>();
+            _roleRepository = container.Resolve<IRoleRepository>();
+            _httpContextAccessor = container.Resolve<IHttpContextAccessor>();
         }
 
         protected bool IsUserAuthenticated
@@ -39,7 +39,7 @@ namespace Deviser.Core.Library.Sites
             get
             {
                 if(!_isAuthenticated)
-                    _isAuthenticated = httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
+                    _isAuthenticated = _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
 
                 return _isAuthenticated; 
             }
@@ -50,7 +50,7 @@ namespace Deviser.Core.Library.Sites
             get
             {
                 if(string.IsNullOrEmpty(_currentUserName))
-                    _currentUserName = (httpContextAccessor.HttpContext.User.Identity.IsAuthenticated) ? httpContextAccessor.HttpContext.User.Identity.Name : "";
+                    _currentUserName = (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated) ? _httpContextAccessor.HttpContext.User.Identity.Name : "";
 
                 return _currentUserName;
             }
@@ -61,7 +61,7 @@ namespace Deviser.Core.Library.Sites
             get
             {
                 if(_currentUserRoles==null)
-                    _currentUserRoles = roleProvider.GetRoles(CurrentUserName);
+                    _currentUserRoles = _roleRepository.GetRoles(CurrentUserName);
 
                 return _currentUserRoles;
             }
@@ -71,12 +71,12 @@ namespace Deviser.Core.Library.Sites
         {
             try
             {
-                var returnData = pageProvider.GetPage(pageId);
+                var returnData = _pageRepository.GetPage(pageId);
                 return returnData;
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling GetPage", ex);
+                _logger.LogError("Error occured while calling GetPage", ex);
             }
             return null;
         }
@@ -86,11 +86,11 @@ namespace Deviser.Core.Library.Sites
             Page resultPage = null;
             if (!string.IsNullOrEmpty(url))
             {
-                var pageTranslation = pageProvider.GetPageTranslations(locale);
+                var pageTranslation = _pageRepository.GetPageTranslations(locale);
                 var currentPageTranslation = pageTranslation.FirstOrDefault(p => (p != null && p.URL.ToLower() == url.ToLower()));
                 if (currentPageTranslation != null)
                 {
-                    resultPage = pageProvider.GetPage(currentPageTranslation.PageId);
+                    resultPage = _pageRepository.GetPage(currentPageTranslation.PageId);
                 }
             }
             return resultPage;

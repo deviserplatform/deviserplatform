@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +19,13 @@ namespace DeviserWI.Controllers.API
     [Route("api/[controller]")]
     public class ModuleController : Controller
     {
-        private ILogger<LayoutController> logger;
-
-        IModuleProvider moduleProvider;
+        private readonly ILogger<ModuleController> _logger;
+        private readonly IModuleRepository _moduleRepository;
 
         public ModuleController(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<LayoutController>>();
-            moduleProvider = container.Resolve<IModuleProvider>();
+            _logger = container.Resolve<ILogger<ModuleController>>();
+            _moduleRepository = container.Resolve<IModuleRepository>();
         }
 
         [HttpGet]
@@ -34,14 +33,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = moduleProvider.Get();
+                var result = _moduleRepository.Get();
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting all modules"), ex);
+                _logger.LogError(string.Format("Error occured while getting all modules"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -51,14 +50,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = moduleProvider.Get(id);
+                var result = _moduleRepository.Get(id);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting Module: {0}", id), ex);
+                _logger.LogError(string.Format("Error occured while getting Module: {0}", id), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -68,17 +67,15 @@ namespace DeviserWI.Controllers.API
         public IActionResult GetModuleActionType()
         {
             try
-            {
-                var moduleActionTypes = moduleProvider.GetModuleActionType();
-                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.ModuleActionType>>(moduleActionTypes);
-
+            {   
+                var result = _moduleRepository.GetModuleActionType();
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting content types"), ex);
+                _logger.LogError(string.Format("Error occured while getting content types"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -88,14 +85,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = moduleProvider.Create(module);
+                var result = _moduleRepository.Create(module);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating a Module"), ex);
+                _logger.LogError(string.Format("Error occured while creating a Module"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -105,14 +102,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = moduleProvider.Update(module);
+                var result = _moduleRepository.Update(module);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating Module"), ex);
+                _logger.LogError(string.Format("Error occured while updating Module"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -122,11 +119,11 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var module = moduleProvider.Get(id);
+                var module = _moduleRepository.Get(id);
                 if (module != null)
                 {
                     module.IsActive = true; //is it correct?
-                    var result = moduleProvider.Update(module);
+                    var result = _moduleRepository.Update(module);
                     if (result != null)
                     {
                         return Ok(result);
@@ -136,7 +133,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while deleting module"), ex);
+                _logger.LogError(string.Format("Error occured while deleting module"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

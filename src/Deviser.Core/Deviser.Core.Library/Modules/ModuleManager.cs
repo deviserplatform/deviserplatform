@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Common;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Sites;
 using Microsoft.AspNetCore.Http;
@@ -16,19 +16,19 @@ namespace Deviser.Core.Library.Modules
     public class ModuleManager : PageManager, IModuleManager
     {
         //Logger
-        private readonly ILogger<ModuleManager> logger;
+        private readonly ILogger<ModuleManager> _logger;
 
         public ModuleManager(ILifetimeScope container)
             : base(container)
         {
-
+            _logger = container.Resolve<ILogger<ModuleManager>>();
         }
 
         public PageModule GetPageModule(Guid pageModuleId)
         {
             try
             {
-                var pageModule = pageProvider.GetPageModule(pageModuleId);
+                var pageModule = _pageRepository.GetPageModule(pageModuleId);
                 if (pageModule != null)
                 {
                     pageModule.HasEditPermission = HasEditPermission(pageModule);
@@ -37,7 +37,7 @@ namespace Deviser.Core.Library.Modules
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting pageModule, pageModuleId: ", pageModuleId), ex);
+                _logger.LogError(string.Format("Error occured while getting pageModule, pageModuleId: ", pageModuleId), ex);
             }
 
             return null;
@@ -47,7 +47,7 @@ namespace Deviser.Core.Library.Modules
         {
             try
             {
-                var pageModules = pageProvider.GetPageModules(pageId);
+                var pageModules = _pageRepository.GetPageModules(pageId);
                 if (pageModules != null)
                 {
                     foreach (var pageModule in pageModules)
@@ -59,7 +59,7 @@ namespace Deviser.Core.Library.Modules
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting pageModules, pageId: ", pageId), ex);
+                _logger.LogError(string.Format("Error occured while getting pageModules, pageId: ", pageId), ex);
             }
 
             return null;
@@ -69,12 +69,12 @@ namespace Deviser.Core.Library.Modules
         {
             try
             {
-                var pageModules = pageProvider.GetDeletedPageModules();               
+                var pageModules = _pageRepository.GetDeletedPageModules();               
                 return pageModules;
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting deleted pageModules"), ex);
+                _logger.LogError(string.Format("Error occured while getting deleted pageModules"), ex);
             }
 
             return null;
@@ -86,10 +86,10 @@ namespace Deviser.Core.Library.Modules
             {
                 if (pageModule != null)
                 {
-                    PageModule dbPageModule = pageProvider.GetPageModule(pageModule.Id);
+                    PageModule dbPageModule = _pageRepository.GetPageModule(pageModule.Id);
                     if (dbPageModule == null)
                     {
-                        dbPageModule = pageProvider.CreatePageModule(pageModule);
+                        dbPageModule = _pageRepository.CreatePageModule(pageModule);
                         List<ModulePermission> adminPermissions = AddAdminPermissions(dbPageModule);
 
                         if (dbPageModule.ModulePermissions == null)
@@ -110,7 +110,7 @@ namespace Deviser.Core.Library.Modules
                         dbPageModule.ContainerId = pageModule.ContainerId;
                         dbPageModule.SortOrder = pageModule.SortOrder;
                         dbPageModule.ModulePermissions = pageModule.ModulePermissions;
-                        dbPageModule = pageProvider.UpdatePageModule(dbPageModule);
+                        dbPageModule = _pageRepository.UpdatePageModule(dbPageModule);
                     }
 
                     dbPageModule.HasEditPermission = HasEditPermission(pageModule);
@@ -120,7 +120,7 @@ namespace Deviser.Core.Library.Modules
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating a pageModule, moduleId: ", pageModule.ModuleId), ex);
+                _logger.LogError(string.Format("Error occured while creating a pageModule, moduleId: ", pageModule.ModuleId), ex);
             }
             return null;
         }
@@ -131,7 +131,7 @@ namespace Deviser.Core.Library.Modules
             {
                 if (pageModules != null)
                 {
-                    pageProvider.UpdatePageModules(pageModules);
+                    _pageRepository.UpdatePageModules(pageModules);
 
                     foreach (var pageModule in pageModules)
                     {
@@ -151,7 +151,7 @@ namespace Deviser.Core.Library.Modules
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating pageModules"), ex);
+                _logger.LogError(string.Format("Error occured while updating pageModules"), ex);
             }
         }
 
@@ -161,12 +161,12 @@ namespace Deviser.Core.Library.Modules
             {
                 if (pageModule != null)
                 {
-                    pageProvider.UpdateModulePermission(pageModule);
+                    _pageRepository.UpdateModulePermission(pageModule);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating page content"), ex);
+                _logger.LogError(string.Format("Error occured while updating page content"), ex);
             }
         }
 
@@ -187,7 +187,7 @@ namespace Deviser.Core.Library.Modules
                 RoleId = Globals.AdministratorRoleId,
                 PermissionId = Globals.ModuleEditPermissionId,
             });
-            adminPermissions = pageProvider.AddModulePermissions(adminPermissions);
+            adminPermissions = _pageRepository.AddModulePermissions(adminPermissions);
             return adminPermissions;
         }
 
@@ -198,7 +198,7 @@ namespace Deviser.Core.Library.Modules
 
             var result = (pageModule.ModulePermissions.Any(modulePermission => modulePermission.PermissionId == Globals.ModuleViewPermissionId &&
               (modulePermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == modulePermission.RoleId)))));
-            var page = pageProvider.GetPage(pageModule.PageId);
+            var page = _pageRepository.GetPage(pageModule.PageId);
             return result || (pageModule.InheritViewPermissions && HasViewPermission(page));
         }
 
@@ -209,7 +209,7 @@ namespace Deviser.Core.Library.Modules
 
             var result = (pageModule.ModulePermissions.Any(modulePermission => modulePermission.PermissionId == Globals.ModuleEditPermissionId &&
                (modulePermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == modulePermission.RoleId)))));
-            var page = pageProvider.GetPage(pageModule.PageId);
+            var page = _pageRepository.GetPage(pageModule.PageId);
             return result || (pageModule.InheritEditPermissions && HasEditPermission(page));
         }
     }

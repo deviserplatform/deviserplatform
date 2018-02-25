@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
@@ -17,41 +17,31 @@ namespace Deviser.Core.Library.Multilingual
     public class LanguageManager : ILanguageManager
     {
         //Logger
-        private readonly ILogger<LanguageManager> logger;
-        private ILanguageProvider languageProvider;
-        private INavigation navigation;
-        private IHostingEnvironment hostingEnvironment;
+        private readonly ILogger<LanguageManager> _logger;
+        private readonly ILanguageRepository _languageRepository;
+        private readonly INavigation _navigation;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
         public LanguageManager(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<LanguageManager>>();
-            languageProvider = container.Resolve<ILanguageProvider>();
-            hostingEnvironment = container.Resolve<IHostingEnvironment>();
-            navigation = container.Resolve<INavigation>();
+            _logger = container.Resolve<ILogger<LanguageManager>>();
+            _languageRepository = container.Resolve<ILanguageRepository>();
+            _hostingEnvironment = container.Resolve<IHostingEnvironment>();
+            _navigation = container.Resolve<INavigation>();
         }
 
         public List<Language> GetAllLanguages(bool exceptEnabled = false)
         {
             try
             {
-                string culuresJsonPath = hostingEnvironment.ContentRootPath + "\\cultures.json";
+                string culuresJsonPath = _hostingEnvironment.ContentRootPath + "\\cultures.json";
                 List<Language> cultures = SDJsonConvert.DeserializeObject<List<Language>>(System.IO.File.ReadAllText(culuresJsonPath));
 
                 cultures.ForEach(c => c.FallbackCulture = Globals.FallbackLanguage);
-
-                //var result = CultureInfo.GetCultureInfo(System.Globalization.CultureTypes.SpecificCultures).OrderBy(c => c.NativeName)
-                //           .Select(c => new Language
-                //           {
-                //               EnglishName = c.EnglishName,
-                //               NativeName = c.NativeName,
-                //               CultureCode = c.Name,
-                //               FallbackCulture = Globals.FallbackLanguage
-                //           })
-                //           .ToList();
-
+                
                 if (exceptEnabled)
                 {
-                    var enabledLanguages = languageProvider.GetLanguages();
+                    var enabledLanguages = _languageRepository.GetLanguages();
                     cultures = cultures.Where(language => !enabledLanguages.Any(el => el.CultureCode == language.CultureCode)).ToList();
                 }
 
@@ -59,7 +49,7 @@ namespace Deviser.Core.Library.Multilingual
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting all languages", ex);
+                _logger.LogError("Error occured while getting all languages", ex);
                 throw ex;
             }
         }
@@ -68,12 +58,12 @@ namespace Deviser.Core.Library.Multilingual
         {
             try
             {
-                var enabledLanguages = languageProvider.GetActiveLanguages();
+                var enabledLanguages = _languageRepository.GetActiveLanguages();
                 return enabledLanguages;
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting active languages", ex);
+                _logger.LogError("Error occured while getting active languages", ex);
                 throw ex;
             }
         }
@@ -82,12 +72,12 @@ namespace Deviser.Core.Library.Multilingual
         {
             try
             {
-                var result = languageProvider.GetLanguages();
+                var result = _languageRepository.GetLanguages();
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting languages", ex);
+                _logger.LogError("Error occured while getting languages", ex);
                 throw ex;
             }
         }
@@ -96,12 +86,12 @@ namespace Deviser.Core.Library.Multilingual
         {
             try
             {
-                var result = languageProvider.GetLanguage(languageId);
+                var result = _languageRepository.GetLanguage(languageId);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while getting a language", ex);
+                _logger.LogError("Error occured while getting a language", ex);
                 throw ex;
             }
         }
@@ -110,9 +100,9 @@ namespace Deviser.Core.Library.Multilingual
         {
             try
             {
-                var before = languageProvider.IsMultilingual();
-                var result = languageProvider.CreateLanguage(language);
-                var after = languageProvider.IsMultilingual();
+                var before = _languageRepository.IsMultilingual();
+                var result = _languageRepository.CreateLanguage(language);
+                var after = _languageRepository.IsMultilingual();
                 if (before != after)
                 {
                     TranslateAllPages();
@@ -121,7 +111,7 @@ namespace Deviser.Core.Library.Multilingual
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while creating a language", ex);
+                _logger.LogError("Error occured while creating a language", ex);
                 throw ex;
             }
         }
@@ -130,9 +120,9 @@ namespace Deviser.Core.Library.Multilingual
         {
             try
             {
-                var before = languageProvider.IsMultilingual();
-                var result = languageProvider.UpdateLanguage(language);
-                var after = languageProvider.IsMultilingual();
+                var before = _languageRepository.IsMultilingual();
+                var result = _languageRepository.UpdateLanguage(language);
+                var after = _languageRepository.IsMultilingual();
                 if(before!=after)
                 {
                     TranslateAllPages();
@@ -141,7 +131,7 @@ namespace Deviser.Core.Library.Multilingual
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while updating languages", ex);
+                _logger.LogError("Error occured while updating languages", ex);
                 throw ex;
             }
         }
@@ -151,8 +141,8 @@ namespace Deviser.Core.Library.Multilingual
         /// </summary>
         private void TranslateAllPages()
         {
-            var root = navigation.GetPageTree();
-            navigation.UpdatePageTree(root);
+            var root = _navigation.GetPageTree();
+            _navigation.UpdatePageTree(root);
         }
     }
 }

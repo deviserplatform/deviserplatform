@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;

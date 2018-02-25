@@ -10,18 +10,18 @@ namespace Deviser.Core.Library.Messaging
 {
     public class MessageSender: IEmailSender, ISmsSender
     {
-        ISettingManager settingManager;
+        private readonly ISettingManager _settingManager;
         
         public MessageSender(ISettingManager settingManager)
         { 
-            this.settingManager = settingManager;
+            _settingManager = settingManager;
         }
 
 
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            var smtpSetting = settingManager.GetSMTPSetting();
-            var siteSetting = settingManager.GetSiteSetting();
+            var smtpSetting = _settingManager.GetSMTPSetting();
+            var siteSetting = _settingManager.GetSiteSetting();
             // Plug in your email service here to send an email.
             var myMessage = new MimeMessage();
             myMessage.To.Add(new MailboxAddress("", email));

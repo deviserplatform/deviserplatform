@@ -32,8 +32,8 @@ namespace Deviser.TestCommon
 {
     public class TestBase
     {
-        protected readonly ILifetimeScope container;
-        protected readonly IServiceProvider serviceProvider;
+        protected readonly ILifetimeScope _container;
+        protected readonly IServiceProvider _serviceProvider;
 
         public TestBase()
         {
@@ -103,8 +103,8 @@ namespace Deviser.TestCommon
             var containerBuilder = new ContainerBuilder();
             containerBuilder.RegisterModule<DefaultModule>();
             containerBuilder.Populate(services);
-            container = containerBuilder.Build();
-            serviceProvider = new AutofacServiceProvider(container);
+            _container = containerBuilder.Build();
+            _serviceProvider = new AutofacServiceProvider(_container);
 
         }
 

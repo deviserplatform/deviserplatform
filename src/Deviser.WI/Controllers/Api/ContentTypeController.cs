@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,15 +15,14 @@ namespace DeviserWI.Controllers.API
     [Route("api/[controller]")]
     public class ContentTypeController : Controller
     {
-        private readonly ILogger<ContentTypeController> logger;
-
-        private IContentTypeProvider contentTypeProvider;
+        private readonly ILogger<ContentTypeController> _logger;
+        private readonly IContentTypeRepository _contentTypeRepository;
 
         public ContentTypeController(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<ContentTypeController>>();
-            contentTypeProvider = container.Resolve<IContentTypeProvider>();
-            IHostingEnvironment hostingEnvironment = container.Resolve<IHostingEnvironment>();
+            _logger = container.Resolve<ILogger<ContentTypeController>>();
+            _contentTypeRepository = container.Resolve<IContentTypeRepository>();
+            //IHostingEnvironment hostingEnvironment = container.Resolve<IHostingEnvironment>();
         }
 
         [HttpGet]
@@ -31,13 +30,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                //if (contentTypes != null)
-                //    return Ok(contentTypes);
-                //return NotFound();
-
-                var contentTypes = contentTypeProvider.GetContentTypes();
-
-                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.ContentType>>(contentTypes);
+                var result = _contentTypeRepository.GetContentTypes();
 
                 if (result != null)
                     return Ok(result);
@@ -45,7 +38,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting content types"), ex);
+                _logger.LogError(string.Format("Error occured while getting content types"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -58,49 +51,38 @@ namespace DeviserWI.Controllers.API
                 if (contentType == null || string.IsNullOrEmpty(contentType.Name))
                     return BadRequest("Invalid parameter");
 
-                if (contentTypeProvider.GetContentType(contentType.Name) != null)
+                if (_contentTypeRepository.GetContentType(contentType.Name) != null)
                     return BadRequest("Content type already exist");
 
-                var dbResult = contentTypeProvider.CreateContentType(ConvertToDbType(contentType));
-                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.ContentType>(dbResult);
+                var result = _contentTypeRepository.CreateContentType(contentType);
+
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating layout type"), ex);
+                _logger.LogError(string.Format("Error occured while creating layout type"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpPut]
-        public IActionResult UpdateContentType([FromBody]Deviser.Core.Common.DomainTypes.ContentType contentType)
+        public IActionResult UpdateContentType([FromBody] ContentType contentType)
         {
             try
             {
-                var dbResult = contentTypeProvider.UpdateContentType(ConvertToDbType(contentType));
+                var result = _contentTypeRepository.UpdateContentType(contentType);
                 //TODO: Update properties Add/Remove/Update
-                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.ContentType>(dbResult);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating content type"), ex);
+                _logger.LogError(string.Format("Error occured while updating content type"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        private Deviser.Core.Common.DomainTypes.ContentType ConvertToDomainType(ContentType role)
-        {
-            return Mapper.Map<Deviser.Core.Common.DomainTypes.ContentType>(role);
-        }
-
-        private ContentType ConvertToDbType(Deviser.Core.Common.DomainTypes.ContentType role)
-        {
-            return Mapper.Map<ContentType>(role);
-        }
+        }        
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
@@ -23,10 +23,10 @@ namespace Deviser.Core.Library.TagHelpers
     {
         private const string BcAttributeName = "sd-breadcrumb";
 
-        private IPageProvider pageProvider;
-        private INavigation navigation;
-        private IHtmlHelper htmlHelper;
-        private readonly IScopeService scopeService;
+        private readonly IPageRepository _pageRepository;
+        private readonly INavigation _navigation;
+        private readonly IHtmlHelper _htmlHelper;
+        private readonly IScopeService _scopeService;
 
         [HtmlAttributeName(BcAttributeName)]
         public string BreadCrumbStyle { get; set; }
@@ -36,14 +36,12 @@ namespace Deviser.Core.Library.TagHelpers
         public ViewContext ViewContext { get; set; }
 
         public BreadCrumbHelper(ILifetimeScope container, IHttpContextAccessor httpContextAccessor, IScopeService scopeService)
-             : base(httpContextAccessor, scopeService)
+             : base(httpContextAccessor)
         {
-            pageProvider = container.Resolve<IPageProvider>();
-            htmlHelper = container.Resolve<IHtmlHelper>();
-            navigation = container.Resolve<INavigation>();
-            this.scopeService = scopeService;
-
-
+            _pageRepository = container.Resolve<IPageRepository>();
+            _htmlHelper = container.Resolve<IHtmlHelper>();
+            _navigation = container.Resolve<INavigation>();
+            _scopeService = scopeService;
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -54,14 +52,12 @@ namespace Deviser.Core.Library.TagHelpers
                 return;
             }
 
-            ((HtmlHelper)htmlHelper).Contextualize(ViewContext);
-            List<Page> pages = navigation.GetBreadCrumbs(scopeService.PageContext.CurrentPageId);
+            ((HtmlHelper)_htmlHelper).Contextualize(ViewContext);
+            List<Page> pages = _navigation.GetBreadCrumbs(_scopeService.PageContext.CurrentPageId);
 
-            var htmlContent = htmlHelper.Partial(string.Format(Globals.BreadCrumbStylePath, BreadCrumbStyle), pages);
+            var htmlContent = _htmlHelper.Partial(string.Format(Globals.BreadCrumbStylePath, BreadCrumbStyle), pages);
             var contentResult = GetString(htmlContent);
             output.Content.SetHtmlContent(contentResult);
-            //output.PostContent.Append("MenuStyle: " + MenuStyle);
-
         }
 
         private static string GetString(IHtmlContent content)

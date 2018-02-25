@@ -21,40 +21,29 @@ namespace Deviser.Core.Library.Internal
     {
         private readonly ObjectMethodExecutorCache _cache;
         private readonly ITypeActivatorCache _typeActivatorCache;
-        //private readonly IControllerFactory _controllerFactory;
+        private readonly IControllerPropertyActivator[] _propertyActivators;
+        private readonly List<TypeInfo> _allControllers;
 
         private const string ControllerTypeNameSuffix = "Controller";
-        private readonly IControllerPropertyActivator[] _propertyActivators;
-        private List<TypeInfo> allControllers;
-
-
+        
         public ActionInvoker(
             ITypeActivatorCache typeActivatorCache,
-            /*IControllerFactory controllerFactory,*/
             ObjectMethodExecutorCache cache,
             IEnumerable<IControllerPropertyActivator> propertyActivators)
         {
-            if (typeActivatorCache == null)
-            {
-                throw new ArgumentNullException(nameof(typeActivatorCache));
-            }
-
-            _typeActivatorCache = typeActivatorCache;
+            _typeActivatorCache = typeActivatorCache ?? throw new ArgumentNullException(nameof(typeActivatorCache));
             _propertyActivators = propertyActivators.ToArray();
-
-            //_controllerFactory = controllerFactory;
-
             _cache = cache;
 
 
             var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.ApplicationEntryPoint);
-            allControllers = new List<TypeInfo>();
+            _allControllers = new List<TypeInfo>();
             foreach (var assembly in assemblies)
             {
                 var controllerTypes = assembly.DefinedTypes.Where(t => IsController(t)).ToList();
 
                 if (controllerTypes != null && controllerTypes.Count > 0)
-                    allControllers.AddRange(controllerTypes);
+                    _allControllers.AddRange(controllerTypes);
             }
         }
 
@@ -62,7 +51,7 @@ namespace Deviser.Core.Library.Internal
         {
             IActionResult result = null;
 
-            var targetController = allControllers.FirstOrDefault(c => c.Namespace == moduleAction.ControllerNamespace && c.Name == moduleAction.ControllerName + ControllerTypeNameSuffix);
+            var targetController = _allControllers.FirstOrDefault(c => c.Namespace == moduleAction.ControllerNamespace && c.Name == moduleAction.ControllerName + ControllerTypeNameSuffix);
 
             if (targetController == null)
                 throw new Exception("Module Controller not found");
@@ -226,9 +215,9 @@ namespace Deviser.Core.Library.Internal
 
         public void Dispose()
         {
-            if(allControllers!=null)
+            if(_allControllers!=null)
             {
-                allControllers.GetEnumerator().Dispose();
+                _allControllers.GetEnumerator().Dispose();
             }
 
             _cache.Dispose();

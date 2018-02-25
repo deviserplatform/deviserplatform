@@ -15,13 +15,13 @@ namespace Deviser.WI.Controllers.Api
     public class LanguageController : Controller
     {
         //Logger
-        private readonly ILogger<LanguageController> logger;        
-        private ILanguageManager languageManager;
+        private readonly ILogger<LanguageController> _logger;
+        private readonly ILanguageManager _languageManager;
 
         public LanguageController(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<LanguageController>>();            
-            languageManager = container.Resolve<ILanguageManager>();
+            _logger = container.Resolve<ILogger<LanguageController>>();
+            _languageManager = container.Resolve<ILanguageManager>();
         }
 
         [HttpGet]
@@ -29,15 +29,14 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var dbResult = languageManager.GetAllLanguages(true);
-                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.Language>>(dbResult);
+                var result = _languageManager.GetAllLanguages(true);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting languages"), ex);
+                _logger.LogError(string.Format("Error occured while getting languages"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -47,16 +46,14 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var dbResult = languageManager.GetLanguages()
-                    .ToList();
-                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.Language>>(dbResult);
+                var result = _languageManager.GetLanguages();
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting languages"), ex);
+                _logger.LogError(string.Format("Error occured while getting languages"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -66,15 +63,14 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var dbResult = languageManager.GetLanguage(id);
-                var result = ConvertToDomainType(dbResult);
+                var result = _languageManager.GetLanguage(id);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting page language: {0}", id), ex);
+                _logger.LogError(string.Format("Error occured while getting page language: {0}", id), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -84,15 +80,14 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var dbResult = languageManager.CreateLanguage(language);
-                var result = ConvertToDomainType(dbResult);
+                var result = _languageManager.CreateLanguage(language);
                 if (result != null)
                     return Ok(result);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while creating a language", ex);
+                _logger.LogError("Error occured while creating a language", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -102,15 +97,14 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var dbResult = languageManager.UpdateLanguage(language);
-                var result = ConvertToDomainType(dbResult);
+                var result = _languageManager.UpdateLanguage(language);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating language, cultureCode: ", language.CultureCode), ex);
+                _logger.LogError(string.Format("Error occured while updating language, cultureCode: ", language.CultureCode), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -120,12 +114,11 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var language = languageManager.GetLanguage(id);
+                var language = _languageManager.GetLanguage(id);
                 if (language != null)
                 {
                     language.IsActive = false;
-                    var dbResult = languageManager.UpdateLanguage(language);
-                    var result = ConvertToDomainType(dbResult);
+                    var result = _languageManager.UpdateLanguage(language);
                     if (result != null)
                     {
                         return Ok(result);
@@ -135,19 +128,9 @@ namespace Deviser.WI.Controllers.Api
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while deleting language"), ex);
+                _logger.LogError(string.Format("Error occured while deleting language"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        private Deviser.Core.Common.DomainTypes.Language ConvertToDomainType(Language language)
-        {
-            return Mapper.Map<Deviser.Core.Common.DomainTypes.Language>(language);
-        }
-
-        private Language ConvertToDbType(Deviser.Core.Common.DomainTypes.Language language)
-        {
-            return Mapper.Map<Language>(language);
         }
     }
 }

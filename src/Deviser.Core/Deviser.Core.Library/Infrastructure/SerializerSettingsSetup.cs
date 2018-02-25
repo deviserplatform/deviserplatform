@@ -17,19 +17,13 @@ namespace Deviser.Core.Library.Infrastructure
     /// Implementation based on https://github.com/aspnet/Mvc/issues/4562
     /// </summary>
     public class SerializerSettingsSetup : IConfigureOptions<MvcOptions>
-    {
-        //private readonly ILoggerFactory _loggerFactory;
+    {   
         private readonly ArrayPool<char> _charPool;
-        //private readonly ObjectPoolProvider _objectPoolProvider;
 
         public SerializerSettingsSetup(
-            //ILoggerFactory loggerFactory,
             ArrayPool<char> charPool)
-            //,ObjectPoolProvider objectPoolProvider)
-        {
-            //_loggerFactory = loggerFactory;
+        {            
             _charPool = charPool;
-            //_objectPoolProvider = objectPoolProvider;
         }
 
         public void Configure(MvcOptions options)

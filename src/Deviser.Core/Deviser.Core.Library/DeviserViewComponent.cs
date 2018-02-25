@@ -22,14 +22,6 @@ namespace Deviser.Core.Library
             this.scopeService = scopeService;
         }
 
-        //protected ISession Session
-        //{
-        //    get
-        //    {
-        //        return HttpContext.Session;
-        //    }
-        //}
-        
         public new ViewViewComponentResult View()
         {
             return base.View();

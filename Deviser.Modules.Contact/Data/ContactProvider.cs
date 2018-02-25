@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,7 +11,7 @@ namespace Deviser.Modules.ContactForm.Data
     {
         bool submitData(Contact contact);
     }
-    public class ContactProvider: DataProviderBase, IContactProvider
+    public class ContactProvider: RepositoryBase, IContactProvider
     {
        
         private readonly ILogger<ContactProvider> _logger;

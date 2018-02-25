@@ -14,12 +14,12 @@ namespace Deviser.Core.Library.TagHelpers
 {
     public class DeviserTagHelper : TagHelper
     {
-        IScopeService scopeService;
+        //private readonly IScopeService _scopeService;
         
-        public DeviserTagHelper(IHttpContextAccessor httpContextAccessor, IScopeService scopeService)
+        public DeviserTagHelper(IHttpContextAccessor httpContextAccessor)
         {
             HttpContext = httpContextAccessor.HttpContext;
-            this.scopeService = scopeService;
+            //_scopeService = scopeService;
         }
 
         protected HttpContext HttpContext

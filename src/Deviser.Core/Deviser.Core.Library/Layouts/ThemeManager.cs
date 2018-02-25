@@ -11,11 +11,11 @@ namespace Deviser.Core.Library.Layouts
 {
     public class ThemeManager : IThemeManager
     {
-        private readonly IHostingEnvironment hostingEnvironment;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
         public ThemeManager(IHostingEnvironment appEnvironment)
         {
-            this.hostingEnvironment = appEnvironment;
+            _hostingEnvironment = appEnvironment;
         }
 
         public List<KeyValuePair<string, string>> GetHostThemes()
@@ -23,7 +23,7 @@ namespace Deviser.Core.Library.Layouts
             string themeRoot = "Themes";
             var themes = new List<KeyValuePair<string, string>>();
 
-            string root = hostingEnvironment.ContentRootPath + "\\" + Globals.HostMapPath + themeRoot;
+            string root = _hostingEnvironment.ContentRootPath + "\\" + Globals.HostMapPath + themeRoot;
             if (Directory.Exists(root))
             {
                 foreach (string themeFolder in Directory.GetDirectories(root))

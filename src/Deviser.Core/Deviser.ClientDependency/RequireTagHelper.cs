@@ -15,7 +15,7 @@ namespace Deviser.ClientDependency
     {
         private static readonly char[] NameSeparator = new[] { ',' };
         
-        private IHttpContextAccessor httpContextAccessor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         /// <summary>
         /// A comma separated list of environment names in which the content should be rendered.
@@ -58,7 +58,7 @@ namespace Deviser.ClientDependency
             IHostingEnvironment hostingEnvironment)
         {
             HostingEnvironment = hostingEnvironment;
-            this.httpContextAccessor = httpContextAccessor;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -73,7 +73,7 @@ namespace Deviser.ClientDependency
 
             try
             {
-                var dependencyLoader = DependencyManager.GetLoader(httpContextAccessor.HttpContext);
+                var dependencyLoader = DependencyManager.GetLoader(_httpContextAccessor.HttpContext);
                 
                 if (!dependencyLoader.DependencyFiles.Any(d => d.FilePath.ToLower() == Path.ToLower()))
                 {

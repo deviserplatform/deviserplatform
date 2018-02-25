@@ -21,11 +21,8 @@ namespace Deviser.Core.Library.Internal
 
         private ObjectMethodExecutor(MethodInfo methodInfo, TypeInfo targetTypeInfo)
         {
-            if (methodInfo == null)
-            {
-                throw new ArgumentNullException(nameof(methodInfo));
-            }
-            MethodInfo = methodInfo;
+            MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
+
             TargetTypeInfo = targetTypeInfo;
             ActionParameters = methodInfo.GetParameters();
             MethodReturnType = methodInfo.ReturnType;

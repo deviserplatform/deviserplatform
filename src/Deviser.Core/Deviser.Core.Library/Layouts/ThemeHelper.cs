@@ -11,9 +11,6 @@ namespace Deviser.Core.Library.Layouts
 {
     public class ThemeHelper
     {
-
-        
-
         public static List<KeyValuePair<string, string>> GetHostThemes()
         {
             string ThemeRoot = "Themes";

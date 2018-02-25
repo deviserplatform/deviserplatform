@@ -14,12 +14,12 @@ namespace Deviser.Core.Library.IO
 {
     public class FileManagement : IFileManagement
     {
-        private readonly ILogger<FileManagement> logger;
-        private IHostingEnvironment hostingEnvironment;
+        private readonly ILogger<FileManagement> _logger;
+        private readonly IHostingEnvironment _hostingEnvironment;
         public FileManagement(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<FileManagement>>();
-            hostingEnvironment = container.Resolve<IHostingEnvironment>();
+            _logger = container.Resolve<ILogger<FileManagement>>();
+            _hostingEnvironment = container.Resolve<IHostingEnvironment>();
         }
 
         public List<FileItem> GetFilesAndFolders()
@@ -27,7 +27,7 @@ namespace Deviser.Core.Library.IO
             //Linq (Language Integrated Query) to Objects
             try
             {
-                string assetsPath = Path.Combine(hostingEnvironment.ContentRootPath + "\\wwwroot\\assets");
+                string assetsPath = Path.Combine(_hostingEnvironment.ContentRootPath + "\\wwwroot\\assets");
                 List<FileItem> folders = Directory.GetDirectories(assetsPath).Select(folderPath => new FileItem
                 {
                     Name = folderPath.Replace(assetsPath, ""),
@@ -45,7 +45,7 @@ namespace Deviser.Core.Library.IO
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting all files and folders"), ex);
+                _logger.LogError(string.Format("Error occured while getting all files and folders"), ex);
                 throw ex;
             }
         }

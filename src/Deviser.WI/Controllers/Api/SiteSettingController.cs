@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Autofac;
 using Microsoft.AspNetCore.Http;
 using Deviser.Core.Common.DomainTypes;
@@ -16,14 +16,13 @@ namespace Deviser.WI.Controllers.Api
     [Route("api/[controller]")]
     public class SiteSettingController : Controller
     {
-        private readonly ILogger<SiteSettingController> logger;
-
-        ISiteSettingProvider siteSettingProvider;
+        private readonly ILogger<SiteSettingController> _logger;
+        private readonly ISiteSettingRepository _siteSettingRepository;
         
         public SiteSettingController(ILifetimeScope container)
         {
-            siteSettingProvider = container.Resolve<ISiteSettingProvider>();
-            logger = container.Resolve<ILogger<SiteSettingController>>();
+            _siteSettingRepository = container.Resolve<ISiteSettingRepository>();
+            _logger = container.Resolve<ILogger<SiteSettingController>>();
         }
 
         [HttpGet]
@@ -31,14 +30,14 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var result = siteSettingProvider.GetSettings();
+                var result = _siteSettingRepository.GetSettings();
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting all site settings"), ex);
+                _logger.LogError(string.Format("Error occured while getting all site settings"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -50,7 +49,7 @@ namespace Deviser.WI.Controllers.Api
             {
                 if(settings != null)
                 {
-                    var result = siteSettingProvider.UpdateSetting(settings);
+                    var result = _siteSettingRepository.UpdateSetting(settings);
                     if (result != null)
                     return Ok(result);
                 }                
@@ -58,7 +57,7 @@ namespace Deviser.WI.Controllers.Api
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating a page layout, LayoutName: "), ex);
+                _logger.LogError(string.Format("Error occured while creating a page layout, LayoutName: "), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

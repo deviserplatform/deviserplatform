@@ -22,7 +22,7 @@ using Deviser.Core.Library.Middleware;
 using Microsoft.AspNetCore.Routing;
 using Deviser.Core.Common;
 using Autofac;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using System.Reflection;
 using System.Linq;
 using Deviser.Core.Data.Extension;
@@ -55,9 +55,6 @@ namespace Deviser.Core.Library.DependencyInjection
             //services.AddDbContext<DeviserDbContext>(options =>
             //    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Deviser.WI")));
 
-
-
-
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<DeviserDbContext>()
                 .AddDefaultTokenProviders();
@@ -66,27 +63,13 @@ namespace Deviser.Core.Library.DependencyInjection
 
             RegisterModuleDependencies(services);
 
-            services.AddMvc(option =>
-            {
-                //var jsonOutputFormatter = new JsonOutputFormatter();
-                //jsonOutputFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                ////jsonOutputFormatter.SerializerSettings.DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore;
-                //jsonOutputFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
-                //jsonOutputFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-
-                //var jsonOutputFormatterOld = option.OutputFormatters.FirstOrDefault(formatter => formatter is JsonOutputFormatter);
-                //if (jsonOutputFormatterOld != null)
-                //{
-                //    option.OutputFormatters.Remove(jsonOutputFormatterOld);
-                //}
-                ////options.OutputFormatters.RemoveAll(formatter => formatter.Instance.GetType() == typeof(JsonOutputFormatter));
-                //option.OutputFormatters.Insert(0, jsonOutputFormatter);                
-            })
-            .AddRazorOptions(options =>
-            {
-                options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
-            })
-            .AddControllersAsServices();
+            services
+                .AddMvc()
+                .AddRazorOptions(options =>
+                {
+                    options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
+                })
+                .AddControllersAsServices();
 
             services.AddSession();
 
@@ -94,7 +77,7 @@ namespace Deviser.Core.Library.DependencyInjection
 
             // Add application services.
             services.AddTransient<IEmailSender, MessageSender>();
-            services.AddTransient<ISmsSender, MessageSender>();            
+            services.AddTransient<ISmsSender, MessageSender>();
             services.TryAddSingleton<ObjectMethodExecutorCache>();
             services.TryAddSingleton<ITypeActivatorCache, TypeActivatorCache>();
 
@@ -124,9 +107,7 @@ namespace Deviser.Core.Library.DependencyInjection
             app.UseStaticFiles();
 
             app.UseAuthentication();
-
             
-
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
             // IMPORTANT: This session call MUST go before UseMvc()
@@ -134,23 +115,13 @@ namespace Deviser.Core.Library.DependencyInjection
 
             Action<IRouteBuilder> routeBuilder = routes =>
             {
-                //routes.MapRoute(
-                //    name: "default",
-                //    template: "{controller=Home}/{action=Index}/{id?}");
-
                 routes.MapRoute(
                    name: "default",
                    template: "{controller=Page}/{action=Index}/{id?}");
 
                 routes.MapRoute(name: Globals.moduleRoute,
                     template: "modules/{area:exists}/{controller=Home}/{action=Index}");
-
-                //routes.MapRoute(
-                //name: "CmsRouteMultilingual",
-                //template: "{culture}/{*permalink}",
-                //defaults: new { controller = "Page", action = "Index" },
-                //constraints: new { permalink = container.Resolve<IRouteConstraint>() });
-
+                
                 routes.MapRoute(
                 name: "CmsRoute",
                 template: "{*permalink}",

@@ -10,7 +10,6 @@ namespace Deviser.Core.Library.Modules
         {
             // Swap /Modules/ for /Areas/
             return viewLocations.Select(f => f.Replace("/Areas/", "/Modules/"));
-            //return viewLocations.;
         }
 
         public void PopulateValues(ViewLocationExpanderContext context)

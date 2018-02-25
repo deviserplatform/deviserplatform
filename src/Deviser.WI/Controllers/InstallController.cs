@@ -12,7 +12,7 @@ using System.IO;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data;
 using Deviser.Core.Common;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
@@ -21,8 +21,8 @@ namespace Deviser.WI.Controllers
     public class InstallController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        private IInstallationProvider _installationProvider;
-        private IConfiguration _configuration;
+        private readonly IInstallationProvider _installationProvider;
+        private readonly IConfiguration _configuration;
 
         public InstallController(IHostingEnvironment hostingEnvironment, 
             IInstallationProvider installationProvider,

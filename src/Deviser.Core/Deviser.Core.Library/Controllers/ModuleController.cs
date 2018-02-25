@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Autofac;
 using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library.Services;
 using Microsoft.Extensions.DependencyInjection;
 

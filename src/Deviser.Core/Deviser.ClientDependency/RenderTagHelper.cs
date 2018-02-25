@@ -23,9 +23,9 @@ namespace Deviser.ClientDependency
         private const string DependencyTypeAttributeName = "type";
         private const string ScriptLocationAttributeName = "location";
 
-        private IHttpContextAccessor httpContextAccessor;
-        private IHostingEnvironment hostingEnvironment;
-        private IMemoryCache cache;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IMemoryCache _cache;
 
         [HtmlAttributeName(DependencyTypeAttributeName)]
         public DependencyType DependencyType { get; set; }
@@ -49,9 +49,9 @@ namespace Deviser.ClientDependency
             HtmlEncoder htmlEncoder)
             :base(urlHelperFactory, htmlEncoder)
         {
-            this.cache = cache;
-            this.httpContextAccessor = httpContextAccessor;
-            this.hostingEnvironment = hostingEnvironment;
+            _cache = cache;
+            _httpContextAccessor = httpContextAccessor;
+            _hostingEnvironment = hostingEnvironment;
         }
 
 
@@ -60,10 +60,10 @@ namespace Deviser.ClientDependency
             try
             {
                 output.TagName = null;
-                var dependencyLoader = DependencyManager.GetLoader(httpContextAccessor.HttpContext);
+                var dependencyLoader = DependencyManager.GetLoader(_httpContextAccessor.HttpContext);
                 var fileVersionProvider = new FileVersionProvider(
-                    hostingEnvironment.WebRootFileProvider,
-                    cache,
+                    _hostingEnvironment.WebRootFileProvider,
+                    _cache,
                     ViewContext.HttpContext.Request.PathBase);
                 //var sb = new StringBuilder();
                 var dependencyFiles = dependencyLoader.DependencyFiles

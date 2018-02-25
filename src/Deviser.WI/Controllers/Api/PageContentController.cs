@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Modules;
@@ -20,18 +20,15 @@ namespace DeviserWI.Controllers.API
     [Route("api/[controller]")]
     public class PageContentController : Controller
     {
-        private readonly ILogger<PageContentController> logger;
-
-        //private IPageContentProvider pageContentProvider;
-        private IModuleManager moduleManager;
-        private IContentManager contentManager;
+        private readonly ILogger<PageContentController> _logger;        
+        private readonly IModuleManager _moduleManager;
+        private readonly IContentManager _contentManager;
 
         public PageContentController(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<PageContentController>>();
-            //pageContentProvider = container.Resolve<IPageContentProvider>();
-            moduleManager = container.Resolve<IModuleManager>();
-            contentManager = container.Resolve<IContentManager>();
+            _logger = container.Resolve<ILogger<PageContentController>>();
+            _moduleManager = container.Resolve<IModuleManager>();
+            _contentManager = container.Resolve<IContentManager>();
         }
 
         [HttpGet("{contentId}")]
@@ -39,15 +36,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dataResult = contentManager.Get(contentId);
-                var result = Mapper.Map<PageContent>(dataResult);
+                var result = _contentManager.Get(contentId);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting page content, contentId: {0}", contentId), ex);
+                _logger.LogError(string.Format("Error occured while getting page content, contentId: {0}", contentId), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -57,17 +53,16 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dbResult = contentManager.Get(pageId, cultureCode);
-                if (dbResult != null)
+                var result = _contentManager.Get(pageId, cultureCode);
+                if (result != null)
                 {
-                    var result = Mapper.Map<List<PageContent>>(dbResult);
                     return Ok(result);
                 }
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting page content, pageId: {0}, cultureCode: {1}", pageId, cultureCode), ex);
+                _logger.LogError(string.Format("Error occured while getting page content, pageId: {0}, cultureCode: {1}", pageId, cultureCode), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -78,17 +73,16 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dbResult = contentManager.Get();
-                if (dbResult != null)
+                var result = _contentManager.Get();
+                if (result != null)
                 {
-                    var result = Mapper.Map<List<PageContent>>(dbResult);
                     return Ok(result);
                 }
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting deleted page contents"), ex);
+                _logger.LogError(string.Format("Error occured while getting deleted page contents"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -98,15 +92,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dataResult = contentManager.AddOrUpdatePageContent(pageContent);
-                var result = Mapper.Map<PageContent>(dataResult);
+                var result = _contentManager.AddOrUpdatePageContent(pageContent);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating a page content"), ex);
+                _logger.LogError(string.Format("Error occured while creating a page content"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -116,15 +109,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dataResult = contentManager.AddOrUpdatePageContent(pageContent);
-                var result = Mapper.Map<PageContent>(dataResult);
+                var result = _contentManager.AddOrUpdatePageContent(pageContent);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating page content, pageContentId", pageContent.Id), ex);
+                _logger.LogError(string.Format("Error occured while updating page content, pageContentId", pageContent.Id), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -138,12 +130,12 @@ namespace DeviserWI.Controllers.API
                 if (pageContents == null || pageContents.Count() == 0)
                     return BadRequest();
 
-                contentManager.AddOrUpdatePageContents(new List<PageContent>(pageContents));
+                _contentManager.AddOrUpdatePageContents(new List<PageContent>(pageContents));
                 return Ok();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating page contents"), ex);
+                _logger.LogError(string.Format("Error occured while updating page contents"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -157,12 +149,12 @@ namespace DeviserWI.Controllers.API
                 if (pageContent == null || pageContent.ContentPermissions == null || pageContent.ContentPermissions.Count() == 0)
                     return BadRequest();
 
-                contentManager.UpdateContentPermission(Mapper.Map<PageContent>(pageContent));
+                _contentManager.UpdateContentPermission(pageContent);
                 return Ok();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating page content permissions"), ex);
+                _logger.LogError(string.Format("Error occured while updating page content permissions"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -173,7 +165,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = contentManager.RestorePageContent(id);
+                var result = _contentManager.RestorePageContent(id);
                 if (result != null)
                     return Ok(result);
 
@@ -181,7 +173,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating page content permissions"), ex);
+                _logger.LogError(string.Format("Error occured while updating page content permissions"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -191,7 +183,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var deleteResult = contentManager.RemovePageContent(id);
+                var deleteResult = _contentManager.RemovePageContent(id);
                 if (deleteResult)
                 {
                     return Ok();
@@ -200,7 +192,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while removing page content"), ex);
+                _logger.LogError(string.Format("Error occured while removing page content"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -211,7 +203,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                bool result = contentManager.DeletePageContent(id);
+                bool result = _contentManager.DeletePageContent(id);
                 if (result)
                     return Ok();
 
@@ -219,7 +211,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while deleting page content"), ex);
+                _logger.LogError(string.Format("Error occured while deleting page content"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

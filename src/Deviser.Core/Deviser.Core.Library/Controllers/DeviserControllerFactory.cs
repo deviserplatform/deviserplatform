@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -21,26 +21,24 @@ namespace Deviser.Core.Library.Controllers
 {
     public class DeviserControllerFactory : IDeviserControllerFactory
     {
-        private readonly ILogger<DeviserControllerFactory> _logger;
-
-        private IPageProvider _pageProvider;
+        private readonly ILogger<DeviserControllerFactory> _logger;        
         private readonly IActionInvoker _actionInvoker;
-        private readonly IModuleProvider _moduleProvider;
         private readonly IActionSelector _actionSelector;
-        //private readonly IModuleInvokerProvider _moduleInvokerProvider;
         private readonly IScopeService _scopeService;
         private readonly IHtmlHelper _htmlHelper;
+        private readonly IModuleRepository _moduleRepository;
+        private readonly IPageRepository _pageRepository;
+        
 
         public DeviserControllerFactory(ILifetimeScope container, IScopeService scopeService)
         {
             _logger = container.Resolve<ILogger<DeviserControllerFactory>>();
             _actionInvoker = container.Resolve<IActionInvoker>();
-            _actionSelector = container.Resolve<IActionSelector>();
-            //_moduleInvokerProvider = container.Resolve<IModuleInvokerProvider>();
-            _pageProvider = container.Resolve<IPageProvider>();
-            _moduleProvider = container.Resolve<IModuleProvider>();
+            _actionSelector = container.Resolve<IActionSelector>();            
             _htmlHelper = container.Resolve<IHtmlHelper>();
-            this._scopeService = scopeService;
+            _pageRepository = container.Resolve<IPageRepository>();
+            _moduleRepository = container.Resolve<IModuleRepository>();
+            _scopeService = scopeService;
         }
 
         /// <summary>
@@ -57,7 +55,7 @@ namespace Deviser.Core.Library.Controllers
                 currentPage.PageModule = currentPage.PageModule.Where(pm => !pm.IsDeleted).ToList();
                 foreach (var pageModule in currentPage.PageModule)
                 {
-                    Module module = _moduleProvider.Get(pageModule.ModuleId);
+                    Module module = _moduleRepository.Get(pageModule.ModuleId);
                     ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == pageModule.ModuleActionId);
                     ModuleContext moduleContext = new ModuleContext();
                     moduleContext.ModuleInfo = module;
@@ -79,20 +77,10 @@ namespace Deviser.Core.Library.Controllers
 
                         try
                         {
-                            //string moduleStringResult = await ExecuteModuleControllerAsString(actionContext, moduleContext, moduleAction);
-                            //moduleStringResult = $"<div class=\"sd-module-container\" data-module=\"{moduleContext.ModuleInfo.Name}\" data-page-module-id=\"{moduleContext.PageModuleId}\">{moduleStringResult}</div>";
-                            //contentResults.Add(new ContentResult
-                            //{
-                            //    //Result = moduleStringResult,
-                            //    HtmlResult = new Microsoft.AspNetCore.Html.HtmlString(moduleStringResult),
-                            //    SortOrder = pageModule.SortOrder
-                            //});
-
                             IHtmlContent actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleAction);
                             IHtmlContent moduleResult = GetModuleResult(actionResult, moduleContext);
                             contentResults.Add(new ContentResult
                             {
-                                //Result = moduleStringResult,
                                 HtmlResult = moduleResult,
                                 SortOrder = pageModule.SortOrder
                             });
@@ -120,7 +108,7 @@ namespace Deviser.Core.Library.Controllers
             string actionResult = string.Empty;
             try
             {
-                var module = _moduleProvider.Get(pageModule.ModuleId);
+                var module = _moduleRepository.Get(pageModule.ModuleId);
                 ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleActionType
                 ModuleContext moduleContext = new ModuleContext();
                 moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleActionType
@@ -145,7 +133,7 @@ namespace Deviser.Core.Library.Controllers
             IHtmlContent editResult = new HtmlString(string.Empty);
             try
             {
-                var module = _moduleProvider.Get(pageModule.ModuleId);
+                var module = _moduleRepository.Get(pageModule.ModuleId);
                 ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleActionType
                 ModuleContext moduleContext = new ModuleContext();
                 moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleActionType

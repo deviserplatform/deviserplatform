@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Common;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -14,29 +14,29 @@ namespace Deviser.Core.Library.Sites
     public class ContentManager : PageManager, IContentManager
     {
         //Logger
-        private readonly ILogger<ContentManager> logger;
+        private readonly ILogger<ContentManager> _logger;
 
-        private IPageContentProvider pageContentProvider;
+        private IPageContentRepository _pageContentRepository;
 
         public ContentManager(ILifetimeScope container)
             : base(container)
         {
-            logger = container.Resolve<ILogger<ContentManager>>();
-            pageContentProvider = container.Resolve<IPageContentProvider>();
-            httpContextAccessor = container.Resolve<IHttpContextAccessor>();
-            roleProvider = container.Resolve<IRoleProvider>();
+            _logger = container.Resolve<ILogger<ContentManager>>();
+            _pageContentRepository = container.Resolve<IPageContentRepository>();
+            //_httpContextAccessor = container.Resolve<IHttpContextAccessor>();
+            //_roleRepository = container.Resolve<IRoleRepository>();
         }
 
         public PageContent Get(Guid pageContentId)
         {
             try
             {
-                var result = pageContentProvider.Get(pageContentId);
+                var result = _pageContentRepository.Get(pageContentId);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling Get", ex);
+                _logger.LogError("Error occured while calling Get", ex);
             }
             return null;
         }
@@ -45,7 +45,7 @@ namespace Deviser.Core.Library.Sites
         {
             try
             {
-                var pageContents = pageContentProvider.Get(pageId, cultureCode);
+                var pageContents = _pageContentRepository.Get(pageId, cultureCode);
                 if (pageContents != null)
                 {
                     foreach (var pageContent in pageContents)
@@ -57,7 +57,7 @@ namespace Deviser.Core.Library.Sites
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling Get", ex);
+                _logger.LogError("Error occured while calling Get", ex);
             }
             return null;
         }
@@ -66,13 +66,13 @@ namespace Deviser.Core.Library.Sites
         {
             try
             {
-                var result = pageContentProvider.Get();
+                var result = _pageContentRepository.Get();
                 return result;
             }
             catch (Exception ex)
             {
 
-                logger.LogError("Error occured while getting deleted page contents", ex);
+                _logger.LogError("Error occured while getting deleted page contents", ex);
             }
             return null;
 
@@ -82,12 +82,12 @@ namespace Deviser.Core.Library.Sites
         {
             try
             {
-                var result = pageContentProvider.RestorePageContent(id);
+                var result = _pageContentRepository.RestorePageContent(id);
                 return result;
             }
             catch(Exception ex)
             {
-                logger.LogError("Error occured while restoring page content", ex);
+                _logger.LogError("Error occured while restoring page content", ex);
             }
             return null;
         }
@@ -95,10 +95,10 @@ namespace Deviser.Core.Library.Sites
         {
             try
             {
-                PageContent result = pageContentProvider.Get(pageContent.Id);
+                PageContent result = _pageContentRepository.Get(pageContent.Id);
                 if (result == null)
                 {
-                    result = pageContentProvider.Create(pageContent);
+                    result = _pageContentRepository.Create(pageContent);
 
                     List<ContentPermission> adminPermissions = AddAdminPermissions(result);
 
@@ -120,13 +120,13 @@ namespace Deviser.Core.Library.Sites
                     result.SortOrder = pageContent.SortOrder;
                     result.LastModifiedDate = DateTime.Now;
                     result.Properties = pageContent.Properties;
-                    result = pageContentProvider.Update(result);
+                    result = _pageContentRepository.Update(result);
                 }
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating a page content"), ex);
+                _logger.LogError(string.Format("Error occured while creating a page content"), ex);
             }
             return null;
         }
@@ -137,7 +137,7 @@ namespace Deviser.Core.Library.Sites
             {
                 if (contents != null)
                 {
-                    pageContentProvider.AddOrUpdate(contents);
+                    _pageContentRepository.AddOrUpdate(contents);
 
                     foreach (var pageContent in contents)
                     {
@@ -157,17 +157,17 @@ namespace Deviser.Core.Library.Sites
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating page content"), ex);
+                _logger.LogError(string.Format("Error occured while updating page content"), ex);
             }
         }
 
         public bool RemovePageContent(Guid id)
         {
-            var content = pageContentProvider.Get(id);
+            var content = _pageContentRepository.Get(id);
             if (content != null)
             {
                 content.IsDeleted = true;
-                pageContentProvider.Update(content);
+                _pageContentRepository.Update(content);
                 return true;
             }
             return false;
@@ -175,7 +175,7 @@ namespace Deviser.Core.Library.Sites
 
         public bool DeletePageContent(Guid id)
         {
-            bool result = pageContentProvider.DeletePageContent(id);
+            bool result = _pageContentRepository.DeletePageContent(id);
             if (result)
                 return true;
 
@@ -188,12 +188,12 @@ namespace Deviser.Core.Library.Sites
             {
                 if (pageContent != null)
                 {
-                    pageContentProvider.UpdateContentPermission(pageContent);
+                    _pageContentRepository.UpdateContentPermission(pageContent);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating page content permissions"), ex);
+                _logger.LogError(string.Format("Error occured while updating page content permissions"), ex);
             }
         }
 
@@ -214,7 +214,7 @@ namespace Deviser.Core.Library.Sites
                 RoleId = Globals.AdministratorRoleId,
                 PermissionId = Globals.ContentEditPermissionId,
             });
-            adminPermissions = pageContentProvider.AddContentPermissions(adminPermissions);
+            adminPermissions = _pageContentRepository.AddContentPermissions(adminPermissions);
             return adminPermissions;
         }
 
@@ -225,7 +225,7 @@ namespace Deviser.Core.Library.Sites
 
             var result = (pageContent.ContentPermissions.Any(contentPermission => contentPermission.PermissionId == Globals.ContentViewPermissionId &&
           (contentPermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == contentPermission.RoleId)))));
-            var page = pageProvider.GetPage(pageContent.PageId);
+            var page = _pageRepository.GetPage(pageContent.PageId);
             return result || (pageContent.InheritViewPermissions && HasViewPermission(page));
         }
 
@@ -236,7 +236,7 @@ namespace Deviser.Core.Library.Sites
 
             var result = (pageContent.ContentPermissions.Any(contentPermission => contentPermission.PermissionId == Globals.ContentEditPermissionId &&
            (contentPermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == contentPermission.RoleId)))));
-            var page = pageProvider.GetPage(pageContent.PageId);
+            var page = _pageRepository.GetPage(pageContent.PageId);
             return result || (pageContent.InheritEditPermissions && HasViewPermission(page));
         }
     }

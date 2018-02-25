@@ -29,14 +29,14 @@ namespace Deviser.Core.Library.TagHelpers
         private const string PageAttributeName = "sde-page";
         private const string ModuleResultAttributeName = "sde-module-results";
 
-        private IHtmlHelper htmlHelper;
-        private readonly IScopeService scopeService;
+        private readonly IHtmlHelper _htmlHelper;
+        private readonly IScopeService _scopeService;
 
         public PageContentHelper(IHtmlHelper htmlHelper, IHtmlGenerator generator, IScopeService scopeService)
         {
             Generator = generator;
-            this.htmlHelper = htmlHelper;
-            this.scopeService = scopeService;
+            _htmlHelper = htmlHelper;
+            _scopeService = scopeService;
         }
 
         [HtmlAttributeName(PageAttributeName)]
@@ -57,7 +57,7 @@ namespace Deviser.Core.Library.TagHelpers
         {
             get
             {
-                return scopeService.PageContext.CurrentCulture;
+                return _scopeService.PageContext.CurrentCulture;
             }
         }
 
@@ -81,7 +81,7 @@ namespace Deviser.Core.Library.TagHelpers
                 return;
             }
 
-            ((HtmlHelper)htmlHelper).Contextualize(ViewContext);
+            ((HtmlHelper)_htmlHelper).Contextualize(ViewContext);
 
             PageLayout pageLayout = new PageLayout();
             pageLayout.Name = CurrentPage.Layout.Name;
@@ -184,9 +184,9 @@ namespace Deviser.Core.Library.TagHelpers
                                     Content = content
                                 };
 
-                                string contentTypesViewPath = string.Format(Globals.ContentTypesViewPath, scopeService.PageContext.SelectedTheme, typeName);
+                                string contentTypesViewPath = string.Format(Globals.ContentTypesViewPath, _scopeService.PageContext.SelectedTheme, typeName);
 
-                                htmlContent = htmlHelper.Partial(contentTypesViewPath, dynamicContent);
+                                htmlContent = _htmlHelper.Partial(contentTypesViewPath, dynamicContent);
                                 //var contentResult = GetString(htmlContent);
                                 currentResults.Add(new ContentResult
                                 {
@@ -225,7 +225,7 @@ namespace Deviser.Core.Library.TagHelpers
                             ContentResult = htmlCurrentResult
                         };
 
-                        htmlContent = htmlHelper.Partial(string.Format(Globals.LayoutTypesPath, scopeService.PageContext.SelectedTheme, layoutType), layoutContent);
+                        htmlContent = _htmlHelper.Partial(string.Format(Globals.LayoutTypesPath, _scopeService.PageContext.SelectedTheme, layoutType), layoutContent);
                         //var layoutResult = GetString(htmlContent);
                         contentBuilder.AppendHtml(htmlContent);
                         //sb.Append(layoutResult);

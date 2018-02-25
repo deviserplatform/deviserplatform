@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using Autofac;
@@ -14,18 +14,17 @@ namespace Deviser.Core.Library.Layouts
     public class LayoutManager : ILayoutManager
     {
         //Logger
-        private readonly ILogger<LayoutManager> logger;
-
-        ILayoutProvider layoutProvider;
-        IPageProvider pageProvider;
-        IPageContentProvider pageContentProvider;
+        private readonly ILogger<LayoutManager> _logger;
+        private readonly ILayoutRepository _layoutRepository;
+        private readonly IPageRepository _pageRepository;
+        private readonly IPageContentRepository _pageContentRepository;
 
         public LayoutManager(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<LayoutManager>>();
-            layoutProvider = container.Resolve<ILayoutProvider>();
-            pageProvider = container.Resolve<IPageProvider>();
-            pageContentProvider = container.Resolve<IPageContentProvider>();
+            _logger = container.Resolve<ILogger<LayoutManager>>();
+            _layoutRepository = container.Resolve<ILayoutRepository>();
+            _pageRepository = container.Resolve<IPageRepository>();
+            _pageContentRepository = container.Resolve<IPageContentRepository>();
         }
 
 
@@ -33,7 +32,7 @@ namespace Deviser.Core.Library.Layouts
         {
             try
             {
-                var resultLayouts = layoutProvider.GetLayouts();
+                var resultLayouts = _layoutRepository.GetLayouts();
                 List<PageLayout> result = new List<PageLayout>();
                 foreach (var layout in resultLayouts)
                 {
@@ -44,7 +43,7 @@ namespace Deviser.Core.Library.Layouts
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting all page layouts"), ex);
+                _logger.LogError(string.Format("Error occured while getting all page layouts"), ex);
             }
             return null;
         }
@@ -53,12 +52,12 @@ namespace Deviser.Core.Library.Layouts
         {
             try
             {
-                var result = layoutProvider.GetDeletedLayouts();
+                var result = _layoutRepository.GetDeletedLayouts();
                 return result;
             }
             catch(Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting deleted layouts"), ex);
+                _logger.LogError(string.Format("Error occured while getting deleted layouts"), ex);
             }
             return null;
         }
@@ -67,13 +66,13 @@ namespace Deviser.Core.Library.Layouts
         {
             try
             {
-                var resultLayout = layoutProvider.GetLayout(layoutId);
+                var resultLayout = _layoutRepository.GetLayout(layoutId);
                 PageLayout result = ConvertToPageLayout(resultLayout);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting oage layout: {0}", layoutId), ex);
+                _logger.LogError(string.Format("Error occured while getting oage layout: {0}", layoutId), ex);
             }
             return null;
         }
@@ -89,14 +88,14 @@ namespace Deviser.Core.Library.Layouts
                 //    CreateElement(pageLayout.ContentItems, pageLayout.PageId);
                 //}
                 var layout = ConvertToLayout(pageLayout);
-                var resultLayout = layoutProvider.CreateLayout(layout);
+                var resultLayout = _layoutRepository.CreateLayout(layout);
                 UpdatePageLayout(pageLayout.PageId, resultLayout.Id);
                 var result = ConvertToPageLayout(resultLayout);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating a page layout, LayoutName: ", pageLayout.Name), ex);
+                _logger.LogError(string.Format("Error occured while creating a page layout, LayoutName: ", pageLayout.Name), ex);
             }
             return null;
         }
@@ -112,14 +111,14 @@ namespace Deviser.Core.Library.Layouts
                 //    CreateElement(pageLayout.ContentItems, pageLayout.PageId);
                 //}                
                 var layout = ConvertToLayout(pageLayout);
-                var resultLayout = layoutProvider.UpdateLayout(layout);
+                var resultLayout = _layoutRepository.UpdateLayout(layout);
                 UpdatePageLayout(pageLayout.PageId, resultLayout.Id);
                 var result = ConvertToPageLayout(resultLayout);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating page layout, LayoutName: ", pageLayout.Name), ex);
+                _logger.LogError(string.Format("Error occured while updating page layout, LayoutName: ", pageLayout.Name), ex);
             }
             return null;
         }
@@ -142,23 +141,23 @@ namespace Deviser.Core.Library.Layouts
 
         private void UpdatePageLayout(Guid pageId, Guid layoutId)
         {
-            var page = pageProvider.GetPage(pageId);
+            var page = _pageRepository.GetPage(pageId);
             page.LayoutId = layoutId;
             page.Layout = null;
-            pageProvider.UpdatePage(page);
+            _pageRepository.UpdatePage(page);
         }
 
         private void DeleteModulesAndContent(PageLayout pageLayout)
         {
             //When page layout is being copied, all modules and contents should be deleted.
-            var pageModules = pageProvider.GetPageModules(pageLayout.PageId);
-            var pageContents = pageContentProvider.Get(pageLayout.PageId, Globals.FallbackLanguage);
+            var pageModules = _pageRepository.GetPageModules(pageLayout.PageId);
+            var pageContents = _pageContentRepository.Get(pageLayout.PageId, Globals.FallbackLanguage);
             if (pageModules != null && pageModules.Count > 0)
             {
                 foreach (var pageModule in pageModules)
                 {
                     pageModule.IsDeleted = true;
-                    pageProvider.UpdatePageModule(pageModule);
+                    _pageRepository.UpdatePageModule(pageModule);
                 }
             }
 
@@ -167,7 +166,7 @@ namespace Deviser.Core.Library.Layouts
                 foreach (var content in pageContents)
                 {
                     content.IsDeleted = true;
-                    pageContentProvider.Update(content);
+                    _pageContentRepository.Update(content);
                 }
             }
         }
@@ -177,12 +176,12 @@ namespace Deviser.Core.Library.Layouts
             try
             {
                 layout.IsDeleted = false;
-                var result = layoutProvider.UpdateLayout(layout);
+                var result = _layoutRepository.UpdateLayout(layout);
                 return result;
             }
             catch(Exception ex)
             {
-                logger.LogError(string.Format("Error occured while restoring the layout"), ex);
+                _logger.LogError(string.Format("Error occured while restoring the layout"), ex);
             }
             return null;
         }

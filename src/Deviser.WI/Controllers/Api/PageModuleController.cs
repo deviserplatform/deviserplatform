@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Layouts;
@@ -23,20 +23,19 @@ namespace DeviserWI.Controllers.API
     public class PageModuleController : Controller
     {
         //Logger
-        private readonly ILogger<PageModuleController> logger;
-
-        private IPageProvider pageProvider;
-        private IModuleManager moduleManager;
-        private IPageManager pageManager;
-        private IScopeService scopeService;
+        private readonly ILogger<PageModuleController> _logger;
+        private readonly IPageRepository _pageRepository;
+        private readonly IModuleManager _moduleManager;
+        private readonly IPageManager _pageManager;
+        private readonly IScopeService _scopeService;
 
         public PageModuleController(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<PageModuleController>>();
-            pageProvider = container.Resolve<IPageProvider>();
-            moduleManager = container.Resolve<IModuleManager>();
-            pageManager = container.Resolve<IPageManager>();
-            scopeService = container.Resolve<IScopeService>();
+            _logger = container.Resolve<ILogger<PageModuleController>>();
+            _pageRepository = container.Resolve<IPageRepository>();
+            _moduleManager = container.Resolve<IModuleManager>();
+            _pageManager = container.Resolve<IPageManager>();
+            _scopeService = container.Resolve<IScopeService>();
         }
 
         [HttpGet]
@@ -45,8 +44,8 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dbResult = moduleManager.GetPageModule(id);                
-                if (dbResult != null && moduleManager.HasEditPermission(dbResult))
+                var dbResult = _moduleManager.GetPageModule(id);                
+                if (dbResult != null && _moduleManager.HasEditPermission(dbResult))
                 {
                     var result = Mapper.Map<PageModule>(dbResult);
                     return Ok(result);
@@ -56,7 +55,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting pageModule, id: ", id), ex);
+                _logger.LogError(string.Format("Error occured while getting pageModule, id: ", id), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -67,7 +66,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dbResult = moduleManager.GetPageModuleByPage(pageId);                
+                var dbResult = _moduleManager.GetPageModuleByPage(pageId);                
                 if (dbResult != null)
                 {  
                     var result = Mapper.Map<List<PageModule>>(dbResult);
@@ -77,7 +76,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting pageModules, pageId: ", pageId), ex);
+                _logger.LogError(string.Format("Error occured while getting pageModules, pageId: ", pageId), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -88,7 +87,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dbResult = moduleManager.GetDeletedPageModules();
+                var dbResult = _moduleManager.GetDeletedPageModules();
                 if (dbResult != null)
                 {
                     var result = Mapper.Map<List<PageModule>>(dbResult);
@@ -98,7 +97,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting deleted pageModules"), ex);
+                _logger.LogError(string.Format("Error occured while getting deleted pageModules"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -110,10 +109,10 @@ namespace DeviserWI.Controllers.API
             {
                 if (pageModule != null)
                 {
-                    var page = pageProvider.GetPage(pageModule.PageId);
-                    if (pageManager.HasEditPermission(page)) //Check edit permission for the page
+                    var page = _pageRepository.GetPage(pageModule.PageId);
+                    if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
                     {
-                        var dbResult = moduleManager.CreateUpdatePageModule(pageModule);
+                        var dbResult = _moduleManager.CreateUpdatePageModule(pageModule);
                         var result = Mapper.Map<PageModule>(dbResult);
                         if (result != null)
                             return Ok(result);
@@ -125,7 +124,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating a pageModule, moduleId: ", pageModule.ModuleId), ex);
+                _logger.LogError(string.Format("Error occured while creating a pageModule, moduleId: ", pageModule.ModuleId), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -139,10 +138,10 @@ namespace DeviserWI.Controllers.API
                 if (pageModules == null || pageModules.Count == 0)
                     return BadRequest();
 
-                var page = pageProvider.GetPage(pageModules.First().PageId);
-                if (pageManager.HasEditPermission(page))//Check edit permission for the page
+                var page = _pageRepository.GetPage(pageModules.First().PageId);
+                if (_pageManager.HasEditPermission(page))//Check edit permission for the page
                 {
-                    moduleManager.UpdatePageModules(pageModules);
+                    _moduleManager.UpdatePageModules(pageModules);
                     return Ok();
                 }
 
@@ -150,7 +149,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating pageModules"), ex);
+                _logger.LogError(string.Format("Error occured while updating pageModules"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -164,17 +163,17 @@ namespace DeviserWI.Controllers.API
                 if (pageModule == null || pageModule.ModulePermissions == null || pageModule.ModulePermissions.Count == 0)
                     return BadRequest();
 
-                var page = pageProvider.GetPage(pageModule.PageId);
-                if (pageManager.HasEditPermission(page)) //Check edit permission for the page
+                var page = _pageRepository.GetPage(pageModule.PageId);
+                if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
                 {
-                    moduleManager.UpdateModulePermission(pageModule);
+                    _moduleManager.UpdateModulePermission(pageModule);
                     return Ok();
                 }
                 return Unauthorized();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating pageModule permissions"), ex);
+                _logger.LogError(string.Format("Error occured while updating pageModule permissions"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -185,7 +184,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = pageProvider.RestorePageModule(id);
+                var result = _pageRepository.RestorePageModule(id);
                 if (result != null)
                     return Ok(result);
 
@@ -193,7 +192,7 @@ namespace DeviserWI.Controllers.API
             }
             catch(Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating pageModule permissions"), ex);
+                _logger.LogError(string.Format("Error occured while updating pageModule permissions"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 
             }
@@ -204,14 +203,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var pageModule = pageProvider.GetPageModule(id);
+                var pageModule = _pageRepository.GetPageModule(id);
                 if (pageModule != null)
                 {
-                    var page = pageProvider.GetPage(pageModule.PageId);
-                    if (pageManager.HasEditPermission(page)) //Check edit permission for the page
+                    var page = _pageRepository.GetPage(pageModule.PageId);
+                    if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
                     {
                         pageModule.IsDeleted = true;
-                        pageProvider.UpdatePageModule(pageModule);
+                        _pageRepository.UpdatePageModule(pageModule);
                         return Ok();
                     }
                     return Unauthorized();
@@ -220,7 +219,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while deleting page module"), ex);
+                _logger.LogError(string.Format("Error occured while deleting page module"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -231,13 +230,13 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var pageModule = pageProvider.GetPageModule(id);
+                var pageModule = _pageRepository.GetPageModule(id);
                 if (pageModule != null)
                 {
-                    var page = pageProvider.GetPage(pageModule.PageId);
-                    if (pageManager.HasEditPermission(page)) //Check edit permission for the page
+                    var page = _pageRepository.GetPage(pageModule.PageId);
+                    if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
                     {
-                        bool result = pageProvider.DeletePageModule(id);
+                        bool result = _pageRepository.DeletePageModule(id);
                         if (result)
                             return Ok();
 
@@ -249,7 +248,7 @@ namespace DeviserWI.Controllers.API
             }
             catch(Exception ex)
             {
-                logger.LogError(string.Format("Error occured while deleting page module"), ex);
+                _logger.LogError(string.Format("Error occured while deleting page module"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

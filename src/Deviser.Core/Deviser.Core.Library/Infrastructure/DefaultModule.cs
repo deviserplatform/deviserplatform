@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Data;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library;
 using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.IO;
@@ -32,18 +32,18 @@ namespace Deviser.Core.Library.Infrastructure
             builder.RegisterType<DeviserControllerFactory>().As<IDeviserControllerFactory>();
             builder.RegisterType<DeviserRouteHandler>().As<DeviserRouteHandler>();
             
-            builder.RegisterType<LayoutProvider>().As<ILayoutProvider>().InstancePerDependency();
-            builder.RegisterType<LayoutTypeProvider>().As<ILayoutTypeProvider>().InstancePerDependency();
-            builder.RegisterType<ContentTypeProvider>().As<IContentTypeProvider>().InstancePerDependency();
-            builder.RegisterType<ModuleProvider>().As<IModuleProvider>().InstancePerDependency();
-            builder.RegisterType<PageContentProvider>().As<IPageContentProvider>().InstancePerDependency();
-            builder.RegisterType<PageProvider>().As<IPageProvider>().InstancePerDependency();
-            builder.RegisterType<RoleProvider>().As<IRoleProvider>().InstancePerDependency();
-            builder.RegisterType<SiteSettingProvider>().As<ISiteSettingProvider>().InstancePerDependency();
-            builder.RegisterType<UserProvider>().As<IUserProvider>().InstancePerDependency();
-            builder.RegisterType<LanguageProvider>().As<ILanguageProvider>().InstancePerDependency();
-            builder.RegisterType<OptionListProvider>().As<IOptionListProvider>().InstancePerDependency();
-            builder.RegisterType<PropertyProvider>().As<IPropertyProvider>().InstancePerDependency();
+            builder.RegisterType<LayoutRepository>().As<ILayoutRepository>().InstancePerDependency();
+            builder.RegisterType<LayoutTypeRepository>().As<ILayoutTypeRepository>().InstancePerDependency();
+            builder.RegisterType<ContentTypeRepository>().As<IContentTypeRepository>().InstancePerDependency();
+            builder.RegisterType<ModuleRepository>().As<IModuleRepository>().InstancePerDependency();
+            builder.RegisterType<PageContentRepository>().As<IPageContentRepository>().InstancePerDependency();
+            builder.RegisterType<PageRepository>().As<IPageRepository>().InstancePerDependency();
+            builder.RegisterType<RoleRepository>().As<IRoleRepository>().InstancePerDependency();
+            builder.RegisterType<SiteSettingRepository>().As<ISiteSettingRepository>().InstancePerDependency();
+            builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerDependency();
+            builder.RegisterType<LanguageRepository>().As<ILanguageRepository>().InstancePerDependency();
+            builder.RegisterType<OptionListRepository>().As<IOptionListRepository>().InstancePerDependency();
+            builder.RegisterType<PropertyRepository>().As<IPropertyRepository>().InstancePerDependency();
 
             //builder.RegisterType<ContactProvider>().As<IContactProvider>();
                         

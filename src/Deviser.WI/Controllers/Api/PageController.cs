@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library;
 using Deviser.Core.Library.Services;
 using Microsoft.AspNetCore.Http;
@@ -15,16 +15,15 @@ namespace DeviserWI.Controllers.API
     public class PageController : Controller
     {
         //Logger
-        private readonly ILogger<PageController> logger;
-
-        IPageProvider pageProvider;
-        INavigation navigation;
+        private readonly ILogger<PageController> _logger;
+        private readonly IPageRepository _pageRepository;
+        private readonly INavigation _navigation;
 
         public PageController(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<PageController>>();
-            pageProvider = container.Resolve<IPageProvider>();
-            navigation = container.Resolve<INavigation>();
+            _logger = container.Resolve<ILogger<PageController>>();
+            _pageRepository = container.Resolve<IPageRepository>();
+            _navigation = container.Resolve<INavigation>();
         }
 
         [HttpGet]
@@ -32,7 +31,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {   
-                var result = navigation.GetPageTree();
+                var result = _navigation.GetPageTree();
                 if (result != null)
                     return Ok(result);
 
@@ -40,7 +39,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting all pages"), ex);
+                _logger.LogError(string.Format("Error occured while getting all pages"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -51,7 +50,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = pageProvider.GetPages();
+                var result = _pageRepository.GetPages();
                 if (result != null)
                     return Ok(result);
 
@@ -59,7 +58,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting all pages"), ex);
+                _logger.LogError(string.Format("Error occured while getting all pages"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -71,7 +70,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = pageProvider.GetDeletedPages();
+                var result = _pageRepository.GetDeletedPages();
                 if (result != null)
                     return Ok(result);
 
@@ -79,7 +78,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting all pages"), ex);
+                _logger.LogError(string.Format("Error occured while getting all pages"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -89,14 +88,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {   
-                var result = navigation.GetPage(id);
+                var result = _navigation.GetPage(id);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting a page, PageId: {0}", id), ex);
+                _logger.LogError(string.Format("Error occured while getting a page, PageId: {0}", id), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -106,7 +105,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = navigation.CreatePage(page);               
+                var result = _navigation.CreatePage(page);               
                 if (result != null)
                         return Ok(result);
                 
@@ -114,7 +113,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating a page, PageId: ", page.Id), ex);
+                _logger.LogError(string.Format("Error occured while creating a page, PageId: ", page.Id), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -125,7 +124,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                bool result = pageProvider.DraftPage(id);
+                bool result = _pageRepository.DraftPage(id);
                 if (result)
                     return Ok();
 
@@ -133,7 +132,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while drafting the page", ex));
+                _logger.LogError(string.Format("Error occured while drafting the page", ex));
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -144,7 +143,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                bool result = pageProvider.PublishPage(id);
+                bool result = _pageRepository.PublishPage(id);
                 if (result)
                     return Ok();
 
@@ -152,7 +151,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while publishing the page", ex));
+                _logger.LogError(string.Format("Error occured while publishing the page", ex));
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -164,7 +163,7 @@ namespace DeviserWI.Controllers.API
             {
                 if (page != null)
                 {
-                    var result = navigation.UpdatePageTree(page);
+                    var result = _navigation.UpdatePageTree(page);
                     if (result != null)
                         return Ok(result);
                 }
@@ -173,7 +172,7 @@ namespace DeviserWI.Controllers.API
             catch (Exception ex)
             {
                 string errorMessage = string.Format("Error occured while updating page tree");
-                logger.LogError(errorMessage, ex);
+                _logger.LogError(errorMessage, ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -185,7 +184,7 @@ namespace DeviserWI.Controllers.API
             {
                 if (page != null)
                 {   
-                    var result = navigation.UpdateSinglePage(page);
+                    var result = _navigation.UpdateSinglePage(page);
                     if (result != null)
                         return Ok(result);
                 }
@@ -194,7 +193,7 @@ namespace DeviserWI.Controllers.API
             catch (Exception ex)
             {
                 string errorMessage = string.Format("Error occured while updating a page, PageId: ", page.Id);
-                logger.LogError(errorMessage, ex);
+                _logger.LogError(errorMessage, ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -204,7 +203,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {                
-                var result = pageProvider.RestorePage(id);
+                var result = _pageRepository.RestorePage(id);
                 if (result != null)
                     return Ok(result);
 
@@ -212,7 +211,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while restoring a page", ex));
+                _logger.LogError(string.Format("Error occured while restoring a page", ex));
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -224,7 +223,7 @@ namespace DeviserWI.Controllers.API
             {
                 if (id != Guid.Empty)
                 {
-                    bool result = navigation.DeletePage(id);
+                    bool result = _navigation.DeletePage(id);
                     if (result)
                         return Ok(result);
                 }
@@ -233,7 +232,7 @@ namespace DeviserWI.Controllers.API
             catch (Exception ex)
             {
                 string errorMessage = string.Format("Error occured while deleting page, PageId: ", id);
-                logger.LogError(errorMessage, ex);
+                _logger.LogError(errorMessage, ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -244,7 +243,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                bool result = pageProvider.DeletePage(id);
+                bool result = _pageRepository.DeletePage(id);
                 if (result)
                     return Ok();
 
@@ -252,7 +251,7 @@ namespace DeviserWI.Controllers.API
             }
             catch(Exception ex)
             {
-                logger.LogError(string.Format("Error occured while deleting the page", ex));
+                _logger.LogError(string.Format("Error occured while deleting the page", ex));
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

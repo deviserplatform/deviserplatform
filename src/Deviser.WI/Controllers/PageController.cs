@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Common;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library;
 using Deviser.Core.Library.Controllers;
@@ -18,44 +18,45 @@ namespace Deviser.WI.Controllers
 {
     public class PageController : DeviserController, IDisposable
     {
-        private readonly ILogger<PageController> logger;
+        private readonly ILogger<PageController> _logger;
 
         [ActionContext]
         public ActionContext Context { get; set; }
 
 
-        private ILifetimeScope container;
-        private IPageProvider pageProvider;
-        private IPageManager pageManager;
-        private IDeviserControllerFactory deviserControllerFactory;
-        private IScopeService scopeService;
-        private IContentManager contentManager;
-        private IModuleManager moduleManager;
-        private IInstallationProvider installationManager;
+        private readonly ILifetimeScope _container;
+        private readonly IPageRepository _pageRepository;
+        //private readonly IPageManager _pageManager;
+        private readonly IDeviserControllerFactory _deviserControllerFactory;
+        private readonly IScopeService _scopeService;
+        private readonly IContentManager _contentManager;
+        private readonly IModuleManager _moduleManager;
+        private readonly IInstallationProvider _installationManager;
 
         public PageController(ILifetimeScope container, IScopeService scopeService)
         {
-            this.container = container;
-            installationManager = container.Resolve<IInstallationProvider>();
-            logger = container.Resolve<ILogger<PageController>>();
+            _container = container;
+            _installationManager = container.Resolve<IInstallationProvider>();
+            _logger = container.Resolve<ILogger<PageController>>();
+            _scopeService = scopeService;
 
-            if (installationManager.IsPlatformInstalled)
+            if (_installationManager.IsPlatformInstalled)
             {
-                pageProvider = container.Resolve<IPageProvider>();
-                pageManager = container.Resolve<IPageManager>();
-                deviserControllerFactory = container.Resolve<IDeviserControllerFactory>();
-                contentManager = container.Resolve<IContentManager>();
-                moduleManager = container.Resolve<IModuleManager>();
+                _pageRepository = container.Resolve<IPageRepository>();
+                //_pageManager = container.Resolve<IPageManager>();
+                _deviserControllerFactory = container.Resolve<IDeviserControllerFactory>();
+                _contentManager = container.Resolve<IContentManager>();
+                _moduleManager = container.Resolve<IModuleManager>();
             }   
-            this.scopeService = scopeService;
+            
         }
 
         public async Task<IActionResult> Index(string permalink)
         {
             try
             {
-                bool isInstalled = installationManager.IsPlatformInstalled;
-                bool isDbExist = installationManager.IsDatabaseExist;
+                bool isInstalled = _installationManager.IsPlatformInstalled;
+                bool isDbExist = _installationManager.IsDatabaseExist;
 
                 if(!isInstalled)
                 {
@@ -72,13 +73,13 @@ namespace Deviser.WI.Controllers
                 if (isInstalled && isDbExist)
                 {
                     //Platform is properly installed
-                    Page currentPage = scopeService.PageContext.CurrentPage;
+                    Page currentPage = _scopeService.PageContext.CurrentPage;
                     FilterPageElements(currentPage);
                     if (currentPage != null)
                     {
-                        if (scopeService.PageContext.HasPageViewPermission)
+                        if (_scopeService.PageContext.HasPageViewPermission)
                         {
-                            Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await deviserControllerFactory.GetPageModuleResults(Context);
+                            Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await _deviserControllerFactory.GetPageModuleResults(Context);
                             ViewBag.ModuleActionResults = moduleActionResults;
                             return View(currentPage);                            
                         }
@@ -91,7 +92,7 @@ namespace Deviser.WI.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Page load exception has been occured", ex);
+                _logger.LogError("Page load exception has been occured", ex);
                 throw ex;
             }
             return View("NotFound");
@@ -99,9 +100,9 @@ namespace Deviser.WI.Controllers
 
         public IActionResult Layout(string permalink)
         {
-            Page currentPage = scopeService.PageContext.CurrentPage;
+            Page currentPage = _scopeService.PageContext.CurrentPage;
             FilterPageElements(currentPage);
-            if (scopeService.PageContext != null)
+            if (_scopeService.PageContext != null)
             {
                 ViewBag.Theme = Globals.AdminTheme;
                 RouteData.Values.Add("permalink", permalink);
@@ -112,15 +113,15 @@ namespace Deviser.WI.Controllers
 
         public IActionResult Edit(string permalink)
         {
-            Page currentPage = scopeService.PageContext.CurrentPage;
+            Page currentPage = _scopeService.PageContext.CurrentPage;
             FilterPageElements(currentPage);
-            if (currentPage != null && scopeService.PageContext != null)
+            if (currentPage != null && _scopeService.PageContext != null)
             {
-                if (scopeService.PageContext.HasPageEditPermission)
+                if (_scopeService.PageContext.HasPageEditPermission)
                 {
                     ViewBag.Theme = Globals.AdminTheme;
                     RouteData.Values.Add("permalink", permalink);
-                    return View(scopeService.PageContext.CurrentPage);
+                    return View(_scopeService.PageContext.CurrentPage);
                 }
                 else
                 {
@@ -139,15 +140,15 @@ namespace Deviser.WI.Controllers
             {
                 try
                 {
-                    var pageModule = pageProvider.GetPageModule(pageModuleId); //It referes PageModule's View ModuleActionType
+                    var pageModule = _pageRepository.GetPageModule(pageModuleId); //It referes PageModule's View ModuleActionType
                     
                     if (pageModule == null)
                         return NotFound();
 
                     //if (moduleManager.HasEditPermission(pageModule))
-                    if (scopeService.PageContext.HasPageEditPermission)
+                    if (_scopeService.PageContext.HasPageEditPermission)
                     {
-                        object result = deviserControllerFactory.GetModuleEditResult(Context, pageModule, moduleActionId).Result;
+                        object result = _deviserControllerFactory.GetModuleEditResult(Context, pageModule, moduleActionId).Result;
                         ViewBag.result = result;
                         return View(result);
                     }
@@ -158,7 +159,7 @@ namespace Deviser.WI.Controllers
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError("Module load exception has been occured", ex);
+                    _logger.LogError("Module load exception has been occured", ex);
                     throw ex;
                 }
             }
@@ -177,14 +178,14 @@ namespace Deviser.WI.Controllers
                 if (currentPage.PageContent != null && currentPage.PageContent.Count > 0)
                 {
                     //Filter pageContents where current user has view permissions
-                    var filteredPageContents = currentPage.PageContent.Where(pc => contentManager.HasViewPermission(pc)).ToList();
+                    var filteredPageContents = currentPage.PageContent.Where(pc => _contentManager.HasViewPermission(pc)).ToList();
                     currentPage.PageContent = filteredPageContents;
                 }
 
                 if (currentPage.PageModule != null && currentPage.PageModule.Count > 0)
                 {
                     //Filter pageContents where current user has view permissions
-                    var filteredPageModules = currentPage.PageModule.Where(pm => moduleManager.HasViewPermission(pm)).ToList();
+                    var filteredPageModules = currentPage.PageModule.Where(pm => _moduleManager.HasViewPermission(pm)).ToList();
                     currentPage.PageModule = filteredPageModules;
                 }
 
@@ -203,7 +204,7 @@ namespace Deviser.WI.Controllers
 
         public new void Dispose()
         {
-            deviserControllerFactory.Dispose();
+            _deviserControllerFactory.Dispose();
             base.Dispose();
         }
 

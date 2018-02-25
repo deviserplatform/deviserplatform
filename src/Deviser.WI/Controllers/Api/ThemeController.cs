@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Layouts;
@@ -20,13 +20,13 @@ namespace DeviserWI.Controllers.API
     public class ThemeController : Controller
     {
         //Logger
-        private readonly ILogger<ThemeController> logger;
-        private IThemeManager themeManager;
+        private readonly ILogger<ThemeController> _logger;
+        private readonly IThemeManager _themeManager;
 
         public ThemeController(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<ThemeController>>();
-            themeManager = container.Resolve<IThemeManager>();
+            _logger = container.Resolve<ILogger<ThemeController>>();
+            _themeManager = container.Resolve<IThemeManager>();
         }
         
         [HttpGet]
@@ -34,14 +34,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var page = themeManager.GetHostThemes();
+                var page = _themeManager.GetHostThemes();
                 if (page != null)
                     return Ok(page);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting themes"), ex);
+                _logger.LogError(string.Format("Error occured while getting themes"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
             

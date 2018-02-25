@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,64 +13,61 @@ namespace Deviser.WI.Controllers.Api
     [Route("api/[controller]")]
     public class ContentTranslationController : Controller
     {
-        private readonly ILogger<ContentTranslationController> logger;
-        IPageContentProvider pageContentProvider;
+        private readonly ILogger<ContentTranslationController> _logger;
+        private readonly IPageContentRepository _pageContentRepository;
         public ContentTranslationController(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<ContentTranslationController>>();
-            pageContentProvider = container.Resolve<IPageContentProvider>();
+            _logger = container.Resolve<ILogger<ContentTranslationController>>();
+            _pageContentRepository = container.Resolve<IPageContentRepository>();
         }
 
         [HttpGet("{cultureCode}/{contentId}")]
         public IActionResult Get(string cultureCode, Guid contentId)
         {
             try
-            {
-                var dbResult = pageContentProvider.GetTranslations(contentId, cultureCode);
-                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.PageContentTranslation>>(dbResult);
+            {                
+                var result = _pageContentRepository.GetTranslations(contentId, cultureCode);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting page content translation, contentId: {0}, cultureCode: {1}", contentId, cultureCode), ex);
+                _logger.LogError(string.Format("Error occured while getting page content translation, contentId: {0}, cultureCode: {1}", contentId, cultureCode), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Deviser.Core.Common.DomainTypes.PageContentTranslation contentTranslation)
+        public IActionResult Post([FromBody] PageContentTranslation contentTranslation)
         {
             try
-            {
-                var dbResult = pageContentProvider.CreateTranslation(ConvertToDbType(contentTranslation));
-                var result = ConvertToDomainType(dbResult);
+            {                
+                var result = _pageContentRepository.CreateTranslation(contentTranslation);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating/updating a page content translation"), ex);
+                _logger.LogError(string.Format("Error occured while creating/updating a page content translation"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] Deviser.Core.Common.DomainTypes.PageContentTranslation contentTranslation)
+        public IActionResult Put([FromBody] PageContentTranslation contentTranslation)
         {
             try
-            {
-                var dbResult = pageContentProvider.UpdateTranslation(ConvertToDbType(contentTranslation));
-                var result = ConvertToDomainType(dbResult);
+            {                
+                var result = _pageContentRepository.UpdateTranslation(contentTranslation);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating/updating a page content translation"), ex);
+                _logger.LogError(string.Format("Error occured while creating/updating a page content translation"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -80,30 +77,20 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var translation = pageContentProvider.GetTranslation(id);
+                var translation = _pageContentRepository.GetTranslation(id);
                 if (translation != null)
                 {
                     translation.IsDeleted = true;
-                    pageContentProvider.UpdateTranslation(translation);
+                    _pageContentRepository.UpdateTranslation(translation);
                     return Ok();
                 }
                 return BadRequest();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while deleting page content translation"), ex);
+                _logger.LogError(string.Format("Error occured while deleting page content translation"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        private Deviser.Core.Common.DomainTypes.PageContentTranslation ConvertToDomainType(PageContentTranslation role)
-        {
-            return Mapper.Map<Deviser.Core.Common.DomainTypes.PageContentTranslation>(role);
-        }
-
-        private PageContentTranslation ConvertToDbType(Deviser.Core.Common.DomainTypes.PageContentTranslation role)
-        {
-            return Mapper.Map<PageContentTranslation>(role);
         }
     }
 }

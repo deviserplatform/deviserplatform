@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using DeviserWI.Controllers.API;
 using Microsoft.AspNetCore.Http;
@@ -19,17 +19,17 @@ namespace Deviser.WI.Controllers.Api
     public class UserController : Controller
     {
         //Logger
-        private readonly ILogger<UserController> logger;
-        private readonly UserManager<Core.Data.Entities.User> userManager;
-        private IUserProvider userProvider;
-        private IRoleProvider roleProvider;
+        private readonly ILogger<UserController> _logger;
+        private readonly UserManager<Core.Data.Entities.User> _userManager;
+        private readonly IUserRepository _userRepository;
+        private readonly IRoleRepository _roleRepository;
 
         public UserController(ILifetimeScope container, UserManager<Core.Data.Entities.User> userManager)
         {
-            logger = container.Resolve<ILogger<UserController>>();
-            userProvider = container.Resolve<IUserProvider>();
-            roleProvider = container.Resolve<IRoleProvider>();
-            this.userManager = userManager;
+            _logger = container.Resolve<ILogger<UserController>>();
+            _userRepository = container.Resolve<IUserRepository>();
+            _roleRepository = container.Resolve<IRoleRepository>();
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -37,40 +37,23 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var users = userProvider.GetUsers();
+                var users = _userRepository.GetUsers();
                 if (users != null)
                 {
-                    var result = users;
-                    ////Roles workarround
-                    //foreach (var user in users)
-                    //{
-                    //    if (user.Roles != null && user.Roles.Count > 0)
-                    //    {
-                    //        var targetUser = result.First(u => u.Id == user.Id);
-                    //        targetUser.Roles = new List<Role>();
-                    //        foreach (var userRole in user.Roles)
-                    //        {
-                    //            if (userRole != null)
-                    //            {
-                    //                var role = roleProvider.GetRole(userRole.RoleId);
-                    //                targetUser.Roles.Add(Mapper.Map<Role>(role));
-                    //            }
-                    //        }
-                    //    }
-                    //}
+                    var result = users;                    
                     return Ok(result);
                 }
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting themes"), ex);
+                _logger.LogError(string.Format("Error occured while getting themes"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] Core.Common.DomainTypes.User userDTO)
+        public async Task<IActionResult> CreateUser([FromBody] User userDTO)
         {
             try
             {
@@ -79,7 +62,7 @@ namespace Deviser.WI.Controllers.Api
                     var user = Mapper.Map<Core.Data.Entities.User>(userDTO);
                     user.Id = Guid.NewGuid();
                     user.UserName = userDTO.Email;
-                    var result = await userManager.CreateAsync(user, userDTO.Password);
+                    var result = await _userManager.CreateAsync(user, userDTO.Password);
                     if (result.Succeeded)
                     {
                         return Ok(result);
@@ -98,25 +81,25 @@ namespace Deviser.WI.Controllers.Api
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured  while creating new user"), ex);
+                _logger.LogError(string.Format("Error occured  while creating new user"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] Core.Common.DomainTypes.User userDTO)
+        public IActionResult Put([FromBody] User userDTO)
         {
             try
             {
                 var user = Mapper.Map<Core.Data.Entities.User>(userDTO);
-                var result = userManager.UpdateAsync(user).Result;
+                var result = _userManager.UpdateAsync(user).Result;
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
             }
             catch (Exception ex)
             {                
-                logger.LogError(string.Format("Error occured while updating user Id: {0}, {1}", userDTO.Id, ex));
+                _logger.LogError(string.Format("Error occured while updating user Id: {0}, {1}", userDTO.Id, ex));
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -126,10 +109,10 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var user = userManager.Users.FirstOrDefault(u => u.Id == id);
+                var user = _userManager.Users.FirstOrDefault(u => u.Id == id);
                 if (user != null)
                 {
-                    var result = userManager.DeleteAsync(user).Result;
+                    var result = _userManager.DeleteAsync(user).Result;
                     if (result != null)
                     {
                         return Ok(result);
@@ -139,7 +122,7 @@ namespace Deviser.WI.Controllers.Api
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while deleting user"), ex);
+                _logger.LogError(string.Format("Error occured while deleting user"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -152,14 +135,14 @@ namespace Deviser.WI.Controllers.Api
                 string userName = userObj.userName;
                 if (!string.IsNullOrEmpty(userName))
                 {
-                    var result = userManager.Users.Any(u => u.UserName == userName);
+                    var result = _userManager.Users.Any(u => u.UserName == userName);
                     return Ok(result);
                 }
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured  while checking user exist"), ex);
+                _logger.LogError(string.Format("Error occured  while checking user exist"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -177,8 +160,8 @@ namespace Deviser.WI.Controllers.Api
                     var newPassword = passwordObj.newPassword;
                     if (userId!= Guid.Empty && !string.IsNullOrEmpty(newPassword))
                     {
-                        var user = userManager.Users.FirstOrDefault(u => u.Id == userId);
-                        var result = userManager.ChangePasswordAsync(user, currentPassword, newPassword).Result;
+                        var user = _userManager.Users.FirstOrDefault(u => u.Id == userId);
+                        var result = _userManager.ChangePasswordAsync(user, currentPassword, newPassword).Result;
                         return Ok(result);
                     }
                 }
@@ -186,7 +169,7 @@ namespace Deviser.WI.Controllers.Api
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured  while resetting password"), ex);
+                _logger.LogError(string.Format("Error occured  while resetting password"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -201,11 +184,11 @@ namespace Deviser.WI.Controllers.Api
                 {
                     var userId = (Guid)userRoleObj.userId;
                     var roleName = (string)userRoleObj.roleName;
-                    var user = userManager.Users.FirstOrDefault(u => u.Id == userId);
-                    var result = userManager.AddToRoleAsync(user, roleName).Result;
+                    var user = _userManager.Users.FirstOrDefault(u => u.Id == userId);
+                    var result = _userManager.AddToRoleAsync(user, roleName).Result;
                     if (result.Succeeded)
                     {
-                        var resultUser = userProvider.GetUser(userId); //userManager.Users.FirstOrDefault(u => u.Id == userId);
+                        var resultUser = _userRepository.GetUser(userId); //userManager.Users.FirstOrDefault(u => u.Id == userId);
                         return Ok(resultUser);
                     }
                 }
@@ -213,7 +196,7 @@ namespace Deviser.WI.Controllers.Api
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating a new user"), ex);
+                _logger.LogError(string.Format("Error occured while creating a new user"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -225,11 +208,11 @@ namespace Deviser.WI.Controllers.Api
             {
                 if (userId != null && roleName != null)
                 {
-                    var user = userManager.Users.FirstOrDefault(u => u.Id == userId);
-                    var result = userManager.RemoveFromRoleAsync(user, roleName).Result;
+                    var user = _userManager.Users.FirstOrDefault(u => u.Id == userId);
+                    var result = _userManager.RemoveFromRoleAsync(user, roleName).Result;
                     if (result.Succeeded)
                     {
-                        var resultUser = userProvider.GetUser(userId);
+                        var resultUser = _userRepository.GetUser(userId);
                         return Ok(resultUser);
                     }
                 }
@@ -238,28 +221,9 @@ namespace Deviser.WI.Controllers.Api
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating a new user"), ex);
+                _logger.LogError(string.Format("Error occured while creating a new user"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-
-        //private Core.Common.DomainTypes.User ConvertToUserDTO(Core.Data.Entities.User user)
-        //{
-        //    var userDTO = Mapper.Map<Core.Common.DomainTypes.User>(user);
-        //    if (user.Roles != null && user.Roles.Count > 0)
-        //    {
-        //        userDTO.Roles = new List<Role>();
-        //        foreach (var userRole in user.Roles)
-        //        {
-        //            if (userRole != null)
-        //            {
-        //                var role = roleProvider.GetRole(userRole.RoleId);
-        //                userDTO.Roles.Add(Mapper.Map<Role>(role));
-        //            }
-
-        //        }
-        //    }
-        //    return userDTO;
-        //}
     }
 }

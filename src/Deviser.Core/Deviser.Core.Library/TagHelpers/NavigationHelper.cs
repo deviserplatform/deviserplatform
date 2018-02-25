@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -26,12 +26,11 @@ namespace Deviser.Core.Library.TagHelpers
         private const string PageAttributeName = "sd-nav-page";
         private const string ParentAttributeName = "sd-nav-parent";
 
-        private IPageProvider pageProvider;
-        private INavigation navigation;
-        private IHtmlHelper htmlHelper;
-
-        private readonly IScopeService scopeService;
-        private readonly ILogger<NavigationHelper> logger;
+        private readonly IPageRepository _pageRepository;
+        private readonly INavigation _navigation;
+        private readonly IHtmlHelper _htmlHelper;
+        private readonly IScopeService _scopeService;
+        private readonly ILogger<NavigationHelper> _logger;
 
         [HtmlAttributeName(NavAttributeName)]
         public string MenuStyle { get; set; }
@@ -47,13 +46,13 @@ namespace Deviser.Core.Library.TagHelpers
         public ViewContext ViewContext { get; set; }
 
         public NavigationHelper(ILifetimeScope container, IHttpContextAccessor httpContextAccessor, IScopeService scopeService)
-             : base(httpContextAccessor, scopeService)
+             : base(httpContextAccessor)
         {
-            pageProvider = container.Resolve<IPageProvider>();
-            htmlHelper = container.Resolve<IHtmlHelper>();
-            navigation = container.Resolve<INavigation>();
-            logger = container.Resolve<ILogger<NavigationHelper>>();
-            this.scopeService = scopeService;
+            _pageRepository = container.Resolve<IPageRepository>();
+            _htmlHelper = container.Resolve<IHtmlHelper>();
+            _navigation = container.Resolve<INavigation>();
+            _logger = container.Resolve<ILogger<NavigationHelper>>();
+            this._scopeService = scopeService;
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -66,16 +65,16 @@ namespace Deviser.Core.Library.TagHelpers
 
             try
             {
-                ((HtmlHelper)htmlHelper).Contextualize(ViewContext);
-                var root = navigation.GetPageTree(scopeService.PageContext.CurrentPageId, SystemFilter, ParentId);
+                ((HtmlHelper)_htmlHelper).Contextualize(ViewContext);
+                var root = _navigation.GetPageTree(_scopeService.PageContext.CurrentPageId, SystemFilter, ParentId);
 
-                var htmlContent = htmlHelper.Partial(string.Format(Globals.MenuStylePath, MenuStyle), root);
+                var htmlContent = _htmlHelper.Partial(string.Format(Globals.MenuStylePath, MenuStyle), root);
                 var contentResult = GetString(htmlContent);
                 output.Content.SetHtmlContent(contentResult);
             }
             catch (Exception ex)
             {
-                logger.LogError("Page load exception has been occured", ex);
+                _logger.LogError("Page load exception has been occured", ex);
                 output.Content.SetHtmlContent("Error occured, in menu");
             }
         }

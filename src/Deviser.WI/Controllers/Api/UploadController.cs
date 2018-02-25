@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
@@ -24,13 +24,13 @@ namespace DeviserWI.Controllers.API
     [Route("api/[controller]")]
     public class UploadController : Controller
     {
-        private readonly ILogger<UploadController> logger;
+        private readonly ILogger<UploadController> _logger;
 
         string siteAssetPath;
         string localImageUploadPath;
         public UploadController(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<UploadController>>();
+            _logger = container.Resolve<ILogger<UploadController>>();
             IHostingEnvironment hostingEnv = container.Resolve<IHostingEnvironment>();
             try
             {
@@ -74,7 +74,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting images"), ex);
+                _logger.LogError(string.Format("Error occured while getting images"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -109,7 +109,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while uploading images"), ex);
+                _logger.LogError(string.Format("Error occured while uploading images"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

@@ -2,7 +2,7 @@
 using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library.Multilingual;
 using Deviser.Core.Library.Services;
 using Deviser.Core.Library.Sites;
@@ -27,53 +27,17 @@ namespace Deviser.Core.Library.Middleware
     /// </summary>
     public class PageContextMiddleware
     {
-        private readonly RequestDelegate next;
-        private readonly ILogger logger;
-        private IRouter router;
-
-        //private RouteContext routeContext;
-        //private HttpContext httpContext;
-
-        //private IPageManager pageManager;
-        //private IModuleProvider moduleProvider;
-        //private ISettingManager settingManager;
-        //private PageContext pageContext;
-        //private ILanguageProvider languageProvider;
-        //private IInstallationProvider installationManager;
-
-        //private IScopeService scopeService;
-
-        //private DeviserDbContext deviserDbContext;
-
-        //public PageContextMiddleware(RequestDelegate next,
-        //    ILoggerFactory loggerFactory,
-        //    IPageManager pageManager,
-        //    IModuleProvider moduleProvider,
-        //    ISettingManager settingManager,
-        //    ILanguageProvider languageProvider,
-        //    IInstallationProvider installationManager,
-        //    IRouter router)
-        //{
-        //    this.next = next;
-        //    this.router = router;
-        //    this.pageManager = pageManager;
-        //    this.moduleProvider = moduleProvider;
-        //    this.settingManager = settingManager;
-        //    this.languageProvider = languageProvider;
-        //    this.installationManager = installationManager;
-
-        //    logger = loggerFactory.CreateLogger<PageContextMiddleware>();
-        //    pageContext = new PageContext();
-        //}
-
+        private readonly RequestDelegate _next;
+        private readonly ILogger _logger;
+        private readonly IRouter _router;
+        
         public PageContextMiddleware(RequestDelegate next,
             ILoggerFactory loggerFactory,
             IRouter router)
         {
-            this.next = next;
-            this.router = router;
-
-            logger = loggerFactory.CreateLogger<PageContextMiddleware>();
+            _next = next;
+            _router = router;
+            _logger = loggerFactory.CreateLogger<PageContextMiddleware>();
 
 
         }
@@ -83,10 +47,10 @@ namespace Deviser.Core.Library.Middleware
         {
 
             IPageManager pageManager;
-            IModuleProvider moduleProvider;
+            IModuleRepository moduleRepository;
             ISettingManager settingManager;
             PageContext pageContext;
-            ILanguageProvider languageProvider;
+            ILanguageRepository languageRepository;
             IInstallationProvider installationManager;
 
             pageContext = new PageContext();
@@ -98,8 +62,8 @@ namespace Deviser.Core.Library.Middleware
             if (isInstalled)
             {
                 RouteContext routeContext = new RouteContext(httpContext);
-                routeContext.RouteData.Routers.Add(router);
-                await router.RouteAsync(routeContext);
+                routeContext.RouteData.Routers.Add(_router);
+                await _router.RouteAsync(routeContext);
 
                 if (!httpContext.Request.Path.Value.Contains("/api") && routeContext.RouteData.Values.Values.Count > 0)
                 {
@@ -107,11 +71,11 @@ namespace Deviser.Core.Library.Middleware
                     {
                         settingManager = container.Resolve<ISettingManager>();
                         pageManager = container.Resolve<IPageManager>();
-                        moduleProvider = container.Resolve<IModuleProvider>(); ;
-                        languageProvider = container.Resolve<ILanguageProvider>();
+                        moduleRepository = container.Resolve<IModuleRepository>(); ;
+                        languageRepository = container.Resolve<ILanguageRepository>();
                         //deviserDbContext = container.Resolve<DeviserDbContext>();
 
-                        pageContext.IsMultilingual = languageProvider.IsMultilingual();
+                        pageContext.IsMultilingual = languageRepository.IsMultilingual();
                         pageContext.SiteSettingInfo = settingManager.GetSiteSetting();
 
                         var currentCulture = GetCurrentCulture(routeContext, httpContext, pageContext.IsMultilingual);
@@ -175,7 +139,7 @@ namespace Deviser.Core.Library.Middleware
 
                         if (routeContext.RouteData.Values.TryGetValue("area", out moduleName))
                         {
-                            moduleContext.ModuleInfo = moduleProvider.Get((string)moduleName);
+                            moduleContext.ModuleInfo = moduleRepository.Get((string)moduleName);
                         }
 
                         if (routeContext.RouteData.Values.TryGetValue("pageModuleId", out pageModuleId))
@@ -184,7 +148,7 @@ namespace Deviser.Core.Library.Middleware
 
                             if (moduleContext.ModuleInfo == null)
                             {
-                                moduleContext.ModuleInfo = moduleProvider.GetModuleByPageModuleId(moduleContext.PageModuleId);
+                                moduleContext.ModuleInfo = moduleRepository.GetModuleByPageModuleId(moduleContext.PageModuleId);
                             }
                         }
 
@@ -203,7 +167,7 @@ namespace Deviser.Core.Library.Middleware
                     catch (Exception ex)
                     {
                         string errorMessage = string.Format("Error occured while initializing site ");
-                        logger.LogError(errorMessage, ex);
+                        _logger.LogError(errorMessage, ex);
                     }
 
                     //InitPageContext();
@@ -216,36 +180,18 @@ namespace Deviser.Core.Library.Middleware
 
             settingManager = null;
             pageManager = null;
-            moduleProvider = null;
-            languageProvider = null;
+            moduleRepository = null;
+            languageRepository = null;
             pageContext = null;
 
-            logger.LogInformation("Handling request: " + httpContext.Request.Path);
-            await next.Invoke(httpContext);
+            _logger.LogInformation("Handling request: " + httpContext.Request.Path);
+            await _next.Invoke(httpContext);
 
             //deviserDbContext.RegisterForDispose(httpContext);
 
-            logger.LogInformation("Finished handling request.");
+            _logger.LogInformation("Finished handling request.");
         }
-
-        //private void InitFirstLevel()
-        //{
-        //}
-
-        ///// <summary>
-        ///// This method initilizes the PageContext based on the RouteData or Query "permalink"
-        ///// </summary>
-        ///// <returns></returns>
-        //private void InitPageContext()
-        //{
-
-        //}
-
-        //private void InitModuleContext()
-        //{
-
-        //}
-
+        
         private CultureInfo GetCurrentCulture(RouteContext routeContext, HttpContext httpContext, bool isSiteMultilingual)
         {
             var requestCultureFeature = httpContext.Features.Get<IRequestCultureFeature>();

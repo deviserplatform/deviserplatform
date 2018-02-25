@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Html;
@@ -27,10 +27,10 @@ namespace Deviser.Core.Library.TagHelpers
     {
         private const string ContentEditsAttribute = "sd-content-edits";
 
-        private INavigation navigation;
-        private IHtmlHelper htmlHelper;
-        private IHostingEnvironment hostingEnvironment;
-        private IScopeService scopeService;
+        private readonly INavigation _navigation;
+        private readonly IHtmlHelper _htmlHelper;
+        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IScopeService _scopeService;
 
         [HtmlAttributeName(ContentEditsAttribute)]
         public string ContentEditViews { get; set; }
@@ -40,12 +40,12 @@ namespace Deviser.Core.Library.TagHelpers
         public ViewContext ViewContext { get; set; }
 
         public ContentEditViewHelper(ILifetimeScope container, IHttpContextAccessor httpContextAccessor, IScopeService scopeService)
-             : base(httpContextAccessor, scopeService)
+             : base(httpContextAccessor)
         {
-            this.htmlHelper = container.Resolve<IHtmlHelper>();
-            this.navigation = container.Resolve<INavigation>();
-            this.scopeService = scopeService;
-            hostingEnvironment = container.Resolve<IHostingEnvironment>();
+            _htmlHelper = container.Resolve<IHtmlHelper>();
+            _navigation = container.Resolve<INavigation>();
+            _scopeService = scopeService;
+            _hostingEnvironment = container.Resolve<IHostingEnvironment>();
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -56,7 +56,7 @@ namespace Deviser.Core.Library.TagHelpers
                 return;
             }
 
-            ((HtmlHelper)htmlHelper).Contextualize(ViewContext);
+            ((HtmlHelper)_htmlHelper).Contextualize(ViewContext);
 
             var contentResult = GetAllEditViews();
             output.Content.SetHtmlContent(contentResult);
@@ -66,14 +66,14 @@ namespace Deviser.Core.Library.TagHelpers
         private string GetAllEditViews()
         {
             StringBuilder sb = new StringBuilder();
-            string editPath = string.Format(Globals.ContentTypesEditPath, scopeService.PageContext.SelectedTheme);
-            string editViewDir = editViewDir = Path.Combine(hostingEnvironment.ContentRootPath, editPath.Replace("~/", "").Replace("/", @"\"));
+            string editPath = string.Format(Globals.ContentTypesEditPath, _scopeService.PageContext.SelectedTheme);
+            string editViewDir = editViewDir = Path.Combine(_hostingEnvironment.ContentRootPath, editPath.Replace("~/", "").Replace("/", @"\"));
             DirectoryInfo dir = new DirectoryInfo(editViewDir);
             foreach (var file in dir.GetFiles())
             {
                 if (file != null)
                 {
-                    var htmlContent = htmlHelper.Partial(Path.Combine(editPath, file.Name));
+                    var htmlContent = _htmlHelper.Partial(Path.Combine(editPath, file.Name));
                     var contentResult = GetString(htmlContent);
                     sb.Append(contentResult);
                 }

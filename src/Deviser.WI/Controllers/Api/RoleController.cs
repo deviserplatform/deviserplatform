@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,14 +15,13 @@ namespace DeviserWI.Controllers.API
     {
 
         //Logger
-        private readonly ILogger<RoleController> logger;
-
-        IRoleProvider roleProvider;
+        private readonly ILogger<RoleController> _logger;
+        private readonly IRoleRepository _roleRepository;
 
         public RoleController(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<RoleController>>();
-            roleProvider = container.Resolve<IRoleProvider>();
+            _logger = container.Resolve<ILogger<RoleController>>();
+            _roleRepository = container.Resolve<IRoleRepository>();
         }
 
         [HttpGet]
@@ -30,8 +29,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dbResult = roleProvider.GetRoles();
-                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.Role>>(dbResult);
+                var result = _roleRepository.GetRoles();
                 if (result != null)
                 {
                     return Ok(result);
@@ -40,7 +38,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting all roles"), ex);
+                _logger.LogError(string.Format("Error occured while getting all roles"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -50,14 +48,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = roleProvider.GetRole(id);
+                var result = _roleRepository.GetRole(id);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting a role, roleId: {0}", id), ex);
+                _logger.LogError(string.Format("Error occured while getting a role, roleId: {0}", id), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -67,14 +65,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = roleProvider.CreateRole(role);
+                var result = _roleRepository.CreateRole(role);
                 if (result != null)
                     return Ok(result);
                 return BadRequest("Invalid role");
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating a role, roleObj: ", JsonConvert.SerializeObject(role)), ex);
+                _logger.LogError(string.Format("Error occured while creating a role, roleObj: ", JsonConvert.SerializeObject(role)), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -86,7 +84,7 @@ namespace DeviserWI.Controllers.API
             {
                 if (role != null)
                 {
-                    var result = roleProvider.UpdateRole(role);
+                    var result = _roleRepository.UpdateRole(role);
                     if (result != null)
                         return Ok(result);
                 }
@@ -95,7 +93,7 @@ namespace DeviserWI.Controllers.API
             catch (Exception ex)
             {
                 string errorMessage = string.Format("Error occured while updating role");
-                logger.LogError(errorMessage, ex);
+                _logger.LogError(errorMessage, ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -107,7 +105,7 @@ namespace DeviserWI.Controllers.API
             {
                 if (id!= Guid.Empty)
                 {
-                    var result = roleProvider.DeleteRole(id);
+                    var result = _roleRepository.DeleteRole(id);
                     if (result != null)
                         return Ok();
                 }
@@ -116,7 +114,7 @@ namespace DeviserWI.Controllers.API
             catch (Exception ex)
             {
                 string errorMessage = string.Format("Error occured while deleting role, roleId: ", id);
-                logger.LogError(errorMessage, ex);
+                _logger.LogError(errorMessage, ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

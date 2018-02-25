@@ -10,7 +10,7 @@ using System.Linq;
 using AutoMapper;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.Services;
 using Deviser.Core.Library.Sites;
@@ -32,13 +32,13 @@ namespace Deviser.Core.Library.Test.Controllers
             //Arrange
             var actionContextMock = new Mock<ActionContext>();
             var scopeServiceMock = new Mock<IScopeService>();
-            var pageManager = new PageManager(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
+            var pageManager = new PageManager(_container);
+            var dbContext = _serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageId = SetupPageAndModules();
             var currentPage = pageManager.GetPage(pageId);
             scopeServiceMock.Setup(s => s.PageContext.CurrentPage).Returns(currentPage);
             actionContextMock.Setup(ac => ac.RouteData.Routers).Returns(new List<IRouter>());
-            var deviserControllerFactory = new DeviserControllerFactory(container, scopeServiceMock.Object);
+            var deviserControllerFactory = new DeviserControllerFactory(_container, scopeServiceMock.Object);
 
             //Act
             var result = deviserControllerFactory.GetPageModuleResults(actionContextMock.Object).Result;
@@ -73,15 +73,15 @@ namespace Deviser.Core.Library.Test.Controllers
             //Arrange
             var actionContextMock = new Mock<ActionContext>();
             var scopeServiceMock = new Mock<IScopeService>();
-            var pageManager = new PageManager(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
+            var pageManager = new PageManager(_container);
+            var dbContext = _serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageId = SetupPageAndModules();
             dbContext.PageModule.RemoveRange(dbContext.PageModule);
             dbContext.SaveChanges();
             var currentPage = pageManager.GetPage(pageId);
             scopeServiceMock.Setup(s => s.PageContext.CurrentPage).Returns(currentPage);
             actionContextMock.Setup(ac => ac.RouteData.Routers).Returns(new List<IRouter>());
-            var deviserControllerFactory = new DeviserControllerFactory(container, scopeServiceMock.Object);
+            var deviserControllerFactory = new DeviserControllerFactory(_container, scopeServiceMock.Object);
 
             //Act
             var result = deviserControllerFactory.GetPageModuleResults(actionContextMock.Object).Result;
@@ -102,9 +102,9 @@ namespace Deviser.Core.Library.Test.Controllers
             //Arrange
             //var actionContextMock = new Mock<ActionContext>();
             var scopeServiceMock = new Mock<IScopeService>();
-            var pageManager = new PageManager(container);
-            var moduleProvider = new ModuleProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
+            var pageManager = new PageManager(_container);
+            var moduleRepository = new ModuleRepository(_container);
+            var dbContext = _serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageId = SetupPageAndModules();
             var currentPage = pageManager.GetPage(pageId);
             scopeServiceMock.Setup(s => s.PageContext.CurrentPage).Returns(currentPage);
@@ -120,8 +120,8 @@ namespace Deviser.Core.Library.Test.Controllers
 
             //actionContextMock.Setup(ac => ac.RouteData).Returns(new RouteData());
             //actionContextMock.Setup(ac => ac.RouteData.Routers).Returns(new List<IRouter>());
-            var deviserControllerFactory = new DeviserControllerFactory(container, scopeServiceMock.Object);
-            var modules = moduleProvider.Get();
+            var deviserControllerFactory = new DeviserControllerFactory(_container, scopeServiceMock.Object);
+            var modules = moduleRepository.Get();
             var editModule = modules.First(m => m.ModuleAction.Any(ma => ma.ControllerName == "Edit"));
             var editModuleAction =
                 editModule.ModuleAction.First(
@@ -148,15 +148,15 @@ namespace Deviser.Core.Library.Test.Controllers
             //Arrange
             var actionContextMock = new Mock<ActionContext>();
             var scopeServiceMock = new Mock<IScopeService>();
-            var pageManager = new PageManager(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
+            var pageManager = new PageManager(_container);
+            var dbContext = _serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageId = SetupPageAndModules();
             dbContext.PageModule.RemoveRange(dbContext.PageModule);
             dbContext.SaveChanges();
             var currentPage = pageManager.GetPage(pageId);
             scopeServiceMock.Setup(s => s.PageContext.CurrentPage).Returns(currentPage);
             actionContextMock.Setup(ac => ac.RouteData.Routers).Returns(new List<IRouter>());
-            var deviserControllerFactory = new DeviserControllerFactory(container, scopeServiceMock.Object);
+            var deviserControllerFactory = new DeviserControllerFactory(_container, scopeServiceMock.Object);
 
             //Act
             var result = deviserControllerFactory.GetModuleEditResultAsString(actionContextMock.Object, new PageModule(), Guid.NewGuid()).Result;
@@ -175,20 +175,20 @@ namespace Deviser.Core.Library.Test.Controllers
         private Guid SetupPageAndModules()
         {
             //Arrange
-            var pageProvider = new PageProvider(container);
-            var moduleProvider = new ModuleProvider(container);
+            var pageRepository = new PageRepository(_container);
+            var moduleRepository = new ModuleRepository(_container);
 
-            var pages = TestDataProvider.GetPages();
+            var pages = TestDataRepository.GetPages();
             var page = pages.First();
 
             //Create a page
-            pageProvider.CreatePage(page);
+            pageRepository.CreatePage(page);
 
             //Create modules
-            var modules = TestDataProvider.GetModules();
+            var modules = TestDataRepository.GetModules();
             foreach (var module in modules)
             {
-                moduleProvider.Create(module);
+                moduleRepository.Create(module);
 
                 if (module != null && module.ModuleAction != null)
                 {
@@ -216,7 +216,7 @@ namespace Deviser.Core.Library.Test.Controllers
                             },
                             IsDeleted = false
                         };
-                        pageProvider.CreatePageModule(pageModule);
+                        pageRepository.CreatePageModule(pageModule);
                     }
                 }
             }

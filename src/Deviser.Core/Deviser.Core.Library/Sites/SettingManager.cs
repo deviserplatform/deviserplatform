@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,20 +12,20 @@ namespace Deviser.Core.Library.Sites
     public class SettingManager : ISettingManager
     {
         //Logger
-        private readonly ILogger<ContentManager> logger;
-        private ISiteSettingProvider siteSettingProvider;
+        private readonly ILogger<SettingManager> _logger;
+        private ISiteSettingRepository _siteSettingRepository;
 
         public SettingManager(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<ContentManager>>();
-            siteSettingProvider = container.Resolve<ISiteSettingProvider>();
+            _logger = container.Resolve<ILogger<SettingManager>>();
+            _siteSettingRepository = container.Resolve<ISiteSettingRepository>();
         }
 
         public SMTPSetting GetSMTPSetting()
         {
             try
             {
-                var settings = siteSettingProvider.GetSettings();
+                var settings = _siteSettingRepository.GetSettings();
                 var serverPort = settings.First(s => s.SettingName == "SMTPServerAndPort").SettingValue;
                 var ssl = settings.First(s => s.SettingName == "SMTPEnableSSL").SettingValue;
                 var authenticationType = settings.First(s => s.SettingName == "SMTPAuthentication").SettingValue;
@@ -45,7 +45,7 @@ namespace Deviser.Core.Library.Sites
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling Get", ex);
+                _logger.LogError("Error occured while calling Get", ex);
             }
             return null;
         }
@@ -54,7 +54,7 @@ namespace Deviser.Core.Library.Sites
         {
             try
             {
-                var settings = siteSettingProvider.GetSettings();
+                var settings = _siteSettingRepository.GetSettings();
                 var strRegistrationEnabled = settings.First(s => s.SettingName == "RegistrationEnabled").SettingValue;
                 var strDefaultAdminLayoutId = settings.First(s => s.SettingName == "DefaultAdminLayoutId").SettingValue;
                 var strHomePageId = settings.First(s => s.SettingName == "HomePageId").SettingValue;
@@ -85,7 +85,7 @@ namespace Deviser.Core.Library.Sites
             }
             catch (Exception ex)
             {
-                logger.LogError("Error occured while calling Get", ex);
+                _logger.LogError("Error occured while calling Get", ex);
             }
             return null;
         }

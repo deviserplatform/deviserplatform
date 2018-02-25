@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.Modules;
 using Deviser.Core.Library.Services;
@@ -25,7 +25,7 @@ namespace Deviser.Modules.ContactForm.Controllers
 
         IPageManager pageManager;
 
-        IUserProvider userProvider;
+        IUserRepository userProvider;
 
         public ContactFormController(IServiceProvider serviceProvider)
         {
@@ -33,7 +33,7 @@ namespace Deviser.Modules.ContactForm.Controllers
             ContactProvider = serviceProvider.GetService<IContactProvider>();
             scopeService = serviceProvider.GetService<IScopeService>();
             pageManager = serviceProvider.GetService<IPageManager>();
-            userProvider = serviceProvider.GetService<IUserProvider>();
+            userProvider = serviceProvider.GetService<IUserRepository>();
 
         }
 

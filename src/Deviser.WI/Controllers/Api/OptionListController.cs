@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Deviser.Core.Data.DataProviders;
+using Deviser.Core.Data.Repositories;
 using Microsoft.Extensions.Logging;
 using Autofac;
 using AutoMapper;
@@ -16,13 +16,12 @@ namespace Deviser.WI.Controllers.Api
     [Route("api/[controller]")]
     public class OptionListController : Controller
     {
-        private readonly ILogger<OptionListController> logger;
-
-        private IOptionListProvider optionListProvider;
+        private readonly ILogger<OptionListController> _logger;
+        private readonly IOptionListRepository _optionListRepository;
         public OptionListController(ILifetimeScope container)
         {
-            logger = container.Resolve<ILogger<OptionListController>>();
-            optionListProvider = container.Resolve<IOptionListProvider>();
+            _logger = container.Resolve<ILogger<OptionListController>>();
+            _optionListRepository = container.Resolve<IOptionListRepository>();
         }
 
         [HttpGet]
@@ -30,12 +29,7 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                //if (contentTypes != null)
-                //    return Ok(contentTypes);
-                //return NotFound();
-
-                var dbOptionList = optionListProvider.GetOptionLists();
-                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.OptionList>>(dbOptionList);
+                var result = _optionListRepository.GetOptionLists();
 
                 if (result != null)
                     return Ok(result);
@@ -43,7 +37,7 @@ namespace Deviser.WI.Controllers.Api
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting option lists"), ex);
+                _logger.LogError(string.Format("Error occured while getting option lists"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -56,18 +50,17 @@ namespace Deviser.WI.Controllers.Api
                 if (optionList == null || string.IsNullOrEmpty(optionList.Name))
                     return BadRequest("Invalid parameter");
 
-                if (optionListProvider.GetOptionList(optionList.Name) != null)
+                if (_optionListRepository.GetOptionList(optionList.Name) != null)
                     return BadRequest("Option list already exist");
-
-                var dbResult = optionListProvider.CreateOptionList(optionList);
-                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.OptionList>(dbResult);
+                
+                var result = _optionListRepository.CreateOptionList(optionList);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while creating option list"), ex);
+                _logger.LogError(string.Format("Error occured while creating option list"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
@@ -77,15 +70,14 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var dbResult = optionListProvider.UpdateOptionList(contentType);
-                var result = Mapper.Map<Deviser.Core.Common.DomainTypes.OptionList>(dbResult);
+                var result = _optionListRepository.UpdateOptionList(contentType);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while updating option list"), ex);
+                _logger.LogError(string.Format("Error occured while updating option list"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

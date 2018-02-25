@@ -15,13 +15,13 @@ namespace Deviser.WI.Controllers.Api
     [Route("api/[controller]")]
     public class FileController : Controller
     {
-        private readonly ILogger<FileController> logger;
-        private IFileManagement fileManagement;
+        private readonly ILogger<FileController> _logger;
+        private readonly IFileManagement _fileManagement;
 
         public FileController(ILifetimeScope container)
         {            
-            logger = container.Resolve<ILogger<FileController>>();
-            fileManagement = container.Resolve<IFileManagement>();
+            _logger = container.Resolve<ILogger<FileController>>();
+            _fileManagement = container.Resolve<IFileManagement>();
         }
 
         [HttpGet]
@@ -29,14 +29,14 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var result = fileManagement.GetFilesAndFolders();
+                var result = _fileManagement.GetFilesAndFolders();
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while getting all files and folders"), ex);
+                _logger.LogError(string.Format("Error occured while getting all files and folders"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
