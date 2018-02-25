@@ -56,6 +56,11 @@
 @import "bootstrap/responsive-utilities";
 
 
+/*----------------------------------------------------------------------
+    Colors
+----------------------------------------------------------------------*/
+$black: #000000;
+
 
 /*!
  * Start Bootstrap - SB Admin 2 Bootstrap Admin Theme (http://startbootstrap.com)
@@ -1076,7 +1081,7 @@ body.page-edit {
     -moz-box-sizing: border-box;
 }
 
- 
+
 .tree-scroll {
     max-height: 80vh;
     overflow-y: auto;
@@ -1090,6 +1095,7 @@ div.form-horizontal .control-label {
 
 .page-layout-name {
     margin-top: 12px;
+
     .col-md-5 {
         padding: 8px;
     }
@@ -1155,7 +1161,7 @@ div.form-horizontal .control-label {
             height: 20px;
             padding: 2px;
         }
-        
+
         .col-md-12, .col-md-6 {
             padding-left: 5px;
             padding-right: 2px;
@@ -1198,45 +1204,77 @@ body.edit-content-modal {
     overflow-x: auto;
 }
 
+.edit-content {
+    .content-table {
+        tr {
+            .content-actions {
+                a {
+                    display: none;
+                    color: $black;
+                }
+
+                a + a {
+                    margin-left: 20px;
+                }
+            }
+
+            &:hover {
+                .content-actions a {
+                    display: unset;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}
+
 
 .module-actions.dropdown-menu li {
     border: none;
 }
 
 /*Image manager*/
-.image-manager .image-preview {
-    display: inline-block;
-}
+.image-manager {
+    .image-preview-container {
+        width: 20%;
 
-.image-manager-modal .modal-sm {
-    width: 900px;
-}
+        .image-preview-header {
+            float: right;
+            a {
+                color: #000;
+                font-size: 16px;
+                line-height: 15px;
+                text-decoration: none;
+                cursor: pointer;
+            }
 
-.image-preview img {
-    height: 20vh;
-}
+            a + a {
+                margin-left: 20px;
+            }
+        }
 
-.image-manager .info {
-    padding: 10px;
-}
+        .image-preview {
+            img {
+                width: 100%;
+            }
 
-.drop-box {
-    background: #F8F8F8;
-    border: 5px dashed #DDD;
-    text-align: center;
-    padding: 20px 10px;
+            p.info {
+                padding: 10px;
+                text-align: center;
+                line-height: 14vh;
+                text-align: center;
+                cursor: pointer;
+            }
+        }
+    }
 }
 
 .image-manager-modal {
-    .tab-pane {
-        border-left: 1px solid #ddd;
-        border-right: 1px solid #ddd;
-        border-bottom: 1px solid #ddd;
-        padding: 10px;
-    }
-
-    .nav-tabs {
-        margin-bottom: 0;
+    .drop-box {
+        background: #F8F8F8;
+        border: 2px dashed #DDD;
+        text-align: center;
+        padding: 20px 10px;
     }
 
     .file-menu {
@@ -1245,7 +1283,7 @@ body.edit-content-modal {
         overflow-x: hidden;
     }
 
-    .image-preview {
+    .image-modal-preview {
         height: 250px;
     }
 
@@ -1256,5 +1294,20 @@ body.edit-content-modal {
 
     .list-group {
         margin-top: 10px;
+    }
+
+    .modal-sm {
+        width: 900px;
+    }
+
+    .nav-tabs {
+        margin-bottom: 0;
+    }
+
+    .tab-pane {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        padding: 10px;
     }
 }

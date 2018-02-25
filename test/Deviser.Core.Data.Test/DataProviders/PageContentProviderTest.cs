@@ -33,7 +33,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.NotEqual(result.Id, Guid.Empty);
             Assert.NotNull(result.PageContentTranslation);
             Assert.NotNull(result.ContentType);
-            Assert.NotNull(result.ContentType.ContentDataType);
+            //Assert.NotNull(result.ContentType.ContentDataType);
             Assert.NotNull(result.ContentType.Properties);
             Assert.True(result.ContentType.Properties.Count > 0);
             Assert.NotNull(result.ContentPermissions);
@@ -155,7 +155,7 @@ namespace Deviser.Core.Data.Test.DataProviders
             Assert.NotEqual(resultItem.Id, Guid.Empty);
             Assert.NotNull(resultItem.PageContentTranslation);
             Assert.NotNull(resultItem.ContentType);
-            Assert.NotNull(resultItem.ContentType.ContentDataType);
+            //Assert.NotNull(resultItem.ContentType.ContentDataType);
             Assert.NotNull(resultItem.ContentType.Properties);
             Assert.True(resultItem.ContentType.Properties.Count > 0);
             Assert.NotNull(resultItem.ContentPermissions);

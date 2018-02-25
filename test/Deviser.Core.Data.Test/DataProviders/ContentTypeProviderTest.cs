@@ -157,27 +157,27 @@ namespace Deviser.Core.Data.DataProviders
             dbContext.ContentType.RemoveRange(dbContext.ContentType);
         }
 
-        [Fact]
-        public void GetContentDataTypesSuccess()
-        {
-            //Arrange
-            var contentTypeProvider = new ContentTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
-            var contentDataTypes = TestDataProvider.GetContentDataTypes();
-            var dbContentDataType = Mapper.Map<List<Entities.ContentDataType>>(contentDataTypes);
-            dbContext.ContentDataType.AddRange(dbContentDataType);
-            dbContext.SaveChanges();
+        //[Fact]
+        //public void GetContentDataTypesSuccess()
+        //{
+        //    //Arrange
+        //    var contentTypeProvider = new ContentTypeProvider(container);
+        //    var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
+        //    var contentDataTypes = TestDataProvider.GetContentDataTypes();
+        //    var dbContentDataType = Mapper.Map<List<Entities.ContentDataType>>(contentDataTypes);
+        //    dbContext.ContentDataType.AddRange(dbContentDataType);
+        //    dbContext.SaveChanges();
 
-            //Act
-            var result = contentTypeProvider.GetContentDataTypes();
+        //    //Act
+        //    var result = contentTypeProvider.GetContentDataTypes();
 
-            //Assert
-            Assert.NotNull(result);
-            Assert.True(result.Count > 0);
+        //    //Assert
+        //    Assert.NotNull(result);
+        //    Assert.True(result.Count > 0);
 
-            //Clean
-            dbContext.ContentDataType.RemoveRange(dbContext.ContentDataType);
-        }
+        //    //Clean
+        //    dbContext.ContentDataType.RemoveRange(dbContext.ContentDataType);
+        //}
 
         [Fact]
         public void GetContentTypesFail()
@@ -195,21 +195,21 @@ namespace Deviser.Core.Data.DataProviders
             Assert.True(result.Count == 0);
         }
 
-        [Fact]
-        public void GetContentDataTypesFail()
-        {
-            //Arrange
-            var contentTypeProvider = new ContentTypeProvider(container);
-            var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
-            dbContext.RemoveRange(dbContext.ContentDataType);
+        //[Fact]
+        //public void GetContentDataTypesFail()
+        //{
+        //    //Arrange
+        //    var contentTypeProvider = new ContentTypeProvider(container);
+        //    var dbContext = serviceProvider.GetRequiredService<DeviserDbContext>();
+        //    dbContext.RemoveRange(dbContext.ContentDataType);
 
-            //Act
-            var result = contentTypeProvider.GetContentDataTypes();
+        //    //Act
+        //    var result = contentTypeProvider.GetContentDataTypes();
 
-            //Assert
-            Assert.NotNull(result);
-            Assert.True(result.Count == 0);
-        }
+        //    //Assert
+        //    Assert.NotNull(result);
+        //    Assert.True(result.Count == 0);
+        //}
 
         [Fact]
         public void UpdateContentTypePropAddSuccess()

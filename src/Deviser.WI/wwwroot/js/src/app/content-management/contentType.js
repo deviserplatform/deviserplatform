@@ -47,7 +47,6 @@
         /*Controller Initialization*/
         function init() {
             getContentTypes();
-            getContentDataTypes();
             getProperties();
         }
 
@@ -77,7 +76,7 @@
                         init();
                         showMessage("success", "New content type has been added");
                     }, function (error) {
-                        showMessage("error", "Cannot add layout type, please contact administrator");
+                        showMessage("error", "Cannot add content type, please contact administrator");
                     });
                 }
                 else {                    
@@ -86,8 +85,8 @@
             }
         }
 
-        function activate(layoutType) {
-            update(layoutType);
+        function activate(contentType) {
+            update(contentType);
         }
 
         function hasError(form, field, validation) {
@@ -155,15 +154,7 @@
                 showMessage("error", "Cannot get all content types, please contact administrator");
             });
         }
-
-        function getContentDataTypes() {
-            contentTypeService.getContentDataType().then(function (contentDataTypes) {
-                vm.contentDataTypes = contentDataTypes;
-            }, function (error) {
-                showMessage("error", "Cannot get all content data types, please contact administrator");
-            });
-        }
-
+        
         function getProperties() {
             propertyService.get().then(function (properties) {                
                 vm.properties = properties;
@@ -179,7 +170,7 @@
                 showMessage("success", "Content Type has been updated");
                 vm.currentViewState = vm.viewStates.LIST;
             }, function (error) {
-                showMessage("error", "Cannot update layout type, please contact administrator");
+                showMessage("error", "Cannot update content type, please contact administrator");
             });
         }
 

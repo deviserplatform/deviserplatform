@@ -13,12 +13,11 @@ namespace Deviser.Core.Library.Infrastructure
         public static void CreateMaps()
         {
             Mapper.Initialize(config =>
-            {               
-                config.CreateMap<ContentDataType, Core.Common.DomainTypes.ContentDataType>().ReverseMap();
+            {
                 config.CreateMap<ContentPermission, Core.Common.DomainTypes.ContentPermission>().ReverseMap();
 
                 config.CreateMap<Core.Common.DomainTypes.ContentType, ContentType>()
-                .ForMember(dest => dest.ContentDataTypeId, opt => opt.MapFrom(src => src.ContentDataType.Id))
+             
                 .ForMember(dest => dest.ContentTypeProperties, opt => opt.MapFrom(src => src.Properties.Select(ctp => new ContentTypeProperty
                 {
                     PropertyId = ctp.Id,
@@ -29,10 +28,7 @@ namespace Deviser.Core.Library.Infrastructure
                 .ForMember(dest => dest.ContentTypeProperties, opt => opt.Condition(src => src.Properties != null))
                 .ReverseMap()
                 .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.ContentTypeProperties.Select(ctp => ctp.Property)))
-                .ForMember(dest => dest.Properties, opt => opt.Condition(src => src.ContentTypeProperties != null && src.ContentTypeProperties.All(cp => cp.Property != null)))
-                .ForMember(dest => dest.DataType, opt => opt.MapFrom(src =>
-                   src.ContentDataType != null ? src.ContentDataType.Name : null));
-                
+                .ForMember(dest => dest.Properties, opt => opt.Condition(src => src.ContentTypeProperties != null && src.ContentTypeProperties.All(cp => cp.Property != null)));
 
                 config.CreateMap<Core.Common.DomainTypes.LayoutType, LayoutType>()
                 .ForMember(dest => dest.LayoutTypeProperties, opt => opt.MapFrom(src =>
@@ -65,10 +61,10 @@ namespace Deviser.Core.Library.Infrastructure
                 config.CreateMap<PageModule, Core.Common.DomainTypes.PageModule>().ReverseMap();
                 config.CreateMap<PagePermission, Core.Common.DomainTypes.PagePermission>()
                     .ReverseMap();
-                //.ForMember(dest => dest.Page, opt => opt.Ignore());
+                
                 config.CreateMap<PageTranslation, Core.Common.DomainTypes.PageTranslation>()
                     .ReverseMap();
-                //.ForMember(dest => dest.Page, opt => opt.Ignore());
+                
 
                 config.CreateMap<Permission, Core.Common.DomainTypes.Permission>().ReverseMap();
                 config.CreateMap<Property, Core.Common.DomainTypes.Property>().ReverseMap();

@@ -90,34 +90,33 @@
             function getTranslationForLocale(locale) {
                 var translation = _.find(vm.contentTranslations, { cultureCode: locale });
                 if (!translation) {
-                    if (vm.contentType.dataType === 'string') {
-                        translation = {
-                            cultureCode: locale,
-                            contentData: ''
-                        };
-                    }
-                    else if (vm.contentType.dataType === 'object') {
+                    //if (vm.contentType.dataType === 'string') {
+                    //    translation = {
+                    //        cultureCode: locale,
+                    //        contentData: ''
+                    //    };
+                    //}
+                    //else if (vm.contentType.dataType === 'object') {
                         translation = {
                             cultureCode: locale,
                             contentData: {}
                         };
-                    }
-                    else {
-                        translation = {
-                            cultureCode: locale,
-                            contentData: {
-                                items: []
-                            }
-                        };
-                    }
+                    //}
+                    //else {
+                    //    translation = {
+                    //        cultureCode: locale,
+                    //        contentData: {
+                    //            items: []
+                    //        }
+                    //    };
+                    //}
 
                 }
                 return translation;
             }
 
             function deserializeContentTranslation() {
-                if (vm.contentType.dataType &&
-                    (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object') &&
+                if (/*vm.contentType.dataType && (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object') &&*/
                     typeof (vm.contentTranslation.contentData) === 'string') {
                     vm.contentTranslation.contentData = JSON.parse(vm.contentTranslation.contentData);
                 }
@@ -995,6 +994,7 @@
 
         function editItem(item) {
             vm.selectedItem = item;
+            vm.tempItem = angular.copy(item);
             vm.currentViewState = vm.viewStates.EDIT;
         }
 
@@ -1005,6 +1005,17 @@
         }
 
         function cancelDetailView() {
+            if (vm.currentViewState == vm.viewStates.NEW) {
+                vm.selectedItem = {};
+            }
+            else if (vm.currentViewState == vm.viewStates.EDIT) {
+                // Find item index using _.findIndex (thanks @AJ Richardson for comment)
+                var index = _.findIndex(vm.contentTranslation.contentData.items, vm.selectedItem);
+
+                vm.selectedItem = vm.tempItem;                
+                // Replace item at index using native splice
+                vm.contentTranslation.contentData.items.splice(index, 1, vm.tempItem);
+            }
             vm.currentViewState = vm.viewStates.LIST;
         }
 
@@ -1046,40 +1057,39 @@
         function getTranslationForLocale(locale) {
             var translation = _.find(vm.contentTranslations, { cultureCode: locale });
             if (!translation) {
-                if (vm.contentType.dataType === 'string') {
-                    translation = {
-                        cultureCode: locale,
-                        contentData: ''
-                    };
-                }
-                else if (vm.contentType.dataType === 'object') {
+                //if (vm.contentType.dataType === 'string') {
+                //    translation = {
+                //        cultureCode: locale,
+                //        contentData: ''
+                //    };
+                //}
+                //else if (vm.contentType.dataType === 'object') {
                     translation = {
                         cultureCode: locale,
                         contentData: {}
                     };
-                }
-                else {
-                    translation = {
-                        cultureCode: locale,
-                        contentData: {
-                            items: []
-                        }
-                    };
-                }
+                //}
+                //else {
+                //    translation = {
+                //        cultureCode: locale,
+                //        contentData: {
+                //            items: []
+                //        }
+                //    };
+                //}
 
             }
             return translation;
         }
 
         function serializeContentTranslation() {
-            if (vm.contentType.dataType && (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object')) {
+            //if (vm.contentType.dataType && (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object')) {
                 vm.contentTranslation.contentData = angular.toJson(vm.contentTranslation.contentData);
-            }
+            //}
         }
 
         function deserializeContentTranslation() {
-            if (vm.contentType.dataType &&
-                (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object') &&
+            if ( /*vm.contentType.dataType && (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object') &&*/
                 typeof (vm.contentTranslation.contentData) === 'string') {
                 vm.contentTranslation.contentData = JSON.parse(vm.contentTranslation.contentData);
             }

@@ -155,7 +155,7 @@ namespace Deviser.Core.Data.DataProviders
                                .Include(p => p.PagePermissions)
                                .Include(p => p.Layout)
                                .Include(p => p.PageContent).ThenInclude(pc => pc.PageContentTranslation)
-                               .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType).ThenInclude(ct => ct.ContentDataType)
+                               .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType)
                                .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType).ThenInclude(ct => ct.ContentTypeProperties).ThenInclude(ctp => ctp.Property).ThenInclude(p => p.OptionList)
                                .Include(p => p.PageContent).ThenInclude(pc => pc.ContentPermissions)
                                .Include(p => p.PageModule).ThenInclude(pm => pm.Module)

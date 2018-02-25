@@ -1,24 +1,30 @@
 ﻿<script type="text/ng-template" id="app/components/imageManager.tpl.html">
     <div class="image-manager">
-        <div>
+        <div ng-show="locVM.label">
             <label>{{locVM.label}}</label>
         </div>
         <div class="form-group">
-            <div class="image-preview">
-                <img src="{{locVM.src}}" alt="{{locVM.alt}}" ng-show="locVM.src" />
-            </div>
-            <p ng-show="!locVM.src" class="info bg-info">Select a image</p>
+            <div class="image-preview-container">
+                <div class="image-preview-header clearfix" ng-show="locVM.src">
+                    <a ng-click="locVM.showPopup()" title="Upload/Change Image"><i class="fa fa-pencil"></i> </a>
+                    <a ng-click="locVM.removeImage()" title="Remove Image"><i class="fa fa-times"></i> </a>
+                </div>
+                <div class="image-preview">
+                    <img src="{{locVM.src}}" alt="{{locVM.alt}}" ng-show="locVM.src" />
+                    <p ng-show="!locVM.src" class="info bg-info" ng-click="locVM.showPopup()">Select a image, click here to the open image selector</p>
+                </div>
+            </div>            
         </div>
-        <div class="form-group">
+        @*<div class="form-group">
             <button type="button" class="btn btn-primary" ng-click="locVM.showPopup()">Upload/Change Image</button>
             <button type="button" class="btn btn-danger" ng-click="locVM.removeImage()">Remove Image</button>
-        </div>
+        </div>*@
     </div>
 </script>
 
 <script type="text/ng-template" id="app/components/imageManagerPopup.tpl.html">
     <div class="modal-header">
-        <h3 class="modal-title">Image Manager</h3>
+        <h3 class="modal-title">Image Selector</h3>
     </div>
     <div class="modal-body">
         <div class="row">
@@ -77,7 +83,7 @@
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane" ng-class="{'active':imVM.selectedTab==='PREVIEW'}">
                             <div class="form-group image">
-                                <img class="image-preview" ng-src="{{imVM.imageSource}}" />
+                                <img class="image-modal-preview" ng-src="{{imVM.imageSource}}" />
                             </div>
                             <div class="form-group image-alt">
                                 <input type="text" ng-model="imVM.imageAlt" placeholder="Image alt text" class="form-control image-alt-textbox" />
@@ -108,7 +114,7 @@
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="imVM.yes()">OK</button>
-        <button class="btn btn-warning" ng-click="imVM.no()">Cancel</button>
+        <button class="btn btn-default" ng-click="imVM.no()">Cancel</button>
     </div>
 </script>
 
@@ -253,5 +259,3 @@
         </div>
     </div>
 </script>
-
-

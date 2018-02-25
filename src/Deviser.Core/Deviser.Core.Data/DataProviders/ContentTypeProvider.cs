@@ -14,7 +14,6 @@ namespace Deviser.Core.Data.DataProviders
     public interface IContentTypeProvider
     {
         List<ContentType> GetContentTypes();
-        List<ContentDataType> GetContentDataTypes();
         ContentType GetContentType(Guid contentTypeId);
         ContentType CreateContentType(ContentType dbContentType);
         ContentType GetContentType(string contentTypeName);
@@ -94,30 +93,7 @@ namespace Deviser.Core.Data.DataProviders
             }
             return null;
         }
-
-        /// <summary>
-        /// It returns all ContentDataTypes
-        /// </summary>
-        /// <returns></returns>
-        public List<ContentDataType> GetContentDataTypes()
-        {
-            try
-            {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
-                    var result = context.ContentDataType
-                        .OrderBy(cd=>cd.Name)
-                        .ToList();
-                    return Mapper.Map<List<ContentDataType>>(result);
-                //}
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting ContentDataTypes", ex);
-            }
-            return null;
-        }
-
+        
         /// <summary>
         /// It returns a ContentType by arrribute Name
         /// </summary>
@@ -156,7 +132,6 @@ namespace Deviser.Core.Data.DataProviders
                 //{
                     var result = context.ContentType
                         .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
-                        .Include(c => c.ContentDataType)
                         .OrderBy(c=>c.Name)
                         .ToList();   
                     return Mapper.Map<List<ContentType>>(result);

@@ -145,21 +145,10 @@
     function contentTypeService($http, $q, globals) {
         var serviceUrl = '/contenttype';
         var service = baseService($http, $q, globals, serviceUrl);
-        service.getContentDataType = getContentDataType;
         return service;
 
         ////////////////////////////////
-        /*Function declarations only*/
-        function getContentDataType() {
-            var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/datatype';
-            var request = $http({
-                method: 'GET',
-                url: getUrl
-            });
-            return request.then(handleSuccess, function (response) {
-                return handleError(response, $q)
-            });
-        }
+        /*Function declarations only*/        
     }
 
     function layoutTypeService($http, $q, globals) {

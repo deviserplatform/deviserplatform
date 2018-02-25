@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
+
 namespace DeviserWI.Controllers.API
 {
     [Route("api/[controller]")]
@@ -49,28 +50,8 @@ namespace DeviserWI.Controllers.API
             }
         }
 
-        [HttpGet]
-        [Route("datatype/")]
-        public IActionResult GetContentDataTypes()
-        {
-            try
-            {
-                var dbResult = contentTypeProvider.GetContentDataTypes();
-                var result = Mapper.Map<List<Deviser.Core.Common.DomainTypes.ContentDataType>>(dbResult);
-
-                if (result != null)
-                    return Ok(result);
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(string.Format("Error occured while getting content types"), ex);
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-        }
-
         [HttpPost]
-        public IActionResult CreateContentType([FromBody]Deviser.Core.Common.DomainTypes.ContentType contentType)
+        public IActionResult CreateContentType([FromBody] ContentType contentType)
         {
             try
             {

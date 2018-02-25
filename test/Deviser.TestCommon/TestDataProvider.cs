@@ -9,33 +9,33 @@ namespace Deviser.TestCommon
     public static class TestDataProvider
     {
 
-        public static List<ContentDataType> GetContentDataTypes()
-        {
-            var contentDataTypes = new List<ContentDataType>();
-            var stringType = new ContentDataType
-            {
-                Id = Guid.NewGuid(),
-                Name = "string",
-                Label = "string"
-            };
-            var objectType = new ContentDataType
-            {
-                Id = Guid.NewGuid(),
-                Name = "object",
-                Label = "object"
-            };
-            var arrayType = new ContentDataType
-            {
-                Id = Guid.NewGuid(),
-                Name = "array",
-                Label = "array"
-            };
+        //public static List<ContentDataType> GetContentDataTypes()
+        //{
+        //    var contentDataTypes = new List<ContentDataType>();
+        //    var stringType = new ContentDataType
+        //    {
+        //        Id = Guid.NewGuid(),
+        //        Name = "string",
+        //        Label = "string"
+        //    };
+        //    var objectType = new ContentDataType
+        //    {
+        //        Id = Guid.NewGuid(),
+        //        Name = "object",
+        //        Label = "object"
+        //    };
+        //    var arrayType = new ContentDataType
+        //    {
+        //        Id = Guid.NewGuid(),
+        //        Name = "array",
+        //        Label = "array"
+        //    };
 
-            contentDataTypes.Add(stringType);
-            contentDataTypes.Add(objectType);
-            contentDataTypes.Add(arrayType);
-            return contentDataTypes;
-        }
+        //    contentDataTypes.Add(stringType);
+        //    contentDataTypes.Add(objectType);
+        //    contentDataTypes.Add(arrayType);
+        //    return contentDataTypes;
+        //}
         
         public static List<ContentPermission> GetContentPermissions()
         {
@@ -59,31 +59,31 @@ namespace Deviser.TestCommon
         {
             var contentTypes = new List<ContentType>();
             //var properties = GetProperties();
-            var stringType = new ContentDataType
-            {
-                Id = Guid.NewGuid(),
-                Name = "string",
-                Label = "string"
-            };
-            var objectType = new ContentDataType
-            {
-                Id = Guid.NewGuid(),
-                Name = "object",
-                Label = "object"
-            };
-            var arrayType = new ContentDataType
-            {
-                Id = Guid.NewGuid(),
-                Name = "array",
-                Label = "array"
-            };
+            //var stringType = new ContentDataType
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Name = "string",
+            //    Label = "string"
+            //};
+            //var objectType = new ContentDataType
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Name = "object",
+            //    Label = "object"
+            //};
+            //var arrayType = new ContentDataType
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Name = "array",
+            //    Label = "array"
+            //};
 
             contentTypes.Add(new ContentType
             {
                 Id = Guid.NewGuid(),
                 Name = "Text",
                 Label = "Text",
-                ContentDataType = arrayType,
+                //ContentDataType = arrayType,
                 Properties = GetProperties()
             });
             contentTypes.Add(new ContentType
@@ -91,7 +91,7 @@ namespace Deviser.TestCommon
                 Id = Guid.NewGuid(),
                 Name = "Image",
                 Label = "Image",
-                ContentDataType = objectType,
+                //ContentDataType = objectType,
                 Properties = GetProperties()
             });
             contentTypes.Add(new ContentType
@@ -99,7 +99,7 @@ namespace Deviser.TestCommon
                 Id = Guid.NewGuid(),
                 Name = "RichText",
                 Label = "Rich text",
-                ContentDataType = stringType,
+                //ContentDataType = stringType,
                 Properties = GetProperties()
             });
 

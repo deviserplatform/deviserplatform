@@ -5814,6 +5814,9 @@ button.close {
   .hidden-print {
     display: none !important; } }
 
+/*----------------------------------------------------------------------
+    Colors
+----------------------------------------------------------------------*/
 /*!
  * Start Bootstrap - SB Admin 2 Bootstrap Admin Theme (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.
@@ -6678,43 +6681,54 @@ body.edit-content-modal {
   max-height: 60vh;
   overflow-x: auto; }
 
+.edit-content .content-table tr .content-actions a {
+  display: none;
+  color: #000000; }
+
+.edit-content .content-table tr .content-actions a + a {
+  margin-left: 20px; }
+
+.edit-content .content-table tr:hover .content-actions a {
+  display: unset;
+  cursor: pointer; }
+
 .module-actions.dropdown-menu li {
   border: none; }
 
 /*Image manager*/
-.image-manager .image-preview {
-  display: inline-block; }
+.image-manager .image-preview-container {
+  width: 20%; }
+  .image-manager .image-preview-container .image-preview-header {
+    float: right; }
+    .image-manager .image-preview-container .image-preview-header a {
+      color: #000;
+      font-size: 16px;
+      line-height: 15px;
+      text-decoration: none;
+      cursor: pointer; }
+    .image-manager .image-preview-container .image-preview-header a + a {
+      margin-left: 20px; }
+  .image-manager .image-preview-container .image-preview img {
+    width: 100%; }
+  .image-manager .image-preview-container .image-preview p.info {
+    padding: 10px;
+    text-align: center;
+    line-height: 14vh;
+    text-align: center;
+    cursor: pointer; }
 
-.image-manager-modal .modal-sm {
-  width: 900px; }
-
-.image-preview img {
-  height: 20vh; }
-
-.image-manager .info {
-  padding: 10px; }
-
-.drop-box {
+.image-manager-modal .drop-box {
   background: #F8F8F8;
-  border: 5px dashed #DDD;
+  border: 2px dashed #DDD;
   text-align: center;
   padding: 20px 10px; }
-
-.image-manager-modal .tab-pane {
-  border-left: 1px solid #ddd;
-  border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  padding: 10px; }
-
-.image-manager-modal .nav-tabs {
-  margin-bottom: 0; }
 
 .image-manager-modal .file-menu {
   height: 300px;
   overflow-y: auto;
   overflow-x: hidden; }
 
-.image-manager-modal .image-preview {
+.image-manager-modal .image-modal-preview {
   height: 250px; }
 
 .image-manager-modal .list-group-item {
@@ -6723,3 +6737,15 @@ body.edit-content-modal {
 
 .image-manager-modal .list-group {
   margin-top: 10px; }
+
+.image-manager-modal .modal-sm {
+  width: 900px; }
+
+.image-manager-modal .nav-tabs {
+  margin-bottom: 0; }
+
+.image-manager-modal .tab-pane {
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding: 10px; }

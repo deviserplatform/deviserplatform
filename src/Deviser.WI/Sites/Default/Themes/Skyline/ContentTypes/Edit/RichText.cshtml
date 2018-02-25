@@ -1,6 +1,6 @@
 ﻿<script type="text/ng-template" id="contenttypes/richtext.html">
     <div class="edit-content-preview" ng-show="ecVM.templateMode==='PREVIEW'">        
-        <p ng-bind-html="ecVM.contentTranslation.contentData"></p>
+        <p ng-bind-html="ecVM.contentTranslation.contentData.content"></p>
     </div>
     <div ng-show="ecVM.templateMode==='EDITCONTENT'">
         <div class="modal-header">
@@ -10,7 +10,7 @@
             <div class="form-group" sd-language-selector selected-locale="ecVM.selectedLocale" change-language="ecVM.changeLanguage()" ng-show="ecVM.currentViewState===ecVM.viewStates.LIST"></div>
 
             <div class="form-group">
-                <div text-angular ng-model="ecVM.contentTranslation.contentData"></div>
+                <div text-angular ng-model="ecVM.contentTranslation.contentData.content"></div>
             </div>
         </div>
         <div class="modal-footer">

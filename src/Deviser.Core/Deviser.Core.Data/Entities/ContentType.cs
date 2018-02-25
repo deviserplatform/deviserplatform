@@ -14,7 +14,6 @@ namespace Deviser.Core.Data.Entities
         public string IconClass { get; set; }
         public int SortOrder { get; set; }
         public Guid ContentDataTypeId { get; set; }
-        public ContentDataType ContentDataType { get; set; }
         public ICollection<ContentTypeProperty> ContentTypeProperties { get; set; }
         public ICollection<PageContent> PageContents { get; set; }     
         public bool IsActive { get; set; }

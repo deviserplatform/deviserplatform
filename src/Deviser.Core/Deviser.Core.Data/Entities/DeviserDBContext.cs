@@ -282,8 +282,6 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
 
-                entity.HasOne(d => d.ContentDataType).WithMany(p => p.ContentTypes).HasForeignKey(d => d.ContentDataTypeId).OnDelete(DeleteBehavior.Restrict);
-
             });
             modelBuilder.Entity<Property>(entity =>
             {
@@ -302,13 +300,7 @@ namespace Deviser.Core.Data
                 entity.Property(e => e.Name).IsRequired();
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
             });
-
-            modelBuilder.Entity<ContentDataType>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                entity.Property(e => e.Name).IsRequired();
-            });
-
+            
             modelBuilder.Entity<LayoutTypeProperty>(entity =>
             {
                 entity.HasOne(d => d.LayoutType).WithMany(p => p.LayoutTypeProperties).HasForeignKey(d => d.LayoutTypeId).OnDelete(DeleteBehavior.Restrict);
@@ -368,8 +360,7 @@ namespace Deviser.Core.Data
                     .HasColumnType("sysname");
             });
         }
-        
-        public virtual DbSet<ContentDataType> ContentDataType { get; set; }
+
         public virtual DbSet<ContentPermission> ContentPermission { get; set; }
         public virtual DbSet<ContentType> ContentType { get; set; }
         public virtual DbSet<ContentTypeProperty> ContentTypeProperty { get; set; }

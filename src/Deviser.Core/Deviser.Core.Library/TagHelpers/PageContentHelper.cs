@@ -176,15 +176,7 @@ namespace Deviser.Core.Library.TagHelpers
                             {
                                 string typeName = pageContent.ContentType.Name;
                                 var contentTranslation = pageContent.PageContentTranslation.FirstOrDefault(t => t.CultureCode.ToLower() == CurrentCulture.ToString().ToLower());
-                                dynamic content = null;
-                                if (pageContent.ContentType.ContentDataType.Name == "string")
-                                {
-                                    content = (contentTranslation != null) ? contentTranslation.ContentData : null;
-                                }
-                                else
-                                {
-                                    content = (contentTranslation != null) ? SDJsonConvert.DeserializeObject<dynamic>(contentTranslation.ContentData) : null;
-                                }
+                                dynamic content = (contentTranslation != null) ? SDJsonConvert.DeserializeObject<dynamic>(contentTranslation.ContentData) : null;
 
                                 var dynamicContent = new DynamicContent
                                 {
