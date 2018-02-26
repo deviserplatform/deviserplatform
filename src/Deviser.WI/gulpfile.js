@@ -8,7 +8,9 @@
 var paths = {
     webroot: './wwwroot/',
     sassPath: './wwwroot/css/admin/main.scss',
-    sassDest: './wwwroot/css/admin'
+    skinSassPath: './wwwroot/css/site.scss',
+    sassDest: './wwwroot/css/admin',
+    skinSassDest: './wwwroot/css'
 };
 
 
@@ -88,6 +90,12 @@ gulp.task('sass', function () {
         .pipe(gulp.dest(paths.sassDest));
 });
 
+gulp.task('skin:sass', function () {
+    return gulp.src(paths.skinSassPath)
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest(paths.skinSassDest));
+});
+
 gulp.task('clean:min', function () {    
     return del(paths.releaseRoot, { force: true });
 });
@@ -143,7 +151,11 @@ gulp.task('clean', ['clean:min']);
 gulp.task('min', ['min:libjs', 'min:appjs', 'min:css']);
 
 gulp.task('watch', ['sass'], function () {
+    //var sassPaths = [];
+    //sassPaths.push(paths.sassPath);
+    //sassPaths.push(paths.skinSassPath);
     gulp.watch(paths.sassPath, ['sass']);
+    gulp.watch(paths.skinSassPath, ['skin:sass']);
 });
 
 

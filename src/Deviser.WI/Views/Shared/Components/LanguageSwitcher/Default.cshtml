@@ -13,9 +13,8 @@
 {
     foreach (var lang in Model)
     {
-        string activeClass = lang.IsActive ? "active" : "";
-        <li>
-            <a href="@lang.Url" title="@lang.EnglishName" class="@activeClass"> @lang.Culture.TwoLetterISOLanguageName.ToUpper()</a>
+        <li class="nav-item @(lang.IsActive ? "active" : "")" href="@lang.Url" title="@lang.EnglishName">
+            <a class="nav-link" href="#">@lang.Culture.TwoLetterISOLanguageName.ToUpper()</a>
         </li>
     }
 }

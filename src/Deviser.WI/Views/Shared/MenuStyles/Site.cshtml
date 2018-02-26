@@ -25,13 +25,15 @@
         if (translation != null)
         {
             translation.URL = siteRoot + translation.URL;
-            <li class="dropdown @activeClass">
-                <a href="@translation.URL">@translation.Name</a>
-                @if (page.ChildPage != null && page.ChildPage.Count > 0)
+            var hasChild = page.ChildPage != null && page.ChildPage.Count > 0;
+            <li class="nav-item @(hasChild?"dropdown":"") @activeClass">
+                <a class="nav-link @(hasChild&&page.PageLevel>1?"dropdown-toggle":"")" href="@translation.URL">@translation.Name</a>
+                @if (hasChild)
                 {
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu @(page.PageLevel>1?"submenu":"")">
                         @Html.Partial(string.Format(Globals.MenuStylePath, "Site"), page)
                     </ul>
+
                 }
             </li>
         }

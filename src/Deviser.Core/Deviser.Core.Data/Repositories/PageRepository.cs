@@ -86,7 +86,7 @@ namespace Deviser.Core.Data.Repositories
             page.ChildPage = context.Page
                 .Include(p => p.PageTranslation)
                 .Include(p => p.PagePermissions)
-                .Where(p => p.ParentId == page.Id).ToList();
+                .Where(p => p.ParentId == page.Id).AsNoTracking().ToList();
 
             if (page.ChildPage != null)
             {
@@ -105,7 +105,7 @@ namespace Deviser.Core.Data.Repositories
                 //using (var context = new DeviserDbContext(DbOptions))
                 //{
                     var result = context.Page
-                                .Where(e => e.ParentId != null)
+                                .Where(e => e.ParentId != null).AsNoTracking()
                                 //.Include("PageTranslations").Include("ChildPages").Include("PageModules").Include("PageModules.Module")
                                 .Include(p => p.PageTranslation)
                                 .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
@@ -130,7 +130,7 @@ namespace Deviser.Core.Data.Repositories
                 //{
                     var result = context.Page
                                 .Include(p => p.PageTranslation)
-                                .Where(e => e.ParentId != null && e.IsDeleted)                                
+                                .Where(e => e.ParentId != null && e.IsDeleted).AsNoTracking()
                                 .ToList();
                    
                     return Mapper.Map<List<Page>>(result);
@@ -150,7 +150,7 @@ namespace Deviser.Core.Data.Repositories
                 //using (var context = new DeviserDbContext(DbOptions))
                 //{
                     var result = context.Page
-                               .Where(e => e.Id == pageId)
+                               .Where(e => e.Id == pageId).AsNoTracking()
                                .Include(p => p.PageTranslation)
                                .Include(p => p.PagePermissions)
                                .Include(p => p.Layout)

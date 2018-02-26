@@ -49,6 +49,7 @@ namespace Deviser.Core.Library.DependencyInjection
                 {
                     //dbContextOptionBuilder.UseInternalServiceProvider(sp);                    
                     installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder);
+                    dbContextOptionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 });
 
 

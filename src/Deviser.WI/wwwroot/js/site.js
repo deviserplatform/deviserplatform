@@ -10,7 +10,13 @@
         showCloseBtn: true
     });
 
-    //slick carousel
+    $(".navbar-nav .dropdown").hover(function () {
+        $(this).addClass("show");
+    }, function () {
+        $(this).removeClass("show");
+    });
+
+    //swiper
     var mySwiper = new Swiper('.swiper-container', {
         // Optional parameters
         //autoplay: {

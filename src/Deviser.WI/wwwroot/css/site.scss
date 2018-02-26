@@ -1,0 +1,192 @@
+/*!
+ * Bootstrap v4.0.0 (https://getbootstrap.com)
+ * Copyright 2011-2018 The Bootstrap Authors
+ * Copyright 2011-2018 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */
+
+@import "admin/bootstrap4/scss/functions";
+@import "admin/bootstrap4/scss/variables";
+@import "admin/bootstrap4/scss/mixins";
+@import "admin/bootstrap4/scss/root";
+@import "admin/bootstrap4/scss/reboot";
+@import "admin/bootstrap4/scss/type";
+@import "admin/bootstrap4/scss/images";
+@import "admin/bootstrap4/scss/code";
+@import "admin/bootstrap4/scss/grid";
+@import "admin/bootstrap4/scss/tables";
+@import "admin/bootstrap4/scss/forms";
+@import "admin/bootstrap4/scss/buttons";
+@import "admin/bootstrap4/scss/transitions";
+@import "admin/bootstrap4/scss/dropdown";
+@import "admin/bootstrap4/scss/button-group";
+@import "admin/bootstrap4/scss/input-group";
+@import "admin/bootstrap4/scss/custom-forms";
+@import "admin/bootstrap4/scss/nav";
+@import "admin/bootstrap4/scss/navbar";
+@import "admin/bootstrap4/scss/card";
+@import "admin/bootstrap4/scss/breadcrumb";
+@import "admin/bootstrap4/scss/pagination";
+@import "admin/bootstrap4/scss/badge";
+@import "admin/bootstrap4/scss/jumbotron";
+@import "admin/bootstrap4/scss/alert";
+@import "admin/bootstrap4/scss/progress";
+@import "admin/bootstrap4/scss/media";
+@import "admin/bootstrap4/scss/list-group";
+@import "admin/bootstrap4/scss/close";
+@import "admin/bootstrap4/scss/modal";
+@import "admin/bootstrap4/scss/tooltip";
+@import "admin/bootstrap4/scss/popover";
+@import "admin/bootstrap4/scss/carousel";
+@import "admin/bootstrap4/scss/utilities";
+@import "admin/bootstrap4/scss/print";
+
+
+$devPrimary: rgb(239, 73, 52);
+$devWhite: rgb(255, 255, 255);
+
+/*--------------------------------------------------------------
+    Navigation
+ --------------------------------------------------------------*/
+.body {
+    font-family: 'Montserrat', 'Open Sans', sans-serif;
+}
+
+
+.skyline-nav {
+    padding: 0;
+
+    .navbar-brand {
+        img {
+            width: 240px;
+        }
+    }
+
+
+    .navbar-nav {
+        text-transform: uppercase;
+
+        .nav-item {
+            .nav-link {
+                padding: 2.5rem 1.5rem;
+
+                &:hover {
+                    color: $devPrimary;
+                }
+            }
+
+            &.active {
+                .nav-link {
+                    color: $devPrimary;
+                }
+            }
+        }
+
+        .dropdown-menu {
+            box-shadow: 0 0 3px rgba(0,0,0,.08);
+            border: unset;
+            border-radius: unset;
+            border-top: 0.2rem solid $devPrimary;
+            -webkit-transform: translateY(30px);
+            transform: translateY(30px);
+            background-color: $devWhite;
+            margin-top: 0;
+            padding: 0;
+            display: block;
+            min-width: 14rem;
+            opacity: 0;
+            left: 0;
+            visibility: hidden;
+
+            .nav-link {
+                padding: 0.5rem;
+
+                &:hover {
+                    background-color: $devPrimary;
+                    color: $devWhite;
+                }
+            }
+
+            .submenu {
+                top: -0.2rem;
+                left: 100%;
+                margin: 0;
+            }
+        }
+
+        .show {
+            & > .dropdown-menu {
+                visibility: visible;
+                -webkit-transform: translateY(0%);
+                transform: translateY(0%);
+                opacity: 1;
+                transition: all .3s ease-in-out;
+            }
+        }
+
+        .dropdown-toggle::after {
+            visibility: visible;
+            position: absolute;
+            right: 1rem;
+            margin-left: 0;
+            top: 50%;
+            content: '\f054';
+            font-family: 'FontAwesome';
+            border: 0;
+            top: 0.40rem;
+            -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+        }
+    }
+}
+
+/*Swiper*/
+.swiper-container {
+    width: 100%;
+    height: 40vh;
+    margin-left: auto;
+    margin-right: auto;
+
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+        /* Center slide text vertically */
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+
+        img {
+            width: 100%;
+        }
+
+        .caption {
+            right: 20%;
+            left: 20%;
+            padding-bottom: 30px;
+            position: absolute;
+            right: 15%;
+            bottom: 20px;
+            left: 15%;
+            z-index: 10;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            color: #fff;
+            text-align: center;
+        }
+    }
+
+    .swiper-pagination-bullet-active {
+        opacity: 1;
+        background: #fff;
+    }
+}
