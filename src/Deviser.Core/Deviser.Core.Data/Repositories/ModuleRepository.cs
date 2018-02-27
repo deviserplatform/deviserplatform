@@ -23,7 +23,7 @@ namespace Deviser.Core.Data.Repositories
         Module GetModuleByPageModuleId(Guid pageModuleId);
         Module Create(Module dbModule);
         Module Update(Module dbModule);
-        ModuleAction CreateModuleAction(ModuleAction moduleAction); 
+        ModuleAction CreateModuleAction(ModuleAction moduleAction);
         ModuleAction UpdateModuleAction(ModuleAction moduleAction);
     }
 
@@ -44,14 +44,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.Module
                         .Include(m => m.ModuleAction)//.ThenInclude(ma=>ma.ModuleActionType)
                         .ToList();
 
                     return Mapper.Map<List<Module>>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -64,14 +64,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.ModuleAction
                         .FirstOrDefault(m => m.Id == moduleActionId);
 
                     return Mapper.Map<ModuleAction>(result);
 
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -84,16 +84,16 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.ModuleAction
                         .Include(ma => ma.Module)//.ThenInclude(ma=>ma.ModuleActionType)
-                        .Where(m => m.ModuleActionType.ControlType.ToLower() == "view" && m.Module.IsActive ) //Selecting View Actions Only
-                        .OrderBy(ma=>ma.DisplayName)
+                        .Where(m => m.ModuleActionType.ControlType.ToLower() == "view" && m.Module.IsActive) //Selecting View Actions Only
+                        .OrderBy(ma => ma.DisplayName)
                         .ToList();
 
                     return Mapper.Map<List<ModuleAction>>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -106,14 +106,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.ModuleActionType
                         .OrderBy(cd => cd.Id)
                         .ToList();
 
                     return Mapper.Map<List<ModuleActionType>>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -126,15 +126,15 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.ModuleAction
                         .Include(ma => ma.Module)//.ThenInclude(ma=>ma.ModuleActionType)
-                        .Where(m => m.ModuleId== moduleId && m.ModuleActionType.ControlType.ToLower() == "edit") //Selecting View Actions Only
+                        .Where(m => m.ModuleId == moduleId && m.ModuleActionType.ControlType.ToLower() == "edit") //Selecting View Actions Only
                         .ToList();
 
                     return Mapper.Map<List<ModuleAction>>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -147,15 +147,15 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.Module
                               .Where(e => e.Id == moduleId)
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) // ("ModuleActions.ModuleActionType")
                               .FirstOrDefault();
 
                     return Mapper.Map<Module>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -168,15 +168,15 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.Module
                               .Where(e => e.Name == moduleName)
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
                               .FirstOrDefault();
 
                     return Mapper.Map<Module>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -189,15 +189,15 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.Module
-                              .Where(e => e.PageModule.Any(pm => pm.Id==pageModuleId))
+                              .Where(e => e.PageModule.Any(pm => pm.Id == pageModuleId))
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
                               .FirstOrDefault();
 
                     return Mapper.Map<Module>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -210,14 +210,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var dbModule = Mapper.Map<Entities.Module>(module);
                     dbModule.CreatedDate = dbModule.LastModifiedDate = DateTime.Now;
                     var result = context.Module.Add(dbModule).Entity;
                     context.SaveChanges();
                     return Mapper.Map<Module>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -229,11 +229,11 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var dbModule = Mapper.Map<Entities.Module>(module);
                     var moduleActions = dbModule.ModuleAction;
-                    dbModule.ModuleAction = null;                  
+                    dbModule.ModuleAction = null;
                     foreach (var moduleAction in moduleActions)
                     {
 
@@ -246,7 +246,7 @@ namespace Deviser.Core.Data.Repositories
                         {
                             moduleAction.ModuleId = dbModule.Id;
                             context.ModuleAction.Add(moduleAction);
-                        } 
+                        }
                     }
 
                     //No need to delte a row from dbo.ModuleAction since the key s referred in dbo.pagemodule.
@@ -259,7 +259,7 @@ namespace Deviser.Core.Data.Repositories
                     var result = context.Module.Update(dbModule).Entity;
                     context.SaveChanges();
                     return Mapper.Map<Module>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -267,18 +267,18 @@ namespace Deviser.Core.Data.Repositories
             }
             return null;
         }
-        
+
         public ModuleAction CreateModuleAction(ModuleAction moduleAction)
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var dbmoduleAction = Mapper.Map<Entities.ModuleAction>(moduleAction);
                     var result = context.ModuleAction.Add(dbmoduleAction).Entity;
                     context.SaveChanges();
                     return Mapper.Map<ModuleAction>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -290,14 +290,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var dbmoduleAction = Mapper.Map<Entities.ModuleAction>(moduleAction);
-                    var result = context.ModuleAction.Attach(dbmoduleAction).Entity;
-                    context.Entry(moduleAction).State = EntityState.Modified;
+                    var result = context.ModuleAction.Update(dbmoduleAction).Entity;
+                    //context.Entry(moduleAction).State = EntityState.Modified;
                     context.SaveChanges();
                     return Mapper.Map<ModuleAction>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {

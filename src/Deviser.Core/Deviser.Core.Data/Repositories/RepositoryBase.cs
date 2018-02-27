@@ -12,10 +12,10 @@ namespace Deviser.Core.Data.Repositories
     public class RepositoryBase : IRepositoryBase
     {
 
-        protected DbContextOptions<DeviserDbContext> DbOptions;
-        protected ILifetimeScope Container;
+        protected readonly DbContextOptions<DeviserDbContext> DbOptions;
+        protected readonly ILifetimeScope Container;
         private readonly ILogger<RepositoryBase> _logger;
-        protected readonly DeviserDbContext context;
+        //protected readonly DeviserDbContext context;
 
         public RepositoryBase(ILifetimeScope container)
         {
@@ -23,8 +23,8 @@ namespace Deviser.Core.Data.Repositories
             DbOptions = container.Resolve<DbContextOptions<DeviserDbContext>>();
             _logger = container.Resolve<ILogger<RepositoryBase>>();
 
-            context = container.Resolve<DeviserDbContext>();
-            context.ChangeTracker.AutoDetectChangesEnabled = false;
+            //context = container.Resolve<DeviserDbContext>();
+            //context.ChangeTracker.AutoDetectChangesEnabled = false;
 
         }
 

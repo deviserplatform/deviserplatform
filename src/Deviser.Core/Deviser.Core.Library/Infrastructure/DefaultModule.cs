@@ -28,7 +28,7 @@ namespace Deviser.Core.Library.Infrastructure
             builder.RegisterType<TypeActivatorCache>().As<ITypeActivatorCache>();
 
             //builder.RegisterType<ModuleInvokerProvider>().As<IModuleInvokerProvider>();
-            builder.RegisterType<PageUrlConstraint>().As<IRouteConstraint>();//.SingleInstance();
+            builder.RegisterType<PageUrlConstraint>().As<IRouteConstraint>().SingleInstance();
             builder.RegisterType<DeviserControllerFactory>().As<IDeviserControllerFactory>();
             builder.RegisterType<DeviserRouteHandler>().As<DeviserRouteHandler>();
             

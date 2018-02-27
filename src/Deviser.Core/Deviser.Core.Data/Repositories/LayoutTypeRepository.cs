@@ -15,7 +15,7 @@ namespace Deviser.Core.Data.Repositories
         LayoutType CreateLayoutType(LayoutType dbLayoutType);
         List<LayoutType> GetLayoutTypes();
         LayoutType GetLayoutType(Guid layoutTypeId);
-        LayoutType GetLayoutType(string layoutTypeName);        
+        LayoutType GetLayoutType(string layoutTypeName);
         LayoutType UpdateLayoutType(LayoutType dbLayoutType);
 
     }
@@ -26,7 +26,7 @@ namespace Deviser.Core.Data.Repositories
 
         //Constructor
         public LayoutTypeRepository(ILifetimeScope container)
-            :base(container)
+            : base(container)
         {
             _logger = container.Resolve<ILogger<LayoutTypeRepository>>();
         }
@@ -35,14 +35,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var dbLayoutType = Mapper.Map<Entities.LayoutType>(layoutType);
                     dbLayoutType.CreatedDate = dbLayoutType.LastModifiedDate = DateTime.Now;
                     var result = context.LayoutType.Add(dbLayoutType).Entity;
                     context.SaveChanges();
                     return Mapper.Map<LayoutType>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -55,14 +55,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.LayoutType
                         .Include(lt => lt.LayoutTypeProperties)
                         .FirstOrDefault(e => e.Id == layoutTypeId);
 
                     return Mapper.Map<LayoutType>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -75,14 +75,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.LayoutType
                         .Include(lt => lt.LayoutTypeProperties)
                         .FirstOrDefault(e => e.Name.ToLower() == layoutTypeName.ToLower());
 
                     return Mapper.Map<LayoutType>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -95,14 +95,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.LayoutType
-                        .Include(c => c.LayoutTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p=>p.OptionList)
+                        .Include(c => c.LayoutTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
                         .ToList();
 
                     return Mapper.Map<List<LayoutType>>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -115,8 +115,8 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var dbLayoutType = Mapper.Map<Entities.LayoutType>(layoutType);
 
                     if (dbLayoutType.LayoutTypeProperties != null && dbLayoutType.LayoutTypeProperties.Count > 0)
@@ -150,18 +150,18 @@ namespace Deviser.Core.Data.Repositories
                             //ContentTypeProperty is not exist in contentType (client source), because client has been removed it. Therefor, remove it from db.
                             context.LayoutTypeProperty.RemoveRange(toRemoveFromDb);
                         }
-                        if(newLayoutTypeProperities != null && newLayoutTypeProperities.Count > 0)
+                        if (newLayoutTypeProperities != null && newLayoutTypeProperities.Count > 0)
                         {
                             context.LayoutTypeProperty.AddRange(newLayoutTypeProperities);
                         }
                     }
-                    
+
                     dbLayoutType.LastModifiedDate = DateTime.Now;
                     var result = context.LayoutType.Attach(dbLayoutType).Entity;
                     context.Entry(dbLayoutType).State = EntityState.Modified;
                     context.SaveChanges();
                     return Mapper.Map<LayoutType>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {

@@ -15,7 +15,7 @@ namespace Deviser.Core.Data.Repositories
         List<User> GetUsers();
         User GetUser(Guid userId);
         Guid GetUser(string userName);
-      
+
     }
 
     public class UserRepository : RepositoryBase, IUserRepository
@@ -35,15 +35,15 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.Users
                                 .Include(u => u.UserRoles)
                                 .ToList();
                     var resturnResult = Mapper.Map<List<User>>(result);
                     foreach (var user in result)
                     {
-                        if (user.UserRoles!= null && user.UserRoles.Count > 0)
+                        if (user.UserRoles != null && user.UserRoles.Count > 0)
                         {
                             var targetUser = resturnResult.First(u => u.Id == user.Id);
                             targetUser.Roles = new List<Role>();
@@ -59,7 +59,7 @@ namespace Deviser.Core.Data.Repositories
                     }
 
                     return resturnResult;
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -72,8 +72,8 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.Users
                                .Where(e => e.Id == userId)
                                .Include(u => u.UserRoles)
@@ -94,7 +94,7 @@ namespace Deviser.Core.Data.Repositories
                     }
 
                     return returnResult;
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -107,15 +107,15 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var userId = context.User
                         .Where(u => u.UserName == userName)
                         .Select(u => u.Id).FirstOrDefault();
                     return userId;
-                //}
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError("Error occured while retrieving user details", ex);
             }

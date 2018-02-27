@@ -40,13 +40,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.Roles
                         .OrderBy(r => r.Name)
                         .ToList();
                     return Mapper.Map<List<Role>>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -59,8 +59,8 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var user = context.Users.FirstOrDefault(u => u.UserName.ToLower() == userName);
                     if (user != null)
                     {
@@ -71,7 +71,7 @@ namespace Deviser.Core.Data.Repositories
                             .ToList();
                         return Mapper.Map<List<Role>>(result);
                     }
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -84,13 +84,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.Roles
                               .FirstOrDefault(e => e.Id == roleId);
 
                     return Mapper.Map<Role>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -103,13 +103,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.Roles
                               .FirstOrDefault(e => e.Name == roleName);
 
                     return Mapper.Map<Role>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {

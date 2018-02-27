@@ -34,7 +34,7 @@ namespace Deviser.Core.Data.Repositories
             : base(container)
         {
             _logger = container.Resolve<ILogger<ContentTypeRepository>>();
-            
+
         }
 
         /// <summary>
@@ -46,13 +46,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var dbContentType = Mapper.Map<Entities.ContentType>(contentType);
-                    dbContentType.Id = Guid.NewGuid();                    
-                    if (dbContentType.ContentTypeProperties!=null && dbContentType.ContentTypeProperties.Count > 0)
+                    dbContentType.Id = Guid.NewGuid();
+                    if (dbContentType.ContentTypeProperties != null && dbContentType.ContentTypeProperties.Count > 0)
                     {
-                        foreach(var ctp in dbContentType.ContentTypeProperties)
+                        foreach (var ctp in dbContentType.ContentTypeProperties)
                         {
                             ctp.ContentTypeId = dbContentType.Id;
                         }
@@ -61,7 +61,7 @@ namespace Deviser.Core.Data.Repositories
                     var result = context.ContentType.Add(dbContentType).Entity;
                     context.SaveChanges();
                     return Mapper.Map<ContentType>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -79,13 +79,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.ContentType
                                .FirstOrDefault(e => e.Id == contentTypeId);
 
                     return Mapper.Map<ContentType>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -93,7 +93,7 @@ namespace Deviser.Core.Data.Repositories
             }
             return null;
         }
-        
+
         /// <summary>
         /// It returns a ContentType by arrribute Name
         /// </summary>
@@ -103,15 +103,15 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.ContentType
                                .Where(e => String.Equals(e.Name, contentTypeName, StringComparison.CurrentCultureIgnoreCase))
                                .OrderBy(ct => ct.Name)
                                .FirstOrDefault();
 
                     return Mapper.Map<ContentType>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -128,14 +128,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.ContentType
                         .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
-                        .OrderBy(c=>c.Name)
-                        .ToList();   
+                        .OrderBy(c => c.Name)
+                        .ToList();
                     return Mapper.Map<List<ContentType>>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -154,8 +154,8 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var dbContentType = Mapper.Map<Entities.ContentType>(contentType);
 
                     if (dbContentType.ContentTypeProperties != null && dbContentType.ContentTypeProperties.Count > 0)
@@ -189,13 +189,13 @@ namespace Deviser.Core.Data.Repositories
                         }
                     }
 
-                    
+
                     dbContentType.LastModifiedDate = DateTime.Now;
                     var result = context.ContentType.Attach(dbContentType).Entity;
                     context.Entry(dbContentType).State = EntityState.Modified;
                     context.SaveChanges();
                     return Mapper.Map<ContentType>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {

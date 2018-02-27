@@ -25,7 +25,7 @@ namespace Deviser.Core.Data.Repositories
 
         //Constructor
         public OptionListRepository(ILifetimeScope container)
-            :base(container)
+            : base(container)
         {
             _logger = container.Resolve<ILogger<OptionListRepository>>();
         }
@@ -34,14 +34,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var dbOptionList = Mapper.Map<Entities.OptionList>(optionList);
                     dbOptionList.CreatedDate = dbOptionList.LastModifiedDate = DateTime.Now;
                     var result = context.OptionList.Add(dbOptionList).Entity;
                     context.SaveChanges();
                     return Mapper.Map<OptionList>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -54,11 +54,11 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.OptionList.ToList();
                     return Mapper.Map<List<OptionList>>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -71,12 +71,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.OptionList
                                .FirstOrDefault(e => e.Id == optionListId);
                     return Mapper.Map<OptionList>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
@@ -89,12 +89,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var result = context.OptionList
                                .FirstOrDefault(e => e.Name.ToLower() == listName.ToLower());
                     return Mapper.Map<OptionList>(result);
-                //}
+                }
             }
 
 
@@ -104,21 +104,20 @@ namespace Deviser.Core.Data.Repositories
             }
             return null;
         }
-        
+
 
         public OptionList UpdateOptionList(OptionList optionList)
         {
             try
             {
-                //using (var context = new DeviserDbContext(DbOptions))
-                //{
+                using (var context = new DeviserDbContext(DbOptions))
+                {
                     var dboptionList = Mapper.Map<Entities.OptionList>(optionList);
                     dboptionList.LastModifiedDate = DateTime.Now;
-                    var result = context.OptionList.Attach(dboptionList).Entity;
-                    context.Entry(dboptionList).State = EntityState.Modified;
+                    var result = context.OptionList.Update(dboptionList).Entity;
                     context.SaveChanges();
                     return Mapper.Map<OptionList>(result);
-                //}
+                }
             }
             catch (Exception ex)
             {
