@@ -44,6 +44,7 @@
 
 $devPrimary: rgb(239, 73, 52);
 $devWhite: rgb(255, 255, 255);
+$lightGrey: rgb(245,245,246);
 
 /*--------------------------------------------------------------
     Navigation
@@ -188,5 +189,31 @@ $devWhite: rgb(255, 255, 255);
     .swiper-pagination-bullet-active {
         opacity: 1;
         background: #fff;
+    }
+}
+
+
+.grey-section {
+    padding: 6rem 0;
+    background-color: $lightGrey;
+}
+
+/*Video conent type*/
+.video-container {
+    position: relative;
+
+    img {
+        width: 100%;
+    }
+
+    .thumb-text {
+        border: 0 solid transparent;
+        background: #fff;
+        border-radius: 80%;
+        color: #ec3d28;
+        font-size: 1.5rem;
+        margin: 26% 46%;
+        padding: 0.45rem 1rem;
+        position: absolute;
     }
 }

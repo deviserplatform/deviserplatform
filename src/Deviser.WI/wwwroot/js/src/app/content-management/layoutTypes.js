@@ -60,10 +60,11 @@
         function edit(layout) {
             vm.currentViewState = vm.viewStates.EDIT;
             vm.selectedLayoutType = layout;
-            var allowedTypeIds = vm.selectedLayoutType.layoutTypeIds.replace(/\s+/g, '').split(',');
-            vm.selectedLayoutType.allowedLayoutTypes = _.filter(vm.layoutTypes, function (layoutType) {
-                return _.includes(allowedTypeIds, layoutType.id);
-            });
+
+            if (vm.selectedLayoutType.layoutTypeIds) {
+                var allowedTypeIds = vm.selectedLayoutType.layoutTypeIds.replace(/\s+/g, '').split(',');
+                vm.selectedLayoutType.allowedLayoutTypes = allowedTypeIds;
+            }
         }
 
         function isValidName(name) {
@@ -84,9 +85,8 @@
                         showMessage("error", "Cannot add layout type, please contact administrator");
                     });
                 }
-                else {
-                    var allowedTypeIds = _.map(vm.selectedLayoutType.allowedLayoutTypes, 'id');
-                    vm.layoutTypeIds = allowedTypeIds.join(',');
+                else {                    
+                    vm.selectedLayoutType.layoutTypeIds = vm.selectedLayoutType.allowedLayoutTypes.join(',');
                     delete vm.selectedLayoutType.allowedLayoutTypes;
                     update(vm.selectedLayoutType);
                 }

@@ -130,7 +130,7 @@
 
                                     <ui-select multiple ng-model="ltVM.selectedLayoutType.allowedLayoutTypes" theme="bootstrap" ng-disabled="lVM.layoutTypes.length<=0">
                                         <ui-select-match placeholder="Select Layout Type">{{$item.label}}</ui-select-match>
-                                        <ui-select-choices repeat="layoutType in ltVM.layoutTypes | filter: $select.search">
+                                        <ui-select-choices repeat="layoutType.id as layoutType in ltVM.layoutTypes | filter: $select.search">
                                             <div ng-bind-html="layoutType.label | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>

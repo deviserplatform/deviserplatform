@@ -2,6 +2,7 @@
 Page Header
 ***/
 .sd-controlbar {
+    font-family: "Open Sans", sans-serif;
     width: 100%;
     /*padding: 0 20px 0 20px;*/
     margin: 0;
