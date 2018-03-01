@@ -105,6 +105,7 @@
                          ng-include="item.layoutTemplate + '.html'">
                     </div>
                 </div>
+                <span class="end-of-element">&lt;!--end of {{item.label}} {{$index+1}}--&gt;</span>
             </script>
             <script type="text/ng-template" id="container.html">
                 <div class="container-element box box-blue">
@@ -134,7 +135,7 @@
             </script>
             <script type="text/ng-template" id="repeater.html">
                 <div class="container-element box box-blue">
-                    <h3>{{item.label}} {{$index+1}} repeater</h3>
+                    <h3>{{item.label}} {{$index+1}}</h3>
                     <div class="container-content" ng-include="'placeHolders.html'">
 
                     </div>

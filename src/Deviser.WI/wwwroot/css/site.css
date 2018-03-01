@@ -6029,8 +6029,10 @@ a.text-dark:hover, a.text-dark:focus {
 /*--------------------------------------------------------------
     Navigation
  --------------------------------------------------------------*/
-.body {
-  font-family: 'Montserrat', 'Open Sans', sans-serif; }
+body {
+  font-family: 'Montserrat', 'Open Sans', sans-serif;
+  line-height: 1.8rem;
+  font-weight: 300; }
 
 .skyline-nav {
   padding: 0; }
@@ -6130,8 +6132,12 @@ a.text-dark:hover, a.text-dark:focus {
     background: #fff; }
 
 .grey-section {
-  padding: 6rem 0;
+  padding: 2rem 0;
   background-color: #f5f5f6; }
+
+.white-section {
+  padding: 2rem 0;
+  background-color: white; }
 
 /*Video conent type*/
 .video-container {
@@ -6139,11 +6145,33 @@ a.text-dark:hover, a.text-dark:focus {
   .video-container img {
     width: 100%; }
   .video-container .thumb-text {
+    /*background: #fff;
+        color: $devPrimary;
+        border: 0 solid transparent;
+        border-radius: 50%;
+        margin: 26% 46%;
+        padding: 0.45rem 1rem;*/
+    background: white;
+    color: #ef4934;
     border: 0 solid transparent;
-    background: #fff;
-    border-radius: 80%;
-    color: #ec3d28;
-    font-size: 1.5rem;
-    margin: 26% 46%;
-    padding: 0.45rem 1rem;
+    border-radius: 50%;
+    margin: 24.6% 41.2%;
+    padding: 0 38px;
+    display: inline-block;
+    line-height: 6rem;
+    transition: all .3s ease;
+    font-size: 1.6rem;
     position: absolute; }
+
+.features .info .icon-circle {
+  background: #ef4934;
+  color: white;
+  border: 0 solid transparent;
+  border-radius: 50%;
+  width: 130px;
+  height: 130px;
+  margin-bottom: 20px;
+  display: inline-block;
+  line-height: 128px;
+  transition: all .3s ease;
+  font-size: 1.6rem; }

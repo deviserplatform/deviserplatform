@@ -97,10 +97,10 @@
                     //    };
                     //}
                     //else if (vm.contentType.dataType === 'object') {
-                        translation = {
-                            cultureCode: locale,
-                            contentData: {}
-                        };
+                    translation = {
+                        cultureCode: locale,
+                        contentData: {}
+                    };
                     //}
                     //else {
                     //    translation = {
@@ -130,7 +130,7 @@
         }
     }
 
-    function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, sdUtil, editLayoutUtil,layoutService, pageService,
+    function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, sdUtil, editLayoutUtil, layoutService, pageService,
         contentTypeService, pageContentService, moduleService, moduleActionService, pageModuleService) {
         var vm = this;
 
@@ -141,7 +141,7 @@
         vm.alerts = [];
         vm.pageLayout = {};
         vm.selectedItem = {};
-        vm.deletedElements = [];       
+        vm.deletedElements = [];
         vm.layoutAllowedTypes = ["container"];
 
         //Method binding
@@ -158,7 +158,7 @@
         vm.openModuleActionEdit = openModuleActionEdit;
         vm.changeModulePermission = changeModulePermission;
         vm.changeContentPermission = changeContentPermission;
-        vm.saveProperties = saveProperties; 
+        vm.saveProperties = saveProperties;
         vm.setColumnWidth = editLayoutUtil.setColumnWidth;
         vm.positionPageContents = positionPageContents;
         vm.draft = draft;
@@ -403,9 +403,9 @@
             }
             else if (vm.selectedItem.layoutTemplate === "module") {
                 var pageModule = vm.selectedItem.pageModule;
-                                
+
                 pageModule.title = vm.selectedItem.title;
-                pageModule.containerId = vm.selectedItem.pageModule.containerId;                
+                pageModule.containerId = vm.selectedItem.pageModule.containerId;
                 pageModule.sortOrder = vm.selectedItem.sortOrder;
 
                 pageModuleService.put(pageModule).then(function (response) {
@@ -416,8 +416,8 @@
                     showMessage("error", "Cannot save the module properities,please contact administrator");
                 }, true);
             }
-        }       
-        
+        }
+
         /*Private functions*/
         function getCurrentPage() {
             var defer = $q.defer();
@@ -427,10 +427,10 @@
                     var permission = _.find(vm.currentPage.pagePermissions, { roleId: globals.appSettings.roles.allUsers });
 
                     if (permission)
-                        vm.currentPage.state = "Published";                    
-                    else 
+                        vm.currentPage.state = "Published";
+                    else
                         vm.currentPage.state = "Publish";
-                                         
+
                     defer.resolve(data);
                 }, function (error) {
                     showMessage("error", SYS_ERROR_MSG);
@@ -876,7 +876,7 @@
         function draft() {
             pageService.draftPage(vm.currentPage.id).then(function (data) {
                 vm.currentPage.state = "Publish";
-                showMessage("success", "The Page has been drafted.");                
+                showMessage("success", "The Page has been drafted.");
             }, function (error) {
                 showMessage("error", "Cannot draft the page, please contact the administrator.");
             });
@@ -1012,7 +1012,7 @@
                 // Find item index using _.findIndex (thanks @AJ Richardson for comment)
                 var index = _.findIndex(vm.contentTranslation.contentData.items, vm.selectedItem);
 
-                vm.selectedItem = vm.tempItem;                
+                vm.selectedItem = vm.tempItem;
                 // Replace item at index using native splice
                 vm.contentTranslation.contentData.items.splice(index, 1, vm.tempItem);
             }
@@ -1064,10 +1064,12 @@
                 //    };
                 //}
                 //else if (vm.contentType.dataType === 'object') {
-                    translation = {
-                        cultureCode: locale,
-                        contentData: {}
-                    };
+                translation = {
+                    cultureCode: locale,
+                    contentData: {
+                        items: []
+                    }
+                };
                 //}
                 //else {
                 //    translation = {
@@ -1084,7 +1086,7 @@
 
         function serializeContentTranslation() {
             //if (vm.contentType.dataType && (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object')) {
-                vm.contentTranslation.contentData = angular.toJson(vm.contentTranslation.contentData);
+            vm.contentTranslation.contentData = angular.toJson(vm.contentTranslation.contentData);
             //}
         }
 

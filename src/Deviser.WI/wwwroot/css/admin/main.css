@@ -6477,7 +6477,8 @@ body.page-edit {
       body.page-edit .layout-container .dropzone .edit-content-preview {
         padding: 4px; }
         body.page-edit .layout-container .dropzone .edit-content-preview img {
-          width: 100%; }
+          width: 100%;
+          max-width: 500px; }
         body.page-edit .layout-container .dropzone .edit-content-preview h1, body.page-edit .layout-container .dropzone .edit-content-preview h2, body.page-edit .layout-container .dropzone .edit-content-preview h3, body.page-edit .layout-container .dropzone .edit-content-preview h4, body.page-edit .layout-container .dropzone .edit-content-preview li, body.page-edit .layout-container .dropzone .edit-content-preview a, body.page-edit .layout-container .dropzone .edit-content-preview th, body.page-edit .layout-container .dropzone .edit-content-preview td {
           font-size: 11px; }
         body.page-edit .layout-container .dropzone .edit-content-preview ul li, body.page-edit .layout-container .dropzone .edit-content-preview ol li {
@@ -6525,6 +6526,9 @@ body.page-edit {
     display: block;
     padding: 0;
     position: relative; }
+  body.page-edit span.end-of-element {
+    font-size: 11px;
+    color: #d5d5d5; }
 
 /***********************************************************/
 /*Angular Tree*/

@@ -48,12 +48,13 @@ namespace Deviser.Core.Data.Repositories
             {
                 using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var dbContentType = Mapper.Map<Entities.ContentType>(contentType);
+                    var dbContentType = Mapper.Map<Entities.ContentType>(contentType);                    
                     dbContentType.Id = Guid.NewGuid();
                     if (dbContentType.ContentTypeProperties != null && dbContentType.ContentTypeProperties.Count > 0)
                     {
                         foreach (var ctp in dbContentType.ContentTypeProperties)
                         {
+                            ctp.Property = null;                            
                             ctp.ContentTypeId = dbContentType.Id;
                         }
                     }

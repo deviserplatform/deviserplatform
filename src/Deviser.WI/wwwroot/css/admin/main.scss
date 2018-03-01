@@ -910,6 +910,7 @@ body.page-edit {
 
                 img {
                     width: 100%;
+                    max-width: 500px;
                 }
 
                 h1, h2, h3, h4, li, a, th, td {
@@ -988,6 +989,11 @@ body.page-edit {
         display: block;
         padding: 0;
         position: relative;
+    }
+
+    span.end-of-element {
+        font-size: 11px;
+        color: #d5d5d5;
     }
 }
 
