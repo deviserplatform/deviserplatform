@@ -188,12 +188,22 @@ namespace Deviser.Core.Data.Repositories
                             //ContentTypeProperty is not exist in contentType (client source), because client has been removed it. Therefor, remove it from db.
                             context.ContentTypeProperty.RemoveRange(toRemoveFromDb);
                         }
+
+                        if(dbContentType.ContentTypeProperties!=null && dbContentType.ContentTypeProperties.Count > 0)
+                        {
+                            foreach(var contentTypeProp in dbContentType.ContentTypeProperties)
+                            {
+                                contentTypeProp.Property = null;
+                                context.ContentTypeProperty.AddRange(dbContentType.ContentTypeProperties);
+                            }
+                            
+                        }
                     }
 
 
                     dbContentType.LastModifiedDate = DateTime.Now;
-                    var result = context.ContentType.Attach(dbContentType).Entity;
-                    context.Entry(dbContentType).State = EntityState.Modified;
+                    var result = context.ContentType.Update(dbContentType).Entity;
+                    //context.Entry(dbContentType).State = EntityState.Modified;
                     context.SaveChanges();
                     return Mapper.Map<ContentType>(result);
                 }

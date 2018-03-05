@@ -51,7 +51,7 @@ namespace Deviser.Core.Common.DomainTypes
             if (!IsMoreOption)
                 return Value;
 
-            var optionVal = OptionList.List.FirstOrDefault(li => li.Id == Guid.Parse(Value));
+            var optionVal = OptionList?.List?.FirstOrDefault(li => li.Id == Guid.Parse(Value));
             return optionVal != null ? optionVal.Name : string.Empty;
         }
     }

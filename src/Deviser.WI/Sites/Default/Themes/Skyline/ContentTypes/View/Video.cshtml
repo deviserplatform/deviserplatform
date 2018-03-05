@@ -6,18 +6,28 @@
     var currentCulture = pageContext.CurrentCulture.ToString();
 
     dynamic rootObj = Model.Content;
-    var videoType = Model.PageContent.Properties.Get("videotype");
+    var videopreview = Model.PageContent.Properties.Get("videopreview");
 }
 
 @if (rootObj != null)
 {
     <div class="video-container">
-        <a class="video popup-video" href="@rootObj.videoUrl">
-            <div class="thumb-text">
-                <i class="fa fa-play" aria-hidden="true"></i>
-            </div>
-            <img src="@rootObj.imageUrl" alt="@rootObj.imageAltText">
-        </a>
+        @if (videopreview?.SelectedOption?.Name == "preview")
+        {
+            <a class="video popup-video" href="@rootObj.videoUrl">
+                <div class="thumb-text">
+                    <i class="fa fa-play" aria-hidden="true"></i>
+                </div>
+                <img src="@rootObj.imageUrl" alt="@rootObj.imageAltText">
+            </a>
+
+        }
+        else
+        {
+            <a class="video popup-video btn btn-primary" href="@rootObj.videoUrl">
+                <i class="fa fa-play" aria-hidden="true"></i> Watch Video
+            </a>
+        }
     </div>
 }
 else

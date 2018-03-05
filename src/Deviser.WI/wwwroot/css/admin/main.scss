@@ -77,17 +77,19 @@ body {
 }
 
 #page-wrapper {
-    padding: 0 15px;
+    padding: 30px;
     min-height: 568px;
     background-color: #fff;
+    min-height: 96.6vh;
 }
 
 @media(min-width:768px) {
     #page-wrapper {
         position: inherit;
         margin: 0 0 0 250px;
-        padding: 0 30px;
+        padding: 30px;
         border-left: 1px solid #e7e7e7;
+        min-height: 96.6vh;
     }
 }
 
@@ -1111,7 +1113,7 @@ div.form-horizontal .control-label {
 /*Layout Designer*/
 .layout-designer-container {
     background: #fff;
-    min-height: 90vh;
+    min-height: 90.8vh;
 }
 
 .layout-controls {
