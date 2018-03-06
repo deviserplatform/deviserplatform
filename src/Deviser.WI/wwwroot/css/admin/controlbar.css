@@ -3,7 +3,7 @@ Page Header
 ***/
 .sd-controlbar {
     font-family: "Open Sans", sans-serif;
-    line-height:1.5;
+    line-height: 1.5;
     width: 100%;
     /*padding: 0 20px 0 20px;*/
     margin: 0;
@@ -50,7 +50,7 @@ Page Header
 
         .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown {
             margin: 0;
-            padding: 0 4px;            
+            padding: 0 4px;
             display: inline-block;
         }
 
@@ -59,38 +59,42 @@ Page Header
                 padding: 15px;
             }
 
-            .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > a {
-                display: inline-block;
-                font-size: 13px;
-                font-weight: 300;
-                color: #79869a;
-                text-decoration:none;
-            }
+a.sd-toggle::after {
+    content: none !important;
+}
 
-                .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > a span {
-                    display: inline-block;
-                    font-size: 13px;
-                    font-weight: 300;
-                    color: #c6cfda;
-                    padding-left: 8px;
-                    vertical-align: top;
-                }
+.sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > a {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 300;
+    color: #79869a;
+    text-decoration: none;
+}
 
-            .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > .dropdown-toggle > i {
-                font-size: 17px;
-                color: #79869a;
-            }
+    .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > a span {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 300;
+        color: #c6cfda;
+        padding-left: 8px;
+        vertical-align: top;
+    }
 
-            .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > .dropdown-toggle:focus {
-                background: 0 0;
-            }
+.sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > .dropdown-toggle > i {
+    font-size: 17px;
+    color: #79869a;
+}
 
-            .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown .dropdown-toggle:hover,
-            .sd-dropdown-menu.dropdown-menu li > a:hover,
-            .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown.open .dropdown-toggle, 
-            .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown.active {
-                background-color: #3f4f62;
-            }
+.sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > .dropdown-toggle:focus {
+    background: 0 0;
+}
+
+.sd-controlbar .top-menu .sd-navbar-nav > li.dropdown .dropdown-toggle:hover,
+.sd-dropdown-menu.dropdown-menu li > a:hover,
+.sd-controlbar .top-menu .sd-navbar-nav > li.dropdown.open .dropdown-toggle,
+.sd-controlbar .top-menu .sd-navbar-nav > li.dropdown.active {
+    background-color: #3f4f62;
+}
 
 .sd-dropdown-menu.dropdown-menu {
     background-color: #2b3643;

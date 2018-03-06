@@ -38,20 +38,20 @@
             <form sd-module="Security" sd-controller="Account" sd-action="LogOff" method="post" id="logoutForm">
                 <ul class="sd-navbar-nav">
                     <li class="dropdown dropdown-quick-sidebar-toggler @(mode=="view"?"active":"")">
-                        <a href="/@pageContext.CurrentUrl" class="dropdown-toggle">
+                        <a href="/@pageContext.CurrentUrl" class="sd-toggle dropdown-toggle">
                             <i class="fa fa-desktop"></i>
                             <span>View</span>
                         </a>
                     </li>
                     <li class="dropdown dropdown-quick-sidebar-toggler @(mode=="edit"?"active":"")">
-                        <a href="@Url.Action("Edit", "Page", new { culture=culture, permalink=permalink })" class="dropdown-toggle">
+                        <a href="@Url.Action("Edit", "Page", new { culture=culture, permalink=permalink })" class="sd-toggle dropdown-toggle">
                             <i class="fa fa-pencil-square-o"></i>
                             <span>Edit</span>
                         </a>
                     </li>
 
                     <li class="dropdown dropdown-quick-sidebar-toggler @(mode=="layout"?"active":"")">
-                        <a href="@Url.Action("Layout", "Page", new { culture=culture, permalink=permalink })" class="dropdown-toggle">
+                        <a href="@Url.Action("Layout", "Page", new { culture=culture, permalink=permalink })" class="sd-toggle dropdown-toggle">
                             <i class="fa fa-columns"></i>
                             <span>Layout</span>
                         </a>

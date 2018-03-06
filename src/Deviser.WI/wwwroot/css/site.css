@@ -6038,6 +6038,27 @@ body {
   padding: 0; }
   .skyline-nav .navbar-brand img {
     width: 240px; }
+  .skyline-nav .navbar-collapse {
+    position: relative; }
+    .skyline-nav .navbar-collapse .header-top {
+      position: absolute;
+      right: 3%;
+      top: 8%;
+      font-size: 0.8rem; }
+      .skyline-nav .navbar-collapse .header-top ul {
+        list-style: none; }
+        .skyline-nav .navbar-collapse .header-top ul li {
+          display: inline; }
+          .skyline-nav .navbar-collapse .header-top ul li a {
+            font-size: 0.9em; }
+      .skyline-nav .navbar-collapse .header-top .navbar-link {
+        border: none;
+        text-decoration: none;
+        background: none;
+        cursor: pointer;
+        color: #8b8e93; }
+        .skyline-nav .navbar-collapse .header-top .navbar-link:hover {
+          color: #ef4934; }
   .skyline-nav .navbar-nav {
     text-transform: uppercase; }
     .skyline-nav .navbar-nav .nav-item .nav-link {

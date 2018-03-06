@@ -40,15 +40,26 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="header-top">
+                <ul class="login">
+                    @await Html.PartialAsync("_LoginPartial")
+
+                </ul>
+                <ul class="language-switcher">
+                    @await Component.InvokeAsync("LanguageSwitcher")
+                </ul>
+            </div>
             <ul sd-nav="Site" sd-nav-page="PublicOnly" class="navbar-nav ml-auto"></ul>
 
-            <ul class="navbar-nav">
-                @await Component.InvokeAsync("LanguageSwitcher")
-                <li class="nav-item">
-                    <a class="nav-link" href="@navigation.NavigateUrl(pageContext.SiteSettingInfo.LoginPageId)">Login</a>
-                </li>
-            </ul>
+            @*<ul class="navbar-nav">
+            @await Component.InvokeAsync("LanguageSwitcher")
+            <li class="nav-item">
+                <a class="nav-link" href="@navigation.NavigateUrl(pageContext.SiteSettingInfo.LoginPageId)">Login</a>
+            </li>
+        </ul>*@
         </div>
     </div>
 </nav>

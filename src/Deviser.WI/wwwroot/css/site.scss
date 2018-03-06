@@ -17,7 +17,7 @@
 @import "admin/bootstrap4/scss/tables";
 @import "admin/bootstrap4/scss/forms";
 @import "admin/bootstrap4/scss/buttons";
-@import "admin/bootstrap4/scss/transitions";
+@import "admin/bootstrap4/scss/transitions"; 
 @import "admin/bootstrap4/scss/dropdown";
 @import "admin/bootstrap4/scss/button-group";
 @import "admin/bootstrap4/scss/input-group";
@@ -27,7 +27,7 @@
 @import "admin/bootstrap4/scss/card";
 @import "admin/bootstrap4/scss/breadcrumb";
 @import "admin/bootstrap4/scss/pagination";
-@import "admin/bootstrap4/scss/badge";
+@import "admin/bootstrap4/scss/badge"; 
 @import "admin/bootstrap4/scss/jumbotron";
 @import "admin/bootstrap4/scss/alert";
 @import "admin/bootstrap4/scss/progress";
@@ -57,6 +57,7 @@ body {
 }
 
 
+
 .skyline-nav {
     padding: 0;
 
@@ -66,6 +67,40 @@ body {
         }
     }
 
+    .navbar-collapse {
+        position: relative;
+
+        .header-top {
+            position: absolute;
+            right: 3%;
+            top: 8%;
+            font-size: 0.8rem;
+
+            ul {
+                list-style: none;
+
+                li {
+                    display: inline;
+
+                    a {
+                        font-size: 0.9em;
+                    }
+                }
+            }
+
+            .navbar-link {
+                border: none;
+                text-decoration: none;
+                background: none;
+                cursor: pointer;
+                color: $darkGrey;
+
+                &:hover {
+                    color: $devPrimary;
+                }
+            }
+        }
+    }
 
     .navbar-nav {
         text-transform: uppercase;
