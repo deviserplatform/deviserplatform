@@ -80,7 +80,7 @@ namespace Deviser.Core.Common
         {
             get
             {
-                return "~/Views/Shared/MenuStyles/{0}.cshtml";
+                return "~/Sites/Default/Themes/{0}/MenuStyles/{1}.cshtml";
             }
         }
 
@@ -88,7 +88,7 @@ namespace Deviser.Core.Common
         {
             get
             {
-                return "~/Views/Shared/BreadCrumbStyles/{0}.cshtml";
+                return "~/Sites/Default/Themes/{0}/BreadCrumbStyles/{1}.cshtml";
             }
         }
 
