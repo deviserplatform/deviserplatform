@@ -93,7 +93,7 @@ namespace Deviser.Core.Library
 
 
                 FilterPage(root, currentPageId, predicate);
-                SetBreadCrumb(activePage);
+                SetBreadCrumb(currentPageId, root);
                 return root;
             }
             catch (Exception ex)
@@ -102,7 +102,7 @@ namespace Deviser.Core.Library
             }
             return null;
         }
-        
+
         public List<Page> GetPages()
         {
             try
@@ -124,7 +124,7 @@ namespace Deviser.Core.Library
                 Page root = _pageRepository.GetPageTree();
                 FilterPage(root, currentPageId);
                 breadcrumbs = new List<Page>();
-                SetBreadCrumb(activePage);
+                SetBreadCrumb(currentPageId, root);
                 return breadcrumbs.OrderBy(p => p.PageLevel).ToList();
             }
             catch (Exception ex)
@@ -147,7 +147,7 @@ namespace Deviser.Core.Library
                     page.PageTranslation = pageTranslation;
                     var result = UpdateSinglePage(page);
                     return result;
-                }                    
+                }
             }
             catch (Exception ex)
             {
@@ -270,7 +270,7 @@ namespace Deviser.Core.Library
 
         public string NavigateUrl(Guid pageId, string locale = null)
         {
-            if(pageId!= Guid.Empty)
+            if (pageId != Guid.Empty)
             {
                 try
                 {
@@ -511,21 +511,31 @@ namespace Deviser.Core.Library
             }
         }
 
-        private void SetBreadCrumb(Page activePage)
+        private void SetBreadCrumb(Guid currentPageId, Page root)
         {
-            if (activePage != null)
-            {
-                activePage.IsBreadCrumb = true;
-                if (breadcrumbs != null)
-                {
-                    breadcrumbs.Add(activePage);
-                }
+            IsCurrentHasSelected(currentPageId, root);
+        }
 
-                if (activePage.Parent != null)
+        private bool IsCurrentHasSelected(Guid currentPageId, Page currentLevel)
+        {
+            bool isCurrentBreadCrumb = false;
+            if (currentLevel != null)
+            {
+                bool? isChildActive = currentLevel?.ChildPage?.Any(child => child.Id == currentLevel.Id);
+                isCurrentBreadCrumb = currentLevel.IsActive || (isChildActive ?? false);
+
+                if (!isCurrentBreadCrumb && currentLevel.ChildPage != null && currentLevel.ChildPage.Count > 0)
                 {
-                    SetBreadCrumb(activePage.Parent);
+                    foreach (var child in currentLevel.ChildPage)
+                    {
+                        isCurrentBreadCrumb = IsCurrentHasSelected(currentPageId, child);
+                        if (isCurrentBreadCrumb)
+                            break;
+                    }
                 }
+                currentLevel.IsBreadCrumb = isCurrentBreadCrumb;
             }
+            return isCurrentBreadCrumb;
         }
 
         #endregion
