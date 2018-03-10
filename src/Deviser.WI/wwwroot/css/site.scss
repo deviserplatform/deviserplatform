@@ -17,7 +17,7 @@
 @import "admin/bootstrap4/scss/tables";
 @import "admin/bootstrap4/scss/forms";
 @import "admin/bootstrap4/scss/buttons";
-@import "admin/bootstrap4/scss/transitions"; 
+@import "admin/bootstrap4/scss/transitions";
 @import "admin/bootstrap4/scss/dropdown";
 @import "admin/bootstrap4/scss/button-group";
 @import "admin/bootstrap4/scss/input-group";
@@ -27,7 +27,7 @@
 @import "admin/bootstrap4/scss/card";
 @import "admin/bootstrap4/scss/breadcrumb";
 @import "admin/bootstrap4/scss/pagination";
-@import "admin/bootstrap4/scss/badge"; 
+@import "admin/bootstrap4/scss/badge";
 @import "admin/bootstrap4/scss/jumbotron";
 @import "admin/bootstrap4/scss/alert";
 @import "admin/bootstrap4/scss/progress";
@@ -51,7 +51,8 @@ $darkGrey: rgb(139,142,147);
     Navigation
  --------------------------------------------------------------*/
 body {
-    font-family: 'Montserrat', 'Open Sans', sans-serif;
+    font-family: 'Rubik', 'Open Sans', sans-serif;
+    font-size: 0.96rem;
     line-height: 1.8rem;
     font-weight: 300;
 }
@@ -270,6 +271,17 @@ body {
     }
 }
 
+.home-action-container {
+    padding: 12% 6%;
+
+    .home-action-container a.btn {
+        padding: 0.750rem 1.25rem;
+    }
+
+    a:not(:last-child) {
+        margin-right: 1rem;
+    }
+}
 
 .features {
     .info .icon-circle {
@@ -284,5 +296,13 @@ body {
         line-height: 128px;
         transition: all .3s ease;
         font-size: 1.6rem;
+    }
+}
+
+.footer {
+    padding-top: 54px;
+
+    p {
+        color: $lightGrey;
     }
 }

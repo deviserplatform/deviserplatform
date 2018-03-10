@@ -11,7 +11,7 @@
     var loggedInClass = pageContext.HasPageEditPermission ? "logged-in" : "";
     var pageContentLoggedInClass = pageContext.HasPageEditPermission ? "page-content-logged-in" : "";
 }
-<require type="Css" priority="10" path="//fonts.googleapis.com/css?family=Montserrat|Open+Sans"></require>
+<require type="Css" priority="10" path="//fonts.googleapis.com/css?family=Rubik"></require>
 <require type="Css" priority="11" path="~/lib/font-awesome/css/font-awesome.css"></require>
 <require type="Css" priority="13" path="~/lib/magnific-popup/dist/magnific-popup.css"></require>
 <require type="Css" priority="14" path="~/lib/swiper/dist/css/swiper.css"></require>
@@ -40,8 +40,6 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        
-
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="header-top">
                 <ul class="login">
@@ -67,6 +65,42 @@
 <div class="@pageContentLoggedInClass">
     @RenderBody()
 </div>
+
+<footer class="footer footer-classic bg-dark">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 col-md-8 ">
+                <div class="text-center">
+                    <p>Released under the <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a></p>
+                    <div class="social-icons">
+                        <a href="#">
+                            <i class="fa fa-github"></i>
+                        </a>
+                        <a href="#">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                        <a href="#">
+                            <i class="fa fa-medium"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- COPY RIGHT -->
+        <div class="copyright">
+            <hr>
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6 ">
+                    <div class="copyRight_text text-center">                        
+                        <p>Copyright &copy; @DateTime.Now.Year Karthick Sundararajan.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</footer>
 
 
 @section Scripts{

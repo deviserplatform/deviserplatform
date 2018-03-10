@@ -11,24 +11,25 @@
 
 @if (rootObj != null)
 {
-    <div class="video-container">
-        @if (videopreview?.SelectedOption?.Name == "preview")
-        {
+
+    @if (videopreview?.SelectedOption?.Name == "preview")
+    {
+        <div class="video-container">
             <a class="video popup-video" href="@rootObj.videoUrl">
                 <div class="thumb-text">
                     <i class="fa fa-play" aria-hidden="true"></i>
                 </div>
                 <img src="@rootObj.imageUrl" alt="@rootObj.imageAltText">
             </a>
+        </div>
+    }
+    else
+    {
+        <a class="video popup-video btn btn-primary" href="@rootObj.videoUrl">
+            <i class="fa fa-play" aria-hidden="true"></i> Watch Video
+        </a>
+    }
 
-        }
-        else
-        {
-            <a class="video popup-video btn btn-primary" href="@rootObj.videoUrl">
-                <i class="fa fa-play" aria-hidden="true"></i> Watch Video
-            </a>
-        }
-    </div>
 }
 else
 {
