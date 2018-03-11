@@ -327,13 +327,15 @@ body {
         font-weight: 600;
     }
 
-    .social-icons{
-        font-weight:unset;
-        font-size:3rem;
-    } 
+    .social-icons {
+        font-weight: unset;
+        font-size: 3rem;
+        margin: 1% 0;
+    }
+
     p {
         color: $lightGrey;
-        padding:0;
-        margin:0;
+        padding: 0;
+        margin: 0;
     }
 }
