@@ -8,6 +8,8 @@
 // Color system
 //
 
+$devPrimary: rgb(239, 73, 52);
+
 // stylelint-disable
 $white:    #fff !default;
 $gray-100: #f8f9fa !default;
@@ -62,7 +64,7 @@ $colors: map-merge((
   "gray-dark":  $gray-800
 ), $colors);
 
-$primary:       $blue !default;
+$primary:       $devPrimary !default;
 $secondary:     $gray-600 !default;
 $success:       $green !default;
 $info:          $cyan !default;

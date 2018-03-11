@@ -44,12 +44,10 @@
 
 $devPrimary: rgb(239, 73, 52);
 $devWhite: rgb(255, 255, 255);
-$lightGrey: rgb(245,245,246);
+$lightGrey: rgb(245,245,246); 
 $darkGrey: rgb(139,142,147);
 
-/*--------------------------------------------------------------
-    Navigation
- --------------------------------------------------------------*/
+
 body {
     font-family: 'Rubik', 'Open Sans', sans-serif;
     font-size: 0.96rem;
@@ -57,8 +55,16 @@ body {
     font-weight: 300;
 }
 
+/*--------------------------------------------------------------
+    General Elements
+ --------------------------------------------------------------*/
+:focus, a:focus, button:focus {
+    outline: 0;
+}
 
-
+/*--------------------------------------------------------------
+    Navigation
+ --------------------------------------------------------------*/
 .skyline-nav {
     padding: 0;
 
@@ -86,6 +92,19 @@ body {
                     a {
                         font-size: 0.9em;
                     }
+                }
+            }
+
+            .login {
+                li {
+                    button {
+                        padding: 0;
+                        margin: 0;
+                    }
+                }
+
+                li:not(:last-child) {
+                    margin-right: 1rem;
                 }
             }
 
@@ -300,9 +319,21 @@ body {
 }
 
 .footer {
-    padding-top: 54px;
+    padding: 2% 0;
 
+    a {
+        color: $white;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .social-icons{
+        font-weight:unset;
+        font-size:3rem;
+    } 
     p {
         color: $lightGrey;
+        padding:0;
+        margin:0;
     }
 }

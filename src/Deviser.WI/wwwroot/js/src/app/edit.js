@@ -719,6 +719,9 @@
                     pageContent.id = item.element.pageContent.id;
                     pageContent.pageId = item.element.pageContent.pageId;
                     pageContent.contentTypeId = item.element.pageContent.contentTypeId;
+                    pageContent.inheritViewPermissions = item.element.pageContent.inheritViewPermissions
+                    pageContent.inheritEditPermissions = item.element.pageContent.inheritEditPermissions
+                    pageContent.hasEditPermission = item.element.pageContent.hasEditPermission
                 }
                 else {
                     //New page content

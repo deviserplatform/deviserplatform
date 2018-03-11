@@ -5832,7 +5832,7 @@ body {
   padding: 30px;
   min-height: 568px;
   background-color: #fff;
-  min-height: 96.6vh; }
+  min-height: 94vh; }
 
 @media (min-width: 768px) {
   #page-wrapper {
@@ -5840,7 +5840,7 @@ body {
     margin: 0 0 0 250px;
     padding: 30px;
     border-left: 1px solid #e7e7e7;
-    min-height: 96.6vh; } }
+    min-height: 94vh; } }
 
 .navbar-top-links {
   margin-right: 0; }
@@ -6285,12 +6285,6 @@ body {
 
 @viewport {
   width: device-width; }
-
-.page-footer {
-  color: #98a6ba;
-  padding: 8px 20px 5px;
-  font-size: 13px;
-  height: 33px; }
 
 .transition {
   -webkit-transition: all 300ms ease-in-out;
@@ -6755,3 +6749,14 @@ body.edit-content-modal {
   border-right: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
   padding: 10px; }
+
+.footer {
+  padding-top: 1.4%; }
+  .footer a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600; }
+  .footer p {
+    color: #f5f5f6;
+    padding: 0;
+    margin: 0; }

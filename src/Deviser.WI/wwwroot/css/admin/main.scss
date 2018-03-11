@@ -60,6 +60,10 @@
     Colors
 ----------------------------------------------------------------------*/
 $black: #000000;
+$devPrimary: rgb(239, 73, 52);
+$devWhite: rgb(255, 255, 255);
+$lightGrey: rgb(245,245,246);
+$darkGrey: rgb(139,142,147);
 
 
 /*!
@@ -80,7 +84,7 @@ body {
     padding: 30px;
     min-height: 568px;
     background-color: #fff;
-    min-height: 96.6vh;
+    min-height: 94vh;
 }
 
 @media(min-width:768px) {
@@ -89,7 +93,7 @@ body {
         margin: 0 0 0 250px;
         padding: 30px;
         border-left: 1px solid #e7e7e7;
-        min-height: 96.6vh;
+        min-height: 94vh;
     }
 }
 
@@ -646,13 +650,6 @@ body {
 
 @viewport {
     width: device-width;
-}
-
-.page-footer {
-    color: #98a6ba;
-    padding: 8px 20px 5px;
-    font-size: 13px;
-    height: 33px;
 }
 
 .transition {
@@ -1317,5 +1314,21 @@ body.edit-content-modal {
         border-right: 1px solid #ddd;
         border-bottom: 1px solid #ddd;
         padding: 10px;
+    }
+}
+
+
+.footer {
+    padding-top: 1.4%;
+
+    a {
+        color: $devWhite;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    p {
+        color: $lightGrey;
+        padding:0;
+        margin:0;
     }
 }

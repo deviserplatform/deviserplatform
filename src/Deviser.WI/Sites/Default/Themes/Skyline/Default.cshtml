@@ -42,10 +42,7 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="header-top">
-                <ul class="login">
-                    @await Html.PartialAsync("_LoginPartial")
-
-                </ul>
+                @await Html.PartialAsync("_LoginPartial")
                 <ul class="language-switcher">
                     @await Component.InvokeAsync("LanguageSwitcher")
                 </ul>
@@ -53,11 +50,11 @@
             <ul sd-nav="Site" sd-nav-page="PublicOnly" class="navbar-nav ml-auto"></ul>
 
             @*<ul class="navbar-nav">
-            @await Component.InvokeAsync("LanguageSwitcher")
-            <li class="nav-item">
-                <a class="nav-link" href="@navigation.NavigateUrl(pageContext.SiteSettingInfo.LoginPageId)">Login</a>
-            </li>
-        </ul>*@
+                    @await Component.InvokeAsync("LanguageSwitcher")
+                    <li class="nav-item">
+                        <a class="nav-link" href="@navigation.NavigateUrl(pageContext.SiteSettingInfo.LoginPageId)">Login</a>
+                    </li>
+                </ul>*@
         </div>
     </div>
 </nav>
@@ -76,27 +73,19 @@
                         <a href="#">
                             <i class="fa fa-github"></i>
                         </a>
-                        <a href="#">
-                            <i class="fa fa-twitter"></i>
-                        </a>
-                        <a href="#">
-                            <i class="fa fa-medium"></i>
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
         <!-- COPY RIGHT -->
-        <div class="copyright">
-            <hr>
+        <div class="copyright">            
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6 ">
-                    <div class="copyRight_text text-center">                        
+                    <div class="copyRight_text text-center">
                         <p>Copyright &copy; @DateTime.Now.Year Karthick Sundararajan.</p>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 

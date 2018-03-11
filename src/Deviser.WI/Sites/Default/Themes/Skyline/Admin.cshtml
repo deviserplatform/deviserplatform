@@ -17,7 +17,7 @@
 
 <require type="Script" include="Development" location="Head" priority="10" path="~/lib/jquery/dist/jquery.js" test="test"></require>
 <require type="Script" include="Development" location="Head" priority="11" path="~/lib/jquery-ui/jquery-ui.js"></require>
-<require type="Script" include="Development" location="Head" priority="12" path="~/lib/bootstrap/dist/js/bootstrap.js"></require>
+<require type="Script" include="Development" location="Head" priority="12" path="~/js/bootstrap.min.js"></require>
 <require type="Script" include="Development" location="Head" priority="13" path="~/lib/lodash/dist/lodash.js"></require>
 <require type="Script" include="Development" priority="14" path="~/lib/metisMenu/dist/metisMenu.js"></require>
 
@@ -80,12 +80,23 @@
         </div>
         <!-- /.container-fluid -->
     </div>
-    <div class="page-footer">
-        <div class="page-footer-inner">
-            @DateTime.Now.Year &copy; Deviser Platform</a>
+    @*<div class="page-footer">
+            <div class="page-footer-inner">
+                @DateTime.Now.Year &copy; Deviser Platform</a>
+            </div>
+            <div class="scroll-to-top">
+                <i class="icon-arrow-up"></i>
+            </div>
+        </div>*@
+    <footer class="footer footer-classic bg-dark">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="text-center">
+                        <p>Copyright &copy; @DateTime.Now.Year Karthick Sundararajan. Released under the <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a></p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="scroll-to-top">
-            <i class="icon-arrow-up"></i>
-        </div>
-    </div>
+    </footer>
 </div>

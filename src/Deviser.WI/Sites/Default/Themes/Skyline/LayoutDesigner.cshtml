@@ -64,12 +64,15 @@
         @RenderBody()
     </div>
 
-    <div class="page-footer">
-        <div class="page-footer-inner">
-            @DateTime.Now.Year &copy; Deviser Platform
+    <footer class="footer footer-classic bg-dark">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="text-center">
+                        <p>Copyright &copy; @DateTime.Now.Year Karthick Sundararajan. Released under the <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a></p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="scroll-to-top">
-            <i class="icon-arrow-up"></i>
-        </div>
-    </div>
+    </footer>
 </div>

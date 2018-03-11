@@ -143,6 +143,7 @@ namespace Deviser.Core.Data.Repositories
                 {
                     var result = context.PageContent
                                 .Include(p => p.Page).ThenInclude(p => p.PageTranslation)
+                                .Include(pc => pc.ContentPermissions)
                                 .Where(p => p.IsDeleted)
                                 .OrderBy(p => p.Id)
                                 .ToList();

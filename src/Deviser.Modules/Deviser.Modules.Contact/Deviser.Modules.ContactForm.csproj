@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj" />
+    <ProjectReference Include="..\..\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj" />
   </ItemGroup>
 
 </Project>
