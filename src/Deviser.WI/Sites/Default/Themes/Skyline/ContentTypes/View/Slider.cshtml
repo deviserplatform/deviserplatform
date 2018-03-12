@@ -1,0 +1,55 @@
+﻿@model DynamicContent
+@inject IScopeService scopeService
+@{
+    var pageContext = scopeService.PageContext;
+    var currentCulture = pageContext.CurrentCulture.ToString();
+
+    dynamic rootObj = Model.Content;
+    int totalItems = 0;
+    if (rootObj != null)
+    {
+        totalItems = rootObj.items.Count;
+    }
+
+}
+
+@if (rootObj != null)
+{
+    <!-- Slider main container -->
+    <div class="swiper-container">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper">
+            <!-- Slides -->
+            @foreach (var item in rootObj.items)
+            {
+                <div class="swiper-slide">
+                    <img src="@item.imageUrl" alt="@item.imageAltText" />
+
+                    <div class="carousel-caption">
+                        <h1>@item.title</h1>
+                        <p>@item.description</p>
+                    </div>
+
+                </div>
+            }
+
+
+            @*<div class="swiper-slide">Slide 1</div>
+                <div class="swiper-slide">Slide 2</div>
+                <div class="swiper-slide">Slide 3</div>*@
+        </div>
+        <!-- If we need pagination -->
+        <div class="swiper-pagination"></div>
+
+        <!-- If we need navigation buttons -->
+        <div class="swiper-button-prev swiper-button-white"></div>
+        <div class="swiper-button-next swiper-button-white"></div>
+    </div>
+
+}
+else
+{
+    <div>
+        Please enter the content
+    </div>
+}
