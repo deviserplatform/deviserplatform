@@ -20,7 +20,7 @@
     app.directive("sdContentPreview", ['$compile', '$templateCache', sdContentPreviewDir]);
 
     app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$uibModal', 'globals', 'sdUtil', 'editLayoutUtil', 'layoutService', 'pageService',
-        'contentTypeService', 'pageContentService', 'moduleService', 'moduleActionService', 'pageModuleService', editCtrl]);
+        'contentTypeService', 'layoutTypeService', 'pageContentService', 'moduleService', 'moduleActionService', 'pageModuleService', editCtrl]);
 
     app.controller('EditContentCtrl', ['$scope', '$uibModalInstance', '$q', 'sdUtil', 'languageService',
         'pageContentService', 'contentTranslationService', 'contentInfo', editContentCtrl]);
@@ -131,7 +131,7 @@
     }
 
     function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, sdUtil, editLayoutUtil, layoutService, pageService,
-        contentTypeService, pageContentService, moduleService, moduleActionService, pageModuleService) {
+        contentTypeService, layoutTypeService, pageContentService, moduleService, moduleActionService, pageModuleService) {
         var vm = this;
 
         var containerIds = [];
@@ -177,6 +177,7 @@
                 $q.all([
                     getLayout(),
                     getContentTypes(),
+                    getLayoutTypes(),
                     getModuleActions(),
                     getPageContents(),
                     getPageModules()
@@ -489,6 +490,19 @@
             return defer.promise;
         }
 
+        function getLayoutTypes() {
+            var defer = $q.defer();
+            layoutTypeService.get()
+                .then(function (data) {
+                    vm.layoutTypes = data;
+                    defer.resolve('data received!');
+                }, function (error) {
+                    showMessage("error", SYS_ERROR_MSG);
+                    defer.reject(SYS_ERROR_MSG);
+                });
+            return defer.promise;
+        }
+
         function getModuleActions() {
             var defer = $q.defer();
             moduleActionService.get()
@@ -589,6 +603,11 @@
                         });
                     }
 
+                    if (item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module') {
+                        syncPropertyForElement(item)
+                    }
+                    
+
                     //Load modules if found
                     var pageModules = _.filter(vm.pageModules, { containerId: item.id });
                     if (pageModules) {
@@ -620,6 +639,29 @@
                     }
                 });
             }
+        }
+
+        function syncPropertyForElement(element) {
+            var propertiesValue = element.properties;
+            var masterLayout = _.find(vm.layoutTypes, { id: element.layoutTypeId });
+            var masterProperties = masterLayout.properties;
+            _.forEach(masterProperties, function (prop) {
+                if (prop) {
+                    var propVal = _.find(propertiesValue, { id: prop.id });
+                    if (propVal) {
+                        //Property exist, update property label
+                        propVal.label = prop.label;
+                        propVal.description = prop.description;
+                        propVal.defaultValue = prop.defaultValue;
+                        propVal.optionList = prop.optionList;
+                        propVal.optionListId = prop.optionListId;
+                    }
+                    else {
+                        //Property not exist, add the property                      
+                        element.properties.push(angular.copy(prop));
+                    }
+                }
+            });
         }
 
         function getPageContentWithProperties(pageContent) {
@@ -703,6 +745,11 @@
             })
 
             _.forEach(item.placeHolders, function (item) {
+
+                _.forEach(item.properties, function (prop, index) {
+                    prop.optionList = null;
+                });
+
                 if (item.placeHolders) {
                     filterLayout(item);
                 }

@@ -18,6 +18,7 @@ using System.Globalization;
 using Deviser.Core.Common.Extensions;
 
 using PageContent = Deviser.Core.Common.DomainTypes.PageContent;
+using Deviser.Core.Data.Repositories;
 //using Page = Deviser.Core.Data.Entities.Page;
 
 namespace Deviser.Core.Library.TagHelpers
@@ -31,12 +32,15 @@ namespace Deviser.Core.Library.TagHelpers
 
         private readonly IHtmlHelper _htmlHelper;
         private readonly IScopeService _scopeService;
+        private readonly IPropertyRepository _propertyRepository;
 
-        public PageContentHelper(IHtmlHelper htmlHelper, IHtmlGenerator generator, IScopeService scopeService)
+        public PageContentHelper(IHtmlHelper htmlHelper, IHtmlGenerator generator, 
+            IScopeService scopeService, IPropertyRepository propertyRepository)
         {
             Generator = generator;
             _htmlHelper = htmlHelper;
             _scopeService = scopeService;
+            _propertyRepository = propertyRepository;
         }
 
         [HtmlAttributeName(PageAttributeName)]
@@ -85,7 +89,12 @@ namespace Deviser.Core.Library.TagHelpers
 
             PageLayout pageLayout = new PageLayout();
             pageLayout.Name = CurrentPage.Layout.Name;
+
+            var properties = _propertyRepository.GetProperties();
             pageLayout.PlaceHolders = JsonConvert.DeserializeObject<List<PlaceHolder>>(CurrentPage.Layout.Config);
+
+            GetPropertyValue(pageLayout.PlaceHolders, properties);
+
             PageContents = Mapper.Map<ICollection<PageContent>>(CurrentPage.PageContent);
 
             //Copy property options from master data
@@ -133,6 +142,32 @@ namespace Deviser.Core.Library.TagHelpers
                 PageContents.GetEnumerator().RegisterForDispose(ViewContext.HttpContext);                
                 ModuleActionResults.GetEnumerator().RegisterForDispose(ViewContext.HttpContext);
                 pageLayout.RegisterForDispose(ViewContext.HttpContext);
+            }
+        }
+
+        private void GetPropertyValue(List<PlaceHolder> placeHolders, List<Property> properties)
+        {
+            foreach(var placeHolder in placeHolders)
+            {
+                if(placeHolder!=null)
+                {
+                    if(placeHolder.Properties!=null && placeHolder.Properties.Count > 0)
+                    {
+                        foreach(var prop in placeHolder.Properties)
+                        {
+                            if (prop != null)
+                            {
+                                var masterProp = properties.FirstOrDefault(p => p.Id == prop.Id);
+                                prop.OptionList = masterProp.OptionList;
+                            }
+                        }
+                    }
+
+                    if(placeHolder.PlaceHolders != null && placeHolder.PlaceHolders.Count > 0)
+                    {
+                        GetPropertyValue(placeHolder.PlaceHolders, properties);
+                    }
+                }
             }
         }
 

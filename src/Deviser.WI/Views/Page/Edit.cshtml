@@ -105,7 +105,7 @@
         </script>
         <script type="text/ng-template" id="repeater.html">
             <div class="container-element box-layout box-grey" dnd-nodrag>
-                <h3>{{item.type}} {{$index+1}} repeater</h3>
+                <h3>{{item.type}} {{$index+1}}</h3>
                 <div class="container-content" ng-include="'placeHolders.html'">
 
                 </div>
@@ -311,7 +311,7 @@
                                         <strong>Properties</strong>
                                     </div>
                                 </div>
-                                <div class="row" ng-repeat="property in editVM.selectedItem.properties track by $index">
+                                <div class="row" title="{{property.description}}" ng-repeat="property in editVM.selectedItem.properties track by $index">
                                     <div class="col-md-6">
                                         {{property.label}}
                                     </div>

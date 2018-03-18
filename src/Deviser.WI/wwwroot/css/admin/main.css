@@ -5823,7 +5823,13 @@ button.close {
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
 body {
-  background-color: #f8f8f8; }
+  background-color: #2b3643;
+  color: #333333;
+  font-family: "Open Sans", sans-serif;
+  padding: 0px !important;
+  margin: 0px !important;
+  direction: "ltr";
+  font-size: 14px; }
 
 #wrapper {
   width: 100%; }
@@ -5840,7 +5846,7 @@ body {
     margin: 0 0 0 250px;
     padding: 30px;
     border-left: 1px solid #e7e7e7;
-    min-height: 94vh; } }
+    min-height: 94.7vh; } }
 
 .navbar-top-links {
   margin-right: 0; }
@@ -5925,6 +5931,29 @@ body {
   .navbar-top-links .dropdown-tasks,
   .navbar-top-links .dropdown-alerts {
     margin-left: auto; } }
+
+/*Side Nav*/
+.navbar-default {
+  background-color: inherit; }
+
+.sidebar ul li a, .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+  color: #b4bcc8;
+  border-top: 1px solid #3d4957; }
+
+.sidebar .nav > li > a:hover,
+.sidebar .nav > li > a:focus,
+.sidebar .nav ul.nav-second-level li.active > a,
+.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+  background: #3f4c62;
+  border-color: transparent; }
+
+.sidebar .nav > li.active > a,
+.root.nav .open > a, .root.nav .open > a:hover, .root.nav .open > a:focus {
+  background: #EF4A34;
+  color: #fff; }
+
+.sidebar ul li:last-child > a {
+  border-bottom: 1px solid transparent !important; }
 
 .btn-outline {
   color: inherit;
@@ -6250,22 +6279,6 @@ Customized Bootstrap Tables
   background-color: #f5f5f5;
   border-top: 1px solid #e7ecf1; }
 
-/***********************************************************/
-/*Admin Layout Elements*/
-/***********************************************************/
-/***
-General reset
-***/
-/* Set default body */
-body {
-  background-color: #364150;
-  color: #333333;
-  font-family: "Open Sans", sans-serif;
-  padding: 0px !important;
-  margin: 0px !important;
-  direction: "ltr";
-  font-size: 14px; }
-
 /*
  Internet Explorer 10 doesn't differentiate device width from viewport width, and thus doesn't 
  properly apply the media queries in Bootstrap's CSS. To address this, 
@@ -6292,29 +6305,6 @@ body {
   -ms-transition: all 300ms ease-in-out;
   -o-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out; }
-
-/*Side Nav*/
-.navbar-default {
-  background-color: inherit; }
-
-.sidebar ul li a, .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
-  color: #b4bcc8;
-  border-top: 1px solid #3d4957; }
-
-.sidebar .nav > li > a:hover,
-.sidebar .nav > li > a:focus,
-.sidebar .nav ul.nav-second-level li.active > a,
-.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
-  background: #2C3542;
-  border-color: transparent; }
-
-.sidebar .nav > li.active > a,
-.root.nav .open > a, .root.nav .open > a:hover, .root.nav .open > a:focus {
-  background: #EF4A34;
-  color: #fff; }
-
-.sidebar ul li:last-child > a {
-  border-bottom: 1px solid transparent !important; }
 
 /***********************************************************/
 /*Form control*/
@@ -6475,8 +6465,8 @@ body.page-edit {
         body.page-edit .layout-container .dropzone .edit-content-preview img {
           width: 100%;
           max-width: 500px; }
-        body.page-edit .layout-container .dropzone .edit-content-preview h1, body.page-edit .layout-container .dropzone .edit-content-preview h2, body.page-edit .layout-container .dropzone .edit-content-preview h3, body.page-edit .layout-container .dropzone .edit-content-preview h4, body.page-edit .layout-container .dropzone .edit-content-preview li, body.page-edit .layout-container .dropzone .edit-content-preview a, body.page-edit .layout-container .dropzone .edit-content-preview th, body.page-edit .layout-container .dropzone .edit-content-preview td {
-          font-size: 11px; }
+        body.page-edit .layout-container .dropzone .edit-content-preview li, body.page-edit .layout-container .dropzone .edit-content-preview a, body.page-edit .layout-container .dropzone .edit-content-preview th, body.page-edit .layout-container .dropzone .edit-content-preview td {
+          font-size: 12px; }
         body.page-edit .layout-container .dropzone .edit-content-preview ul li, body.page-edit .layout-container .dropzone .edit-content-preview ol li {
           background: none;
           border: none;
@@ -6610,7 +6600,7 @@ div.form-horizontal .control-label {
 /*Layout Designer*/
 .layout-designer-container {
   background: #fff;
-  min-height: 86vh; }
+  min-height: 94.7vh; }
 
 .layout-controls {
   margin-top: 20px;
@@ -6751,7 +6741,12 @@ body.edit-content-modal {
   padding: 10px; }
 
 .footer {
-  padding-top: 1.4%; }
+  padding: 1%;
+  position: fixed;
+  text-align: center;
+  width: 100%;
+  background: #2b3643;
+  bottom: 0; }
   .footer a {
     color: white;
     text-decoration: none;

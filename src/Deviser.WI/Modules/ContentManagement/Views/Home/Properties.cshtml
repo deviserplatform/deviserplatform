@@ -111,8 +111,13 @@
                                            name="name"
                                            ng-model="pVM.selectedProperty.name"
                                            ng-trim="true"
-                                           ng-disabled="pVM.currentViewState == pVM.viewStates.EDIT"
-                                            />
+                                           ng-disabled="pVM.currentViewState == pVM.viewStates.EDIT" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Description</label>
+                                <div class="col-md-6">
+                                    <textarea class="form-control" rows="3" ng-model="pVM.selectedProperty.description"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -129,6 +134,19 @@
                                         <ui-select-match placeholder="Select option list">{{$select.selected.label}}</ui-select-match>
                                         <ui-select-choices repeat="optionList in pVM.optionLists | filter: $select.search">
                                             <div ng-bind-html="optionList.label | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Default Value</label>
+                                <div class="col-md-6">
+                                    <input class="form-control" name="label" ng-model="pVM.selectedProperty.defaultValue" ng-show="!pVM.selectedProperty.moreOption" />
+
+                                    <ui-select ng-model="pVM.selectedProperty.defaultValue" theme="bootstrap" ng-show="pVM.selectedProperty.moreOption">
+                                        <ui-select-match placeholder="Select default value">{{$select.selected.label}}</ui-select-match>
+                                        <ui-select-choices repeat="item.id as item in pVM.selectedProperty.optionList.list | filter: $select.search">
+                                            <div ng-bind-html="item.label | highlight: $select.search"></div>
                                         </ui-select-choices>
                                     </ui-select>
                                 </div>

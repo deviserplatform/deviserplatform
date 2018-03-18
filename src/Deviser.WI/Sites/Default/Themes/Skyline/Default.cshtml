@@ -59,36 +59,22 @@
     </div>
 </nav>
 
-<div class="@pageContentLoggedInClass">
+<div class="content-wrapper @pageContentLoggedInClass">
     @RenderBody()
 </div>
 
 <footer class="footer footer-classic bg-dark">
-    <div class="container">
+    <div class="container-fluid">
         <div class="row justify-content-center">
-            <div class="col-lg-7 col-md-8 ">
+            <div class="col-md-12">
                 <div class="text-center">
-                    <p>Released under the <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a></p>
-                    <div class="social-icons">
-                        <a href="#">
-                            <i class="fa fa-github"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- COPY RIGHT -->
-        <div class="copyright">            
-            <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-6 ">
-                    <div class="copyRight_text text-center">
-                        <p>Copyright &copy; @DateTime.Now.Year Karthick Sundararajan.</p>
-                    </div>
+                    <p>
+                        Copyright &copy; @DateTime.Now.Year Karthick Sundararajan. <a href="#" title="source"> <i class="fa fa-github"></i></a> Released under the <a href="https://opensource.org/licenses/MIT" title="License" target="_blank">MIT License</a>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
-
 </footer>
 
 

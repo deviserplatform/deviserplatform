@@ -2,7 +2,7 @@
 @{
     var properties = Model.PlaceHolder.Properties;
 }
-<div class="container @properties.Get("cssclass").Value">    
+<div class="container @properties.Get("css_class").Value">    
     @*@Html.Raw(Model.ContentResult)*@
     @Model.ContentResult
 </div>

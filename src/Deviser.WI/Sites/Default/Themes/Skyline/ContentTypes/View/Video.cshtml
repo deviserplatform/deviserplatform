@@ -6,13 +6,13 @@
     var currentCulture = pageContext.CurrentCulture.ToString();
 
     dynamic rootObj = Model.Content;
-    var videopreview = Model.PageContent.Properties.Get("videopreview");
+    var videoPreview = Model.PageContent.Properties.Get("video_preview");
 }
 
 @if (rootObj != null)
 {
 
-    @if (videopreview?.SelectedOption?.Name == "preview")
+    @if (videoPreview?.SelectedOption?.Name == "preview")
     {
         <div class="video-container">
             <a class="video popup-video" href="@rootObj.videoUrl">

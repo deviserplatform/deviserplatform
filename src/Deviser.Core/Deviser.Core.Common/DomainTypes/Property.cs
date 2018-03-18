@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 
 namespace Deviser.Core.Common.DomainTypes
@@ -9,10 +10,16 @@ namespace Deviser.Core.Common.DomainTypes
     public class Property
     {
         public Guid Id { get; set; }
+
+        [BindRequired]
         public string Name { get; set; }
+
+        [BindRequired]
         public string Label { get; set; }
         //Value property is not in DB, It is here to maintain JSON strucuture
         public string Value { get; set; }
+        public string DefaultValue { get; set; }
+        public string Description { get; set; }
         public Guid? OptionListId { get; set; }
         //SelectedOption property is not in DB, It is here to maintain JSON strucuture. 
         //In addtion, value will be assigned only if property is optionlist
@@ -51,7 +58,7 @@ namespace Deviser.Core.Common.DomainTypes
             if (!IsMoreOption)
                 return Value;
 
-            var optionVal = OptionList?.List?.FirstOrDefault(li => li.Id == Guid.Parse(Value));
+            var optionVal = string.IsNullOrEmpty(Value) ? null : OptionList?.List?.FirstOrDefault(li => li.Id == Guid.Parse(Value));
             return optionVal != null ? optionVal.Name : string.Empty;
         }
     }

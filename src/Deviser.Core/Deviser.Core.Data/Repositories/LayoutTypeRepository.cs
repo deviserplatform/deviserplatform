@@ -127,7 +127,7 @@ namespace Deviser.Core.Data.Repositories
 
                         var layoutTypeProperties = context.LayoutTypeProperty.Where(ctp => ctp.LayoutTypeId == dbLayoutType.Id).ToList();
 
-                        List<Entities.LayoutTypeProperty> newLayoutTypeProperities = dbLayoutType.LayoutTypeProperties.Where(newProp => context.LayoutTypeProperty.Any(ctp => ctp.LayoutTypeId == newProp.LayoutTypeId && ctp.PropertyId != newProp.PropertyId)).ToList();
+                        //List<Entities.LayoutTypeProperty> newLayoutTypeProperities = dbLayoutType.LayoutTypeProperties.Where(newProp => context.LayoutTypeProperty.Any(ctp => ctp.LayoutTypeId == newProp.LayoutTypeId && ctp.PropertyId != newProp.PropertyId)).ToList();
 
                         List<Entities.LayoutTypeProperty> toRemoveFromDb = null;
 
@@ -150,15 +150,14 @@ namespace Deviser.Core.Data.Repositories
                             //ContentTypeProperty is not exist in contentType (client source), because client has been removed it. Therefor, remove it from db.
                             context.LayoutTypeProperty.RemoveRange(toRemoveFromDb);
                         }
-                        if (newLayoutTypeProperities != null && newLayoutTypeProperities.Count > 0)
+                        if (dbLayoutType.LayoutTypeProperties != null && dbLayoutType.LayoutTypeProperties.Count > 0)
                         {
-                            context.LayoutTypeProperty.AddRange(newLayoutTypeProperities);
+                            context.LayoutTypeProperty.AddRange(dbLayoutType.LayoutTypeProperties);
                         }
                     }
 
                     dbLayoutType.LastModifiedDate = DateTime.Now;
-                    var result = context.LayoutType.Attach(dbLayoutType).Entity;
-                    context.Entry(dbLayoutType).State = EntityState.Modified;
+                    var result = context.LayoutType.Update(dbLayoutType).Entity;
                     context.SaveChanges();
                     return Mapper.Map<LayoutType>(result);
                 }

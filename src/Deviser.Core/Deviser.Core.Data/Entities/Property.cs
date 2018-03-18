@@ -11,7 +11,9 @@ namespace Deviser.Core.Data.Entities
         public string Name { get; set; }
         public string Label { get; set; }
         //Value property is not in DB, It is here to maintain JSON strucuture
-        public string Value { get; set; }        
+        public string Value { get; set; }
+        public string DefaultValue { get; set; }
+        public string Description { get; set; }
         public Guid? OptionListId { get; set; }
         public ICollection<LayoutTypeProperty> LayoutTypeProperties { get; set; }
         public ICollection<ContentTypeProperty> ContentTypeProperties { get; set; }       

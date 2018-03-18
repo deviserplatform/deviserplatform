@@ -66,7 +66,9 @@
             modelCtrl.$parsers.push(function (inputValue) {
                 if (inputValue == undefined) return '';
                
-                var transformedInput = inputValue.replace(/[^a-z]/g, '');
+                var transformedInput;
+                transformedInput = inputValue.replace(/\s+/g, '_');
+                transformedInput = transformedInput.replace(/[^_a-zA-Z]/g, '');
                 if (transformedInput != inputValue) {
                     modelCtrl.$setViewValue(transformedInput);
                     modelCtrl.$render();
@@ -239,7 +241,7 @@
         }
 
         function getColumnWidthProperty(properties) {
-            return _.find(properties, { name: 'columnwidth' });
+            return _.find(properties, { name: 'column_width' });
         }
     }
 

@@ -163,7 +163,7 @@
         }
 
         function saveLayout() {
-            processplaceHolders(vm.pageLayout.placeHolders);
+            processplaceHolders(vm.pageLayout.placeHolders, true);
 
             //vm.pageLayout.config = JSON.stringify(vm.pageLayout.placeHolders);
             vm.pageLayout.pageId = pageContext.currentPageId;
@@ -201,7 +201,7 @@
             }
         }       
 
-        function processplaceHolders(placeHolders) {
+        function processplaceHolders(placeHolders, toSave) {
             if (placeHolders) {
                 _.forEach(placeHolders, function (item, index) {
                     console.log(item)
@@ -209,11 +209,24 @@
                     if (masterLayout) {
                         item.label = masterLayout.label;
                     }
+
+                    if (toSave && item.properties) {
+                        _.forEach(item.properties, function (prop, index) {
+                            prop.optionList = null;
+                        });
+                    }
+                    else {
+                        syncPropertyForElement(item);
+                        //Refresh selected item
+                        if (item.id === vm.selectedItem.id) {
+                            vm.selectedItem = item;
+                        }
+                    }
                     
                     item.sortOrder = index + 1;
 
                     if (item.placeHolders) {
-                        processplaceHolders(item.placeHolders);
+                        processplaceHolders(item.placeHolders, toSave);
                     }
                 });
             }
@@ -246,25 +259,8 @@
 
         function selectItem(item) {
             var propertiesValue = item.properties;
-            var masterLayout = _.find(vm.layoutTypes, { layoutTypeId: item.layoutTypeId });
-            var masterProperties = masterLayout.properties;
-            _.forEach(masterProperties, function (prop) {
-                if (prop) {
-                    var propVal = _.find(propertiesValue, { id: prop.id });
-                    if (propVal) {
-                        //Property exist, update property label
-                        propVal.label = prop.label;
-                        propVal.optionList = prop.optionList;
-                        propVal.optionListId = prop.optionListId;
-                    }
-                    else {
-                        //Property not exist, add the property                      
-                        item.properties.push(angular.copy(prop));
-                    }
-                }
-            });
-
-            //columnwidth update - hard coded behaviour only for property 'columnwidth'
+            syncPropertyForElement(item);
+            //columnwidth update - hard coded behaviour only for property 'column_width'
             var columnWidthProp = editLayoutUtil.getColumnWidthProperty(propertiesValue);            
             if (columnWidthProp && !columnWidthProp.value) {
                 var columnWidth = _.find(columnWidthProp.optionList.list, { name: editLayoutUtil.const.defaultWidth })
@@ -272,6 +268,29 @@
             }                
 
             vm.selectedItem = item;
+        }
+
+        function syncPropertyForElement(element) {
+            var propertiesValue = element.properties;
+            var masterLayout = _.find(vm.layoutTypes, { layoutTypeId: element.layoutTypeId });
+            var masterProperties = masterLayout.properties;
+            _.forEach(masterProperties, function (prop) {
+                if (prop) {
+                    var propVal = _.find(propertiesValue, { id: prop.id });
+                    if (propVal) {
+                        //Property exist, update property label
+                        propVal.label = prop.label;
+                        propVal.description = prop.description;
+                        propVal.defaultValue = prop.defaultValue;
+                        propVal.optionList = prop.optionList;
+                        propVal.optionListId = prop.optionListId;
+                    }
+                    else {
+                        //Property not exist, add the property                      
+                        element.properties.push(angular.copy(prop));
+                    }
+                }
+            });
         }
 
         function dragoverCallback(event, index, item) {

@@ -144,7 +144,7 @@
                                         <ui-select-match placeholder="Select property">{{$select.selected.label}}</ui-select-match>
                                         <ui-select-choices repeat="property in ctVM.properties | filter: $select.search">
                                             <div ng-if="property.isTag" ng-bind-html="(property.label | highlight: $select.search) +' (New Property)'"></div>
-                                            <div ng-if="!property.isTag" ng-bind-html="property.label | highlight: $select.search"></div>
+                                            <div ng-if="!property.isTag" ng-bind-html="(property.label | highlight: $select.search) + ' (' + property.name +')'"></div>
                                         </ui-select-choices>
                                     </ui-select>
                                 </div>

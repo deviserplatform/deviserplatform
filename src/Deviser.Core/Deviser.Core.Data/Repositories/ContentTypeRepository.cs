@@ -194,7 +194,7 @@ namespace Deviser.Core.Data.Repositories
                             foreach(var contentTypeProp in dbContentType.ContentTypeProperties)
                             {
                                 contentTypeProp.Property = null;
-                                context.ContentTypeProperty.AddRange(dbContentType.ContentTypeProperties);
+                                context.ContentTypeProperty.Add(contentTypeProp);
                             }
                             
                         }

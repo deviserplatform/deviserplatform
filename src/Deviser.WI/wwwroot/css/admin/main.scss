@@ -64,6 +64,8 @@ $devPrimary: rgb(239, 73, 52);
 $devWhite: rgb(255, 255, 255);
 $lightGrey: rgb(245,245,246);
 $darkGrey: rgb(139,142,147);
+$lightBlue: rgb(63,76,98);
+$darkBlue: rgb(43, 54, 67);
 
 
 /*!
@@ -73,7 +75,13 @@ $darkGrey: rgb(139,142,147);
  */
 
 body {
-    background-color: #f8f8f8;
+    background-color: $darkBlue;
+    color: #333333;
+    font-family: "Open Sans", sans-serif;
+    padding: 0px !important;
+    margin: 0px !important;
+    direction: "ltr";
+    font-size: 14px;
 }
 
 #wrapper {
@@ -93,7 +101,7 @@ body {
         margin: 0 0 0 250px;
         padding: 30px;
         border-left: 1px solid #e7e7e7;
-        min-height: 94vh;
+        min-height: 94.7vh;
     }
 }
 
@@ -205,6 +213,34 @@ body {
     .navbar-top-links .dropdown-alerts {
         margin-left: auto;
     }
+}
+
+/*Side Nav*/
+.navbar-default {
+    background-color: inherit;
+}
+
+.sidebar ul li a, .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+    color: #b4bcc8;
+    border-top: 1px solid #3d4957;
+}
+
+.sidebar .nav > li > a:hover,
+.sidebar .nav > li > a:focus,
+.sidebar .nav ul.nav-second-level li.active > a,
+.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+    background: $lightBlue;
+    border-color: transparent;
+}
+
+.sidebar .nav > li.active > a,
+.root.nav .open > a, .root.nav .open > a:hover, .root.nav .open > a:focus {
+    background: #EF4A34;
+    color: #fff;
+}
+
+.sidebar ul li:last-child > a {
+    border-bottom: 1px solid transparent !important;
 }
 
 .btn-outline {
@@ -606,27 +642,6 @@ Customized Bootstrap Tables
     border-top: 1px solid #e7ecf1;
 }
 
-
-
-
-/***********************************************************/
-/*Admin Layout Elements*/
-/***********************************************************/
-
-/***
-General reset
-***/
-/* Set default body */
-body {
-    background-color: #364150;
-    color: #333333;
-    font-family: "Open Sans", sans-serif;
-    padding: 0px !important;
-    margin: 0px !important;
-    direction: "ltr";
-    font-size: 14px;
-}
-
 /*
  Internet Explorer 10 doesn't differentiate device width from viewport width, and thus doesn't 
  properly apply the media queries in Bootstrap's CSS. To address this, 
@@ -659,35 +674,6 @@ body {
     -o-transition: all 300ms ease-in-out;
     transition: all 300ms ease-in-out;
 }
-
-/*Side Nav*/
-.navbar-default {
-    background-color: inherit;
-}
-
-.sidebar ul li a, .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
-    color: #b4bcc8;
-    border-top: 1px solid #3d4957;
-}
-
-.sidebar .nav > li > a:hover,
-.sidebar .nav > li > a:focus,
-.sidebar .nav ul.nav-second-level li.active > a,
-.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
-    background: #2C3542;
-    border-color: transparent;
-}
-
-.sidebar .nav > li.active > a,
-.root.nav .open > a, .root.nav .open > a:hover, .root.nav .open > a:focus {
-    background: #EF4A34;
-    color: #fff;
-}
-
-.sidebar ul li:last-child > a {
-    border-bottom: 1px solid transparent !important;
-}
-
 
 /***********************************************************/
 /*Form control*/
@@ -912,8 +898,8 @@ body.page-edit {
                     max-width: 500px;
                 }
 
-                h1, h2, h3, h4, li, a, th, td {
-                    font-size: 11px;
+                li, a, th, td {
+                    font-size: 12px;
                 }
 
                 ul li, ol li {
@@ -1110,7 +1096,7 @@ div.form-horizontal .control-label {
 /*Layout Designer*/
 .layout-designer-container {
     background: #fff;
-    min-height: 86vh;
+    min-height: 94.7vh;
 }
 
 .layout-controls {
@@ -1245,6 +1231,7 @@ body.edit-content-modal {
 
         .image-preview-header {
             float: right;
+
             a {
                 color: #000;
                 font-size: 16px;
@@ -1319,16 +1306,22 @@ body.edit-content-modal {
 
 
 .footer {
-    padding-top: 1.4%;
+    padding: 1%;
+    position: fixed;
+    text-align: center;
+    width: 100%;
+    background: $darkBlue;
+    bottom: 0;
 
     a {
         color: $devWhite;
         text-decoration: none;
         font-weight: 600;
     }
+
     p {
         color: $lightGrey;
-        padding:0;
-        margin:0;
+        padding: 0;
+        margin: 0;
     }
 }
