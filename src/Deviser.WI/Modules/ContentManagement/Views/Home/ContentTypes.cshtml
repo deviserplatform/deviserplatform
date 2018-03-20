@@ -142,7 +142,7 @@
                                 <div class="col-md-6">
                                     <ui-select tagging="ctVM.propertyTransform" ng-model="ctVM.selectedProperty" theme="bootstrap" ng-disabled="ctVM.properties.length<=0">
                                         <ui-select-match placeholder="Select property">{{$select.selected.label}}</ui-select-match>
-                                        <ui-select-choices repeat="property in ctVM.properties | filter: $select.search">
+                                        <ui-select-choices repeat="property in ctVM.properties | notInArray:ctVM.selectedContentType.properties:'id' | filter: $select.search">
                                             <div ng-if="property.isTag" ng-bind-html="(property.label | highlight: $select.search) +' (New Property)'"></div>
                                             <div ng-if="!property.isTag" ng-bind-html="(property.label | highlight: $select.search) + ' (' + property.name +')'"></div>
                                         </ui-select-choices>

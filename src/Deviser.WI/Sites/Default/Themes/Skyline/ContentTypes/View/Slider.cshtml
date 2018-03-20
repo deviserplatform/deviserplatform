@@ -3,6 +3,8 @@
 @{
     var pageContext = scopeService.PageContext;
     var currentCulture = pageContext.CurrentCulture.ToString();
+    var properties = Model.PageContent.Properties;
+    var pageContentId = Model.PageContent.Id;
 
     dynamic rootObj = Model.Content;
     int totalItems = 0;
@@ -11,12 +13,120 @@
         totalItems = rootObj.items.Count;
     }
 
+    var direction = properties.Get("swiper_direction")?.ToString();
+    var speed = properties.Get("swiper_speed")?.ToString();
+    var autoHeight = properties.Get("swiper_autoHeight")?.ToString();
+    var roundLengths = properties.Get("swiper_roundLengths")?.ToString();
+    var effect = properties.Get("swiper_effect")?.ToString();
+    var navigation = properties.Get("swiper_navigation")?.ToString();
+    var pagination = properties.Get("swiper_pagination")?.ToString();
+    var paginationType = properties.Get("swiper_pagination_type")?.ToString();
+    var scrollbar = properties.Get("swiper_scrollbar")?.ToString();
+    var spaceBetween = properties.Get("swiper_spaceBetween")?.ToString();
+    var loop = properties.Get("swiper_loop")?.ToString();
+    var keyboard = properties.Get("swiper_keyboard")?.ToString();
+    var mousewheel = properties.Get("swiper_mousewheel")?.ToString();
+
+
+
+
+
+    direction = !string.IsNullOrEmpty(direction) ? direction : properties.Get("swiper_direction")?.DefaultValue;
+    speed = !string.IsNullOrEmpty(speed) ? speed : properties.Get("swiper_speed")?.DefaultValue;
+    autoHeight = !string.IsNullOrEmpty(autoHeight) ? autoHeight : properties.Get("swiper_autoHeight")?.DefaultValue;
+    roundLengths = !string.IsNullOrEmpty(roundLengths) ? roundLengths : properties.Get("swiper_roundLengths")?.DefaultValue;
+    effect = !string.IsNullOrEmpty(effect) ? effect : properties.Get("swiper_effect")?.DefaultValue;
+    bool hasNavigation = !string.IsNullOrEmpty(navigation) && navigation == "true";
+    bool hasPagination = !string.IsNullOrEmpty(pagination) && pagination == "true";
+    paginationType = !string.IsNullOrEmpty(paginationType) ? paginationType : properties.Get("swiper_pagination_type")?.DefaultValue;
+
+    bool hasScrollbar = !string.IsNullOrEmpty(scrollbar) && scrollbar == "true";
+
+    spaceBetween = !string.IsNullOrEmpty(spaceBetween) ? spaceBetween : properties.Get("swiper_spaceBetween")?.DefaultValue;
+    loop = !string.IsNullOrEmpty(loop) ? loop : properties.Get("swiper_loop")?.DefaultValue;
+    bool hasKeyboard = !string.IsNullOrEmpty(keyboard) && keyboard == "true";
+    bool hasMousewheel = !string.IsNullOrEmpty(mousewheel) && mousewheel == "true";
 }
 
 @if (rootObj != null)
 {
+
+    <script>
+        (function () {
+
+            $(function () {
+                var mySwiper = new Swiper('#@pageContentId', {
+                    // Optional parameters
+                    //autoplay: {
+                    //    delay: 2500,
+                    //    disableOnInteraction: false,
+                    //},
+                    slidesPerView: 1,
+                    spaceBetween: @spaceBetween,
+                    direction: '@direction',
+                    speed: @speed,
+                    autoHeight:@autoHeight,
+                    roundLengths: @roundLengths,
+                    effect: '@effect',
+
+                    loop: @loop,
+                    @if (hasNavigation)
+                    {
+                        <text>
+                            navigation: {
+                            nextEl: '#@(pageContentId)-swiper-next',
+                            prevEl: '#@(pageContentId)-swiper-prev',
+                        },
+                        </text>
+                    }
+
+                    @if (hasPagination)
+                    {
+                        <text>
+                        pagination: {
+                            el: '#@(pageContentId)-swiper-pagination',
+                            type: '@paginationType'
+                        },
+                        </text>
+                    }
+
+                    @if (hasScrollbar)
+                    {
+                        <text>
+                            scrollbar: {
+                                el: '@(pageContentId)-swiper-scrollbar',
+                                hide: true,
+                            },
+                        </text>
+                    }
+
+                    @if (hasKeyboard)
+                    {
+                        <text>
+                        keyboard: {
+                            enabled: true,
+                            onlyInViewport: false,
+                        },
+                        </text>
+                    }
+
+                    @if (hasMousewheel)
+                    {
+                        <text>
+                        mousewheel: {
+                            invert: true,
+                        },
+                        </text>
+                    }
+                });
+
+            });
+
+        }());
+    </script>
+
     <!-- Slider main container -->
-    <div class="swiper-container">
+    <div id="@pageContentId" class="swiper-container">
         <!-- Additional required wrapper -->
         <div class="swiper-wrapper">
             <!-- Slides -->
@@ -32,20 +142,27 @@
 
                 </div>
             }
-
-
-            @*<div class="swiper-slide">Slide 1</div>
-                <div class="swiper-slide">Slide 2</div>
-                <div class="swiper-slide">Slide 3</div>*@
         </div>
-        <!-- If we need pagination -->
-        <div class="swiper-pagination"></div>
+        @if (hasPagination)
+        {
+            <!-- If we need pagination -->
+            <div id="@(pageContentId)-swiper-pagination" class="swiper-pagination"></div>
+        }
 
-        <!-- If we need navigation buttons -->
-        <div class="swiper-button-prev swiper-button-white"></div>
-        <div class="swiper-button-next swiper-button-white"></div>
+        @if (hasNavigation)
+        {
+            <!-- If we need navigation buttons -->
+            <div id="@(pageContentId)-swiper-prev" class="swiper-button-prev swiper-button-white"></div>
+            <div id="@(pageContentId)-swiper-next" class="swiper-button-next swiper-button-white"></div>
+        }
+
+        @if (hasScrollbar)
+        {
+            <!-- Add Scrollbar -->
+            <div id="@(pageContentId)-swiper-scrollbar" class="swiper-scrollbar"></div>
+        }
+
     </div>
-
 }
 else
 {

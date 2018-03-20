@@ -16,6 +16,8 @@
     app.factory('sdUtil', [sdUtil]);
 
     app.factory('editLayoutUtil', [editLayoutUtil])
+
+    app.filter('notInArray', ['$filter', notInArray]);
     /////////////////////////////////////////////
     /*Function declarations only*/
     function sdEnterDir() {
@@ -243,6 +245,21 @@
         function getColumnWidthProperty(properties) {
             return _.find(properties, { name: 'column_width' });
         }
+    }
+
+    function notInArray($filter){
+        return function (list, arrayFilter, element) {
+            if (arrayFilter) {
+                return $filter("filter")(list, function (listItem) {
+                    //return arrayFilter.indexOf(listItem[element]) !== -1;
+                    for (var i = 0; i < arrayFilter.length; i++) {
+                        if (arrayFilter[i][element] == listItem[element])
+                            return false;
+                    }
+                    return true;
+                });
+            }
+        };
     }
 
 }());
