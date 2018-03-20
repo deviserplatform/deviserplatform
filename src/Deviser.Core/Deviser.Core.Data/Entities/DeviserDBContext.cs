@@ -346,6 +346,15 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Role).WithMany(p => p.ContentPermissions).HasForeignKey(d => d.RoleId).OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<ModuleProperty>(entity =>
+            {
+                entity.HasOne(d => d.Module).WithMany(p => p.ModuleProperties).HasForeignKey(d => d.ModuleId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.Property).WithMany(p => p.ModuleProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasKey(d => new { d.ModuleId, d.PropertyId });
+            });
+
             modelBuilder.Entity<sysdiagrams>(entity =>
             {
                 entity.HasKey(e => e.diagram_id)
@@ -383,7 +392,7 @@ namespace Deviser.Core.Data
         public virtual DbSet<PageContentTranslation> PageContentTranslation { get; set; }
         public virtual DbSet<SiteSetting> SiteSetting { get; set; }        
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
-
+        public virtual DbSet<ModuleProperty> ModuleProperty { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<IdentityUserRole<Guid>> UserRole { get; set; }

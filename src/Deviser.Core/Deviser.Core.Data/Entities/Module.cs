@@ -19,8 +19,9 @@ namespace Deviser.Core.Data.Entities
         public DateTime? LastModifiedDate { get; set; }
         public string Name { get; set; }
         public string Version { get; set; }
-
+        public ICollection<ModuleProperty> ModuleProperties { get; set; }
         public virtual ICollection<ModuleAction> ModuleAction { get; set; }
-        public virtual ICollection<PageModule> PageModule { get; set; }
+        public virtual ICollection<PageModule> PageModule { get; set; }    
+
     }
 }

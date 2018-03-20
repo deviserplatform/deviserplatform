@@ -189,7 +189,13 @@
 
         //Event handlers
         $scope.$watch(function () {
-            return vm.selectedItem.properties;
+            if (vm.selectedItem.type === "module") {
+                vm.selectedItem.properties = vm.selectedItem.pageModule.module.properties;
+                return vm.selectedItem.properties;
+            }
+            else {
+                return vm.selectedItem.properties;
+            }
         }, function (newValue, oldValue) {
             vm.selectedItem.isPropertyChanged = true;
         }, true);
@@ -367,24 +373,26 @@
         }
 
         function saveProperties() {
+
+            var properties = [];
+            _.forEach(vm.selectedItem.properties, function (srcProp) {
+                if (srcProp) {
+                    var prop = {
+                        id: srcProp.id,
+                        name: srcProp.name,
+                        label: srcProp.label,
+                        value: srcProp.value
+                    }
+                    properties.push(prop);
+                }
+            });
             //It Saves content with properties
             if (vm.selectedItem.layoutTemplate === "content") {
 
                 //Prepare content to update
                 var pageContent = {};//vm.selectedItem.pageContent;
 
-                var properties = [];
-                _.forEach(vm.selectedItem.properties, function (srcProp) {
-                    if (srcProp) {
-                        var prop = {
-                            id: srcProp.id,
-                            name: srcProp.name,
-                            label: srcProp.label,
-                            value: srcProp.value
-                        }
-                        properties.push(prop);
-                    }
-                });
+              
                 pageContent.id = vm.selectedItem.pageContent.id;
                 pageContent.pageId = vm.selectedItem.pageContent.pageId;
                 pageContent.title = vm.selectedItem.title;
@@ -404,10 +412,11 @@
             }
             else if (vm.selectedItem.layoutTemplate === "module") {
                 var pageModule = vm.selectedItem.pageModule;
-
+              
                 pageModule.title = vm.selectedItem.title;
                 pageModule.containerId = vm.selectedItem.pageModule.containerId;
                 pageModule.sortOrder = vm.selectedItem.sortOrder;
+                pageModule.module.properties = properties;
 
                 pageModuleService.put(pageModule).then(function (response) {
                     console.log(response);

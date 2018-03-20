@@ -16,5 +16,6 @@ namespace Deviser.Core.Common.DomainTypes
         public string Name { get; set; }
         public string Version { get; set; }
         public virtual ICollection<ModuleAction> ModuleAction { get; set; }
+        public ICollection<Property> Properties { get; set; }
     }
 }

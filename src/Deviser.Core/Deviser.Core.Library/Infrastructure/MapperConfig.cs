@@ -38,8 +38,14 @@ namespace Deviser.Core.Library.Infrastructure
                     .ReverseMap()
                     .ForMember(dest => dest.Properties, opt => opt.MapFrom(src =>
                       src.LayoutTypeProperties != null ? src.LayoutTypeProperties.Select(ctp => ctp.Property) : null));
+                    
+                    config.CreateMap<Core.Common.DomainTypes.Module, Module>()
+                     .ForMember(dest => dest.ModuleProperties, opt => opt.MapFrom(src =>
+                        src.Properties != null ? src.Properties.Select(ctp => new ModuleProperty { PropertyId = ctp.Id, ModuleId = src.Id }) : null))
+                    .ReverseMap()
+                    .ForMember(dest => dest.Properties, opt => opt.MapFrom(src =>
+                      src.ModuleProperties != null ? src.ModuleProperties.Select(ctp => ctp.Property) : null));
 
-                    config.CreateMap<Module, Core.Common.DomainTypes.Module>().ReverseMap();
                     config.CreateMap<ModuleAction, Core.Common.DomainTypes.ModuleAction>().ReverseMap();
                     config.CreateMap<ModuleActionType, Core.Common.DomainTypes.ModuleActionType>().ReverseMap();
                     config.CreateMap<ModulePermission, Core.Common.DomainTypes.ModulePermission>().ReverseMap();
@@ -60,7 +66,15 @@ namespace Deviser.Core.Library.Infrastructure
                         .MaxDepth(10);
 
                     config.CreateMap<PageContentTranslation, Core.Common.DomainTypes.PageContentTranslation>().ReverseMap();
-                    config.CreateMap<PageModule, Core.Common.DomainTypes.PageModule>().ReverseMap();
+
+                    config.CreateMap<PageModule, Core.Common.DomainTypes.PageModule>()
+                    .ForMember(dest => dest.Properties, opt =>
+                   opt.MapFrom(src => !string.IsNullOrEmpty(src.Properties) ? SDJsonConvert.DeserializeObject<ICollection<Core.Common.DomainTypes.Property>>(src.Properties) : null))
+                   .ReverseMap()
+                   .ForMember(dest => dest.Properties, opt =>
+                   opt.MapFrom(src => (src.Properties != null) ? SDJsonConvert.SerializeObject(src.Properties) : null));
+
+
                     config.CreateMap<PagePermission, Core.Common.DomainTypes.PagePermission>()
                         .ReverseMap();
 

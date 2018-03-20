@@ -10,11 +10,11 @@
         'deviser.config'        
     ]);
 
-    app.controller('ModuleManagementCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'moduleService', 'moduleActionService', editCtrl]);
+    app.controller('ModuleManagementCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'moduleService', 'moduleActionService', 'propertyService', editCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
-    function editCtrl($scope, $timeout, $filter, $q, globals, moduleService, moduleActionService) {
+    function editCtrl($scope, $timeout, $filter, $q, globals, moduleService, moduleActionService, propertyService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
@@ -32,6 +32,10 @@
         vm.editModuleActions = editModuleActions;
         vm.removeModuleActions = removeModuleActions;
         vm.saveModuleAction = saveModuleAction;
+        vm.addProperty = addProperty;
+        vm.isPropExist = isPropExist;
+        vm.removeProperty = removeProperty;
+        vm.propertyTransform = propertyTransform;
         vm.viewStates = {
             NEW: "NEW",
             LIST: "LIST",
@@ -49,6 +53,7 @@
             getModules();
             getModuleActions();
             getModuleActionTypes();
+            getProperties();
         }
 
 
@@ -77,6 +82,14 @@
                 vm.moduleActionTypes = moduleActionType;
             }, function (error) {
                 showMessage("error", "Cannot get all module action types, please contact administrator");
+            });
+        }
+
+        function getProperties() {
+            propertyService.get().then(function (properties) {
+                vm.properties = properties;
+            }, function (error) {
+                showMessage("error", "Cannot get all properties, please contact administrator");
             });
         }
 
@@ -174,6 +187,54 @@
                 $scope.editModuleForm.submitted = false;
                 vm.currentViewState = vm.viewStates.LISTMODULEACTION;
             }               
+        }
+
+        function addProperty() {
+            if (!isPropExist()) {
+                if (!vm.selectedModule.properties) {
+                    vm.selectedModule.properties = [];
+                }
+
+                if (vm.selectedProperty.id) {
+                    //Add existing property
+                    vm.selectedModule.properties.push(vm.selectedProperty)
+                }
+                else {
+                    //Add new property to service and then add it to selected content type
+                    propertyService.post(vm.selectedProperty).then(function (property) {
+                        console.log(property);
+                        vm.selectedProperty = property;
+                        vm.selectedModule.properties.push(vm.selectedProperty)
+                        getProperties();
+                        showMessage("success", "New property has been added");
+                    }, function (error) {
+                        showMessage("error", "Cannot add new property, please contact administrator");
+                    });
+                }
+            }
+        }
+
+
+        function isPropExist() {
+            var isExist = _.find(vm.selectedModule.properties, { id: vm.selectedProperty.id });
+            return isExist;
+        }
+
+
+        function removeProperty(property) {
+            vm.selectedModule.properties = _.reject(vm.selectedModule.properties, function (prop) {
+                return prop.id === property.id;
+            })
+        }
+
+        function propertyTransform(propertyLabel) {
+            var propertyName = propertyLabel.replace(/\s+/g, '');
+            propertyName = propertyName.toLowerCase();
+            var item = {
+                name: propertyName,
+                label: propertyLabel
+            };
+            return item;
         }
 
 

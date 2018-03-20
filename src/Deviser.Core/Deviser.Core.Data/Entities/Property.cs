@@ -16,7 +16,8 @@ namespace Deviser.Core.Data.Entities
         public string Description { get; set; }
         public Guid? OptionListId { get; set; }
         public ICollection<LayoutTypeProperty> LayoutTypeProperties { get; set; }
-        public ICollection<ContentTypeProperty> ContentTypeProperties { get; set; }       
+        public ICollection<ContentTypeProperty> ContentTypeProperties { get; set; }
+        public ICollection<ModuleProperty> ModuleProperties { get; set; }
         public OptionList OptionList { get; set; }
         public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }

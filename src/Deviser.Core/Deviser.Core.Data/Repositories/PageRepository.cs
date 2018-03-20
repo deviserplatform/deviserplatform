@@ -387,7 +387,7 @@ namespace Deviser.Core.Data.Repositories
                 {
                     var result = context.PageModule
                                 .Where(e => e.PageId == pageId && !e.IsDeleted)
-                                .Include(e => e.Module)
+                                .Include(e => e.Module).ThenInclude(mp => mp.ModuleProperties).ThenInclude(cp => cp.Property)
                                 .Include(e => e.ModuleAction)
                                 .Include(e => e.ModulePermissions)
                                 .OrderBy(p => p.Id)
@@ -493,7 +493,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 using (var context = new DeviserDbContext(DbOptions))
                 {
-                    var dbPageModule = Mapper.Map<Entities.PageModule>(pageModule);
+                    var dbPageModule = Mapper.Map<Entities.PageModule>(pageModule);                   
                     var result = context.PageModule.Update(dbPageModule).Entity;
                     context.SaveChanges();
                     return Mapper.Map<PageModule>(result);

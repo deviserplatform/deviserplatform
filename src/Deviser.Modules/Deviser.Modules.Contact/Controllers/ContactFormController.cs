@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Deviser.Core.Library.Messaging;
+using Newtonsoft.Json;
 using System;
 
 namespace Deviser.Modules.ContactForm.Controllers
@@ -17,24 +19,26 @@ namespace Deviser.Modules.ContactForm.Controllers
     [Module("Contact")]
     public class ContactFormController : ModuleController
     {
-        private ILogger<ContactFormController> logger;
+        private ILogger<ContactFormController> _logger;
 
-        IContactProvider ContactProvider;
+        IContactProvider _contactProvider;
 
-        IScopeService scopeService;
+        IScopeService _scopeService;
 
-        IPageManager pageManager;
+        IPageManager _pageManager;
 
-        IUserRepository userProvider;
+        IUserRepository _userProvider;
+
+        IEmailSender _emailsender;
 
         public ContactFormController(IServiceProvider serviceProvider)
         {
-            logger = serviceProvider.GetService<ILogger<ContactFormController>>();
-            ContactProvider = serviceProvider.GetService<IContactProvider>();
-            scopeService = serviceProvider.GetService<IScopeService>();
-            pageManager = serviceProvider.GetService<IPageManager>();
-            userProvider = serviceProvider.GetService<IUserRepository>();
-
+            _logger = serviceProvider.GetService<ILogger<ContactFormController>>();
+            _contactProvider = serviceProvider.GetService<IContactProvider>();
+            _scopeService = serviceProvider.GetService<IScopeService>();
+            _pageManager = serviceProvider.GetService<IPageManager>();
+            _userProvider = serviceProvider.GetService<IUserRepository>();
+            _emailsender = serviceProvider.GetService<IEmailSender>();
         }
 
         [HttpGet]
@@ -52,9 +56,15 @@ namespace Deviser.Modules.ContactForm.Controllers
                 if(contact != null)
                 {
                     var userName = HttpContext.User.Identity.Name;
-                    contact.CreatedBy = userProvider.GetUser(userName);
+                    contact.CreatedBy = _userProvider.GetUser(userName);
                     contact.CreatedOn = DateTime.Now;
-                    var result = ContactProvider.submitData(contact);
+                    var result = _contactProvider.submitData(contact);
+
+                    var message = JsonConvert.DeserializeObject(contact.Data).ToString();              
+                    string subject = "Contact Form";
+                  
+                    string email ="kowsikanakataj@gmail.com";
+                    _emailsender.SendEmailAsync(email, subject, message);
                     if (result)
                         return Ok();
                 }        
@@ -63,7 +73,7 @@ namespace Deviser.Modules.ContactForm.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(string.Format("Error occured while posting the message."), ex);
+                _logger.LogError(string.Format("Error occured while posting the message."), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

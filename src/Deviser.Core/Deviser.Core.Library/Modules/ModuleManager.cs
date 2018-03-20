@@ -110,6 +110,7 @@ namespace Deviser.Core.Library.Modules
                         dbPageModule.ContainerId = pageModule.ContainerId;
                         dbPageModule.SortOrder = pageModule.SortOrder;
                         dbPageModule.ModulePermissions = pageModule.ModulePermissions;
+                        dbPageModule.Properties = pageModule.Module.Properties;
                         dbPageModule = _pageRepository.UpdatePageModule(dbPageModule);
                     }
 

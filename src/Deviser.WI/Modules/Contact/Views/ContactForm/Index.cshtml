@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Deviser.Modules.ContactForm.Data.ContactData
+@{
     ViewData["Title"] = "Contact";
 }
 <require type="Script" priority="109" path="~/lib/angular/angular.js"></require>
@@ -19,7 +20,8 @@
         </div>
     </div>
 
-   <form name="ContactForm" role="form" id="ContactForm" ng-submit="cVM.submit()" novalidate>
+    
+    <form name="ContactForm" role="form" id="ContactForm" ng-submit="cVM.submit()" novalidate>
 
         <h2><b>@ViewData["Title"]</b></h2>
         <br />
@@ -50,9 +52,10 @@
             <label>Message</label>
             <textarea id="Message" name="Message"
                       ng-model="cVM.form.Message" maxlength="300"
-                      class="form-control" placeholder="Enter Your Message"></textarea>
+                      class="form-control" placeholder="Enter Your Message" required></textarea>
         </div>
         <br />
         <input type="submit" class="btn btn-primary" value="Send Message" ng-disabled="ContactForm.$invalid" />
+
     </form>
 </div>

@@ -11,9 +11,10 @@ using System;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDbContext))]
-    partial class DeviserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180320093712_Platform_Schema_00.00.03")]
+    partial class Platform_Schema_000003
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -464,8 +465,6 @@ namespace Deviser.WI.Migrations
                     b.Property<Guid>("ModuleId");
 
                     b.Property<Guid>("PageId");
-
-                    b.Property<string>("Properties");
 
                     b.Property<int>("SortOrder");
 

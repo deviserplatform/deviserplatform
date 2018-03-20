@@ -23,9 +23,9 @@ namespace Deviser.Core.Library.Messaging
             var smtpSetting = _settingManager.GetSMTPSetting();
             var siteSetting = _settingManager.GetSiteSetting();
             // Plug in your email service here to send an email.
-            var myMessage = new MimeMessage();
+            var myMessage = new MimeMessage();            
             myMessage.To.Add(new MailboxAddress("", email));
-            myMessage.From.Add(new MailboxAddress("Deviser", siteSetting.SiteAdminEmail));
+            myMessage.From.Add(new MailboxAddress("Deviser", siteSetting.SiteAdminEmail));          
             myMessage.Subject = subject;
             myMessage.Body = new TextPart("HTML")
             {

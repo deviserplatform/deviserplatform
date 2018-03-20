@@ -21,6 +21,7 @@ namespace Deviser.Core.Common.DomainTypes
         public bool InheritViewPermissions { get; set; }
         public bool InheritEditPermissions { get; set; }
         public bool HasEditPermission { get; set; }
+        public ICollection<Property> Properties { get; set; }
         public virtual ICollection<ModulePermission> ModulePermissions { get; set; }
     }
 }

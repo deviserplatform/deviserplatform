@@ -48,6 +48,7 @@ namespace Deviser.Core.Data.Repositories
                 {
                     var result = context.Module
                         .Include(m => m.ModuleAction)//.ThenInclude(ma=>ma.ModuleActionType)
+                        .Include(p => p.ModuleProperties).ThenInclude(cp => cp.Property)
                         .ToList();
 
                     return Mapper.Map<List<Module>>(result);
@@ -152,6 +153,7 @@ namespace Deviser.Core.Data.Repositories
                     var result = context.Module
                               .Where(e => e.Id == moduleId)
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) // ("ModuleActions.ModuleActionType")
+                              .Include(p => p.ModuleProperties).ThenInclude(cp => cp.Property)
                               .FirstOrDefault();
 
                     return Mapper.Map<Module>(result);
@@ -173,6 +175,7 @@ namespace Deviser.Core.Data.Repositories
                     var result = context.Module
                               .Where(e => e.Name == moduleName)
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
+                              .Include(p => p.ModuleProperties).ThenInclude(cp => cp.Property)
                               .FirstOrDefault();
 
                     return Mapper.Map<Module>(result);
@@ -194,6 +197,7 @@ namespace Deviser.Core.Data.Repositories
                     var result = context.Module
                               .Where(e => e.PageModule.Any(pm => pm.Id == pageModuleId))
                               .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
+                               .Include(p => p.ModuleProperties).ThenInclude(cp => cp.Property)
                               .FirstOrDefault();
 
                     return Mapper.Map<Module>(result);
@@ -248,6 +252,52 @@ namespace Deviser.Core.Data.Repositories
                             context.ModuleAction.Add(moduleAction);
                         }
                     }
+
+                    var currentTypeProperties = context.ModuleProperty.Where(ctp => ctp.ModuleId == dbModule.Id).ToList();
+
+                    List<Entities.ModuleProperty> toRemoveFromDb = null;
+
+                    if (currentTypeProperties != null && currentTypeProperties.Count > 0)
+                    {
+                        toRemoveFromDb = currentTypeProperties.Where(dbProp => !dbModule.ModuleProperties.Any(clientProp => dbProp.PropertyId == clientProp.PropertyId)).ToList();
+                    }
+                    if (toRemoveFromDb != null && toRemoveFromDb.Count > 0)
+                    {
+                        //ContentTypeProperty is not exist in contentType (client source), because client has been removed it. Therefor, remove it from db.
+                        context.ModuleProperty.RemoveRange(toRemoveFromDb);
+                    }
+
+                    if (dbModule.ModuleProperties != null && dbModule.ModuleProperties.Count > 0)
+                    {
+
+                        var toRemoveFromClient = dbModule.ModuleProperties.Where(clientProp => context.ModuleProperty.Any(dbProp =>
+                         clientProp.ModuleId == dbProp.ModuleId && clientProp.PropertyId == dbProp.PropertyId)).ToList();
+                                          
+
+                        if (toRemoveFromClient != null && toRemoveFromClient.Count > 0)
+                        {
+                            foreach (var contentTypeProp in toRemoveFromClient)
+                            {
+                                //ContentTypeProperty exist in db, therefore remove it from contentType (client source)
+                                dbModule.ModuleProperties.Remove(contentTypeProp);
+                            }
+                        }                     
+
+
+                        if (dbModule.ModuleProperties != null && dbModule.ModuleProperties.Count > 0)
+                        {
+                            foreach (var moduleProp in dbModule.ModuleProperties)
+                            {
+                                moduleProp.Property = null;
+                                context.ModuleProperty.Add(moduleProp);
+                            }
+
+                        }
+
+                    }
+                                  
+
+                   
 
                     //No need to delte a row from dbo.ModuleAction since the key s referred in dbo.pagemodule.
 

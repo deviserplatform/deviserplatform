@@ -19,6 +19,7 @@ namespace Deviser.Core.Data.Entities
         public bool InheritViewPermissions { get; set; }
         public bool InheritEditPermissions { get; set; }
         public bool HasEditPermission { get; set; }
+        public string Properties { get; set; }
         public virtual ICollection<ModulePermission> ModulePermissions { get; set; }
     }
 }
