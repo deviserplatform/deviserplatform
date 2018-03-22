@@ -88,7 +88,7 @@ namespace Deviser.Core.Data.Repositories
                 using (var context = new DeviserDbContext(DbOptions))
                 {
                     var result = context.ModuleAction
-                        .Include(ma => ma.Module)//.ThenInclude(ma=>ma.ModuleActionType)
+                        .Include(ma => ma.Module).ThenInclude(mp => mp.ModuleProperties).ThenInclude(p => p.Property)
                         .Where(m => m.ModuleActionType.ControlType.ToLower() == "view" && m.Module.IsActive) //Selecting View Actions Only
                         .OrderBy(ma => ma.DisplayName)
                         .ToList();
@@ -130,7 +130,7 @@ namespace Deviser.Core.Data.Repositories
                 using (var context = new DeviserDbContext(DbOptions))
                 {
                     var result = context.ModuleAction
-                        .Include(ma => ma.Module)//.ThenInclude(ma=>ma.ModuleActionType)
+                        .Include(ma => ma.Module).ThenInclude(mp => mp.ModuleProperties).ThenInclude(p => p.Property)
                         .Where(m => m.ModuleId == moduleId && m.ModuleActionType.ControlType.ToLower() == "edit") //Selecting View Actions Only
                         .ToList();
 

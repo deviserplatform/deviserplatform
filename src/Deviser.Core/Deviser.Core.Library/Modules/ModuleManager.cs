@@ -108,13 +108,12 @@ namespace Deviser.Core.Library.Modules
                         dbPageModule.Title = pageModule.Title;
                         dbPageModule.IsDeleted = false;
                         dbPageModule.ContainerId = pageModule.ContainerId;
-                        dbPageModule.SortOrder = pageModule.SortOrder;
-                        dbPageModule.ModulePermissions = pageModule.ModulePermissions;
-                        dbPageModule.Properties = pageModule.Module.Properties;
+                        dbPageModule.SortOrder = pageModule.SortOrder;                       
+                        dbPageModule.Properties = pageModule.Properties;
                         dbPageModule = _pageRepository.UpdatePageModule(dbPageModule);
                     }
 
-                    dbPageModule.HasEditPermission = HasEditPermission(pageModule);
+                    dbPageModule.HasEditPermission = HasEditPermission(dbPageModule);
 
                     return dbPageModule;
                 }

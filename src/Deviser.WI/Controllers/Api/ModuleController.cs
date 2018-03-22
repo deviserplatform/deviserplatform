@@ -62,6 +62,7 @@ namespace DeviserWI.Controllers.API
             }
         }
 
+
         [HttpGet]
         [Route("moduleactiontype/")]
         public IActionResult GetModuleActionType()
@@ -75,7 +76,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                _logger.LogError(string.Format("Error occured while getting content types"), ex);
+                _logger.LogError(string.Format("Error occured while getting module action"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

@@ -46,7 +46,10 @@ namespace Deviser.Core.Library.Infrastructure
                     .ForMember(dest => dest.Properties, opt => opt.MapFrom(src =>
                       src.ModuleProperties != null ? src.ModuleProperties.Select(ctp => ctp.Property) : null));
 
-                    config.CreateMap<ModuleAction, Core.Common.DomainTypes.ModuleAction>().ReverseMap();
+                    config.CreateMap<ModuleAction, Core.Common.DomainTypes.ModuleAction>()
+                    .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.Module.ModuleProperties!= null ? src.Module.ModuleProperties.Select(ctp => ctp.Property) : null))
+                    .ReverseMap();
+
                     config.CreateMap<ModuleActionType, Core.Common.DomainTypes.ModuleActionType>().ReverseMap();
                     config.CreateMap<ModulePermission, Core.Common.DomainTypes.ModulePermission>().ReverseMap();
 

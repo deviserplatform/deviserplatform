@@ -189,13 +189,18 @@
 
         //Event handlers
         $scope.$watch(function () {
-            if (vm.selectedItem.type === "module") {
-                vm.selectedItem.properties = vm.selectedItem.pageModule.module.properties;
+            //if (vm.selectedItem.type === "module") {
+            //    if (vm.selectedItem.pageModule.properties.length != 0) {
+            //        vm.selectedItem.properties = vm.selectedItem.pageModule.properties;                    
+            //    }
+            //    else {
+            //        vm.selectedItem.properties = vm.selectedItem.pageModule.module.properties; 
+            //    }
+            //    return vm.selectedItem.properties;
+            //}
+            //else {
                 return vm.selectedItem.properties;
-            }
-            else {
-                return vm.selectedItem.properties;
-            }
+            //}
         }, function (newValue, oldValue) {
             vm.selectedItem.isPropertyChanged = true;
         }, true);
@@ -233,6 +238,10 @@
         function selectItem(item) {
             if (item.layoutTemplate === "content" || item.layoutTemplate === "module") {
                 vm.selectedItem = item;
+
+                //if (item.layoutTemplate === "module") {
+                //    item.properties = 
+                //}
             }
         }
 
@@ -416,7 +425,7 @@
                 pageModule.title = vm.selectedItem.title;
                 pageModule.containerId = vm.selectedItem.pageModule.containerId;
                 pageModule.sortOrder = vm.selectedItem.sortOrder;
-                pageModule.module.properties = properties;
+                pageModule.properties = properties;
 
                 pageModuleService.put(pageModule).then(function (response) {
                     console.log(response);
@@ -455,7 +464,7 @@
                 .then(function (data) {
                     vm.pageModules = data;
                     defer.resolve(data);
-                }, function (error) {
+                }, function (error) {  
                     showMessage("error", SYS_ERROR_MSG);
                     defer.reject(SYS_ERROR_MSG);
                 });
@@ -522,7 +531,8 @@
                         vm.modules.push({
                             layoutTemplate: "module",
                             type: "module",
-                            moduleAction: moduleAction
+                            moduleAction: moduleAction,    
+                            properties: moduleAction.properties
                         });
                     });
                     defer.resolve('data received!');
@@ -606,7 +616,7 @@
                             var content = getPageContentWithProperties(pageContent);
                             //item.placeHolders.splice(index, 0, contentTypeInfo); //Insert placeHolder into specified index
                             if (!content.title) {
-                                content.title = content.contentType.label + ' ' + item.placeHolders.length + 1;
+                                content.title = content.contentType.label + ' ' + (item.placeHolders.length + 1);
                             }
                             item.placeHolders.push(content);
                         });
@@ -622,19 +632,23 @@
                     if (pageModules) {
                         _.forEach(pageModules, function (pageModule) {
                             var index = pageModule.sortOrder - 1;
-                            var module = {
-                                id: pageModule.id,
-                                layoutTemplate: "module",
-                                type: "module",
-                                title: pageModule.title,
-                                moduleAction: pageModule.moduleAction,
-                                pageModule: pageModule,
-                                sortOrder: pageModule.sortOrder
-                            };//JSON.parse(pageModule.module);
+                            var module = getPageModulesWithProperties(pageModule);
+                            //var module = {
+                            //    id: pageModule.id,
+                            //    layoutTemplate: "module",
+                            //    type: "module",
+                            //    title: pageModule.title,
+                            //    moduleAction: pageModule.moduleAction,
+                            //    pageModule: pageModule,
+                            //    sortOrder: pageModule.sortOrder,
+                            //    properties : pageModule.properties
+                            //};//JSON.parse(pageModule.module);
                             //item.placeHolders.splice(index, 0, module); //Insert placeHolder into specified index
 
                             if (!module.title) {
-                                module.title = module.moduleAction.displayName + ' ' + item.placeHolders.length + 1;
+                                
+                               
+                                module.title = module.moduleAction.displayName + ' ' + (item.placeHolders.length + 1);
                             }
 
                             item.placeHolders.push(module);
@@ -703,6 +717,38 @@
             }
 
             return content;
+        }
+
+        function getPageModulesWithProperties(pageModule) {
+            var propertiesValue = pageModule.properties;
+            var masterModule = _.find(vm.modules, function (item) {
+                return item.moduleAction.id === pageModule.moduleAction.id;
+            });
+            var properties = angular.copy(masterModule.moduleAction.properties);
+
+            //Loading values to the properties
+            _.forEach(properties, function (prop) {
+                var propVal = _.find(propertiesValue, { id: prop.id });
+                if (propVal) {
+                    prop.value = propVal.value;
+                }
+                if (prop.optionList && prop.optionList.list) {
+                    prop.optionList = angular.fromJson(prop.optionList.list);
+                }
+            });
+
+            var module = {
+                id: pageModule.id,
+                layoutTemplate: "module",
+                type: "module",
+                title: pageModule.title,
+                moduleAction: pageModule.moduleAction,
+                pageModule: pageModule,
+                sortOrder: pageModule.sortOrder,
+                properties: properties
+            };
+
+            return module;
         }
 
         function updateElements(container) {
@@ -838,6 +884,7 @@
                     containerId: item.containerId,
                     sortOrder: item.element.sortOrder
                 };
+
                 if (item.element.id) {
                     //Update
                     module.id = item.element.id;
@@ -848,21 +895,35 @@
                     item.element.id = module.id;
                 }
 
-                if (item.element.pageModule) {
+                var properties = [];
+                var sourceProperties = (item.element.pageModule && item.element.pageModule.properties)? item.element.pageModule.properties : item.element.moduleAction.properties;
+                _.forEach(sourceProperties, function (srcProp) {
+                    if (srcProp) {
+                        var prop = {
+                            id: srcProp.id,
+                            name: srcProp.name,
+                            label: srcProp.label,
+                            value: srcProp.value
+                        }
+                        properties.push(prop);
+                    }
+                });
+                module.properties = properties;
+
+                if (item.element.pageModule && item.element.pageModule.module) {
                     //pagemodule from db
                     module.moduleId = item.element.pageModule.module.id;
-                    module.moduleActionId = item.element.pageModule.moduleActionId;
+                    module.moduleActionId = item.element.pageModule.moduleActionId;                    
                 }
                 else {
                     //newely created module                    
                     module.moduleId = item.element.moduleAction.moduleId;
                     module.moduleActionId = item.element.moduleAction.id;
-                    module.hasEditPermission = true; //New content always has edit permission
+                    module.hasEditPermission = true; //New content always has edit permission                  
                     item.element.pageModule = module;
                 }
-
+                
                 modules.push(module);
-
             });
 
             if (modules && modules.length > 0) {

@@ -111,7 +111,8 @@ namespace DeviserWI.Controllers.API
                 {
                     var page = _pageRepository.GetPage(pageModule.PageId);
                     if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
-                    {
+                    {               
+
                         var dbResult = _moduleManager.CreateUpdatePageModule(pageModule);
                         var result = Mapper.Map<PageModule>(dbResult);
                         if (result != null)
@@ -207,6 +208,7 @@ namespace DeviserWI.Controllers.API
                 if (pageModule != null)
                 {
                     var page = _pageRepository.GetPage(pageModule.PageId);
+                    System.Threading.Tasks.Task.Delay(200).Wait();
                     if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
                     {
                         pageModule.IsDeleted = true;

@@ -18,5 +18,6 @@ namespace Deviser.Core.Common.DomainTypes
         public Guid ModuleId { get; set; }
         public bool IsDefault { get; set; }
         public virtual ModuleActionType ModuleActionType { get; set; }
+        public ICollection<Property> Properties { get; set; }
     }
 }

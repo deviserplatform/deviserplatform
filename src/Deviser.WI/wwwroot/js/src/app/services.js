@@ -307,7 +307,7 @@
     function moduleService($http, $q, globals) {
         var serviceUrl = '/module';
         var service = baseService($http, $q, globals, '/module');
-        service.getModuleActionTypes = getModuleActionTypes;
+        service.getModuleActionTypes = getModuleActionTypes;        
         return service;
         
 
@@ -323,6 +323,7 @@
                 return handleError(response, $q)
             });
         }
+
     }
 
     function moduleActionService($http, $q, globals) {
