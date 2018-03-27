@@ -8,7 +8,7 @@ namespace Deviser.Core.Library.Extensions
 {
     public static class PageContentExtension
     {
-        public static Property Get(this List<Property> properties, string propertyName)
+        public static Property Get(this ICollection<Property> properties, string propertyName)
         {
             if (properties != null && properties.Count > 0)
             {
