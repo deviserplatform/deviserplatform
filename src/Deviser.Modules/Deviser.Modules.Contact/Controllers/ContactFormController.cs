@@ -2,17 +2,25 @@
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library.Controllers;
+using Deviser.Core.Library.Extensions;
+using Deviser.Core.Library.Messaging;
 using Deviser.Core.Library.Modules;
 using Deviser.Core.Library.Services;
-using Deviser.Core.Library.Sites;
 using Deviser.Modules.ContactForm.Data;
+using Deviser.Core.Library.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Deviser.Core.Library.Messaging;
 using Newtonsoft.Json;
 using System;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 
 namespace Deviser.Modules.ContactForm.Controllers
 {
@@ -21,24 +29,22 @@ namespace Deviser.Modules.ContactForm.Controllers
     {
         private ILogger<ContactFormController> _logger;
 
-        IContactProvider _contactProvider;
-
-        IScopeService _scopeService;
-
-        IPageManager _pageManager;
-
-        IUserRepository _userProvider;
-
-        IEmailSender _emailsender;
+        private readonly IContactProvider _contactProvider;
+        private readonly IScopeService _scopeService;
+        private readonly IModuleManager _moduleManager;
+        private readonly IUserRepository _userProvider;
+        private readonly IEmailSender _emailsender;
+        private readonly IViewRenderService _viewRenderService;
 
         public ContactFormController(IServiceProvider serviceProvider)
         {
             _logger = serviceProvider.GetService<ILogger<ContactFormController>>();
             _contactProvider = serviceProvider.GetService<IContactProvider>();
             _scopeService = serviceProvider.GetService<IScopeService>();
-            _pageManager = serviceProvider.GetService<IPageManager>();
+            _moduleManager = serviceProvider.GetService<IModuleManager>();
             _userProvider = serviceProvider.GetService<IUserRepository>();
             _emailsender = serviceProvider.GetService<IEmailSender>();
+            _viewRenderService = serviceProvider.GetService<IViewRenderService>();
         }
 
         [HttpGet]
@@ -49,7 +55,7 @@ namespace Deviser.Modules.ContactForm.Controllers
 
         [HttpPost]
         [Route("api/[controller]")]
-        public IActionResult Submit([FromBody]Contact contact)
+        public async Task<IActionResult> Submit([FromBody]Contact contact)
         {
             try
             {  
@@ -60,11 +66,19 @@ namespace Deviser.Modules.ContactForm.Controllers
                     contact.CreatedOn = DateTime.Now;
                     var result = _contactProvider.submitData(contact);
 
-                    var message = JsonConvert.DeserializeObject(contact.Data).ToString();              
-                    string subject = "Contact Form";
-                  
-                    string email ="kowsikanakataj@gmail.com";
-                    _emailsender.SendEmailAsync(email, subject, message);
+                    var pageModule = _moduleManager.GetPageModule(contact.PageModuleId);
+                    var pageModuleProperties = pageModule.Properties;
+
+                    string email = pageModuleProperties.Get("to")?.ToString();
+                    string fromEmail = pageModuleProperties.Get("from")?.ToString();
+                    string subject = pageModuleProperties.Get("subject")?.ToString();
+
+                    
+                    string templatePath = "~/Modules/Contact/Views/ContactForm/";
+                    dynamic data = JObject.Parse(contact.Data);
+                    string message = ViewExtensions.RenderPartial($"{templatePath}ContactTemplate.cshtml", data, HttpContext);
+
+                    await _emailsender.SendEmailAsync(email, subject, message, fromEmail);
                     if (result)
                         return Ok();
                 }        

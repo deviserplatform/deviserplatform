@@ -18,20 +18,24 @@ namespace Deviser.Core.Library.Messaging
         }
 
 
-        public Task SendEmailAsync(string email, string subject, string message)
+        public Task SendEmailAsync(string email, string subject, string message, string optfromaddress = null)
         {
             var smtpSetting = _settingManager.GetSMTPSetting();
             var siteSetting = _settingManager.GetSiteSetting();
             // Plug in your email service here to send an email.
             var myMessage = new MimeMessage();            
             myMessage.To.Add(new MailboxAddress("", email));
-            myMessage.From.Add(new MailboxAddress("Deviser", siteSetting.SiteAdminEmail));          
+
+            if(optfromaddress == null)
+                myMessage.From.Add(new MailboxAddress("Deviser", siteSetting.SiteAdminEmail));   
+            else
+                myMessage.From.Add(new MailboxAddress("Deviser", optfromaddress));
             myMessage.Subject = subject;
             myMessage.Body = new TextPart("HTML")
             {
                 Text = message
             };
-
+            
             using (var client = new SmtpClient())
             {
                 client.Connect(smtpSetting.Server, smtpSetting.Port, smtpSetting.EnableSSL);

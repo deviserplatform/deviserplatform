@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
@@ -20,6 +23,24 @@ namespace Deviser.Core.Library.Controllers
     public static class ViewExtensions
     {
         public static readonly string DefaultContentType = "text/html; charset=utf-8";
+
+
+
+        public static string RenderPartial(string viewName, object model, HttpContext httpContext)
+        {
+            var factory = httpContext?.RequestServices?.GetRequiredService<ITempDataDictionaryFactory>();
+            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ControllerContext().ModelState);
+
+            viewData.Model = model;
+            var viewResult = new ViewResult()
+            {
+                ViewName = viewName,
+                ViewData = viewData,
+                TempData = factory?.GetTempData(httpContext)
+            };
+
+            return viewResult.ExecuteResultToString(new ActionContext(httpContext, new RouteData(), new ActionDescriptor()));
+        }
 
         public static string ExecuteResultToString(this ViewResult viewResult, ActionContext context)
         {
