@@ -2,11 +2,11 @@
 @{
     var properties = Model.PlaceHolder.Properties;
 
-    var colWidthXS = properties.Get("column_width_xs")?.ToString();
-    var colWidthS = properties.Get("column_width_s")?.ToString();
-    var colWidthM = properties.Get("column_width")?.ToString();
-    var colWidthL = properties.Get("column_width_l")?.ToString();
-    var colWidthXL = properties.Get("column_width_xl")?.ToString();
+    var colWidthXS = properties.Get("column_width_xs")?.ToString(false);
+    var colWidthS = properties.Get("column_width_s")?.ToString(false);
+    var colWidthM = properties.Get("column_width")?.ToString(false);
+    var colWidthL = properties.Get("column_width_l")?.ToString(false);
+    var colWidthXL = properties.Get("column_width_xl")?.ToString(false);
 
     if (string.IsNullOrEmpty(colWidthM))
     {

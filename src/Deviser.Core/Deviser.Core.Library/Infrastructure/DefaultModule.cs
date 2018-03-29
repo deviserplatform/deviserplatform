@@ -11,6 +11,7 @@ using Deviser.Core.Library.Multilingual;
 using Deviser.Core.Library.Sites;
 using Microsoft.AspNetCore.Routing;
 using Deviser.Core.Library.Services;
+using Deviser.Core.Library.Media;
 
 namespace Deviser.Core.Library.Infrastructure
 {
@@ -23,6 +24,8 @@ namespace Deviser.Core.Library.Infrastructure
             //builder.RegisterType<ModuleActionInvoker>().As<IModuleActionInvoker>();
             
             builder.RegisterType<ScopeService>().As<IScopeService>().InstancePerDependency();
+            builder.RegisterType<ImageOptimizer>().As<IImageOptimizer>().InstancePerDependency();
+            
 
             builder.RegisterType<ActionInvoker>().As<IActionInvoker>();
             builder.RegisterType<TypeActivatorCache>().As<ITypeActivatorCache>();
