@@ -319,6 +319,7 @@
                                         <input type="text" class="form-control input-sm" ng-model="property.value" />
                                     </div>
                                     <div class="col-md-6" ng-show="property.optionList">
+                                        <option value="">Select</option>
                                         <select class="form-control input-sm" name="repeatSelect" id="repeatSelect" ng-model="property.value">
                                             <option ng-repeat="option in property.optionList" value="{{option.id}}">{{option.label}}</option>
                                         </select>

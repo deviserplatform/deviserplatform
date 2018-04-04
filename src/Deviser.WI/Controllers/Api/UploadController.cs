@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Net.Http.Headers;
 using System.Threading.Tasks;
 using Deviser.Core.Common;
+using Deviser.Core.Library.Media;
 
 namespace DeviserWI.Controllers.API
 {
@@ -25,12 +26,14 @@ namespace DeviserWI.Controllers.API
     public class UploadController : Controller
     {
         private readonly ILogger<UploadController> _logger;
+        private readonly IImageOptimizer _imageOptimizer;
 
         string siteAssetPath;
         string localImageUploadPath;
         public UploadController(ILifetimeScope container)
         {
             _logger = container.Resolve<ILogger<UploadController>>();
+            _imageOptimizer = container.Resolve<IImageOptimizer>();
             IHostingEnvironment hostingEnv = container.Resolve<IHostingEnvironment>();
             try
             {
@@ -92,14 +95,19 @@ namespace DeviserWI.Controllers.API
                     {
                         if (file.Length > 0)
                         {
-                            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.ToString().Trim('"');
-                            var path = Path.Combine(localImageUploadPath, fileName);
-                            
-                            using (var fileStream = System.IO.File.Create(path))
+                            string fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.ToString().Trim('"');
+                            string filePath = Path.Combine(localImageUploadPath, fileName);
+                            string originalfilePath = filePath + Globals.OriginalFileSuffix;
+                            using(var memoryStream = new MemoryStream())
                             {
-                                await file.CopyToAsync(fileStream);
+                                var sourImage = memoryStream.ToArray();
+                                await file.CopyToAsync(memoryStream);
+                                SaveFile(sourImage, originalfilePath);
+                                sourImage = memoryStream.ToArray();
+                                var optimizedImage = _imageOptimizer.OptimizeImage(sourImage);
+                                SaveFile(optimizedImage, filePath);
                             }
-                                                            
+
                             fileList.Add(Globals.SiteAssetsPath.Replace("~", "") + Globals.ImagesFolder + "/" + fileName);
                         }
                     }
@@ -112,6 +120,19 @@ namespace DeviserWI.Controllers.API
                 _logger.LogError(string.Format("Error occured while uploading images"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private async Task SaveFile(Stream stream, string path)
+        {
+            using (var fileStream = System.IO.File.Create(path))
+            {
+                await stream.CopyToAsync(fileStream);
+            }
+        }
+
+        private void SaveFile(byte[] arrBytes, string path)
+        {
+            System.IO.File.WriteAllBytes(path, arrBytes);
         }
     }
 }

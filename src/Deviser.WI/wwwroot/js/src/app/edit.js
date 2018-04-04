@@ -390,7 +390,9 @@
                         id: srcProp.id,
                         name: srcProp.name,
                         label: srcProp.label,
-                        value: srcProp.value
+                        value: srcProp.value,
+                        description: srcProp.description,
+                        defaultValue: srcProp.defaultValue
                     }
                     properties.push(prop);
                 }

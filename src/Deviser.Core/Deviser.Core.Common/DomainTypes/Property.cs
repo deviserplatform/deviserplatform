@@ -55,11 +55,32 @@ namespace Deviser.Core.Common.DomainTypes
 
         public override string ToString()
         {
-            if (!IsMoreOption)
-                return Value;
+            return GetPropertyValue();
+        }
 
-            var optionVal = string.IsNullOrEmpty(Value) ? null : OptionList?.List?.FirstOrDefault(li => li.Id == Guid.Parse(Value));
-            return optionVal != null ? optionVal.Name : string.Empty;
+        public string ToString(bool returnDefault)
+        {
+            return GetPropertyValue(returnDefault);
+        }
+
+        private string GetPropertyValue(bool returnDefault = true)
+        {
+            if (!IsMoreOption)
+            {
+                return (!string.IsNullOrEmpty(Value) || !returnDefault) ? Value : DefaultValue;
+            }
+
+            PropertyOption propertyOption = null;
+            if (!string.IsNullOrEmpty(Value))
+            {
+                propertyOption = OptionList?.List?.FirstOrDefault(li => li.Id == Guid.Parse(Value));
+            }
+            else if (!string.IsNullOrEmpty(DefaultValue) && returnDefault)
+            {
+                propertyOption = OptionList?.List?.FirstOrDefault(li => li.Id == Guid.Parse(DefaultValue));
+            }
+
+            return propertyOption != null ? propertyOption.Name : string.Empty;
         }
     }
 }

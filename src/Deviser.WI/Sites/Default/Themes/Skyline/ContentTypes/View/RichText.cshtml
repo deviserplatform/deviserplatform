@@ -3,13 +3,15 @@
 @{
     var pageContext = scopeService.PageContext;
     var currentCulture = pageContext.CurrentCulture.ToString();
+    var properties = Model.PageContent.Properties;
 
     dynamic rootObj = Model.Content;
+    var cssClass = properties.Get("css_class")?.ToString();
 }
 
 @if (Model != null)
 {
-    <div>            
+    <div class="@cssClass">            
          @Html.Raw(rootObj.content)
     </div>
 }

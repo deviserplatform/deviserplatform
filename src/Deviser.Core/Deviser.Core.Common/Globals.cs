@@ -22,6 +22,13 @@ namespace Deviser.Core.Common
 
         public const string ModuleMigrationTableName = "__ModuleMigrationsHistory";
 
+        public const string OriginalFileSuffix = ".original";
+
+        public const int ImageOptimizeDpi = 72;
+        public const int ImageOptimizeMaxWidth = 1024;
+        public const int ImageOptimizeMaxHeight = 1204;
+        public const int ImageOptimizeQualityPercent = 80;
+
         public static string HostMapPath
         {
             get

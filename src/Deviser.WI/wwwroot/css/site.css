@@ -6203,16 +6203,19 @@ body {
       padding: 0.750rem 1.25rem; }
     .content-wrapper .home-action-container a:not(:last-child) {
       margin-right: 1rem; }
+  .content-wrapper .feature-heading {
+    text-align: center;
+    margin-bottom: 40px; }
   .content-wrapper .features .info .icon-circle {
     background: #ef4934;
-    color: white;
+    color: #fff;
     border: 0 solid transparent;
     border-radius: 50%;
-    width: 130px;
-    height: 130px;
+    width: 60px;
+    height: 60px;
     margin-bottom: 20px;
     display: inline-block;
-    line-height: 128px;
+    line-height: 60px;
     transition: all .3s ease;
     font-size: 1.6rem; }
 

@@ -51,8 +51,10 @@
             function init() {
                 var properties = vm.properties();
                 if (properties) {
-                    imageCropSize.width = _.find(properties, { name: 'imagewidth' }).value;
-                    imageCropSize.height = _.find(properties, { name: 'imageheight' }).value;
+                    var propWidth = _.find(properties, { name: 'image_width' }),
+                        propHeight = _.find(properties, { name: 'image_height' });
+                    imageCropSize.width = propWidth && propWidth.value ? propWidth.value : propWidth.defaultValue;
+                    imageCropSize.height = propHeight && propHeight.value ? propHeight.value : propHeight.defaultValue;
                 }
                 if (vm.focusPoint) {
                     setFocusPoint(vm.focusPoint);
