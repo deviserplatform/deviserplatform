@@ -58,7 +58,7 @@ namespace DeviserWI.Controllers.API
                 foreach (var file in dir.GetFiles())
                 {
                     path = "";
-                    if (file != null)
+                    if (file != null && !file.Name.Contains(Globals.OriginalFileSuffix))
                     {
                         path = Globals.SiteAssetsPath.Replace("~", "") + Globals.ImagesFolder + "/" + file.Name;
                         fileList.Add(new FileItem

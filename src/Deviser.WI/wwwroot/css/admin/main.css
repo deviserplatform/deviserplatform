@@ -6686,26 +6686,24 @@ body.edit-content-modal {
   border: none; }
 
 /*Image manager*/
-.image-manager .image-preview-container {
-  width: 20%; }
-  .image-manager .image-preview-container .image-preview-header {
-    float: right; }
-    .image-manager .image-preview-container .image-preview-header a {
-      color: #000;
-      font-size: 16px;
-      line-height: 15px;
-      text-decoration: none;
-      cursor: pointer; }
-    .image-manager .image-preview-container .image-preview-header a + a {
-      margin-left: 20px; }
-  .image-manager .image-preview-container .image-preview img {
-    width: 100%; }
-  .image-manager .image-preview-container .image-preview p.info {
-    padding: 10px;
-    text-align: center;
-    line-height: 14vh;
-    text-align: center;
+.image-manager .image-preview-container .image-preview-header {
+  float: right; }
+  .image-manager .image-preview-container .image-preview-header a {
+    color: #000;
+    font-size: 16px;
+    line-height: 15px;
+    text-decoration: none;
     cursor: pointer; }
+  .image-manager .image-preview-container .image-preview-header a + a {
+    margin-left: 20px; }
+
+.image-manager .image-preview-container .image-preview img {
+  width: 30%; }
+
+.image-manager .image-preview-container p.info {
+  padding: 20px;
+  text-align: center;
+  cursor: pointer; }
 
 .image-manager-modal .drop-box {
   background: #F8F8F8;

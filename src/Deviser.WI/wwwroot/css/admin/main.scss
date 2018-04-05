@@ -1227,8 +1227,6 @@ body.edit-content-modal {
 /*Image manager*/
 .image-manager {
     .image-preview-container {
-        width: 20%;
-
         .image-preview-header {
             float: right;
 
@@ -1247,16 +1245,14 @@ body.edit-content-modal {
 
         .image-preview {
             img {
-                width: 100%;
+                width: 30%;
             }
+        }
 
-            p.info {
-                padding: 10px;
-                text-align: center;
-                line-height: 14vh;
-                text-align: center;
-                cursor: pointer;
-            }
+        p.info {
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
         }
     }
 }

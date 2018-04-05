@@ -252,6 +252,19 @@ body {
     }
 }
 
+/*Image Gallery*/
+.image-gallery-container {
+    .image-thumb {
+        img {
+            width: 100%;
+        }
+
+        figcaption{
+            display:none;
+        }
+    }
+}
+
 
 .content-wrapper {
     min-height: calc(100vh - 176px);
@@ -298,7 +311,7 @@ body {
         padding: 12% 6%;
 
         .home-action-container a.btn {
-            padding: 0.750rem 1.25rem; 
+            padding: 0.750rem 1.25rem;
         }
 
         a:not(:last-child) {

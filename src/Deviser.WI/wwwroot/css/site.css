@@ -6166,6 +6166,13 @@ body {
     opacity: 1;
     background: #fff; }
 
+/*Image Gallery*/
+.image-gallery-container .image-thumb img {
+  width: 100%; }
+
+.image-gallery-container .image-thumb figcaption {
+  display: none; }
+
 .content-wrapper {
   min-height: calc(100vh - 176px);
   /*Video conent type*/ }
