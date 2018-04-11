@@ -21,7 +21,7 @@
     @foreach (var item in rootObj.items)
     {
         var itemId = "pane" + item.id;
-        <figure class="col-md-3 image-thumb" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+        <figure class="col-lg-4 col-md-6 image-thumb" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
             <a href="@item.imageUrl" itemprop="contentUrl" data-size="1024x683">
                 <img src="@item.imageUrl" itemprop="thumbnail" alt="@item.imageAltText" />
             </a>

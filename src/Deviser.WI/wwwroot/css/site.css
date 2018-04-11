@@ -6167,11 +6167,20 @@ body {
     background: #fff; }
 
 /*Image Gallery*/
-.image-gallery-container .image-thumb img {
-  width: 100%; }
+.projects-title {
+  padding-top: 50px;
+  padding-bottom: 50px;
+  text-align: center; }
 
-.image-gallery-container .image-thumb figcaption {
-  display: none; }
+.image-gallery-container .image-thumb {
+  margin: 0 0 1.18rem; }
+  .image-gallery-container .image-thumb.col-lg-4, .image-gallery-container .image-thumb col-md-6 {
+    padding-right: 10px;
+    padding-left: 10px; }
+  .image-gallery-container .image-thumb img {
+    width: 100%; }
+  .image-gallery-container .image-thumb figcaption {
+    display: none; }
 
 .content-wrapper {
   min-height: calc(100vh - 176px);
