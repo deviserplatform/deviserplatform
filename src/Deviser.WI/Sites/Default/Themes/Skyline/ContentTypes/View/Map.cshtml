@@ -42,7 +42,7 @@
             }];
 
             var markerImage = {
-                url: "/assets/images/map-marker-icon.png",
+                url: "/images/map-marker.svg",
                 size: new google.maps.Size(40, 55),
                 origin: new google.maps.Point(0, 0),
                 anchor: new google.maps.Point(20, 55),
@@ -54,7 +54,7 @@
                 pixelOffset: new google.maps.Size(0, -130),
                 zIndex: null,
                 closeBoxMargin: "0px",
-                closeBoxURL: "/assets/images/close.png",
+                closeBoxURL: "/images/close.svg",
                 isHidden: false,
                 pane: "floatPane",
                 enableEventPropagation: false,
@@ -68,13 +68,13 @@
                 var location = locations[i];
 
                 var content = '';
-                content += (location.Title) ? '<div>' + location.title + '</div>' : '';
-                content += (location.LocationName) ? '<div>' + location.locationName + '</div>' : '';
-                content += (location.Address) ? '<div>' + location.address + '</div>' : '';
-                content += (location.PostalCodeAndCity) ? '<div>' + location.postalCodeAndCity + '</div>' : '';
-                content += (location.Phone) ? '<div>' + location.phone + '</div>' : '';
-                content += (location.Fax) ? '<div>' + location.fax + '</div>' : '';
-                content += (location.Email) ? '<div>' + location.email + '</div>' : '';
+                content += (location.title) ? '<div class="title">' + location.title + '</div>' : '';
+                content += (location.locationName) ? '<div>' + location.locationName + '</div>' : '';
+                content += (location.address) ? '<div>' + location.address + '</div>' : '';
+                content += (location.postalCodeAndCity) ? '<div>' + location.postalCodeAndCity + '</div>' : '';
+                content += (location.phone) ? '<div>' + location.phone + '</div>' : '';
+                content += (location.fax) ? '<div>' + location.fax + '</div>' : '';
+                content += (location.email) ? '<div>' + location.email + '</div>' : '';
 
                 location.content = content;
             }

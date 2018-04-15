@@ -278,6 +278,24 @@ body {
 }
 
 
+/*Google map*/
+.map-container {
+    height: 400px;
+
+    .custom-info-window {
+        background: #fff;
+        width: 150px;
+        padding:10px;
+        img {
+            width: 15px;
+        }
+        .title{
+            font-weight:600;
+        }
+    }
+}
+
+
 .content-wrapper {
     min-height: calc(100vh - 176px);
 

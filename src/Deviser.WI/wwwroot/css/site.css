@@ -6182,6 +6182,18 @@ body {
   .image-gallery-container .image-thumb figcaption {
     display: none; }
 
+/*Google map*/
+.map-container {
+  height: 400px; }
+  .map-container .custom-info-window {
+    background: #fff;
+    width: 150px;
+    padding: 10px; }
+    .map-container .custom-info-window img {
+      width: 15px; }
+    .map-container .custom-info-window .title {
+      font-weight: 600; }
+
 .content-wrapper {
   min-height: calc(100vh - 176px);
   /*Video conent type*/ }

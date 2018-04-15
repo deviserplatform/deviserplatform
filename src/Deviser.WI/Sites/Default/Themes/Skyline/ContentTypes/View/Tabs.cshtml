@@ -16,23 +16,25 @@
 
 @if (rootObj != null)
 {
-    <!-- Indicators -->
-    <ul class="nav nav-tabs" role="tablist">
-        @foreach (var item in rootObj.items)
-        {
-            var id = "tabPane" + item.id;
-            <li role="presentation" class="@(item.viewOrder == 1 ? "active" : "")">
-                <a href="#@id" aria-controls="home" role="tab" data-toggle="tab">@item.title</a>
-            </li>
-            index++;
-        }
-    </ul>
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            @foreach (var item in rootObj.items)
+            {
+                var id = "tabPane" + item.id;
+                <a class="nav-item nav-link @(item.viewOrder == 1 ? "active" : "")" id="nav-home-tab" data-toggle="tab" href="#@id" role="tab" aria-controls="nav-home" aria-selected="@(item.viewOrder == 1 ? "true" : "false")">
+                    @item.title
+                </a>
 
+                index++;
+            }
+        </div>
+    </nav>
+    
     <div class="tab-content">
         @foreach (var item in rootObj.items)
         {
             var id = "tabPane" + item.id;
-            <div id="@id" role="tabpanel" class="tab-pane @(item.viewOrder == 1 ? "active" : "")">
+            <div id="@id" role="tabpanel" class="tab-pane fade @(item.viewOrder == 1 ? "active show" : "")">
                 @item.description
             </div>
         }

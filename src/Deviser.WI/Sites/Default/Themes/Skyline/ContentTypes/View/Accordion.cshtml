@@ -17,20 +17,20 @@
 
 @if (rootObj != null)
 {
-    <div class="panel-group" id="@id" role="tablist" aria-multiselectable="true">
+    <div id="@id">
         @foreach (var item in rootObj.items)
         {
             var itemId = "pane" + item.id;
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab">
-                    <h4 class="panel-title">
-                        <a role="button" data-toggle="collapse" data-parent="#@id" href="#@itemId" aria-expanded="true" aria-controls="@itemId">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <a class="btn btn-link" data-toggle="collapse" data-target="#@itemId" aria-expanded="true" aria-controls="@itemId" role="button" href="">
                             @item.title
                         </a>
-                    </h4>
+                    </h5>
                 </div>
-                <div id="@itemId" class="panel-collapse collapse @(item.viewOrder == 1 ? "in" : "")" role="tabpanel" aria-labelledby="headingOne">
-                    <div class="panel-body">
+                <div id="@itemId" class="collapse @(item.viewOrder == 1 ? "show" : "")" role="tabpanel" data-parent="#@id">
+                    <div class="card-body">
                         @item.description
 
                         <br />
