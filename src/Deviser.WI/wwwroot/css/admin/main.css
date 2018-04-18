@@ -6698,7 +6698,7 @@ body.edit-content-modal {
     margin-left: 20px; }
 
 .image-manager .image-preview-container .image-preview img {
-  width: 30%; }
+  width: 200px; }
 
 .image-manager .image-preview-container p.info {
   padding: 20px;

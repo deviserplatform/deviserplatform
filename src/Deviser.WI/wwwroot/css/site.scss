@@ -45,6 +45,7 @@
 $devPrimary: rgb(239, 73, 52);
 $devWhite: rgb(255, 255, 255);
 $lightGrey: rgb(245,245,246);
+$lightGreyTransparent: rgba(245,245,246, 0.6);
 $darkGrey: rgb(139,142,147);
 
 
@@ -253,7 +254,7 @@ body {
 }
 
 /*Image Gallery*/
-.projects-title {
+.page-title {
     padding-top: 50px;
     padding-bottom: 50px;
     text-align: center;
@@ -278,7 +279,6 @@ body {
     }
 }
 
-
 /*Google map*/
 .map-container {
     height: 400px;
@@ -298,8 +298,7 @@ body {
     }
 }
 
-
-
+/*Services*/
 .info.info-boxed {
     margin-top: 85px;
     background: 0 0;
@@ -350,6 +349,30 @@ body {
     }
 }
 
+/*Team*/
+.team-container {
+    .team-item {
+        position: relative;
+        margin-bottom: 15px;
+
+        img {
+            display: block;
+            height: auto;
+            width: 100%;
+        }
+
+        .team-text {
+            position: absolute;
+            bottom: 0;
+            left: 15px;
+            right: 15px;
+            background-color: $lightGreyTransparent;
+            transition: .5s ease;
+            display: block;
+            padding: 10px;
+        }
+    }
+}
 
 .content-wrapper {
     min-height: calc(100vh - 176px);

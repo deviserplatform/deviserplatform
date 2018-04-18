@@ -1,0 +1,39 @@
+﻿@model DynamicContent
+@inject IScopeService scopeService
+@{
+    var pageContext = scopeService.PageContext;
+    var currentCulture = pageContext.CurrentCulture.ToString();
+    var properties = Model.PageContent.Properties;
+    var pageContentId = Model.PageContent.Id;
+
+    dynamic rootObj = Model.Content;
+    int totalItems = 0;
+    if (rootObj != null)
+    {
+        totalItems = rootObj.items.Count;
+    }
+}
+
+@if (rootObj != null)
+{
+    <div id="@pageContentId" class="team-container row">
+        <!-- Slides -->
+        @foreach (var item in rootObj.items)
+        {
+        <div class="team-item col-12 col-sm-6 col-md-4 col-lg-3">
+            <img src="@item.imageUrl" alt="@item.imageAltText" />
+            <div class="team-text">
+                <h4>@item.name</h4>
+                <span>@item.position</span>
+            </div>
+
+        </div>
+        }
+    </div>
+}
+else
+{
+<div>
+    Please enter the content
+</div>
+}

@@ -6167,7 +6167,7 @@ body {
     background: #fff; }
 
 /*Image Gallery*/
-.projects-title {
+.page-title {
   padding-top: 50px;
   padding-bottom: 50px;
   text-align: center; }
@@ -6194,6 +6194,7 @@ body {
     .map-container .custom-info-window .title {
       font-weight: 600; }
 
+/*Services*/
 .info.info-boxed {
   margin-top: 85px;
   background: 0 0;
@@ -6225,6 +6226,24 @@ body {
       background-color: #ef4934; }
       .info.info-boxed:hover .icon-circle svg path {
         fill: #fff; }
+
+/*Team*/
+.team-container .team-item {
+  position: relative;
+  margin-bottom: 15px; }
+  .team-container .team-item img {
+    display: block;
+    height: auto;
+    width: 100%; }
+  .team-container .team-item .team-text {
+    position: absolute;
+    bottom: 0;
+    left: 15px;
+    right: 15px;
+    background-color: rgba(245, 245, 246, 0.6);
+    transition: .5s ease;
+    display: block;
+    padding: 10px; }
 
 .content-wrapper {
   min-height: calc(100vh - 176px);
