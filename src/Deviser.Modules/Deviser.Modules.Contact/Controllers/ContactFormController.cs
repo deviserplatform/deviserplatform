@@ -85,8 +85,8 @@ namespace Deviser.Modules.ContactForm.Controllers
                     await _emailsender.SendEmailAsync(adminEmail, subject, message, fromEmail);
 
                     //Send Email to Contact
-                    message = ViewExtensions.RenderPartial($"{_modulePath}/EmailTemplates/{contact}.cshtml", data, HttpContext);
-                    await _emailsender.SendEmailAsync(adminEmail, subject, message, fromEmail);
+                    message = ViewExtensions.RenderPartial($"{_modulePath}/EmailTemplates/{contactEmailTemplate}.cshtml", data, HttpContext);
+                    await _emailsender.SendEmailAsync(data.Email, subject, message, fromEmail);
 
                     if (result)
                         return Ok();
@@ -106,9 +106,9 @@ namespace Deviser.Modules.ContactForm.Controllers
             var pageModule = _moduleManager.GetPageModule(pageModuleId);
             var pageModuleProperties = pageModule.Properties;
             //Copy property options from master data
-            if (pageModule.Module.Properties != null && pageModule.Module.Properties.Count > 0)
+            if (pageModule.ModuleAction.Properties != null && pageModule.ModuleAction.Properties.Count > 0)
             {
-                foreach (var prop in pageModule.Module.Properties)
+                foreach (var prop in pageModule.ModuleAction.Properties)
                 {
                     var propValue = pageModule.Properties.FirstOrDefault(p => p.Id == prop.Id);
                     if (propValue != null)

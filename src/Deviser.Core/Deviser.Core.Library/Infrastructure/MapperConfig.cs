@@ -38,17 +38,20 @@ namespace Deviser.Core.Library.Infrastructure
                     .ReverseMap()
                     .ForMember(dest => dest.Properties, opt => opt.MapFrom(src =>
                       src.LayoutTypeProperties != null ? src.LayoutTypeProperties.Select(ctp => ctp.Property) : null));
-                    
-                    config.CreateMap<Core.Common.DomainTypes.Module, Module>()
-                     .ForMember(dest => dest.ModuleProperties, opt => opt.MapFrom(src =>
-                        src.Properties != null ? src.Properties.Select(ctp => new ModuleProperty { PropertyId = ctp.Id, ModuleId = src.Id }) : null))
-                    .ReverseMap()
-                    .ForMember(dest => dest.Properties, opt => opt.MapFrom(src =>
-                      src.ModuleProperties != null ? src.ModuleProperties.Select(ctp => ctp.Property) : null));
+
+                    config.CreateMap<Core.Common.DomainTypes.Module, Module>().ReverseMap();
 
                     config.CreateMap<ModuleAction, Core.Common.DomainTypes.ModuleAction>()
-                    .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.Module.ModuleProperties!= null ? src.Module.ModuleProperties.Select(ctp => ctp.Property) : null))
-                    .ReverseMap();
+                    .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.ModuleActionProperties != null ? src.ModuleActionProperties.Select(ctp => ctp.Property) : null))
+                    .ReverseMap()
+                    .ForMember(dest => dest.ModuleActionProperties, opt => opt.MapFrom(src => src.Properties != null ? src.Properties.Select(macp => new ModuleActionProperty { PropertyId = macp.Id, ModuleActionId = src.Id }) : null));
+
+                    //config.CreateMap<Core.Common.DomainTypes.Module, Module>()
+                    // .ForMember(dest => dest.ModuleProperties, opt => opt.MapFrom(src =>
+                    //    src.Properties != null ? src.Properties.Select(ctp => new ModuleProperty { PropertyId = ctp.Id, ModuleId = src.Id }) : null))
+                    //.ReverseMap()
+                    //.ForMember(dest => dest.Properties, opt => opt.MapFrom(src =>
+                    //  src.ModuleProperties != null ? src.ModuleProperties.Select(ctp => ctp.Property) : null));
 
                     config.CreateMap<ModuleActionType, Core.Common.DomainTypes.ModuleActionType>().ReverseMap();
                     config.CreateMap<ModulePermission, Core.Common.DomainTypes.ModulePermission>().ReverseMap();

@@ -191,20 +191,20 @@
 
         function addProperty() {
             if (!isPropExist()) {
-                if (!vm.selectedModule.properties) {
-                    vm.selectedModule.properties = [];
+                if (!vm.selectedModuleAction.properties) {
+                    vm.selectedModuleAction.properties = [];
                 }
 
                 if (vm.selectedProperty.id) {
                     //Add existing property
-                    vm.selectedModule.properties.push(vm.selectedProperty)
+                    vm.selectedModuleAction.properties.push(vm.selectedProperty)
                 }
                 else {
                     //Add new property to service and then add it to selected content type
                     propertyService.post(vm.selectedProperty).then(function (property) {
                         console.log(property);
                         vm.selectedProperty = property;
-                        vm.selectedModule.properties.push(vm.selectedProperty)
+                        vm.selectedModuleAction.properties.push(vm.selectedProperty)
                         getProperties();
                         showMessage("success", "New property has been added");
                     }, function (error) {
@@ -216,13 +216,13 @@
 
 
         function isPropExist() {
-            var isExist = _.find(vm.selectedModule.properties, { id: vm.selectedProperty.id });
+            var isExist = _.find(vm.selectedModuleAction.properties, { id: vm.selectedProperty.id });
             return isExist;
         }
 
 
         function removeProperty(property) {
-            vm.selectedModule.properties = _.reject(vm.selectedModule.properties, function (prop) {
+            vm.selectedModuleAction.properties = _.reject(vm.selectedModuleAction.properties, function (prop) {
                 return prop.id === property.id;
             })
         }

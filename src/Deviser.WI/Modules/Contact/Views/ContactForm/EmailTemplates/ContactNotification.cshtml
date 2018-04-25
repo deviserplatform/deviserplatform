@@ -2,29 +2,13 @@
   
 
 <p>
-    Dear Admin, <br />
-    You have received new request
+    Dear @Model.FirstName @Model.LastName, <br />
+    Thank you for your interest, we will get back to you.
 </p>
 
-<table>
+<table>    
     <tr>
-        <th>First Name</th>
-        <td>@Model.FirstName</td>
-    </tr>
-    <tr>
-        <th>Last Name</th>
-        <td>@Model.LastName</td>
-    </tr>
-    <tr>
-        <th>Email</th>
-        <td>@Model.Email</td>
-    </tr>
-    <tr>
-        <th>Company</th>
-        <td>@Model.Company</td>
-    </tr>
-    <tr>
-        <th>Message</th>
+        <th>Your message</th>
         <td>@Model.Message</td>
     </tr>
 </table>

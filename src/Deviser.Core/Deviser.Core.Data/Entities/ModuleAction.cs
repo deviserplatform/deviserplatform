@@ -18,5 +18,6 @@ namespace Deviser.Core.Data.Entities
         public virtual ModuleActionType ModuleActionType { get; set; }
         public virtual Module Module { get; set; }
         public virtual ICollection<PageModule> PageModules { get; set; }
+        public ICollection<ModuleActionProperty> ModuleActionProperties { get; set; }
     }
 }

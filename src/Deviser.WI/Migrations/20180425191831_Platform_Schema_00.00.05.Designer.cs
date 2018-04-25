@@ -11,9 +11,10 @@ using System;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDbContext))]
-    partial class DeviserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180425191831_Platform_Schema_00.00.05")]
+    partial class Platform_Schema_000005
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -249,11 +250,11 @@ namespace Deviser.WI.Migrations
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleActionProperty", b =>
                 {
-                    b.Property<Guid>("ModuleActionId");
+                    b.Property<Guid>("ModuleId");
 
                     b.Property<Guid>("PropertyId");
 
-                    b.HasKey("ModuleActionId", "PropertyId");
+                    b.HasKey("ModuleId", "PropertyId");
 
                     b.HasIndex("PropertyId");
 
@@ -848,7 +849,7 @@ namespace Deviser.WI.Migrations
                 {
                     b.HasOne("Deviser.Core.Data.Entities.ModuleAction", "ModuleAction")
                         .WithMany("ModuleActionProperties")
-                        .HasForeignKey("ModuleActionId")
+                        .HasForeignKey("ModuleId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Deviser.Core.Data.Entities.Property", "Property")

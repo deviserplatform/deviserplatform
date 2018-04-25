@@ -397,8 +397,8 @@ namespace Deviser.Core.Data.Repositories
                 {
                     var result = context.PageModule
                                 .Where(e => e.PageId == pageId && !e.IsDeleted)
-                                .Include(e => e.Module).ThenInclude(mp => mp.ModuleProperties).ThenInclude(cp => cp.Property)
-                                .Include(e => e.ModuleAction)
+                                .Include(e => e.Module)
+                                .Include(e => e.ModuleAction).ThenInclude(mp => mp.ModuleActionProperties).ThenInclude(cp => cp.Property)
                                 .Include(e => e.ModulePermissions)
                                 .OrderBy(p => p.Id)
                                 .ToList();
@@ -421,7 +421,8 @@ namespace Deviser.Core.Data.Repositories
                 {
                     var result = context.PageModule
                         .Include(pm => pm.ModulePermissions)
-                        .Include(pm => pm.Module).ThenInclude(ma => ma.ModuleProperties).ThenInclude(cp => cp.Property).ThenInclude(p=>p.OptionList)
+                        .Include(pm => pm.Module)
+                        .Include(e => e.ModuleAction).ThenInclude(ma => ma.ModuleActionProperties).ThenInclude(cp => cp.Property).ThenInclude(p=>p.OptionList)
                         .Where(e => e.Id == pageModuleId && !e.IsDeleted)
                         .OrderBy(p => p.Id)
                         .FirstOrDefault();
