@@ -193,8 +193,7 @@
                             <div ng-repeat="contentType in editVM.contentTypes | orderBy:'contentType.sortOrder'"
                                  dnd-type="contentType.type"
                                  dnd-draggable="contentType"
-                                 dnd-effect-allowed="copy"
-                                 dnd-copied="editVM.copyElement(contentType)">
+                                 dnd-effect-allowed="copy">
                                 <button type="button" class="btn btn-sm btn-default">
                                     <i class="{{contentType.contentType.iconClass}}" ng-show="contentType.contentType.iconClass"></i>
                                     <img src="{{contentType.contentType.iconImage}}" ng-show="contentType.contentType.iconImage" alt="{{contentType.contentType.name}}" />
@@ -215,8 +214,7 @@
                             <div ng-repeat="item in editVM.modules"
                                  dnd-type="item.type"
                                  dnd-draggable="item"
-                                 dnd-effect-allowed="copy"
-                                 dnd-copied="editVM.copyElement(item)">
+                                 dnd-effect-allowed="copy">
                                 <button type="button" class="btn btn-sm btn-default">
                                     <i class="{{item.moduleAction.iconClass}}" ng-show="item.moduleAction.iconClass"></i>
                                     <img src="{{item.moduleAction.iconImage}}" ng-show="item.moduleAction.iconImage" alt="{{item.moduleAction.name}}" />
@@ -318,9 +316,9 @@
                                     <div class="col-md-6" ng-show="!property.optionList">
                                         <input type="text" class="form-control input-sm" ng-model="property.value" />
                                     </div>
-                                    <div class="col-md-6" ng-show="property.optionList">
-                                        <option value="">Select</option>
+                                    <div class="col-md-6" ng-show="property.optionList">                                        
                                         <select class="form-control input-sm" name="repeatSelect" id="repeatSelect" ng-model="property.value">
+                                            <option value="">Select</option>
                                             <option ng-repeat="option in property.optionList" value="{{option.id}}">{{option.label}}</option>
                                         </select>
                                     </div>

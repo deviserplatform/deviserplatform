@@ -135,6 +135,7 @@
         var vm = this;
 
         var containerIds = [];
+        var pageLayout = {}
 
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
 
@@ -152,7 +153,7 @@
         vm.itemMoved = itemMoved;
         vm.deleteElement = deleteElement;
         vm.selectItem = selectItem;
-        vm.copyElement = copyElement;
+        //vm.copyElement = copyElement;
         vm.editContent = editContent;
         vm.editModule = editModule;
         vm.openModuleActionEdit = openModuleActionEdit;
@@ -160,7 +161,7 @@
         vm.changeContentPermission = changeContentPermission;
         vm.saveProperties = saveProperties;
         vm.setColumnWidth = editLayoutUtil.setColumnWidth;
-        vm.positionPageContents = positionPageContents;
+        //vm.positionPageElements = positionPageElements;
         vm.draft = draft;
         vm.publish = publish;
         init();
@@ -171,7 +172,7 @@
         //Controller initialization
         function init() {
             vm.uaLayout = {}; //unassigned layout
-            var pageLayout = {};
+            pageLayout = {};
 
             getCurrentPage().then(function () {
                 $q.all([
@@ -182,7 +183,7 @@
                     getPageContents(),
                     getPageModules()
                 ]).then(function () {
-                    loadPageContents();
+                    loadPageElements();
                 });
             });
         }
@@ -214,7 +215,7 @@
 
             console.log('updatingElement');
             //Update elements should be called each time even if the item is not new,
-            //because when a item moved from one placeholder to another placeholder container should be updated!
+            //because when an item moved from one placeholder to another, the container and moved item should be updated!
             updateElements(parentScope.item);
         }
 
@@ -227,7 +228,9 @@
             var parentItem = $(event.currentTarget).closest('.dnd-list').scope().parentItem;
             placeHolders.splice(index, 1);
             updateElements(parentItem);
+            console.log('-----------------------');
             console.log('itemMoved');
+            console.log('-----------------------');
         }
 
         function deleteElement(event, index, item) {
@@ -238,16 +241,24 @@
         function selectItem(item) {
             if (item.layoutTemplate === "content" || item.layoutTemplate === "module") {
                 vm.selectedItem = item;
+                _.forEach(item.properties, function (prop) {                    
+                    if (prop.optionList && prop.optionList.list) {
+                        prop.optionList = angular.fromJson(prop.optionList.list);
+                    }
+                });
 
-                //if (item.layoutTemplate === "module") {
-                //    item.properties = 
+                //if (item.layoutTemplate === "content") {
+                //    vm.selectedItem = getPageContentWithProperties(item.pageContent);
+                //}
+                //else {
+                //    vm.selectedItem = getPageModulesWithProperties(item.pageModule);
                 //}
             }
         }
 
-        function copyElement(contentType) {
-            //contentType.id = vm.newGuid();
-        }
+        //function copyElement(contentType) {
+        //    //contentType.id = vm.newGuid();
+        //}
 
         function editContent(content) {
             var defer = $q.defer();
@@ -439,6 +450,26 @@
             }
         }
 
+        function draft() {
+            pageService.draftPage(vm.currentPage.id).then(function (data) {
+                vm.currentPage.state = "Publish";
+                showMessage("success", "The Page has been drafted.");
+            }, function (error) {
+                showMessage("error", "Cannot draft the page, please contact the administrator.");
+            });
+        }
+
+        function publish() {
+            if (vm.currentPage.state == 'Publish') {
+                pageService.publishPage(vm.currentPage.id).then(function (data) {
+                    vm.currentPage.state = "Published";
+                    showMessage("success", "The Page has been published.");
+                }, function (error) {
+                    showMessage("error", "Cannot publish the page, please contact the administrator.");
+                });
+            }
+        }
+
         /*Private functions*/
         function getCurrentPage() {
             var defer = $q.defer();
@@ -558,13 +589,14 @@
             return defer.promise;
         }
 
-        function loadPageContents() {
+        //Once all required data has been received, loading all elements (pageContent, pageModule and placeholders) in the view. 
+        function loadPageElements() {
 
             var unAssignedContents = [],
                 unAssignedModules = [];
 
             //First, position elements in correct order and then assign the pageLayout to VM.
-            vm.positionPageContents(pageLayout.placeHolders);
+            positionPageElements(pageLayout.placeHolders);
             vm.pageLayout = pageLayout;
             vm.pageLayout.pageId = vm.currentPage.id;
 
@@ -584,15 +616,8 @@
 
             _.forEach(unAssignedSrcModules, function (pageModule) {
                 var index = pageModule.sortOrder - 1;
-                var module = {
-                    id: pageModule.id,
-                    layoutTemplate: "module",
-                    type: "module",
-                    moduleAction: pageModule.moduleAction,
-                    pageModule: pageModule,
-                    sortOrder: pageModule.sortOrder,
-                    isUnassigned: true
-                };//JSON.parse(pageModule.module);
+                var module = getPageModulesWithProperties(pageModule);
+                module.isUnassigned = true;
                 unAssignedModules.push(module);
             })
 
@@ -603,7 +628,7 @@
 
         }
 
-        function positionPageContents(placeHolders) {
+        function positionPageElements(placeHolders) {
             if (placeHolders) {
                 _.forEach(placeHolders, function (item) {
                     //console.log(item)
@@ -624,10 +649,9 @@
                         });
                     }
 
-                    if (item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module') {
-                        syncPropertyForElement(item)
-                    }
-                    
+                    //if (item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module') {
+                    //    syncPropertyForElement(item)
+                    //}                   
 
                     //Load modules if found
                     var pageModules = _.filter(vm.pageModules, { containerId: item.id });
@@ -635,24 +659,9 @@
                         _.forEach(pageModules, function (pageModule) {
                             var index = pageModule.sortOrder - 1;
                             var module = getPageModulesWithProperties(pageModule);
-                            //var module = {
-                            //    id: pageModule.id,
-                            //    layoutTemplate: "module",
-                            //    type: "module",
-                            //    title: pageModule.title,
-                            //    moduleAction: pageModule.moduleAction,
-                            //    pageModule: pageModule,
-                            //    sortOrder: pageModule.sortOrder,
-                            //    properties : pageModule.properties
-                            //};//JSON.parse(pageModule.module);
-                            //item.placeHolders.splice(index, 0, module); //Insert placeHolder into specified index
-
-                            if (!module.title) {
-                                
-                               
+                            if (!module.title) {                               
                                 module.title = module.moduleAction.displayName + ' ' + (item.placeHolders.length + 1);
                             }
-
                             item.placeHolders.push(module);
                         });
                     }
@@ -660,34 +669,34 @@
                     item.placeHolders = _.sortBy(item.placeHolders, ['sortOrder']);
 
                     if (item.placeHolders) {
-                        vm.positionPageContents(item.placeHolders);
+                        positionPageElements(item.placeHolders);
                     }
                 });
             }
         }
 
-        function syncPropertyForElement(element) {
-            var propertiesValue = element.properties;
-            var masterLayout = _.find(vm.layoutTypes, { id: element.layoutTypeId });
-            var masterProperties = masterLayout.properties;
-            _.forEach(masterProperties, function (prop) {
-                if (prop) {
-                    var propVal = _.find(propertiesValue, { id: prop.id });
-                    if (propVal) {
-                        //Property exist, update property label
-                        propVal.label = prop.label;
-                        propVal.description = prop.description;
-                        propVal.defaultValue = prop.defaultValue;
-                        propVal.optionList = prop.optionList;
-                        propVal.optionListId = prop.optionListId;
-                    }
-                    else {
-                        //Property not exist, add the property                      
-                        element.properties.push(angular.copy(prop));
-                    }
-                }
-            });
-        }
+        //function syncPropertyForElement(element) {
+        //    var propertiesValue = element.properties;
+        //    var masterLayout = _.find(vm.layoutTypes, { id: element.layoutTypeId });
+        //    var masterProperties = masterLayout.properties;
+        //    _.forEach(masterProperties, function (prop) {
+        //        if (prop) {
+        //            var propVal = _.find(propertiesValue, { id: prop.id });
+        //            if (propVal) {
+        //                //Property exist, update property label
+        //                propVal.label = prop.label;
+        //                propVal.description = prop.description;
+        //                propVal.defaultValue = prop.defaultValue;
+        //                propVal.optionList = prop.optionList;
+        //                propVal.optionListId = prop.optionListId;
+        //            }
+        //            else {
+        //                //Property not exist, add the property                      
+        //                element.properties.push(angular.copy(prop));
+        //            }
+        //        }
+        //    });
+        //}
 
         function getPageContentWithProperties(pageContent) {
             var propertiesValue = pageContent.properties;
@@ -993,26 +1002,6 @@
                     content: ""
                 };
             }, globals.appSettings.alertLifeTime);
-        }
-
-        function draft() {
-            pageService.draftPage(vm.currentPage.id).then(function (data) {
-                vm.currentPage.state = "Publish";
-                showMessage("success", "The Page has been drafted.");
-            }, function (error) {
-                showMessage("error", "Cannot draft the page, please contact the administrator.");
-            });
-        }
-
-        function publish() {
-            if (vm.currentPage.state == 'Publish') {
-                pageService.publishPage(vm.currentPage.id).then(function (data) {
-                    vm.currentPage.state = "Published";
-                    showMessage("success", "The Page has been published.");
-                }, function (error) {
-                    showMessage("error", "Cannot publish the page, please contact the administrator.");
-                });
-            }
         }
     }
 

@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc.Abstractions;
+using System.Linq;
 
 namespace Deviser.Modules.ContactForm.Controllers
 {
@@ -36,6 +37,8 @@ namespace Deviser.Modules.ContactForm.Controllers
         private readonly IEmailSender _emailsender;
         private readonly IViewRenderService _viewRenderService;
 
+        private const string _modulePath = "~/Modules/Contact/Views/ContactForm";
+
         public ContactFormController(IServiceProvider serviceProvider)
         {
             _logger = serviceProvider.GetService<ILogger<ContactFormController>>();
@@ -50,7 +53,10 @@ namespace Deviser.Modules.ContactForm.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            var moduleProperties = GetModuleProperties(PageModuleId);
+            string viewTemplate = moduleProperties.Get("cf_view_template")?.ToString();
+            var viewPath = $"{_modulePath}/ViewTemplates/{viewTemplate}.cshtml";
+            return View(viewPath);
         }
 
         [HttpPost]
@@ -58,31 +64,34 @@ namespace Deviser.Modules.ContactForm.Controllers
         public async Task<IActionResult> Submit([FromBody]Contact contact)
         {
             try
-            {  
-                if(contact != null)
+            {
+                if (contact != null)
                 {
                     var userName = HttpContext.User.Identity.Name;
                     contact.CreatedBy = _userProvider.GetUser(userName);
                     contact.CreatedOn = DateTime.Now;
                     var result = _contactProvider.submitData(contact);
+                    System.Collections.Generic.ICollection<Property> pageModuleProperties = GetModuleProperties(contact.PageModuleId);
 
-                    var pageModule = _moduleManager.GetPageModule(contact.PageModuleId);
-                    var pageModuleProperties = pageModule.Properties;
-
-                    string email = pageModuleProperties.Get("to")?.ToString();
+                    string adminEmail = pageModuleProperties.Get("cf_admin_email")?.ToString();
                     string fromEmail = pageModuleProperties.Get("from")?.ToString();
                     string subject = pageModuleProperties.Get("subject")?.ToString();
-
-                    
-                    string templatePath = "~/Modules/Contact/Views/ContactForm/";
+                    string adminEmailTemplate = pageModuleProperties.Get("cf_admin_email_template")?.ToString();
+                    string contactEmailTemplate = pageModuleProperties.Get("cf_contact_email_template")?.ToString();
                     dynamic data = JObject.Parse(contact.Data);
-                    string message = ViewExtensions.RenderPartial($"{templatePath}ContactTemplate.cshtml", data, HttpContext);
 
-                    await _emailsender.SendEmailAsync(email, subject, message, fromEmail);
+                    //Send Email to Admin
+                    string message = ViewExtensions.RenderPartial($"{_modulePath}/EmailTemplates/{adminEmailTemplate}.cshtml", data, HttpContext);
+                    await _emailsender.SendEmailAsync(adminEmail, subject, message, fromEmail);
+
+                    //Send Email to Contact
+                    message = ViewExtensions.RenderPartial($"{_modulePath}/EmailTemplates/{contact}.cshtml", data, HttpContext);
+                    await _emailsender.SendEmailAsync(adminEmail, subject, message, fromEmail);
+
                     if (result)
                         return Ok();
-                }        
-                
+                }
+
                 return NotFound();
             }
             catch (Exception ex)
@@ -90,6 +99,27 @@ namespace Deviser.Modules.ContactForm.Controllers
                 _logger.LogError(string.Format("Error occured while posting the message."), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private System.Collections.Generic.ICollection<Property> GetModuleProperties(Guid pageModuleId)
+        {
+            var pageModule = _moduleManager.GetPageModule(pageModuleId);
+            var pageModuleProperties = pageModule.Properties;
+            //Copy property options from master data
+            if (pageModule.Module.Properties != null && pageModule.Module.Properties.Count > 0)
+            {
+                foreach (var prop in pageModule.Module.Properties)
+                {
+                    var propValue = pageModule.Properties.FirstOrDefault(p => p.Id == prop.Id);
+                    if (propValue != null)
+                    {
+                        propValue.OptionListId = prop.OptionListId;
+                        propValue.OptionList = prop.OptionList;
+                    }
+                }
+            }
+
+            return pageModuleProperties;
         }
     }
 }

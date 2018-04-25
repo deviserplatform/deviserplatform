@@ -20,5 +20,13 @@ namespace Deviser.Core.Library.Controllers
                 return ScoperService.ModuleContext;
             }
         }
+
+        public Guid PageModuleId
+        {
+            get
+            {
+                return (Guid)RouteData.Values["pageModuleId"];
+            }
+        }
     }
 }

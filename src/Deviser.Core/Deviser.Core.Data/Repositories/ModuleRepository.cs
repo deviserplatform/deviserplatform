@@ -88,7 +88,7 @@ namespace Deviser.Core.Data.Repositories
                 using (var context = new DeviserDbContext(DbOptions))
                 {
                     var result = context.ModuleAction
-                        .Include(ma => ma.Module).ThenInclude(mp => mp.ModuleProperties).ThenInclude(p => p.Property)
+                        .Include(ma => ma.Module).ThenInclude(mp => mp.ModuleProperties).ThenInclude(p => p.Property).ThenInclude(p => p.OptionList)
                         .Where(m => m.ModuleActionType.ControlType.ToLower() == "view" && m.Module.IsActive) //Selecting View Actions Only
                         .OrderBy(ma => ma.DisplayName)
                         .ToList();

@@ -421,6 +421,7 @@ namespace Deviser.Core.Data.Repositories
                 {
                     var result = context.PageModule
                         .Include(pm => pm.ModulePermissions)
+                        .Include(pm => pm.Module).ThenInclude(ma => ma.ModuleProperties).ThenInclude(cp => cp.Property).ThenInclude(p=>p.OptionList)
                         .Where(e => e.Id == pageModuleId && !e.IsDeleted)
                         .OrderBy(p => p.Id)
                         .FirstOrDefault();

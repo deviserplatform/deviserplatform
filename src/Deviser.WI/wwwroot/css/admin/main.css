@@ -5835,7 +5835,7 @@ body {
   width: 100%; }
 
 #page-wrapper {
-  padding: 30px;
+  padding: 30px 30px 80px 30px;
   min-height: 568px;
   background-color: #fff;
   min-height: 94vh; }
@@ -5844,7 +5844,6 @@ body {
   #page-wrapper {
     position: inherit;
     margin: 0 0 0 250px;
-    padding: 30px;
     border-left: 1px solid #e7e7e7;
     min-height: 94.7vh; } }
 
