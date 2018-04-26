@@ -6294,9 +6294,9 @@ body {
     height: 60px;
     margin-bottom: 20px;
     display: inline-block;
-    line-height: 60px;
     transition: all .3s ease;
-    font-size: 1.6rem; }
+    font-size: 1.6rem;
+    padding-top: 18px; }
 
 .footer {
   padding: 20px 0;

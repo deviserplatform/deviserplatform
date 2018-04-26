@@ -434,17 +434,17 @@ body {
 
     .features {
         .info .icon-circle {
-            background: #ef4934;
-            color: #fff;
+            background: $devPrimary;
+            color: $white;
             border: 0 solid transparent;
             border-radius: 50%;
             width: 60px;
             height: 60px;
             margin-bottom: 20px;
             display: inline-block;
-            line-height: 60px;
             transition: all .3s ease;
             font-size: 1.6rem;
+            padding-top: 18px;
         }
     }
 }

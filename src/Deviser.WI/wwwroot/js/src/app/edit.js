@@ -649,9 +649,10 @@
                         });
                     }
 
-                    //if (item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module') {
-                    //    syncPropertyForElement(item)
-                    //}                   
+                    //To sync and fetch the layout properties
+                    if (item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module') {
+                        syncPropertyForElement(item)
+                    }                   
 
                     //Load modules if found
                     var pageModules = _.filter(vm.pageModules, { containerId: item.id });
@@ -675,28 +676,29 @@
             }
         }
 
-        //function syncPropertyForElement(element) {
-        //    var propertiesValue = element.properties;
-        //    var masterLayout = _.find(vm.layoutTypes, { id: element.layoutTypeId });
-        //    var masterProperties = masterLayout.properties;
-        //    _.forEach(masterProperties, function (prop) {
-        //        if (prop) {
-        //            var propVal = _.find(propertiesValue, { id: prop.id });
-        //            if (propVal) {
-        //                //Property exist, update property label
-        //                propVal.label = prop.label;
-        //                propVal.description = prop.description;
-        //                propVal.defaultValue = prop.defaultValue;
-        //                propVal.optionList = prop.optionList;
-        //                propVal.optionListId = prop.optionListId;
-        //            }
-        //            else {
-        //                //Property not exist, add the property                      
-        //                element.properties.push(angular.copy(prop));
-        //            }
-        //        }
-        //    });
-        //}
+        //To sync and fetch the layout properties
+        function syncPropertyForElement(element) {
+            var propertiesValue = element.properties;
+            var masterLayout = _.find(vm.layoutTypes, { id: element.layoutTypeId });
+            var masterProperties = masterLayout.properties;
+            _.forEach(masterProperties, function (prop) {
+                if (prop) {
+                    var propVal = _.find(propertiesValue, { id: prop.id });
+                    if (propVal) {
+                        //Property exist, update property label
+                        propVal.label = prop.label;
+                        propVal.description = prop.description;
+                        propVal.defaultValue = prop.defaultValue;
+                        propVal.optionList = prop.optionList;
+                        propVal.optionListId = prop.optionListId;
+                    }
+                    else {
+                        //Property not exist, add the property                      
+                        element.properties.push(angular.copy(prop));
+                    }
+                }
+            });
+        }
 
         function getPageContentWithProperties(pageContent) {
             var propertiesValue = pageContent.properties;
