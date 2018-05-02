@@ -6040,6 +6040,13 @@ body {
 :focus, a:focus, button:focus {
   outline: 0; }
 
+.form-control, .btn {
+  border-radius: 0; }
+
+.form-control:focus, .btn:focus, .btn.focus, .btn-primary:focus, .btn-primary.focus,
+.btn:not(:disabled):not(.disabled):active:focus, .btn:not(:disabled):not(.disabled).active:focus, .show > .btn.dropdown-toggle:focus {
+  box-shadow: none; }
+
 /*--------------------------------------------------------------
     Navigation
  --------------------------------------------------------------*/
@@ -6245,6 +6252,7 @@ body {
     display: block;
     padding: 10px; }
 
+/*General Content*/
 .content-wrapper {
   min-height: calc(100vh - 176px);
   /*Video conent type*/ }
@@ -6297,6 +6305,38 @@ body {
     transition: all .3s ease;
     font-size: 1.6rem;
     padding-top: 18px; }
+
+/*Login*/
+.login-container {
+  padding: 20px; }
+  .login-container .btn {
+    width: 100%; }
+  .login-container .login-right .btn.facebook {
+    color: #fff;
+    background-color: rgba(66, 103, 178, 0.9);
+    border-color: rgba(66, 103, 178, 0.9); }
+    .login-container .login-right .btn.facebook:hover {
+      color: #fff;
+      background-color: #4267b2;
+      border-color: #4267b2; }
+  .login-container .login-right .btn.google {
+    color: #fff;
+    background-color: rgba(213, 75, 61, 0.9);
+    border-color: rgba(213, 75, 61, 0.9); }
+    .login-container .login-right .btn.google:hover {
+      color: #fff;
+      background-color: #d54b3d;
+      border-color: #d54b3d; }
+  .login-container .login-right .btn.twitter {
+    color: #fff;
+    background-color: rgba(30, 160, 242, 0.9);
+    border-color: rgba(30, 160, 242, 0.9); }
+    .login-container .login-right .btn.twitter:hover {
+      color: #fff;
+      background-color: #1ea0f2;
+      border-color: #1ea0f2; }
+  .login-container .forget-password {
+    padding-top: 20px; }
 
 .footer {
   padding: 20px 0;

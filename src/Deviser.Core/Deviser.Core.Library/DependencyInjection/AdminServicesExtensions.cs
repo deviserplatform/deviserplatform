@@ -37,6 +37,7 @@ namespace Deviser.Core.Library.DependencyInjection
         {
 
             services.AddSingleton<IInstallationProvider, InstallationProvider>();
+            services.AddSingleton<ISiteSettingRepository, SiteSettingRepository>();
 
             var sp = services.BuildServiceProvider();
             IInstallationProvider installationProvider = sp.GetRequiredService<IInstallationProvider>();
@@ -51,6 +52,8 @@ namespace Deviser.Core.Library.DependencyInjection
                     installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder);
                 });
 
+            MapperConfig.CreateMaps();
+            sp = services.BuildServiceProvider();
 
             //Add framework services.
             //services.AddDbContext<DeviserDbContext>(options =>
@@ -59,6 +62,47 @@ namespace Deviser.Core.Library.DependencyInjection
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<DeviserDbContext>()
                 .AddDefaultTokenProviders();
+
+            var siteSettingRepository = sp.GetService<ISiteSettingRepository>(); //sp.GetService<ISiteSettingRepository>();
+            var siteSettings = siteSettingRepository.GetSettings();
+
+            var enableFacebookAuth = siteSettings.FirstOrDefault(s => s.SettingName == "EnableFacebookAuth").SettingValue;
+            var facebookAppId = siteSettings.FirstOrDefault(s => s.SettingName == "FacebookAppId").SettingValue;
+            var facebookAppAppSecret = siteSettings.FirstOrDefault(s => s.SettingName == "FacebookAppAppSecret").SettingValue;
+            var enableGoogleAuth = siteSettings.FirstOrDefault(s => s.SettingName == "EnableGoogleAuth").SettingValue;
+            var googleClientId = siteSettings.FirstOrDefault(s => s.SettingName == "GoogleClientId").SettingValue;
+            var googleClientSecret = siteSettings.FirstOrDefault(s => s.SettingName == "GoogleClientSecret").SettingValue;
+            var enableTwitterAuth = siteSettings.FirstOrDefault(s => s.SettingName == "EnableTwitterAuth").SettingValue;
+            var twitterConsumerKey = siteSettings.FirstOrDefault(s => s.SettingName == "TwitterConsumerKey").SettingValue;
+            var twitterConsumerSecret = siteSettings.FirstOrDefault(s => s.SettingName == "TwitterConsumerSecret").SettingValue;
+
+            if (!string.IsNullOrEmpty(enableFacebookAuth) && bool.Parse(enableFacebookAuth.ToLower()))
+            {
+                services.AddAuthentication().AddFacebook(facebookOptions =>
+                {
+                    facebookOptions.AppId = facebookAppId;
+                    facebookOptions.AppSecret = facebookAppAppSecret;
+                });
+            }
+
+            if (!string.IsNullOrEmpty(enableTwitterAuth) && bool.Parse(enableTwitterAuth.ToLower()))
+            {
+                services.AddAuthentication().AddTwitter(twitterOptions =>
+                {
+                    twitterOptions.ConsumerKey = twitterConsumerKey;
+                    twitterOptions.ConsumerSecret = twitterConsumerSecret;
+                });
+            }
+
+            if (!string.IsNullOrEmpty(enableGoogleAuth) && bool.Parse(enableGoogleAuth.ToLower()))
+            {
+                services.AddAuthentication().AddGoogle(googleOptions =>
+                {
+                    googleOptions.ClientId = googleClientId;
+                    googleOptions.ClientSecret = googleClientSecret;
+                });
+            }
+
 
             services.Add(ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, SerializerSettingsSetup>());
 
@@ -73,8 +117,6 @@ namespace Deviser.Core.Library.DependencyInjection
                 .AddControllersAsServices();
 
             services.AddSession();
-
-            MapperConfig.CreateMaps();
 
             // Add application services.
             services.AddTransient<IEmailSender, MessageSender>();
@@ -108,7 +150,7 @@ namespace Deviser.Core.Library.DependencyInjection
             app.UseStaticFiles();
 
             app.UseAuthentication();
-            
+
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
             // IMPORTANT: This session call MUST go before UseMvc()
@@ -116,13 +158,13 @@ namespace Deviser.Core.Library.DependencyInjection
 
             Action<IRouteBuilder> routeBuilder = routes =>
             {
+                routes.MapRoute(name: Globals.moduleRoute,
+                    template: "modules/{area:exists}/{controller=Home}/{action=Index}");
+
                 routes.MapRoute(
                    name: "default",
                    template: "{controller=Page}/{action=Index}/{id?}");
 
-                routes.MapRoute(name: Globals.moduleRoute,
-                    template: "modules/{area:exists}/{controller=Home}/{action=Index}");
-                
                 routes.MapRoute(
                 name: "CmsRoute",
                 template: "{*permalink}",

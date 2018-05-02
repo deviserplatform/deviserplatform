@@ -1,7 +1,11 @@
-﻿(function (window,$) {
+﻿(function (window, $) {
 
-    window.sdFormHelper = init();
-    
+    window.sdFormHelper = init;
+    $(function () {
+        init();
+    });
+
+
     //////////////////////////////////
     /*Function declarations only*/
     function init() {
@@ -14,9 +18,9 @@
     function formSubmit(event) {
         event.preventDefault();
         var $form = $(this),
-        url = $form.attr('action'),
-        fromData = $form.serialize(),
-        formMethod = $form.attr('method').toUpperCase();
+            url = $form.attr('action'),
+            fromData = $form.serialize(),
+            formMethod = $form.attr('method').toUpperCase();
 
         console.log(fromData);
 
@@ -78,5 +82,5 @@
         });
 
     }
-    
-}(window,$));
+
+}(window, $));

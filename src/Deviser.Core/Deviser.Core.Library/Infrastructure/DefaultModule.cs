@@ -42,7 +42,7 @@ namespace Deviser.Core.Library.Infrastructure
             builder.RegisterType<PageContentRepository>().As<IPageContentRepository>().InstancePerDependency();
             builder.RegisterType<PageRepository>().As<IPageRepository>().InstancePerDependency();
             builder.RegisterType<RoleRepository>().As<IRoleRepository>().InstancePerDependency();
-            builder.RegisterType<SiteSettingRepository>().As<ISiteSettingRepository>().InstancePerDependency();
+            //builder.RegisterType<SiteSettingRepository>().As<ISiteSettingRepository>().InstancePerDependency(); moved to core lib
             builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerDependency();
             builder.RegisterType<LanguageRepository>().As<ILanguageRepository>().InstancePerDependency();
             builder.RegisterType<OptionListRepository>().As<IOptionListRepository>().InstancePerDependency();

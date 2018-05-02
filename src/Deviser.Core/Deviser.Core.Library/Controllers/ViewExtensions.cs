@@ -167,13 +167,33 @@ namespace Deviser.Core.Library.Controllers
 
             using (var writer = new StringWriter())
             {
+                //var viewContext = new ViewContext(
+                //    actionContext,
+                //    view,
+                //    viewData,
+                //    tempData,
+                //    writer,
+                //    viewOption.Value.HtmlHelperOptions);
+
+                var routeData = new RouteData();
+                //routeData.Values.Add("area", actionContext.RouteData.Values["area"]); //area information has been removed intentionally, because this route date spoils the view context of the parent (Page Controller)
+                routeData.Values.Add("controller", actionContext.RouteData.Values["controller"]);
+                routeData.Values.Add("action", actionContext.RouteData.Values["action"]);
+                routeData.Values.Add("pageModuleId", actionContext.RouteData.Values["pageModuleId"]);
+                foreach(var rt in actionContext.RouteData.Routers)
+                {
+                    routeData.Routers.Add(rt);
+                }
+                
+                var ac = new ActionContext(actionContext.HttpContext, routeData, actionContext.ActionDescriptor);
+
                 var viewContext = new ViewContext(
-                    actionContext,
-                    view,
-                    viewData,
-                    tempData,
-                    writer,
-                    viewOption.Value.HtmlHelperOptions);
+                   ac,
+                   view,
+                   viewData,
+                   tempData,
+                   writer,
+                   viewOption.Value.HtmlHelperOptions);
 
                 ((HtmlHelper)htmlHelper).Contextualize(viewContext);
 

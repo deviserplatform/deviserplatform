@@ -48,6 +48,15 @@ $lightGrey: rgb(245,245,246);
 $lightGreyTransparent: rgba(245,245,246, 0.6);
 $darkGrey: rgb(139,142,147);
 
+$twitterLight: rgba(30, 160, 242, 0.9);
+$facebookLight: rgba(66, 103, 178, 0.9);
+$googleLight: rgba(213, 75, 61, 0.9);
+
+$twitter: rgba(30, 160, 242, 1);
+$facebook: rgba(66, 103, 178, 1);
+$google: rgba(213, 75, 61, 1);
+
+
 
 body {
     font-family: 'Rubik', 'Open Sans', sans-serif;
@@ -65,6 +74,14 @@ body {
     outline: 0;
 }
 
+.form-control, .btn {
+    border-radius: 0;
+}
+
+.form-control:focus, .btn:focus, .btn.focus, .btn-primary:focus, .btn-primary.focus,
+.btn:not(:disabled):not(.disabled):active:focus, .btn:not(:disabled):not(.disabled).active:focus, .show > .btn.dropdown-toggle:focus {
+    box-shadow: none;
+}
 /*--------------------------------------------------------------
     Navigation
  --------------------------------------------------------------*/
@@ -336,7 +353,8 @@ body {
     }
 
     &:hover {
-        background-color:$lightGrey;
+        background-color: $lightGrey;
+
         .icon-circle {
             background-color: $devPrimary;
 
@@ -374,6 +392,7 @@ body {
     }
 }
 
+/*General Content*/
 .content-wrapper {
     min-height: calc(100vh - 176px);
 
@@ -446,6 +465,57 @@ body {
             font-size: 1.6rem;
             padding-top: 18px;
         }
+    }
+}
+
+/*Login*/
+.login-container {
+    padding: 20px;
+
+    .btn {
+        width: 100%;
+    }
+
+    .login-right {
+        .btn.facebook {
+            color: $white;
+            background-color: $facebookLight;
+            border-color: $facebookLight;
+
+            &:hover {
+                color: $white;
+                background-color: $facebook;
+                border-color: $facebook;
+            }
+        }
+
+        .btn.google {
+            color: $white;
+            background-color: $googleLight;
+            border-color: $googleLight;
+
+            &:hover {
+                color: $white;
+                background-color: $google;
+                border-color: $google;
+            }
+        }
+
+        .btn.twitter {
+            color: $white;
+            background-color: $twitterLight;
+            border-color: $twitterLight;
+
+            &:hover {
+                color: $white;
+                background-color: $twitter;
+                border-color: $twitter;
+            }
+        }
+    }
+
+    .forget-password{
+        padding-top:20px;
     }
 }
 

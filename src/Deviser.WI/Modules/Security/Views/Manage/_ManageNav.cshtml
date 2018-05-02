@@ -1,0 +1,16 @@
+﻿@using OAuthMVC.Views.Manage
+@inject SignInManager<Deviser.Core.Data.Entities.User> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+}
+
+<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+    <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" sd-module="Security" sd-action="Index">Profile</a>
+    <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" sd-module="Security" sd-action="ChangePassword">Password</a>
+    @if (hasExternalLogins)
+    {
+        <a class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" sd-module="Security" sd-action="ExternalLogins">External logins</a>
+    }
+    <a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" sd-module="Security" sd-action="TwoFactorAuthentication">Two-factor authentication</a>
+</div>
+

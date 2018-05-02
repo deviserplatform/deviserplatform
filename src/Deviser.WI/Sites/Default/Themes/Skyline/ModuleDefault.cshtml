@@ -1,0 +1,89 @@
+﻿@using System.Security.Claims
+@using Deviser.Core.Library.TagHelpers;
+@using Deviser.Core.Library;
+@using Deviser.Core.Library.Services;
+@using Deviser.Core.Common;
+@inject IScopeService scopeService
+@inject INavigation navigation
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var pageContext = scopeService.PageContext;
+    var loggedInClass = pageContext.HasPageEditPermission ? "logged-in" : "";
+    var pageContentLoggedInClass = pageContext.HasPageEditPermission ? "page-content-logged-in" : "";
+}
+<require type="Css" priority="10" path="//fonts.googleapis.com/css?family=Rubik"></require>
+<require type="Css" priority="11" path="~/lib/font-awesome/css/font-awesome.css"></require>
+<require type="Css" priority="13" path="~/lib/magnific-popup/dist/magnific-popup.css"></require>
+<require type="Css" priority="14" path="~/lib/swiper/dist/css/swiper.css"></require>
+<require type="Css" priority="15" path="~/lib/photoswipe/dist/photoswipe.css"></require>
+<require type="Css" priority="16" path="~/lib/photoswipe/dist/default-skin/default-skin.css"></require>
+<require type="Css" priority="17" path="~/css/site.css"></require>
+
+<require type="Script" priority="10" location="Head" path="~/lib/jquery/dist/jquery.js" test="test"></require>
+<require type="Script" priority="11" location="Head" path="~/lib/jquery-ui/jquery-ui.js"></require>
+<require type="Script" priority="12" location="Head" path="//maps.googleapis.com/maps/api/js?key=AIzaSyDXVNBX9Jhd_CB2UUcRa897oD6rWzRhupQ"></require>
+<require type="Script" priority="13" location="Head" path="~/js/infobox.js"></require>
+<require type="Script" priority="14" location="Head" path="~/js/sd-maps.js"></require>
+
+<require type="Script" location="Head" priority="20" path="~/lib/bootstrap/dist/js/bootstrap.js"></require>
+<require type="Script" location="Head" priority="21" path="~/lib/magnific-popup/dist/jquery.magnific-popup.js"></require>
+<require type="Script" location="Head" priority="22" path="~/js/src/app/sd-form-helper.js"></require>
+<require type="Script" location="Head" priority="23" path="~/lib/swiper/dist/js/swiper.js"></require>
+<require type="Script" location="Head" priority="23" path="~/lib/photoswipe/dist/photoswipe.min.js"></require>
+<require type="Script" location="Head" priority="23" path="~/lib/photoswipe/dist/photoswipe-ui-default.min.js"></require>
+<require type="Script" location="Head" priority="30" path="~/js/site.js"></require>
+
+@await Component.InvokeAsync("ControlBar")
+
+<nav class="skyline-nav navbar navbar-expand-lg navbar-light bg-light @loggedInClass">
+    <div class="container">
+        <a class="navbar-brand" href="@pageContext.HomePageFullUrl">
+            <img src="/images/DeviserLogoDark.svg" onerror="this.src='/images/DeviserLogoDark.png'; this.onerror=null;" alt="DEVISER">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="header-top">
+                @await Html.PartialAsync("_LoginPartial")
+                <ul class="language-switcher">
+                    @await Component.InvokeAsync("LanguageSwitcher")
+                </ul>
+            </div>
+            <ul sd-nav="Site" sd-nav-page="PublicOnly" class="navbar-nav ml-auto"></ul>
+
+            @*<ul class="navbar-nav">
+                    @await Component.InvokeAsync("LanguageSwitcher")
+                    <li class="nav-item">
+                        <a class="nav-link" href="@navigation.NavigateUrl(pageContext.SiteSettingInfo.LoginPageId)">Login</a>
+                    </li>
+                </ul>*@
+        </div>
+    </div>
+</nav>
+
+<div class="content-wrapper @pageContentLoggedInClass">
+    <div class="container">
+        @RenderBody()
+    </div>
+</div>
+
+<footer class="footer footer-classic bg-dark">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="text-center">
+                    <p>
+                        Copyright &copy; @DateTime.Now.Year Karthick Sundararajan. <a href="#" title="source"> <i class="fa fa-github"></i></a> Released under the <a href="https://opensource.org/licenses/MIT" title="License" target="_blank">MIT License</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+@section Scripts{
+    @RenderSection("scripts", required: false)
+}
