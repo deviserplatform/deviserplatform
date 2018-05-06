@@ -10,18 +10,19 @@
     ]);
 
     app.controller('SiteSettingsCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'sdUtil',
-        'siteSettingService', 'pageService', 'layoutService', 'themeService', 'languageService', siteSettingsCtrl]);
+        'siteSettingService', 'pageService', 'layoutService', 'themeService', 'languageService', 'applicationService', siteSettingsCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
     function siteSettingsCtrl($scope, $timeout, $filter, $q, globals, sdUtil,
-        siteSettingService, pageService, layoutService, themeService, languageService) {
+        siteSettingService, pageService, layoutService, themeService, languageService, applicationService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
 
         /*Function bindings*/
         vm.update = updateSiteSettings;
+        vm.restartApplication = restartApplication;
         vm.cancel = cancel;
 
         init();
@@ -49,6 +50,15 @@
                 showMessage("error", "Cannot update site setting please contact administrator");
             });
         }
+
+        function restartApplication() {
+            applicationService.restart().then(function (result) {
+                location.reload();
+            }, function (error) {
+                showMessage("error", "Cannot update site setting please contact administrator");
+            })
+        }
+
         function cancel() {
             getSiteSettings();
         }
@@ -58,8 +68,20 @@
             siteSettingService.get().then(function (siteSettings) {
                 vm.siteSettings = siteSettings;
                 vm.setting = _.keyBy(siteSettings, "settingName");
-                vm.setting.SMTPEnableSSL.settingValue = (vm.setting.SMTPEnableSSL.settingValue === "true") ? true : false;
-                vm.setting.RegistrationEnabled.settingValue = (vm.setting.RegistrationEnabled.settingValue === "true") ? true : false;
+
+                _.forEach(vm.setting, function (setting) {
+                    if (setting && setting.settingValue) {
+                        if (setting.settingValue === 'true') {
+                            setting.settingValue = true;
+                        }
+                        else if (setting.settingValue === 'false') {
+                            setting.settingValue = false;
+                        }
+                    }
+                });
+
+                //vm.setting.SMTPEnableSSL.settingValue = (vm.setting.SMTPEnableSSL.settingValue === "true") ? true : false;
+                //vm.setting.RegistrationEnabled.settingValue = (vm.setting.RegistrationEnabled.settingValue === "true") ? true : false;
 
             }, function (error) {
                 showMessage("error", "Cannot get all Site Settings, please contact administrator");

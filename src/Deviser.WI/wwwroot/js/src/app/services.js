@@ -1,6 +1,7 @@
 ﻿(function () {
     var app = angular.module('deviser.services', ['deviser.config']);
-    app.factory('layoutService', ['$http', '$q', 'globals',layoutService]);
+    app.factory('layoutService', ['$http', '$q', 'globals', layoutService]);
+    app.factory('applicationService', ['$http', '$q', 'globals', applicationService]);
     app.factory('pageService', ['$http', '$q', 'globals',pageService]);
     app.factory('contentTypeService', ['$http', '$q', 'globals',contentTypeService]);
     app.factory('layoutTypeService', ['$http', '$q', 'globals',layoutTypeService]);
@@ -22,6 +23,7 @@
     app.factory('fileService', ['$http', '$q', 'globals',fileService]);
     app.factory('assetService', ['$http', '$q', 'globals',assetService]);
     app.factory('conatctFormService', ['$http', '$q', 'globals', conatctFormService]);
+    
 
     ////////////////////////////////
     /*Function declarations only*/
@@ -35,6 +37,37 @@
 
         function getDeletedLayouts() {
             var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/deletedlist';
+            var request = $http({
+                method: 'GET',
+                url: getUrl
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q);
+            });
+        }
+
+        function restoreLayout(data) {
+            var putUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/' + data.id;
+            var request = $http({
+                method: 'PUT',
+                url: putUrl,
+                data: angular.toJson(data)
+            });
+            return request.then(handleSuccess, function (response) {
+                return handleError(response, $q);
+            });
+        }
+    }
+
+    function applicationService($http, $q, globals) {
+        var serviceUrl = '/application';
+        var service = {
+            restart: restart
+        }
+        return service;
+       
+        function restart() {
+            var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/restart';
             var request = $http({
                 method: 'GET',
                 url: getUrl

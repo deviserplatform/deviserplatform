@@ -68,7 +68,7 @@ namespace Deviser.Core.Library.DependencyInjection
 
             var enableFacebookAuth = siteSettings.FirstOrDefault(s => s.SettingName == "EnableFacebookAuth").SettingValue;
             var facebookAppId = siteSettings.FirstOrDefault(s => s.SettingName == "FacebookAppId").SettingValue;
-            var facebookAppAppSecret = siteSettings.FirstOrDefault(s => s.SettingName == "FacebookAppAppSecret").SettingValue;
+            var facebookAppAppSecret = siteSettings.FirstOrDefault(s => s.SettingName == "FacebookAppSecret").SettingValue;
             var enableGoogleAuth = siteSettings.FirstOrDefault(s => s.SettingName == "EnableGoogleAuth").SettingValue;
             var googleClientId = siteSettings.FirstOrDefault(s => s.SettingName == "GoogleClientId").SettingValue;
             var googleClientSecret = siteSettings.FirstOrDefault(s => s.SettingName == "GoogleClientSecret").SettingValue;

@@ -72,13 +72,6 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-3 control-label">Enable/Disable Registration</label>
-                                        <div class="col-md-6">
-                                            <input type="checkbox" ng-model="ssVM.setting.RegistrationEnabled.settingValue" />
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
                                         <label class="col-md-3 control-label">Site Language</label>
                                         <div class="col-md-6">
                                             <ui-select ng-model="ssVM.setting.SiteLanguage.settingValue" theme="bootstrap" ng-disabled="ssVM.languages.length<=0">
@@ -90,9 +83,6 @@
                                             </ui-select>
                                         </div>
                                     </div>
-
-
-
                                 </div>
                                 <div uib-accordion-group class="panel-default" heading="Page Configuration">
                                     <div class="form-group">
@@ -243,13 +233,76 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div uib-accordion-group class="panel-default" heading="Security">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Allow Registration</label>
+                                        <div class="col-md-6">
+                                            <input type="checkbox" ng-model="ssVM.setting.RegistrationEnabled.settingValue" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-show="ssVM.setting.RegistrationEnabled.settingValue">
+                                        <label class="col-md-3 control-label">Allow Facebook Login</label>
+                                        <div class="col-md-6">
+                                            <input type="checkbox" ng-model="ssVM.setting.EnableFacebookAuth.settingValue" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-show="ssVM.setting.RegistrationEnabled.settingValue && ssVM.setting.EnableFacebookAuth.settingValue">
+                                        <label class="col-md-3 control-label">Facebook AppId</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" ng-model="ssVM.setting.FacebookAppId.settingValue" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-show="ssVM.setting.RegistrationEnabled.settingValue && ssVM.setting.EnableFacebookAuth.settingValue">
+                                        <label class="col-md-3 control-label">Facebook AppSecret</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" ng-model="ssVM.setting.FacebookAppSecret.settingValue" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-show="ssVM.setting.RegistrationEnabled.settingValue">
+                                        <label class="col-md-3 control-label">Allow Google Login</label>
+                                        <div class="col-md-6">
+                                            <input type="checkbox" ng-model="ssVM.setting.EnableGoogleAuth.settingValue" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-show="ssVM.setting.RegistrationEnabled.settingValue && ssVM.setting.EnableGoogleAuth.settingValue">
+                                        <label class="col-md-3 control-label">Google ClientId</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" ng-model="ssVM.setting.GoogleClientId.settingValue" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-show="ssVM.setting.RegistrationEnabled.settingValue && ssVM.setting.EnableGoogleAuth.settingValue">
+                                        <label class="col-md-3 control-label">Google ClientSecret</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" ng-model="ssVM.setting.GoogleClientSecret.settingValue" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-show="ssVM.setting.RegistrationEnabled.settingValue">
+                                        <label class="col-md-3 control-label">Allow Twitter Login</label>
+                                        <div class="col-md-6">
+                                            <input type="checkbox" ng-model="ssVM.setting.EnableTwitterAuth.settingValue" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-show="ssVM.setting.RegistrationEnabled.settingValue && ssVM.setting.EnableTwitterAuth.settingValue">
+                                        <label class="col-md-3 control-label">Twitter ConsumerKey</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" ng-model="ssVM.setting.TwitterConsumerKey.settingValue" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-show="ssVM.setting.RegistrationEnabled.settingValue && ssVM.setting.EnableTwitterAuth.settingValue">
+                                        <label class="col-md-3 control-label">Twitter ConsumerSecret</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" ng-model="ssVM.setting.TwitterConsumerSecret.settingValue" />
+                                        </div>
+                                    </div>
+                                </div>
                             </uib-accordion>
                         </div>
                         <div class="form-actions">
                             <div class="row">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn btn-success" ng-click="ssVM.update()">Update</button>
-                                    <button type="button" class="btn btn-default" ng-click="ssVM.cancel()">Cancel</button>
+                                    <a class="btn btn-success" ng-click="ssVM.update()">Update</a>
+                                    <a class="btn btn-danger" ng-click="ssVM.restartApplication()">Restart Application</a>
+                                    <a class="btn btn-default" ng-click="ssVM.cancel()">Cancel</a>
                                 </div>
                             </div>
                         </div>
