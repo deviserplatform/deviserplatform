@@ -21,7 +21,7 @@ namespace Deviser.Core.Library.TagHelpers
     [HtmlTargetElement("*", Attributes = BcAttributeName)]
     public class BreadCrumbHelper : DeviserTagHelper
     {
-        private const string BcAttributeName = "sd-breadcrumb";
+        private const string BcAttributeName = "dev-breadcrumb";
 
         private readonly IPageRepository _pageRepository;
         private readonly INavigation _navigation;
@@ -48,7 +48,7 @@ namespace Deviser.Core.Library.TagHelpers
         {
             if (string.IsNullOrEmpty(BreadCrumbStyle))
             {
-                output.Content.SetHtmlContent("BreadCrumb style (sd-breadcrumb) cannot be null");
+                output.Content.SetHtmlContent("BreadCrumb style (dev-breadcrumb) cannot be null");
                 return;
             }
 

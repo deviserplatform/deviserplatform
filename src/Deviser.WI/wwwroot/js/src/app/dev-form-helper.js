@@ -1,6 +1,6 @@
 ﻿(function (window, $) {
 
-    window.sdFormHelper = init;
+    window.devFormHelper = init;
     $(function () {
         init();
     });
@@ -10,8 +10,8 @@
     /*Function declarations only*/
     function init() {
         /*Event bindings*/
-        $("body").on("submit", "form.sd-form", formSubmit);
-        $("body").on("click", "a.sd-ajax-load", ajaxAnchorClick)
+        $("body").on("submit", "form.dev-form", formSubmit);
+        $("body").on("click", "a.dev-ajax-load", ajaxAnchorClick)
     }
 
 
@@ -45,7 +45,7 @@
                 }
             }
             else {
-                var $formContainer = $form.closest('.sd-module-container');
+                var $formContainer = $form.closest('.dev-module-container');
                 $form.remove();
                 //$formContainer.empty();
                 $formContainer.html(data);
@@ -72,7 +72,7 @@
 
         request.done(function (data, textStatus, jqXHR) {
             console.log(data); // show response from the server.    
-            var $formContainer = $a.closest('.sd-module-container');
+            var $formContainer = $a.closest('.dev-module-container');
             //$formContainer.empty();
             $formContainer.html(data);
         });

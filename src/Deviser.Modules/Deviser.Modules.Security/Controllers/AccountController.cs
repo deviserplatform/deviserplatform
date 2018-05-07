@@ -269,6 +269,7 @@ namespace Deviser.Modules.Security.Controllers
                     }
                     AddErrors(result);
                 }
+                return View(model);
             }
             return NotFound();
         }
@@ -464,7 +465,7 @@ namespace Deviser.Modules.Security.Controllers
             {
                 // Don't reveal that the user does not exist
                 //return RedirectToAction(nameof(AccountController.ResetPasswordConfirmation), "Account");
-                var url = Url.RouteUrl(Globals.moduleRoute, new { module = ModuleGlobals.ModuleName, Controller = "Account", Action = nameof(ResetPasswordConfirmation) });
+                var url = Url.RouteUrl(Globals.moduleRoute, new { Controller = "Account", Action = nameof(ResetPasswordConfirmation) });
 
                 return Redirect(url);
             }

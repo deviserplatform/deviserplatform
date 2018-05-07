@@ -20,7 +20,7 @@
             <h3 class="modal-title">Edit {{ecVM.typeInfo.type}}</h3>
         </div>
         <div class="modal-body">
-            <div class="form-group" sd-language-selector selected-locale="ecVM.selectedLocale" change-language="ecVM.changeLanguage()" ng-show="ecVM.currentViewState===ecVM.viewStates.LIST"></div>
+            <div class="form-group" dev-language-selector selected-locale="ecVM.selectedLocale" change-language="ecVM.changeLanguage()" ng-show="ecVM.currentViewState===ecVM.viewStates.LIST"></div>
 
             <div ng-show="ecVM.currentViewState===ecVM.viewStates.LIST">
                 <div class="form-group">
@@ -66,7 +66,7 @@
                     <textarea id="txtDescription" class="form-control" ng-model="ecVM.selectedItem.description" placeholder="Enter description"></textarea>
                 </div>
 
-                <div sd-link-selector label="Link" selected-link="ecVM.selectedItem.link" properties="ecVM.properties"></div>
+                <div dev-link-selector label="Link" selected-link="ecVM.selectedItem.link" properties="ecVM.properties"></div>
             </div>
 
         </div>

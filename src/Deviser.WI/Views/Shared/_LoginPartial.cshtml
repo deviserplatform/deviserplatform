@@ -7,7 +7,7 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    <form sd-module="Security" sd-controller="Account" sd-action="LogOut" method="post" id="logoutForm">
+    <form dev-module="Security" dev-controller="Account" dev-action="LogOut" method="post" id="logoutForm">
         <ul class="login">
             <li>@User.Identity.Name</li>
             <li><button type="submit" class="navbar-link">Log off</button></li>

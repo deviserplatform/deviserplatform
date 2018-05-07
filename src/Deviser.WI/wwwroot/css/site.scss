@@ -74,7 +74,7 @@ body {
     outline: 0;
 }
 
-.form-control, .btn {
+.alert, .form-control, .btn, .nav-pills .nav-link {
     border-radius: 0;
 }
 
@@ -469,14 +469,18 @@ body {
 }
 
 /*Login*/
-.login-container {
+.security-container {
     padding: 20px;
 
-    .btn {
+    .btn-primary {
         width: 100%;
     }
 
     .login-right {
+        .btn{
+            width:100%;
+        }
+
         .btn.facebook {
             color: $white;
             background-color: $facebookLight;

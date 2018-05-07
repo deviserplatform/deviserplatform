@@ -6040,7 +6040,7 @@ body {
 :focus, a:focus, button:focus {
   outline: 0; }
 
-.form-control, .btn {
+.alert, .form-control, .btn, .nav-pills .nav-link {
   border-radius: 0; }
 
 .form-control:focus, .btn:focus, .btn.focus, .btn-primary:focus, .btn-primary.focus,
@@ -6307,35 +6307,37 @@ body {
     padding-top: 18px; }
 
 /*Login*/
-.login-container {
+.security-container {
   padding: 20px; }
-  .login-container .btn {
+  .security-container .btn-primary {
     width: 100%; }
-  .login-container .login-right .btn.facebook {
+  .security-container .login-right .btn {
+    width: 100%; }
+  .security-container .login-right .btn.facebook {
     color: #fff;
     background-color: rgba(66, 103, 178, 0.9);
     border-color: rgba(66, 103, 178, 0.9); }
-    .login-container .login-right .btn.facebook:hover {
+    .security-container .login-right .btn.facebook:hover {
       color: #fff;
       background-color: #4267b2;
       border-color: #4267b2; }
-  .login-container .login-right .btn.google {
+  .security-container .login-right .btn.google {
     color: #fff;
     background-color: rgba(213, 75, 61, 0.9);
     border-color: rgba(213, 75, 61, 0.9); }
-    .login-container .login-right .btn.google:hover {
+    .security-container .login-right .btn.google:hover {
       color: #fff;
       background-color: #d54b3d;
       border-color: #d54b3d; }
-  .login-container .login-right .btn.twitter {
+  .security-container .login-right .btn.twitter {
     color: #fff;
     background-color: rgba(30, 160, 242, 0.9);
     border-color: rgba(30, 160, 242, 0.9); }
-    .login-container .login-right .btn.twitter:hover {
+    .security-container .login-right .btn.twitter:hover {
       color: #fff;
       background-color: #1ea0f2;
       border-color: #1ea0f2; }
-  .login-container .forget-password {
+  .security-container .forget-password {
     padding-top: 20px; }
 
 .footer {

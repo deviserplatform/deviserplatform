@@ -19,15 +19,15 @@ namespace Deviser.Core.Library.TagHelpers
     [HtmlTargetElement("a", Attributes = RouteValuesPrefix + "*")]
     public class AnchorTagHelper : TagHelper
     {
-        private const string ActionAttributeName = "sd-action";
-        private const string ControllerAttributeName = "sd-controller";
-        private const string ModuleAttributeName = "sd-module";
-        private const string FragmentAttributeName = "sd-fragment";
-        private const string HostAttributeName = "sd-host";
-        private const string ProtocolAttributeName = "sd-protocol";
-        private const string RouteAttributeName = "sd-route";
-        private const string RouteValuesDictionaryName = "sd-all-route-data";
-        private const string RouteValuesPrefix = "sd-route-";
+        private const string ActionAttributeName = "dev-action";
+        private const string ControllerAttributeName = "dev-controller";
+        private const string ModuleAttributeName = "dev-module";
+        private const string FragmentAttributeName = "dev-fragment";
+        private const string HostAttributeName = "dev-host";
+        private const string ProtocolAttributeName = "dev-protocol";
+        private const string RouteAttributeName = "dev-route";
+        private const string RouteValuesDictionaryName = "dev-all-route-data";
+        private const string RouteValuesPrefix = "dev-route-";
         private const string Href = "href";
         private IDictionary<string, string> _routeValues;
 
@@ -132,7 +132,7 @@ namespace Deviser.Core.Library.TagHelpers
         /// <exception cref="InvalidOperationException">
         /// Thrown if <c>href</c> attribute is provided and <see cref="Action"/>, <see cref="Controller"/>,
         /// <see cref="Fragment"/>, <see cref="Host"/>, <see cref="Protocol"/>, or <see cref="Route"/> are
-        /// non-<c>null</c> or if the user provided <c>sd-route-*</c> attributes. Also thrown if <see cref="Route"/>
+        /// non-<c>null</c> or if the user provided <c>dev-route-*</c> attributes. Also thrown if <see cref="Route"/>
         /// and one or both of <see cref="Action"/> and <see cref="Controller"/> are non-<c>null</c>.
         /// </exception>
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -194,7 +194,7 @@ namespace Deviser.Core.Library.TagHelpers
                         routeValues = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
                     }
 
-                    // Unconditionally replace any value from sd-route-area. 
+                    // Unconditionally replace any value from dev-route-area. 
                     routeValues["area"] = Area;
                 }
 

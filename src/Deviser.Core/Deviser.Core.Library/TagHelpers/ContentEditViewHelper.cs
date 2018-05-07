@@ -25,7 +25,7 @@ namespace Deviser.Core.Library.TagHelpers
     [HtmlTargetElement("*", Attributes = ContentEditsAttribute)]
     public class ContentEditViewHelper : DeviserTagHelper
     {
-        private const string ContentEditsAttribute = "sd-content-edits";
+        private const string ContentEditsAttribute = "dev-content-edits";
 
         private readonly INavigation _navigation;
         private readonly IHtmlHelper _htmlHelper;
@@ -52,7 +52,7 @@ namespace Deviser.Core.Library.TagHelpers
         {
             if (string.IsNullOrEmpty(ContentEditViews))
             {
-                output.Content.SetHtmlContent("Navigation style (sd-nav) cannot be null");
+                output.Content.SetHtmlContent("Navigation style (dev-nav) cannot be null");
                 return;
             }
 

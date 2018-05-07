@@ -23,10 +23,10 @@
 @if (pageContext.HasPageEditPermission)
 {
     <!-- BEGIN HEADER -->
-    <div class="sd-controlbar">
+    <div class="dev-controlbar">
         <!-- BEGIN LOGO -->
-        <div class="sd-logo">
-            <a class="sd-navbar-brand" href="@navigation.NavigateUrl("dd650840-0ee7-46cf-abb5-8a1591dc0936")">
+        <div class="dev-logo">
+            <a class="dev-navbar-brand" href="@navigation.NavigateUrl("dd650840-0ee7-46cf-abb5-8a1591dc0936")">
                 <img src="/images/DeviserLogoWhite.svg" onerror="this.src='/images/DeviserLogoWhite.png'; this.onerror=null;" alt="DEVISER">
                 @*<img src="/images/DeviserLogoWhite.png" alt="DEVISER">*@
             </a>
@@ -35,23 +35,23 @@
         <!-- END RESPONSIVE MENU TOGGLER -->
         <!-- BEGIN TOP NAVIGATION MENU -->
         <div class="top-menu">
-            <form sd-module="Security" sd-controller="Account" sd-action="LogOff" method="post" id="logoutForm">
-                <ul class="sd-navbar-nav">
+            <form dev-module="Security" dev-controller="Account" dev-action="LogOff" method="post" id="logoutForm">
+                <ul class="dev-navbar-nav">
                     <li class="dropdown dropdown-quick-sidebar-toggler @(mode=="view"?"active":"")">
-                        <a href="/@pageContext.CurrentUrl" class="sd-toggle dropdown-toggle">
+                        <a href="/@pageContext.CurrentUrl" class="dev-toggle dropdown-toggle">
                             <i class="fa fa-desktop"></i>
                             <span>View</span>
                         </a>
                     </li>
                     <li class="dropdown dropdown-quick-sidebar-toggler @(mode=="edit"?"active":"")">
-                        <a href="@Url.Action("Edit", "Page", new { culture=culture, permalink=permalink })" class="sd-toggle dropdown-toggle">
+                        <a href="@Url.Action("Edit", "Page", new { culture=culture, permalink=permalink })" class="dev-toggle dropdown-toggle">
                             <i class="fa fa-pencil-square-o"></i>
                             <span>Edit</span>
                         </a>
                     </li>
 
                     <li class="dropdown dropdown-quick-sidebar-toggler @(mode=="layout"?"active":"")">
-                        <a href="@Url.Action("Layout", "Page", new { culture=culture, permalink=permalink })" class="sd-toggle dropdown-toggle">
+                        <a href="@Url.Action("Layout", "Page", new { culture=culture, permalink=permalink })" class="dev-toggle dropdown-toggle">
                             <i class="fa fa-columns"></i>
                             <span>Layout</span>
                         </a>
@@ -64,7 +64,7 @@
                             </span>
                             <i class="fa fa-angle-down"></i>
                         </a>
-                        <ul class="sd-dropdown-menu dropdown-menu dropdown-menu-default">
+                        <ul class="dev-dropdown-menu dropdown-menu dropdown-menu-default">
                             <li>
                                 <a asp-controller="Manage" asp-action="Index" title="Manage">
                                     <i class="icon-user"></i> My Profile

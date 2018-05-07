@@ -21,13 +21,13 @@ namespace Deviser.Core.Library.TagHelpers
     [HtmlTargetElement("form", Attributes = RouteValuesPrefix + "*")]
     public class FormTagHelper : TagHelper
     {
-        private const string ActionAttributeName = "sd-action";
-        private const string AntiforgeryAttributeName = "sd-antiforgery";
-        private const string ModuleAttributeName = "sd-module";
-        private const string ControllerAttributeName = "sd-controller";
-        //private const string RouteAttributeName = "sd-route";
-        private const string RouteValuesDictionaryName = "sd-all-route-data";
-        private const string RouteValuesPrefix = "sd-route-";
+        private const string ActionAttributeName = "dev-action";
+        private const string AntiforgeryAttributeName = "dev-antiforgery";
+        private const string ModuleAttributeName = "dev-module";
+        private const string ControllerAttributeName = "dev-controller";
+        //private const string RouteAttributeName = "dev-route";
+        private const string RouteValuesDictionaryName = "dev-all-route-data";
+        private const string RouteValuesPrefix = "dev-route-";
         private const string HtmlActionAttributeName = "action";
         private IDictionary<string, string> _routeValues;
 
@@ -127,7 +127,7 @@ namespace Deviser.Core.Library.TagHelpers
         /// </remarks>
         /// <exception cref="InvalidOperationException">
         /// Thrown if <c>action</c> attribute is provided and <see cref="Action"/> or <see cref="Controller"/> are
-        /// non-<c>null</c> or if the user provided <c>sd-route-*</c> attributes.
+        /// non-<c>null</c> or if the user provided <c>dev-route-*</c> attributes.
         /// </exception>
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -192,7 +192,7 @@ namespace Deviser.Core.Library.TagHelpers
                         routeValues = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
                     }
 
-                    // Unconditionally replace any value from sd-route-area. 
+                    // Unconditionally replace any value from dev-route-area. 
                     routeValues["area"] = Area;
                 }
 

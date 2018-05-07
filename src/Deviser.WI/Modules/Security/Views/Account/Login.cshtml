@@ -16,11 +16,11 @@
 }
 
 
-<div class="login-container">
+<div class="security-container">
     <div class="row d-flex justify-content-center align-items-stretch">
-        <div class="col-5 login-left">
+        <div class="col-md-5 login-left">
             <section>
-                <form sd-module="Security" sd-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="sd-form form-horizontal">
+                <form dev-module="Security" dev-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="dev-form form-horizontal">
                     <h2>@ViewData["Title"]</h2>
                     @*<div asp-validation-summary="All" class="text-danger"></div>*@
                     <div class="form-group">
@@ -50,7 +50,7 @@
 
         @if (scopeService.PageContext.SiteSettingInfo.RegistrationEnabled)
         {
-            <div class="col-5 login-right">
+            <div class="col-md-5 login-right">
                 <section>
                     @{
                         var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -65,7 +65,7 @@
                         }
                         else
                         {
-                            <form sd-module="Security" sd-action="ExternalLogin" sd-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                            <form dev-module="Security" dev-action="ExternalLogin" dev-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
                                 <div class="d-flex flex-column">
                                     <div class="p-2">
                                         <p>If you do not have an account yet, click the button below to create your account.</p>
@@ -90,8 +90,8 @@
 
     </div>
     <div class="row justify-content-center forget-password">
-        <div class="col-10">
-            <p class="text-center">Could not access your account? Did you <a sd-module="Security" sd-action="ForgotPassword">Forgot your password?</a></p>
+        <div class="col-md-10">
+            <p class="text-center">Could not access your account? Did you <a dev-module="Security" dev-action="ForgotPassword">Forgot your password?</a></p>
         </div>
     </div>
 </div>

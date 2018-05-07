@@ -116,7 +116,7 @@ namespace Deviser.Core.Library.Controllers
                 if (module != null && moduleAction != null)
                 {
                     actionResult = await ExecuteModuleControllerAsString(actionContext, moduleContext, moduleAction);
-                    actionResult = $"<div class=\"sd-module-container\" data-module=\"{moduleContext.ModuleInfo.Name}\" data-page-module-id=\"{moduleContext.PageModuleId}\">{actionResult}</div>";
+                    actionResult = $"<div class=\"dev-module-container\" data-module=\"{moduleContext.ModuleInfo.Name}\" data-page-module-id=\"{moduleContext.PageModuleId}\">{actionResult}</div>";
                 }
             }
             catch (Exception ex)
@@ -157,7 +157,7 @@ namespace Deviser.Core.Library.Controllers
         public IHtmlContent GetModuleResult(IHtmlContent actionResult, ModuleContext moduleContext)
         {
             var moduleContainer = new TagBuilder("div");
-            moduleContainer.Attributes.Add("class", "sd-module-container");
+            moduleContainer.Attributes.Add("class", "dev-module-container");
             moduleContainer.Attributes.Add("data-module", moduleContext.ModuleInfo.Name);
             moduleContainer.Attributes.Add("data-page-module-id", moduleContext.PageModuleId.ToString());
             moduleContainer.InnerHtml.AppendHtml(actionResult);

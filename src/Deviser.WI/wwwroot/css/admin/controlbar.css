@@ -1,7 +1,7 @@
 ﻿/***
 Page Header
 ***/
-.sd-controlbar {
+.dev-controlbar {
     font-family: "Open Sans", sans-serif;
     line-height: 1.5;
     width: 100%;
@@ -20,26 +20,26 @@ Page Header
     z-index: 100;
 }
 
-    .sd-controlbar .sd-navbar-brand img {
+    .dev-controlbar .dev-navbar-brand img {
         margin: 12px;
         height: 26px;
     }
 
-.sd-navbar-brand {
+.dev-navbar-brand {
     float: left;
 }
 
-.sd-controlbar .sd-logo {
+.dev-controlbar .dev-logo {
     width: 230px;
 }
 
-.sd-controlbar .top-menu {
+.dev-controlbar .top-menu {
     margin: 0;
     padding: 0;
     float: right;
 }
 
-    .sd-controlbar .top-menu .sd-navbar-nav {
+    .dev-controlbar .top-menu .dev-navbar-nav {
         text-transform: uppercase;
         padding: 0;
         margin-right: 20px;
@@ -48,22 +48,22 @@ Page Header
         margin: 0;
     }
 
-        .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown {
+        .dev-controlbar .top-menu .dev-navbar-nav > li.dropdown {
             margin: 0;
             padding: 0 4px;
             display: inline-block;
         }
 
-            .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > .dropdown-toggle {
+            .dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > .dropdown-toggle {
                 margin: 0;
                 padding: 15px;
             }
 
-a.sd-toggle::after {
+a.dev-toggle::after {
     content: none !important;
 }
 
-.sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > a {
+.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > a {
     display: inline-block;
     font-size: 13px;
     font-weight: 300;
@@ -71,7 +71,7 @@ a.sd-toggle::after {
     text-decoration: none;
 }
 
-    .sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > a span {
+    .dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > a span {
         display: inline-block;
         font-size: 13px;
         font-weight: 300;
@@ -80,38 +80,38 @@ a.sd-toggle::after {
         vertical-align: top;
     }
 
-.sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > .dropdown-toggle > i {
+.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > .dropdown-toggle > i {
     font-size: 17px;
     color: #79869a;
 }
 
-.sd-controlbar .top-menu .sd-navbar-nav > li.dropdown > .dropdown-toggle:focus {
+.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > .dropdown-toggle:focus {
     background: 0 0;
 }
 
-.sd-controlbar .top-menu .sd-navbar-nav > li.dropdown .dropdown-toggle:hover,
-.sd-dropdown-menu.dropdown-menu li > a:hover,
-.sd-controlbar .top-menu .sd-navbar-nav > li.dropdown.open .dropdown-toggle,
-.sd-controlbar .top-menu .sd-navbar-nav > li.dropdown.active {
+.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown .dropdown-toggle:hover,
+.dev-dropdown-menu.dropdown-menu li > a:hover,
+.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown.open .dropdown-toggle,
+.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown.active {
     background-color: #3f4f62;
 }
 
-.sd-dropdown-menu.dropdown-menu {
+.dev-dropdown-menu.dropdown-menu {
     background-color: #2b3643;
 }
 
-    .sd-dropdown-menu.dropdown-menu li > a {
+    .dev-dropdown-menu.dropdown-menu li > a {
         color: #c6cfda;
         padding: 10px;
     }
 
 
 
-.sd-controlbar .top-menu .dropdown-quick-sidebar-toggler > .dropdown-toggle i {
+.dev-controlbar .top-menu .dropdown-quick-sidebar-toggler > .dropdown-toggle i {
     top: 0;
 }
 
-.sd-dropdown-menu {
+.dev-dropdown-menu {
     z-index: 10000;
     width: calc(100% - 4px);
     border-radius: 0;

@@ -26,7 +26,7 @@
 
         function submit() {
             contact.data = angular.toJson(vm.form);
-            contact.pageModuleId = $('#ContactForm').closest('.sd-module-container').data('pageModuleId');
+            contact.pageModuleId = $('#ContactForm').closest('.dev-module-container').data('pageModuleId');
             conatctFormService.post(contact).then(function (success) {
                 showMessage("success", "Your message have been successfully sent.");
             }, function (error) {

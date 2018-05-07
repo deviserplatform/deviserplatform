@@ -9,7 +9,7 @@
             <h3 class="modal-title">Edit {{ecVM.typeInfo.type}}</h3>
         </div>
         <div class="modal-body">
-            <div class="form-group" sd-language-selector selected-locale="ecVM.selectedLocale" change-language="ecVM.changeLanguage()" ng-show="ecVM.currentViewState===ecVM.viewStates.LIST"></div>
+            <div class="form-group" dev-language-selector selected-locale="ecVM.selectedLocale" change-language="ecVM.changeLanguage()" ng-show="ecVM.currentViewState===ecVM.viewStates.LIST"></div>
 
             <div class="form-group">
                 <label for="txtIconClass">Icon Class</label>
@@ -17,7 +17,7 @@
             </div>
 
             <div class="form-group">
-                <div sd-link-selector label="Link" selected-link="ecVM.contentTranslation.contentData.link" properties="ecVM.properties"></div>
+                <div dev-link-selector label="Link" selected-link="ecVM.contentTranslation.contentData.link" properties="ecVM.properties"></div>
             </div>
 
         </div>

@@ -22,9 +22,9 @@ namespace Deviser.Core.Library.TagHelpers
     [HtmlTargetElement("*", Attributes = NavAttributeName)]    
     public class NavigationHelper : DeviserTagHelper
     {
-        private const string NavAttributeName = "sd-nav";
-        private const string PageAttributeName = "sd-nav-page";
-        private const string ParentAttributeName = "sd-nav-parent";
+        private const string NavAttributeName = "dev-nav";
+        private const string PageAttributeName = "dev-nav-page";
+        private const string ParentAttributeName = "dev-nav-parent";
 
         private readonly IPageRepository _pageRepository;
         private readonly INavigation _navigation;
@@ -59,7 +59,7 @@ namespace Deviser.Core.Library.TagHelpers
         {
             if (string.IsNullOrEmpty(MenuStyle))
             {
-                output.Content.SetHtmlContent("Navigation style (sd-nav) cannot be null");
+                output.Content.SetHtmlContent("Navigation style (dev-nav) cannot be null");
                 return;
             }
 
