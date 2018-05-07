@@ -6,7 +6,7 @@
     'ui.tree',
     'ui.select',
     'ngSanitize',
-    'sd.sdlib',
+    'dev.sdlib',
     'deviser.services',
     'deviser.config'
     ]);

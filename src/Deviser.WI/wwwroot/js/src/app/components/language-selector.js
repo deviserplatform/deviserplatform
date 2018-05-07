@@ -9,9 +9,9 @@
     'angular-img-cropper'
     ]);
 
-    app.directive("sdLanguageSelector", ['$compile', '$templateCache', 'assetService', sdLanguageSelector]);
+    app.directive("devLanguageSelector", ['$compile', '$templateCache', 'assetService', devLanguageSelector]);
 
-    function sdLanguageSelector($compile, $templateCache, assetService) {
+    function devLanguageSelector($compile, $templateCache, assetService) {
         var returnObject = {
             restrict: "A",
             controller: ['$scope', '$uibModal', 'languageService', ctrl],

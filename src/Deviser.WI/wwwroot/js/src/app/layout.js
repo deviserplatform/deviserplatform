@@ -4,20 +4,20 @@
     'ui.router',
     'ui.bootstrap',
     'dndLists',
-    'sd.modal',
-    'sd.sdlib',    
+    'dev.modal',
+    'dev.sdlib',    
     'deviser.services',
     'deviser.config'
     ]);
 
-    app.controller('LayoutCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'sdUtil','editLayoutUtil', 'layoutService', 'pageService',
+    app.controller('LayoutCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'devUtil','editLayoutUtil', 'layoutService', 'pageService',
         'layoutTypeService', 'pageContentService', 'moduleService', 'pageModuleService','modalService', layoutCtrl]);
 
 
     ////////////////////////////////
     /*Function declarations only*/
 
-    function layoutCtrl($scope, $timeout, $filter, $q, globals, sdUtil, editLayoutUtil, layoutService, pageService,
+    function layoutCtrl($scope, $timeout, $filter, $q, globals, devUtil, editLayoutUtil, layoutService, pageService,
         layoutTypeService, pageContentService, moduleService, pageModuleService, modalService) {
         var vm = this;
 
@@ -29,7 +29,7 @@
         vm.layoutAllowedTypes = ["9341f92e-83d8-4afe-ad4a-a95deeda9ae3", "5a0a5884-da84-4922-a02f-5828b55d5c92"]; //Id of container and wrapper;     
        
         //Function binding
-        vm.newGuid = sdUtil.getGuid;
+        vm.newGuid = devUtil.getGuid;
         vm.dragoverCallback = dragoverCallback;
         vm.dropCallback = dropCallback;
         vm.logListEvent = logListEvent;
@@ -120,7 +120,7 @@
             if (layoutTypes) {
                 _.forEach(layoutTypes, function (layoutType) {
                     layoutType.layoutTypeId = layoutType.id;
-                    layoutType.id = sdUtil.getGuid();
+                    layoutType.id = devUtil.getGuid();
                     layoutType.placeHolders = [];
                     layoutType.layoutTypeIds = layoutType.layoutTypeIds.replace(/\s+/g, '');
                     layoutType.allowedTypes = (layoutType.layoutTypeIds) ? layoutType.layoutTypeIds.split(",") : "";

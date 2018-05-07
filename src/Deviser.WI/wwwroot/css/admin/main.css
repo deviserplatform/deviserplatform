@@ -5847,6 +5847,21 @@ body {
     border-left: 1px solid #e7e7e7;
     min-height: 94.7vh; } }
 
+.glyphicon {
+  display: inline-block;
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+.glyphicon-chevron-left:before {
+  content: "\f053"; }
+
+.glyphicon-chevron-right:before {
+  content: "\f054"; }
+
 .navbar-top-links {
   margin-right: 0; }
 

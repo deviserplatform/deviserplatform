@@ -4,17 +4,17 @@
     'ui.router',
     'ui.bootstrap',
     'ui.select',
-    'sd.sdlib',
+    'dev.sdlib',
     'deviser.services',
     'deviser.config'
     ]);
 
-    app.controller('OptionListCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'sdUtil',
+    app.controller('OptionListCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'devUtil',
         'optionListService', languageCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
-    function languageCtrl($scope, $timeout, $filter, $q, globals, sdUtil, optionListService) {
+    function languageCtrl($scope, $timeout, $filter, $q, globals, devUtil, optionListService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
@@ -108,7 +108,7 @@
 
         function addListItem() {
             var listItem = {
-                id: sdUtil.getGuid(),
+                id: devUtil.getGuid(),
                 name: '',
                 label:''
             }

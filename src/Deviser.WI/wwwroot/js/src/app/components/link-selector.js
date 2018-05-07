@@ -9,9 +9,9 @@
     'angular-img-cropper'
     ]);
 
-    app.directive("sdLinkSelector", ['$compile', '$templateCache', 'assetService', sdLinkSelector]);
+    app.directive("devLinkSelector", ['$compile', '$templateCache', 'assetService', devLinkSelector]);
 
-    function sdLinkSelector($compile, $templateCache, assetService) {
+    function devLinkSelector($compile, $templateCache, assetService) {
         var returnObject = {
             restrict: "A",
             controller: ['$scope', '$uibModal', 'pageService', ctrl],
@@ -36,7 +36,7 @@
 
         function ctrl($scope, $uibModal, pageService) {
             var vm = this;
-
+            vm.pages = [];
 
 
             init();
@@ -57,14 +57,35 @@
             //Event handlers
 
             function getPages() {
-                pageService.getPages().then(function (pages) {
-                    vm.pages = pages;
-                    _.each(vm.pages, function (page) {
-                        var englishTranslation = _.find(page.pageTranslation, { locale: "en-US" });
-                        page.pageName = englishTranslation.name;
-                    });
+                pageService.get().then(function (pages) {
+                    vm.nestedPages = pages;
+                    vm.pages = [];
+                    processPage(vm.nestedPages);
                 })
             }
+
+
+            function processPage(page, levelPrefix) {
+                if (!levelPrefix) {
+                    levelPrefix = '';
+                }
+                else if (levelPrefix === '') {
+                    levelPrefix = '--';
+                }
+
+                if (page.pageLevel != 0) {
+                    var englishTranslation = _.find(page.pageTranslation, { locale: "en-US" });
+                    page.pageName = levelPrefix + englishTranslation.name;
+                    vm.pages.push(page);
+                }
+
+                if (page.childPage && page.childPage.length > 0) {
+                    _.each(page.childPage, function (child) {
+                        processPage(child, levelPrefix + '--');    
+                    });
+                }
+            }
+            
         }
     }
 })();

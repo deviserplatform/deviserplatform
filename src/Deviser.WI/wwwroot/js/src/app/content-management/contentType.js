@@ -4,17 +4,17 @@
     'ui.router',
     'ui.bootstrap',
     'ui.select',
-    'sd.sdlib',
+    'dev.sdlib',
     'deviser.services',
     'deviser.config'
     ]);
 
-    app.controller('ContentTypesCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'sdUtil',
+    app.controller('ContentTypesCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'devUtil',
         'contentTypeService', 'propertyService', languageCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
-    function languageCtrl($scope, $timeout, $filter, $q, globals, sdUtil,
+    function languageCtrl($scope, $timeout, $filter, $q, globals, devUtil,
         contentTypeService, propertyService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;

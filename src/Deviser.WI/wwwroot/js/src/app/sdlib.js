@@ -1,19 +1,19 @@
 ﻿(function () {
 
-    var app = angular.module('sd.sdlib', [
+    var app = angular.module('dev.sdlib', [
         'ngSanitize']);
 
-    app.directive('sdEnter', sdEnterDir);
+    app.directive('devEnter', sdEnterDir);
 
-    app.directive('sdNumberOnly', sdNumberOnlyDir);
+    app.directive('devNumberOnly', sdNumberOnlyDir);
 
-    app.directive('sdAlphabetsOnly', sdAlphabetsOnlyDir);
+    app.directive('devAlphabetsOnly', sdAlphabetsOnlyDir);
 
-    app.directive("sdEdit", ['$compile', '$templateCache', sdContenteditable]);
+    app.directive("devEdit", ['$compile', '$templateCache', sdContenteditable]);
 
     app.directive('contenteditable', ['$sce', contenteditable]); 
 
-    app.factory('sdUtil', [sdUtil]);
+    app.factory('devUtil', [devUtil]);
 
     app.factory('editLayoutUtil', [editLayoutUtil])
 
@@ -191,7 +191,7 @@
         };
     }   
 
-    function sdUtil() {
+    function devUtil() {
         var service = {
             getGuid: getGuid,
             isGuid: isGuid
@@ -258,6 +258,9 @@
                     }
                     return true;
                 });
+            }
+            else {
+                return list;
             }
         };
     }

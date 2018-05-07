@@ -7,7 +7,7 @@
         'ui.select',
         'dndLists',
         'textAngular',
-        'sd.sdlib',
+        'dev.sdlib',
         'deviser.services',
         'deviser.config',
         'modules.app.imageManager',
@@ -19,18 +19,18 @@
 
     app.directive("sdContentPreview", ['$compile', '$templateCache', sdContentPreviewDir]);
 
-    app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$uibModal', 'globals', 'sdUtil', 'editLayoutUtil', 'layoutService', 'pageService',
+    app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$uibModal', 'globals', 'devUtil', 'editLayoutUtil', 'layoutService', 'pageService',
         'contentTypeService', 'layoutTypeService', 'pageContentService', 'moduleService', 'moduleActionService', 'pageModuleService', editCtrl]);
 
-    app.controller('EditContentCtrl', ['$scope', '$uibModalInstance', '$q', 'sdUtil', 'languageService',
+    app.controller('EditContentCtrl', ['$scope', '$uibModalInstance', '$q', 'devUtil', 'languageService',
         'pageContentService', 'contentTranslationService', 'contentInfo', editContentCtrl]);
 
-    app.controller('EditModuleCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', '$sce', 'sdUtil', 'globals', 'moduleActionService', 'moduleInfo', editModuleCtrl]);
+    app.controller('EditModuleCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', '$sce', 'devUtil', 'globals', 'moduleActionService', 'moduleInfo', editModuleCtrl]);
 
-    app.controller('ModulePermissionCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', 'sdUtil', 'globals', 'roleService', 'pageModuleService',
+    app.controller('ModulePermissionCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', 'devUtil', 'globals', 'roleService', 'pageModuleService',
         'pageModule', modulePermissionCtrl]);
 
-    app.controller('ContentPermissionCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', 'sdUtil', 'globals', 'roleService', 'pageContentService',
+    app.controller('ContentPermissionCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', 'devUtil', 'globals', 'roleService', 'pageContentService',
         'pageContent', contentPermissionCtrl]);
 
 
@@ -130,7 +130,7 @@
         }
     }
 
-    function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, sdUtil, editLayoutUtil, layoutService, pageService,
+    function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, devUtil, editLayoutUtil, layoutService, pageService,
         contentTypeService, layoutTypeService, pageContentService, moduleService, moduleActionService, pageModuleService) {
         var vm = this;
 
@@ -146,7 +146,7 @@
         vm.layoutAllowedTypes = ["container"];
 
         //Method binding
-        vm.newGuid = sdUtil.getGuid;
+        vm.newGuid = devUtil.getGuid;
         //vm.dragoverCallback = dragoverCallback;
         vm.dropCallback = dropCallback;
         vm.insertedCallback = insertedCallback;
@@ -1007,7 +1007,7 @@
         }
     }
 
-    function editContentCtrl($scope, $uibModalInstance, $q, sdUtil, languageService, pageContentService, contentTranslationService, contentInfo) {
+    function editContentCtrl($scope, $uibModalInstance, $q, devUtil, languageService, pageContentService, contentTranslationService, contentInfo) {
         var vm = this;
         vm.contentId = contentInfo.id;
         vm.properties = contentInfo.properties;
@@ -1032,6 +1032,12 @@
                     item.viewOrder = index + 1;
                 });
             }
+        };
+        vm.dateOptions = {            
+            formatYear: 'yy',
+            maxDate: new Date(2025, 11, 31),
+            minDate: new Date(2018, 0, 1),
+            startingDay: 1
         };
 
         init();
@@ -1098,7 +1104,7 @@
 
         function updateItem() {
             if (!vm.selectedItem.id) {
-                vm.selectedItem.id = sdUtil.getGuid();
+                vm.selectedItem.id = devUtil.getGuid();
                 vm.selectedItem.viewOrder = vm.contentTranslation.contentData.items.length + 1;
                 vm.contentTranslation.contentData.items.push(vm.selectedItem);
             }
@@ -1212,7 +1218,7 @@
 
     };
 
-    function editModuleCtrl($scope, $timeout, $uibModalInstance, $q, $sce, sdUtil, globals, moduleActionService, moduleInfo) {
+    function editModuleCtrl($scope, $timeout, $uibModalInstance, $q, $sce, devUtil, globals, moduleActionService, moduleInfo) {
         var vm = this;
         vm.pageModuleId = moduleInfo.pageModuleId;
         vm.moduleActionId = moduleInfo.moduleActionId;
@@ -1242,7 +1248,7 @@
         }
     }
 
-    function modulePermissionCtrl($scope, $timeout, $uibModalInstance, $q, sdUtil, globals, roleService, pageModuleService, pageModule) {
+    function modulePermissionCtrl($scope, $timeout, $uibModalInstance, $q, devUtil, globals, roleService, pageModuleService, pageModule) {
         var vm = this;
         var moduleViewPermissionId = globals.appSettings.permissions.moduleView;
         var moduleEditPermissionId = globals.appSettings.permissions.moduleEdit;
@@ -1388,7 +1394,7 @@
         }
     }
 
-    function contentPermissionCtrl($scope, $timeout, $uibModalInstance, $q, sdUtil, globals, roleService, pageContentService, pageContent) {
+    function contentPermissionCtrl($scope, $timeout, $uibModalInstance, $q, devUtil, globals, roleService, pageContentService, pageContent) {
         var vm = this;
         var contentViewPermissionId = globals.appSettings.permissions.contentView;
         var contentEditPermissionId = globals.appSettings.permissions.contentEdit;

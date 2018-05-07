@@ -1,5 +1,5 @@
 ﻿(function () {
-    var app = angular.module('sd.modal', ['ui.bootstrap']);
+    var app = angular.module('dev.modal', ['ui.bootstrap']);
     app.factory('modalService', ['$q', '$uibModal',modalService]);
 
     app.controller('ModalInstanceCtrl', ['$uibModalInstance', '$scope', 'labels', modalCtrl])

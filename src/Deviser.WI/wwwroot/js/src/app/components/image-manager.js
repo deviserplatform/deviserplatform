@@ -9,11 +9,11 @@
         'angular-img-cropper'
     ]);
 
-    app.directive("sdImageManager", ['$compile', '$templateCache', 'assetService', sdImageManagerDir]);
+    app.directive("devImageManager", ['$compile', '$templateCache', 'assetService', devImageManager]);
 
     app.controller('ImageManagerPopup', ['$scope', '$uibModalInstance', '$timeout', 'Upload', 'assetService', 'selectedImage', imageManagerPopup]);
 
-    function sdImageManagerDir($compile, $templateCache, assetService) {
+    function devImageManager($compile, $templateCache, assetService) {
         var returnObject = {
             restrict: "A",
             controller: ['$scope', '$uibModal', ctrl],

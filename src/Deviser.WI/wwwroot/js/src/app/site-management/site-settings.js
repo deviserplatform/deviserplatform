@@ -4,17 +4,17 @@
     'ui.router',
     'ui.bootstrap',
     'ui.select',
-    'sd.sdlib',
+    'dev.sdlib',
     'deviser.services',
     'deviser.config'
     ]);
 
-    app.controller('SiteSettingsCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'sdUtil',
+    app.controller('SiteSettingsCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'devUtil',
         'siteSettingService', 'pageService', 'layoutService', 'themeService', 'languageService', 'applicationService', siteSettingsCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
-    function siteSettingsCtrl($scope, $timeout, $filter, $q, globals, sdUtil,
+    function siteSettingsCtrl($scope, $timeout, $filter, $q, globals, devUtil,
         siteSettingService, pageService, layoutService, themeService, languageService, applicationService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
