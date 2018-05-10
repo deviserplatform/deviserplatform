@@ -23,7 +23,7 @@
         'contentTypeService', 'layoutTypeService', 'pageContentService', 'moduleService', 'moduleActionService', 'pageModuleService', editCtrl]);
 
     app.controller('EditContentCtrl', ['$scope', '$uibModalInstance', '$q', 'devUtil', 'languageService',
-        'pageContentService', 'contentTranslationService', 'contentInfo', editContentCtrl]);
+        'pageContentService', 'contentTranslationService', 'dateConverter','contentInfo', editContentCtrl]);
 
     app.controller('EditModuleCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', '$sce', 'devUtil', 'globals', 'moduleActionService', 'moduleInfo', editModuleCtrl]);
 
@@ -1007,7 +1007,7 @@
         }
     }
 
-    function editContentCtrl($scope, $uibModalInstance, $q, devUtil, languageService, pageContentService, contentTranslationService, contentInfo) {
+    function editContentCtrl($scope, $uibModalInstance, $q, devUtil, languageService, pageContentService, contentTranslationService, dateConverter, contentInfo) {
         var vm = this;
         vm.contentId = contentInfo.id;
         vm.properties = contentInfo.properties;
@@ -1205,14 +1205,16 @@
 
         function serializeContentTranslation() {
             //if (vm.contentType.dataType && (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object')) {
-            vm.contentTranslation.contentData = angular.toJson(vm.contentTranslation.contentData);
+            var contentData = dateConverter.parseResponse(vm.contentTranslation.contentData);
+            vm.contentTranslation.contentData = angular.toJson(contentData);
             //}
         }
 
         function deserializeContentTranslation() {
             if ( /*vm.contentType.dataType && (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object') &&*/
                 typeof (vm.contentTranslation.contentData) === 'string') {
-                vm.contentTranslation.contentData = JSON.parse(vm.contentTranslation.contentData);
+                var contentData = JSON.parse(vm.contentTranslation.contentData);
+                vm.contentTranslation.contentData = dateConverter.parseResponse(contentData); //if any date string is found, it parses back to date object
             }
         }
 

@@ -15,7 +15,8 @@
             </tbody>
         </table>
     </div>
-    <div ng-show="ecVM.templateMode==='EDITCONTENT'">
+
+    <div class="edit-content" ng-show="ecVM.templateMode==='EDITCONTENT'">
         <div class="modal-header">
             <h3 class="modal-title">Edit {{ecVM.typeInfo.type}}</h3>
         </div>
@@ -26,26 +27,21 @@
                 <div class="form-group">
                     <a ng-click="ecVM.newItem()" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a>
                 </div>
-                <table class="table table-hover" style="max-height:500px;overflow:auto">
+                <table class="table table-hover content-table" style="max-height:500px;overflow:auto">
                     <thead>
                         <tr>
                             <th>Image</th>
                             <th>Description</th>
-                            <th>View Order</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody ui-sortable="ecVM.sortableOptions" ng-model="ecVM.contentTranslation.contentData.items">
                         <tr ng-repeat="item in ecVM.contentTranslation.contentData.items track by item.id | orderBy:item.viewOrder" class="item" style="cursor: move;">
                             <td><img style="width:80px" src="{{item.imageUrl}}"/></td>
                             <td>{{item.description}}</td>
-                            <td>{{item.viewOrder}}</td>
-                            <td>
-                                <a ng-click="ecVM.editItem(item)" class="btn btn-default"><i class="fa fa-pencil"></i> Edit</a>
-                            </td>
-                            <td>
-                                <a ng-click="ecVM.removeItem(item)" class="btn btn-danger"><i class="fa fa-trash-o"></i> Delete</a>
+                            <td class="content-actions">
+                                <a ng-click="ecVM.editItem(item)" title="Edit"><i class="fa fa-pencil"></i></a>                            
+                                <a ng-click="ecVM.removeItem(item)" title="Delete"><i class="fa fa-trash-o"></i></a>
                             </td>
                         </tr>
                     </tbody>
@@ -64,7 +60,7 @@
         <div class="modal-footer">
             <div ng-show="ecVM.currentViewState===ecVM.viewStates.LIST">
                 <button class="btn btn-primary" type="button" ng-click="ecVM.save()" ng-disabled="ecVM.isDetailView">Save</button>
-                <button class="btn btn-warning" type="button" ng-click="ecVM.cancel()" ng-disabled="ecVM.isDetailView">Cancel</button>
+                <button class="btn btn-default" type="button" ng-click="ecVM.cancel()" ng-disabled="ecVM.isDetailView">Cancel</button>
             </div>
             <div ng-show="ecVM.currentViewState===ecVM.viewStates.NEW||ecVM.currentViewState===ecVM.viewStates.EDIT">
                 <a class="btn btn-primary" ng-click="ecVM.updateItem()">Save Item</a>

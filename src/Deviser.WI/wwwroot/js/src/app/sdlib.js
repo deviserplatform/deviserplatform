@@ -17,6 +17,8 @@
 
     app.factory('editLayoutUtil', [editLayoutUtil])
 
+    app.factory('dateConverter', ['dateFilter', dateConverter]);
+
     app.filter('notInArray', ['$filter', notInArray]);
     /////////////////////////////////////////////
     /*Function declarations only*/
@@ -263,6 +265,86 @@
                 return list;
             }
         };
+    }
+
+    function dateConverter(dateFilter) {
+        var dateConverter = {
+            parseResponse: parseResponse,
+            prepareRequest: prepareRequest
+        };
+
+        return dateConverter;
+
+        function parseResponse(response) {
+
+            //for (prop in response) {
+            //    if (response.hasOwnProperty(prop)) {
+            //        if (moment(response[prop], moment.ISO_8601, true).isValid()) {
+            //            response[prop] = new Date(response[prop]);
+            //        }
+            //    }
+            //}
+            recursiveFunction(response);
+
+            return response;
+
+            function recursiveFunction(response) {
+                _.forEach(response, function (value, prop) {
+
+                    if (response.hasOwnProperty(prop)) {
+
+                        if (moment(response[prop], moment.ISO_8601, true).isValid()) {
+                            response[prop] = moment(response[prop]).toDate();//new Date(response[prop]);
+                        }
+
+                        if (angular.isArray(response[prop]) && response[prop].length > 0) {
+                            _.forEach(response[prop], function (item) {
+                                recursiveFunction(item);
+                            });
+                        }
+                    }
+                });
+            };
+        };
+
+        function prepareRequest(obj) {
+            //for (prop in item) {
+            //    if (item.hasOwnProperty(prop)) {
+            //        if (angular.isDate(item[prop])) {
+            //            item[prop] = dateFilter(item[prop], "yyyy-MM-ddTHH:mm:ssZ")
+            //        }
+            //    }
+            //}
+            var clonedObject;
+
+            clonedObject = angular.copy(obj);
+
+            recursiveFunction(clonedObject);
+
+            return clonedObject;
+
+            function recursiveFunction(parent) {
+                _.forEach(parent, function (value, prop) {
+
+                    if (parent.hasOwnProperty(prop)) {
+
+                        if (angular.isDate(parent[prop])) {
+                            parent[prop] = dateFilter(parent[prop], "yyyy-MM-ddTHH:mm:ssZ")
+                        }
+
+                        if (angular.isArray(parent[prop]) && parent[prop].length > 0) {
+                            _.forEach(parent[prop], function (item) {
+                                recursiveFunction(item);
+                            });
+                        }
+                    }
+                });
+            };
+
+
+        };
+
+        
     }
 
 }());
