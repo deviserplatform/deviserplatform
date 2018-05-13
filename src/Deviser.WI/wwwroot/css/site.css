@@ -6306,6 +6306,13 @@ body {
     font-size: 1.6rem;
     padding-top: 18px; }
 
+/*Blog*/
+.blog-container .blog-item span {
+  color: #8b8e93; }
+
+.blog-container .blog-item .blog-img img {
+  max-width: 50%; }
+
 /*Login*/
 .security-container {
   padding: 20px; }

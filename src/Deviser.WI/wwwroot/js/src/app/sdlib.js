@@ -329,7 +329,8 @@
                     if (parent.hasOwnProperty(prop)) {
 
                         if (angular.isDate(parent[prop])) {
-                            parent[prop] = dateFilter(parent[prop], "yyyy-MM-ddTHH:mm:ssZ")
+                            //parent[prop] = dateFilter(parent[prop], "yyyy-MM-ddTHH:mm:ssZ")
+                            parent[prop] = moment(parent[prop]).format()
                         }
 
                         if (angular.isArray(parent[prop]) && parent[prop].length > 0) {

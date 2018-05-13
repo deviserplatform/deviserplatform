@@ -50,9 +50,10 @@
 
             <div ng-show="ecVM.currentViewState===ecVM.viewStates.NEW||ecVM.currentViewState===ecVM.viewStates.EDIT">
                 <div class="form-group">
-                    <label for="txtDate">Date</label>                    
+                    <label for="txtDate">Date</label>
                     <div class="input-group">
                         <input type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-model="ecVM.selectedItem.date"
+                               ng-click="dateOpened = true"
                                is-open="dateOpened" datepicker-options="ecVM.dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="dateOpened = true"><i class="fa fa-calendar"></i></button>
@@ -67,6 +68,8 @@
                     <label for="txtDescrption">Short Description</label>
                     <textarea id="txtDescription" class="form-control" ng-model="ecVM.selectedItem.shortDescription" placeholder="Enter short description"></textarea>
                 </div>
+
+                <div dev-image-manager src="ecVM.selectedItem.imageUrl" alt="ecVM.selectedItem.imageAltText" focus-point="ecVM.selectedItem.focusPoint"></div>
 
                 <div dev-link-selector label="Link" selected-link="ecVM.selectedItem.link" properties="ecVM.properties"></div>
             </div>

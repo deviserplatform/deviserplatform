@@ -468,6 +468,22 @@ body {
     }
 }
 
+
+/*Blog*/
+.blog-container {
+    .blog-item {
+        span {
+            color: $darkGrey;
+        }
+
+        .blog-img{
+            img{
+                max-width:50%;
+            }
+        }
+    }
+}
+
 /*Login*/
 .security-container {
     padding: 20px;
@@ -477,8 +493,8 @@ body {
     }
 
     .login-right {
-        .btn{
-            width:100%;
+        .btn {
+            width: 100%;
         }
 
         .btn.facebook {
@@ -518,8 +534,8 @@ body {
         }
     }
 
-    .forget-password{
-        padding-top:20px;
+    .forget-password {
+        padding-top: 20px;
     }
 }
 

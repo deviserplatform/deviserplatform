@@ -696,6 +696,11 @@ Customized Bootstrap Tables
 /***********************************************************/
 /*Form control*/
 /***********************************************************/
+
+.form-control{
+    height:inherit;
+}
+
 .btn, .input-group-addon, .form-control {
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -1245,6 +1250,7 @@ body.edit-content-modal {
 /*Image manager*/
 .image-manager {
     .image-preview-container {
+        display:table;
         .image-preview-header {
             float: right;
 

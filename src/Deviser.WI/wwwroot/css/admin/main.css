@@ -6323,6 +6323,9 @@ Customized Bootstrap Tables
 /***********************************************************/
 /*Form control*/
 /***********************************************************/
+.form-control {
+  height: inherit; }
+
 .btn, .input-group-addon, .form-control {
   -webkit-box-shadow: none;
   box-shadow: none; }
@@ -6700,24 +6703,24 @@ body.edit-content-modal {
   border: none; }
 
 /*Image manager*/
-.image-manager .image-preview-container .image-preview-header {
-  float: right; }
-  .image-manager .image-preview-container .image-preview-header a {
-    color: #000;
-    font-size: 16px;
-    line-height: 15px;
-    text-decoration: none;
+.image-manager .image-preview-container {
+  display: table; }
+  .image-manager .image-preview-container .image-preview-header {
+    float: right; }
+    .image-manager .image-preview-container .image-preview-header a {
+      color: #000;
+      font-size: 16px;
+      line-height: 15px;
+      text-decoration: none;
+      cursor: pointer; }
+    .image-manager .image-preview-container .image-preview-header a + a {
+      margin-left: 20px; }
+  .image-manager .image-preview-container .image-preview img {
+    width: 200px; }
+  .image-manager .image-preview-container p.info {
+    padding: 20px;
+    text-align: center;
     cursor: pointer; }
-  .image-manager .image-preview-container .image-preview-header a + a {
-    margin-left: 20px; }
-
-.image-manager .image-preview-container .image-preview img {
-  width: 200px; }
-
-.image-manager .image-preview-container p.info {
-  padding: 20px;
-  text-align: center;
-  cursor: pointer; }
 
 .image-manager-modal .drop-box {
   background: #F8F8F8;

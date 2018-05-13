@@ -1205,7 +1205,7 @@
 
         function serializeContentTranslation() {
             //if (vm.contentType.dataType && (vm.contentType.dataType === 'array' || vm.contentType.dataType === 'object')) {
-            var contentData = dateConverter.parseResponse(vm.contentTranslation.contentData);
+            var contentData = dateConverter.prepareRequest(vm.contentTranslation.contentData);
             vm.contentTranslation.contentData = angular.toJson(contentData);
             //}
         }
