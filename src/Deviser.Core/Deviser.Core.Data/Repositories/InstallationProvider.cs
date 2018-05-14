@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Deviser.Core.Data.Installation;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -46,6 +47,7 @@ namespace Deviser.Core.Data.Repositories
         private DbContextOptionsBuilder _dbContextOptionsBuilder;
         private InstallModel _installModel;
         private bool _isPlatformInstalled;
+        private bool _isInstallInProgress;
         private bool _isDbExist;
 
         public InstallationProvider(IHostingEnvironment hostingEnvironment, IConfiguration configuration, IServiceProvider serviceProvider)
@@ -59,6 +61,9 @@ namespace Deviser.Core.Data.Repositories
         {
             get
             {
+                if (_isInstallInProgress)
+                    return false;
+
                 if (!_isPlatformInstalled)
                 {
                     var installModel = GetInstallationModel();
@@ -87,17 +92,21 @@ namespace Deviser.Core.Data.Repositories
 
         public void InstallPlatform(InstallModel installModel)
         {
+            _isInstallInProgress = true;
             string connectionString = GetConnectionString(installModel);
             string settingFile = Path.Combine(_hostingEnvironment.ContentRootPath, $"appsettings.{_hostingEnvironment.EnvironmentName}.json");
             DbContextOptionsBuilder dbContextOptionsBuilder = GetDbContextOptionsBuilder(installModel);
             DbContextOptions dbOption = dbContextOptionsBuilder.Options;
-
+            
             if (!IsDatabaseExistsFor(connectionString))
             {
                 //Creating database                        
                 using (var context = new DeviserDbContext(dbOption))
                 {
                     context.Database.Migrate();
+
+                    //Plaform has been successfully migrated. Therefore, assign the installModel to local variable which will be used for further steps.
+                    _installModel = installModel;
                 }
 
                 //Insert data
@@ -124,11 +133,16 @@ namespace Deviser.Core.Data.Repositories
             //Success no exceptions were thrown
             _dbContextOptions = dbOption;
             _dbContextOptionsBuilder = dbContextOptionsBuilder;
+            _isInstallInProgress = false;
         }
 
         public void InsertData(DbContextOptions dbOption)
         {
-            //TODO: Insert data
+            using (var context = new DeviserDbContext(dbOption))
+            {
+                var dataSeeder = new DataSeeder(context);
+                dataSeeder.InsertData();
+            }
         }
 
         public string GetConnectionString(InstallModel model)
@@ -146,6 +160,10 @@ namespace Deviser.Core.Data.Repositories
             else if (model.DatabaseProvider == DatabaseProvider.PostgreSQL)
             {
                 return $"Server={model.ServerName};Database={model.DatabaseName};Username={model.DBUserName};Password={model.DBPassword}";
+            }
+            else if (model.DatabaseProvider == DatabaseProvider.MySQL)
+            {
+                return $"server={model.ServerName};database={model.DatabaseName};user={model.DBUserName};password={model.DBPassword}";
             }
             else
             {
@@ -208,6 +226,22 @@ namespace Deviser.Core.Data.Repositories
                 else
                 {
                     optionsBuilder.UseNpgsql(connectionString, (x) =>
+                    {
+                        x.MigrationsAssembly(moduleAssembly);
+                        x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
+                    })
+                    .ReplaceService<IHistoryRepository, NpgsqlModuleHistoryRepository>();
+                }
+            }
+            else if (installModel.DatabaseProvider == DatabaseProvider.MySQL)
+            {
+                if (string.IsNullOrEmpty(moduleAssembly))
+                {
+                    optionsBuilder.UseMySQL(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                }
+                else
+                {
+                    optionsBuilder.UseMySQL(connectionString, (x) =>
                     {
                         x.MigrationsAssembly(moduleAssembly);
                         x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);

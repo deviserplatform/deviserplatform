@@ -15,6 +15,7 @@ using Deviser.Core.Common;
 using Deviser.Core.Data.Repositories;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using Deviser.Core.Common.Internal;
 
 namespace Deviser.WI.Controllers
 {
@@ -26,8 +27,10 @@ namespace Deviser.WI.Controllers
 
         public InstallController(IHostingEnvironment hostingEnvironment, 
             IInstallationProvider installationProvider,
-            IConfiguration configuration)
+            IConfiguration configuration, 
+            IServiceProvider serviceProvider)
         {
+            SharedObjects.ServiceProvider = serviceProvider;
             _hostingEnvironment = hostingEnvironment;
             _installationProvider = installationProvider;
             _configuration = configuration;

@@ -14,7 +14,7 @@ namespace Deviser.Core.Data.Extension
 {
     public class ModuleDbContext : DbContext
     {
-        private IInstallationProvider _installationProvider;
+        //private IInstallationProvider _installationProvider;
         public ModuleMetaInfo ModuleMetaInfo { get; set; }
 
         //public ModuleDbContext(DbContextOptions options)

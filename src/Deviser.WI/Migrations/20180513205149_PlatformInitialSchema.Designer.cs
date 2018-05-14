@@ -11,8 +11,8 @@ using System;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDbContext))]
-    [Migration("20180425192320_Platform_Schema_00.00.06")]
-    partial class Platform_Schema_000006
+    [Migration("20180513205149_PlatformInitialSchema")]
+    partial class PlatformInitialSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,8 +47,6 @@ namespace Deviser.WI.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("ContentDataTypeId");
 
                     b.Property<DateTime?>("CreatedDate");
 

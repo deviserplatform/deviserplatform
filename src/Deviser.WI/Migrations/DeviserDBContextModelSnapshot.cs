@@ -47,8 +47,6 @@ namespace Deviser.WI.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("ContentDataTypeId");
-
                     b.Property<DateTime?>("CreatedDate");
 
                     b.Property<string>("IconClass");

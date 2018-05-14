@@ -45,12 +45,15 @@ namespace Deviser.Core.Library.DependencyInjection
             SharedObjects.ServiceProvider = sp;
 
 
-            services.AddDbContext<DeviserDbContext>(
-                (internalServiceProvider, dbContextOptionBuilder) =>
-                {
-                    //dbContextOptionBuilder.UseInternalServiceProvider(sp);                    
-                    installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder);
-                });
+            if (installationProvider.IsPlatformInstalled)
+            {
+                services.AddDbContext<DeviserDbContext>(
+                       (internalServiceProvider, dbContextOptionBuilder) =>
+                       {
+                           //dbContextOptionBuilder.UseInternalServiceProvider(sp);                    
+                           installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder);
+                       });
+            }
 
             MapperConfig.CreateMaps();
             sp = services.BuildServiceProvider();
@@ -59,50 +62,53 @@ namespace Deviser.Core.Library.DependencyInjection
             //services.AddDbContext<DeviserDbContext>(options =>
             //    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Deviser.WI")));
 
-            services.AddIdentity<User, Role>()
+            
+            if (installationProvider.IsPlatformInstalled)
+            {
+                services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<DeviserDbContext>()
                 .AddDefaultTokenProviders();
 
-            var siteSettingRepository = sp.GetService<ISiteSettingRepository>(); //sp.GetService<ISiteSettingRepository>();
-            var siteSettings = siteSettingRepository.GetSettings();
+                var siteSettingRepository = sp.GetService<ISiteSettingRepository>(); //sp.GetService<ISiteSettingRepository>();
+                var siteSettings = siteSettingRepository.GetSettings();
 
-            var enableFacebookAuth = siteSettings.FirstOrDefault(s => s.SettingName == "EnableFacebookAuth").SettingValue;
-            var facebookAppId = siteSettings.FirstOrDefault(s => s.SettingName == "FacebookAppId").SettingValue;
-            var facebookAppAppSecret = siteSettings.FirstOrDefault(s => s.SettingName == "FacebookAppSecret").SettingValue;
-            var enableGoogleAuth = siteSettings.FirstOrDefault(s => s.SettingName == "EnableGoogleAuth").SettingValue;
-            var googleClientId = siteSettings.FirstOrDefault(s => s.SettingName == "GoogleClientId").SettingValue;
-            var googleClientSecret = siteSettings.FirstOrDefault(s => s.SettingName == "GoogleClientSecret").SettingValue;
-            var enableTwitterAuth = siteSettings.FirstOrDefault(s => s.SettingName == "EnableTwitterAuth").SettingValue;
-            var twitterConsumerKey = siteSettings.FirstOrDefault(s => s.SettingName == "TwitterConsumerKey").SettingValue;
-            var twitterConsumerSecret = siteSettings.FirstOrDefault(s => s.SettingName == "TwitterConsumerSecret").SettingValue;
+                var enableFacebookAuth = siteSettings.FirstOrDefault(s => s.SettingName == "EnableFacebookAuth").SettingValue;
+                var facebookAppId = siteSettings.FirstOrDefault(s => s.SettingName == "FacebookAppId").SettingValue;
+                var facebookAppAppSecret = siteSettings.FirstOrDefault(s => s.SettingName == "FacebookAppSecret").SettingValue;
+                var enableGoogleAuth = siteSettings.FirstOrDefault(s => s.SettingName == "EnableGoogleAuth").SettingValue;
+                var googleClientId = siteSettings.FirstOrDefault(s => s.SettingName == "GoogleClientId").SettingValue;
+                var googleClientSecret = siteSettings.FirstOrDefault(s => s.SettingName == "GoogleClientSecret").SettingValue;
+                var enableTwitterAuth = siteSettings.FirstOrDefault(s => s.SettingName == "EnableTwitterAuth").SettingValue;
+                var twitterConsumerKey = siteSettings.FirstOrDefault(s => s.SettingName == "TwitterConsumerKey").SettingValue;
+                var twitterConsumerSecret = siteSettings.FirstOrDefault(s => s.SettingName == "TwitterConsumerSecret").SettingValue;
 
-            if (!string.IsNullOrEmpty(enableFacebookAuth) && bool.Parse(enableFacebookAuth.ToLower()))
-            {
-                services.AddAuthentication().AddFacebook(facebookOptions =>
+                if (!string.IsNullOrEmpty(enableFacebookAuth) && bool.Parse(enableFacebookAuth.ToLower()))
                 {
-                    facebookOptions.AppId = facebookAppId;
-                    facebookOptions.AppSecret = facebookAppAppSecret;
-                });
-            }
+                    services.AddAuthentication().AddFacebook(facebookOptions =>
+                    {
+                        facebookOptions.AppId = facebookAppId;
+                        facebookOptions.AppSecret = facebookAppAppSecret;
+                    });
+                }
 
-            if (!string.IsNullOrEmpty(enableTwitterAuth) && bool.Parse(enableTwitterAuth.ToLower()))
-            {
-                services.AddAuthentication().AddTwitter(twitterOptions =>
+                if (!string.IsNullOrEmpty(enableTwitterAuth) && bool.Parse(enableTwitterAuth.ToLower()))
                 {
-                    twitterOptions.ConsumerKey = twitterConsumerKey;
-                    twitterOptions.ConsumerSecret = twitterConsumerSecret;
-                });
-            }
+                    services.AddAuthentication().AddTwitter(twitterOptions =>
+                    {
+                        twitterOptions.ConsumerKey = twitterConsumerKey;
+                        twitterOptions.ConsumerSecret = twitterConsumerSecret;
+                    });
+                }
 
-            if (!string.IsNullOrEmpty(enableGoogleAuth) && bool.Parse(enableGoogleAuth.ToLower()))
-            {
-                services.AddAuthentication().AddGoogle(googleOptions =>
+                if (!string.IsNullOrEmpty(enableGoogleAuth) && bool.Parse(enableGoogleAuth.ToLower()))
                 {
-                    googleOptions.ClientId = googleClientId;
-                    googleOptions.ClientSecret = googleClientSecret;
-                });
+                    services.AddAuthentication().AddGoogle(googleOptions =>
+                    {
+                        googleOptions.ClientId = googleClientId;
+                        googleOptions.ClientSecret = googleClientSecret;
+                    });
+                }
             }
-
 
             services.Add(ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, SerializerSettingsSetup>());
 
