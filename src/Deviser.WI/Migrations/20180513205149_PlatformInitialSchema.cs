@@ -5,21 +5,27 @@ using System.Collections.Generic;
 
 namespace Deviser.WI.Migrations
 {
-    public partial class InitialSchema : Migration
+    public partial class PlatformInitialSchema : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ContentDataType",
+                name: "ContentType",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    IconClass = table.Column<string>(nullable: true),
+                    IconImage = table.Column<string>(nullable: true),
+                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
                     Label = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: false)
+                    LastModifiedDate = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    SortOrder = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ContentDataType", x => x.Id);
+                    table.PrimaryKey("PK_ContentType", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -208,32 +214,6 @@ namespace Deviser.WI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ContentType",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    ContentDataTypeId = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: true),
-                    IconClass = table.Column<string>(nullable: true),
-                    IconImage = table.Column<string>(nullable: true),
-                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
-                    Label = table.Column<string>(nullable: true),
-                    LastModifiedDate = table.Column<DateTime>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    SortOrder = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ContentType", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ContentType_ContentDataType_ContentDataTypeId",
-                        column: x => x.ContentDataTypeId,
-                        principalTable: "ContentDataType",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Page",
                 columns: table => new
                 {
@@ -306,6 +286,8 @@ namespace Deviser.WI.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: true),
+                    DefaultValue = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false, defaultValue: true),
                     Label = table.Column<string>(nullable: true),
                     LastModifiedDate = table.Column<DateTime>(nullable: true),
@@ -530,6 +512,7 @@ namespace Deviser.WI.Migrations
                     ModuleActionId = table.Column<Guid>(nullable: false),
                     ModuleId = table.Column<Guid>(nullable: false),
                     PageId = table.Column<Guid>(nullable: false),
+                    Properties = table.Column<string>(nullable: true),
                     SortOrder = table.Column<int>(nullable: false),
                     Title = table.Column<string>(nullable: true)
                 },
@@ -598,6 +581,30 @@ namespace Deviser.WI.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_LayoutTypeProperty_Property_PropertyId",
+                        column: x => x.PropertyId,
+                        principalTable: "Property",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ModuleActionProperty",
+                columns: table => new
+                {
+                    ModuleActionId = table.Column<Guid>(nullable: false),
+                    PropertyId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ModuleActionProperty", x => new { x.ModuleActionId, x.PropertyId });
+                    table.ForeignKey(
+                        name: "FK_ModuleActionProperty_ModuleAction_ModuleActionId",
+                        column: x => x.ModuleActionId,
+                        principalTable: "ModuleAction",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ModuleActionProperty_Property_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Property",
                         principalColumn: "Id",
@@ -707,11 +714,6 @@ namespace Deviser.WI.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ContentType_ContentDataTypeId",
-                table: "ContentType",
-                column: "ContentDataTypeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ContentTypeProperty_PropertyId",
                 table: "ContentTypeProperty",
                 column: "PropertyId");
@@ -730,6 +732,11 @@ namespace Deviser.WI.Migrations
                 name: "IX_FK_ModuleActions_Modules",
                 table: "ModuleAction",
                 column: "ModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModuleActionProperty_PropertyId",
+                table: "ModuleActionProperty",
+                column: "PropertyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ModulePermission_PageModuleId",
@@ -870,6 +877,9 @@ namespace Deviser.WI.Migrations
                 name: "LayoutTypeProperty");
 
             migrationBuilder.DropTable(
+                name: "ModuleActionProperty");
+
+            migrationBuilder.DropTable(
                 name: "ModulePermission");
 
             migrationBuilder.DropTable(
@@ -937,9 +947,6 @@ namespace Deviser.WI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Module");
-
-            migrationBuilder.DropTable(
-                name: "ContentDataType");
 
             migrationBuilder.DropTable(
                 name: "Layout");

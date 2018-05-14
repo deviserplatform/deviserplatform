@@ -202,11 +202,11 @@ namespace Deviser.WI.Controllers
             }
         }
 
-        public new void Dispose()
-        {
-            _deviserControllerFactory.Dispose();
-            base.Dispose();
-        }
+        //public new void Dispose()
+        //{
+        //    _deviserControllerFactory.Dispose();
+        //    base.Dispose();
+        //}
 
 
     }

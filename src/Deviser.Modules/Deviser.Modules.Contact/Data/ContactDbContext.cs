@@ -8,18 +8,18 @@ using System.Text;
 namespace Deviser.Modules.ContactForm.Data
 {
     public class ContactDbContext : ModuleDbContext
-    {
+    {   
 
-        public ContactDbContext()
-        {
-            ModuleMetaInfo = Global.ModuleMetaInfo;
-        }
-
-        //public ContactDbContext(DbContextOptions options)
-        //    : base(options)
+        //public ContactDbContext()
         //{
         //    ModuleMetaInfo = Global.ModuleMetaInfo;
         //}
+
+        public ContactDbContext(DbContextOptions options)
+            : base(options)
+        {
+            ModuleMetaInfo = Global.ModuleMetaInfo;
+        }
 
         //public ContactDbContext(IServiceProvider serviceProvider)
         //    : base(serviceProvider)

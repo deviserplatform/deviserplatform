@@ -15,6 +15,7 @@ using Deviser.Core.Common;
 using Deviser.Core.Data.Repositories;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using static Deviser.WI.Program;
 
 namespace Deviser.WI.Controllers
 {
@@ -67,6 +68,7 @@ namespace Deviser.WI.Controllers
                 try
                 {
                     _installationProvider.InstallPlatform(installModel);
+                    ApplicationManager.Instance.Restart();
                     return View("Success");
                 }
                 catch (SqlException ex)

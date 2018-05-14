@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Deviser.Core.Data.Installation;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -104,7 +105,7 @@ namespace Deviser.Core.Data.Repositories
                 InsertData(dbOption);
 
                 //Migrate module
-                MigrateModuleContexts();
+                MigrateModuleContexts(installModel);
             }
 
             //Write intall settings
@@ -128,7 +129,11 @@ namespace Deviser.Core.Data.Repositories
 
         public void InsertData(DbContextOptions dbOption)
         {
-            //TODO: Insert data
+            using (var context = new DeviserDbContext(dbOption))
+            {
+                var dataSeeder = new DataSeeder(context);
+                dataSeeder.InsertData();
+            }
         }
 
         public string GetConnectionString(InstallModel model)
@@ -146,6 +151,10 @@ namespace Deviser.Core.Data.Repositories
             else if (model.DatabaseProvider == DatabaseProvider.PostgreSQL)
             {
                 return $"Server={model.ServerName};Database={model.DatabaseName};Username={model.DBUserName};Password={model.DBPassword}";
+            }
+            else if (model.DatabaseProvider == DatabaseProvider.MySQL)
+            {
+                return $"server={model.ServerName};database={model.DatabaseName};user={model.DBUserName};password={model.DBPassword}";
             }
             else
             {
@@ -208,6 +217,22 @@ namespace Deviser.Core.Data.Repositories
                 else
                 {
                     optionsBuilder.UseNpgsql(connectionString, (x) =>
+                    {
+                        x.MigrationsAssembly(moduleAssembly);
+                        x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
+                    })
+                    .ReplaceService<IHistoryRepository, NpgsqlModuleHistoryRepository>();
+                }
+            }
+            else if (installModel.DatabaseProvider == DatabaseProvider.MySQL)
+            {
+                if (string.IsNullOrEmpty(moduleAssembly))
+                {
+                    optionsBuilder.UseMySQL(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                }
+                else
+                {
+                    optionsBuilder.UseMySQL(connectionString, (x) =>
                     {
                         x.MigrationsAssembly(moduleAssembly);
                         x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
@@ -279,17 +304,17 @@ namespace Deviser.Core.Data.Repositories
             File.WriteAllText(filePath, JsonConvert.SerializeObject(model));
         }
 
-        private void MigrateModuleContexts()
+        private void MigrateModuleContexts(InstallModel installModel)
         {
             var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.PlatformAssembly);
             List<TypeInfo> moduleDbContextTypes = new List<TypeInfo>();
 
-            Type moduleDbContextType = typeof(ModuleDbContext);
-            PropertyInfo databaseField = moduleDbContextType.GetProperty("Database");
+            Type moduleDbContextBaseType = typeof(ModuleDbContext);
+            PropertyInfo databaseField = moduleDbContextBaseType.GetProperty("Database");
             MethodInfo registerServiceMethodInfo = typeof(Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions).GetMethod("Migrate");
             foreach (var assembly in assemblies)
             {
-                var controllerTypes = assembly.DefinedTypes.Where(t => moduleDbContextType.IsAssignableFrom(t)).ToList();
+                var controllerTypes = assembly.DefinedTypes.Where(t => moduleDbContextBaseType.IsAssignableFrom(t)).ToList();
 
                 if (controllerTypes != null && controllerTypes.Count > 0)
                     moduleDbContextTypes.AddRange(controllerTypes);
@@ -297,9 +322,15 @@ namespace Deviser.Core.Data.Repositories
 
             if (moduleDbContextTypes.Count > 0)
             {
-                foreach (var serviceCollectorType in moduleDbContextTypes)
+                foreach (var moduleDbContextType in moduleDbContextTypes)
                 {
-                    var moduleDbContextObj = Activator.CreateInstance(serviceCollectorType);
+                    var moduleDbOptionBuilderGType = typeof(DbContextOptionsBuilder<>);
+                    Type[] typeArgs = { moduleDbContextType };
+                    var moduleDbOptionBuilderType = moduleDbOptionBuilderGType.MakeGenericType(typeArgs);
+                    var moduleDbOptionBuilder = Activator.CreateInstance(moduleDbOptionBuilderType); //var optionsBuilder = new DbContextOptionsBuilder<DeviserDbContext>();
+                    var dbContextOptionBuilder = GetDbContextOptionsBuilder(installModel, (DbContextOptionsBuilder)moduleDbOptionBuilder);
+
+                    var moduleDbContextObj = Activator.CreateInstance(moduleDbContextType, dbContextOptionBuilder.Options);
 
                     var databaseObj = databaseField.GetValue(moduleDbContextObj);
 

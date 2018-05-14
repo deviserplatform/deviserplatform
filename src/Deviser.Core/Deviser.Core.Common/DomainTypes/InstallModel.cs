@@ -11,7 +11,8 @@ namespace Deviser.Core.Common.DomainTypes
         SQLLocalDb = 1,
         SQLServer = 2,
         SQLite = 3,
-        PostgreSQL = 4
+        PostgreSQL = 4,
+        MySQL = 5,
     }
 
     public class InstallModel

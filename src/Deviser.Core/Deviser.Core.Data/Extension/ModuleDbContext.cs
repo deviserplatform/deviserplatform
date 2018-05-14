@@ -17,17 +17,17 @@ namespace Deviser.Core.Data.Extension
         private IInstallationProvider _installationProvider;
         public ModuleMetaInfo ModuleMetaInfo { get; set; }
 
-        //public ModuleDbContext(DbContextOptions options)
-        //    : base(options)
-        //{
+        public ModuleDbContext(DbContextOptions options)
+            : base(options)
+        {
 
-        //}
+        }
 
         //public ModuleDbContext(IServiceProvider serviceProvider)
         //{
         //    _installationProvider = serviceProvider.GetService<InstallationProvider>();
         //}
-        
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {
             //var _serviceScope = ServiceProviderCache.Instance.GetOrAdd(optionBuilder.Options, providerRequired: true)
@@ -43,7 +43,7 @@ namespace Deviser.Core.Data.Extension
 
             //var scopedServiceProvider = ((IInfrastructure<IServiceProvider>)this).Instance;
 
-            var _installationProvider = SharedObjects.ServiceProvider.GetService<IInstallationProvider>();
+            //var _installationProvider = SharedObjects.ServiceProvider.GetService<IInstallationProvider>();
 
             if (ModuleMetaInfo == null)
                 throw new ArgumentNullException(nameof(ModuleMetaInfo));
@@ -54,10 +54,10 @@ namespace Deviser.Core.Data.Extension
             if (string.IsNullOrEmpty(ModuleMetaInfo.ModuleAssembly))
                 throw new ArgumentNullException(nameof(ModuleMetaInfo.ModuleAssembly));
 
-            if (_installationProvider != null)
-            {
-                _installationProvider.GetDbContextOptionsBuilder(optionBuilder, ModuleMetaInfo.ModuleAssembly);
-            }
+            //if (_installationProvider != null)
+            //{
+            //    _installationProvider.GetDbContextOptionsBuilder(optionBuilder, ModuleMetaInfo.ModuleAssembly);
+            //}
         }
     }
 }

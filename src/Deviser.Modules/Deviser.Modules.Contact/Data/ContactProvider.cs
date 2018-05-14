@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Deviser.Core.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,11 +16,12 @@ namespace Deviser.Modules.ContactForm.Data
     {
        
         private readonly ILogger<ContactProvider> _logger;
-
+        DbContextOptions<ContactDbContext> _dbOptions;
         public ContactProvider(IServiceProvider serviceProvider, ILifetimeScope container)
             :base(container)
         {           
             _logger = serviceProvider.GetService<ILogger<ContactProvider>>();
+            _dbOptions = serviceProvider.GetService<DbContextOptions<ContactDbContext>>();
         }
 
 
@@ -27,15 +29,14 @@ namespace Deviser.Modules.ContactForm.Data
         {
             try
             {
-                using (var context = new ContactDbContext())
+                using (var context = new ContactDbContext(_dbOptions))
                 {    
                     if(contact != null)
                     {
                         context.Contact.Add(contact);
                         context.SaveChanges();
                         return true;
-                    }                  
-
+                    }
                 }
                 
             }

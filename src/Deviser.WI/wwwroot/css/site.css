@@ -6267,12 +6267,6 @@ body {
     .content-wrapper .video-container img {
       width: 100%; }
     .content-wrapper .video-container .thumb-text {
-      /*background: #fff;
-        color: $devPrimary;
-        border: 0 solid transparent;
-        border-radius: 50%;
-        margin: 26% 46%;
-        padding: 0.45rem 1rem;*/
       background: white;
       color: #ef4934;
       border: 0 solid transparent;
