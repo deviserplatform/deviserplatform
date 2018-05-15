@@ -17,18 +17,30 @@ namespace Deviser.Core.Data.Installation
 
         public void InsertData()
         {
+
+            //Contact
+            #region Contact        
+
+            #endregion
+
             //ContentType
+            #region ContentType        
+
             _dbContext.Set<ContentType>
             ().Add(new ContentType
             {
 
                 Id = Guid.Parse("817fea8f-59e2-4b77-8e63-1ea002772893"),
 
+                CreatedDate = DateTime.Parse("2018-03-01T21:56:46"),
+
                 IconClass = "fa fa-check-square-o",
 
                 IconImage = null,
 
                 Label = "Features",
+
+                LastModifiedDate = DateTime.Parse("2018-03-20T14:30:14"),
 
                 Name = "features",
 
@@ -41,11 +53,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("a7bbfc37-b496-4c8f-b481-309ec38fbac0"),
 
+                CreatedDate = DateTime.Parse("2016-08-20T15:19:37"),
+
                 IconClass = "fa fa-code",
 
                 IconImage = null,
 
                 Label = "Rich Text",
+
+                LastModifiedDate = DateTime.Parse("2018-03-22T23:16:54"),
 
                 Name = "richtext",
 
@@ -58,11 +74,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("f99a54f8-5704-4bc1-b287-3a930c9ece53"),
 
+                CreatedDate = DateTime.Parse("2018-03-26T22:11:24"),
+
                 IconClass = "fa fa-picture-o",
 
                 IconImage = null,
 
                 Label = "Gallery",
+
+                LastModifiedDate = DateTime.Parse("2018-03-26T22:13:07"),
 
                 Name = "gallery",
 
@@ -75,11 +95,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("ad98e4c6-204e-492c-b1d9-48cca97e2cbf"),
 
+                CreatedDate = DateTime.Parse("2018-02-24T20:12:29"),
+
                 IconClass = null,
 
                 IconImage = null,
 
                 Label = "test",
+
+                LastModifiedDate = DateTime.Parse("2018-02-24T20:12:29"),
 
                 Name = "test",
 
@@ -92,11 +116,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("c49840f4-5a00-4d1d-86b7-7881e3841314"),
 
+                CreatedDate = DateTime.Parse("2018-04-18T22:06:51"),
+
                 IconClass = "fa fa-users",
 
                 IconImage = null,
 
                 Label = "Team",
+
+                LastModifiedDate = DateTime.Parse("2018-04-18T22:07:33"),
 
                 Name = "team",
 
@@ -109,11 +137,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("978bd890-7dbd-4ee0-9d86-8356dfadf4e6"),
 
+                CreatedDate = DateTime.Parse("2016-08-21T09:45:20"),
+
                 IconClass = "fa fa-clone",
 
                 IconImage = null,
 
                 Label = "Teaser Box",
+
+                LastModifiedDate = DateTime.Parse("2018-03-05T22:00:13"),
 
                 Name = "teaserbox",
 
@@ -126,11 +158,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("9b2ec6ac-8fdf-4cb5-ae60-90b73a6931fc"),
 
+                CreatedDate = DateTime.Parse("2016-07-18T23:54:37"),
+
                 IconClass = "fa fa-video-camera",
 
                 IconImage = null,
 
                 Label = "Video",
+
+                LastModifiedDate = DateTime.Parse("2018-03-26T17:26:27"),
 
                 Name = "video",
 
@@ -143,11 +179,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("69933d62-31ed-481e-be1f-95dfb8210027"),
 
+                CreatedDate = DateTime.Parse("2018-03-08T22:54:28"),
+
                 IconClass = "fa fa-external-link",
 
                 IconImage = null,
 
                 Label = "Call to action",
+
+                LastModifiedDate = DateTime.Parse("2018-03-08T22:54:28"),
 
                 Name = "calltoaction",
 
@@ -166,6 +206,8 @@ namespace Deviser.Core.Data.Installation
 
                 Label = "Image",
 
+                LastModifiedDate = DateTime.Parse("2018-03-05T21:59:57"),
+
                 Name = "image",
 
                 SortOrder = 2,
@@ -177,11 +219,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("a3e319ea-80b9-4800-9032-bb7ea09ed331"),
 
+                CreatedDate = DateTime.Parse("2018-05-07T22:28:02"),
+
                 IconClass = "fa fa-rss-square",
 
                 IconImage = null,
 
                 Label = "Blog",
+
+                LastModifiedDate = DateTime.Parse("2018-05-07T22:28:02"),
 
                 Name = "blog",
 
@@ -194,11 +240,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("8d878db7-c3e2-4c39-b359-bd0e39d87df9"),
 
+                CreatedDate = DateTime.Parse("2016-08-20T12:02:46"),
+
                 IconClass = "fa fa-folder-o",
 
                 IconImage = null,
 
                 Label = "Tabs",
+
+                LastModifiedDate = DateTime.Parse("2018-03-05T22:00:09"),
 
                 Name = "tabs",
 
@@ -217,6 +267,8 @@ namespace Deviser.Core.Data.Installation
 
                 Label = "Text",
 
+                LastModifiedDate = DateTime.Parse("2018-03-05T22:00:19"),
+
                 Name = "text",
 
                 SortOrder = 1,
@@ -228,11 +280,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("b2c35761-a953-4bf7-bfb2-d0ea9e63786d"),
 
+                CreatedDate = DateTime.Parse("2016-08-22T22:17:07"),
+
                 IconClass = "fa fa-map-o",
 
                 IconImage = null,
 
                 Label = "Map",
+
+                LastModifiedDate = DateTime.Parse("2018-03-05T22:00:00"),
 
                 Name = "map",
 
@@ -245,11 +301,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("d8e458b3-daa2-4bc5-90a0-d56e9a78839e"),
 
+                CreatedDate = DateTime.Parse("2016-08-20T12:01:53"),
+
                 IconClass = "fa fa-bars",
 
                 IconImage = null,
 
                 Label = "Accordion",
+
+                LastModifiedDate = DateTime.Parse("2018-03-05T21:58:51"),
 
                 Name = "accordion",
 
@@ -268,12 +328,17 @@ namespace Deviser.Core.Data.Installation
 
                 Label = "Slider",
 
+                LastModifiedDate = DateTime.Parse("2018-03-25T13:26:47"),
+
                 Name = "slider",
 
                 SortOrder = 3,
             });
 
+            #endregion
+
             //Language
+            #region Language        
 
             _dbContext.Set<Language>
             ().Add(new Language
@@ -281,11 +346,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("388b34ed-803a-48ad-6618-08d360bcd031"),
 
+                CreatedDate = DateTime.Parse("2016-04-09T23:20:37"),
+
                 CultureCode = "de-CH",
 
                 EnglishName = "German (Switzerland)",
 
                 FallbackCulture = "en-US",
+
+                LastModifiedDate = DateTime.Parse("2016-04-09T23:20:37"),
 
                 NativeName = "Deutsch (Schweiz)",
             });
@@ -296,11 +365,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("1350c0b2-634e-4e81-6619-08d360bcd031"),
 
+                CreatedDate = DateTime.Parse("2016-04-09T23:24:04"),
+
                 CultureCode = "fr-CH",
 
                 EnglishName = "French (Switzerland)",
 
                 FallbackCulture = "en-US",
+
+                LastModifiedDate = DateTime.Parse("2016-04-09T23:24:04"),
 
                 NativeName = "français (Suisse)",
             });
@@ -311,11 +384,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("d17b0b1f-129c-4bd8-1848-08d3f060a575"),
 
+                CreatedDate = DateTime.Parse("2016-10-09T18:23:47"),
+
                 CultureCode = "ta-IN",
 
                 EnglishName = "Tamil (India)",
 
                 FallbackCulture = "en-US",
+
+                LastModifiedDate = DateTime.Parse("2016-10-09T18:23:47"),
 
                 NativeName = "தமிழ் (இந்தியா)",
             });
@@ -335,7 +412,10 @@ namespace Deviser.Core.Data.Installation
                 NativeName = "English (United States)",
             });
 
+            #endregion
+
             //Layout
+            #region Layout        
 
             _dbContext.Set<Layout>
             ().Add(new Layout
@@ -506,7 +586,10 @@ namespace Deviser.Core.Data.Installation
                 Name = "Admin Layout",
             });
 
+            #endregion
+
             //LayoutType
+            #region LayoutType        
 
             _dbContext.Set<LayoutType>
             ().Add(new LayoutType
@@ -514,11 +597,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("a72ce8d2-5f5f-4176-0141-08d57ef792d3"),
 
+                CreatedDate = DateTime.Parse("2018-02-28T23:06:52"),
+
                 IconClass = "fa fa-code",
 
                 IconImage = null,
 
                 Label = "Section",
+
+                LastModifiedDate = DateTime.Parse("2018-02-28T23:35:11"),
 
                 LayoutTypeIds = "9341f92e-83d8-4afe-ad4a-a95deeda9ae3,5a0a5884-da84-4922-a02f-5828b55d5c92,43734210-943e-4f33-a161-f12260b8c001",
 
@@ -537,6 +624,8 @@ namespace Deviser.Core.Data.Installation
 
                 Label = "Wrapper",
 
+                LastModifiedDate = DateTime.Parse("2017-11-09T16:42:03"),
+
                 LayoutTypeIds = "9341f92e-83d8-4afe-ad4a-a95deeda9ae3, 43734210-943e-4f33-a161-f12260b8c001",
 
                 Name = "wrapper",
@@ -553,6 +642,8 @@ namespace Deviser.Core.Data.Installation
                 IconImage = null,
 
                 Label = "Column",
+
+                LastModifiedDate = DateTime.Parse("2018-03-18T00:25:49"),
 
                 LayoutTypeIds = "9341f92e-83d8-4afe-ad4a-a95deeda9ae3,43734210-943e-4f33-a161-f12260b8c001",
 
@@ -593,7 +684,10 @@ namespace Deviser.Core.Data.Installation
                 Name = "row",
             });
 
+            #endregion
+
             //Module
+            #region Module        
 
             _dbContext.Set<Module>
             ().Add(new Module
@@ -601,9 +695,13 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("d670ac96-2ab6-4036-4664-08d52acdf1a1"),
 
+                CreatedDate = DateTime.Parse("2017-11-13T20:37:15"),
+
                 Description = "Recycle Bin",
 
                 Label = "RecycleBin",
+
+                LastModifiedDate = DateTime.Parse("2017-11-13T20:37:15"),
 
                 Name = "RecycleBin",
 
@@ -616,9 +714,13 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("c75b54cc-8e9d-42cc-f1e8-08d568c7a843"),
 
+                CreatedDate = DateTime.Parse("2018-01-31T17:28:27"),
+
                 Description = "Contact",
 
                 Label = "Contact",
+
+                LastModifiedDate = DateTime.Parse("2018-01-31T17:28:27"),
 
                 Name = "Contact",
 
@@ -760,7 +862,10 @@ namespace Deviser.Core.Data.Installation
                 Version = "00.01.00",
             });
 
+            #endregion
+
             //ModuleActionType
+            #region ModuleActionType        
 
             _dbContext.Set<ModuleActionType>
             ().Add(new ModuleActionType
@@ -780,15 +885,22 @@ namespace Deviser.Core.Data.Installation
                 ControlType = "Edit",
             });
 
+            #endregion
 
             //OptionList
+            #region OptionList        
+
             _dbContext.Set<OptionList>
             ().Add(new OptionList
             {
 
                 Id = Guid.Parse("969eb4ef-188c-4174-4194-08d54de4cd18"),
 
+                CreatedDate = DateTime.Parse("2017-12-28T12:19:03"),
+
                 Label = "Column Width (Medium)",
+
+                LastModifiedDate = DateTime.Parse("2018-03-17T23:56:48"),
 
                 List = "[\r\n  {\r\n    \"id\": \"b211626d-09e3-c23a-e731-7cd85d33871a\",\r\n    \"name\": \"col-md-1\",\r\n    \"label\": \"col-md-1\"\r\n  },\r\n  {\r\n    \"id\": \"cc70e2c9-2af8-cf7c-9596-8af075c626e6\",\r\n    \"name\": \"col-md-2\",\r\n    \"label\": \"col-md-2\"\r\n  },\r\n  {\r\n    \"id\": \"2d4c86e6-b85b-e278-7591-906ccc3f8fe5\",\r\n    \"name\": \"col-md-3\",\r\n    \"label\": \"col-md-3\"\r\n  },\r\n  {\r\n    \"id\": \"f2eafdde-4f79-a195-c1c1-0794e293fa27\",\r\n    \"name\": \"col-md-4\",\r\n    \"label\": \"col-md-4\"\r\n  },\r\n  {\r\n    \"id\": \"48474435-0004-8fa7-33d2-f1b5de5ecaff\",\r\n    \"name\": \"col-md-5\",\r\n    \"label\": \"col-md-5\"\r\n  },\r\n  {\r\n    \"id\": \"22a46d38-7cad-0921-fd30-3a40b2933575\",\r\n    \"name\": \"col-md-6\",\r\n    \"label\": \"col-md-6\"\r\n  },\r\n  {\r\n    \"id\": \"7fd1245f-c218-7a56-f388-7f41a051a81a\",\r\n    \"name\": \"col-md-7\",\r\n    \"label\": \"col-md-7\"\r\n  },\r\n  {\r\n    \"id\": \"1bc35e70-9f0e-4038-e182-ebdfac4ea653\",\r\n    \"name\": \"col-md-8\",\r\n    \"label\": \"col-md-8\"\r\n  },\r\n  {\r\n    \"id\": \"65745a21-9d59-3b95-50fd-39586f61957a\",\r\n    \"name\": \"col-md-9\",\r\n    \"label\": \"col-md-9\"\r\n  },\r\n  {\r\n    \"id\": \"f8f8ff2e-88b0-f66a-20cf-07c3339424cf\",\r\n    \"name\": \"col-md-10\",\r\n    \"label\": \"col-md-10\"\r\n  },\r\n  {\r\n    \"id\": \"3d41a705-ca67-2510-1d09-967419377e55\",\r\n    \"name\": \"col-md-11\",\r\n    \"label\": \"col-md-11\"\r\n  },\r\n  {\r\n    \"id\": \"2c6d4b41-a103-d2a0-4d2f-0b75646d05fe\",\r\n    \"name\": \"col-md-12\",\r\n    \"label\": \"col-md-12\"\r\n  }\r\n]",
 
@@ -801,7 +913,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("7893ac90-9793-4c77-f5a2-08d582dfc823"),
 
+                CreatedDate = DateTime.Parse("2018-03-05T22:26:38"),
+
                 Label = "Video Button",
+
+                LastModifiedDate = DateTime.Parse("2018-03-05T22:26:38"),
 
                 List = "[\r\n  {\r\n    \"id\": \"a935f434-6bb4-5c6a-2889-1216180770bf\",\r\n    \"name\": \"preview\",\r\n    \"label\": \"Preview\"\r\n  },\r\n  {\r\n    \"id\": \"71b59001-99b1-7f78-8ce8-f9c3765434e2\",\r\n    \"name\": \"nopreview\",\r\n    \"label\": \"No Preview\"\r\n  }\r\n]",
 
@@ -814,7 +930,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("10506766-7323-401c-29b6-08d58b87bb48"),
 
+                CreatedDate = DateTime.Parse("2018-03-16T22:49:02"),
+
                 Label = "Boolean",
+
+                LastModifiedDate = DateTime.Parse("2018-03-16T22:49:02"),
 
                 List = "[\r\n  {\r\n    \"id\": \"20e770b7-b245-16e6-925c-1ce3a036d1ae\",\r\n    \"name\": \"true\",\r\n    \"label\": \"true\"\r\n  },\r\n  {\r\n    \"id\": \"13916b6e-9c6e-accb-c457-9d71c32909c0\",\r\n    \"name\": \"false\",\r\n    \"label\": \"false\"\r\n  }\r\n]",
 
@@ -827,7 +947,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("bfae06f9-d850-486c-29b7-08d58b87bb48"),
 
+                CreatedDate = DateTime.Parse("2018-03-16T22:49:50"),
+
                 Label = "Swiper Direction",
+
+                LastModifiedDate = DateTime.Parse("2018-03-17T11:38:58"),
 
                 List = "[\r\n  {\r\n    \"id\": \"954d54e1-5c95-da20-422e-9c31691631b2\",\r\n    \"name\": \"horizontal\",\r\n    \"label\": \"horizontal\"\r\n  },\r\n  {\r\n    \"id\": \"443cfb14-0fc0-6f52-f941-bab9803592d4\",\r\n    \"name\": \"vertical\",\r\n    \"label\": \"vertical\"\r\n  }\r\n]",
 
@@ -840,7 +964,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("58b22ebe-cb20-4a43-4f77-08d58be54a36"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T09:58:45"),
+
                 Label = "Swiper Effect",
+
+                LastModifiedDate = DateTime.Parse("2018-03-17T09:58:45"),
 
                 List = "[\r\n  {\r\n    \"id\": \"196f5ee0-c955-7d7a-618d-27863e379a19\",\r\n    \"name\": \"slider\",\r\n    \"label\": \"Slide\"\r\n  },\r\n  {\r\n    \"id\": \"25734e5e-4fd3-6dd8-0f7f-0e9d86354109\",\r\n    \"name\": \"fade\",\r\n    \"label\": \"Fade\"\r\n  },\r\n  {\r\n    \"id\": \"d506ac22-604f-4da1-50c1-d2cfd67f17a3\",\r\n    \"name\": \"cube\",\r\n    \"label\": \"Cube\"\r\n  },\r\n  {\r\n    \"id\": \"e6f8dc77-70da-2af8-00fc-b6be408993f1\",\r\n    \"name\": \"coverflow\",\r\n    \"label\": \"Cover Flow\"\r\n  },\r\n  {\r\n    \"id\": \"e0da701b-ff78-69ba-f033-d88bf0d2b577\",\r\n    \"name\": \"flip\",\r\n    \"label\": \"Flip\"\r\n  }\r\n]",
 
@@ -853,7 +981,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("dd48a020-bba4-43e3-4f78-08d58be54a36"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T10:01:38"),
+
                 Label = "Swiper slides per column fill",
+
+                LastModifiedDate = DateTime.Parse("2018-03-17T10:01:38"),
 
                 List = "[\r\n  {\r\n    \"id\": \"449cc0c9-52ca-7f58-bb40-f4c876486ffa\",\r\n    \"name\": \"column\",\r\n    \"label\": \"Column\"\r\n  },\r\n  {\r\n    \"id\": \"ca98241d-a655-b684-1659-a1c00d9f02d2\",\r\n    \"name\": \"row\",\r\n    \"label\": \"Row\"\r\n  }\r\n]",
 
@@ -866,7 +998,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("c21630e0-e691-4412-4f79-08d58be54a36"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T10:04:22"),
+
                 Label = "Swiper touch events target",
+
+                LastModifiedDate = DateTime.Parse("2018-03-17T10:04:22"),
 
                 List = "[\r\n  {\r\n    \"id\": \"9a530193-4a7e-8602-2046-60e97db38507\",\r\n    \"name\": \"container\",\r\n    \"label\": \"Container\"\r\n  },\r\n  {\r\n    \"id\": \"a7a020f5-b565-5cf3-023b-bac23ae3d343\",\r\n    \"name\": \"wrapper\",\r\n    \"label\": \"Wrapper\"\r\n  }\r\n]",
 
@@ -879,7 +1015,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("e41fa497-9436-475e-f3da-08d58c5519e4"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T23:19:07"),
+
                 Label = "Swiper Pagination Type",
+
+                LastModifiedDate = DateTime.Parse("2018-03-17T23:19:07"),
 
                 List = "[\r\n  {\r\n    \"id\": \"0a50497a-f3d8-53de-932d-2b30a390b125\",\r\n    \"name\": \"bullets\",\r\n    \"label\": \"Bullets\"\r\n  },\r\n  {\r\n    \"id\": \"0ae4ec32-1903-fba5-6438-27767bcc3af6\",\r\n    \"name\": \"fraction\",\r\n    \"label\": \"Fraction\"\r\n  },\r\n  {\r\n    \"id\": \"aa1661ea-ba33-3fef-134f-86c3930813d7\",\r\n    \"name\": \"progressbar\",\r\n    \"label\": \"Progress Bar\"\r\n  },\r\n  {\r\n    \"id\": \"cd918778-02df-baab-2052-7af79303fe87\",\r\n    \"name\": \"custom\",\r\n    \"label\": \"Custom\"\r\n  }\r\n]",
 
@@ -892,7 +1032,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("b98ba240-64b4-4862-f1fb-08d58c5a4d88"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T23:56:21"),
+
                 Label = "Column Width (XS)",
+
+                LastModifiedDate = DateTime.Parse("2018-03-18T00:03:12"),
 
                 List = "[\r\n  {\r\n    \"id\": \"9dc71c7c-da8d-27d6-4dde-b3c5f7519949\",\r\n    \"name\": \"col-1\",\r\n    \"label\": \"col-1\"\r\n  },\r\n  {\r\n    \"id\": \"3b7e2a54-9bd9-3459-8ddb-5ac9365b503f\",\r\n    \"name\": \"col-2\",\r\n    \"label\": \"col-2\"\r\n  },\r\n  {\r\n    \"id\": \"3d39d589-ca8e-ef44-b94e-201a8d4cfd99\",\r\n    \"name\": \"col-3\",\r\n    \"label\": \"col-3\"\r\n  },\r\n  {\r\n    \"id\": \"6597d3bd-0971-9d73-968b-64ff6e2eabda\",\r\n    \"name\": \"col-4\",\r\n    \"label\": \"col-4\"\r\n  },\r\n  {\r\n    \"id\": \"a9e5fb1c-30da-3d09-1020-c9e4058295b8\",\r\n    \"name\": \"col-5\",\r\n    \"label\": \"col-5\"\r\n  },\r\n  {\r\n    \"id\": \"c624b2b6-1e55-1113-581a-b3aa42487ced\",\r\n    \"name\": \"col-6\",\r\n    \"label\": \"col-6\"\r\n  },\r\n  {\r\n    \"id\": \"6fae6bae-066e-f70e-6cc9-6b27fae3c93e\",\r\n    \"name\": \"col-7\",\r\n    \"label\": \"col-7\"\r\n  },\r\n  {\r\n    \"id\": \"6481a797-347e-ef0f-4196-fb5d6c6ddc05\",\r\n    \"name\": \"col-8\",\r\n    \"label\": \"col-8\"\r\n  },\r\n  {\r\n    \"id\": \"bb48a7b1-420b-f9f5-fff1-69c1ef972e87\",\r\n    \"name\": \"col-9\",\r\n    \"label\": \"col-9\"\r\n  },\r\n  {\r\n    \"id\": \"df92ad01-fdc3-8c38-8683-923074b216ec\",\r\n    \"name\": \"col-10\",\r\n    \"label\": \"col-10\"\r\n  },\r\n  {\r\n    \"id\": \"758d9218-b241-24dd-5f30-3e5fea633ee8\",\r\n    \"name\": \"col-11\",\r\n    \"label\": \"col-11\"\r\n  },\r\n  {\r\n    \"id\": \"055c1a23-1fd5-a10e-e01c-46462461c438\",\r\n    \"name\": \"col-12\",\r\n    \"label\": \"col-12\"\r\n  }\r\n]",
 
@@ -905,7 +1049,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("17fa4063-c7b4-4659-f1fc-08d58c5a4d88"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T23:57:24"),
+
                 Label = "Column Width (S)",
+
+                LastModifiedDate = DateTime.Parse("2018-03-18T00:04:27"),
 
                 List = "[\r\n  {\r\n    \"id\": \"3f3343df-fc72-a030-6fc6-76e9fe1649f9\",\r\n    \"name\": \"col-sm-1\",\r\n    \"label\": \"col-sm-1\"\r\n  },\r\n  {\r\n    \"id\": \"87654aad-b339-7151-bbb4-29b28258f053\",\r\n    \"name\": \"col-sm-2\",\r\n    \"label\": \"col-sm-2\"\r\n  },\r\n  {\r\n    \"id\": \"5ecf3c99-42b5-a91a-09e6-6d0a18aa7629\",\r\n    \"name\": \"col-sm-3\",\r\n    \"label\": \"col-sm-3\"\r\n  },\r\n  {\r\n    \"id\": \"e7cf0d7d-e66b-09cb-f338-720588431bee\",\r\n    \"name\": \"col-sm-4\",\r\n    \"label\": \"col-sm-4\"\r\n  },\r\n  {\r\n    \"id\": \"58dc823a-4506-5c61-7a9b-776f011c7f1d\",\r\n    \"name\": \"col-sm-5\",\r\n    \"label\": \"col-sm-5\"\r\n  },\r\n  {\r\n    \"id\": \"5990dae2-6180-3aeb-ce5e-fe94c3eb79ba\",\r\n    \"name\": \"col-sm-6\",\r\n    \"label\": \"col-sm-6\"\r\n  },\r\n  {\r\n    \"id\": \"502b1a02-ae52-f6aa-28fc-aa4c61b4adb2\",\r\n    \"name\": \"col-sm-7\",\r\n    \"label\": \"col-sm-7\"\r\n  },\r\n  {\r\n    \"id\": \"e332ab93-e731-2117-befa-73f326055121\",\r\n    \"name\": \"col-sm-8\",\r\n    \"label\": \"col-sm-8\"\r\n  },\r\n  {\r\n    \"id\": \"8004aca9-524c-8192-6eaf-21bdde2cc13e\",\r\n    \"name\": \"col-sm-9\",\r\n    \"label\": \"col-sm-9\"\r\n  },\r\n  {\r\n    \"id\": \"672b8492-04d9-1344-ebae-b4173e6448d9\",\r\n    \"name\": \"col-sm-10\",\r\n    \"label\": \"col-sm-10\"\r\n  },\r\n  {\r\n    \"id\": \"fd499341-8911-eea2-65a9-912ff7c067ee\",\r\n    \"name\": \"col-sm-11\",\r\n    \"label\": \"col-sm-11\"\r\n  },\r\n  {\r\n    \"id\": \"dfb3073f-f4e4-d6c6-9b67-c192a575597e\",\r\n    \"name\": \"col-sm-12\",\r\n    \"label\": \"col-sm-12\"\r\n  }\r\n]",
 
@@ -918,7 +1066,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("ed74aa2d-dd21-42d9-f1fd-08d58c5a4d88"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T23:57:53"),
+
                 Label = "Column Width (L)",
+
+                LastModifiedDate = DateTime.Parse("2018-03-18T00:06:14"),
 
                 List = "[\r\n  {\r\n    \"id\": \"5479ef96-5ffa-ecc0-3a86-081eecc8bc91\",\r\n    \"name\": \"col-lg-2\",\r\n    \"label\": \"col-lg-1\"\r\n  },\r\n  {\r\n    \"id\": \"073864aa-0bbc-c7dd-4b01-21ddd8572f7e\",\r\n    \"name\": \"col-lg-2\",\r\n    \"label\": \"col-lg-2\"\r\n  },\r\n  {\r\n    \"id\": \"97028213-3609-c16d-52cf-6c9dac539a14\",\r\n    \"name\": \"col-lg-3\",\r\n    \"label\": \"col-lg-3\"\r\n  },\r\n  {\r\n    \"id\": \"5913c029-6cd8-352b-eae0-6f3f2e146b01\",\r\n    \"name\": \"col-lg-4\",\r\n    \"label\": \"col-lg-4\"\r\n  },\r\n  {\r\n    \"id\": \"9eaec3ef-93b5-10e5-4f4e-f76bc09d3ac5\",\r\n    \"name\": \"col-lg-5\",\r\n    \"label\": \"col-lg-5\"\r\n  },\r\n  {\r\n    \"id\": \"4c181fc9-af0c-7f9e-f100-44eb3b1dbc9b\",\r\n    \"name\": \"col-lg-6\",\r\n    \"label\": \"col-lg-6\"\r\n  },\r\n  {\r\n    \"id\": \"ff46a563-f2bc-7255-1561-7b3d066f9302\",\r\n    \"name\": \"col-lg-7\",\r\n    \"label\": \"col-lg-7\"\r\n  },\r\n  {\r\n    \"id\": \"94e3134c-534f-d597-ca8f-89324731d451\",\r\n    \"name\": \"col-lg-8\",\r\n    \"label\": \"col-lg-8\"\r\n  },\r\n  {\r\n    \"id\": \"f86f5f12-a662-c919-69f3-adacd235f0d6\",\r\n    \"name\": \"col-lg-9\",\r\n    \"label\": \"col-lg-9\"\r\n  },\r\n  {\r\n    \"id\": \"9c7e5cf0-9cc7-8d89-018d-72e1c62afeee\",\r\n    \"name\": \"col-lg-10\",\r\n    \"label\": \"col-lg-10\"\r\n  },\r\n  {\r\n    \"id\": \"8cb5c74a-bfcd-87d0-a667-0733ea2f8e38\",\r\n    \"name\": \"col-lg-11\",\r\n    \"label\": \"col-lg-11\"\r\n  },\r\n  {\r\n    \"id\": \"47342187-08af-37d2-cb6b-17f051233f52\",\r\n    \"name\": \"col-lg-12\",\r\n    \"label\": \"col-lg-12\"\r\n  }\r\n]",
 
@@ -931,7 +1083,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("bfd219cc-12a0-4d8b-f1fe-08d58c5a4d88"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T23:58:26"),
+
                 Label = "Column Width (XL)",
+
+                LastModifiedDate = DateTime.Parse("2018-03-18T00:07:23"),
 
                 List = "[\r\n  {\r\n    \"id\": \"3495b691-2d3a-1b82-1b33-5e2955232976\",\r\n    \"name\": \"col-xl-1\",\r\n    \"label\": \"col-xl-1\"\r\n  },\r\n  {\r\n    \"id\": \"f0c7089c-2855-efed-9857-f42e1f6c593e\",\r\n    \"name\": \"col-xl-2\",\r\n    \"label\": \"col-xl-2\"\r\n  },\r\n  {\r\n    \"id\": \"57d8d10f-9067-a7a4-602e-78d2f233ac59\",\r\n    \"name\": \"col-xl-3\",\r\n    \"label\": \"col-xl-3\"\r\n  },\r\n  {\r\n    \"id\": \"4e3ff987-b14b-0713-4243-053fc5787389\",\r\n    \"name\": \"col-xl-4\",\r\n    \"label\": \"col-xl-4\"\r\n  },\r\n  {\r\n    \"id\": \"001ee044-e14b-3a12-f8b8-3cc2556aa990\",\r\n    \"name\": \"col-xl-5\",\r\n    \"label\": \"col-xl-5\"\r\n  },\r\n  {\r\n    \"id\": \"7462c1d1-f3dd-5556-977e-2e80e726cef0\",\r\n    \"name\": \"col-xl-6\",\r\n    \"label\": \"col-xl-6\"\r\n  },\r\n  {\r\n    \"id\": \"871929af-d47e-723d-8feb-954795cbe7e0\",\r\n    \"name\": \"col-xl-7\",\r\n    \"label\": \"col-xl-7\"\r\n  },\r\n  {\r\n    \"id\": \"c4bbca0c-2d38-a927-be66-f995da9a14e8\",\r\n    \"name\": \"col-xl-8\",\r\n    \"label\": \"col-xl-8\"\r\n  },\r\n  {\r\n    \"id\": \"6929bd66-04c9-002a-de63-37af8c87421d\",\r\n    \"name\": \"col-xl-9\",\r\n    \"label\": \"col-xl-9\"\r\n  },\r\n  {\r\n    \"id\": \"4f172221-01d7-0df2-8c69-4c5efb19f513\",\r\n    \"name\": \"col-xl-10\",\r\n    \"label\": \"col-xl-10\"\r\n  },\r\n  {\r\n    \"id\": \"529898d2-d53b-2968-80cd-3c5f83f06fea\",\r\n    \"name\": \"col-xl-11\",\r\n    \"label\": \"col-xl-11\"\r\n  },\r\n  {\r\n    \"id\": \"237b37d3-2711-afe7-5f2d-e26556658719\",\r\n    \"name\": \"col-xl-12\",\r\n    \"label\": \"col-xl-12\"\r\n  }\r\n]",
 
@@ -944,7 +1100,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("973115b0-c453-4aa6-2b46-08d5a94f289b"),
 
+                CreatedDate = DateTime.Parse("2018-04-23T21:19:39"),
+
                 Label = "CF View Templates",
+
+                LastModifiedDate = DateTime.Parse("2018-04-23T21:56:38"),
 
                 List = "[\r\n  {\r\n    \"id\": \"8f9ccd68-101d-cc14-ee4a-2676aaedc3f5\",\r\n    \"name\": \"DefaultForm\",\r\n    \"label\": \"DefaultForm\"\r\n  },\r\n  {\r\n    \"id\": \"b403e966-8cf2-230e-cb1f-c4a715c2c3a3\",\r\n    \"name\": \"SimpleForm\",\r\n    \"label\": \"SimpleForm\"\r\n  }\r\n]",
 
@@ -957,14 +1117,21 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("fb907561-52ff-49de-2b47-08d5a94f289b"),
 
+                CreatedDate = DateTime.Parse("2018-04-23T21:21:00"),
+
                 Label = "CF Email Templates",
+
+                LastModifiedDate = DateTime.Parse("2018-04-23T21:21:00"),
 
                 List = "[\r\n  {\r\n    \"id\": \"eb2b86b0-20a3-e218-d6d4-d82b448dc778\",\r\n    \"name\": \"AdminNotification\",\r\n    \"label\": \"AdminNotification\"\r\n  },\r\n  {\r\n    \"id\": \"384df06f-63cd-effb-faf8-b152885ba305\",\r\n    \"name\": \"ContactNotification\",\r\n    \"label\": \"ContactNotification\"\r\n  }\r\n]",
 
                 Name = "cf_email_templates",
             });
 
+            #endregion
+
             //Permission
+            #region Permission        
 
             _dbContext.Set<Permission>
             ().Add(new Permission
@@ -1056,7 +1223,10 @@ namespace Deviser.Core.Data.Installation
                 Name = "VIEW",
             });
 
+            #endregion
+
             //Role
+            #region Role        
 
             _dbContext.Set<Role>
             ().Add(new Role
@@ -1149,7 +1319,10 @@ namespace Deviser.Core.Data.Installation
                 NormalizedName = "ALL USERS",
             });
 
+            #endregion
+
             //SiteSetting
+            #region SiteSetting        
 
             _dbContext.Set<SiteSetting>
             ().Add(new SiteSetting
@@ -1492,7 +1665,10 @@ namespace Deviser.Core.Data.Installation
                 SettingValue = "805579299652232",
             });
 
+            #endregion
+
             //User
+            #region User        
 
             _dbContext.Set<User>
             ().Add(new User
@@ -1642,8 +1818,42 @@ namespace Deviser.Core.Data.Installation
                 UserName = "sky.karthick+3@gmail.com",
             });
 
-            
+            #endregion
+
+            //AspNetUserTokens
+            #region AspNetUserTokens        
+
+            _dbContext.Set<IdentityUserToken<Guid>>
+            ().Add(new IdentityUserToken<Guid>
+            {
+
+                UserId = Guid.Parse("c6206baf-9ae9-42c2-bda9-97adcf6c8afd"),
+
+                LoginProvider = "[AspNetUserStore]",
+
+                Name = "AuthenticatorKey",
+
+                Value = "BLIRCQ5S5M5HQGFSCVCYTTBKPQLAF2XM",
+            });
+
+            _dbContext.Set<IdentityUserToken<Guid>>
+            ().Add(new IdentityUserToken<Guid>
+            {
+
+                UserId = Guid.Parse("c6206baf-9ae9-42c2-bda9-97adcf6c8afd"),
+
+                LoginProvider = "[AspNetUserStore]",
+
+                Name = "RecoveryCodes",
+
+                Value = "583e1c89;49020a66;8b852945;80bccd9b;b090065d;080d99f3;6e6b8051;8cb77900;d4d5543d;e27d9a23",
+            });
+
+            #endregion
+
             //PageContentTranslation
+            #region PageContentTranslation        
+
             _dbContext.Set<PageContentTranslation>
             ().Add(new PageContentTranslation
             {
@@ -1652,9 +1862,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"videoUrl\":\"https://www.youtube.com/watch?v=EA-jdbno19E\",\"imageUrl\":\"/assets/images/UserManual.jpg?67.87946570053545\",\"imageAltText\":null,\"focusPoint\":null}",
 
+                CreatedDate = DateTime.Parse("2016-08-18T22:33:16"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-02-28T22:31:44"),
 
                 PageContentId = Guid.Parse("2281e807-cf0c-67cb-796e-d41a83761206"),
             });
@@ -1667,9 +1881,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"content\":\"<h1>An open-source, cross-platform, rapid application and WCM development framework </h1><p>Deviser is an open-source unique framework for developing modern cross-platform applications and Web Content Management system based on ASP.NET Core. This platform enables developers to create modern web application and empowers any user groups to create dynamic contents by just drag-and-drop on a dynamic layout in no time. Deviser Platform is completely free and Open Source on Github.</p>\"}",
 
+                CreatedDate = DateTime.Parse("2016-08-20T15:44:18"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-11T15:55:05"),
 
                 PageContentId = Guid.Parse("2eb17f68-bf88-0767-46e6-4d7e26b3cbaa"),
             });
@@ -1682,9 +1900,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[{\"icon\":\"<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-feather\\\"><path d=\\\"M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z\\\"></path><line x1=\\\"16\\\" y1=\\\"8\\\" x2=\\\"2\\\" y2=\\\"22\\\"></line><line x1=\\\"17\\\" y1=\\\"15\\\" x2=\\\"9\\\" y2=\\\"15\\\"></line></svg>\",\"title\":\"Lightweight\",\"description\":\"Deviser is built on ASP.NET core with minimal dependencies, hence the framework is lightweight.\",\"id\":\"3b8f4491-f6d4-830e-2cfe-57e6614068b9\",\"viewOrder\":1},{\"title\":\"Dynamic Layout\",\"icon\":\"<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-layout\\\"><rect x=\\\"3\\\" y=\\\"3\\\" width=\\\"18\\\" height=\\\"18\\\" rx=\\\"2\\\" ry=\\\"2\\\"></rect><line x1=\\\"3\\\" y1=\\\"9\\\" x2=\\\"21\\\" y2=\\\"9\\\"></line><line x1=\\\"9\\\" y1=\\\"21\\\" x2=\\\"9\\\" y2=\\\"9\\\"></line></svg>\",\"description\":\"Create any number of layouts with dynamic layout elements (Placeholders) and get full control over HTML and CSS\",\"id\":\"bd5663f5-8fb1-8a0a-107f-b085713a486e\",\"viewOrder\":2},{\"title\":\"Do Not Repeat Yourself(DRY)\",\"description\":\"Do not worry about writing tons of code. Deviser provides a solid framework to reuse modules, contents and layouts\",\"id\":\"d90be6c1-8824-63ad-2fc7-2a2859000eba\",\"viewOrder\":3,\"icon\":\"<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-repeat\\\"><polyline points=\\\"17 1 21 5 17 9\\\"></polyline><path d=\\\"M3 11V9a4 4 0 0 1 4-4h14\\\"></path><polyline points=\\\"7 23 3 19 7 15\\\"></polyline><path d=\\\"M21 13v2a4 4 0 0 1-4 4H3\\\"></path></svg>\"},{\"icon\":\"<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-x\\\"><line x1=\\\"18\\\" y1=\\\"6\\\" x2=\\\"6\\\" y2=\\\"18\\\"></line><line x1=\\\"6\\\" y1=\\\"6\\\" x2=\\\"18\\\" y2=\\\"18\\\"></line></svg>\",\"title\":\"Cross Platform\",\"description\":\"Build web application and websites that run on Windows, Linux and macOS\",\"id\":\"6e5d82ed-eaf0-37e7-bb40-0fba7e3f9186\",\"viewOrder\":4},{\"description\":\"Create your own content types and empower non-technical users to manage complex contents at any extent.\",\"id\":\"6f4111fe-d3d4-2789-6ffe-2d9c628dea0b\",\"viewOrder\":5,\"title\":\"Dynamic Content\",\"icon\":\"<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-edit-3\\\"><polygon points=\\\"14 2 18 6 7 17 3 17 3 13 14 2\\\"></polygon><line x1=\\\"3\\\" y1=\\\"22\\\" x2=\\\"21\\\" y2=\\\"22\\\"></line></svg>\"},{\"icon\":\"<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-package\\\"><path d=\\\"M12.89 1.45l8 4A2 2 0 0 1 22 7.24v9.53a2 2 0 0 1-1.11 1.79l-8 4a2 2 0 0 1-1.79 0l-8-4a2 2 0 0 1-1.1-1.8V7.24a2 2 0 0 1 1.11-1.79l8-4a2 2 0 0 1 1.78 0z\\\"></path><polyline points=\\\"2.32 6.16 12 11 21.68 6.16\\\"></polyline><line x1=\\\"12\\\" y1=\\\"22.76\\\" x2=\\\"12\\\" y2=\\\"11\\\"></line><line x1=\\\"7\\\" y1=\\\"3.5\\\" x2=\\\"17\\\" y2=\\\"8.5\\\"></line></svg>\",\"description\":\"Develop independent modules based on ASP.NET MVC and place it on the Dynamic Layouts\",\"title\":\"Modular\",\"id\":\"577cb188-bcc4-7559-be36-ac3831e708bd\",\"viewOrder\":6},{\"title\":\"Multilingual\",\"id\":\"6bd307a0-a278-f2ae-471a-0251ca8a58a5\",\"viewOrder\":7,\"icon\":\"<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-flag\\\"><path d=\\\"M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z\\\"></path><line x1=\\\"4\\\" y1=\\\"22\\\" x2=\\\"4\\\" y2=\\\"15\\\"></line></svg>\",\"description\":\"The platform allows to manage pages and contents in any number of languages easily\"},{\"title\":\"Authentication and Authorization\",\"description\":\"Authentication and authorization are built-in within the platform.\",\"icon\":\"<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-users\\\"><path d=\\\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\\\"></path><circle cx=\\\"9\\\" cy=\\\"7\\\" r=\\\"4\\\"></circle><path d=\\\"M23 21v-2a4 4 0 0 0-3-3.87\\\"></path><path d=\\\"M16 3.13a4 4 0 0 1 0 7.75\\\"></path></svg>\",\"id\":\"32284797-4520-3e57-29b5-cb859e3969d1\",\"viewOrder\":8},{\"icon\":\"<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-move\\\"><polyline points=\\\"5 9 2 12 5 15\\\"></polyline><polyline points=\\\"9 5 12 2 15 5\\\"></polyline><polyline points=\\\"15 19 12 22 9 19\\\"></polyline><polyline points=\\\"19 9 22 12 19 15\\\"></polyline><line x1=\\\"2\\\" y1=\\\"12\\\" x2=\\\"22\\\" y2=\\\"12\\\"></line><line x1=\\\"12\\\" y1=\\\"2\\\" x2=\\\"12\\\" y2=\\\"22\\\"></line></svg>\",\"title\":\"Drag-and-Drop\",\"description\":\"Built any kind of complex pages by just drag-and-drop content and modules on a dynamic layout.\",\"id\":\"3a6f1b06-9217-c58e-c35c-cc72f76fba99\",\"viewOrder\":9}]}",
 
+                CreatedDate = DateTime.Parse("2018-03-01T22:23:36"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-04-26T22:14:33"),
 
                 PageContentId = Guid.Parse("3d215aa4-9c5b-a93e-1b7c-2df844467824"),
             });
@@ -1697,9 +1919,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[],\"link\":{\"linkType\":\"URL\",\"url\":\"https://github.com/karthicksundararajan\",\"isNewWindow\":true,\"linkText\":\"Github\"},\"iconClass\":\"fa fa-github\"}",
 
+                CreatedDate = DateTime.Parse("2018-03-08T23:01:48"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-10T18:01:59"),
 
                 PageContentId = Guid.Parse("c9916a98-17b6-f120-f38b-9a028cff7382"),
             });
@@ -1712,9 +1938,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[],\"link\":{\"linkType\":\"URL\",\"linkText\":\"Get Started\",\"url\":\"/docs\"}}",
 
+                CreatedDate = DateTime.Parse("2018-03-10T18:06:50"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-10T18:30:12"),
 
                 PageContentId = Guid.Parse("108d471d-e6ac-a321-c2b0-256a079e90df"),
             });
@@ -1727,9 +1957,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[{\"title\":\"Lightweight\",\"description\":\"Deviser is built on ASP.NET core with minimal dependencies, hence the framework is lightweight.\",\"imageUrl\":\"/assets/images/rawpixel-com-561415-unsplash.jpg?9.85880129268255\",\"imageAltText\":\"Lightweight\",\"id\":\"4312fbd1-88ab-26ff-8899-0051a2d0c668\",\"viewOrder\":1},{\"title\":\"Dynamic\",\"description\":\"Create any number of layouts with dynamic layout elements (Placeholders) and get full control over HTML and CSS\",\"imageUrl\":\"/assets/images/sai-kiran-anagani-61187-unsplash.jpg?72.3694811957373\",\"id\":\"dc82fdce-57b0-017b-f2b0-e12e81166efe\",\"viewOrder\":2},{\"title\":\"Cross Platform\",\"description\":\"Build web application and websites that run on Windows, Linux and macOS\",\"imageUrl\":\"/assets/images/spacex-71873-unsplash.jpg?44.49516821171806\",\"id\":\"085a2e19-df2a-1b48-fff0-3d3c31585b19\",\"viewOrder\":3}]}",
 
+                CreatedDate = DateTime.Parse("2018-03-12T21:49:11"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-12T21:49:19"),
 
                 PageContentId = Guid.Parse("a032e37a-ac20-22e4-81af-72faed1cc13c"),
             });
@@ -1742,9 +1976,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[{\"icon\":\"fa fa-puzzle-piece\",\"title\":\"Modular\",\"description\":\"Develop independent modules based on ASP.NET MVC and place it on the Dynamic Layouts\",\"id\":\"a956bc92-638c-b4fa-637b-bd12f584ca25\",\"viewOrder\":1},{\"title\":\"Multilingual\",\"description\":\"The platform allows to manage pages and contents in any number of languages easily\",\"icon\":\"fa fa-language\",\"id\":\"e2b70ef6-85b9-15fd-20ac-2fa3474b1a7c\",\"viewOrder\":2},{\"icon\":\"fa fa-arrows\",\"title\":\"Drag-and-Drop\",\"description\":\"Built any kind of complex pages by just drag-and-drop content and modules on a dynamic layout.\",\"id\":\"3bc938e3-883d-8f5d-d2b6-2acf1c3346af\",\"viewOrder\":3}]}",
 
+                CreatedDate = DateTime.Parse("2018-03-12T21:55:00"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-12T21:55:00"),
 
                 PageContentId = Guid.Parse("deae8c01-cc70-ebc1-b165-af94417eae61"),
             });
@@ -1757,9 +1995,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[],\"content\":\"<h2>Features</h2>\"}",
 
+                CreatedDate = DateTime.Parse("2018-03-22T23:12:45"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-22T23:12:45"),
 
                 PageContentId = Guid.Parse("3ae46227-d6dc-b5da-9a31-87494a1ee576"),
             });
@@ -1772,9 +2014,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[],\"content\":\"<h1>An open-source, cross-platform, rapid application and WCM development framework </h1><p>Deviser is an open-source unique framework for developing modern cross-platform applications and Web Content Management system based on ASP.NET Core. This platform enables developers to create modern web application and empowers any user groups to create dynamic contents by just drag-and-drop on a dynamic layout in no time. Deviser Platform is completely free and Open Source on Github.</p>\"}",
 
+                CreatedDate = DateTime.Parse("2018-03-26T17:10:42"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-26T17:10:42"),
 
                 PageContentId = Guid.Parse("2fcd1f08-42b0-fe77-bf67-0fa01148eef3"),
             });
@@ -1787,9 +2033,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[],\"imageUrl\":\"/assets/images/UserManual.jpg?71.79668362564576\",\"videoUrl\":\"https://www.youtube.com/watch?v=EA-jdbno19E\"}",
 
+                CreatedDate = DateTime.Parse("2018-03-26T17:30:40"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-26T17:30:40"),
 
                 PageContentId = Guid.Parse("42a6b892-6cc9-10ea-322e-edfc5f7f4c36"),
             });
@@ -1802,9 +2052,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[{\"imageUrl\":\"/assets/images/alex-iby-558878-unsplash.jpg?95.33394332472156\",\"id\":\"72a3d536-603a-7340-31ff-53d6ae257402\",\"viewOrder\":1,\"description\":\"Lorem ipsum dolor sit amet, eum et debet moderatius, pro ne labitur elaboraret disputationi.\"},{\"imageUrl\":\"/assets/images/jason-blackeye-428759-unsplash.jpg?71.13357858472058\",\"description\":\"Odio impedit eu eam, clita admodum vituperatoribus ei eam, invidunt repudiandae consequuntur ex vis.\",\"id\":\"78b2ea9d-811a-064e-a526-a0c3ba0a306f\",\"viewOrder\":2},{\"imageUrl\":\"/assets/images/marcus-cramer-426500-unsplash.jpg?15.03560765820513\",\"description\":\"Congue sensibus dissentiet ei eum. An est fabulas phaedrum, an illud iudicabit consulatu ius, no per nominavi ocurreret.\",\"id\":\"c40a1aa8-1e7e-2b1e-bb8a-afe2f27aacfa\",\"viewOrder\":3},{\"imageUrl\":\"/assets/images/bella-huang-596578-unsplash.jpg?37.581091708642255\",\"description\":\"Vis illud prompta ceteros id, at ius accumsan reformidans. Sea ubique ridens deterruisset eu\",\"id\":\"86a4c05a-1e64-00ff-d797-f78e1e87df4d\",\"viewOrder\":4},{\"imageUrl\":\"/assets/images/guilherme-stecanella-368391-unsplash.jpg?83.26263688634276\",\"description\":\"Ea nam adhuc prompta impedit, his in mucius facilis, diam possim voluptaria ei has\",\"id\":\"efb4aea6-1d2b-1392-f659-c051a0ea49ca\",\"viewOrder\":5},{\"imageUrl\":\"/assets/images/richard-lee-500313-unsplash.jpg?11.945052612358609\",\"description\":\"Illud partem in sit, meliore adolescens in pro, ei eros mollis noluisse vix.\",\"id\":\"a7c61a1d-58d0-9673-ec81-1b15e5807c1a\",\"viewOrder\":6},{\"imageUrl\":\"/assets/images/axel-houmadi-325303-unsplash.jpg?98.03875512687345\",\"description\":\"Dicit accusam at vis. Duo dissentias dissentiunt ut, omnis inermis has ei, an dico intellegebat nam.\",\"id\":\"f482bada-80bc-0b9a-98c8-e75090b8bbf4\",\"viewOrder\":7},{\"imageUrl\":\"/assets/images/wladislaw-sokolowskij-584523-unsplash.jpg?10.510457008413155\",\"description\":\"Cu duo ubique disputationi, solum porro in mei, mea ea tamquam disputando.\",\"id\":\"f17146cb-1c7d-6044-cc10-418c64ae1381\",\"viewOrder\":8},{\"imageUrl\":\"/assets/images/rares-c-514851-unsplash.jpg?39.24327578868123\",\"description\":\"Commodo oportere ea nec, est ancillae dissentiet no. No sed paulo suscipit facilisis, vix ut elitr detraxit dignissim, at pri evertitur interesset.\",\"id\":\"c13006e4-cd8b-72db-4eb5-a246bd4f4739\",\"viewOrder\":9}]}",
 
+                CreatedDate = DateTime.Parse("2018-04-05T21:03:04"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-05-10T22:59:13"),
 
                 PageContentId = Guid.Parse("49ff3342-d09e-8965-07b8-27289395cc7f"),
             });
@@ -1817,9 +2071,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[],\"content\":\"<h2>Our Projects</h2><p>Inventore cillum soluta inceptos eos platea, soluta class laoreet repellendus imperdiet optio.</p>\"}",
 
+                CreatedDate = DateTime.Parse("2018-04-11T22:03:51"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-05-10T22:59:18"),
 
                 PageContentId = Guid.Parse("58f3b967-ecf6-3870-46e4-3c0e1d70fe21"),
             });
@@ -1832,9 +2090,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[{\"title\":\"Home\",\"description\":\"Et et consectetur ipsum labore excepteur est proident excepteur ad velit occaecat qui minim occaecat veniam. Fugiat veniam incididunt anim aliqua enim pariatur veniam sunt est aute sit dolor anim. Velit non irure adipisicing aliqua ullamco irure incididunt irure non esse consectetur nostrud minim non minim occaecat. Amet duis do nisi duis veniam non est eiusmod tempor incididunt tempor dolor ipsum in qui sit. Exercitation mollit sit culpa nisi culpa non adipisicing reprehenderit do dolore. Duis reprehenderit occaecat anim ullamco ad duis occaecat ex.\",\"id\":\"c44f3030-57e6-7f19-2706-1f212d26b7b6\",\"viewOrder\":1},{\"description\":\"Nulla est ullamco ut irure incididunt nulla Lorem Lorem minim irure officia enim reprehenderit. Magna duis labore cillum sint adipisicing exercitation ipsum. Nostrud ut anim non exercitation velit laboris fugiat cupidatat. Commodo esse dolore fugiat sint velit ullamco magna consequat voluptate minim amet aliquip ipsum aute laboris nisi. Labore labore veniam irure irure ipsum pariatur mollit magna in cupidatat dolore magna irure esse tempor ad mollit. Dolore commodo nulla minim amet ipsum officia consectetur amet ullamco voluptate nisi commodo ea sit eu.\",\"title\":\"Profile\",\"id\":\"98eedcec-80ab-a41f-ac4e-fab2762e46f2\",\"viewOrder\":2},{\"title\":\"Contact\",\"description\":\"Sint sit mollit irure quis est nostrud cillum consequat Lorem esse do quis dolor esse fugiat sunt do. Eu ex commodo veniam Lorem aliquip laborum occaecat qui Lorem esse mollit dolore anim cupidatat. Deserunt officia id Lorem nostrud aute id commodo elit eiusmod enim irure amet eiusmod qui reprehenderit nostrud tempor. Fugiat ipsum excepteur in aliqua non et quis aliquip ad irure in labore cillum elit enim. Consequat aliquip incididunt ipsum et minim laborum laborum laborum et cillum labore. Deserunt adipisicing cillum id nulla minim nostrud labore eiusmod et amet. Laboris consequat consequat commodo non ut non aliquip reprehenderit nulla anim occaecat. Sunt sit ullamco reprehenderit irure ea ullamco Lorem aute nostrud magna.\",\"id\":\"94c3e7c0-b4a6-15b4-1e84-784f8f4e70a3\",\"viewOrder\":3}]}",
 
+                CreatedDate = DateTime.Parse("2018-04-15T14:08:59"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-04-15T14:08:59"),
 
                 PageContentId = Guid.Parse("5416d100-4f46-c549-914c-29e94f6ee06a"),
             });
@@ -1847,9 +2109,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[{\"description\":\"Lorem ipsum dolor sit amet, in modo nobis euismod cum, cu per malis tantas, in autem doming fuisset cum. At meis persecuti cum. Et eum viderer patrioque, consul aeterno veritus in has. Ex ius ignota rationibus liberavisse, mea ei nonumes mediocrem, mei te offendit adipiscing. Lobortis concludaturque in quo, ad sed diam disputationi. Ubique graeco per ut, epicuri antiopam eu cum. Eros propriae id est.\",\"title\":\"Lorem ipsum\",\"id\":\"801c6906-fd1c-8c2b-541c-c1544a486d04\",\"viewOrder\":1},{\"description\":\"Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.\",\"title\":\"Anim pariatur\",\"id\":\"d4ccc44f-e6f8-0f23-e6a5-05bbbc68d98d\",\"viewOrder\":2},{\"description\":\"His clita quando veritus ei, qui graece deterruisset ad. Tollit eleifend ocurreret eos ut. No dicat summo eam, usu ad oratio facilisi imperdiet. Dicat civibus te pro, etiam audire ei vel, ex sumo malorum feugait ius.\",\"title\":\"His clita\",\"id\":\"951d399c-6efd-94cb-4584-e1505f6d4601\",\"viewOrder\":3}]}",
 
+                CreatedDate = DateTime.Parse("2018-04-15T14:21:18"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-05-10T22:55:58"),
 
                 PageContentId = Guid.Parse("033ab6c7-a8e1-536e-9794-27d0752031c6"),
             });
@@ -1862,9 +2128,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[{\"latitude\":\"47.377923\",\"longitude\":\"8.5401898\",\"title\":\"Zurich Head Office\",\"locationName\":\"Zurich Mainstation\",\"address\":\"Bahnhofstrasse 1\",\"postalCodeAndCity\":\"8001 Zürich\",\"id\":\"ddfa77d7-d430-9b55-cdb7-d104bc034646\",\"viewOrder\":1}]}",
 
+                CreatedDate = DateTime.Parse("2018-04-15T20:14:16"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-05-10T23:01:32"),
 
                 PageContentId = Guid.Parse("a0335b80-b2cc-a282-ea78-01924eee2513"),
             });
@@ -1877,9 +2147,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[{\"link\":{\"linkType\":\"PAGE\",\"pageId\":\"8dd34791-fad4-4f9d-a42c-08d587845981\"},\"title\":\"UI/UX Design\",\"icon\":\"<svg aria-hidden=\\\"true\\\" data-prefix=\\\"fal\\\" data-icon=\\\"pencil\\\" role=\\\"img\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\" viewBox=\\\"0 0 512 512\\\" class=\\\"svg-inline--fa fa-pencil fa-w-16\\\"><path fill=\\\"#495057\\\" d=\\\"M493.255 56.236l-37.49-37.49c-24.993-24.993-65.515-24.994-90.51 0L12.838 371.162.151 485.346c-1.698 15.286 11.22 28.203 26.504 26.504l114.184-12.687 352.417-352.417c24.992-24.994 24.992-65.517-.001-90.51zm-95.196 140.45L174 420.745V386h-48v-48H91.255l224.059-224.059 82.745 82.745zM126.147 468.598l-58.995 6.555-30.305-30.305 6.555-58.995L63.255 366H98v48h48v34.745l-19.853 19.853zm344.48-344.48l-49.941 49.941-82.745-82.745 49.941-49.941c12.505-12.505 32.748-12.507 45.255 0l37.49 37.49c12.506 12.506 12.507 32.747 0 45.255z\\\" class=\\\"\\\" stroke=\\\"none\\\" stroke-width=\\\"1px\\\"></path></svg>\",\"description\":\"Nonummy augue culpa aenean inceptos sapiente justo alias quod nonummy veritatis impedit! Sit minim nibh mollis.\",\"id\":\"c3204050-38c6-17a9-4253-5e1bde665978\",\"viewOrder\":1},{\"title\":\"Premium Support\",\"description\":\"Nonummy augue culpa aenean inceptos sapiente justo alias quod nonummy veritatis impedit! Sit minim nibh mollis.\",\"icon\":\"<svg aria-hidden=\\\"true\\\" data-prefix=\\\"fal\\\" data-icon=\\\"life-ring\\\" role=\\\"img\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\" viewBox=\\\"0 0 512 512\\\" class=\\\"svg-inline--fa fa-life-ring fa-w-16\\\"><path fill=\\\"#495057\\\" d=\\\"M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm168.766 113.176l-62.885 62.885a128.711 128.711 0 0 0-33.941-33.941l62.885-62.885a217.323 217.323 0 0 1 33.941 33.941zM256 352c-52.935 0-96-43.065-96-96s43.065-96 96-96 96 43.065 96 96-43.065 96-96 96zM363.952 68.853l-66.14 66.14c-26.99-9.325-56.618-9.33-83.624 0l-66.139-66.14c66.716-38.524 149.23-38.499 215.903 0zM121.176 87.234l62.885 62.885a128.711 128.711 0 0 0-33.941 33.941l-62.885-62.885a217.323 217.323 0 0 1 33.941-33.941zm-52.323 60.814l66.139 66.14c-9.325 26.99-9.33 56.618 0 83.624l-66.139 66.14c-38.523-66.715-38.5-149.229 0-215.904zm18.381 242.776l62.885-62.885a128.711 128.711 0 0 0 33.941 33.941l-62.885 62.885a217.366 217.366 0 0 1-33.941-33.941zm60.814 52.323l66.139-66.14c26.99 9.325 56.618 9.33 83.624 0l66.14 66.14c-66.716 38.524-149.23 38.499-215.903 0zm242.776-18.381l-62.885-62.885a128.711 128.711 0 0 0 33.941-33.941l62.885 62.885a217.323 217.323 0 0 1-33.941 33.941zm52.323-60.814l-66.14-66.14c9.325-26.99 9.33-56.618 0-83.624l66.14-66.14c38.523 66.715 38.5 149.229 0 215.904z\\\" class=\\\"\\\" stroke=\\\"none\\\" stroke-width=\\\"1px\\\"></path></svg>\",\"id\":\"2c7122c9-ecab-153e-7c71-aac8f6d3b3b8\",\"viewOrder\":2,\"link\":{\"linkType\":\"PAGE\",\"pageId\":\"8dd34791-fad4-4f9d-a42c-08d587845981\"}},{\"title\":\"Graphic Design\",\"icon\":\"<svg aria-hidden=\\\"true\\\" data-prefix=\\\"fal\\\" data-icon=\\\"video\\\" role=\\\"img\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\" viewBox=\\\"0 0 576 512\\\" class=\\\"svg-inline--fa fa-video fa-w-18\\\"><path fill=\\\"#495057\\\" d=\\\"M543.9 96c-6.2 0-12.5 1.8-18.2 5.7L416 171.6v-59.8c0-26.4-23.2-47.8-51.8-47.8H51.8C23.2 64 0 85.4 0 111.8v288.4C0 426.6 23.2 448 51.8 448h312.4c28.6 0 51.8-21.4 51.8-47.8v-59.8l109.6 69.9c5.7 4 12.1 5.7 18.2 5.7 16.6 0 32.1-13 32.1-31.5v-257c.1-18.5-15.4-31.5-32-31.5zM384 400.2c0 8.6-9.1 15.8-19.8 15.8H51.8c-10.7 0-19.8-7.2-19.8-15.8V111.8c0-8.6 9.1-15.8 19.8-15.8h312.4c10.7 0 19.8 7.2 19.8 15.8v288.4zm160-15.7l-1.2-1.3L416 302.4v-92.9L544 128v256.5z\\\" class=\\\"\\\" stroke=\\\"none\\\" stroke-width=\\\"1px\\\"></path></svg>\",\"description\":\"Nonummy augue culpa aenean inceptos sapiente justo alias quod nonummy veritatis impedit! Sit minim nibh mollis.\",\"link\":{\"linkType\":\"PAGE\",\"pageId\":\"8dd34791-fad4-4f9d-a42c-08d587845981\"},\"id\":\"587735bf-9c36-9b47-c8ff-6aa1e1340789\",\"viewOrder\":3},{\"title\":\"Secure Applications\",\"description\":\"Nonummy augue culpa aenean inceptos sapiente justo alias quod nonummy veritatis impedit! Sit minim nibh mollis.\",\"icon\":\"<svg aria-hidden=\\\"true\\\" data-prefix=\\\"fal\\\" data-icon=\\\"key\\\" role=\\\"img\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\" viewBox=\\\"0 0 512 512\\\" class=\\\"svg-inline--fa fa-key fa-w-16\\\"><path fill=\\\"#495057\\\" d=\\\"M336 32c79.529 0 144 64.471 144 144s-64.471 144-144 144c-18.968 0-37.076-3.675-53.661-10.339L240 352h-48v64h-64v64H32v-80l170.339-170.339C195.675 213.076 192 194.968 192 176c0-79.529 64.471-144 144-144m0-32c-97.184 0-176 78.769-176 176 0 15.307 1.945 30.352 5.798 44.947L7.029 379.716A24.003 24.003 0 0 0 0 396.686V488c0 13.255 10.745 24 24 24h112c13.255 0 24-10.745 24-24v-40h40c13.255 0 24-10.745 24-24v-40h19.314c6.365 0 12.47-2.529 16.971-7.029l30.769-30.769C305.648 350.055 320.693 352 336 352c97.184 0 176-78.769 176-176C512 78.816 433.231 0 336 0zm48 108c11.028 0 20 8.972 20 20s-8.972 20-20 20-20-8.972-20-20 8.972-20 20-20m0-28c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48z\\\" class=\\\"\\\" stroke=\\\"none\\\" stroke-width=\\\"1px\\\"></path></svg>\",\"link\":{\"linkType\":\"PAGE\",\"pageId\":\"8dd34791-fad4-4f9d-a42c-08d587845981\"},\"id\":\"78ae3721-8b9e-aeac-e741-83fe1bac5471\",\"viewOrder\":4},{\"title\":\"Creative Solution\",\"icon\":\"<svg aria-hidden=\\\"true\\\" data-prefix=\\\"fal\\\" data-icon=\\\"lightbulb\\\" role=\\\"img\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\" viewBox=\\\"0 0 384 512\\\" class=\\\"svg-inline--fa fa-lightbulb fa-w-12\\\"><path fill=\\\"#495057\\\" d=\\\"M192 80c0 8.837-7.164 16-16 16-35.29 0-64 28.71-64 64 0 8.837-7.164 16-16 16s-16-7.163-16-16c0-52.935 43.065-96 96-96 8.836 0 16 7.163 16 16zm176 96c0 101.731-51.697 91.541-90.516 192.674a23.722 23.722 0 0 1-5.484 8.369V464h-.018a23.99 23.99 0 0 1-5.241 14.574l-19.535 24.419A24 24 0 0 1 228.465 512h-72.93a24 24 0 0 1-18.741-9.007l-19.535-24.419A23.983 23.983 0 0 1 112.018 464H112v-86.997a24.153 24.153 0 0 1-5.54-8.478c-38.977-101.401-90.897-90.757-90.457-193.822C16.415 78.01 95.306 0 192 0c97.195 0 176 78.803 176 176zM240 448h-96v12.775L159.38 480h65.24L240 460.775V448zm0-64h-96v32h96v-32zm96-208c0-79.59-64.424-144-144-144-79.59 0-144 64.423-144 144 0 87.475 44.144 70.908 86.347 176h115.306C291.779 247.101 336 263.222 336 176z\\\" class=\\\"\\\" stroke=\\\"none\\\" stroke-width=\\\"1px\\\"></path></svg>\",\"description\":\"Nonummy augue culpa aenean inceptos sapiente justo alias quod nonummy veritatis impedit! Sit minim nibh mollis.\",\"link\":{\"linkType\":\"PAGE\",\"pageId\":\"8dd34791-fad4-4f9d-a42c-08d587845981\"},\"id\":\"a7fbf9d0-3e3f-d32f-8d75-e56eb4dd2b8b\",\"viewOrder\":5},{\"title\":\"Quality Assurance\",\"icon\":\"<svg aria-hidden=\\\"true\\\" data-prefix=\\\"fal\\\" data-icon=\\\"check\\\" role=\\\"img\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\" viewBox=\\\"0 0 448 512\\\" class=\\\"svg-inline--fa fa-check fa-w-14\\\"><path fill=\\\"#495057\\\" d=\\\"M413.505 91.951L133.49 371.966l-98.995-98.995c-4.686-4.686-12.284-4.686-16.971 0L6.211 284.284c-4.686 4.686-4.686 12.284 0 16.971l118.794 118.794c4.686 4.686 12.284 4.686 16.971 0l299.813-299.813c4.686-4.686 4.686-12.284 0-16.971l-11.314-11.314c-4.686-4.686-12.284-4.686-16.97 0z\\\" class=\\\"\\\" stroke=\\\"none\\\" stroke-width=\\\"1px\\\"></path></svg>\",\"description\":\"Nonummy augue culpa aenean inceptos sapiente justo alias quod nonummy veritatis impedit! Sit minim nibh mollis.\",\"link\":{\"linkType\":\"PAGE\",\"pageId\":\"8dd34791-fad4-4f9d-a42c-08d587845981\"},\"id\":\"2d95bad7-f481-df70-7287-68e76bae82f1\",\"viewOrder\":6}]}",
 
+                CreatedDate = DateTime.Parse("2018-04-16T15:26:55"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-05-10T22:53:29"),
 
                 PageContentId = Guid.Parse("385b16f5-4350-ff0d-baa6-5e0ad96ea608"),
             });
@@ -1892,9 +2166,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[{\"imageUrl\":\"/assets/images/img_avatar.png?78.32406559902098\",\"name\":\"Peter Muster\",\"position\":\"CEO\",\"id\":\"ff434365-c012-92ed-9586-4b138ea0ff0d\",\"viewOrder\":1},{\"imageUrl\":\"/assets/images/img_avatar2.png?33.96990558204536\",\"name\":\"Petra Muster\",\"position\":\"CFO\",\"id\":\"92a5fd89-6058-401e-56c8-c8bcca14b2d3\",\"viewOrder\":2},{\"imageUrl\":\"/assets/images/img_avatar.png?88.67899420627126\",\"imageAltText\":\"John Muster\",\"name\":\"John Muster\",\"position\":\"CIO\",\"id\":\"5a0a0362-536b-23f1-6a10-6ebe37052ae5\",\"viewOrder\":3},{\"imageUrl\":\"/assets/images/img_avatar2.png?74.15355174404623\",\"name\":\"Christina Muster\",\"position\":\"CTO\",\"id\":\"c03a6009-44fc-4b6d-445c-1dc24f804e8b\",\"viewOrder\":4},{\"imageUrl\":\"/assets/images/img_avatar2.png?55.43743100362612\",\"name\":\"Petra Muster\",\"position\":\"Product Manager\",\"id\":\"96aa4477-55fe-067f-fc68-e6801d24905d\",\"viewOrder\":5},{\"imageUrl\":\"/assets/images/img_avatar.png?97.81804704426233\",\"name\":\"James Bond\",\"position\":\"Technical Lead\",\"id\":\"b164e845-b28f-7420-c53a-9ce258e93b91\",\"viewOrder\":6}]}",
 
+                CreatedDate = DateTime.Parse("2018-04-18T22:11:15"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-05-10T23:03:54"),
 
                 PageContentId = Guid.Parse("9d66eb3d-8795-c015-4a29-e4951e84f5a8"),
             });
@@ -1907,9 +2185,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[],\"content\":\"<h1>Our Team</h1><p>Lorem ipsum dolor sit amet, impetus appellantur pri cu. Pri te assum verterem maluisset.</p>\"}",
 
+                CreatedDate = DateTime.Parse("2018-04-18T22:46:46"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-04-18T22:52:19"),
 
                 PageContentId = Guid.Parse("b04a9f79-17a8-b1ff-e5f6-32b81e3936fd"),
             });
@@ -1922,9 +2204,13 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[],\"content\":\"<h1>Our Services</h1><p>Lorem ipsum dolor sit amet, impetus appellantur pri cu. Pri te assum verterem maluisset.</p>\"}",
 
+                CreatedDate = DateTime.Parse("2018-04-18T22:49:38"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-05-10T22:54:23"),
 
                 PageContentId = Guid.Parse("ee52a5c6-5117-5312-59cf-e43d398fd95e"),
             });
@@ -1937,14 +2223,21 @@ namespace Deviser.Core.Data.Installation
 
                 ContentData = "{\"items\":[{\"date\":\"2018-05-20T00:00:00+02:00\",\"shortDescription\":\"Today I am very happy to announce the official release of Deviser 1.0 alpha version. The office guide is available at <a href=\\\"#\\\">deviser.io/guide</a>\",\"title\":\"Deviser 1.0 Alpha is Out!\",\"id\":\"cee4d6b9-e67f-344c-2668-67cd6f0b0b46\",\"viewOrder\":1,\"link\":{\"linkType\":\"PAGE\",\"pageId\":\"c015c363-3973-4619-a437-08d587845981\",\"linkText\":\"Read more\"},\"imageUrl\":\"/assets/images/alex-iby-558878-unsplash.jpg?4.611297946884441\"}]}",
 
+                CreatedDate = DateTime.Parse("2018-05-07T22:53:01"),
+
                 CultureCode = "en-US",
 
                 IsDeleted = false,
 
+                LastModifiedDate = DateTime.Parse("2018-05-13T19:09:58"),
+
                 PageContentId = Guid.Parse("64bf349e-df8e-f341-22d4-2e03fbaafa2a"),
             });
 
+            #endregion
+
             //PageTranslation
+            #region PageTranslation        
 
             _dbContext.Set<PageTranslation>
             ().Add(new PageTranslation
@@ -2877,7 +3170,10 @@ namespace Deviser.Core.Data.Installation
                 URL = "Admin/PageManagement",
             });
 
+            #endregion
+
             //Property
+            #region Property        
 
             _dbContext.Set<Property>
             ().Add(new Property
@@ -2885,9 +3181,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("f4fff310-340a-437a-8ce3-08d54de42fea"),
 
+                CreatedDate = DateTime.Parse("2017-12-28T12:14:39"),
+
                 Label = "Column Width (M)",
 
+                LastModifiedDate = DateTime.Parse("2017-12-28T12:14:39"),
+
                 Name = "column_width",
+
+                OptionListId = Guid.Parse("969eb4ef-188c-4174-4194-08d54de4cd18"),
 
                 DefaultValue = "f2eafdde-4f79-a195-c1c1-0794e293fa27",
 
@@ -2900,9 +3202,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("fa1b0856-cea0-4245-e3f1-08d582dfee42"),
 
+                CreatedDate = DateTime.Parse("2018-03-05T22:27:42"),
+
                 Label = "Video Preview",
 
+                LastModifiedDate = DateTime.Parse("2018-03-05T22:27:42"),
+
                 Name = "video_preview",
+
+                OptionListId = Guid.Parse("7893ac90-9793-4c77-f5a2-08d582dfc823"),
 
                 DefaultValue = null,
 
@@ -2915,9 +3223,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("0d9134a4-4eb6-40a8-0959-08d58bf2fdc6"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T11:38:45"),
+
                 Label = "Direction",
 
+                LastModifiedDate = DateTime.Parse("2018-03-17T11:38:45"),
+
                 Name = "swiper_direction",
+
+                OptionListId = Guid.Parse("bfae06f9-d850-486c-29b7-08d58b87bb48"),
 
                 DefaultValue = "954d54e1-5c95-da20-422e-9c31691631b2",
 
@@ -2930,7 +3244,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("278c0cc1-5212-4bfa-095a-08d58bf2fdc6"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T12:15:04"),
+
                 Label = "Speed",
+
+                LastModifiedDate = DateTime.Parse("2018-03-17T12:15:04"),
 
                 Name = "swiper_speed",
 
@@ -2945,9 +3263,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("89e09c02-9c55-4721-5531-08d58c515929"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T22:54:23"),
+
                 Label = "Auto Height",
 
+                LastModifiedDate = DateTime.Parse("2018-03-17T22:54:23"),
+
                 Name = "swiper_autoHeight",
+
+                OptionListId = Guid.Parse("10506766-7323-401c-29b6-08d58b87bb48"),
 
                 DefaultValue = "13916b6e-9c6e-accb-c457-9d71c32909c0",
 
@@ -2960,9 +3284,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("238b60e4-bcea-4171-5532-08d58c515929"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T22:55:16"),
+
                 Label = "Round Lengths",
 
+                LastModifiedDate = DateTime.Parse("2018-03-17T22:55:16"),
+
                 Name = "swiper_roundLengths",
+
+                OptionListId = Guid.Parse("10506766-7323-401c-29b6-08d58b87bb48"),
 
                 DefaultValue = "13916b6e-9c6e-accb-c457-9d71c32909c0",
 
@@ -2975,9 +3305,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("c436196b-f19e-4e3b-5535-08d58c515929"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T22:58:12"),
+
                 Label = "Effect",
 
+                LastModifiedDate = DateTime.Parse("2018-03-17T22:58:12"),
+
                 Name = "swiper_effect",
+
+                OptionListId = Guid.Parse("58b22ebe-cb20-4a43-4f77-08d58be54a36"),
 
                 DefaultValue = "196f5ee0-c955-7d7a-618d-27863e379a19",
 
@@ -2990,9 +3326,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("4a81a097-a694-4db2-5538-08d58c515929"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T23:08:42"),
+
                 Label = "Navigation",
 
+                LastModifiedDate = DateTime.Parse("2018-03-17T23:08:42"),
+
                 Name = "swiper_navigation",
+
+                OptionListId = Guid.Parse("10506766-7323-401c-29b6-08d58b87bb48"),
 
                 DefaultValue = "20e770b7-b245-16e6-925c-1ce3a036d1ae",
 
@@ -3005,9 +3347,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("338675b6-6ffa-4f2d-5539-08d58c515929"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T23:12:53"),
+
                 Label = "Pagination",
 
+                LastModifiedDate = DateTime.Parse("2018-03-17T23:12:53"),
+
                 Name = "swiper_pagination",
+
+                OptionListId = Guid.Parse("10506766-7323-401c-29b6-08d58b87bb48"),
 
                 DefaultValue = "13916b6e-9c6e-accb-c457-9d71c32909c0",
 
@@ -3020,9 +3368,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("7b2d6527-199b-406d-553b-08d58c515929"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T23:18:07"),
+
                 Label = "Pagination Type",
 
+                LastModifiedDate = DateTime.Parse("2018-03-17T23:18:07"),
+
                 Name = "swiper_pagination_type",
+
+                OptionListId = Guid.Parse("e41fa497-9436-475e-f3da-08d58c5519e4"),
 
                 DefaultValue = "0a50497a-f3d8-53de-932d-2b30a390b125",
 
@@ -3035,9 +3389,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("2157ff87-35a5-405c-553c-08d58c515929"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T23:23:56"),
+
                 Label = "Scrollbar",
 
+                LastModifiedDate = DateTime.Parse("2018-03-17T23:23:56"),
+
                 Name = "swiper_scrollbar",
+
+                OptionListId = Guid.Parse("10506766-7323-401c-29b6-08d58b87bb48"),
 
                 DefaultValue = "13916b6e-9c6e-accb-c457-9d71c32909c0",
 
@@ -3050,7 +3410,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("4f6bf74f-b4eb-4b66-553d-08d58c515929"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T23:25:08"),
+
                 Label = "Space Between",
+
+                LastModifiedDate = DateTime.Parse("2018-03-17T23:25:08"),
 
                 Name = "swiper_spaceBetween",
 
@@ -3065,7 +3429,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("84ac0204-f84e-4e1c-553e-08d58c515929"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T23:25:59"),
+
                 Label = "Sliders per view",
+
+                LastModifiedDate = DateTime.Parse("2018-03-17T23:25:59"),
 
                 Name = "swiper_slidesPerView",
 
@@ -3080,9 +3448,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("55f585c6-708a-4487-553f-08d58c515929"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T23:28:24"),
+
                 Label = "Loop",
 
+                LastModifiedDate = DateTime.Parse("2018-03-17T23:28:24"),
+
                 Name = "swiper_loop",
+
+                OptionListId = Guid.Parse("10506766-7323-401c-29b6-08d58b87bb48"),
 
                 DefaultValue = "13916b6e-9c6e-accb-c457-9d71c32909c0",
 
@@ -3095,9 +3469,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("2c843984-7009-4287-5540-08d58c515929"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T23:31:10"),
+
                 Label = "keyboard",
 
+                LastModifiedDate = DateTime.Parse("2018-03-17T23:31:10"),
+
                 Name = "swiper_keyboard",
+
+                OptionListId = Guid.Parse("10506766-7323-401c-29b6-08d58b87bb48"),
 
                 DefaultValue = "13916b6e-9c6e-accb-c457-9d71c32909c0",
 
@@ -3110,9 +3490,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("017c4f30-da51-4d18-5541-08d58c515929"),
 
+                CreatedDate = DateTime.Parse("2018-03-17T23:32:03"),
+
                 Label = "Mouse Wheel",
 
+                LastModifiedDate = DateTime.Parse("2018-03-17T23:32:03"),
+
                 Name = "swiper_mousewheel",
+
+                OptionListId = Guid.Parse("10506766-7323-401c-29b6-08d58b87bb48"),
 
                 DefaultValue = "13916b6e-9c6e-accb-c457-9d71c32909c0",
 
@@ -3125,9 +3511,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("3de7dc0a-b6c1-4136-aeaa-08d58c5c2d05"),
 
+                CreatedDate = DateTime.Parse("2018-03-18T00:09:46"),
+
                 Label = "Column Width (XS)",
 
+                LastModifiedDate = DateTime.Parse("2018-03-18T00:09:46"),
+
                 Name = "column_width_xs",
+
+                OptionListId = Guid.Parse("b98ba240-64b4-4862-f1fb-08d58c5a4d88"),
 
                 DefaultValue = "6597d3bd-0971-9d73-968b-64ff6e2eabda",
 
@@ -3140,9 +3532,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("3379dca0-ada6-4245-aeab-08d58c5c2d05"),
 
+                CreatedDate = DateTime.Parse("2018-03-18T00:10:49"),
+
                 Label = "Column Width (S)",
 
+                LastModifiedDate = DateTime.Parse("2018-03-18T00:10:49"),
+
                 Name = "column_width_s",
+
+                OptionListId = Guid.Parse("17fa4063-c7b4-4659-f1fc-08d58c5a4d88"),
 
                 DefaultValue = "e7cf0d7d-e66b-09cb-f338-720588431bee",
 
@@ -3155,9 +3553,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("14539266-bd68-440f-aeac-08d58c5c2d05"),
 
+                CreatedDate = DateTime.Parse("2018-03-18T00:12:06"),
+
                 Label = "Column Width (L)",
 
+                LastModifiedDate = DateTime.Parse("2018-03-18T00:12:06"),
+
                 Name = "column_width_l",
+
+                OptionListId = Guid.Parse("ed74aa2d-dd21-42d9-f1fd-08d58c5a4d88"),
 
                 DefaultValue = "5913c029-6cd8-352b-eae0-6f3f2e146b01",
 
@@ -3170,9 +3574,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("f0ad85a3-ff8c-40c6-aead-08d58c5c2d05"),
 
+                CreatedDate = DateTime.Parse("2018-03-18T00:13:00"),
+
                 Label = "Column Width (XL)",
 
+                LastModifiedDate = DateTime.Parse("2018-03-18T00:13:00"),
+
                 Name = "column_width_xl",
+
+                OptionListId = Guid.Parse("bfd219cc-12a0-4d8b-f1fe-08d58c5a4d88"),
 
                 DefaultValue = "4e3ff987-b14b-0713-4243-053fc5787389",
 
@@ -3185,7 +3595,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("789115a9-2b18-474d-0721-08d58e3bfd70"),
 
+                CreatedDate = DateTime.Parse("2018-03-20T09:24:24"),
+
                 Label = "From",
+
+                LastModifiedDate = DateTime.Parse("2018-03-20T09:24:24"),
 
                 Name = "from",
 
@@ -3200,7 +3614,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("1acf1470-d421-4b91-0722-08d58e3bfd70"),
 
+                CreatedDate = DateTime.Parse("2018-03-20T09:24:52"),
+
                 Label = "Admin Email",
+
+                LastModifiedDate = DateTime.Parse("2018-03-20T09:24:52"),
 
                 Name = "cf_admin_email",
 
@@ -3215,7 +3633,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("16485fed-208b-456a-fd02-08d590dbe247"),
 
+                CreatedDate = DateTime.Parse("2018-03-23T17:34:01"),
+
                 Label = "Subject",
+
+                LastModifiedDate = DateTime.Parse("2018-03-23T17:34:01"),
 
                 Name = "subject",
 
@@ -3230,7 +3652,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("f645a11f-bc8c-4003-0e83-08d5932d4c52"),
 
+                CreatedDate = DateTime.Parse("2018-03-26T17:21:50"),
+
                 Label = "Image Width",
+
+                LastModifiedDate = DateTime.Parse("2018-03-26T17:21:50"),
 
                 Name = "image_width",
 
@@ -3245,7 +3671,11 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("cb4b6f18-7267-41c3-0e84-08d5932d4c52"),
 
+                CreatedDate = DateTime.Parse("2018-03-26T17:22:08"),
+
                 Label = "Image Height",
+
+                LastModifiedDate = DateTime.Parse("2018-03-26T17:22:08"),
 
                 Name = "image_height",
 
@@ -3260,9 +3690,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("217fbbe9-bf8e-4c49-c720-08d5a94c6f03"),
 
+                CreatedDate = DateTime.Parse("2018-04-23T21:00:08"),
+
                 Label = "View Template",
 
+                LastModifiedDate = DateTime.Parse("2018-04-23T21:00:08"),
+
                 Name = "cf_view_template",
+
+                OptionListId = Guid.Parse("973115b0-c453-4aa6-2b46-08d5a94f289b"),
 
                 DefaultValue = "8f9ccd68-101d-cc14-ee4a-2676aaedc3f5",
 
@@ -3275,9 +3711,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("c1a87a70-1b7a-4fe6-09bc-08d5a94f7b1f"),
 
+                CreatedDate = DateTime.Parse("2018-04-23T21:21:57"),
+
                 Label = "Admin Email Template",
 
+                LastModifiedDate = DateTime.Parse("2018-04-23T21:21:57"),
+
                 Name = "cf_admin_email_template",
+
+                OptionListId = Guid.Parse("fb907561-52ff-49de-2b47-08d5a94f289b"),
 
                 DefaultValue = "384df06f-63cd-effb-faf8-b152885ba305",
 
@@ -3290,9 +3732,15 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("aa417aea-c1f2-467c-338d-08d5a95294ba"),
 
+                CreatedDate = DateTime.Parse("2018-04-23T21:44:09"),
+
                 Label = "Contact Email Template",
 
+                LastModifiedDate = DateTime.Parse("2018-04-23T21:44:09"),
+
                 Name = "cf_contact_email_template",
+
+                OptionListId = Guid.Parse("fb907561-52ff-49de-2b47-08d5a94f289b"),
 
                 DefaultValue = "384df06f-63cd-effb-faf8-b152885ba305",
 
@@ -3314,13 +3762,25 @@ namespace Deviser.Core.Data.Installation
                 Description = null,
             });
 
+            #endregion
+
             //RoleClaim
+            #region RoleClaim        
+
+            #endregion
 
             //UserClaim
+            #region UserClaim        
+
+            #endregion
 
             //UserLogin
+            #region UserLogin        
+
+            #endregion
 
             //ContentTypeProperty
+            #region ContentTypeProperty        
 
             _dbContext.Set<ContentTypeProperty>
             ().Add(new ContentTypeProperty
@@ -3601,7 +4061,10 @@ namespace Deviser.Core.Data.Installation
                 PropertyId = Guid.Parse("f5031c31-778b-45dd-bd33-eeb2a088d2bc"),
             });
 
+            #endregion
+
             //LayoutTypeProperty
+            #region LayoutTypeProperty        
 
             _dbContext.Set<LayoutTypeProperty>
             ().Add(new LayoutTypeProperty
@@ -3693,7 +4156,10 @@ namespace Deviser.Core.Data.Installation
                 PropertyId = Guid.Parse("f5031c31-778b-45dd-bd33-eeb2a088d2bc"),
             });
 
+            #endregion
+
             //ModuleAction
+            #region ModuleAction        
 
             _dbContext.Set<ModuleAction>
             ().Add(new ModuleAction
@@ -4095,7 +4561,10 @@ namespace Deviser.Core.Data.Installation
                 ModuleId = Guid.Parse("73829a91-4a4a-4c22-885a-fb1215e37fdc"),
             });
 
+            #endregion
+
             //ModuleActionProperty
+            #region ModuleActionProperty        
 
             _dbContext.Set<ModuleActionProperty>
             ().Add(new ModuleActionProperty
@@ -4151,7 +4620,10 @@ namespace Deviser.Core.Data.Installation
                 PropertyId = Guid.Parse("aa417aea-c1f2-467c-338d-08d5a95294ba"),
             });
 
+            #endregion
+
             //Page
+            #region Page        
 
             _dbContext.Set<Page>
             ().Add(new Page
@@ -4159,11 +4631,23 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("c597d915-38e0-4c32-0615-08d3a367fbcc"),
 
+                CreatedDate = DateTime.Parse("2016-07-03T19:32:15"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = true,
 
                 IsSystem = true,
+
+                LastModifiedDate = DateTime.Parse("2016-07-24T13:19:51"),
+
+                LayoutId = Guid.Parse("af8ecc7d-e300-41af-b55a-deeb097836d2"),
+
+                PageLevel = 2,
+
+                PageOrder = 2,
+
+                ParentId = Guid.Parse("dd650840-0ee7-46cf-abb5-8a1591dc0936"),
 
                 ThemeSrc = "[G]Themes/Skyline/Admin.cshtml",
             });
@@ -4174,11 +4658,23 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("56b72d88-5922-4635-0616-08d3a367fbcc"),
 
+                CreatedDate = DateTime.Parse("2016-07-03T19:34:47"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = true,
 
                 IsSystem = true,
+
+                LastModifiedDate = DateTime.Parse("2016-07-24T13:20:16"),
+
+                LayoutId = Guid.Parse("af8ecc7d-e300-41af-b55a-deeb097836d2"),
+
+                PageLevel = 2,
+
+                PageOrder = 3,
+
+                ParentId = Guid.Parse("dd650840-0ee7-46cf-abb5-8a1591dc0936"),
 
                 ThemeSrc = "[G]Themes/Skyline/Admin.cshtml",
             });
@@ -4189,11 +4685,23 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("8efd99d2-5004-44c6-0617-08d3a367fbcc"),
 
+                CreatedDate = DateTime.Parse("2016-07-03T19:34:55"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = true,
 
                 IsSystem = true,
+
+                LastModifiedDate = DateTime.Parse("2016-07-24T13:20:31"),
+
+                LayoutId = Guid.Parse("af8ecc7d-e300-41af-b55a-deeb097836d2"),
+
+                PageLevel = 2,
+
+                PageOrder = 4,
+
+                ParentId = Guid.Parse("dd650840-0ee7-46cf-abb5-8a1591dc0936"),
 
                 ThemeSrc = "[G]Themes/Skyline/Admin.cshtml",
             });
@@ -4204,11 +4712,23 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("56ff05c4-57f6-429c-c4ad-08d3a6adbc78"),
 
+                CreatedDate = DateTime.Parse("2016-07-07T23:29:11"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = true,
 
                 IsSystem = true,
+
+                LastModifiedDate = DateTime.Parse("2016-07-24T13:20:39"),
+
+                LayoutId = Guid.Parse("af8ecc7d-e300-41af-b55a-deeb097836d2"),
+
+                PageLevel = 3,
+
+                PageOrder = 2,
+
+                ParentId = Guid.Parse("57942b7c-42a8-405e-aa52-08d3b8ab87fd"),
 
                 ThemeSrc = "[G]Themes/Skyline/Admin.cshtml",
             });
@@ -4219,11 +4739,23 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("20d1b105-5c6d-4961-c4ae-08d3a6adbc78"),
 
+                CreatedDate = DateTime.Parse("2016-07-07T23:29:41"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = true,
 
                 IsSystem = true,
+
+                LastModifiedDate = DateTime.Parse("2016-07-24T13:20:55"),
+
+                LayoutId = Guid.Parse("af8ecc7d-e300-41af-b55a-deeb097836d2"),
+
+                PageLevel = 3,
+
+                PageOrder = 1,
+
+                ParentId = Guid.Parse("57942b7c-42a8-405e-aa52-08d3b8ab87fd"),
 
                 ThemeSrc = "[G]Themes/Skyline/Admin.cshtml",
             });
@@ -4234,11 +4766,23 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("9333f6a1-ba81-4b18-a922-08d3adc0bb30"),
 
+                CreatedDate = DateTime.Parse("2016-07-16T23:32:47"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = true,
 
                 IsSystem = true,
+
+                LastModifiedDate = DateTime.Parse("2016-07-24T13:21:16"),
+
+                LayoutId = Guid.Parse("af8ecc7d-e300-41af-b55a-deeb097836d2"),
+
+                PageLevel = 3,
+
+                PageOrder = 4,
+
+                ParentId = Guid.Parse("57942b7c-42a8-405e-aa52-08d3b8ab87fd"),
 
                 ThemeSrc = "[G]Themes/Skyline/Admin.cshtml",
             });
@@ -4249,11 +4793,23 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("7dff05ab-1376-4ae6-09f0-08d3ae5877da"),
 
+                CreatedDate = DateTime.Parse("2016-07-17T17:38:58"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = true,
 
                 IsSystem = true,
+
+                LastModifiedDate = DateTime.Parse("2016-07-24T13:21:07"),
+
+                LayoutId = Guid.Parse("af8ecc7d-e300-41af-b55a-deeb097836d2"),
+
+                PageLevel = 3,
+
+                PageOrder = 3,
+
+                ParentId = Guid.Parse("57942b7c-42a8-405e-aa52-08d3b8ab87fd"),
 
                 ThemeSrc = "[G]Themes/Skyline/Admin.cshtml",
             });
@@ -4264,11 +4820,23 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("bb858c11-6779-406d-e941-08d3b4c8ff40"),
 
+                CreatedDate = DateTime.Parse("2016-07-25T22:19:35"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = true,
 
                 IsSystem = true,
+
+                LastModifiedDate = DateTime.Parse("2016-07-25T22:21:02"),
+
+                LayoutId = Guid.Parse("af8ecc7d-e300-41af-b55a-deeb097836d2"),
+
+                PageLevel = 2,
+
+                PageOrder = 7,
+
+                ParentId = Guid.Parse("dd650840-0ee7-46cf-abb5-8a1591dc0936"),
 
                 ThemeSrc = "[G]Themes/Skyline/Admin.cshtml",
             });
@@ -4279,11 +4847,21 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("57942b7c-42a8-405e-aa52-08d3b8ab87fd"),
 
+                CreatedDate = DateTime.Parse("2016-07-30T20:58:44"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = true,
 
                 IsSystem = true,
+
+                LastModifiedDate = DateTime.Parse("2016-07-30T20:58:44"),
+
+                PageLevel = 2,
+
+                PageOrder = 8,
+
+                ParentId = Guid.Parse("dd650840-0ee7-46cf-abb5-8a1591dc0936"),
 
                 ThemeSrc = "[G]Themes/Skyline/Admin.cshtml",
             });
@@ -4294,11 +4872,23 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("1322cf31-fae5-40de-d7b7-08d3bfd5ca3d"),
 
+                CreatedDate = DateTime.Parse("2016-08-08T23:48:53"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = true,
 
                 IsSystem = true,
+
+                LastModifiedDate = DateTime.Parse("2016-08-08T23:58:02"),
+
+                LayoutId = Guid.Parse("af8ecc7d-e300-41af-b55a-deeb097836d2"),
+
+                PageLevel = 2,
+
+                PageOrder = 6,
+
+                ParentId = Guid.Parse("dd650840-0ee7-46cf-abb5-8a1591dc0936"),
 
                 ThemeSrc = "[G]Themes/Skyline/Admin.cshtml",
             });
@@ -4309,11 +4899,23 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("51a79e31-9bb1-4fa7-4da6-08d3c2d166ce"),
 
+                CreatedDate = DateTime.Parse("2016-08-12T18:55:01"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = false,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-05-01T15:31:34"),
+
+                LayoutId = Guid.Parse("af7533aa-3e4b-4e29-b118-1841ab5a0a91"),
+
+                PageLevel = 1,
+
+                PageOrder = 7,
+
+                ParentId = Guid.Parse("d1c11d1f-2345-43b6-baa1-8ce890242397"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4324,11 +4926,23 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("2624f356-ff17-49b4-9d18-08d52ace7d21"),
 
+                CreatedDate = DateTime.Parse("2017-11-13T20:41:09"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = true,
 
                 IsSystem = true,
+
+                LastModifiedDate = DateTime.Parse("2017-11-13T20:46:51"),
+
+                LayoutId = Guid.Parse("af8ecc7d-e300-41af-b55a-deeb097836d2"),
+
+                PageLevel = 2,
+
+                PageOrder = 5,
+
+                ParentId = Guid.Parse("dd650840-0ee7-46cf-abb5-8a1591dc0936"),
 
                 ThemeSrc = "[G]Themes/Skyline/Admin.cshtml",
             });
@@ -4345,6 +4959,14 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-05T19:49:02"),
+
+                PageLevel = 1,
+
+                PageOrder = 5,
+
+                ParentId = Guid.Parse("d1c11d1f-2345-43b6-baa1-8ce890242397"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4359,6 +4981,16 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-05-13T14:47:19"),
+
+                LayoutId = Guid.Parse("49ca6d71-a647-4b3e-8c59-08d5b45b8cf4"),
+
+                PageLevel = 1,
+
+                PageOrder = 4,
+
+                ParentId = Guid.Parse("d1c11d1f-2345-43b6-baa1-8ce890242397"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4375,6 +5007,14 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-10T16:59:25"),
+
+                PageLevel = 1,
+
+                PageOrder = 2,
+
+                ParentId = Guid.Parse("d1c11d1f-2345-43b6-baa1-8ce890242397"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4389,6 +5029,14 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-10T16:59:52"),
+
+                PageLevel = 1,
+
+                PageOrder = 3,
+
+                ParentId = Guid.Parse("d1c11d1f-2345-43b6-baa1-8ce890242397"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4405,6 +5053,16 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-26T21:06:37"),
+
+                LayoutId = Guid.Parse("bef258d0-173c-4b70-343c-08d58851a063"),
+
+                PageLevel = 2,
+
+                PageOrder = 1,
+
+                ParentId = Guid.Parse("0c1a1106-6d75-4349-53d5-08d5869fb686"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4419,6 +5077,16 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-04-18T22:47:47"),
+
+                LayoutId = Guid.Parse("04e4fd47-d326-400f-31c1-08d59356951e"),
+
+                PageLevel = 2,
+
+                PageOrder = 2,
+
+                ParentId = Guid.Parse("0c1a1106-6d75-4349-53d5-08d5869fb686"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4435,6 +5103,16 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-04-18T22:50:07"),
+
+                LayoutId = Guid.Parse("aa05d040-361d-45a8-d347-08d5a398fdd9"),
+
+                PageLevel = 2,
+
+                PageOrder = 3,
+
+                ParentId = Guid.Parse("0c1a1106-6d75-4349-53d5-08d5869fb686"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4449,6 +5127,16 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-04-18T22:51:22"),
+
+                LayoutId = Guid.Parse("7605e49c-da3a-4b25-b67a-08d5a5682b4f"),
+
+                PageLevel = 2,
+
+                PageOrder = 4,
+
+                ParentId = Guid.Parse("0c1a1106-6d75-4349-53d5-08d5869fb686"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4465,6 +5153,14 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-12T21:56:51"),
+
+                PageLevel = 2,
+
+                PageOrder = 5,
+
+                ParentId = Guid.Parse("0c1a1106-6d75-4349-53d5-08d5869fb686"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4479,6 +5175,16 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-04-15T14:20:01"),
+
+                LayoutId = Guid.Parse("68c349b1-dcc9-47ef-f375-08d5a2c90b56"),
+
+                PageLevel = 3,
+
+                PageOrder = 2,
+
+                ParentId = Guid.Parse("aaa7c6b9-03e8-424f-a42e-08d587845981"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4495,6 +5201,14 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-12T21:56:59"),
+
+                PageLevel = 3,
+
+                PageOrder = 3,
+
+                ParentId = Guid.Parse("aaa7c6b9-03e8-424f-a42e-08d587845981"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4509,6 +5223,14 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = false,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-12T21:57:03"),
+
+                PageLevel = 3,
+
+                PageOrder = 4,
+
+                ParentId = Guid.Parse("aaa7c6b9-03e8-424f-a42e-08d587845981"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4525,6 +5247,14 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-12T21:57:06"),
+
+                PageLevel = 3,
+
+                PageOrder = 5,
+
+                ParentId = Guid.Parse("aaa7c6b9-03e8-424f-a42e-08d587845981"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4539,6 +5269,14 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-12T21:57:10"),
+
+                PageLevel = 3,
+
+                PageOrder = 6,
+
+                ParentId = Guid.Parse("aaa7c6b9-03e8-424f-a42e-08d587845981"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4555,6 +5293,16 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-04-24T23:16:06"),
+
+                LayoutId = Guid.Parse("bef258d0-173c-4b70-343c-08d58851a063"),
+
+                PageLevel = 3,
+
+                PageOrder = 7,
+
+                ParentId = Guid.Parse("aaa7c6b9-03e8-424f-a42e-08d587845981"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4569,6 +5317,16 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-04-25T22:34:41"),
+
+                LayoutId = Guid.Parse("c4843750-1e7c-45f9-bf11-08d3a4535e73"),
+
+                PageLevel = 2,
+
+                PageOrder = 6,
+
+                ParentId = Guid.Parse("0c1a1106-6d75-4349-53d5-08d5869fb686"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4585,6 +5343,14 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-12T21:57:17"),
+
+                PageLevel = 3,
+
+                PageOrder = 8,
+
+                ParentId = Guid.Parse("aaa7c6b9-03e8-424f-a42e-08d587845981"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4599,6 +5365,14 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-11T20:25:27"),
+
+                PageLevel = 2,
+
+                PageOrder = 1,
+
+                ParentId = Guid.Parse("4c099d48-8810-42e2-53d4-08d5869fb686"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4615,6 +5389,14 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-11T20:26:09"),
+
+                PageLevel = 2,
+
+                PageOrder = 2,
+
+                ParentId = Guid.Parse("4c099d48-8810-42e2-53d4-08d5869fb686"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4629,6 +5411,14 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-11T20:37:12"),
+
+                PageLevel = 2,
+
+                PageOrder = 6,
+
+                ParentId = Guid.Parse("4c099d48-8810-42e2-53d4-08d5869fb686"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4645,6 +5435,14 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-11T20:36:51"),
+
+                PageLevel = 2,
+
+                PageOrder = 4,
+
+                ParentId = Guid.Parse("4c099d48-8810-42e2-53d4-08d5869fb686"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4659,6 +5457,14 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-11T20:32:53"),
+
+                PageLevel = 3,
+
+                PageOrder = 1,
+
+                ParentId = Guid.Parse("fc6670ef-ab01-4bd2-a43a-08d587845981"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4675,6 +5481,14 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-11T20:33:12"),
+
+                PageLevel = 3,
+
+                PageOrder = 2,
+
+                ParentId = Guid.Parse("fc6670ef-ab01-4bd2-a43a-08d587845981"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4689,6 +5503,14 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-11T20:33:37"),
+
+                PageLevel = 3,
+
+                PageOrder = 3,
+
+                ParentId = Guid.Parse("fc6670ef-ab01-4bd2-a43a-08d587845981"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4705,6 +5527,14 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-11T20:33:58"),
+
+                PageLevel = 3,
+
+                PageOrder = 4,
+
+                ParentId = Guid.Parse("fc6670ef-ab01-4bd2-a43a-08d587845981"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4719,6 +5549,14 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-11T20:34:21"),
+
+                PageLevel = 3,
+
+                PageOrder = 6,
+
+                ParentId = Guid.Parse("fc6670ef-ab01-4bd2-a43a-08d587845981"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4735,6 +5573,14 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-11T20:36:52"),
+
+                PageLevel = 3,
+
+                PageOrder = 5,
+
+                ParentId = Guid.Parse("fc6670ef-ab01-4bd2-a43a-08d587845981"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4749,6 +5595,14 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-11T20:35:11"),
+
+                PageLevel = 3,
+
+                PageOrder = 7,
+
+                ParentId = Guid.Parse("fc6670ef-ab01-4bd2-a43a-08d587845981"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4765,6 +5619,14 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-11T20:37:31"),
+
+                PageLevel = 3,
+
+                PageOrder = 8,
+
+                ParentId = Guid.Parse("fc6670ef-ab01-4bd2-a43a-08d587845981"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4779,6 +5641,14 @@ namespace Deviser.Core.Data.Installation
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-11T20:38:30"),
+
+                PageLevel = 2,
+
+                PageOrder = 3,
+
+                ParentId = Guid.Parse("4c099d48-8810-42e2-53d4-08d5869fb686"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4795,6 +5665,14 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-11T20:39:10"),
+
+                PageLevel = 2,
+
+                PageOrder = 5,
+
+                ParentId = Guid.Parse("4c099d48-8810-42e2-53d4-08d5869fb686"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4810,6 +5688,16 @@ namespace Deviser.Core.Data.Installation
 
                 IsSystem = false,
 
+                LastModifiedDate = DateTime.Parse("2018-04-15T14:10:35"),
+
+                LayoutId = Guid.Parse("f51483cb-bb13-4632-f374-08d5a2c90b56"),
+
+                PageLevel = 3,
+
+                PageOrder = 1,
+
+                ParentId = Guid.Parse("aaa7c6b9-03e8-424f-a42e-08d587845981"),
+
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
 
@@ -4819,11 +5707,23 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("d5d5a9fd-511b-4025-b495-8908fb70c762"),
 
+                CreatedDate = DateTime.Parse("2016-07-03T19:34:55"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = false,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-26T15:53:33"),
+
+                LayoutId = Guid.Parse("d6471f27-716c-4f6f-a10b-4acef3fa4da3"),
+
+                PageLevel = 1,
+
+                PageOrder = 1,
+
+                ParentId = Guid.Parse("d1c11d1f-2345-43b6-baa1-8ce890242397"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4834,11 +5734,23 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("dd650840-0ee7-46cf-abb5-8a1591dc0936"),
 
+                CreatedDate = DateTime.Parse("2016-07-03T19:34:55"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = true,
 
                 IsSystem = true,
+
+                LastModifiedDate = DateTime.Parse("2016-07-03T19:36:03"),
+
+                LayoutId = Guid.Parse("af8ecc7d-e300-41af-b55a-deeb097836d2"),
+
+                PageLevel = 1,
+
+                PageOrder = 8,
+
+                ParentId = Guid.Parse("d1c11d1f-2345-43b6-baa1-8ce890242397"),
 
                 ThemeSrc = "[G]Themes/Skyline/Admin.cshtml",
             });
@@ -4849,11 +5761,19 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("d1c11d1f-2345-43b6-baa1-8ce890242397"),
 
+                CreatedDate = DateTime.Parse("2016-07-03T19:34:55"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = true,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-04-15T14:02:14"),
+
+                PageLevel = 0,
+
+                PageOrder = 0,
 
                 ThemeSrc = "[G]Themes/Skyline/Admin.cshtml",
             });
@@ -4864,11 +5784,23 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("62328d72-ad82-4de2-9a98-c954e5b30b28"),
 
+                CreatedDate = DateTime.Parse("2016-07-03T19:34:55"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = false,
 
                 IsSystem = false,
+
+                LastModifiedDate = DateTime.Parse("2018-05-01T21:15:47"),
+
+                LayoutId = Guid.Parse("af7533aa-3e4b-4e29-b118-1841ab5a0a91"),
+
+                PageLevel = 1,
+
+                PageOrder = 6,
+
+                ParentId = Guid.Parse("d1c11d1f-2345-43b6-baa1-8ce890242397"),
 
                 ThemeSrc = "[G]Themes/Skyline/Default.cshtml",
             });
@@ -4879,16 +5811,31 @@ namespace Deviser.Core.Data.Installation
 
                 Id = Guid.Parse("c6dd6902-4a9c-4a38-8a05-febe76694993"),
 
+                CreatedDate = DateTime.Parse("2016-07-03T19:34:55"),
+
                 IsDeleted = false,
 
                 IsIncludedInMenu = true,
 
                 IsSystem = true,
 
+                LastModifiedDate = DateTime.Parse("2018-01-03T15:29:59"),
+
+                LayoutId = Guid.Parse("af8ecc7d-e300-41af-b55a-deeb097836d2"),
+
+                PageLevel = 2,
+
+                PageOrder = 1,
+
+                ParentId = Guid.Parse("dd650840-0ee7-46cf-abb5-8a1591dc0936"),
+
                 ThemeSrc = "[G]Themes/Skyline/Admin.cshtml",
             });
 
+            #endregion
+
             //PageContent
+            #region PageContent        
 
             _dbContext.Set<PageContent>
             ().Add(new PageContent
@@ -4901,6 +5848,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("b2c35761-a953-4bf7-bfb2-d0ea9e63786d"),
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-04-25T22:34:41"),
 
                 PageId = Guid.Parse("faa9caaa-1fe2-40a9-a435-08d587845981"),
 
@@ -4923,6 +5872,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = true,
 
+                LastModifiedDate = DateTime.Parse("2018-04-24T23:00:33"),
+
                 PageId = Guid.Parse("5214eb20-b815-499a-a434-08d587845981"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"0d9134a4-4eb6-40a8-0959-08d58bf2fdc6\",\r\n    \"name\": \"swiper_direction\",\r\n    \"label\": \"Direction\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"278c0cc1-5212-4bfa-095a-08d58bf2fdc6\",\r\n    \"name\": \"swiper_speed\",\r\n    \"label\": \"Speed\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"89e09c02-9c55-4721-5531-08d58c515929\",\r\n    \"name\": \"swiper_autoHeight\",\r\n    \"label\": \"Auto Height\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"238b60e4-bcea-4171-5532-08d58c515929\",\r\n    \"name\": \"swiper_roundLengths\",\r\n    \"label\": \"Round Lengths\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"c436196b-f19e-4e3b-5535-08d58c515929\",\r\n    \"name\": \"swiper_effect\",\r\n    \"label\": \"Effect\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"4a81a097-a694-4db2-5538-08d58c515929\",\r\n    \"name\": \"swiper_navigation\",\r\n    \"label\": \"Navigation\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"338675b6-6ffa-4f2d-5539-08d58c515929\",\r\n    \"name\": \"swiper_pagination\",\r\n    \"label\": \"Pagination\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"7b2d6527-199b-406d-553b-08d58c515929\",\r\n    \"name\": \"swiper_pagination_type\",\r\n    \"label\": \"Pagination Type\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"2157ff87-35a5-405c-553c-08d58c515929\",\r\n    \"name\": \"swiper_scrollbar\",\r\n    \"label\": \"Scrollbar\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"4f6bf74f-b4eb-4b66-553d-08d58c515929\",\r\n    \"name\": \"swiper_spaceBetween\",\r\n    \"label\": \"Space Between\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"84ac0204-f84e-4e1c-553e-08d58c515929\",\r\n    \"name\": \"swiper_slidesPerView\",\r\n    \"label\": \"Sliders per view\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"55f585c6-708a-4487-553f-08d58c515929\",\r\n    \"name\": \"swiper_loop\",\r\n    \"label\": \"Loop\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"2c843984-7009-4287-5540-08d58c515929\",\r\n    \"name\": \"swiper_keyboard\",\r\n    \"label\": \"keyboard\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"017c4f30-da51-4d18-5541-08d58c515929\",\r\n    \"name\": \"swiper_mousewheel\",\r\n    \"label\": \"Mouse Wheel\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -4943,6 +5894,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("a7bbfc37-b496-4c8f-b481-309ec38fbac0"),
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-26T17:10:18"),
 
                 PageId = Guid.Parse("42e0d3c9-2269-46fd-a42a-08d587845981"),
 
@@ -4965,6 +5918,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-17T15:29:13"),
+
                 PageId = Guid.Parse("d5d5a9fd-511b-4025-b495-8908fb70c762"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": \"btn btn-outline-primary\",\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -4985,6 +5940,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("f99a54f8-5704-4bc1-b287-3a930c9ece53"),
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-04-11T21:42:30"),
 
                 PageId = Guid.Parse("1e2f0a6a-7197-400a-a42b-08d587845981"),
 
@@ -5007,6 +5964,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = false,
 
+                LastModifiedDate = DateTime.Parse("2018-04-15T14:20:01"),
+
                 PageId = Guid.Parse("19e8e352-d244-4b05-a42f-08d587845981"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -5027,6 +5986,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("8d878db7-c3e2-4c39-b359-bd0e39d87df9"),
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-04-15T14:06:17"),
 
                 PageId = Guid.Parse("7505e6d3-bb44-41bb-67ee-08d5a2c8b666"),
 
@@ -5049,6 +6010,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-01T22:00:15"),
+
                 PageId = Guid.Parse("d5d5a9fd-511b-4025-b495-8908fb70c762"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"cssclass\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -5069,6 +6032,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("a3e319ea-80b9-4800-9032-bb7ea09ed331"),
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-05-07T22:46:51"),
 
                 PageId = Guid.Parse("5e9b5792-f8dd-4852-1a16-08d583b38502"),
 
@@ -5091,6 +6056,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = false,
 
+                LastModifiedDate = DateTime.Parse("2018-04-18T22:46:36"),
+
                 PageId = Guid.Parse("72eb8147-8171-4d39-a42d-08d587845981"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -5111,6 +6078,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("a7bbfc37-b496-4c8f-b481-309ec38fbac0"),
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-04-11T22:03:09"),
 
                 PageId = Guid.Parse("1e2f0a6a-7197-400a-a42b-08d587845981"),
 
@@ -5133,6 +6102,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = true,
 
+                LastModifiedDate = DateTime.Parse("2018-03-22T17:13:47"),
+
                 PageId = Guid.Parse("faa9caaa-1fe2-40a9-a435-08d587845981"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -5153,6 +6124,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("a7bbfc37-b496-4c8f-b481-309ec38fbac0"),
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-11T16:02:37"),
 
                 PageId = Guid.Parse("d5d5a9fd-511b-4025-b495-8908fb70c762"),
 
@@ -5175,6 +6148,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = false,
 
+                LastModifiedDate = DateTime.Parse("2018-04-16T15:38:28"),
+
                 PageId = Guid.Parse("8dd34791-fad4-4f9d-a42c-08d587845981"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -5195,6 +6170,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("d2e62921-32f5-4c66-a9b3-e5b61d60b193"),
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-25T13:57:41"),
 
                 PageId = Guid.Parse("42e0d3c9-2269-46fd-a42a-08d587845981"),
 
@@ -5217,6 +6194,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-22T23:21:48"),
+
                 PageId = Guid.Parse("d5d5a9fd-511b-4025-b495-8908fb70c762"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": \"feature-heading\",\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -5237,6 +6216,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("d2e62921-32f5-4c66-a9b3-e5b61d60b193"),
 
                 IsDeleted = true,
+
+                LastModifiedDate = DateTime.Parse("2018-04-24T22:09:07"),
 
                 PageId = Guid.Parse("5214eb20-b815-499a-a434-08d587845981"),
 
@@ -5259,6 +6240,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-17T15:29:13"),
+
                 PageId = Guid.Parse("d5d5a9fd-511b-4025-b495-8908fb70c762"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": \"btn btn-dark\",\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -5279,6 +6262,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("d2e62921-32f5-4c66-a9b3-e5b61d60b193"),
 
                 IsDeleted = true,
+
+                LastModifiedDate = DateTime.Parse("2018-04-24T23:15:38"),
 
                 PageId = Guid.Parse("5214eb20-b815-499a-a434-08d587845981"),
 
@@ -5301,6 +6286,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-12T21:53:51"),
+
                 PageId = Guid.Parse("42e0d3c9-2269-46fd-a42a-08d587845981"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"cssclass\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -5321,6 +6308,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("d2e62921-32f5-4c66-a9b3-e5b61d60b193"),
 
                 IsDeleted = true,
+
+                LastModifiedDate = DateTime.Parse("2018-04-24T23:08:03"),
 
                 PageId = Guid.Parse("5214eb20-b815-499a-a434-08d587845981"),
 
@@ -5343,6 +6332,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = true,
 
+                LastModifiedDate = DateTime.Parse("2018-04-24T23:16:06"),
+
                 PageId = Guid.Parse("5214eb20-b815-499a-a434-08d587845981"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -5363,6 +6354,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("9b2ec6ac-8fdf-4cb5-ae60-90b73a6931fc"),
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-03-17T22:49:32"),
 
                 PageId = Guid.Parse("d5d5a9fd-511b-4025-b495-8908fb70c762"),
 
@@ -5385,6 +6378,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = false,
 
+                LastModifiedDate = DateTime.Parse("2018-04-18T22:48:58"),
+
                 PageId = Guid.Parse("8dd34791-fad4-4f9d-a42c-08d587845981"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -5405,6 +6400,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("c49840f4-5a00-4d1d-86b7-7881e3841314"),
 
                 IsDeleted = false,
+
+                LastModifiedDate = DateTime.Parse("2018-04-18T22:17:58"),
 
                 PageId = Guid.Parse("72eb8147-8171-4d39-a42d-08d587845981"),
 
@@ -5427,6 +6424,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = true,
 
+                LastModifiedDate = DateTime.Parse("2018-03-22T18:17:35"),
+
                 PageId = Guid.Parse("faa9caaa-1fe2-40a9-a435-08d587845981"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -5447,6 +6446,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("b2c35761-a953-4bf7-bfb2-d0ea9e63786d"),
 
                 IsDeleted = true,
+
+                LastModifiedDate = DateTime.Parse("2018-03-20T16:24:10"),
 
                 PageId = Guid.Parse("faa9caaa-1fe2-40a9-a435-08d587845981"),
 
@@ -5469,6 +6470,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = false,
 
+                LastModifiedDate = DateTime.Parse("2018-03-26T21:05:26"),
+
                 PageId = Guid.Parse("42e0d3c9-2269-46fd-a42a-08d587845981"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"fa1b0856-cea0-4245-e3f1-08d582dfee42\",\r\n    \"name\": \"video_preview\",\r\n    \"label\": \"Video Preview\",\r\n    \"value\": \"a935f434-6bb4-5c6a-2889-1216180770bf\",\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"f645a11f-bc8c-4003-0e83-08d5932d4c52\",\r\n    \"name\": \"image_width\",\r\n    \"label\": \"Image Width\",\r\n    \"value\": null,\r\n    \"defaultValue\": \"300\",\r\n    \"description\": \"Image Width\",\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"cb4b6f18-7267-41c3-0e84-08d5932d4c52\",\r\n    \"name\": \"image_height\",\r\n    \"label\": \"Image Height\",\r\n    \"value\": null,\r\n    \"defaultValue\": \"200\",\r\n    \"description\": \"Image Height\",\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -5489,6 +6492,8 @@ namespace Deviser.Core.Data.Installation
                 ContentTypeId = Guid.Parse("00332002-f2c7-401c-b59c-d0181eaf657b"),
 
                 IsDeleted = true,
+
+                LastModifiedDate = DateTime.Parse("2018-04-18T22:46:29"),
 
                 PageId = Guid.Parse("72eb8147-8171-4d39-a42d-08d587845981"),
 
@@ -5511,6 +6516,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = true,
 
+                LastModifiedDate = DateTime.Parse("2018-04-24T23:15:59"),
+
                 PageId = Guid.Parse("5214eb20-b815-499a-a434-08d587845981"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"0d9134a4-4eb6-40a8-0959-08d58bf2fdc6\",\r\n    \"name\": \"swiper_direction\",\r\n    \"label\": \"Direction\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"278c0cc1-5212-4bfa-095a-08d58bf2fdc6\",\r\n    \"name\": \"swiper_speed\",\r\n    \"label\": \"Speed\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"89e09c02-9c55-4721-5531-08d58c515929\",\r\n    \"name\": \"swiper_autoHeight\",\r\n    \"label\": \"Auto Height\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"238b60e4-bcea-4171-5532-08d58c515929\",\r\n    \"name\": \"swiper_roundLengths\",\r\n    \"label\": \"Round Lengths\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"c436196b-f19e-4e3b-5535-08d58c515929\",\r\n    \"name\": \"swiper_effect\",\r\n    \"label\": \"Effect\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"4a81a097-a694-4db2-5538-08d58c515929\",\r\n    \"name\": \"swiper_navigation\",\r\n    \"label\": \"Navigation\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"338675b6-6ffa-4f2d-5539-08d58c515929\",\r\n    \"name\": \"swiper_pagination\",\r\n    \"label\": \"Pagination\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"7b2d6527-199b-406d-553b-08d58c515929\",\r\n    \"name\": \"swiper_pagination_type\",\r\n    \"label\": \"Pagination Type\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"2157ff87-35a5-405c-553c-08d58c515929\",\r\n    \"name\": \"swiper_scrollbar\",\r\n    \"label\": \"Scrollbar\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"4f6bf74f-b4eb-4b66-553d-08d58c515929\",\r\n    \"name\": \"swiper_spaceBetween\",\r\n    \"label\": \"Space Between\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"84ac0204-f84e-4e1c-553e-08d58c515929\",\r\n    \"name\": \"swiper_slidesPerView\",\r\n    \"label\": \"Sliders per view\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"55f585c6-708a-4487-553f-08d58c515929\",\r\n    \"name\": \"swiper_loop\",\r\n    \"label\": \"Loop\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"2c843984-7009-4287-5540-08d58c515929\",\r\n    \"name\": \"swiper_keyboard\",\r\n    \"label\": \"keyboard\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"017c4f30-da51-4d18-5541-08d58c515929\",\r\n    \"name\": \"swiper_mousewheel\",\r\n    \"label\": \"Mouse Wheel\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  },\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -5532,6 +6539,8 @@ namespace Deviser.Core.Data.Installation
 
                 IsDeleted = true,
 
+                LastModifiedDate = DateTime.Parse("2018-03-22T18:17:30"),
+
                 PageId = Guid.Parse("faa9caaa-1fe2-40a9-a435-08d587845981"),
 
                 Properties = "[\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": null,\r\n    \"defaultValue\": null,\r\n    \"description\": null,\r\n    \"optionListId\": null,\r\n    \"optionList\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null\r\n  }\r\n]",
@@ -5541,7 +6550,10 @@ namespace Deviser.Core.Data.Installation
                 Title = null,
             });
 
+            #endregion
+
             //UserRole
+            #region UserRole        
 
             _dbContext.Set<IdentityUserRole<Guid>>
             ().Add(new IdentityUserRole<Guid>
@@ -5633,7 +6645,10 @@ namespace Deviser.Core.Data.Installation
                 RoleId = Guid.Parse("086357bf-01b1-494c-a8b8-54fdfa7c4c9e"),
             });
 
+            #endregion
+
             //ContentPermission
+            #region ContentPermission        
 
             _dbContext.Set<ContentPermission>
             ().Add(new ContentPermission
@@ -6441,7 +7456,10 @@ namespace Deviser.Core.Data.Installation
                 RoleId = Guid.Parse("9b461499-c49e-4398-bfed-4364a176ebbd"),
             });
 
+            #endregion
+
             //ModulePermission
+            #region ModulePermission        
 
             _dbContext.Set<ModulePermission>
             ().Add(new ModulePermission
@@ -7067,7 +8085,10 @@ namespace Deviser.Core.Data.Installation
                 RoleId = Guid.Parse("9b461499-c49e-4398-bfed-4364a176ebbd"),
             });
 
+            #endregion
+
             //PageModule
+            #region PageModule        
 
             _dbContext.Set<PageModule>
             ().Add(new PageModule
@@ -7874,7 +8895,10 @@ namespace Deviser.Core.Data.Installation
                 Properties = null,
             });
 
+            #endregion
+
             //PagePermission
+            #region PagePermission        
 
             _dbContext.Set<PagePermission>
             ().Add(new PagePermission
@@ -9409,6 +10433,8 @@ namespace Deviser.Core.Data.Installation
 
                 RoleId = Guid.Parse("9b461499-c49e-4398-bfed-4364a176ebbd"),
             });
+
+            #endregion
 
             _dbContext.SaveChanges();
         }

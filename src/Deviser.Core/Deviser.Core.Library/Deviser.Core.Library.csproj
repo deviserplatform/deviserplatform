@@ -15,24 +15,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.6.2" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.1" />
+    <PackageReference Include="Autofac" Version="4.8.1" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.2" />
     <PackageReference Include="AutoMapper" Version="6.2.2" />
     <PackageReference Include="Imageflow.NativeRuntime.ubuntu_16_04-x86_64-haswell" Version="1.0.0-rc9" />
     <PackageReference Include="Imageflow.NativeRuntime.ubuntu_16_04-x86_64-sandybridge" Version="1.0.0-rc9" />
     <PackageReference Include="Imageflow.NativeRuntime.win-x86_64" Version="1.0.0-rc13" />
     <PackageReference Include="Imageflow.NativeRuntime.win-x86_64-haswell" Version="1.0.0-rc13" />
     <PackageReference Include="Imageflow.Net" Version="0.2.6" />
-    <PackageReference Include="MailKit" Version="2.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="2.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="2.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="2.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="2.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.1" />
+    <PackageReference Include="MailKit" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="2.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="2.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="2.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Twitter" Version="2.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>
