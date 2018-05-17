@@ -45,15 +45,19 @@ namespace Deviser.Core.Library.DependencyInjection
             SharedObjects.ServiceProvider = sp;
 
 
-            if (installationProvider.IsPlatformInstalled)
-            {
+            //if (installationProvider.IsPlatformInstalled)
+            //{
                 services.AddDbContext<DeviserDbContext>(
                        (internalServiceProvider, dbContextOptionBuilder) =>
                        {
                            //dbContextOptionBuilder.UseInternalServiceProvider(sp);                    
                            installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder);
                        });
-            }
+            //}
+
+            services.AddIdentity<User, Role>()
+               .AddEntityFrameworkStores<DeviserDbContext>()
+               .AddDefaultTokenProviders();
 
             MapperConfig.CreateMaps();
             sp = services.BuildServiceProvider();
@@ -65,9 +69,7 @@ namespace Deviser.Core.Library.DependencyInjection
             
             if (installationProvider.IsPlatformInstalled)
             {
-                services.AddIdentity<User, Role>()
-                .AddEntityFrameworkStores<DeviserDbContext>()
-                .AddDefaultTokenProviders();
+               
 
                 var siteSettingRepository = sp.GetService<ISiteSettingRepository>(); //sp.GetService<ISiteSettingRepository>();
                 var siteSettings = siteSettingRepository.GetSettings();

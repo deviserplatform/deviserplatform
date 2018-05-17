@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -18,6 +19,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Deviser.Core.Data.Installation;
+using Microsoft.AspNetCore.Identity;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -42,10 +44,13 @@ namespace Deviser.Core.Data.Repositories
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
+        private UserManager<Entities.User> _userManager;
+        private IServiceCollection _services;
 
         private DbContextOptions _dbContextOptions;
         private DbContextOptionsBuilder _dbContextOptionsBuilder;
-        private InstallModel _installModel;
+        private static InstallModel _installModel;
+        private static bool _isInstallInProgress;
         private bool _isPlatformInstalled;
         private bool _isDbExist;
 
@@ -60,6 +65,9 @@ namespace Deviser.Core.Data.Repositories
         {
             get
             {
+                if (_isInstallInProgress)
+                    return false;
+
                 if (!_isPlatformInstalled)
                 {
                     var installModel = GetInstallationModel();
@@ -92,7 +100,8 @@ namespace Deviser.Core.Data.Repositories
             string settingFile = Path.Combine(_hostingEnvironment.ContentRootPath, $"appsettings.{_hostingEnvironment.EnvironmentName}.json");
             DbContextOptionsBuilder dbContextOptionsBuilder = GetDbContextOptionsBuilder(installModel);
             DbContextOptions dbOption = dbContextOptionsBuilder.Options;
-
+            _isInstallInProgress = true;
+            _installModel = installModel;
             if (!IsDatabaseExistsFor(connectionString))
             {
                 //Creating database                        
@@ -106,6 +115,18 @@ namespace Deviser.Core.Data.Repositories
 
                 //Migrate module
                 MigrateModuleContexts(installModel);
+                
+
+                //Create user account                
+                _userManager = _serviceProvider.GetService<UserManager<Entities.User>>();
+
+                var user = new Entities.User { UserName = installModel.AdminEmail, Email = installModel.AdminEmail };
+                var result = _userManager.CreateAsync(user, installModel.AdminPassword).GetAwaiter().GetResult();
+                if (result.Succeeded)
+                {
+                    //Assign user to admin role
+                    _userManager.AddToRoleAsync(user, "Administrators");
+                }
             }
 
             //Write intall settings
@@ -125,13 +146,14 @@ namespace Deviser.Core.Data.Repositories
             //Success no exceptions were thrown
             _dbContextOptions = dbOption;
             _dbContextOptionsBuilder = dbContextOptionsBuilder;
+            _isInstallInProgress = false;
         }
 
         public void InsertData(DbContextOptions dbOption)
         {
             using (var context = new DeviserDbContext(dbOption))
             {
-                var dataSeeder = new DataSeeder(context);
+                var dataSeeder = new DataSeeder(context, _hostingEnvironment);
                 dataSeeder.InsertData();
             }
         }
@@ -166,6 +188,9 @@ namespace Deviser.Core.Data.Repositories
         public DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder, string moduleAssembly=null)
         {   
             InstallModel installModel = GetInstallationModel();
+            if (installModel == null)
+                return null;
+
             _dbContextOptionsBuilder = GetDbContextOptionsBuilder(installModel, optionsBuilder, moduleAssembly);
 
             if (_dbContextOptionsBuilder == null)
