@@ -92,7 +92,7 @@ namespace Deviser.Core.Data
 
             modelBuilder.Entity<Layout>(entity =>
             {
-                entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
+                entity.Property(e => e.IsDeleted).HasDefaultValue(false);
 
                 entity.Property(e => e.Name).HasMaxLength(50);
             });
@@ -103,7 +103,7 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.Description).HasMaxLength(2000);
 
-                entity.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
 
                 entity.Property(e => e.Label)
                     .IsRequired()
@@ -132,7 +132,7 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.DisplayName).HasMaxLength(50);
 
-                entity.Property(e => e.IsDefault).IsRequired().HasDefaultValueSql("((0))");
+                entity.Property(e => e.IsDefault).IsRequired().HasDefaultValue(false);
 
                 entity.HasOne(d => d.ModuleActionType).WithMany(p => p.ModuleAction).HasForeignKey(d => d.ModuleActionTypeId).OnDelete(DeleteBehavior.Restrict);
 
@@ -152,9 +152,9 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.EndDate).HasColumnType("datetime");
 
-                entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
+                entity.Property(e => e.IsDeleted).HasDefaultValue(false);
 
-                entity.Property(e => e.IsSystem).HasDefaultValueSql("((0))");
+                entity.Property(e => e.IsSystem).HasDefaultValue(false);
 
                 entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
 
@@ -177,11 +177,11 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
-                entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
+                entity.Property(e => e.IsDeleted).HasDefaultValue(false);
 
-                entity.Property(e => e.InheritViewPermissions).HasDefaultValueSql("((1))");
+                entity.Property(e => e.InheritViewPermissions).HasDefaultValue(true);
 
-                entity.Property(e => e.InheritEditPermissions).HasDefaultValueSql("((1))");
+                entity.Property(e => e.InheritEditPermissions).HasDefaultValue(true);
 
                 entity.Ignore(e => e.HasEditPermission);
 
@@ -203,7 +203,7 @@ namespace Deviser.Core.Data
                     .IsRequired()
                     .HasMaxLength(10);
 
-                entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
+                entity.Property(e => e.IsDeleted).HasDefaultValue(false);
 
                 entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
 
@@ -218,11 +218,11 @@ namespace Deviser.Core.Data
 
                 entity.HasIndex(e => e.PageId).HasName("IX_FK_PageModule_Module");
 
-                entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
+                entity.Property(e => e.IsDeleted).HasDefaultValue(false);
 
-                entity.Property(e => e.InheritViewPermissions).HasDefaultValueSql("((1))");
+                entity.Property(e => e.InheritViewPermissions).HasDefaultValue(true);
 
-                entity.Property(e => e.InheritEditPermissions).HasDefaultValueSql("((1))");
+                entity.Property(e => e.InheritEditPermissions).HasDefaultValue(true);
 
                 entity.Ignore(e => e.HasEditPermission);
 
@@ -263,7 +263,7 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
-                entity.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
 
                 entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
 
@@ -273,14 +273,14 @@ namespace Deviser.Core.Data
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
             });
 
             modelBuilder.Entity<ContentType>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
 
             });
             modelBuilder.Entity<Property>(entity =>
@@ -289,7 +289,7 @@ namespace Deviser.Core.Data
 
                 entity.Ignore(e => e.Value);
 
-                entity.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
 
                 entity.HasOne(d => d.OptionList).WithMany(p => p.Properties).HasForeignKey(d => d.OptionListId).OnDelete(DeleteBehavior.Restrict);
             });
@@ -298,7 +298,7 @@ namespace Deviser.Core.Data
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired();
-                entity.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
             });
             
             modelBuilder.Entity<LayoutTypeProperty>(entity =>

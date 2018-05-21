@@ -55,7 +55,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Label");
 
@@ -99,7 +99,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValue(true);
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime");
@@ -120,7 +120,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((0))");
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Name")
                         .HasMaxLength(50);
@@ -143,7 +143,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Label");
 
@@ -184,7 +184,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Label")
                         .IsRequired()
@@ -229,7 +229,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<bool>("IsDefault")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((0))");
+                        .HasDefaultValue(false);
 
                     b.Property<Guid>("ModuleActionTypeId");
 
@@ -302,7 +302,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Label");
 
@@ -331,13 +331,13 @@ namespace Deviser.WI.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((0))");
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsIncludedInMenu");
 
                     b.Property<bool>("IsSystem")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((0))");
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime");
@@ -379,15 +379,15 @@ namespace Deviser.WI.Migrations
 
                     b.Property<bool>("InheritEditPermissions")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("InheritViewPermissions")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((0))");
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime");
@@ -425,7 +425,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((0))");
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime");
@@ -447,15 +447,15 @@ namespace Deviser.WI.Migrations
 
                     b.Property<bool>("InheritEditPermissions")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("InheritViewPermissions")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((0))");
+                        .HasDefaultValue(false);
 
                     b.Property<Guid>("ModuleActionId");
 
@@ -566,7 +566,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Label");
 
