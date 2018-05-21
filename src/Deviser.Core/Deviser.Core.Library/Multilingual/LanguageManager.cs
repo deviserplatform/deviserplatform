@@ -34,7 +34,7 @@ namespace Deviser.Core.Library.Multilingual
         {
             try
             {
-                string culuresJsonPath = _hostingEnvironment.ContentRootPath + "\\cultures.json";
+                string culuresJsonPath = Path.Combine(_hostingEnvironment.ContentRootPath, "cultures.json");
                 List<Language> cultures = SDJsonConvert.DeserializeObject<List<Language>>(System.IO.File.ReadAllText(culuresJsonPath));
 
                 cultures.ForEach(c => c.FallbackCulture = Globals.FallbackLanguage);
