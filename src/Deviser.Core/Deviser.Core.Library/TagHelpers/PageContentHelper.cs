@@ -187,7 +187,7 @@ namespace Deviser.Core.Library.TagHelpers
                         List<ContentResult> currentResults = new List<ContentResult>();
                         IHtmlContent htmlContent;
                         List<ContentResult> moduleResult = null;
-                        var layoutType = placeHolder.Type.ToLower();
+                        var layoutType = placeHolder.Type;
                         ViewContext.ViewData["isEditMode"] = false;
 
                         if (ModuleActionResults.ContainsKey(placeHolder.Id.ToString()))
