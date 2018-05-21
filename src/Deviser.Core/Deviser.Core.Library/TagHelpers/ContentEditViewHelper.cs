@@ -67,7 +67,7 @@ namespace Deviser.Core.Library.TagHelpers
         {
             StringBuilder sb = new StringBuilder();
             string editPath = string.Format(Globals.ContentTypesEditPath, _scopeService.PageContext.SelectedTheme);
-            string editViewDir = editViewDir = Path.Combine(_hostingEnvironment.ContentRootPath, editPath.Replace("~/", "").Replace("/", @"\"));
+            string editViewDir = Path.Combine(_hostingEnvironment.ContentRootPath, Path.Combine(editPath.Replace("~/", "").Split('/')));
             DirectoryInfo dir = new DirectoryInfo(editViewDir);
             foreach (var file in dir.GetFiles())
             {
