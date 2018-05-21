@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
-using MySql.Data.EntityFrameworkCore;
+//using MySql.Data.EntityFrameworkCore;
 using System;
 using System.Text;
 

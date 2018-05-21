@@ -36,7 +36,7 @@ namespace Deviser.Core.Data.Repositories
         void InstallPlatform(InstallModel installModel);
         void InsertData(DbContextOptions dbOption);
         string GetConnectionString(InstallModel model);
-        DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder, string moduleAssembly=null);
+        DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null);
     }
 
     public class InstallationProvider : IInstallationProvider
@@ -115,7 +115,7 @@ namespace Deviser.Core.Data.Repositories
 
                 //Migrate module
                 MigrateModuleContexts(installModel);
-                
+
 
                 //Create user account                
                 _userManager = _serviceProvider.GetService<UserManager<Entities.User>>();
@@ -172,7 +172,17 @@ namespace Deviser.Core.Data.Repositories
             }
             else if (model.DatabaseProvider == DatabaseProvider.PostgreSQL)
             {
-                return $"Server={model.ServerName};Database={model.DatabaseName};Username={model.DBUserName};Password={model.DBPassword}";
+                string host = model.ServerName;
+                string port = "";
+
+                if (host.Contains(":"))
+                {
+                    var hostAndPort = host.Split(':');
+                    host = hostAndPort[0];
+                    port = hostAndPort[1];
+                }
+
+                return $"Host={model.ServerName};{((!string.IsNullOrEmpty(port)) ? port + ";" : "")}Database={model.DatabaseName};Username={model.DBUserName};Password={model.DBPassword}";
             }
             else if (model.DatabaseProvider == DatabaseProvider.MySQL)
             {
@@ -184,9 +194,9 @@ namespace Deviser.Core.Data.Repositories
                 return $"Data Source={model.DatabaseName}.db";
             }
         }
-        
-        public DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder, string moduleAssembly=null)
-        {   
+
+        public DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null)
+        {
             InstallModel installModel = GetInstallationModel();
             if (installModel == null)
                 return null;
@@ -211,9 +221,9 @@ namespace Deviser.Core.Data.Repositories
             return GetDbContextOptionsBuilder(installModel, optionsBuilder);
         }
 
-        private DbContextOptionsBuilder GetDbContextOptionsBuilder(InstallModel installModel, DbContextOptionsBuilder optionsBuilder, string moduleAssembly=null)
+        private DbContextOptionsBuilder GetDbContextOptionsBuilder(InstallModel installModel, DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null)
         {
-            string connectionString = IsPlatformInstalled? _configuration.GetConnectionString("DefaultConnection"): GetConnectionString(installModel);
+            string connectionString = IsPlatformInstalled ? _configuration.GetConnectionString("DefaultConnection") : GetConnectionString(installModel);
 
 
             if (installModel.DatabaseProvider == DatabaseProvider.SQLServer || installModel.DatabaseProvider == DatabaseProvider.SQLLocalDb)
@@ -231,7 +241,7 @@ namespace Deviser.Core.Data.Repositories
                     })
                     .ReplaceService<IHistoryRepository, SqlServerModuleHistoryRepository>();
                 }
-                
+
             }
             else if (installModel.DatabaseProvider == DatabaseProvider.PostgreSQL)
             {
@@ -253,16 +263,16 @@ namespace Deviser.Core.Data.Repositories
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
-                    optionsBuilder.UseMySQL(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                    optionsBuilder.UseMySql(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
                 }
                 else
                 {
-                    optionsBuilder.UseMySQL(connectionString, (x) =>
+                    optionsBuilder.UseMySql(connectionString, (x) =>
                     {
                         x.MigrationsAssembly(moduleAssembly);
                         x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
                     })
-                    .ReplaceService<IHistoryRepository, NpgsqlModuleHistoryRepository>();
+                    .ReplaceService<IHistoryRepository, MySQLModuleHistoryRepository>();
                 }
             }
             else

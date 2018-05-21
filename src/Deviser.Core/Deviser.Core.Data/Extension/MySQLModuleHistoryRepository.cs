@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Deviser.Core.Data.Extension
 {
-    public class MySQLModuleHistoryRepository : MySQLHistoryRepository
+    public class MySQLModuleHistoryRepository : MySqlHistoryRepository
     {
         private readonly string modulePrefix;
 
