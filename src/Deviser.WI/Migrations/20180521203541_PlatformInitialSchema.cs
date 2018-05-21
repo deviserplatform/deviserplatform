@@ -171,22 +171,6 @@ namespace Deviser.WI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "sysdiagrams",
-                columns: table => new
-                {
-                    diagram_id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    definition = table.Column<byte[]>(nullable: true),
-                    name = table.Column<string>(type: "sysname", nullable: false),
-                    principal_id = table.Column<int>(nullable: false),
-                    version = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__sysdiagr__C2B05B617A77B34C", x => x.diagram_id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
@@ -826,12 +810,6 @@ namespace Deviser.WI.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "UK_principal_name",
-                table: "sysdiagrams",
-                columns: new[] { "principal_id", "name" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "User",
                 column: "NormalizedEmail");
@@ -896,9 +874,6 @@ namespace Deviser.WI.Migrations
 
             migrationBuilder.DropTable(
                 name: "SiteSetting");
-
-            migrationBuilder.DropTable(
-                name: "sysdiagrams");
 
             migrationBuilder.DropTable(
                 name: "UserClaim");

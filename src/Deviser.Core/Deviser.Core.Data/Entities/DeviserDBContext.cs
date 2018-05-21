@@ -354,20 +354,6 @@ namespace Deviser.Core.Data
 
                 entity.HasKey(d => new { d.ModuleActionId, d.PropertyId });
             });
-
-            modelBuilder.Entity<sysdiagrams>(entity =>
-            {
-                entity.HasKey(e => e.diagram_id)
-                    .HasName("PK__sysdiagr__C2B05B617A77B34C");
-
-                entity.HasIndex(e => new { e.principal_id, e.name })
-                    .HasName("UK_principal_name")
-                    .IsUnique();
-
-                entity.Property(e => e.name)
-                    .IsRequired()
-                    .HasColumnType("sysname");
-            });
         }
 
         public virtual DbSet<ContentPermission> ContentPermission { get; set; }
@@ -390,8 +376,7 @@ namespace Deviser.Core.Data
         public virtual DbSet<PagePermission> PagePermission { get; set; }
         public virtual DbSet<PageTranslation> PageTranslation { get; set; }
         public virtual DbSet<PageContentTranslation> PageContentTranslation { get; set; }
-        public virtual DbSet<SiteSetting> SiteSetting { get; set; }        
-        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
+        public virtual DbSet<SiteSetting> SiteSetting { get; set; }
         public virtual DbSet<ModuleActionProperty> ModuleActionProperty { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }

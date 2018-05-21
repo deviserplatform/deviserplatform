@@ -11,7 +11,7 @@ using System;
 namespace Deviser.WI.Migrations
 {
     [DbContext(typeof(DeviserDbContext))]
-    [Migration("20180521191835_PlatformInitialSchema")]
+    [Migration("20180521203541_PlatformInitialSchema")]
     partial class PlatformInitialSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -621,31 +621,6 @@ namespace Deviser.WI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SiteSetting");
-                });
-
-            modelBuilder.Entity("Deviser.Core.Data.Entities.sysdiagrams", b =>
-                {
-                    b.Property<int>("diagram_id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<byte[]>("definition");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("sysname");
-
-                    b.Property<int>("principal_id");
-
-                    b.Property<int?>("version");
-
-                    b.HasKey("diagram_id")
-                        .HasName("PK__sysdiagr__C2B05B617A77B34C");
-
-                    b.HasIndex("principal_id", "name")
-                        .IsUnique()
-                        .HasName("UK_principal_name");
-
-                    b.ToTable("sysdiagrams");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.User", b =>
