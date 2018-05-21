@@ -16,7 +16,7 @@
         "IsActive": true,
         "Label": "Features",
         "LastModifiedDate": "2018-03-20T14:30:14.4256246",
-        "Name": "features",
+        "Name": "Features",
         "SortOrder": 0,
         "ContentTypeProperty": null,
         "PageContent": null
@@ -29,7 +29,7 @@
         "IsActive": true,
         "Label": "Rich Text",
         "LastModifiedDate": "2018-03-22T23:16:54.1817826",
-        "Name": "richtext",
+        "Name": "RichText",
         "SortOrder": 0,
         "ContentTypeProperty": null,
         "PageContent": null
@@ -42,7 +42,7 @@
         "IsActive": true,
         "Label": "Gallery",
         "LastModifiedDate": "2018-03-26T22:13:07.6753257",
-        "Name": "gallery",
+        "Name": "Gallery",
         "SortOrder": 0,
         "ContentTypeProperty": null,
         "PageContent": null
@@ -68,7 +68,7 @@
         "IsActive": true,
         "Label": "Team",
         "LastModifiedDate": "2018-04-18T22:07:33.1289141",
-        "Name": "team",
+        "Name": "Team",
         "SortOrder": 0,
         "ContentTypeProperty": null,
         "PageContent": null
@@ -81,7 +81,7 @@
         "IsActive": true,
         "Label": "Teaser Box",
         "LastModifiedDate": "2018-03-05T22:00:13.128632",
-        "Name": "teaserbox",
+        "Name": "TeaserBox",
         "SortOrder": 0,
         "ContentTypeProperty": null,
         "PageContent": null
@@ -94,7 +94,7 @@
         "IsActive": true,
         "Label": "Video",
         "LastModifiedDate": "2018-03-26T17:26:27.6676967",
-        "Name": "video",
+        "Name": "Video",
         "SortOrder": 0,
         "ContentTypeProperty": null,
         "PageContent": null
@@ -107,7 +107,7 @@
         "IsActive": true,
         "Label": "Call to action",
         "LastModifiedDate": "2018-03-08T22:54:28.0919538",
-        "Name": "calltoaction",
+        "Name": "CallToAction",
         "SortOrder": 0,
         "ContentTypeProperty": null,
         "PageContent": null
@@ -120,7 +120,7 @@
         "IsActive": true,
         "Label": "Image",
         "LastModifiedDate": "2018-03-05T21:59:57.9994519",
-        "Name": "image",
+        "Name": "Image",
         "SortOrder": 2,
         "ContentTypeProperty": null,
         "PageContent": null
@@ -133,7 +133,7 @@
         "IsActive": true,
         "Label": "Blog",
         "LastModifiedDate": "2018-05-07T22:28:02.796406",
-        "Name": "blog",
+        "Name": "Blog",
         "SortOrder": 0,
         "ContentTypeProperty": null,
         "PageContent": null
@@ -146,7 +146,7 @@
         "IsActive": true,
         "Label": "Tabs",
         "LastModifiedDate": "2018-03-05T22:00:09.8672032",
-        "Name": "tabs",
+        "Name": "Tabs",
         "SortOrder": 0,
         "ContentTypeProperty": null,
         "PageContent": null
@@ -159,7 +159,7 @@
         "IsActive": true,
         "Label": "Text",
         "LastModifiedDate": "2018-03-05T22:00:19.7381113",
-        "Name": "text",
+        "Name": "Text",
         "SortOrder": 1,
         "ContentTypeProperty": null,
         "PageContent": null
@@ -172,7 +172,7 @@
         "IsActive": true,
         "Label": "Map",
         "LastModifiedDate": "2018-03-05T22:00:00.6132749",
-        "Name": "map",
+        "Name": "Map",
         "SortOrder": 0,
         "ContentTypeProperty": null,
         "PageContent": null
@@ -185,7 +185,7 @@
         "IsActive": true,
         "Label": "Accordion",
         "LastModifiedDate": "2018-03-05T21:58:51.7857539",
-        "Name": "accordion",
+        "Name": "Accordion",
         "SortOrder": 0,
         "ContentTypeProperty": null,
         "PageContent": null
@@ -198,7 +198,7 @@
         "IsActive": true,
         "Label": "Slider",
         "LastModifiedDate": "2018-03-25T13:26:47.5434256",
-        "Name": "slider",
+        "Name": "Slider",
         "SortOrder": 3,
         "ContentTypeProperty": null,
         "PageContent": null
@@ -361,7 +361,7 @@
         "Label": "Section",
         "LastModifiedDate": "2018-02-28T23:35:11.7669924",
         "LayoutTypeIds": "9341f92e-83d8-4afe-ad4a-a95deeda9ae3,5a0a5884-da84-4922-a02f-5828b55d5c92,43734210-943e-4f33-a161-f12260b8c001",
-        "Name": "section",
+        "Name": "Section",
         "LayoutTypeProperty": null
       },
       {
@@ -373,7 +373,7 @@
         "Label": "Wrapper",
         "LastModifiedDate": "2017-11-09T16:42:03.2918961",
         "LayoutTypeIds": "9341f92e-83d8-4afe-ad4a-a95deeda9ae3, 43734210-943e-4f33-a161-f12260b8c001",
-        "Name": "wrapper",
+        "Name": "Wrapper",
         "LayoutTypeProperty": null
       },
       {
@@ -385,7 +385,7 @@
         "Label": "Column",
         "LastModifiedDate": "2018-03-18T00:25:49.7879368",
         "LayoutTypeIds": "9341f92e-83d8-4afe-ad4a-a95deeda9ae3,43734210-943e-4f33-a161-f12260b8c001",
-        "Name": "column",
+        "Name": "Column",
         "LayoutTypeProperty": null
       },
       {
@@ -409,7 +409,7 @@
         "Label": "Row",
         "LastModifiedDate": null,
         "LayoutTypeIds": "4c98f160-d676-40a2-9b88-79fd1343f333",
-        "Name": "row",
+        "Name": "Row",
         "LayoutTypeProperty": null
       }
     ]
