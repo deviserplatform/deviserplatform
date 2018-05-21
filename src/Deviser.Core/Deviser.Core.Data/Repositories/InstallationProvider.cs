@@ -182,11 +182,21 @@ namespace Deviser.Core.Data.Repositories
                     port = hostAndPort[1];
                 }
 
-                return $"Host={model.ServerName};{((!string.IsNullOrEmpty(port)) ? $"Port={port};" : "")}Database={model.DatabaseName};Username={model.DBUserName};Password={model.DBPassword}";
+                return $"Host={host};{((!string.IsNullOrEmpty(port)) ? $"Port={port};" : "")}Database={model.DatabaseName};User ID={model.DBUserName};Password={model.DBPassword};";
             }
             else if (model.DatabaseProvider == DatabaseProvider.MySQL)
             {
-                return $"server={model.ServerName};database={model.DatabaseName};user={model.DBUserName};password={model.DBPassword}";
+                string host = model.ServerName;
+                string port = "";
+
+                if (host.Contains(":"))
+                {
+                    var hostAndPort = host.Split(':');
+                    host = hostAndPort[0];
+                    port = hostAndPort[1];
+                }
+
+                return $"server={host};{((!string.IsNullOrEmpty(port)) ? $"port={port};" : "")}database={model.DatabaseName};user={model.DBUserName};password={model.DBPassword}";
             }
             else
             {
