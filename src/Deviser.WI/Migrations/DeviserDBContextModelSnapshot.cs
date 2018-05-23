@@ -88,8 +88,7 @@ namespace Deviser.WI.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("CreatedDate");
 
                     b.Property<string>("CultureCode");
 
@@ -101,8 +100,7 @@ namespace Deviser.WI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(true);
 
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("LastModifiedDate");
 
                     b.Property<string>("NativeName");
 
@@ -176,8 +174,7 @@ namespace Deviser.WI.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("CreatedDate");
 
                     b.Property<string>("Description")
                         .HasMaxLength(2000);
@@ -190,8 +187,7 @@ namespace Deviser.WI.Migrations
                         .IsRequired()
                         .HasMaxLength(128);
 
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("LastModifiedDate");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -323,11 +319,9 @@ namespace Deviser.WI.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("CreatedDate");
 
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("EndDate");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -339,8 +333,7 @@ namespace Deviser.WI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);
 
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("LastModifiedDate");
 
                     b.Property<Guid?>("LayoutId");
 
@@ -350,8 +343,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<Guid?>("ParentId");
 
-                    b.Property<DateTime?>("StartDate")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("StartDate");
 
                     b.Property<string>("ThemeSrc")
                         .HasMaxLength(200);
@@ -374,8 +366,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<Guid>("ContentTypeId");
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("CreatedDate");
 
                     b.Property<bool>("InheritEditPermissions")
                         .ValueGeneratedOnAdd()
@@ -389,8 +380,7 @@ namespace Deviser.WI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);
 
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("LastModifiedDate");
 
                     b.Property<Guid>("PageId");
 
@@ -416,8 +406,7 @@ namespace Deviser.WI.Migrations
 
                     b.Property<string>("ContentData");
 
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("CreatedDate");
 
                     b.Property<string>("CultureCode")
                         .IsRequired()
@@ -427,8 +416,7 @@ namespace Deviser.WI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(false);
 
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("LastModifiedDate");
 
                     b.Property<Guid>("PageContentId");
 

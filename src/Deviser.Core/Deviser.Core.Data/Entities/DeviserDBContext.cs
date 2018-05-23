@@ -99,7 +99,7 @@ namespace Deviser.Core.Data
 
             modelBuilder.Entity<Module>(entity =>
             {
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate);
 
                 entity.Property(e => e.Description).HasMaxLength(2000);
 
@@ -109,7 +109,7 @@ namespace Deviser.Core.Data
                     .IsRequired()
                     .HasMaxLength(128);
 
-                entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.LastModifiedDate);
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -148,19 +148,19 @@ namespace Deviser.Core.Data
             {
                 entity.HasIndex(e => e.ParentId).HasName("IX_FK_Pages_Pages");
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate);
 
-                entity.Property(e => e.EndDate).HasColumnType("datetime");
+                entity.Property(e => e.EndDate);
 
                 entity.Property(e => e.IsDeleted).HasDefaultValue(false);
 
                 entity.Property(e => e.IsSystem).HasDefaultValue(false);
 
-                entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.LastModifiedDate);
 
                 entity.Property(e => e.ThemeSrc).HasMaxLength(200);
 
-                entity.Property(e => e.StartDate).HasColumnType("datetime");
+                entity.Property(e => e.StartDate);
 
                 entity.HasOne(d => d.Layout).WithMany(p => p.Page).HasForeignKey(d => d.LayoutId);
 
@@ -175,7 +175,7 @@ namespace Deviser.Core.Data
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate);
 
                 entity.Property(e => e.IsDeleted).HasDefaultValue(false);
 
@@ -185,7 +185,7 @@ namespace Deviser.Core.Data
 
                 entity.Ignore(e => e.HasEditPermission);
 
-                entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.LastModifiedDate);
 
                 entity.HasOne(d => d.Page).WithMany(p => p.PageContent).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
 
@@ -197,7 +197,7 @@ namespace Deviser.Core.Data
             {
                 entity.Property(e => e.Id);
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate);
 
                 entity.Property(e => e.CultureCode)
                     .IsRequired()
@@ -205,7 +205,7 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.IsDeleted).HasDefaultValue(false);
 
-                entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.LastModifiedDate);
 
                 entity.HasOne(d => d.PageContent).WithMany(p => p.PageContentTranslation).HasForeignKey(d => d.PageContentId).OnDelete(DeleteBehavior.Restrict);
             });
@@ -261,11 +261,11 @@ namespace Deviser.Core.Data
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate);
 
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
 
-                entity.Property(e => e.LastModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.LastModifiedDate);
 
             });
 

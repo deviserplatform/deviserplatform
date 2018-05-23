@@ -33,12 +33,12 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
                     CultureCode = table.Column<string>(nullable: true),
                     EnglishName = table.Column<string>(nullable: true),
                     FallbackCulture = table.Column<string>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false, defaultValue: true),
-                    LastModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true),
                     NativeName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -84,11 +84,11 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
                     Description = table.Column<string>(maxLength: 2000, nullable: true),
                     IsActive = table.Column<bool>(nullable: false, defaultValue: true),
                     Label = table.Column<string>(maxLength: 128, nullable: false),
-                    LastModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(maxLength: 128, nullable: false),
                     Version = table.Column<string>(maxLength: 10, nullable: false)
                 },
@@ -202,17 +202,17 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    EndDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    EndDate = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
                     IsIncludedInMenu = table.Column<bool>(nullable: false),
                     IsSystem = table.Column<bool>(nullable: false, defaultValue: false),
-                    LastModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true),
                     LayoutId = table.Column<Guid>(nullable: true),
                     PageLevel = table.Column<int>(nullable: true),
                     PageOrder = table.Column<int>(nullable: true),
                     ParentId = table.Column<Guid>(nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    StartDate = table.Column<DateTime>(nullable: true),
                     ThemeSrc = table.Column<string>(maxLength: 200, nullable: true)
                 },
                 constraints: table =>
@@ -402,11 +402,11 @@ namespace Deviser.WI.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     ContainerId = table.Column<Guid>(nullable: false),
                     ContentTypeId = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
                     InheritEditPermissions = table.Column<bool>(nullable: false, defaultValue: true),
                     InheritViewPermissions = table.Column<bool>(nullable: false, defaultValue: true),
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
-                    LastModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true),
                     PageId = table.Column<Guid>(nullable: false),
                     Properties = table.Column<string>(nullable: true),
                     SortOrder = table.Column<int>(nullable: false),
@@ -633,10 +633,10 @@ namespace Deviser.WI.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     ContentData = table.Column<string>(nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
                     CultureCode = table.Column<string>(maxLength: 10, nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
-                    LastModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true),
                     PageContentId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
