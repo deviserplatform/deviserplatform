@@ -196,7 +196,7 @@ namespace Deviser.Core.Data.Repositories
                     port = hostAndPort[1];
                 }
 
-                return $"server={host};{((!string.IsNullOrEmpty(port)) ? $"port={port};" : "")}database={model.DatabaseName};user={model.DBUserName};password={model.DBPassword}";
+                return $"server={host};{((!string.IsNullOrEmpty(port)) ? $"port={port};" : "")}database={model.DatabaseName};user={model.DBUserName};password={model.DBPassword};CharSet=utf8mb4;";
             }
             else
             {
