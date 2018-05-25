@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Migrations.Internal;
+using Microsoft.EntityFrameworkCore.SqlServer.Migrations.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;

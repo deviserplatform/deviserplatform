@@ -35,7 +35,7 @@ namespace Deviser.WI
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDeviserPlatform(Configuration);
+            services = services.AddDeviserPlatform(Configuration);
 
             // Add Autofac
             var builder = new ContainerBuilder();
@@ -63,12 +63,11 @@ namespace Deviser.WI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-                app.UseBrowserLink();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
 
             app.UseDeviserPlatform(container);

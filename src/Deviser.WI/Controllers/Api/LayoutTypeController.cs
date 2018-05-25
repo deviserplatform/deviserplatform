@@ -11,7 +11,7 @@ using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Autofac;
-using Microsoft.Extensions.PlatformAbstractions;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using AutoMapper;

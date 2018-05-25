@@ -11,12 +11,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-
+using Microsoft.AspNetCore.Builder;
 using Deviser.Core.Library.Infrastructure;
 using Deviser.Core.Library.Messaging;
 using Deviser.Core.Library.Services;
 using Deviser.Core.Library.Internal;
-using Microsoft.AspNetCore.Builder;
 using System.Globalization;
 using Deviser.Core.Library.Middleware;
 using Microsoft.AspNetCore.Routing;
@@ -47,12 +46,12 @@ namespace Deviser.Core.Library.DependencyInjection
 
             //if (installationProvider.IsPlatformInstalled)
             //{
-                services.AddDbContext<DeviserDbContext>(
-                       (internalServiceProvider, dbContextOptionBuilder) =>
-                       {
+            services.AddDbContext<DeviserDbContext>(
+                   (internalServiceProvider, dbContextOptionBuilder) =>
+                   {
                            //dbContextOptionBuilder.UseInternalServiceProvider(sp);                    
                            installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder);
-                       });
+                   });
             //}
 
             services.AddIdentity<User, Role>()
@@ -66,10 +65,10 @@ namespace Deviser.Core.Library.DependencyInjection
             //services.AddDbContext<DeviserDbContext>(options =>
             //    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Deviser.WI")));
 
-            
+
             if (installationProvider.IsPlatformInstalled)
             {
-               
+
 
                 var siteSettingRepository = sp.GetService<ISiteSettingRepository>(); //sp.GetService<ISiteSettingRepository>();
                 var siteSettings = siteSettingRepository.GetSettings();
@@ -118,6 +117,7 @@ namespace Deviser.Core.Library.DependencyInjection
 
             services
                 .AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddRazorOptions(options =>
                 {
                     options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
@@ -154,6 +154,8 @@ namespace Deviser.Core.Library.DependencyInjection
             };
 
             app.UseRequestLocalization(requestLocalizationOptions);
+
+            app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 

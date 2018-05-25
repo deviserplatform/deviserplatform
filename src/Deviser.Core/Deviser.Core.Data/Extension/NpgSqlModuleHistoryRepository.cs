@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Migrations.Internal;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;

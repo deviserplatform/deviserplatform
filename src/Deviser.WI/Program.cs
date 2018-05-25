@@ -23,10 +23,9 @@ namespace Deviser.WI
             } while (appManager.Restarting);
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+                .UseStartup<Startup>();
 
         public class ApplicationManager
         {
@@ -69,7 +68,7 @@ namespace Deviser.WI
                 _tokenSource.Token.ThrowIfCancellationRequested();
                 _running = true;
 
-                _WebHost = BuildWebHost(args);
+                _WebHost = CreateWebHostBuilder(args).Build();
                 _WebHost.RunAsync(_tokenSource.Token).GetAwaiter().GetResult();
             }
 
