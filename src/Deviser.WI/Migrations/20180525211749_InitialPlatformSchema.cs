@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 
 namespace Deviser.WI.Migrations
 {
-    public partial class PlatformInitialSchema : Migration
+    public partial class InitialPlatformSchema : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,14 +13,14 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: true),
-                    IconClass = table.Column<string>(nullable: true),
-                    IconImage = table.Column<string>(nullable: true),
-                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
-                    Label = table.Column<string>(nullable: true),
-                    LastModifiedDate = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(nullable: true),
-                    SortOrder = table.Column<int>(nullable: false)
+                    Label = table.Column<string>(nullable: true),
+                    IconImage = table.Column<string>(nullable: true),
+                    IconClass = table.Column<string>(nullable: true),
+                    SortOrder = table.Column<int>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -33,13 +32,13 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: true),
                     CultureCode = table.Column<string>(nullable: true),
                     EnglishName = table.Column<string>(nullable: true),
+                    NativeName = table.Column<string>(nullable: true),
                     FallbackCulture = table.Column<string>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false, defaultValue: true),
-                    LastModifiedDate = table.Column<DateTime>(nullable: true),
-                    NativeName = table.Column<string>(nullable: true)
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -65,14 +64,14 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: true),
-                    IconClass = table.Column<string>(nullable: true),
-                    IconImage = table.Column<string>(nullable: true),
-                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
+                    Name = table.Column<string>(nullable: true),
                     Label = table.Column<string>(nullable: true),
-                    LastModifiedDate = table.Column<DateTime>(nullable: true),
+                    IconImage = table.Column<string>(nullable: true),
+                    IconClass = table.Column<string>(nullable: true),
                     LayoutTypeIds = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true)
+                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -114,12 +113,12 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: true),
-                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
+                    Name = table.Column<string>(nullable: false),
                     Label = table.Column<string>(nullable: true),
-                    LastModifiedDate = table.Column<DateTime>(nullable: true),
                     List = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: false)
+                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -131,12 +130,12 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
                     Entity = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
                     Label = table.Column<string>(nullable: true),
-                    LastModifiedDate = table.Column<DateTime>(nullable: true),
-                    Name = table.Column<string>(nullable: true)
+                    Description = table.Column<string>(nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -148,9 +147,9 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
                     Name = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(maxLength: 256, nullable: true)
+                    NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -175,22 +174,22 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    FirstName = table.Column<string>(maxLength: 100, nullable: true),
-                    LastName = table.Column<string>(maxLength: 100, nullable: true),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    UserName = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
                     PasswordHash = table.Column<string>(nullable: true),
+                    SecurityStamp = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    SecurityStamp = table.Column<string>(nullable: true),
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true)
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    FirstName = table.Column<string>(maxLength: 100, nullable: true),
+                    LastName = table.Column<string>(maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -205,15 +204,15 @@ namespace Deviser.WI.Migrations
                     CreatedDate = table.Column<DateTime>(nullable: true),
                     EndDate = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
-                    IsIncludedInMenu = table.Column<bool>(nullable: false),
                     IsSystem = table.Column<bool>(nullable: false, defaultValue: false),
+                    IsIncludedInMenu = table.Column<bool>(nullable: false),
                     LastModifiedDate = table.Column<DateTime>(nullable: true),
                     LayoutId = table.Column<Guid>(nullable: true),
                     PageLevel = table.Column<int>(nullable: true),
                     PageOrder = table.Column<int>(nullable: true),
                     ParentId = table.Column<Guid>(nullable: true),
-                    StartDate = table.Column<DateTime>(nullable: true),
-                    ThemeSrc = table.Column<string>(maxLength: 200, nullable: true)
+                    ThemeSrc = table.Column<string>(maxLength: 200, nullable: true),
+                    StartDate = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -241,11 +240,11 @@ namespace Deviser.WI.Migrations
                     ControllerName = table.Column<string>(maxLength: 50, nullable: true),
                     ControllerNamespace = table.Column<string>(maxLength: 200, nullable: true),
                     DisplayName = table.Column<string>(maxLength: 50, nullable: true),
-                    IconClass = table.Column<string>(nullable: true),
                     IconImage = table.Column<string>(nullable: true),
-                    IsDefault = table.Column<bool>(nullable: false, defaultValue: false),
+                    IconClass = table.Column<string>(nullable: true),
                     ModuleActionTypeId = table.Column<Guid>(nullable: false),
-                    ModuleId = table.Column<Guid>(nullable: false)
+                    ModuleId = table.Column<Guid>(nullable: false),
+                    IsDefault = table.Column<bool>(nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -269,14 +268,14 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    Label = table.Column<string>(nullable: true),
                     DefaultValue = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
+                    OptionListId = table.Column<Guid>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false, defaultValue: true),
-                    Label = table.Column<string>(nullable: true),
-                    LastModifiedDate = table.Column<DateTime>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    OptionListId = table.Column<Guid>(nullable: true)
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -295,9 +294,9 @@ namespace Deviser.WI.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    RoleId = table.Column<Guid>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true),
-                    RoleId = table.Column<Guid>(nullable: false)
+                    ClaimValue = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -336,9 +335,9 @@ namespace Deviser.WI.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<Guid>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true),
-                    UserId = table.Column<Guid>(nullable: false)
+                    ClaimValue = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -400,17 +399,17 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
                     ContainerId = table.Column<Guid>(nullable: false),
-                    ContentTypeId = table.Column<Guid>(nullable: false),
+                    Properties = table.Column<string>(nullable: true),
+                    SortOrder = table.Column<int>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: true),
-                    InheritEditPermissions = table.Column<bool>(nullable: false, defaultValue: true),
-                    InheritViewPermissions = table.Column<bool>(nullable: false, defaultValue: true),
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
                     LastModifiedDate = table.Column<DateTime>(nullable: true),
                     PageId = table.Column<Guid>(nullable: false),
-                    Properties = table.Column<string>(nullable: true),
-                    SortOrder = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(nullable: true)
+                    ContentTypeId = table.Column<Guid>(nullable: false),
+                    InheritViewPermissions = table.Column<bool>(nullable: false, defaultValue: true),
+                    InheritEditPermissions = table.Column<bool>(nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -489,16 +488,16 @@ namespace Deviser.WI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
                     ContainerId = table.Column<Guid>(nullable: false),
-                    InheritEditPermissions = table.Column<bool>(nullable: false, defaultValue: true),
-                    InheritViewPermissions = table.Column<bool>(nullable: false, defaultValue: true),
                     IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
-                    ModuleActionId = table.Column<Guid>(nullable: false),
                     ModuleId = table.Column<Guid>(nullable: false),
-                    PageId = table.Column<Guid>(nullable: false),
-                    Properties = table.Column<string>(nullable: true),
+                    ModuleActionId = table.Column<Guid>(nullable: false),
                     SortOrder = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(nullable: true)
+                    PageId = table.Column<Guid>(nullable: false),
+                    InheritViewPermissions = table.Column<bool>(nullable: false, defaultValue: true),
+                    InheritEditPermissions = table.Column<bool>(nullable: false, defaultValue: true),
+                    Properties = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -527,8 +526,8 @@ namespace Deviser.WI.Migrations
                 name: "ContentTypeProperty",
                 columns: table => new
                 {
-                    ContentTypeId = table.Column<Guid>(nullable: false),
-                    PropertyId = table.Column<Guid>(nullable: false)
+                    PropertyId = table.Column<Guid>(nullable: false),
+                    ContentTypeId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -551,8 +550,8 @@ namespace Deviser.WI.Migrations
                 name: "LayoutTypeProperty",
                 columns: table => new
                 {
-                    LayoutTypeId = table.Column<Guid>(nullable: false),
-                    PropertyId = table.Column<Guid>(nullable: false)
+                    PropertyId = table.Column<Guid>(nullable: false),
+                    LayoutTypeId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -575,8 +574,8 @@ namespace Deviser.WI.Migrations
                 name: "ModuleActionProperty",
                 columns: table => new
                 {
-                    ModuleActionId = table.Column<Guid>(nullable: false),
-                    PropertyId = table.Column<Guid>(nullable: false)
+                    PropertyId = table.Column<Guid>(nullable: false),
+                    ModuleActionId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
