@@ -19,29 +19,30 @@
                 <label asp-for="AdminEmail" class="col-4 col-form-label"></label>
                 <div class="col">
                     <input asp-for="AdminEmail" class="form-control" />
+                    <span asp-validation-for="AdminEmail" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="AdminEmail" class="text-danger"></span>
             </div>
             <div class="form-group row">
                 <label asp-for="AdminPassword" class="col-4 col-form-label"></label>
                 <div class="col">
                     <input asp-for="AdminPassword" class="form-control" />
+                    <span asp-validation-for="AdminPassword" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="AdminPassword" class="text-danger"></span>
             </div>
+
             <div class="form-group row">
                 <label asp-for="AdminConfirmPassword" class="col-4 col-form-label"></label>
                 <div class="col">
                     <input asp-for="AdminConfirmPassword" class="form-control" />
+                    <span asp-validation-for="AdminConfirmPassword" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="AdminConfirmPassword" class="text-danger"></span>
             </div>
             <div class="form-group row">
                 <label asp-for="SiteName" class="col-4 col-form-label"></label>
                 <div class="col">
                     <input asp-for="SiteName" class="form-control" />
+                    <span asp-validation-for="SiteName" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="SiteName" class="text-danger"></span>
             </div>
             <div class="form-group row">
                 <label asp-for="DatabaseProvider" class="col-4 col-form-label"></label>
@@ -59,15 +60,15 @@
                 <label asp-for="ServerName" class="col-4 col-form-label"></label>
                 <div class="col">
                     <input asp-for="ServerName" class="form-control" />
+                    <span asp-validation-for="ServerName" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="ServerName" class="text-danger"></span>
             </div>
             <div id="fldDatabaseName" class="form-group row connection-string">
                 <label asp-for="DatabaseName" class="col-4 col-form-label"></label>
                 <div class="col">
                     <input asp-for="DatabaseName" class="form-control" />
+                    <span asp-validation-for="DatabaseName" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="DatabaseName" class="text-danger"></span>
             </div>
             <div id="fldIsIntegratedSecurity" class="form-group row connection-string">
                 <div class="offset-4 col">
@@ -75,22 +76,22 @@
                     <label class="form-check-label" for="gridCheck1">
                         @Html.DisplayNameFor(t => t.IsIntegratedSecurity)
                     </label>
+                    <span asp-validation-for="IsIntegratedSecurity" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="IsIntegratedSecurity" class="text-danger"></span>
             </div>
             <div id="fldDBUserName" class="form-group row connection-string">
                 <label asp-for="DBUserName" class="col-4 col-form-label"></label>
                 <div class="col">
                     <input asp-for="DBUserName" class="form-control" />
+                    <span asp-validation-for="DBUserName" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="DBUserName" class="text-danger"></span>
             </div>
             <div id="fldDBPassword" class="form-group row connection-string">
                 <label asp-for="DBPassword" class="col-4 col-form-label"></label>
                 <div class="col">
                     <input asp-for="DBPassword" class="form-control" />
+                    <span asp-validation-for="DBPassword" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="DBPassword" class="text-danger"></span>
             </div>
             <div class="form-group row">
                 <div class="offset-4 col">
@@ -98,8 +99,8 @@
                     <label class="form-check-label" for="gridCheck1">
                         <a asp-action="Terms" target="_blank"> @Html.DisplayNameFor(t => t.AcceptLicense)</a>
                     </label>
+                    <span asp-validation-for="AcceptLicense" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="AcceptLicense" class="text-danger"></span>
             </div>
             <div class="form-group row">
                 <div class="offset-4 col">
