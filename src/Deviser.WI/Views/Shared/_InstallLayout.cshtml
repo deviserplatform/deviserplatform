@@ -15,7 +15,6 @@
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link href="~/css/bootstrap-datepicker.css" rel="stylesheet" />
         <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
@@ -23,51 +22,56 @@
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link href="~/css/bootstrap-datepicker.css" rel="stylesheet" />
         <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
     <style>
         .navbar-brand {
-            height: 90px;
+            padding: 24px 0;
         }
 
         .body-content {
-            margin-top: 90px;
+            margin-top: 40px;
+        }
+
+
+
+        .btn-install {
+            width: 50%;
+        }
+
+        .body-content h2, footer p {
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-            <div>
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <div class="navbar-header page-scroll">                    
-                    <a class="navbar-brand">
-                        <img src="/images/DeviserLogoDark.svg" onerror="this.src='/images/DeviserLogoDark.png'; this.onerror=null;" alt="DEVISER">
-                        @*<img src="/images/DeviserLogoDark.png" alt="DEVISER">*@
-                    </a>
-                </div>
-            </div>
-
+    <nav class="skyline-nav navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container d-flex justify-content-center">
+            <a class="navbar-brand">
+                <img src="/images/DeviserLogoDark.svg" onerror="this.src='/images/DeviserLogoDark.png'; this.onerror=null;" alt="DEVISER">
+            </a>
         </div>
-        <!-- /.container-fluid -->
     </nav>
 
     <div class="container body-content">
         @RenderBody()
-        <hr />
+
         <footer>
-            <p>&copy; 2017 - Deviser Platform</p>
+            <div class="row justify-content-center">
+                <div class="col-8">
+                    <hr />
+                    <p>&copy; @DateTime.Now.Year - Deviser Platform</p>
+                </div>
+            </div>
+
         </footer>
     </div>
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/bootstrap-datepicker.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
@@ -82,7 +86,6 @@
                 crossorigin="anonymous"
                 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
         </script>
-        <script src="~/js/bootstrap-datepicker.js"></script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
