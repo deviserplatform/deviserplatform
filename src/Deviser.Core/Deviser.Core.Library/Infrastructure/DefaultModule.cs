@@ -12,6 +12,7 @@ using Deviser.Core.Library.Sites;
 using Microsoft.AspNetCore.Routing;
 using Deviser.Core.Library.Services;
 using Deviser.Core.Library.Media;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Deviser.Core.Library.Infrastructure
 {
@@ -22,10 +23,12 @@ namespace Deviser.Core.Library.Infrastructure
             //builder.RegisterType<DeviserViewEngine>().As<IRazorViewEngine>();
 
             //builder.RegisterType<ModuleActionInvoker>().As<IModuleActionInvoker>();
-            
+
+            builder.RegisterType<ViewResultExecutor>().As<ViewResultExecutor>().InstancePerDependency();
+
             builder.RegisterType<ScopeService>().As<IScopeService>().InstancePerDependency();
             builder.RegisterType<ImageOptimizer>().As<IImageOptimizer>().InstancePerDependency();
-            
+
 
             builder.RegisterType<ActionInvoker>().As<IActionInvoker>();
             builder.RegisterType<TypeActivatorCache>().As<ITypeActivatorCache>();
@@ -34,7 +37,7 @@ namespace Deviser.Core.Library.Infrastructure
             builder.RegisterType<PageUrlConstraint>().As<IRouteConstraint>().SingleInstance();
             builder.RegisterType<DeviserControllerFactory>().As<IDeviserControllerFactory>();
             builder.RegisterType<DeviserRouteHandler>().As<DeviserRouteHandler>();
-            
+
             builder.RegisterType<LayoutRepository>().As<ILayoutRepository>().InstancePerDependency();
             builder.RegisterType<LayoutTypeRepository>().As<ILayoutTypeRepository>().InstancePerDependency();
             builder.RegisterType<ContentTypeRepository>().As<IContentTypeRepository>().InstancePerDependency();
@@ -49,23 +52,23 @@ namespace Deviser.Core.Library.Infrastructure
             builder.RegisterType<PropertyRepository>().As<IPropertyRepository>().InstancePerDependency();
 
             //builder.RegisterType<ContactProvider>().As<IContactProvider>();
-                        
+
             builder.RegisterType<PageManager>().As<IPageManager>();
             builder.RegisterType<ModuleManager>().As<IModuleManager>();
-            builder.RegisterType<ContentManager>().As<IContentManager>(); 
+            builder.RegisterType<ContentManager>().As<IContentManager>();
             builder.RegisterType<LayoutManager>().As<ILayoutManager>();
             builder.RegisterType<ThemeManager>().As<IThemeManager>();
             builder.RegisterType<Navigation>().As<INavigation>();
             builder.RegisterType<FileManagement>().As<IFileManagement>();
             builder.RegisterType<LanguageManager>().As<ILanguageManager>();
             builder.RegisterType<SettingManager>().As<ISettingManager>();
-            
+
             //Autofac Property injection is not working
             //ref: https://github.com/autofac/Autofac.Mvc/issues/1
             builder.RegisterType<ModuleController>().PropertiesAutowired();
 
             //builder.RegisterType<DeviserDbContext>().As<DeviserDbContext>();
-                        
+
         }
     }
 }
