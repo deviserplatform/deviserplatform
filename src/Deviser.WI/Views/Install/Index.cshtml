@@ -230,8 +230,8 @@
                         }
                     });
                 }
-                else if (dbProvider === 4) {
-                    //PostgreSQL
+                else if (dbProvider === 4 || dbProvider === 5) {
+                    //PostgreSQL or MySQL
                     $('#fldServerName').show();
                     $('#fldDatabaseName').show();
                     $('#fldDBUserName').show();
