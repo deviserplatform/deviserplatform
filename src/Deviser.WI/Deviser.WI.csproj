@@ -87,8 +87,4 @@
     <Exec Command="gulp min" />
   </Target>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>
