@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/Deviser.WI/bin/Debug/netcoreapp2.0/Deviser.WI.dll",
+            "program": "${workspaceFolder}/src/Deviser.WI/bin/Debug/netcoreapp2.1/Deviser.WI.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/Deviser.WI",
             "stopAtEntry": false,
