@@ -17,7 +17,7 @@
 
     app.config(['$provide', config]);
 
-    app.directive("sdContentPreview", ['$compile', '$templateCache', sdContentPreviewDir]);
+    app.directive("devContentPreview", ['$compile', '$templateCache', devContentPreviewDir]);
 
     app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$uibModal', 'globals', 'devUtil', 'editLayoutUtil', 'layoutService', 'pageService',
         'contentTypeService', 'layoutTypeService', 'pageContentService', 'moduleService', 'moduleActionService', 'pageModuleService', editCtrl]);
@@ -48,7 +48,7 @@
         }]);
     }
 
-    function sdContentPreviewDir($compile, $templateCache) {
+    function devContentPreviewDir($compile, $templateCache) {
         var returnObject = {
             restrict: "A",
             controller: ['$scope', '$uibModal', ctrl],
