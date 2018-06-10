@@ -43,13 +43,13 @@
                 <i class="fa fa-plus"></i> New
             </button>
 
-            <button type="button" class="layout-control btn btn-default" 
+            <button type="button" class="layout-control btn btn-default"
                     ng-show="!layoutVM.isLayoutEdit"
                     ng-click="layoutVM.copyLayout()">
                 <i class="fa fa-clone" aria-hidden="true"></i> Copy
             </button>
 
-            <button type="button" class="layout-control btn btn-default" 
+            <button type="button" class="layout-control btn btn-default"
                     ng-show="!layoutVM.isLayoutEdit"
                     ng-click="layoutVM.isLayoutEdit=true">
                 <i class="fa fa-pencil" aria-hidden="true"></i> Change Layout Name
@@ -63,9 +63,9 @@
                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Save
             </button>
 
-            <button type="button" class="layout-control btn btn-danger" 
+            <button type="button" class="layout-control btn btn-danger"
                     ng-show="!layoutVM.isLayoutEdit"
-                    ng-click="layoutVM.deleteLayout()" 
+                    ng-click="layoutVM.deleteLayout()"
                     ng-disabled="!layoutVM.pageLayout.id">
                 <i class="fa fa-trash"></i> Delete
             </button>
@@ -89,57 +89,45 @@
     <div class="row">
         <div class="col-md-12">
             <script type="text/ng-template" id="placeHolders.html">
+                @*<div class="row dnd-list"
+                         dnd-list="item.placeHolders"
+                         dnd-allowed-types="item.allowedTypes"
+                         dnd-drop="layoutVM.dropCallback(event, index, item)"
+                         ng-init="placeHolders = item.placeHolders">
+                        <div class="content-item"
+                             ng-repeat="item in placeHolders"
+                             dnd-draggable="item"
+                             dnd-type="item.layoutTypeId"
+                             dnd-effect-allowed="move"
+                             dnd-moved="layoutVM.itemMoved(placeHolders, $index)"
+                             dnd-selected="layoutVM.selectItem(item)"
+                             ng-class="{selected:layoutVM.selectedItem === item}"
+                             ng-include="item.layoutTemplate + '.html'">
+                        </div>
+                    </div>*@
+
                 <div class="row dnd-list"
                      dnd-list="item.placeHolders"
                      dnd-allowed-types="item.allowedTypes"
                      dnd-drop="layoutVM.dropCallback(event, index, item)"
                      ng-init="placeHolders = item.placeHolders">
-                    <div class="content-item"
-                         ng-repeat="item in placeHolders"
+                    <div class="content-item" ng-repeat="item in placeHolders"
                          dnd-draggable="item"
                          dnd-type="item.layoutTypeId"
                          dnd-effect-allowed="move"
                          dnd-moved="layoutVM.itemMoved(placeHolders, $index)"
                          dnd-selected="layoutVM.selectItem(item)"
-                         ng-class="{selected:layoutVM.selectedItem === item}"
-                         ng-include="item.layoutTemplate + '.html'">
-                    </div>
-                </div>
-                <span class="end-of-element">&lt;!--end of {{item.label}} {{$index+1}}--&gt;</span>
-            </script>
-            <script type="text/ng-template" id="container.html">
-                <div class="container-element box box-blue">
-                    <h3>{{item.label}} {{$index+1}}</h3>
-                    <div class="container-content" ng-include="'placeHolders.html'">
+                         ng-class="[layoutVM.selectedItem === item?'selected':'', item.type==='column'?layoutVM.setColumnWidth(item.properties):'']">
+                        <div class="container-element box box-blue">
+                            <h3>{{item.label}} {{$index+1}}</h3>
 
-                    </div>
-                </div>
-            </script>
-            <script type="text/ng-template" id="row.html">
-                <div class="container-element box box-blue">
-                    <h3>{{item.label}} {{$index+1}}</h3>
-                    <div class="container-content" ng-include="'placeHolders.html'">
+                            <div class="container-content" ng-include="'placeHolders.html'">
 
-                    </div>
-                </div>
-            </script>
-            <script type="text/ng-template" id="column.html">
-                <div ng-class="layoutVM.setColumnWidth(item.properties)">
-                    <div class="container-element box box-blue">
-                        <h3>{{item.label}} {{$index+1}}</h3>
-                        <div class="container-content" ng-include="'placeHolders.html'">
-
+                            </div>
                         </div>
                     </div>
                 </div>
-            </script>
-            <script type="text/ng-template" id="repeater.html">
-                <div class="container-element box box-blue">
-                    <h3>{{item.label}} {{$index+1}}</h3>
-                    <div class="container-content" ng-include="'placeHolders.html'">
-
-                    </div>
-                </div>
+                <span class="end-of-element">&lt;!--end of {{item.label}} {{$index+1}} --&gt;</span>
             </script>
 
             <div class="row layout-container">
@@ -156,8 +144,8 @@
                                  dnd-copied="layoutType.id = layoutVM.newGuid()">
                                 <button type="button" class="btn btn-default">
 
-                                    <i class="{{layoutType.iconClass}}" ng-show="layoutType.iconClass"></i>
-                                    <img src="{{layoutType.iconImage}}" ng-show="layoutType.iconImage" alt="{{layoutType.name}}" />
+                                    <i class="{{layoutType.iconClass}}" ng-if="layoutType.iconClass"></i>
+                                    <img src="{{layoutType.iconImage}}" ng-if="layoutType.iconImage" alt="{{layoutType.name}}" />
                                     {{layoutType.label}}
                                 </button>
                             </div>
@@ -181,11 +169,25 @@
                                          dnd-effect-allowed="move"
                                          dnd-moved="layoutVM.itemMoved(layoutVM.pageLayout.placeHolders, $index)"
                                          dnd-selected="layoutVM.selectItem(item)"
-                                         ng-class="{selected:layoutVM.selectedItem === item}"
-                                         ng-include="item.layoutTemplate + '.html'">
+                                         ng-class="[layoutVM.selectedItem === item?'selected':'', item.type==='column'?layoutVM.setColumnWidth(item.properties):'']">
+                                        <div class="container-element box box-blue">
+                                            <h3>{{item.label}} {{$index+1}}</h3>
+
+                                            <div class="container-content" ng-include="'placeHolders.html'">
+
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </div>
+
+                                @*<div class="row dnd-list">
+                                        <div class="content-item"
+                                             ng-repeat="item in layoutVM.pageLayout.placeHolders"
+                                             ng-include="item.layoutTemplate + '.html'">
+                                        </div>
+
+                                    </div>*@
 
                             </div>
                         </div>

@@ -48,16 +48,16 @@
                     <button class="btn btn-default pull-right" ng-show="editVM.currentPage.state == 'Published'" ng-click="editVM.draft()">
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>Draft
                     </button>
-                 </div>
-                    <div class="col-md-1">
-                        <button class="btn btn-primary" ng-click="editVM.publish()">{{editVM.currentPage.state}}</button>
-                    </div>
                 </div>
-            </div>        
+                <div class="col-md-1">
+                    <button class="btn btn-primary" ng-click="editVM.publish()">{{editVM.currentPage.state}}</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="layout-container">
-        <script type="text/ng-template" id="placeHolders.html">
+        <script type="text/ng-template" id="placeHolders.html">            
             <div class="row dnd-list"
                  dnd-list="item.placeHolders"
                  dnd-allowed-types="item.allowedTypes"
@@ -71,53 +71,120 @@
                      dnd-effect-allowed="move"
                      dnd-moved="editVM.itemMoved(placeHolders, $index, event)"
                      dnd-selected="editVM.selectItem(item)"
-                     ng-class="{selected:editVM.selectedItem === item}"
-                     ng-include="item.layoutTemplate + '.html'">
+                     ng-class="[editVM.selectedItem === item?'selected':'', item.type==='column'?editVM.setColumnWidth(item.properties):'']">
+
+                    <div class="container-element box-layout box-grey" ng-if="item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module'">
+                        <h3>{{item.type}} {{$index+1}}</h3>
+
+                        <div class="container-content" ng-include="'placeHolders.html'">
+
+                        </div>
+                    </div>
+
+
+                    <div class="container-element box box-blue" ng-if="item.layoutTemplate === 'content'">
+                        <div class="content-header clearfix">
+                            <div class="content-title">
+                                <i class="{{item.contentType.iconClass}}" ng-if="item.contentType.iconClass"></i>
+                                <img src="{{item.contentType.iconImage}}" ng-if="item.contentType.iconImage" alt="{{item.contentType.name}}" />
+                                {{item.title}}
+                            </div>
+                            <div class="content-controls" dnd-nodrag ng-show="item.pageContent.hasEditPermission">
+                                <a class="btn btn-xs btn-primary" ng-click="editVM.changeContentPermission(item)">
+                                    <i class="fa fa-shield" aria-hidden="true"></i>
+                                </a>
+                                <a class="btn btn-xs btn-primary" ng-click="editVM.editContent(item)">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="container-content">
+                            <div dev-content-preview content="item.pageContent"></div>
+                        </div>
+                    </div>
+
+                    <div class="container-element box box-blue" ng-if="item.layoutTemplate === 'module'">
+
+                        <div class="module-header clearfix">
+                            <div class="module-title">
+                                <i class="{{item.moduleAction.iconClass}}" ng-if="item.moduleAction.iconClass"></i>
+                                <img src="{{item.moduleAction.iconImage}}" ng-if="item.moduleAction.iconImage" alt="{{item.moduleAction.name}}" />
+                                {{item.moduleAction.displayName}}
+
+
+                                {{$index+1}}
+                            </div>
+                            <div class="module-controls" dnd-nodrag uib-dropdown ng-show="item.pageModule.hasEditPermission">
+                                <a class="btn btn-xs btn-primary" ng-click="editVM.changeModulePermission(item)">
+                                    <i class="fa fa-shield" aria-hidden="true"></i>
+                                </a>
+                                <a class="btn btn-xs btn-primary" ng-click="editVM.editModule(item)" uib-dropdown-toggle>
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                                <ul class="module-actions dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                                    <li ng-repeat="action in editVM.selectedItem.pageModule.editActions" role="menuitem">
+                                        <a ng-click="editVM.openModuleActionEdit(action)">
+                                            <i class="{{action.iconClass}}" ng-show="action.iconClass"></i>
+
+                                            {{action.displayName}}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="container-content">
+
+                        </div>
+                    </div>
+
+
                 </div>
                 <span class="end-of-element">&lt;!--end of {{item.type}} {{$index+1}}--&gt;</span>
             </div>
-        </script>
-        <script type="text/ng-template" id="container.html">
-            <div class="container-element box-layout box-grey" dnd-nodrag>
-                <h3>{{item.type}} {{$index+1}}</h3>
-                <div class="container-content" ng-include="'placeHolders.html'">
 
-                </div>
-            </div>
         </script>
-        <script type="text/ng-template" id="row.html">
-            <div class="container-element box-layout box-grey" dnd-nodrag>
-                <h3>{{item.type}} {{$index+1}}</h3>
-                <div class="container-content" ng-include="'placeHolders.html'">
-
-                </div>
-            </div>
-        </script>
-        <script type="text/ng-template" id="column.html">
-            <div ng-class="editVM.setColumnWidth(item.properties)">
+        @*<script type="text/ng-template" id="container.html">
                 <div class="container-element box-layout box-grey" dnd-nodrag>
                     <h3>{{item.type}} {{$index+1}}</h3>
                     <div class="container-content" ng-include="'placeHolders.html'">
 
                     </div>
                 </div>
-            </div>
-        </script>
-        <script type="text/ng-template" id="repeater.html">
-            <div class="container-element box-layout box-grey" dnd-nodrag>
-                <h3>{{item.type}} {{$index+1}}</h3>
-                <div class="container-content" ng-include="'placeHolders.html'">
+            </script>
+            <script type="text/ng-template" id="row.html">
+                <div class="container-element box-layout box-grey" dnd-nodrag>
+                    <h3>{{item.type}} {{$index+1}}</h3>
+                    <div class="container-content" ng-include="'placeHolders.html'">
 
+                    </div>
                 </div>
-            </div>
-        </script>
+            </script>
+            <script type="text/ng-template" id="column.html">
+                <div ng-class="editVM.setColumnWidth(item.properties)">
+                    <div class="container-element box-layout box-grey" dnd-nodrag>
+                        <h3>{{item.type}} {{$index+1}}</h3>
+                        <div class="container-content" ng-include="'placeHolders.html'">
+
+                        </div>
+                    </div>
+                </div>
+            </script>
+            <script type="text/ng-template" id="repeater.html">
+                <div class="container-element box-layout box-grey" dnd-nodrag>
+                    <h3>{{item.type}} {{$index+1}}</h3>
+                    <div class="container-content" ng-include="'placeHolders.html'">
+
+                    </div>
+                </div>
+            </script>*@
         <script type="text/ng-template" id="content.html">
             <div class="container-element box box-blue">
                 @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
                 <div class="content-header clearfix">
                     <div class="content-title">
-                        <i class="{{item.contentType.iconClass}}" ng-show="item.contentType.iconClass"></i>
-                        <img src="{{item.contentType.iconImage}}" ng-show="item.contentType.iconImage" alt="{{item.contentType.name}}" />
+                        <i class="{{item.contentType.iconClass}}" ng-if="item.contentType.iconClass"></i>
+                        <img src="{{item.contentType.iconImage}}" ng-if="item.contentType.iconImage" alt="{{item.contentType.name}}" />
                         {{item.title}}
                     </div>
                     <div class="content-controls" dnd-nodrag ng-show="item.pageContent.hasEditPermission">
@@ -195,8 +262,8 @@
                                  dnd-draggable="contentType"
                                  dnd-effect-allowed="copy">
                                 <button type="button" class="btn btn-sm btn-default">
-                                    <i class="{{contentType.contentType.iconClass}}" ng-show="contentType.contentType.iconClass"></i>
-                                    <img src="{{contentType.contentType.iconImage}}" ng-show="contentType.contentType.iconImage" alt="{{contentType.contentType.name}}" />
+                                    <i class="{{contentType.contentType.iconClass}}" ng-if="contentType.contentType.iconClass"></i>
+                                    <img src="{{contentType.contentType.iconImage}}" ng-if="contentType.contentType.iconImage" alt="{{contentType.contentType.name}}" />
                                     {{contentType.contentType.label}}
                                 </button>
                             </div>
@@ -216,8 +283,8 @@
                                  dnd-draggable="item"
                                  dnd-effect-allowed="copy">
                                 <button type="button" class="btn btn-sm btn-default">
-                                    <i class="{{item.moduleAction.iconClass}}" ng-show="item.moduleAction.iconClass"></i>
-                                    <img src="{{item.moduleAction.iconImage}}" ng-show="item.moduleAction.iconImage" alt="{{item.moduleAction.name}}" />
+                                    <i class="{{item.moduleAction.iconClass}}" ng-if="item.moduleAction.iconClass"></i>
+                                    <img src="{{item.moduleAction.iconImage}}" ng-if="item.moduleAction.iconImage" alt="{{item.moduleAction.name}}" />
                                     {{item.moduleAction.displayName}}
                                 </button>
                             </div>
@@ -243,8 +310,14 @@
                                  dnd-effect-allowed="move"
                                  dnd-moved="editVM.itemMoved(editVM.pageLayout.placeHolders, $index, event)"
                                  dnd-selected="editVM.selectItem(item)"
-                                 ng-class="{selected:editVM.selectedItem === item}"
-                                 ng-include="item.layoutTemplate + '.html'">
+                                 ng-class="[editVM.selectedItem === item?'selected':'', item.type==='column'?editVM.setColumnWidth(item.properties):'']">
+                                <div class="container-element box-layout box-grey">
+                                    <h3>{{item.type}} {{$index+1}}</h3>
+
+                                    <div class="container-content" ng-include="'placeHolders.html'">
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -316,7 +389,7 @@
                                     <div class="col-md-6" ng-show="!property.optionList">
                                         <input type="text" class="form-control input-sm" ng-model="property.value" />
                                     </div>
-                                    <div class="col-md-6" ng-show="property.optionList">                                        
+                                    <div class="col-md-6" ng-show="property.optionList">
                                         <select class="form-control input-sm" name="repeatSelect" id="repeatSelect" ng-model="property.value">
                                             <option value="">Select</option>
                                             <option ng-repeat="option in property.optionList" value="{{option.id}}">{{option.label}}</option>
