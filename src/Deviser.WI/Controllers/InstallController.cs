@@ -54,6 +54,11 @@ namespace Deviser.WI.Controllers
             return View();
         }
 
+        public IActionResult License()
+        {
+            return View("Terms");
+        }
+
         [HttpPost]
         public IActionResult Index(InstallModel installModel)
         {

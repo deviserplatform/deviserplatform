@@ -204,7 +204,7 @@
                                         <div class="col-md-6">
                                             <ui-select ng-model="ssVM.setting.DefaultTheme.settingValue" theme="bootstrap">
                                                 <ui-select-match placeholder="Select Theme">{{$select.selected.key}}</ui-select-match>
-                                                <ui-select-choices repeat="theme.value as theme in ssVM.theme | filter: $select.search">
+                                                <ui-select-choices repeat="theme.value as theme in ssVM.themes | filter: $select.search">
                                                     <div ng-bind-html="theme.key | highlight: $select.search"></div>
                                                 </ui-select-choices>
                                             </ui-select>
