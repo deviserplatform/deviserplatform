@@ -35,9 +35,10 @@
         }
 
         function ctrl($scope, $uibModal, pageService) {
-            var vm = this;
+            var vm = this,
+                formatPages = processPage;
             vm.pages = [];
-
+            
 
             init();
 
@@ -60,7 +61,7 @@
                 pageService.get().then(function (pages) {
                     vm.nestedPages = pages;
                     vm.pages = [];
-                    processPage(vm.nestedPages);
+                    formatPages(vm.nestedPages);
                 })
             }
 
@@ -81,7 +82,7 @@
 
                 if (page.childPage && page.childPage.length > 0) {
                     _.each(page.childPage, function (child) {
-                        processPage(child, levelPrefix + '--');    
+                        formatPages(child, levelPrefix + '--');    
                     });
                 }
             }

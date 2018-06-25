@@ -24,6 +24,7 @@ paths.bowerFiles = {
     js: [
         paths.bowerRoot + 'jquery/dist/jquery.js',
         paths.bowerRoot + 'jquery-ui/jquery-ui.js',
+        paths.webroot + 'js/moment.js',
         paths.bowerRoot + 'bootstrap/dist/js/bootstrap.js',
         paths.bowerRoot + 'metisMenu/dist/metisMenu.js',
         paths.bowerRoot + 'lodash/dist/lodash.js',
