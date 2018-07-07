@@ -18,7 +18,8 @@ namespace Deviser.Core.Common.DomainTypes
         public int? PageLevel { get; set; }
         public int? PageOrder { get; set; }
         public Guid? ParentId { get; set; }
-        public string ThemeSrc { get; set; }
+        public Guid? PageTypeId { get; set; }
+        public string ThemeSrc { get; set; }        
         public DateTime? StartDate { get; set; }
 
         public virtual ICollection<PageContent> PageContent { get; set; }
@@ -27,6 +28,7 @@ namespace Deviser.Core.Common.DomainTypes
         public virtual ICollection<PagePermission> PagePermissions { get; set; }
         public virtual Layout Layout { get; set; }
         public virtual Page Parent { get; set; }
+        //public virtual PageType PageType { get; set; }
         public virtual ICollection<Page> ChildPage { get; set; }
 
         //Non DB Properties

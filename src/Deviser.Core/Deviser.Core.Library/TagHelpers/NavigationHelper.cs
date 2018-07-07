@@ -66,7 +66,7 @@ namespace Deviser.Core.Library.TagHelpers
             try
             {
                 ((HtmlHelper)_htmlHelper).Contextualize(ViewContext);
-                var root = _navigation.GetPageTree(_scopeService.PageContext.CurrentPageId, SystemFilter, ParentId);
+                var root = _navigation.GetMenuItemTree(_scopeService.PageContext.CurrentPageId, SystemFilter, ParentId);
                 
                 var htmlContent = _htmlHelper.Partial(string.Format(Globals.MenuStylePath, _scopeService.PageContext.SelectedTheme, MenuStyle), root);
                 var contentResult = GetString(htmlContent);

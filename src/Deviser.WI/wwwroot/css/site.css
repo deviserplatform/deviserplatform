@@ -6062,16 +6062,31 @@ body {
       top: 8%;
       font-size: 0.8rem; }
       .skyline-nav .navbar-collapse .header-top ul {
-        list-style: none; }
+        list-style: none;
+        padding: 0; }
         .skyline-nav .navbar-collapse .header-top ul li {
           display: inline; }
           .skyline-nav .navbar-collapse .header-top ul li a {
             font-size: 0.9em; }
+      .skyline-nav .navbar-collapse .header-top form {
+        float: left; }
       .skyline-nav .navbar-collapse .header-top .login li button {
         padding: 0;
         margin: 0; }
       .skyline-nav .navbar-collapse .header-top .login li:not(:last-child) {
         margin-right: 1rem; }
+      .skyline-nav .navbar-collapse .header-top .language-switcher {
+        float: left;
+        padding-left: 1rem; }
+        .skyline-nav .navbar-collapse .header-top .language-switcher li {
+          display: inline-block;
+          padding: 0 0 0 10px;
+          color: inherit; }
+          .skyline-nav .navbar-collapse .header-top .language-switcher li a {
+            padding: 0;
+            margin: 0; }
+        .skyline-nav .navbar-collapse .header-top .language-switcher li:not(:last-child) {
+          margin-right: 0.1rem; }
       .skyline-nav .navbar-collapse .header-top .navbar-link {
         border: none;
         text-decoration: none;

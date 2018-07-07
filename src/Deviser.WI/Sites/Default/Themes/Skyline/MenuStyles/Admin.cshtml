@@ -1,4 +1,4 @@
-﻿@model Deviser.Core.Common.DomainTypes.Page
+﻿@model Deviser.Core.Common.DomainTypes.MenuItem
 @inject IScopeService scopeService
 @using System.Security.Claims
 @using Deviser.Core.Library
@@ -6,8 +6,8 @@
 @{
     Layout = null;
     var pageContext = scopeService.PageContext;
-    var translation = Model.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
-    var siteRoot = pageContext.SiteSettingInfo.SiteRoot;
+    //var translation = Model.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
+    //var siteRoot = pageContext.SiteSettingInfo.SiteRoot;
 }
 
 @if (Model.PageLevel == 0)
@@ -18,18 +18,16 @@
             <span class="title">Back to Home</span>
         </a>
     </li>
-    @foreach (var page in Model.ChildPage)
+    @foreach (var menuItem in Model.ChildMenuItems)
     {
-        translation = page.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
-        string activeClass = (page.IsActive || page.IsBreadCrumb) ? "active open" : "";
-        if (translation != null)
+        if (menuItem != null)
         {
-            translation.URL = pageContext.SiteSettingInfo.SiteRoot + translation.URL;
+            string activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "active open" : "";
             <li class=" @activeClass ">
-                <a href="#"> @translation.Name<span class="fa arrow"></span></a>
-                @if (page.ChildPage != null && page.ChildPage.Count > 0)
+                <a href="#"> @menuItem.PageName<span class="fa arrow"></span></a>
+                @if (menuItem.ChildMenuItems != null && menuItem.ChildMenuItems.Count > 0)
                 {
-                    @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "Admin"), page)
+                    @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "Admin"), menuItem)
                 }
             </li>
         }
@@ -38,24 +36,22 @@
 else if (Model.PageLevel == 1)
 {
     <ul class="nav nav-second-level collapse">
-        @foreach (var page in Model.ChildPage)
+        @foreach (var menuItem in Model.ChildMenuItems)
         {
-            string activeClass = (page.IsActive || page.IsBreadCrumb) ? "active open" : "";
-            translation = page.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
-            var hasChild = page.ChildPage != null && page.ChildPage.Count > 0;
-            if (translation != null)
+            if (menuItem != null)
             {
-                translation.URL = siteRoot + translation.URL;
+                string activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "active open" : "";
                 <li class="@activeClass">
-                    <a href="@translation.URL">
-                        @translation.Name
-                        @if(hasChild){
+                    <a href="@menuItem.URL">
+                        @menuItem.PageName
+                        @if (menuItem.HasChild)
+                        {
                             <span class="fa arrow"></span>
                         }
                     </a>
-                    @if (hasChild)
+                    @if (menuItem.HasChild)
                     {
-                        @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "Admin"), page)
+                        @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "Admin"), menuItem)
                     }
                 </li>
             }
@@ -65,20 +61,18 @@ else if (Model.PageLevel == 1)
 else if (Model.PageLevel == 2)
 {
     <ul class="nav nav-third-level">
-        @foreach (var page in Model.ChildPage)
+        @foreach (var menuItem in Model.ChildMenuItems)
         {
-            string activeClass = (page.IsActive || page.IsBreadCrumb) ? "active open" : "";
-            translation = page.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
-            if (translation != null)
+            if (menuItem != null)
             {
-                translation.URL = siteRoot + translation.URL;
+                string activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "active open" : "";                
                 <li class="@activeClass">
-                    <a href="@translation.URL">
-                        @translation.Name
+                    <a href="@menuItem.URL">
+                        @menuItem.PageName
                     </a>
-                    @if (page.ChildPage != null && page.ChildPage.Count > 0)
+                    @if (menuItem.ChildMenuItems != null && menuItem.ChildMenuItems.Count > 0)
                     {
-                        @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "Admin"), page)
+                        @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "Admin"), menuItem)
                     }
                 </li>
             }

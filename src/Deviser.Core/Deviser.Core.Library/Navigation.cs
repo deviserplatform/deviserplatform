@@ -117,6 +117,69 @@ namespace Deviser.Core.Library
             return null;
         }
 
+        public MenuItem GetMenuItemTree(Guid currentPageId, SystemPageFilter systemFilter, Guid parentId = new Guid())
+        {
+            try
+            {
+                var rootPage = GetPageTree(currentPageId, systemFilter, parentId);
+                var currentCulture = _scopeService.PageContext.CurrentCulture.ToString();
+                var siteRoot = _scopeService.PageContext.SiteSettingInfo.SiteRoot;
+
+                var rootMenuItem = GetMenuItemIteratively(rootPage, currentCulture, siteRoot);
+                return rootMenuItem;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while getting menu item tree", ex);
+            }
+            return null;
+        }
+
+        private MenuItem GetMenuItemIteratively(Page page, string currentCulture, string siteRoot)
+        {
+            var menuItem = CreateMenuItem(page, currentCulture, siteRoot);
+            menuItem.Parent = page.Parent != null ? CreateMenuItem(page.Parent, currentCulture, siteRoot) :null;
+
+            if (page.ChildPage != null && page.ChildPage.Count > 0)
+            {
+                menuItem.ChildMenuItems = new List<MenuItem>();
+                foreach (var child in page.ChildPage.OrderBy(p => p.PageOrder))
+                {
+                    var childMenuItem = GetMenuItemIteratively(child, currentCulture, siteRoot);
+                    menuItem.ChildMenuItems.Add(childMenuItem);
+                }
+            }
+            return menuItem;
+        }
+
+        private MenuItem CreateMenuItem(Page page, string currentCulture, string siteRoot)
+        {
+            var menuItem = new MenuItem();
+            var pageTranslation = page.PageTranslation.FirstOrDefault(t => t.Locale == currentCulture);            
+
+            menuItem.Page = page;
+            menuItem.HasChild = page.ChildPage != null && page.ChildPage.Count > 0;            
+            menuItem.PageLevel = page.PageLevel != null ? (int)page.PageLevel : 0;
+            menuItem.IsActive = page.IsActive;
+            menuItem.IsBreadCrumb = page.IsBreadCrumb;
+
+            if (pageTranslation != null)
+            {
+                menuItem.PageName = pageTranslation.Name;
+                menuItem.IsLinkNewWindow = pageTranslation.IsLinkNewWindow;
+                if (page.PageTypeId == Globals.PageTypeStandard)
+                {
+                    menuItem.URL = siteRoot + pageTranslation.URL;
+                }
+                else
+                {
+                    menuItem.URL = pageTranslation.RedirectUrl;
+                }
+            }
+
+            return menuItem;
+        }
+
         public List<Page> GetBreadCrumbs(Guid currentPageId)
         {
             try

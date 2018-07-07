@@ -164,6 +164,8 @@ namespace Deviser.Core.Data
 
                 entity.HasOne(d => d.Layout).WithMany(p => p.Page).HasForeignKey(d => d.LayoutId);
 
+                entity.HasOne(d => d.PageType).WithMany(p => p.Page).HasForeignKey(d => d.PageTypeId).OnDelete(DeleteBehavior.Restrict);
+
                 entity.HasOne(d => d.Parent).WithMany((System.Linq.Expressions.Expression<System.Func<Page, System.Collections.Generic.IEnumerable<Page>>>)(p => p.ChildPage)).HasForeignKey(d => d.ParentId);
 
                 entity.Ignore(e => e.IsActive);

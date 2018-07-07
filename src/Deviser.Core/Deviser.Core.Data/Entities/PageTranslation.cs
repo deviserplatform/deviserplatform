@@ -12,7 +12,8 @@ namespace Deviser.Core.Data.Entities
         public string Name { get; set; }
         public string Title { get; set; }
         public string URL { get; set; }
-
+        public string RedirectUrl { get; set; }
+        public bool IsLinkNewWindow { get; set; }
         public virtual Page Page { get; set; }
     }
 }

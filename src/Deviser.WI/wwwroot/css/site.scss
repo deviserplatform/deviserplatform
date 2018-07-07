@@ -105,6 +105,7 @@ body {
 
             ul {
                 list-style: none;
+                padding: 0;
 
                 li {
                     display: inline;
@@ -115,7 +116,12 @@ body {
                 }
             }
 
+            form {
+                float: left;
+            }
+
             .login {
+
                 li {
                     button {
                         padding: 0;
@@ -125,6 +131,26 @@ body {
 
                 li:not(:last-child) {
                     margin-right: 1rem;
+                }
+            }
+
+            .language-switcher {
+                float: left;
+                padding-left: 1rem;
+
+                li {
+                    display: inline-block;
+                    padding: 0 0 0 10px;
+                    color: inherit;
+
+                    a {
+                        padding: 0;
+                        margin: 0;
+                    }
+                }
+
+                li:not(:last-child) {
+                    margin-right: 0.1rem;
                 }
             }
 
@@ -413,7 +439,7 @@ body {
             width: 100%;
         }
 
-        .thumb-text {           
+        .thumb-text {
             background: white;
             color: #ef4934;
             border: 0 solid transparent;
@@ -470,9 +496,9 @@ body {
             color: $darkGrey;
         }
 
-        .blog-img{
-            img{
-                max-width:50%;
+        .blog-img {
+            img {
+                max-width: 50%;
             }
         }
     }

@@ -17,7 +17,7 @@
     "jquery": "~2.2.3",
     "jqueri-ui": "~1.11.4",
     "jquery-validation": "1.14.0",
-    "jquery-validation-unobtrusive": "~3.2.6",
+    "jquery-validation-unobtrusive": "~3.2.6",  
     "lodash": "~4.14.1",
     "magnific-popup": "1.1.0",
     "metisMenu": "~2.5.2",    

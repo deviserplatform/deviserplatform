@@ -41,3 +41,4 @@ src/Deviser.Core/Deviser.Core.Common/DomainTypes/ModuleActionType_BACKUP_16112.c
 /src/Deviser.WI/Deviser.db
 /src/Deviser.WI/installconfig.json
 /src/Deviser.WI/DeviserWI.db
+/dist

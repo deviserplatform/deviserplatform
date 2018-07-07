@@ -127,6 +127,18 @@ namespace Deviser.WI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PageType",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PageType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Permission",
                 columns: table => new
                 {
@@ -198,41 +210,6 @@ namespace Deviser.WI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Page",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: true),
-                    EndDate = table.Column<DateTime>(nullable: true),
-                    IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
-                    IsSystem = table.Column<bool>(nullable: false, defaultValue: false),
-                    IsIncludedInMenu = table.Column<bool>(nullable: false),
-                    LastModifiedDate = table.Column<DateTime>(nullable: true),
-                    LayoutId = table.Column<Guid>(nullable: true),
-                    PageLevel = table.Column<int>(nullable: true),
-                    PageOrder = table.Column<int>(nullable: true),
-                    ParentId = table.Column<Guid>(nullable: true),
-                    ThemeSrc = table.Column<string>(maxLength: 200, nullable: true),
-                    StartDate = table.Column<DateTime>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Page", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Page_Layout_LayoutId",
-                        column: x => x.LayoutId,
-                        principalTable: "Layout",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Page_Page_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "Page",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ModuleAction",
                 columns: table => new
                 {
@@ -285,6 +262,48 @@ namespace Deviser.WI.Migrations
                         name: "FK_Property_OptionList_OptionListId",
                         column: x => x.OptionListId,
                         principalTable: "OptionList",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Page",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    EndDate = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
+                    IsSystem = table.Column<bool>(nullable: false, defaultValue: false),
+                    IsIncludedInMenu = table.Column<bool>(nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true),
+                    LayoutId = table.Column<Guid>(nullable: true),
+                    PageLevel = table.Column<int>(nullable: true),
+                    PageOrder = table.Column<int>(nullable: true),
+                    ParentId = table.Column<Guid>(nullable: true),
+                    PageTypeId = table.Column<Guid>(nullable: true),
+                    ThemeSrc = table.Column<string>(maxLength: 200, nullable: true),
+                    StartDate = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Page", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Page_Layout_LayoutId",
+                        column: x => x.LayoutId,
+                        principalTable: "Layout",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Page_PageType_PageTypeId",
+                        column: x => x.PageTypeId,
+                        principalTable: "PageType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Page_Page_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Page",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -400,134 +419,6 @@ namespace Deviser.WI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PageContent",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Title = table.Column<string>(nullable: true),
-                    ContainerId = table.Column<Guid>(nullable: false),
-                    Properties = table.Column<string>(nullable: true),
-                    SortOrder = table.Column<int>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: true),
-                    IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
-                    LastModifiedDate = table.Column<DateTime>(nullable: true),
-                    PageId = table.Column<Guid>(nullable: false),
-                    ContentTypeId = table.Column<Guid>(nullable: false),
-                    InheritViewPermissions = table.Column<bool>(nullable: false, defaultValue: true),
-                    InheritEditPermissions = table.Column<bool>(nullable: false, defaultValue: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PageContent", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PageContent_ContentType_ContentTypeId",
-                        column: x => x.ContentTypeId,
-                        principalTable: "ContentType",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PageContent_Page_PageId",
-                        column: x => x.PageId,
-                        principalTable: "Page",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PagePermission",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    PageId = table.Column<Guid>(nullable: false),
-                    PermissionId = table.Column<Guid>(nullable: false),
-                    RoleId = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PagePermission", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PagePermission_Page_PageId",
-                        column: x => x.PageId,
-                        principalTable: "Page",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PagePermission_Permission_PermissionId",
-                        column: x => x.PermissionId,
-                        principalTable: "Permission",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PagePermission_Role_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Role",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PageTranslation",
-                columns: table => new
-                {
-                    PageId = table.Column<Guid>(nullable: false),
-                    Locale = table.Column<string>(maxLength: 10, nullable: false),
-                    Description = table.Column<string>(maxLength: 500, nullable: true),
-                    Keywords = table.Column<string>(maxLength: 500, nullable: true),
-                    Name = table.Column<string>(maxLength: 100, nullable: true),
-                    Title = table.Column<string>(maxLength: 200, nullable: true),
-                    URL = table.Column<string>(maxLength: 255, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PageTranslation", x => new { x.PageId, x.Locale });
-                    table.ForeignKey(
-                        name: "FK_PageTranslation_Page_PageId",
-                        column: x => x.PageId,
-                        principalTable: "Page",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PageModule",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Title = table.Column<string>(nullable: true),
-                    ContainerId = table.Column<Guid>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
-                    ModuleId = table.Column<Guid>(nullable: false),
-                    ModuleActionId = table.Column<Guid>(nullable: false),
-                    SortOrder = table.Column<int>(nullable: false),
-                    PageId = table.Column<Guid>(nullable: false),
-                    InheritViewPermissions = table.Column<bool>(nullable: false, defaultValue: true),
-                    InheritEditPermissions = table.Column<bool>(nullable: false, defaultValue: true),
-                    Properties = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PageModule", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PageModule_ModuleAction_ModuleActionId",
-                        column: x => x.ModuleActionId,
-                        principalTable: "ModuleAction",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PageModule_Module_ModuleId",
-                        column: x => x.ModuleId,
-                        principalTable: "Module",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PageModule_Page_PageId",
-                        column: x => x.PageId,
-                        principalTable: "Page",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ContentTypeProperty",
                 columns: table => new
                 {
@@ -595,6 +486,136 @@ namespace Deviser.WI.Migrations
                         name: "FK_ModuleActionProperty_Property_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Property",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PageContent",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    ContainerId = table.Column<Guid>(nullable: false),
+                    Properties = table.Column<string>(nullable: true),
+                    SortOrder = table.Column<int>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
+                    LastModifiedDate = table.Column<DateTime>(nullable: true),
+                    PageId = table.Column<Guid>(nullable: false),
+                    ContentTypeId = table.Column<Guid>(nullable: false),
+                    InheritViewPermissions = table.Column<bool>(nullable: false, defaultValue: true),
+                    InheritEditPermissions = table.Column<bool>(nullable: false, defaultValue: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PageContent", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PageContent_ContentType_ContentTypeId",
+                        column: x => x.ContentTypeId,
+                        principalTable: "ContentType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PageContent_Page_PageId",
+                        column: x => x.PageId,
+                        principalTable: "Page",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PageModule",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    ContainerId = table.Column<Guid>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
+                    ModuleId = table.Column<Guid>(nullable: false),
+                    ModuleActionId = table.Column<Guid>(nullable: false),
+                    SortOrder = table.Column<int>(nullable: false),
+                    PageId = table.Column<Guid>(nullable: false),
+                    InheritViewPermissions = table.Column<bool>(nullable: false, defaultValue: true),
+                    InheritEditPermissions = table.Column<bool>(nullable: false, defaultValue: true),
+                    Properties = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PageModule", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PageModule_ModuleAction_ModuleActionId",
+                        column: x => x.ModuleActionId,
+                        principalTable: "ModuleAction",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PageModule_Module_ModuleId",
+                        column: x => x.ModuleId,
+                        principalTable: "Module",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PageModule_Page_PageId",
+                        column: x => x.PageId,
+                        principalTable: "Page",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PagePermission",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    PageId = table.Column<Guid>(nullable: false),
+                    PermissionId = table.Column<Guid>(nullable: false),
+                    RoleId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PagePermission", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PagePermission_Page_PageId",
+                        column: x => x.PageId,
+                        principalTable: "Page",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PagePermission_Permission_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "Permission",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PagePermission_Role_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Role",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PageTranslation",
+                columns: table => new
+                {
+                    PageId = table.Column<Guid>(nullable: false),
+                    Locale = table.Column<string>(maxLength: 10, nullable: false),
+                    Description = table.Column<string>(maxLength: 500, nullable: true),
+                    Keywords = table.Column<string>(maxLength: 500, nullable: true),
+                    Name = table.Column<string>(maxLength: 100, nullable: true),
+                    Title = table.Column<string>(maxLength: 200, nullable: true),
+                    URL = table.Column<string>(maxLength: 255, nullable: true),
+                    RedirectUrl = table.Column<string>(nullable: true),
+                    IsLinkNewWindow = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PageTranslation", x => new { x.PageId, x.Locale });
+                    table.ForeignKey(
+                        name: "FK_PageTranslation_Page_PageId",
+                        column: x => x.PageId,
+                        principalTable: "Page",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -745,6 +766,11 @@ namespace Deviser.WI.Migrations
                 name: "IX_Page_LayoutId",
                 table: "Page",
                 column: "LayoutId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Page_PageTypeId",
+                table: "Page",
+                column: "PageTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FK_Pages_Pages",
@@ -953,6 +979,9 @@ namespace Deviser.WI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Layout");
+
+            migrationBuilder.DropTable(
+                name: "PageType");
         }
     }
 }

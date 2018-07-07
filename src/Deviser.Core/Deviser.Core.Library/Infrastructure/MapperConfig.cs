@@ -71,6 +71,8 @@ namespace Deviser.Core.Library.Infrastructure
                         .ReverseMap()
                         .MaxDepth(10);
 
+                    config.CreateMap<PageType, Core.Common.DomainTypes.PageType>().ReverseMap();
+
                     config.CreateMap<PageContentTranslation, Core.Common.DomainTypes.PageContentTranslation>().ReverseMap();
 
                     config.CreateMap<PageModule, Core.Common.DomainTypes.PageModule>()

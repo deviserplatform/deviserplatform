@@ -213,22 +213,25 @@ namespace Deviser.Core.Library.TagHelpers
                                 var contentTranslation = pageContent.PageContentTranslation.FirstOrDefault(t => t.CultureCode.ToLower() == CurrentCulture.ToString().ToLower());
                                 dynamic content = (contentTranslation != null) ? SDJsonConvert.DeserializeObject<dynamic>(contentTranslation.ContentData) : null;
 
-                                var dynamicContent = new DynamicContent
+                                if (content != null)
                                 {
-                                    PageContent = pageContent,
-                                    Content = content
-                                };
+                                    var dynamicContent = new DynamicContent
+                                    {
+                                        PageContent = pageContent,
+                                        Content = content
+                                    };
 
-                                string contentTypesViewPath = string.Format(Globals.ContentTypesViewPath, _scopeService.PageContext.SelectedTheme, typeName);
+                                    string contentTypesViewPath = string.Format(Globals.ContentTypesViewPath, _scopeService.PageContext.SelectedTheme, typeName);
 
-                                htmlContent = _htmlHelper.Partial(contentTypesViewPath, dynamicContent);
-                                //var contentResult = GetString(htmlContent);
-                                currentResults.Add(new ContentResult
-                                {
-                                    //Result = contentResult,
-                                    HtmlResult = htmlContent,
-                                    SortOrder = pageContent.SortOrder
-                                });
+                                    htmlContent = _htmlHelper.Partial(contentTypesViewPath, dynamicContent);
+                                    //var contentResult = GetString(htmlContent);
+                                    currentResults.Add(new ContentResult
+                                    {
+                                        //Result = contentResult,
+                                        HtmlResult = htmlContent,
+                                        SortOrder = pageContent.SortOrder
+                                    });
+                                }
                             }
                         }
 

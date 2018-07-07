@@ -47,9 +47,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="header-top">
                 @await Html.PartialAsync("_LoginPartial")
-                <ul class="language-switcher">
-                    @await Component.InvokeAsync("LanguageSwitcher")
-                </ul>
+                @await Component.InvokeAsync("LanguageSwitcher")
             </div>
             <ul dev-nav="Site" dev-nav-page="PublicOnly" class="navbar-nav ml-auto"></ul>
 

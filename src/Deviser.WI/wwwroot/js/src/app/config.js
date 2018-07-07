@@ -35,6 +35,16 @@
             roles: {
                 administrator: '9b461499-c49e-4398-bfed-4364a176ebbd',
                 allUsers: '086357bf-01b1-494c-a8b8-54fdfa7c4c9e'
+            },
+            pageTypes: {
+                standard: {
+                    id: '4c06dcfd-214f-45af-8404-ff84b412ab01',
+                    name: 'Standard'
+                },
+                Url: {
+                    id: 'bfefa535-7af1-4ddc-82c0-c906c948367a',
+                    name: 'URL'
+                }
             }
 
         };

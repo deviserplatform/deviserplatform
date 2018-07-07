@@ -42,13 +42,15 @@
         var SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         var pageViewPermissionId = globals.appSettings.permissions.pageView;
         var pageEditPermissionId = globals.appSettings.permissions.pageEdit;
-        var administratorRoleId = globals.appSettings.roles.administrator;
+        var administratorRoleId = globals.appSettings.roles.administrator;        
         vm.alerts = [];
         vm.pages = [];
         vm.selectedItem = {};
         vm.liveTill = {};
         vm.liveFrom = {};       
         vm.administratorRoleId = administratorRoleId;
+        vm.pageTypes = globals.appSettings.pageTypes;
+
         var isNewChildPage = false;
 
         vm.options = {
@@ -85,6 +87,7 @@
         vm.changeEditPermission = changeEditPermission;
         vm.siteLanguage = "en-US";
         vm.openConfirmDialog = openConfirmDialog;
+        vm.collapseAll = collapseAll;
         //vm.cancel = cancel;
 
         init();
@@ -104,7 +107,7 @@
             pageService.get().then(function (data) {
                 vm.pages = [];
                 vm.pages.push(data);
-                sortPages(vm.pages[0]);
+                sortPages(vm.pages[0]);                
             }, function (error) {
                 showMessage("error", "Cannot load pages, please contact administrator");
             });
@@ -199,8 +202,13 @@
             });
         }
 
+        function collapseAll() {
+            $scope.$broadcast('angular-ui-tree:collapse-all');
+        }
+
         function toggle(scope) {
-            scope.toggle();
+            //scope.toggle();
+            scope.collapsed = !scope.collapsed;
         }
 
         function selectPage(page) {
@@ -283,11 +291,12 @@
                 parentId: parentPage.id,
                 childPage: [],
                 pageLevel: parentPage.pageLevel + 1,
+                pageTypeId: vm.pageTypes.standard.id,
                 pageTranslation: [
                     {
                         locale: vm.currentLocale,
                         name: "",
-                        url: "",
+                        url: "",                        
                         title: null,
                         description: null,
                         keywords: null
@@ -352,6 +361,12 @@
 
         function sortPages(page) {
             if (page) {
+
+                if (page.pageLevel == 1) {
+                    page.collapsed = true;
+                }
+
+
                 if (page.childPage) {
                     page.childPage = _.sortBy(page.childPage, function (page) {
                         return page.pageOrder;

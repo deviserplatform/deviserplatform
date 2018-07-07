@@ -15,7 +15,7 @@ namespace Deviser.Core.Common
         public const string glbHostThemeFolder = "_default";
 
         public const string moduleRoute = "moduleRoute";
-        
+
         public const string InstallConfigFile = "installconfig.json";
 
         public const string PlatformAssembly = "Deviser.WI";
@@ -28,6 +28,22 @@ namespace Deviser.Core.Common
         public const int ImageOptimizeMaxWidth = 1024;
         public const int ImageOptimizeMaxHeight = 1204;
         public const int ImageOptimizeQualityPercent = 80;
+
+        public static Guid PageTypeURL
+        {
+            get
+            {
+                return new Guid("BFEFA535-7AF1-4DDC-82C0-C906C948367A");
+            }
+        }
+
+        public static Guid PageTypeStandard
+        {
+            get
+            {
+                return new Guid("4C06DCFD-214F-45AF-8404-FF84B412AB01");
+            }
+        }
 
         public static string HostMapPath
         {

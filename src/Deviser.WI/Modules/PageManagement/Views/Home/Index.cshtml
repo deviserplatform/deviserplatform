@@ -26,15 +26,17 @@
             <div class="tree-scroll">
                 <!-- Nested list template -->
                 <script type="text/ng-template" id="items_renderer.html">
+                    <div style="display:none" ng-bind="collapsed = page.collapsed;"></div>
                     <div ng-click="pmVM.selectPage(page)" class="tree-node tree-node-content"
                          ng-class="{'selected' : pmVM.selectedItem.id === page.id}">
+
                         @*<div ui-tree-handle class="draggable-bar-container">
                                 <div class="draggable-bar">
                                     <i class="fa fa-bars"></i>
                                 </div>
                             </div>*@
 
-                        <a class="expander pull-left" ng-click="pmVM.toggle(this)" ng-show="page.childPage.length>0">
+                        <a class="expander pull-left" ng-click="pmVM.toggle(page)" ng-show="page.childPage.length>0">
                             <!--<span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span>-->
                             <i class="fa" ng-class="{'fa-angle-down' : !collapsed, 'fa-angle-right': collapsed}"></i>
                         </a>
@@ -64,6 +66,7 @@
                     </ol>
                 </script>
                 <div class="form-group ui-tree">
+                    <a ng-click="pmVM.collapseAll()">Collpse All</a>
                     <div ui-tree="pmVM.options" data-drag-enabled="true" data-drag-delay="200" data-max-depth="8">
                         <ol ui-tree-nodes ng-model="pmVM.pages">
                             <li ng-repeat="page in pmVM.pages" ui-tree-node ng-include="'items_renderer.html'" ng-show="!page.isDeleted">
@@ -85,12 +88,8 @@
                         <div class="page-setting-content">
                             <div class="form-horizontal edit-page">
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label">Locale</label>
-                                    <div class="col-sm-6">
-                                        @*<input type="text" class="form-control" placeholder="Enter page title" value="{{currentLocale}}" ng-model="translation.locale" readonly>*@
-                                        @*<select ng-model="pmVM.currentLocale" ng-options="language.cultureCode as language.englishName for language in pmVM.languages" class="form-control" ng-change="pmVM.changeLanguage()">
-                                                <option value="">-- Coose a language --</option>
-                                            </select>*@
+                                    <label class="col-sm-4 control-label">Locale</label>
+                                    <div class="col-sm-8">
                                         <ui-select name="locale" ng-model="pmVM.currentLocale" theme="bootstrap" ng-disabled="lVM.languages.length<=0" ng-change="pmVM.changeLanguage()">
                                             <ui-select-match placeholder="Choose a language">{{$select.selected.englishName}}</ui-select-match>
                                             <ui-select-choices repeat="language.cultureCode as language in pmVM.languages | filter: $select.search">
@@ -100,57 +99,80 @@
                                         </ui-select>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Page Type</label>
+                                    <div class="col-sm-8">
+                                        <ui-select name="pageType" ng-model="pmVM.selectedItem.pageTypeId" theme="bootstrap">
+                                            <ui-select-match placeholder="Choose a language">{{$select.selected.value.name}}</ui-select-match>
+                                            <ui-select-choices repeat="pageType.value.id as (key, pageType) in pmVM.pageTypes | filter: $select.search">
+                                                <div ng-bind-html="pageType.value.name | highlight: $select.search"></div>
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-horizontal edit-page" ng-repeat="translation in pmVM.selectedItem.pageTranslation | selectLanguage:pmVM.currentLocale">
                                 <div class="form-group" ng-class="{'has-error': managePage.name.$invalid && (managePage.name.$dirty || managePage.$submitted)}">
-                                    <label class="col-sm-2 control-label">Name *</label>
-                                    <div class="col-sm-6">
+                                    <label class="col-sm-4 control-label">Name *</label>
+                                    <div class="col-sm-8">
                                         <input type="text" name="name" class="form-control" placeholder="Enter page name" ng-model="translation.name" required>
                                     </div>
                                 </div>
-                                <div class="form-group" ng-class="{'has-error': managePage.title.$invalid && (managePage.title.$dirty || managePage.$submitted)}">
-                                    <label class="col-sm-2 control-label">Title *</label>
-                                    <div class="col-sm-6">
+                                <div class="form-group" ng-class="{'has-error': managePage.title.$invalid && (managePage.title.$dirty || managePage.$submitted)}" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.standard.id">
+                                    <label class="col-sm-4 control-label">Title *</label>
+                                    <div class="col-sm-8">
                                         <input type="text" name="title" class="form-control" placeholder="Enter page title" ng-model="translation.title" required>
                                     </div>
                                 </div>
                                 @*<div class="form-group">
-                                        <label class="col-sm-2 control-label">Locale</label>
-                                        <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label">Locale</label>
+                                        <div class="col-sm-8">
                                             <input type="text" class="form-control" placeholder="Enter page title" value="{{currentLocale}}" ng-model="translation.locale" readonly>
                                         </div>
                                     </div>*@
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">Description</label>
-                                    <div class="col-sm-6">
+                                <div class="form-group" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.standard.id">
+                                    <label class="col-sm-4 control-label">Description</label>
+                                    <div class="col-sm-8">
                                         <textarea type="text" class="form-control" placeholder="Enter page description" ng-model="translation.description" rows="4"></textarea>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">KeyWords</label>
-                                    <div class="col-sm-6">
+                                <div class="form-group" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.standard.id">
+                                    <label class="col-sm-4 control-label">KeyWords</label>
+                                    <div class="col-sm-8">
                                         <input type="text" class="form-control" placeholder="Enter keywords" ng-model="translation.keywords">
+                                    </div>
+                                </div>
+                                <div class="form-group" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.Url.id">
+                                    <label class="col-sm-4 control-label">Redirect Link</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" placeholder="Enter Redirect Link" ng-model="translation.redirectUrl">
+                                    </div>
+                                </div>
+                                <div class="form-group" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.Url.id">
+                                    <label class="col-sm-4 control-label">Open Link in New Window</label>
+                                    <div class="col-sm-8">
+                                        <a ng-click="translation.isLinkNewWindow=!translation.isLinkNewWindow">
+                                            <i class="fa fa-check-square-o"
+                                               ng-class="{'fa-square-o':!translation.isLinkNewWindow, 'fa-check-square-o':translation.isLinkNewWindow}"
+                                               aria-hidden="true"></i>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-horizontal edit-page">
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label">Is System</label>
-                                    <div class="col-sm-6">
+                                    <label class="col-sm-4 control-label">Is System</label>
+                                    <div class="col-sm-8">
                                         <a ng-click="pmVM.selectedItem.isSystem=!pmVM.selectedItem.isSystem">
                                             <i class="fa fa-check-square-o"
                                                ng-class="{'fa-square-o':!pmVM.selectedItem.isSystem, 'fa-check-square-o':pmVM.selectedItem.isSystem}"
                                                aria-hidden="true"></i>
                                         </a>
-
-                                        @*<div class="checkbox-list">
-                                                <input type="checkbox" ng-model="">
-                                            </div>*@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label">Include in Menu</label>
-                                    <div class="col-sm-6">
+                                    <label class="col-sm-4 control-label">Include in Menu</label>
+                                    <div class="col-sm-8">
                                         <a ng-click="pmVM.selectedItem.isIncludedInMenu=!pmVM.selectedItem.isIncludedInMenu">
                                             <i class="fa fa-check-square-o"
                                                ng-class="{'fa-square-o':!pmVM.selectedItem.isIncludedInMenu, 'fa-check-square-o':pmVM.selectedItem.isIncludedInMenu}"
@@ -163,16 +185,16 @@
                                     </div>
                                 </div>
                                 <div class="form-group" ng-class="{'has-error': managePage.theme.$invalid && (managePage.theme.$dirty || managePage.$submitted)}">
-                                    <label class="col-sm-2 control-label">Theme *</label>
-                                    <div class="col-sm-6">
+                                    <label class="col-sm-4 control-label">Theme *</label>
+                                    <div class="col-sm-8">
                                         <select name="theme" ng-model="pmVM.selectedItem.themeSrc" ng-options="theme.value as theme.key for theme in pmVM.themes" class="form-control" required>
                                             <option value="">-- Choose a theme --</option>
                                         </select>
                                     </div>
                                 </div>
                                 @*<div class="form-group">
-                                        <label class="col-sm-2 control-label">Live from</label>
-                                        <div class="col-sm-6">
+                                        <label class="col-sm-4 control-label">Live from</label>
+                                        <div class="col-sm-8">
                                             <div class="input-group">
                                                 <input type="text" class="form-control" placeholder="Live from"
                                                        datepicker-popup="{{pmVM.dateFormat}}"
@@ -190,7 +212,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Live till</label>
+                                        <label class="col-sm-4 control-label">Live till</label>
                                         <div class=" col-sm-6">
                                             <div class="input-group">
                                                 <input type="text" class="form-control" placeholder="Live till"

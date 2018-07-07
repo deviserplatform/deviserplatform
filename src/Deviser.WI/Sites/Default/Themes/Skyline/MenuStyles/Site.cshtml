@@ -1,37 +1,30 @@
-﻿@model Deviser.Core.Common.DomainTypes.Page
+﻿@model Deviser.Core.Common.DomainTypes.MenuItem
 @inject IScopeService scopeService
 @using System.Security.Claims
 @using Deviser.Core.Library
 @using Deviser.Core.Common;
 @{
     Layout = null;
-    var pageContext = scopeService.PageContext;
-    var currentCulture = pageContext.CurrentCulture.ToString();
-    var siteRoot = pageContext.SiteSettingInfo.SiteRoot;
+    //var pageContext = scopeService.PageContext;
+    //var currentCulture = pageContext.CurrentCulture.ToString();
+    //var siteRoot = pageContext.SiteSettingInfo.SiteRoot;
 }
 
 
 
-@if (Model.ChildPage != null)
+@if (Model.ChildMenuItems != null)
 {
-    foreach (var page in Model.ChildPage.OrderBy(p => p.PageOrder))
+    foreach (var menuItem in Model.ChildMenuItems)
     {
-        var translation = page.PageTranslation.FirstOrDefault(t => t.Locale == currentCulture);
-        string activeClass = page.IsActive || page.IsBreadCrumb ? "active" : "";
-        //if(translation==null && currentCulture != Globals.FallbackLanguage)
-        //{
-        //    translation = page.PageTranslation.FirstOrDefault(t => t.Locale == Globals.FallbackLanguage);
-        //}
-        if (translation != null)
+        if (menuItem != null)
         {
-            translation.URL = siteRoot + translation.URL;
-            var hasChild = page.ChildPage != null && page.ChildPage.Count > 0;
-            <li class="nav-item @(hasChild?"dropdown":"") @activeClass">
-                <a class="nav-link @(hasChild&&page.PageLevel>1?"dropdown-toggle":"")" href="@translation.URL">@translation.Name</a>
-                @if (hasChild)
+            string activeClass = menuItem.IsActive || menuItem.IsBreadCrumb ? "active" : "";
+            <li class="nav-item @(menuItem.HasChild?"dropdown":"") @activeClass">
+                <a class="nav-link @(menuItem.HasChild && menuItem.PageLevel>1?"dropdown-toggle":"")" href="@menuItem.URL">@menuItem.PageName</a>
+                @if (menuItem.HasChild)
                 {
-                    <ul class="dropdown-menu @(page.PageLevel>1?"submenu":"")">
-                        @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "Site"), page)
+                    <ul class="dropdown-menu @(menuItem.PageLevel>1?"submenu":"")">
+                        @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "Site"), menuItem)
                     </ul>
 
                 }

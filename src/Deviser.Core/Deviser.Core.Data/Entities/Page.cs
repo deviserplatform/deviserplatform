@@ -23,15 +23,16 @@ namespace Deviser.Core.Data.Entities
         public int? PageLevel { get; set; }
         public int? PageOrder { get; set; }
         public Guid? ParentId { get; set; }
-        public string ThemeSrc { get; set; }
+        public Guid? PageTypeId { get; set; }
+        public string ThemeSrc { get; set; }        
         public DateTime? StartDate { get; set; }
-
         public virtual ICollection<PageContent> PageContent { get; set; }
         public virtual ICollection<PageModule> PageModule { get; set; }
         public virtual ICollection<PageTranslation> PageTranslation { get; set; }
         public virtual ICollection<PagePermission> PagePermissions { get; set; }
         public virtual Layout Layout { get; set; }
         public virtual Page Parent { get; set; }
+        public virtual PageType PageType { get; set; }
         public virtual ICollection<Page> ChildPage { get; set; }
 
         //Non DB Properties

@@ -15,7 +15,7 @@ namespace Deviser.WI.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.0-rc1-32029")
+                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -340,6 +340,8 @@ namespace Deviser.WI.Migrations
 
                     b.Property<int?>("PageOrder");
 
+                    b.Property<Guid?>("PageTypeId");
+
                     b.Property<Guid?>("ParentId");
 
                     b.Property<DateTime?>("StartDate");
@@ -350,6 +352,8 @@ namespace Deviser.WI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("LayoutId");
+
+                    b.HasIndex("PageTypeId");
 
                     b.HasIndex("ParentId")
                         .HasName("IX_FK_Pages_Pages");
@@ -501,11 +505,15 @@ namespace Deviser.WI.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(500);
 
+                    b.Property<bool>("IsLinkNewWindow");
+
                     b.Property<string>("Keywords")
                         .HasMaxLength(500);
 
                     b.Property<string>("Name")
                         .HasMaxLength(100);
+
+                    b.Property<string>("RedirectUrl");
 
                     b.Property<string>("Title")
                         .HasMaxLength(200);
@@ -516,6 +524,18 @@ namespace Deviser.WI.Migrations
                     b.HasKey("PageId", "Locale");
 
                     b.ToTable("PageTranslation");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.PageType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PageType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Permission", b =>
@@ -842,6 +862,11 @@ namespace Deviser.WI.Migrations
                     b.HasOne("Deviser.Core.Data.Entities.Layout", "Layout")
                         .WithMany("Page")
                         .HasForeignKey("LayoutId");
+
+                    b.HasOne("Deviser.Core.Data.Entities.PageType", "PageType")
+                        .WithMany("Page")
+                        .HasForeignKey("PageTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Deviser.Core.Data.Entities.Page", "Parent")
                         .WithMany("ChildPage")
