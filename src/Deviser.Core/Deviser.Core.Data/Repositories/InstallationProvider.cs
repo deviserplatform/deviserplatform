@@ -51,8 +51,8 @@ namespace Deviser.Core.Data.Repositories
         private DbContextOptionsBuilder _dbContextOptionsBuilder;
         private static InstallModel _installModel;
         private static bool _isInstallInProgress;
-        private bool _isPlatformInstalled;
-        private bool _isDbExist;
+        private static bool _isPlatformInstalled;
+        private static bool _isDbExist;
 
         public InstallationProvider(IHostingEnvironment hostingEnvironment, IConfiguration configuration, IServiceProvider serviceProvider)
         {

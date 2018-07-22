@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Deviser.Core.Library.Services;
 
 namespace Deviser.Core.Library.Sites
 {
@@ -15,14 +16,16 @@ namespace Deviser.Core.Library.Sites
     {
         //Logger
         private readonly ILogger<ContentManager> _logger;
-
-        private IPageContentRepository _pageContentRepository;
+        private readonly IScopeService _scopeService;
+        private readonly IPageContentRepository _pageContentRepository;
+        
 
         public ContentManager(ILifetimeScope container)
             : base(container)
         {
             _logger = container.Resolve<ILogger<ContentManager>>();
             _pageContentRepository = container.Resolve<IPageContentRepository>();
+            _scopeService = container.Resolve<IScopeService>();
             //_httpContextAccessor = container.Resolve<IHttpContextAccessor>();
             //_roleRepository = container.Resolve<IRoleRepository>();
         }
@@ -218,26 +221,28 @@ namespace Deviser.Core.Library.Sites
             return adminPermissions;
         }
 
-        public bool HasViewPermission(PageContent pageContent)
+        public bool HasViewPermission(PageContent pageContent, bool isForCurrentRequest = false)
         {
             if (pageContent == null && pageContent.ContentPermissions == null)
                 throw new ArgumentNullException("pageContent.ContentPermissions", "PageContent and ContentPermissions should not be null");
 
             var result = (pageContent.ContentPermissions.Any(contentPermission => contentPermission.PermissionId == Globals.ContentViewPermissionId &&
           (contentPermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == contentPermission.RoleId)))));
-            var page = _pageRepository.GetPage(pageContent.PageId);
+                        
+            var page = isForCurrentRequest ? _scopeService.PageContext.CurrentPage : _pageRepository.GetPageAndPagePermissions(pageContent.PageId);
             return result || (pageContent.InheritViewPermissions && HasViewPermission(page));
         }
 
-        public bool HasEditPermission(PageContent pageContent)
+        public bool HasEditPermission(PageContent pageContent, bool isForCurrentRequest = false)
         {
             if (pageContent == null && pageContent.ContentPermissions == null)
                 throw new ArgumentNullException("pageContent.ContentPermissions", "PageContent and ContentPermissions should not be null");
 
             var result = (pageContent.ContentPermissions.Any(contentPermission => contentPermission.PermissionId == Globals.ContentEditPermissionId &&
            (contentPermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == contentPermission.RoleId)))));
-            var page = _pageRepository.GetPage(pageContent.PageId);
-            return result || (pageContent.InheritEditPermissions && HasViewPermission(page));
+
+            var page = isForCurrentRequest ? _scopeService.PageContext.CurrentPage : _pageRepository.GetPageAndPagePermissions(pageContent.PageId);
+            return result || (pageContent.InheritEditPermissions && HasEditPermission(page));
         }
     }
 }

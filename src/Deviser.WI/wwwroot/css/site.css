@@ -6047,6 +6047,33 @@ body {
 .btn:not(:disabled):not(.disabled):active:focus, .btn:not(:disabled):not(.disabled).active:focus, .show > .btn.dropdown-toggle:focus {
   box-shadow: none; }
 
+.banner {
+  background: url(/assets/images/banner-bg.jpg) no-repeat;
+  background-size: 100%;
+  padding: 0;
+  min-height: 420px;
+  position: relative; }
+  .banner .banner-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.65);
+    filter: alpha(opacity=60);
+    /* For IE8 and earlier */ }
+    .banner .banner-overlay .banner-text {
+      padding: 4rem 0;
+      text-align: center; }
+      .banner .banner-overlay .banner-text h1 {
+        color: #fff; }
+    .banner .banner-overlay .banner-calls {
+      padding: 2rem 0; }
+      .banner .banner-overlay .banner-calls .banner-call {
+        text-align: center; }
+        .banner .banner-overlay .banner-calls .banner-call .btn {
+          min-width: 200px; }
+
 /*--------------------------------------------------------------
     Navigation
  --------------------------------------------------------------*/
@@ -6371,3 +6398,24 @@ body {
     color: #f5f5f6;
     padding: 0;
     margin: 0; }
+
+@media (max-width: 991.98px) {
+  .skyline-nav .header-top {
+    display: none; }
+  .skyline-nav .navbar-brand img {
+    width: 240px;
+    padding: 20px; }
+  .skyline-nav .navbar-nav {
+    padding: 20px; }
+    .skyline-nav .navbar-nav .nav-item .nav-link {
+      padding: 10px 0; } }
+
+@media (max-width: 767.98px) {
+  .banner .banner-overlay .banner-text {
+    padding: 2rem 0; }
+    .banner .banner-overlay .banner-text h1 {
+      font-size: 1.7rem; }
+  .banner .banner-overlay .banner-calls {
+    padding: 0; }
+    .banner .banner-overlay .banner-calls .banner-call {
+      padding: 10px 0; } }

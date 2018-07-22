@@ -73,7 +73,7 @@ namespace Deviser.WI.Controllers
                 try
                 {
                     _installationProvider.InstallPlatform(installModel);
-                    ApplicationManager.Instance.Restart();
+                    //ApplicationManager.Instance.Restart();
                     return View("Success");
                 }
                 catch (SqlException ex)

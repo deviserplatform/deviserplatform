@@ -109,7 +109,7 @@ namespace DeviserWI.Controllers.API
             {
                 if (pageModule != null)
                 {
-                    var page = _pageRepository.GetPage(pageModule.PageId);
+                    var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
                     if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
                     {               
 
@@ -139,7 +139,7 @@ namespace DeviserWI.Controllers.API
                 if (pageModules == null || pageModules.Count == 0)
                     return BadRequest();
 
-                var page = _pageRepository.GetPage(pageModules.First().PageId);
+                var page = _pageRepository.GetPageAndDependencies(pageModules.First().PageId);
                 if (_pageManager.HasEditPermission(page))//Check edit permission for the page
                 {
                     _moduleManager.UpdatePageModules(pageModules);
@@ -164,7 +164,7 @@ namespace DeviserWI.Controllers.API
                 if (pageModule == null || pageModule.ModulePermissions == null || pageModule.ModulePermissions.Count == 0)
                     return BadRequest();
 
-                var page = _pageRepository.GetPage(pageModule.PageId);
+                var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
                 if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
                 {
                     _moduleManager.UpdateModulePermission(pageModule);
@@ -207,7 +207,7 @@ namespace DeviserWI.Controllers.API
                 var pageModule = _pageRepository.GetPageModule(id);
                 if (pageModule != null)
                 {
-                    var page = _pageRepository.GetPage(pageModule.PageId);
+                    var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
                     System.Threading.Tasks.Task.Delay(200).Wait();
                     if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
                     {
@@ -235,7 +235,7 @@ namespace DeviserWI.Controllers.API
                 var pageModule = _pageRepository.GetPageModule(id);
                 if (pageModule != null)
                 {
-                    var page = _pageRepository.GetPage(pageModule.PageId);
+                    var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
                     if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
                     {
                         bool result = _pageRepository.DeletePageModule(id);

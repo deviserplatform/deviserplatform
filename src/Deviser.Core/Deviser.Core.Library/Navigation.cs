@@ -249,7 +249,7 @@ namespace Deviser.Core.Library
 
                     var currentURLs = GetParentURL(page);
                     UpdatePageTreeURL(page, currentURLs);
-                    var resultPage = _pageRepository.UpdatePage(page);
+                    var resultPage = _pageRepository.UpdatePageAndPermissions(page);
 
                     //Update admin permissions
                     var adminPermissions = new List<PagePermission>();
@@ -320,7 +320,7 @@ namespace Deviser.Core.Library
                 try
                 {
                     Guid id = Guid.Parse(pageId);
-                    var page = _pageRepository.GetPage(id);
+                    var page = _pageRepository.GetPageAndPageTranslations(id);
                     return NavigateUrl(page, locale);
                 }
                 catch (Exception ex)
@@ -337,7 +337,7 @@ namespace Deviser.Core.Library
             {
                 try
                 {
-                    var page = _pageRepository.GetPage(pageId);
+                    var page = _pageRepository.GetPageAndPageTranslations(pageId);
                     return NavigateUrl(page, locale);
                 }
                 catch (Exception ex)
@@ -426,7 +426,7 @@ namespace Deviser.Core.Library
             {
                 foreach (Page child in pages)
                 {
-                    _pageRepository.UpdatePage(child);
+                    _pageRepository.UpdatePageAndPermissions(child);
                     if (child.ChildPage != null)
                     {
                         UpdateChildPages(child.ChildPage);
@@ -441,7 +441,7 @@ namespace Deviser.Core.Library
             var URLs = InitParentUrls();
             if (page != null && page.ParentId != null && page.ParentId != Guid.Empty)
             {
-                Page parentPage = _pageRepository.GetPage((Guid)page.ParentId);
+                Page parentPage = _pageRepository.GetPageAndPageTranslations((Guid)page.ParentId);
                 var parentURLs = GetParentURL(parentPage);
                 if (parentPage.PageTranslation != null && parentPage.PageTranslation.Count > 0)
                 {

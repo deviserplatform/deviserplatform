@@ -6,10 +6,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using Deviser.Core.Data.Extensions;
+using System.Collections.Concurrent;
 
 namespace Deviser.Core.Data.Repositories
 {
-    public class RepositoryBase : IRepositoryBase
+    public class RepositoryBase : AbstractRepository, IRepositoryBase
     {
 
         protected readonly DbContextOptions<DeviserDbContext> DbOptions;

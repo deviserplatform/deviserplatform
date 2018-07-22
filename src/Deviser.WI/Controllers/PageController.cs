@@ -33,6 +33,9 @@ namespace Deviser.WI.Controllers
         private readonly IModuleManager _moduleManager;
         private readonly IInstallationProvider _installationManager;
 
+        private static bool _isInstalled;
+        private static bool _isDbExist;
+
         public PageController(ILifetimeScope container, IScopeService scopeService)
         {
             _container = container;
@@ -40,37 +43,40 @@ namespace Deviser.WI.Controllers
             _logger = container.Resolve<ILogger<PageController>>();
             _scopeService = scopeService;
 
-            if (_installationManager.IsPlatformInstalled)
+            if (!_isInstalled)
+                _isInstalled = _installationManager.IsPlatformInstalled;
+
+            if(!_isDbExist)
+                _isDbExist = _installationManager.IsDatabaseExist;
+
+            if (_isInstalled)
             {
                 _pageRepository = container.Resolve<IPageRepository>();
                 //_pageManager = container.Resolve<IPageManager>();
                 _deviserControllerFactory = container.Resolve<IDeviserControllerFactory>();
                 _contentManager = container.Resolve<IContentManager>();
                 _moduleManager = container.Resolve<IModuleManager>();
-            }   
-            
+            }
+
         }
 
         public async Task<IActionResult> Index(string permalink)
         {
             try
             {
-                bool isInstalled = _installationManager.IsPlatformInstalled;
-                bool isDbExist = _installationManager.IsDatabaseExist;
-
-                if(!isInstalled)
+                if (!_isInstalled)
                 {
                     //Not installed, start installation wizzard
                     return RedirectToAction("Index", "Install");
                 }
 
-                if(isInstalled && !isDbExist)
+                if (_isInstalled && !_isDbExist)
                 {
                     //Platform properly installed, but Database not found. Kindly check the connection string
                     return View("DbNotInstalled");
                 }
-                                
-                if (isInstalled && isDbExist)
+
+                if (_isInstalled && _isDbExist)
                 {
                     //Platform is properly installed
                     Page currentPage = _scopeService.PageContext.CurrentPage;
@@ -81,14 +87,14 @@ namespace Deviser.WI.Controllers
                         {
                             Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await _deviserControllerFactory.GetPageModuleResults(Context);
                             ViewBag.ModuleActionResults = moduleActionResults;
-                            return View(currentPage);                            
+                            return View(currentPage);
                         }
                         else
                         {
                             return View("UnAuthorized");
                         }
                     }
-                }   
+                }
             }
             catch (Exception ex)
             {
@@ -141,7 +147,7 @@ namespace Deviser.WI.Controllers
                 try
                 {
                     var pageModule = _pageRepository.GetPageModule(pageModuleId); //It referes PageModule's View ModuleActionType
-                    
+
                     if (pageModule == null)
                         return NotFound();
 
@@ -169,7 +175,7 @@ namespace Deviser.WI.Controllers
             }
 
         }
-        
+
         private void FilterPageElements(Page currentPage)
         {
             if (currentPage != null)
@@ -178,14 +184,14 @@ namespace Deviser.WI.Controllers
                 if (currentPage.PageContent != null && currentPage.PageContent.Count > 0)
                 {
                     //Filter pageContents where current user has view permissions
-                    var filteredPageContents = currentPage.PageContent.Where(pc => _contentManager.HasViewPermission(pc)).ToList();
+                    var filteredPageContents = currentPage.PageContent.Where(pc => _contentManager.HasViewPermission(pc, true)).ToList();
                     currentPage.PageContent = filteredPageContents;
                 }
 
                 if (currentPage.PageModule != null && currentPage.PageModule.Count > 0)
                 {
                     //Filter pageContents where current user has view permissions
-                    var filteredPageModules = currentPage.PageModule.Where(pm => _moduleManager.HasViewPermission(pm)).ToList();
+                    var filteredPageModules = currentPage.PageModule.Where(pm => _moduleManager.HasViewPermission(pm, true)).ToList();
                     currentPage.PageModule = filteredPageModules;
                 }
 

@@ -10,7 +10,7 @@ namespace Deviser.Core.Library
         Page GetPageTree(Guid pageId);
         Page GetPageTree(Guid currentPageId, SystemPageFilter systemFilter, Guid parentId = new Guid());
         MenuItem GetMenuItemTree(Guid currentPageId, SystemPageFilter systemFilter, Guid parentId = new Guid());
-        Page GetPage(Guid pageId);
+        Page GetPageAndDependencies(Guid pageId);
         List<Page> GetPages();
         List<Page> GetBreadCrumbs(Guid currentPageId);
         Page CreatePage(Page page);

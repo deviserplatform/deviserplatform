@@ -67,11 +67,11 @@ namespace Deviser.Core.Library.Sites
             }
         }
 
-        public Page GetPage(Guid pageId)
+        public Page GetPageAndDependencies(Guid pageId)
         {
             try
             {
-                var returnData = _pageRepository.GetPage(pageId);
+                var returnData = _pageRepository.GetPageAndDependencies(pageId);
                 return returnData;
             }
             catch (Exception ex)
@@ -81,7 +81,7 @@ namespace Deviser.Core.Library.Sites
             return null;
         }
 
-        public Page GetPageByUrl(string url, string locale)
+        public Page GetPageAndDependenciesByUrl(string url, string locale)
         {
             Page resultPage = null;
             if (!string.IsNullOrEmpty(url))
@@ -90,7 +90,7 @@ namespace Deviser.Core.Library.Sites
                 var currentPageTranslation = pageTranslation.FirstOrDefault(p => (p != null && p.URL.ToLower() == url.ToLower()));
                 if (currentPageTranslation != null)
                 {
-                    resultPage = _pageRepository.GetPage(currentPageTranslation.PageId);
+                    resultPage = _pageRepository.GetPageAndDependencies(currentPageTranslation.PageId);
                 }
             }
             return resultPage;

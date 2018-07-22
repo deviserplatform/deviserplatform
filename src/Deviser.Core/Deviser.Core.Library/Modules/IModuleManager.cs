@@ -12,7 +12,7 @@ namespace Deviser.Core.Library.Modules
         PageModule CreateUpdatePageModule(PageModule pageModule);
         void UpdatePageModules(List<PageModule> pageModules);
         void UpdateModulePermission(PageModule pageModule);
-        bool HasEditPermission(PageModule pageModule);
-        bool HasViewPermission(PageModule pageModule);
+        bool HasEditPermission(PageModule pageModule, bool isForCurrentRequest = false);
+        bool HasViewPermission(PageModule pageModule, bool isForCurrentRequest = false);
     }
 }

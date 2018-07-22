@@ -82,6 +82,44 @@ body {
 .btn:not(:disabled):not(.disabled):active:focus, .btn:not(:disabled):not(.disabled).active:focus, .show > .btn.dropdown-toggle:focus {
     box-shadow: none;
 }
+
+.banner {
+    background: url(/assets/images/banner-bg.jpg) no-repeat;
+    background-size: 100%;
+    padding: 0;
+    min-height: 420px;
+    position: relative;
+
+    .banner-overlay {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0,0,0,0.65);
+        filter: alpha(opacity=60); /* For IE8 and earlier */
+        .banner-text {
+            padding: 4rem 0;
+            text-align: center;
+
+            h1 {
+                color: $white;
+            }
+        }
+
+        .banner-calls {
+            padding: 2rem 0;
+
+            .banner-call {
+                text-align: center;
+
+                .btn {
+                    min-width: 200px;
+                }
+            }
+        }
+    }
+}
 /*--------------------------------------------------------------
     Navigation
  --------------------------------------------------------------*/
@@ -579,5 +617,56 @@ body {
         color: $lightGrey;
         padding: 0;
         margin: 0;
+    }
+}
+
+
+@include media-breakpoint-down(md) {
+
+
+    .skyline-nav {
+
+        .header-top {
+            display: none;
+        }
+
+        .navbar-brand {
+            img {
+                width: 240px;
+                padding: 20px;
+            }
+        }
+
+        .navbar-nav {
+            .nav-item {
+                .nav-link {
+                    padding: 10px 0;
+                }
+            }
+
+            padding: 20px;
+        }
+    }
+}
+
+
+@include media-breakpoint-down(sm) {
+    .banner {
+        .banner-overlay {
+            .banner-text {
+                padding: 2rem 0;
+
+                h1 {
+                    font-size: 1.7rem;
+                }
+            }
+
+            .banner-calls {
+                padding:0;
+                .banner-call{
+                    padding: 10px 0;                    
+                }
+            }
+        }
     }
 }

@@ -141,7 +141,7 @@ namespace Deviser.Core.Library.Layouts
 
         private void UpdatePageLayout(Guid pageId, Guid layoutId)
         {
-            var page = _pageRepository.GetPage(pageId, false);
+            var page = _pageRepository.GetPage(pageId);
             page.LayoutId = layoutId;
             page.Layout = null;
             _pageRepository.UpdatePage(page);

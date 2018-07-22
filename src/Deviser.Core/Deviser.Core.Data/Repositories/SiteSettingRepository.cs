@@ -18,7 +18,7 @@ namespace Deviser.Core.Data.Repositories
         List<SiteSetting> UpdateSetting(List<SiteSetting> settings);
     }
 
-    public class SiteSettingRepository : ISiteSettingRepository
+    public class SiteSettingRepository : AbstractRepository, ISiteSettingRepository
     {
         //Logger
         private readonly ILogger<SiteSettingRepository> _logger;
@@ -36,10 +36,19 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
+                //var cacheName = nameof(GetSettings);
+                //var result = GetResultFromCache<List<SiteSetting>>(cacheName);
+                //if (result != null)
+                //{
+                //    return result;
+                //}
+
                 using (var context = new DeviserDbContext(_dbOptions))
                 {
-                    var result = context.SiteSetting.ToList();
-                    return Mapper.Map<List<SiteSetting>>(result);
+                    var dbResult = context.SiteSetting.ToList();                    
+                    var result = Mapper.Map<List<SiteSetting>>(dbResult);
+                    //AddResultToCache(cacheName, result);
+                    return result;
                 }
             }
             catch (Exception ex)

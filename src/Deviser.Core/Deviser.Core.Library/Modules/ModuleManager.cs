@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Deviser.Core.Library.Services;
 
 namespace Deviser.Core.Library.Modules
 {
@@ -17,11 +18,12 @@ namespace Deviser.Core.Library.Modules
     {
         //Logger
         private readonly ILogger<ModuleManager> _logger;
-
+        private readonly IScopeService _scopeService;
         public ModuleManager(ILifetimeScope container)
             : base(container)
         {
             _logger = container.Resolve<ILogger<ModuleManager>>();
+            _scopeService = container.Resolve<IScopeService>();
         }
 
         public PageModule GetPageModule(Guid pageModuleId)
@@ -191,25 +193,26 @@ namespace Deviser.Core.Library.Modules
             return adminPermissions;
         }
 
-        public bool HasViewPermission(PageModule pageModule)
+        public bool HasViewPermission(PageModule pageModule, bool isForCurrentRequest=false)
         {
             if (pageModule == null || pageModule.ModulePermissions == null)
                 throw new ArgumentNullException("pageModule.ModulePermissions", "PageModule and ModulePermissions should not be null");
 
             var result = (pageModule.ModulePermissions.Any(modulePermission => modulePermission.PermissionId == Globals.ModuleViewPermissionId &&
               (modulePermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == modulePermission.RoleId)))));
-            var page = _pageRepository.GetPage(pageModule.PageId);
+
+            var page = isForCurrentRequest? _scopeService.PageContext.CurrentPage : _pageRepository.GetPageAndPagePermissions(pageModule.PageId);
             return result || (pageModule.InheritViewPermissions && HasViewPermission(page));
         }
 
-        public bool HasEditPermission(PageModule pageModule)
+        public bool HasEditPermission(PageModule pageModule, bool isForCurrentRequest = false)
         {
             if (pageModule == null && pageModule.ModulePermissions == null)
                 throw new ArgumentNullException("pageModule.ModulePermissions", "PageModule and ModulePermissions should not be null");
 
             var result = (pageModule.ModulePermissions.Any(modulePermission => modulePermission.PermissionId == Globals.ModuleEditPermissionId &&
                (modulePermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == modulePermission.RoleId)))));
-            var page = _pageRepository.GetPage(pageModule.PageId);
+            var page = isForCurrentRequest ? _scopeService.PageContext.CurrentPage : _pageRepository.GetPageAndPagePermissions(pageModule.PageId);
             return result || (pageModule.InheritEditPermissions && HasEditPermission(page));
         }
     }

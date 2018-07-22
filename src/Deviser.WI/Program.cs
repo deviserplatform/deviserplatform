@@ -11,84 +11,101 @@ namespace Deviser.WI
 {
     public class Program
     {
-        public static IWebHost _WebHost;
-
         public static void Main(string[] args)
         {
-            var appManager = ApplicationManager.Instance;
-
-            do
+            try
             {
-                appManager.Start(args);
-            } while (appManager.Restarting);
+                CreateWebHostBuilder(args).Build().Run();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();
 
-        public class ApplicationManager
-        {
+        //public static IWebHost _WebHost;
 
-            private static ApplicationManager _appManager;
-            private IWebHost _web;
-            private CancellationTokenSource _tokenSource;
-            private bool _running;
-            private bool _restart;
+        //public static void Main(string[] args)
+        //{
+        //    var appManager = ApplicationManager.Instance;
 
-            public bool Restarting => _restart;
+        //    do
+        //    {
+        //        appManager.Start(args);
+        //    } while (appManager.Restarting);
+        //}
 
-            private ApplicationManager()
-            {
-                _running = false;
-                _restart = false;
+        //public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        //    WebHost.CreateDefaultBuilder(args)
+        //        .UseStartup<Startup>();
 
-            }
+        //public class ApplicationManager
+        //{
 
-            public static ApplicationManager Instance
-            {
-                get
-                {
-                    if (_appManager == null)
-                        _appManager = new ApplicationManager();
+        //    private static ApplicationManager _appManager;
+        //    private IWebHost _web;
+        //    private CancellationTokenSource _tokenSource;
+        //    private bool _running;
+        //    private bool _restart;
 
-                    return _appManager;
-                }
-            }
+        //    public bool Restarting => _restart;
 
-            public void Start(string[] args)
-            {
-                if (_running)
-                    return;
+        //    private ApplicationManager()
+        //    {
+        //        _running = false;
+        //        _restart = false;
 
-                if (_tokenSource != null && _tokenSource.IsCancellationRequested)
-                    return;
+        //    }
 
-                _tokenSource = new CancellationTokenSource();
-                _tokenSource.Token.ThrowIfCancellationRequested();
-                _running = true;
+        //    public static ApplicationManager Instance
+        //    {
+        //        get
+        //        {
+        //            if (_appManager == null)
+        //                _appManager = new ApplicationManager();
 
-                _WebHost = CreateWebHostBuilder(args).Build();
-                _WebHost.RunAsync(_tokenSource.Token).GetAwaiter().GetResult();
-            }
+        //            return _appManager;
+        //        }
+        //    }
 
-            public async Task Stop()
-            {
-                if (!_running)
-                    return;
+        //    public void Start(string[] args)
+        //    {
+        //        if (_running)
+        //            return;
 
-                _tokenSource.Cancel();
-                await _WebHost.WaitForShutdownAsync(_tokenSource.Token);                
-                _running = false;
-            }
+        //        if (_tokenSource != null && _tokenSource.IsCancellationRequested)
+        //            return;
 
-            public async Task Restart()
-            {
-                await Stop();
+        //        _tokenSource = new CancellationTokenSource();
+        //        _tokenSource.Token.ThrowIfCancellationRequested();
+        //        _running = true;
 
-                _restart = true;
-                _tokenSource = null;
-            }
-        }
+        //        _WebHost = CreateWebHostBuilder(args).Build();
+        //        _WebHost.RunAsync(_tokenSource.Token).GetAwaiter().GetResult();
+        //    }
+
+        //    public async Task Stop()
+        //    {
+        //        if (!_running)
+        //            return;
+
+        //        _tokenSource.Cancel();
+        //        await _WebHost.WaitForShutdownAsync(_tokenSource.Token);                
+        //        _running = false;
+        //    }
+
+        //    public async Task Restart()
+        //    {
+        //        //await Stop();
+
+        //        //_restart = true;
+        //        //_tokenSource = null;
+        //    }
+        //}
     }
 }

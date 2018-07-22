@@ -88,7 +88,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {   
-                var result = _navigation.GetPage(id);
+                var result = _navigation.GetPageAndDependencies(id);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
