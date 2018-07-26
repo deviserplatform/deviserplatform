@@ -23,12 +23,14 @@
     <render type="Script" location="Head"></render>
 </head>
 <body class="header-fixed">
-    <render type="Script" location="BodyStart"></render>
+    <div>
+        <render type="Script" location="BodyStart"></render>
 
-    @RenderBody()
+        @RenderBody()
 
 
-    @RenderSection("scripts", required: false)
-    <render type="Script" location="BodyEnd"></render>
+        @RenderSection("scripts", required: false)
+        <render type="Script" location="BodyEnd"></render>
+    </div>
 </body>
 </html>

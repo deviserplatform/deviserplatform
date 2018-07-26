@@ -6491,7 +6491,8 @@ body.page-edit {
           padding: inherit; }
     body.page-edit .layout-container .edit-wrapper {
       overflow-y: auto;
-      max-height: 80vh; }
+      max-height: 80vh;
+      overflow-x: hidden; }
     body.page-edit .layout-container .toolbox ul {
       list-style: none;
       padding-left: 0px;

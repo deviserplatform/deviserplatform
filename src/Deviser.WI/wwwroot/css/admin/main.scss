@@ -937,6 +937,7 @@ body.page-edit {
         .edit-wrapper {
             overflow-y: auto;
             max-height: 80vh;
+            overflow-x:hidden;
         }
 
         .toolbox {

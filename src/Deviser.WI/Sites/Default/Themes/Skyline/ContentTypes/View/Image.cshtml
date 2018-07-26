@@ -3,14 +3,16 @@
 @{
     var pageContext = scopeService.PageContext;
     var currentCulture = pageContext.CurrentCulture.ToString();
+    var properties = Model.PageContent.Properties;
 
     dynamic rootObj = Model.Content;
+    var cssClass = properties.Get("css_class")?.ToString();
 
 }
 
 @if (rootObj != null)
 {
-    <img src="@rootObj.imageUrl" alt="@rootObj.imageAltText" />
+    <img class="@cssClass" src="@rootObj.imageUrl" alt="@rootObj.imageAltText" />
 }
 else{
     <div>

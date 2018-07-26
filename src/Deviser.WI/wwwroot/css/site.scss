@@ -40,6 +40,7 @@
 @import "admin/bootstrap4/scss/carousel";
 @import "admin/bootstrap4/scss/utilities";
 @import "admin/bootstrap4/scss/print";
+@import "hamburgers/hamburgers";
 
 
 $devPrimary: rgb(239, 73, 52);
@@ -84,10 +85,11 @@ body {
 }
 
 .banner {
-    background: url(/assets/images/banner-bg.jpg) no-repeat;
+    background: url(/assets/images/banner-bg2.jpg) no-repeat;
     background-size: 100%;
+    background-position: 20%;
     padding: 0;
-    min-height: 420px;
+    min-height: 500px;
     position: relative;
 
     .banner-overlay {
@@ -98,8 +100,17 @@ body {
         right: 0;
         background-color: rgba(0,0,0,0.65);
         filter: alpha(opacity=60); /* For IE8 and earlier */
+        .banner-container {
+            position: relative;
+
+            .banner-content {
+                position: relative;
+                transform: translateY(50%);
+            }
+        }
+
         .banner-text {
-            padding: 4rem 0;
+            padding: 0;
             text-align: center;
 
             h1 {
@@ -108,7 +119,7 @@ body {
         }
 
         .banner-calls {
-            padding: 2rem 0;
+            padding-top: 10%;
 
             .banner-call {
                 text-align: center;
@@ -120,6 +131,8 @@ body {
         }
     }
 }
+
+
 /*--------------------------------------------------------------
     Navigation
  --------------------------------------------------------------*/
@@ -281,7 +294,30 @@ body {
             transform: translateY(-50%);
         }
     }
+
+    .navbar-toggler {
+        margin-right: 14px;
+        border-radius: unset;
+    }
 }
+/*Mmenu*/
+.hamburger {
+    display: none;
+}
+
+.mm-menu {
+    background: $lightGrey;
+
+    .mm-listitem > a, .mm-listitem > span {
+        padding: 16px 10px 16px 20px
+    }
+
+    .mm-listitem > a:hover {
+        color: $primary;
+    }
+}
+
+
 
 /*Swiper*/
 .swiper-container {
@@ -504,6 +540,22 @@ body {
         }
     }
 
+    .img-statistics {
+        width: 50%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 20px 0;
+    }
+
+    .about-image {
+        width: 60%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 20px 0;
+    }
+
     .feature-heading {
         text-align: center;
         margin-bottom: 40px;
@@ -622,7 +674,9 @@ body {
 
 
 @include media-breakpoint-down(md) {
-
+    .hamburger {
+        display: block;
+    }
 
     .skyline-nav {
 
@@ -647,26 +701,68 @@ body {
             padding: 20px;
         }
     }
+
+    .banner {
+        background-size: 150%;
+    }
+
+    .content-wrapper {
+        .img-statistics {
+            width: 100%;
+        }
+    }
 }
 
 
 @include media-breakpoint-down(sm) {
+
+
     .banner {
+        background-size: 500%;
+        min-height: 480px;
+
         .banner-overlay {
+            .banner-container {
+                position: relative;
+
+                .banner-content {
+                    transform: translateY(14%);
+                }
+            }
+
             .banner-text {
-                padding: 2rem 0;
+
 
                 h1 {
-                    font-size: 1.7rem;
+                    font-size: 1.8rem;
                 }
             }
 
             .banner-calls {
-                padding:0;
-                .banner-call{
-                    padding: 10px 0;                    
+
+                .banner-call {
+                    padding: 10px 0;
                 }
             }
+        }
+    }
+
+    .content-wrapper {
+       
+
+        .img-statistics, .about-image {
+            width: 40%;
+            padding: 40px;
+        }
+
+        .why-deviser, .about-deviser, .about-vision, .about-mission {
+            h1, h2 {
+                text-align: center;
+            }
+        }
+
+        .why-deviser, .about-deviser, .about-mission {
+            flex-direction: column-reverse
         }
     }
 }

@@ -17,6 +17,7 @@
 <require type="Css" priority="14" path="~/lib/swiper/dist/css/swiper.css"></require>
 <require type="Css" priority="15" path="~/lib/photoswipe/dist/photoswipe.css"></require>
 <require type="Css" priority="16" path="~/lib/photoswipe/dist/default-skin/default-skin.css"></require>
+<require type="Css" priority="17" path="~/css/jquery.mmenu.all.css"></require>
 <require type="Css" priority="17" path="~/css/site.css"></require>
 
 <require type="Script" priority="10" location="Head" path="~/lib/jquery/dist/jquery.js" test="test"></require>
@@ -31,6 +32,7 @@
 <require type="Script" location="Head" priority="23" path="~/lib/swiper/dist/js/swiper.js"></require>
 <require type="Script" location="Head" priority="23" path="~/lib/photoswipe/dist/photoswipe.min.js"></require>
 <require type="Script" location="Head" priority="23" path="~/lib/photoswipe/dist/photoswipe-ui-default.min.js"></require>
+<require type="Script" location="Head" priority="23" path="~/js/jquery.mmenu.all.js"></require>
 <require type="Script" location="Head" priority="30" path="~/js/site.js"></require>
 
 @await Component.InvokeAsync("ControlBar")
@@ -40,23 +42,27 @@
         <a class="navbar-brand" href="@pageContext.HomePageFullUrl">
             <img src="/images/DeviserLogoDark.svg" onerror="this.src='/images/DeviserLogoDark.png'; this.onerror=null;" alt="DEVISER">
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        @*<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
-        </button>
+        </button>*@
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <a href="#mainNav" class="hamburger hamburger--collapse">
+            <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+            </span>
+        </a>
+
+        <div class="collapse navbar-collapse">
             <div class="header-top">
                 @await Html.PartialAsync("_LoginPartial")
                 @await Component.InvokeAsync("LanguageSwitcher")
             </div>
             <ul dev-nav="Site" dev-nav-page="PublicOnly" class="navbar-nav ml-auto"></ul>
 
-            @*<ul class="navbar-nav">
-                    @await Component.InvokeAsync("LanguageSwitcher")
-                    <li class="nav-item">
-                        <a class="nav-link" href="@navigation.NavigateUrl(pageContext.SiteSettingInfo.LoginPageId)">Login</a>
-                    </li>
-                </ul>*@
+
+            <nav id="mainNav">
+                <ul dev-nav="Site" dev-nav-page="PublicOnly" class="navbar-nav ml-auto"></ul>
+            </nav>
         </div>
     </div>
 </nav>

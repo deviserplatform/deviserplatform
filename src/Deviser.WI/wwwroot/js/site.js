@@ -18,25 +18,28 @@
             $(this).removeClass("show");
         });
 
-        //swiper
-        //var mySwiper = new Swiper('.swiper-container', {
-        //    // Optional parameters
-        //    //autoplay: {
-        //    //    delay: 2500,
-        //    //    disableOnInteraction: false,
-        //    //},       
-        //    slidesPerView: 1,
-        //    spaceBetween: 0,
-        //    direction: 'horizontal',
-        //    loop: true,
-        //    navigation: {
-        //        nextEl: '.swiper-button-next',
-        //        prevEl: '.swiper-button-prev',
-        //    },
-        //    pagination: {
-        //        el: '.swiper-pagination',
-        //    }
-        //});
+        var $menu = $('nav#mainNav')
+
+        $menu.mmenu({
+            dragOpen: true,
+            navbar: {
+                add: true
+            },
+            extensions: ["position-right"],
+            onClick: {
+                close: true
+            },
+            hooks: {
+                "open:finish": function ($panel) {
+                    //console.log("This panel is now opening: #" + $panel.attr("id"));
+                    $('.hamburger').addClass('is-active');
+                },
+                "close:finish": function ($panel) {
+                    //console.log("This panel is now opened: #" + $panel.attr("id"));
+                    $('.hamburger').removeClass('is-active');
+                }
+            }
+        });
     })
 
 })();
