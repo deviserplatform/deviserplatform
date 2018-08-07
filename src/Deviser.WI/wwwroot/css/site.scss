@@ -46,7 +46,7 @@
 $devPrimary: rgb(239, 73, 52);
 $devWhite: rgb(255, 255, 255);
 $lightGrey: rgb(245,245,246);
-$lightGreyTransparent: rgba(245,245,246, 0.6);
+$lightGreyTransparent: rgba(245,245,246, 0.8);
 $darkGrey: rgb(139,142,147);
 
 $twitterLight: rgba(30, 160, 242, 0.9);
@@ -136,9 +136,20 @@ body {
 /*--------------------------------------------------------------
     Navigation
  --------------------------------------------------------------*/
-.skyline-nav {
+.header-container {
+    position: fixed;
+    top: 0px;
     padding: 0;
-
+    width: 100%;
+    z-index: 10;
+    background: $lightGreyTransparent;
+    filter: alpha(opacity=80); /* For IE8 and earlier */
+    /*.container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+    }*/
     .navbar-brand {
         img {
             width: 240px;
@@ -492,9 +503,15 @@ body {
     }
 }
 
+
 /*General Content*/
 .content-wrapper {
     min-height: calc(100vh - 176px);
+    padding-top: 108px;
+
+    &.page-content-logged-in {
+        padding-top: 158px; 
+    }
 
     .grey-section {
         padding: 2rem 0;
@@ -674,11 +691,19 @@ body {
 
 
 @include media-breakpoint-down(md) {
+    .header-container {
+        height: 90px;
+    }
+
+    .content-wrapper {
+        padding-top: 90px;
+    }
+
     .hamburger {
         display: block;
     }
 
-    .skyline-nav {
+    .header-container {
 
         .header-top {
             display: none;
@@ -748,10 +773,10 @@ body {
     }
 
     .content-wrapper {
-       
+
 
         .img-statistics, .about-image {
-            width: 40%;
+            width: 60%;
             padding: 40px;
         }
 

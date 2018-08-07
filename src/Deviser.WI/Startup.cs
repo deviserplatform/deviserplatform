@@ -22,7 +22,7 @@ namespace Deviser.WI
             Log.Logger = new LoggerConfiguration()
                 //.Enrich.FromLogContext()
                 .MinimumLevel.Debug()
-                .WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "log", "log-{Date}.txt"))
+                .WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "logs", "log-{Date}.txt"))
                 .CreateLogger();
             
             Configuration = configuration;

@@ -36,7 +36,7 @@ nuget.exe
 node_modules
 **/[Cc]ompiler/[Rr]esources/**/*.js
 *log-*.txt
-log
+logs
 src/Deviser.Core/Deviser.Core.Common/DomainTypes/ModuleActionType_BACKUP_16112.cs
 /src/Deviser.WI/Deviser.db
 /src/Deviser.WI/installconfig.json

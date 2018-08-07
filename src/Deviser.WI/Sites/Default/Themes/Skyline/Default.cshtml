@@ -37,7 +37,7 @@
 
 @await Component.InvokeAsync("ControlBar")
 
-<nav class="skyline-nav navbar navbar-expand-lg navbar-light bg-light @loggedInClass">
+<header class="header-container navbar navbar-expand-lg @loggedInClass">
     <div class="container">
         <a class="navbar-brand" href="@pageContext.HomePageFullUrl">
             <img src="/images/DeviserLogoDark.svg" onerror="this.src='/images/DeviserLogoDark.png'; this.onerror=null;" alt="DEVISER">
@@ -65,7 +65,7 @@
             </nav>
         </div>
     </div>
-</nav>
+</header>
 
 <div class="content-wrapper @pageContentLoggedInClass">
     @RenderBody()

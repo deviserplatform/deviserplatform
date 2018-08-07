@@ -50,6 +50,7 @@
         vm.liveFrom = {};       
         vm.administratorRoleId = administratorRoleId;
         vm.pageTypes = globals.appSettings.pageTypes;
+        vm.reSortPages = reSortPages;
 
         var isNewChildPage = false;
 
@@ -170,7 +171,7 @@
             if (sourcePage && destPage) {
                 sourcePage.parentId = destPage.id;
                 sourcePage.pageLevel = event.dest.nodesScope.depth();
-                reSortPages(vm.pages[0]);
+                vm.reSortPages(vm.pages[0]);
                 savePageTree();
             }
         }
@@ -354,7 +355,7 @@
             if (page && page.childPage) {
                 _.forEach(page.childPage, function (child, index) {
                     child.pageOrder = index + 1;
-                    reSortPages(child);
+                    vm.reSortPages(child);
                 });
             }
         }
