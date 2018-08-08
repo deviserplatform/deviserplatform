@@ -134,6 +134,7 @@ namespace Deviser.Core.Data.Repositories
                     var dbResult = context.Page
                                 .Where(e => e.ParentId != null).AsNoTracking()
                                 //.Include("PageTranslations").Include("ChildPages").Include("PageModules").Include("PageModules.Module")
+                                .Include(p => p.PagePermissions)
                                 .Include(p => p.PageTranslation)
                                 .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
                                 .OrderBy(p => p.PageOrder)

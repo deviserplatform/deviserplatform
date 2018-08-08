@@ -117,6 +117,21 @@ namespace Deviser.Core.Library
             return null;
         }
 
+        public List<Page> GetPublicPages()
+        {
+            try
+            {
+                var allPages = GetPages();
+                var publicPages = allPages.Where(p => HasViewPermission(p)).ToList();
+                return publicPages;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while getting all public pages in list", ex);
+                throw;
+            }
+        }
+
         public MenuItem GetMenuItemTree(Guid currentPageId, SystemPageFilter systemFilter, Guid parentId = new Guid())
         {
             try
@@ -356,7 +371,7 @@ namespace Deviser.Core.Library
                 {
                     if (locale == null)
                         locale = _scopeService.PageContext.CurrentCulture.ToString().ToLower();
-                    var translation = page.PageTranslation.FirstOrDefault(t => t.Locale.ToLower() == locale);
+                    var translation = page.PageTranslation.FirstOrDefault(t => t.Locale.ToLower() == locale.ToLower());
 
                     return translation != null ? _scopeService.PageContext.SiteRoot + translation.URL : "";
                 }

@@ -62,6 +62,7 @@ namespace Deviser.Core.Library.Infrastructure
             builder.RegisterType<FileManagement>().As<IFileManagement>();
             builder.RegisterType<LanguageManager>().As<ILanguageManager>();
             builder.RegisterType<SettingManager>().As<ISettingManager>();
+            builder.RegisterType<SitemapService>().As<ISitemapService>();
 
             //Autofac Property injection is not working
             //ref: https://github.com/autofac/Autofac.Mvc/issues/1

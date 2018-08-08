@@ -26,6 +26,7 @@ namespace Deviser.Core.Data.Entities
         public Guid? PageTypeId { get; set; }
         public string ThemeSrc { get; set; }        
         public DateTime? StartDate { get; set; }
+        public float SiteMapPriority { get; set; }
         public virtual ICollection<PageContent> PageContent { get; set; }
         public virtual ICollection<PageModule> PageModule { get; set; }
         public virtual ICollection<PageTranslation> PageTranslation { get; set; }
