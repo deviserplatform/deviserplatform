@@ -105,7 +105,9 @@ namespace Deviser.Core.Data.Repositories
             //Page resultPage = null;
 
             page.ChildPage = pagesInFlat
-                .Where(p => p.ParentId == page.Id).ToList();
+                .Where(p => p.ParentId == page.Id)
+                .OrderBy(p=>p.PageOrder)
+                .ToList();
 
             if (page.ChildPage != null)
             {

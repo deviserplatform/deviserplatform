@@ -54,7 +54,7 @@ namespace Deviser.Core.Library
             try
             {
                 var root = _pageRepository.GetPageTree();
-                return GetPageTree(root, parentId);
+                return GetPageTreeFrom(root, parentId);
             }
             catch (Exception ex)
             {
@@ -414,7 +414,7 @@ namespace Deviser.Core.Library
             return result;
         }
 
-        private Page GetPageTree(Page page, Guid pageId)
+        private Page GetPageTreeFrom(Page page, Guid pageId)
         {
             Page resultPage = null;
             if (page.Id == pageId)
@@ -424,7 +424,7 @@ namespace Deviser.Core.Library
             {
                 foreach (var child in page.ChildPage)
                 {
-                    var childResult = GetPageTree(child, pageId);
+                    var childResult = GetPageTreeFrom(child, pageId);
                     if (childResult != null)
                     {
                         resultPage = childResult;
