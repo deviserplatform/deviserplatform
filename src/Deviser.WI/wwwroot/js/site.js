@@ -193,7 +193,7 @@
             }
         });
 
-        $('.header-container').scrollupbar();
+        $('.header').scrollupbar();
 
     })
 

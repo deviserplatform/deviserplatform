@@ -1,6 +1,6 @@
 ﻿<script type="text/ng-template" id="contenttypes/text.html">
     <div class="edit-content-preview" ng-show="ecVM.templateMode==='PREVIEW'">
-        <p ng-bind-html="ecVM.contentTranslation.contentData"></p>
+        <p ng-bind-html="ecVM.contentTranslation.contentData.content"></p>
     </div>
     <div ng-show="ecVM.templateMode==='EDITCONTENT'">
         <div class="modal-header">

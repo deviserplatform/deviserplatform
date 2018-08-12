@@ -24,7 +24,7 @@
                 @if (menuItem.HasChild)
                 {
                     <ul class="dropdown-menu @(menuItem.PageLevel>1?"submenu":"")">
-                        @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "Site"), menuItem)
+                        @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "SiteMain"), menuItem)
                     </ul>
 
                 }

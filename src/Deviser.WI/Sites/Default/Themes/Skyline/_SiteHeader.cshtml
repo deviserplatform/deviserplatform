@@ -6,17 +6,18 @@
 @inject IScopeService scopeService
 @inject INavigation navigation
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
     var pageContext = scopeService.PageContext;
     var loggedInClass = pageContext.HasPageEditPermission ? "logged-in" : "";
     var pageContentLoggedInClass = pageContext.HasPageEditPermission ? "page-content-logged-in" : "";
 }
+
 <require type="Css" priority="10" path="//fonts.googleapis.com/css?family=Rubik"></require>
 <require type="Css" priority="11" path="~/lib/font-awesome/css/font-awesome.css"></require>
 <require type="Css" priority="13" path="~/lib/magnific-popup/dist/magnific-popup.css"></require>
 <require type="Css" priority="14" path="~/lib/swiper/dist/css/swiper.css"></require>
 <require type="Css" priority="15" path="~/lib/photoswipe/dist/photoswipe.css"></require>
 <require type="Css" priority="16" path="~/lib/photoswipe/dist/default-skin/default-skin.css"></require>
+<require type="Css" priority="17" path="~/css/jquery.mmenu.all.css"></require>
 <require type="Css" priority="17" path="~/css/site.css"></require>
 
 <require type="Script" priority="10" location="Head" path="~/lib/jquery/dist/jquery.js" test="test"></require>
@@ -31,60 +32,38 @@
 <require type="Script" location="Head" priority="23" path="~/lib/swiper/dist/js/swiper.js"></require>
 <require type="Script" location="Head" priority="23" path="~/lib/photoswipe/dist/photoswipe.min.js"></require>
 <require type="Script" location="Head" priority="23" path="~/lib/photoswipe/dist/photoswipe-ui-default.min.js"></require>
+<require type="Script" location="Head" priority="23" path="~/js/jquery.mmenu.all.js"></require>
 <require type="Script" location="Head" priority="30" path="~/js/site.js"></require>
 
 @await Component.InvokeAsync("ControlBar")
 
-<header class="header-container navbar navbar-expand-lg navbar-light bg-light @loggedInClass">
-    <div class="container">
+<header class="header navbar navbar-expand-lg @loggedInClass">
+    <div class="header-content container">
         <a class="navbar-brand" href="@pageContext.HomePageFullUrl">
             <img src="/images/DeviserLogoDark.svg" onerror="this.src='/images/DeviserLogoDark.png'; this.onerror=null;" alt="DEVISER">
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        @*<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>*@
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <div class="header-top">
-                @await Html.PartialAsync("_LoginPartial")
-                <ul class="language-switcher">
-                    @await Component.InvokeAsync("LanguageSwitcher")
-                </ul>
-            </div>
+        <a href="#mainNav" class="hamburger hamburger--collapse">
+            <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+            </span>
+        </a>
+
+        <div class="header-top">
+            @await Html.PartialAsync("_LoginPartial")
+            @await Component.InvokeAsync("LanguageSwitcher")
+        </div>
+
+        <div class="collapse navbar-collapse">
             <ul dev-nav="SiteMain" dev-nav-page="PublicOnly" class="navbar-nav ml-auto"></ul>
 
-            @*<ul class="navbar-nav">
-                    @await Component.InvokeAsync("LanguageSwitcher")
-                    <li class="nav-item">
-                        <a class="nav-link" href="@navigation.NavigateUrl(pageContext.SiteSettingInfo.LoginPageId)">Login</a>
-                    </li>
-                </ul>*@
+
+            <nav id="mainNav">
+                <ul dev-nav="SiteMain" dev-nav-page="PublicOnly" class="navbar-nav ml-auto"></ul>
+            </nav>
         </div>
     </div>
 </header>
-
-<div class="content-wrapper @pageContentLoggedInClass">
-    <div class="container">
-        @RenderBody()
-    </div>
-</div>
-
-<footer class="footer footer-classic bg-dark">
-    <div class="container-fluid">
-        <div class="row justify-content-center">
-            <div class="col-md-12">
-                <div class="text-center">
-                    <p>
-                        Copyright &copy; @DateTime.Now.Year Karthick Sundararajan. Released on <a href="https://github.com/deviserplatform/deviserplatform" title="Source" target="_blank"> <i class="fa fa-github"></i></a>
-                        under the <a href="/install/License" title="License" target="_blank">MIT License</a>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
-
-
-@section Scripts{
-    @RenderSection("scripts", required: false)
-}

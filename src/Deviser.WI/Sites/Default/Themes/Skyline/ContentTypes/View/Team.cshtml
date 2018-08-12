@@ -12,6 +12,10 @@
     {
         totalItems = rootObj.items.Count;
     }
+
+    var colWidthM = properties.Get("column_width")?.ToString(false);
+    colWidthM = string.IsNullOrEmpty(colWidthM) ? "col-md-4" : colWidthM;
+
 }
 
 @if (rootObj != null)
@@ -20,20 +24,20 @@
         <!-- Slides -->
         @foreach (var item in rootObj.items)
         {
-        <div class="team-item col-12 col-sm-6 col-md-4 col-lg-3">
-            <img src="@item.imageUrl" alt="@item.imageAltText" />
-            <div class="team-text">
-                <h4>@item.name</h4>
-                <span>@item.position</span>
-            </div>
+            <div class="team-item col-12 col-sm-6 @colWidthM">
+                <img src="@item.imageUrl" alt="@item.imageAltText" />
+                <div class="team-text">
+                    <h4>@item.name</h4>
+                    <span>@item.position</span>
+                </div>
 
-        </div>
+            </div>
         }
     </div>
 }
 else
 {
-<div>
-    Please enter the content
-</div>
+    <div>
+        Please enter the content
+    </div>
 }

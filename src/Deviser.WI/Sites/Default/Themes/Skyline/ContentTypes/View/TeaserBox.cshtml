@@ -4,6 +4,7 @@
 @{
     var pageContext = scopeService.PageContext;
     var currentCulture = pageContext.CurrentCulture.ToString();
+    var properties = Model.PageContent.Properties;
 
     dynamic rootObj = Model.Content;
     int totalItems = 0;
@@ -11,6 +12,9 @@
     {
         totalItems = rootObj.items.Count;
     }
+
+    var colWidthM = properties.Get("column_width")?.ToString(false);
+    colWidthM = string.IsNullOrEmpty(colWidthM) ? "col-md-4" : colWidthM;
 }
 
 @if (rootObj != null)
@@ -27,7 +31,7 @@
             url = linkType == "PAGE" ? navigation.NavigateUrl((string)item.link.pageId) : (string)item.link.url;
         }
 
-        <div class="col-md-4 my-4">
+        <div class="@colWidthM my-4">
             <div class="info text-center info-boxed">
                 <div class="icon icon-circle">
                     @Html.Raw(item.icon)

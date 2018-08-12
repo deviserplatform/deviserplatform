@@ -96,6 +96,18 @@
     <PackageReference Include="System.IO" Version="4.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Sites\Default\Themes\Skyline\LeftNavColumn.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Sites\Default\Themes\Skyline\MenuStyles\SiteSide.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Sites\Default\Themes\Skyline\_SiteFooter.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
     <Exec Command="npm install" />
     <Exec Command="bower install" />
