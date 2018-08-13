@@ -29,7 +29,7 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                //ApplicationManager.Instance.Restart();
+                ApplicationManager.Instance.Restart();
                 return Ok(new { status = "Application has been restarted" });
             }
             catch (Exception ex)
