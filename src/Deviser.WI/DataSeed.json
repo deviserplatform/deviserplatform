@@ -197,36 +197,6 @@
     "SortOrder": 0,
     "AllRecords": [
       {
-        "Id": "388b34ed-803a-48ad-6618-08d360bcd031",
-        "CreatedDate": "2016-04-09T23:20:37.487",
-        "CultureCode": "de-CH",
-        "EnglishName": "German (Switzerland)",
-        "FallbackCulture": "en-US",
-        "IsActive": false,
-        "LastModifiedDate": "2016-04-09T23:20:37.487",
-        "NativeName": "Deutsch (Schweiz)"
-      },
-      {
-        "Id": "1350c0b2-634e-4e81-6619-08d360bcd031",
-        "CreatedDate": "2016-04-09T23:24:04.597",
-        "CultureCode": "fr-CH",
-        "EnglishName": "French (Switzerland)",
-        "FallbackCulture": "en-US",
-        "IsActive": false,
-        "LastModifiedDate": "2016-04-09T23:24:04.597",
-        "NativeName": "français (Suisse)"
-      },
-      {
-        "Id": "d17b0b1f-129c-4bd8-1848-08d3f060a575",
-        "CreatedDate": "2016-10-09T18:23:47.28",
-        "CultureCode": "ta-IN",
-        "EnglishName": "Tamil (India)",
-        "FallbackCulture": "en-US",
-        "IsActive": false,
-        "LastModifiedDate": "2016-10-09T18:23:47.28",
-        "NativeName": "தமிழ் (இந்தியா)"
-      },
-      {
         "Id": "4a8a96c4-b125-433a-b0b7-e8ddbcfaa381",
         "CreatedDate": null,
         "CultureCode": "en-US",
