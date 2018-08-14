@@ -29,6 +29,6 @@ More excited? [Get Started here.](https://www.deviser.io/docs/guide/get-started.
 
 
 ##Contribute to Deviser
-Deviser is contribution focused and community driven. If you want to contribute back to Umbraco please check out our [guide to contributing](CONTRIBUTING.md).
+Deviser is community focused. Would you like to contribute? feel free to check out [guide to contributing](CONTRIBUTING.md).
 
 Everyone interacting in Deviser and its sub-projects' codebases, issue trackers, chat rooms, and mailing lists is expected to follow the Deviser [code of conduct](https://www.deviser.io/codeofconduct).

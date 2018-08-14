@@ -1,6 +1,6 @@
 ﻿# How to contribute
 
-We are commited to fostering a welcomming community. The easist way to contribute is to participate in discussions and discuss the issues.
+Deviser is commited to fostering a welcomming community. The easist way to contribute is to participate in discussions and discuss the issues.
 
 ## Getting Started
 1. Make sure you have a [GitHub account](https://github.com/signup/free).
@@ -10,7 +10,7 @@ We are commited to fostering a welcomming community. The easist way to contribut
 ### Reporting Bugs
 Have you found a bug? No problem!
 1. Just [Submit a ticket](https://github.com/deviserplatform/deviserplatform/issues/new) for your issue if one does not already exist. Kindly use the bug filing template shown below.
-2. Start discussing on it.
+2. Jump into the discussion.
 3. Get fixes.
 
 ### Helping each other
@@ -20,18 +20,18 @@ Have you found a bug? No problem!
 
 ### Code contribution
 1. Open one of the [issues](https://github.com/deviserplatform/deviserplatform/issues)
-2. Start a discussion on it. 
-3. Once agreed on the stable solution, fork the main repository
+2. Jump into the discussion. 
+3. Once agreed on the stable solution, fork the main repository.
 4. Create a separate branch.
 5. Implement/Fix the issue. 
-6. Build and Test the application
-7. Push it to your local repository
+6. Build and test the application.
+7. Push it to your local repository.
 8. Submit the pull request.
 
 Once the pull requestion is submitted, it will be reviewed and approved by our team members. 
 
 ## Bugs filing template
-To fix the bug in an efficeint way, kindly use this template and describe the issue as detaild as you can.
+To fix the bug in an efficeint way, kindly use this template and describe the issue as clear as possible.
 
 ```
 ### Title
