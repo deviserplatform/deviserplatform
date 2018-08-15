@@ -7,11 +7,14 @@ Deviser is commited to fostering a welcomming community. The easist way to contr
 2. Read the [documentation](https://www.deviser.io/docs/guide/intro.html)
 3. You can contribute in following ways
 
-### Reporting Bugs
-Have you found a bug? No problem!
-1. Just [Submit a ticket](https://github.com/deviserplatform/deviserplatform/issues/new) for your issue if one does not already exist. Kindly use the bug filing template shown below.
+### Bugs and feature requests?
+For non-security related bugs, please log a new issue.
+1. [Submit a ticket](https://github.com/deviserplatform/deviserplatform/issues/new) for your issue if one does not already exist. Kindly use the bug filing template shown below.
 2. Jump into the discussion.
-3. Get fixes.
+3. Get featues/fixes.
+
+### Reporting security issues and bugs
+Security issues and bugs should be reported privately, via email to [secure@deviser.io](mailto:secure@deviser.io?subject=Deviser Security Issue). Response should be received within 24 hours. Unlikely, if there is no response, please follow up via email to ensure we received your original message.
 
 ### Helping each other
 1. Open one of the [issues](https://github.com/deviserplatform/deviserplatform/issues)
