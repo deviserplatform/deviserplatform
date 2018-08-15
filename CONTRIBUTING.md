@@ -4,7 +4,7 @@ Deviser is commited to fostering a welcomming community. The easist way to contr
 
 ## Getting Started
 1. Make sure you have a [GitHub account](https://github.com/signup/free).
-2. Read the [documentation](https://www.deviser.io/docs/guide/intro.html)
+2. Read the [documentation](https://www.deviser.io/docs/guide/get-started.html)
 3. You can contribute in following ways
 
 ### Bugs and feature requests?
