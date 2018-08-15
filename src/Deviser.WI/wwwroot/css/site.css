@@ -6936,17 +6936,15 @@ body {
     align-items: center; }
     .swiper-container .swiper-slide img {
       width: 100%; }
-    .swiper-container .swiper-slide .caption {
-      right: 20%;
-      left: 20%;
-      padding-bottom: 30px;
+    .swiper-container .swiper-slide .carousel-caption {
+      background: rgba(0, 0, 0, 0.7);
       position: absolute;
-      right: 15%;
-      bottom: 20px;
-      left: 15%;
+      right: 0;
+      bottom: 0;
+      left: 0;
       z-index: 10;
       padding-top: 20px;
-      padding-bottom: 20px;
+      padding-bottom: 30px;
       color: #fff;
       text-align: center; }
   .swiper-container .swiper-pagination-bullet-active {
@@ -7180,7 +7178,9 @@ body {
   .banner {
     background-size: 150%; }
   .content-wrapper .img-statistics {
-    width: 100%; } }
+    width: 100%; }
+  .swiper-container {
+    height: 40vh; } }
 
 @media (max-width: 767.98px) {
   .banner {
@@ -7200,4 +7200,8 @@ body {
   .content-wrapper .why-deviser h1, .content-wrapper .why-deviser h2, .content-wrapper .about-deviser h1, .content-wrapper .about-deviser h2, .content-wrapper .about-vision h1, .content-wrapper .about-vision h2, .content-wrapper .about-mission h1, .content-wrapper .about-mission h2 {
     text-align: center; }
   .content-wrapper .why-deviser, .content-wrapper .about-deviser, .content-wrapper .about-mission {
-    flex-direction: column-reverse; } }
+    flex-direction: column-reverse; }
+  .swiper-container {
+    height: 30vh; }
+    .swiper-container h1, .swiper-container .h1 {
+      font-size: 1.8rem; } }

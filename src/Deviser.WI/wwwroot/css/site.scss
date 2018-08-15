@@ -44,7 +44,7 @@
 
 
 $devPrimary: rgb(239, 73, 52);
-$devPrimaryDark: darken($devPrimary, 25%); 
+$devPrimaryDark: darken($devPrimary, 25%);
 $devWhite: rgb(255, 255, 255);
 $lightGrey: rgb(245,245,246);
 $lightGreyTransparent: rgba(245,245,246, 0.8);
@@ -374,17 +374,15 @@ body {
             width: 100%;
         }
 
-        .caption {
-            right: 20%;
-            left: 20%;
-            padding-bottom: 30px;
+        .carousel-caption {
+            background: rgba(0, 0, 0, 0.7);
             position: absolute;
-            right: 15%;
-            bottom: 20px;
-            left: 15%;
+            right: 0;
+            bottom: 0;
+            left: 0;
             z-index: 10;
             padding-top: 20px;
-            padding-bottom: 20px;
+            padding-bottom: 30px;
             color: #fff;
             text-align: center;
         }
@@ -616,8 +614,8 @@ body {
         border-style: solid;
     }
 
-    .demo-img{
-        width:100%;
+    .demo-img {
+        width: 100%;
     }
 }
 
@@ -766,6 +764,10 @@ body {
             width: 100%;
         }
     }
+
+    .swiper-container {
+        height: 40vh;
+    }
 }
 
 
@@ -818,6 +820,14 @@ body {
 
         .why-deviser, .about-deviser, .about-mission {
             flex-direction: column-reverse
+        }
+    }
+
+    .swiper-container {
+        height: 30vh;
+
+        h1, .h1 {
+            font-size: 1.8rem;
         }
     }
 }
