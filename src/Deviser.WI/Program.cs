@@ -94,7 +94,7 @@ namespace Deviser.WI
                 if (!_running)
                     return;
 
-                _tokenSource.Cancel();
+                _tokenSource.Cancel(throwOnFirstException: false);
                 await _WebHost.WaitForShutdownAsync(_tokenSource.Token);
                 _running = false;
             }
