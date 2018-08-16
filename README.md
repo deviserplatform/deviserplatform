@@ -23,7 +23,7 @@ More excited? [Get Started here.](https://www.deviser.io/docs/guide/get-started.
 1. Install [.NET Core SDK](https://www.microsoft.com/net/download)
 2. Install [Node.js](https://nodejs.org)
 3. Clone this repository
-`git clone https://github.com/deviserplatform/deviserplatform/`
+`git clone https://github.com/deviserplatform/deviserplatform.git`
 4. Run Deviser Platform 
 `dotnet run`
 5. Get an editor (Preferred IDE: Visual Studio or Visual Studio Code)
