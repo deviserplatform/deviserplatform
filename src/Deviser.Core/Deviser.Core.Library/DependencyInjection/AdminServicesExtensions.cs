@@ -140,27 +140,21 @@ namespace Deviser.Core.Library.DependencyInjection
         {
             //var defaultRequestCulture = new RequestCulture(new CultureInfo(enUSCulture));
 
-
-            var languageRepository = container.Resolve<ILanguageRepository>();
-            var activeLangauges = languageRepository.GetActiveLanguages();
-            var supportedCultures = activeLangauges.Select(al => new CultureInfo(al.CultureCode)).ToArray();
-
-            //var supportedCultures = new[]
-            //{
-            //    new CultureInfo("en-US"),
-            //    new CultureInfo("de-CH"),
-            //    new CultureInfo("fr-CH"),
-            //    new CultureInfo("it-CH")
-            //};
-
-            var requestLocalizationOptions = new RequestLocalizationOptions
+            var installationProvider = container.Resolve<IInstallationProvider>();
+            if (installationProvider.IsPlatformInstalled)
             {
-                //DefaultRequestCulture = defaultRequestCulture,
-                SupportedCultures = supportedCultures,
-                SupportedUICultures = supportedCultures
-            };
+                var languageRepository = container.Resolve<ILanguageRepository>();
+                var activeLangauges = languageRepository.GetActiveLanguages();
+                var supportedCultures = activeLangauges.Select(al => new CultureInfo(al.CultureCode)).ToArray();
 
-            app.UseRequestLocalization(requestLocalizationOptions);
+                var requestLocalizationOptions = new RequestLocalizationOptions
+                {
+                    //DefaultRequestCulture = defaultRequestCulture,
+                    SupportedCultures = supportedCultures,
+                    SupportedUICultures = supportedCultures
+                };
+                app.UseRequestLocalization(requestLocalizationOptions);
+            }
 
             app.UseHttpsRedirection();
 

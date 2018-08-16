@@ -1,0 +1,18 @@
+<Project>
+  <PropertyGroup>
+    <Copyright>Copyright © Karthick Sundararajan</Copyright>
+    <Product>Deviser Platform</Product>
+    <Description>This project contains a set of core services, business logic, validations or calculations related with the data, if needed. Some people call it Business Access Layer (BAL).</Description>
+    <PackageLicenseUrl>https://www.deviser.io/install/terms</PackageLicenseUrl>
+    <PackageProjectUrl>https://www.deviser.io/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/aspnet/Mvc</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Company>Deviser.IO</Company>
+    <Authors>Karthick Sundararajan</Authors>
+        
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix>alpha</VersionSuffix>
+    <ExperimentalVersionPrefix>0.1.0</ExperimentalVersionPrefix>
+    <ExperimentalVersionSuffix>rtm</ExperimentalVersionSuffix>    
+  </PropertyGroup>
+</Project>

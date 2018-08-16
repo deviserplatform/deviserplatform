@@ -9,42 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!--<Content Include="Modules\**\*" CopyToPublishDirectory="PreserveNewest"></Content>
-    <Content Include="Sites\**\*" CopyToPublishDirectory="PreserveNewest"></Content>
-    <Content Include="Views\*" CopyToPublishDirectory="PreserveNewest"></Content>-->
     <None Update="Views\**\*;Modules\**\*;Sites\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <Content Update="installconfig.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
-
-  <!--<ItemGroup>
-    <Compile Remove="log\**" />
-    <Content Remove="log\**" />
-    <EmbeddedResource Remove="log\**" />
-    <None Remove="log\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="wwwroot\assets\images\DSC_5892.JPG" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="installconfig.json__" />
-    <None Remove="Migrations\20180528155737_InitialPlatformSchema.cs_" />
-    <None Remove="Migrations\20180528155737_InitialPlatformSchema.Designer.cs_" />
-    <None Remove="Migrations\DeviserDBContextModelSnapshot.cs_" />
-    <None Remove="Properties\PublishProfiles\release-to-folder.pubxml" />
-    <None Remove="Properties\PublishProfiles\skydevise - web deploy.pubxml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="installconfig.json__" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="wwwroot\**\*;Views\**\*;Modules\**\*;Sites\**\*">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </None>
-  </ItemGroup>-->
-
+  
   <ItemGroup>
     <ProjectReference Include="..\Deviser.Core\Deviser.Core.Common\Deviser.Core.Common.csproj" />
     <ProjectReference Include="..\Deviser.Core\Deviser.Core.Data\Deviser.Core.Data.csproj" />

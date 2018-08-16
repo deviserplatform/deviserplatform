@@ -35,7 +35,7 @@ namespace Deviser.Core.Library.Test.Controllers
             var pageManager = new PageManager(_container);
             var dbContext = _serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageId = SetupPageAndModules();
-            var currentPage = pageManager.GetPage(pageId);
+            var currentPage = pageManager.GetPageAndDependencies(pageId);
             scopeServiceMock.Setup(s => s.PageContext.CurrentPage).Returns(currentPage);
             actionContextMock.Setup(ac => ac.RouteData.Routers).Returns(new List<IRouter>());
             var deviserControllerFactory = new DeviserControllerFactory(_container, scopeServiceMock.Object);
@@ -78,7 +78,7 @@ namespace Deviser.Core.Library.Test.Controllers
             var pageId = SetupPageAndModules();
             dbContext.PageModule.RemoveRange(dbContext.PageModule);
             dbContext.SaveChanges();
-            var currentPage = pageManager.GetPage(pageId);
+            var currentPage = pageManager.GetPageAndDependencies(pageId);
             scopeServiceMock.Setup(s => s.PageContext.CurrentPage).Returns(currentPage);
             actionContextMock.Setup(ac => ac.RouteData.Routers).Returns(new List<IRouter>());
             var deviserControllerFactory = new DeviserControllerFactory(_container, scopeServiceMock.Object);
@@ -106,7 +106,7 @@ namespace Deviser.Core.Library.Test.Controllers
             var moduleRepository = new ModuleRepository(_container);
             var dbContext = _serviceProvider.GetRequiredService<DeviserDbContext>();
             var pageId = SetupPageAndModules();
-            var currentPage = pageManager.GetPage(pageId);
+            var currentPage = pageManager.GetPageAndDependencies(pageId);
             scopeServiceMock.Setup(s => s.PageContext.CurrentPage).Returns(currentPage);
 
 
@@ -153,7 +153,7 @@ namespace Deviser.Core.Library.Test.Controllers
             var pageId = SetupPageAndModules();
             dbContext.PageModule.RemoveRange(dbContext.PageModule);
             dbContext.SaveChanges();
-            var currentPage = pageManager.GetPage(pageId);
+            var currentPage = pageManager.GetPageAndDependencies(pageId);
             scopeServiceMock.Setup(s => s.PageContext.CurrentPage).Returns(currentPage);
             actionContextMock.Setup(ac => ac.RouteData.Routers).Returns(new List<IRouter>());
             var deviserControllerFactory = new DeviserControllerFactory(_container, scopeServiceMock.Object);
