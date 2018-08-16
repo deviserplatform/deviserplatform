@@ -29,7 +29,7 @@ More excited? [Get Started here.](https://www.deviser.io/docs/guide/get-started.
 5. Get an editor (Preferred IDE: Visual Studio or Visual Studio Code)
 
 
-##Contribute to Deviser
+## Contribute to Deviser
 Deviser is community focused. Would you like to contribute? feel free to check out [guide to contributing](CONTRIBUTING.md).
 
 Everyone interacting in Deviser and its sub-projects' codebases, issue trackers, chat rooms, and mailing lists is expected to follow the Deviser [code of conduct](https://www.deviser.io/codeofconduct).
