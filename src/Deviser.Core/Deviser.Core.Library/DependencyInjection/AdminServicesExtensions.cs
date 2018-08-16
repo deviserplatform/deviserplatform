@@ -139,13 +139,19 @@ namespace Deviser.Core.Library.DependencyInjection
         public static IApplicationBuilder UseDeviserPlatform(this IApplicationBuilder app, ILifetimeScope container)
         {
             //var defaultRequestCulture = new RequestCulture(new CultureInfo(enUSCulture));
-            var supportedCultures = new[]
-            {
-                new CultureInfo("en-US"),
-                new CultureInfo("de-CH"),
-                new CultureInfo("fr-CH"),
-                new CultureInfo("it-CH")
-            };
+
+
+            var languageRepository = container.Resolve<ILanguageRepository>();
+            var activeLangauges = languageRepository.GetActiveLanguages();
+            var supportedCultures = activeLangauges.Select(al => new CultureInfo(al.CultureCode)).ToArray();
+
+            //var supportedCultures = new[]
+            //{
+            //    new CultureInfo("en-US"),
+            //    new CultureInfo("de-CH"),
+            //    new CultureInfo("fr-CH"),
+            //    new CultureInfo("it-CH")
+            //};
 
             var requestLocalizationOptions = new RequestLocalizationOptions
             {

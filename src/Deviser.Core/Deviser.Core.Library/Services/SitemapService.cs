@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.Xml;
 using System.Globalization;
+using Deviser.Core.Common;
 
 namespace Deviser.Core.Library.Services
 {
@@ -54,9 +55,14 @@ namespace Deviser.Core.Library.Services
                 }
             }
 
-            using (var stringWriter = new StringWriter())
+            
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.Encoding = Encoding.UTF8;
+
+            using (var stringWriter = new StringWriterUtf8())
             {
-                using (var writer = XmlWriter.Create(stringWriter))
+                using (var writer = XmlWriter.Create(stringWriter, settings))
                 {
                     // build header
                     writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/" + SITEMAP_VERSION);
@@ -76,8 +82,6 @@ namespace Deviser.Core.Library.Services
                 }
                 return stringWriter.ToString();
             }
-
-            return null;
         }
 
         private SitemapUrl GetSitemapUrl(Page page)
