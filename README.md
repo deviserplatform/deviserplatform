@@ -17,7 +17,11 @@ Deviser is an open-source unique platform to develop modern web applications and
 2. Developers to build modular web applications faster.
 3. Front-End developers to build websites faster.
 
-More excited? [Get Started here.](https://www.deviser.io/docs/guide/get-started.html)
+## Documentation
+Follow the guidelines to start developing your applications:
+* [Getting Started](https://www.deviser.io/docs/guide/get-started.html)
+* [Concepts](https://www.deviser.io/docs/guide/concepts.html)
+* [Create my frist page](https://www.deviser.io/docs/guide/pages/index.html)
 
 ## Build from source
 1. Install [.NET Core SDK](https://www.microsoft.com/net/download)
