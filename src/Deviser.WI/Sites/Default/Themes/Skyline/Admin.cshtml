@@ -57,7 +57,8 @@
 <require type="Css" exclude="Development" priority="11" path="~/release/deviser.min.css" test="test"></require>
 
 <require type="Script" exclude="Development" location="Head" priority="11" path="~/release/deviserlib.min.js"></require>
-<require type="Script" exclude="Development" location="Head" priority="12" path="~/release/deviserapp.min.js"></require>
+<require type="Script" exclude="Development" location="Head" priority="12" path="~/js/bootstrap.min.js"></require>
+<require type="Script" exclude="Development" location="Head" priority="13" path="~/release/deviserapp.min.js"></require>
 
 
 @await Component.InvokeAsync("ControlBar")
@@ -95,7 +96,7 @@
                 <div class="col-md-12">
                     <div class="text-center">
                         <p>
-                            Copyright &copy; @DateTime.Now.Year Karthick Sundararajan. Released on <a href="https://github.com/deviserplatform/deviserplatform" title="Source" target="_blank"> <i class="fa fa-github"></i></a> 
+                            Copyright &copy; @DateTime.Now.Year Karthick Sundararajan. Released on <a href="https://github.com/deviserplatform/deviserplatform" title="Source" target="_blank"> <i class="fa fa-github"></i></a>
                             under the <a href="/install/License" title="License" target="_blank">MIT License</a>
                         </p>
                     </div>

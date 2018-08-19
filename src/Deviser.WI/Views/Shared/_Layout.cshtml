@@ -1,12 +1,29 @@
-﻿<!DOCTYPE html>
-<html>
+﻿@inject IScopeService scopeService
+@inject INavigation navigation
+@{
+    var pageContext = scopeService.PageContext;
+    var currentLang = pageContext.CurrentCulture.TwoLetterISOLanguageName;
+    var currentAbsUrl = navigation.NavigateAbsoluteUrl(pageContext.CurrentPage);
+}
+<!DOCTYPE html>
+<html lang="@currentLang">
 <head>
     <meta charset="utf-8" />
     <title>@ViewData["Title"]</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta property="og:title" content="@ViewData["Title"]" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="@currentAbsUrl" />
+    <meta property="og:description" content="@ViewData["Description"]" />
+
     <meta name="DESCRIPTION" content="@ViewData["Description"]" />
     <meta name="KEYWORDS" content="@ViewData["Keywords"]" />
     <meta name="ROBOTS" content="INDEX, FOLLOW" />
+
+    @Html.Raw(ViewBag.SiteHeaderTags)
+
+    @Html.Raw(ViewBag.PageHeaderTags)
 
     <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png">

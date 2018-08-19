@@ -21,5 +21,6 @@ namespace Deviser.Core.Library
         string NavigateUrl(string pageId, string locale = null);
         string NavigateUrl(Guid pageId, string locale = null);
         string NavigateUrl(Page page, string locale = null);
+        string NavigateAbsoluteUrl(Page page, string locale = null);
     }
 }

@@ -6,5 +6,6 @@ namespace Deviser.Core.Library.Sites
     {
         SMTPSetting GetSMTPSetting();
         SiteSettingInfo GetSiteSetting();
+        string GetSettingValue(string settingName);
     }
 }

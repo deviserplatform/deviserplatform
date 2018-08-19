@@ -913,6 +913,11 @@
         "SettingValue": "false"
       },
       {
+        "Id": "702363da-e64a-4c37-86db-bdabe67a8e92",
+        "SettingName": "SiteHeaderTags",
+        "SettingValue": ""
+      },
+      {
         "Id": "ebd27836-16b2-4135-86ec-cfbd5234f704",
         "SettingName": "SiteRoot",
         "SettingValue": "/"

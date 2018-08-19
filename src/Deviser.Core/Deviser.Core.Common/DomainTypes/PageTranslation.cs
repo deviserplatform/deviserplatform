@@ -16,5 +16,6 @@ namespace Deviser.Core.Common.DomainTypes
         public string URL { get; set; }
         public string RedirectUrl { get; set; }
         public bool IsLinkNewWindow { get; set; }
+        public string PageHeaderTags { get; set; }
     }
 }

@@ -22,6 +22,7 @@ namespace Deviser.Core.Library
         private readonly ILogger<LayoutRepository> _logger;
         private readonly ILanguageRepository _languageRepository;
         private readonly IScopeService _scopeService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private Page activePage = null;
         private List<Page> breadcrumbs = null;
@@ -33,6 +34,7 @@ namespace Deviser.Core.Library
             _logger = container.Resolve<ILogger<LayoutRepository>>();
             _languageRepository = container.Resolve<ILanguageRepository>();
             _scopeService = container.Resolve<IScopeService>();
+            _httpContextAccessor = container.Resolve<IHttpContextAccessor>();
         }
 
         public Page GetPageTree()
@@ -381,6 +383,18 @@ namespace Deviser.Core.Library
                 }
             }
             return string.Empty;
+        }
+
+        public string NavigateAbsoluteUrl(Page page, string locale = null)
+        {
+            var isSecureConnection = _httpContextAccessor.HttpContext.Request.IsHttps;
+            var requestHost = _httpContextAccessor.HttpContext.Request.Host.Host;
+            var scheme = isSecureConnection ? "https://" : "http://";
+            var protocolHost = scheme + requestHost;
+
+            var relativePath = NavigateUrl(page, locale);
+
+            return protocolHost + relativePath;
         }
         #endregion
 

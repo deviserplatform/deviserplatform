@@ -71,6 +71,12 @@
                                             <input class="form-control" name="SiteRoot" ng-model="ssVM.setting.SiteRoot.settingValue" />
                                         </div>
                                     </div>
+                                    <div class="form-group" ng-class="{'has-error':ssVM.hasError(propertyForm, 'label', 'required')}">
+                                        <label class="col-md-3 control-label">Site Header Tags</label>
+                                        <div class="col-md-6">
+                                            <textarea class="form-control" rows="5" ng-model="ssVM.setting.SiteHeaderTags.settingValue"></textarea>
+                                        </div>
+                                    </div>
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">Site Language</label>
                                         <div class="col-md-6">

@@ -158,6 +158,13 @@
                                         </a>
                                     </div>
                                 </div>
+                                <div class="form-group" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.standard.id">
+                                    <label class="col-sm-4 control-label">Page header tags</label>
+                                    <div class="col-sm-8">
+                                        <textarea type="text" class="form-control" placeholder="Enter page header tags" ng-model="translation.pageHeaderTags" rows="4"></textarea>
+                                    </div>
+                                </div>
+                                
                             </div>
                             <div class="form-horizontal edit-page">
                                 <div class="form-group">

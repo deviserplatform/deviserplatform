@@ -89,5 +89,18 @@ namespace Deviser.Core.Library.Sites
             }
             return null;
         }
+
+        public string GetSettingValue(string settingName)
+        {
+            try
+            {
+                return _siteSettingRepository.GetSettingValue(settingName);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while getting GetSettings", ex);
+            }
+            return null;
+        }
     }
 }
