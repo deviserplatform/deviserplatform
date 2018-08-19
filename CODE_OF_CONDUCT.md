@@ -6,4 +6,4 @@ Deviser is committed to fostering a welcoming community. If you encounter any un
 
 **Our Code of Conduct can be found here**:
 
-http://deviser.io/conduct/
+https://www.deviser.io/codeofconduct
