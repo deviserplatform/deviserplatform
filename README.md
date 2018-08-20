@@ -28,10 +28,14 @@ Follow the guidelines to start developing your applications:
 2. Install [Node.js](https://nodejs.org)
 3. Clone this repository
 `git clone https://github.com/deviserplatform/deviserplatform.git`
-4. Run Deviser Platform 
+4. Change the current working directory to `.\deviserplatform\src\Deviser.WI\`
+`cd .\deviserplatform\src\Deviser.WI\`
+5. Run Deviser Platform 
 `dotnet run`
-5. Get an editor (Preferred IDE: Visual Studio or Visual Studio Code)
+6. Open the url `https://localhost:5000`
+7. Follow the installation wizzard.
 
+To play around with source code, get an editor (Preferred IDE: Visual Studio or Visual Studio Code). 
 
 ## Contribute to Deviser
 Deviser is community focused. Would you like to contribute? feel free to check out [guide to contributing](CONTRIBUTING.md).
