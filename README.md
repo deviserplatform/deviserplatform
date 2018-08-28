@@ -21,19 +21,24 @@ Deviser is an open-source unique platform to develop modern web applications and
 Follow the guidelines to start developing your applications:
 * [Getting Started](https://www.deviser.io/docs/guide/get-started.html)
 * [Concepts](https://www.deviser.io/docs/guide/concepts.html)
-* [Create my frist page](https://www.deviser.io/docs/guide/pages/index.html)
+* [Create my first page](https://www.deviser.io/docs/guide/pages/index.html)
 
 ## Build from source
 1. Install [.NET Core SDK](https://www.microsoft.com/net/download)
 2. Install [Node.js](https://nodejs.org)
-3. Clone this repository
+3. Install Bower
+`npm install -g bower`
+4. Clone this repository
 `git clone https://github.com/deviserplatform/deviserplatform.git`
-4. Change the current working directory to `.\deviserplatform\src\Deviser.WI\`
+5. Change the current working directory to `.\deviserplatform\src\Deviser.WI\`
 `cd .\deviserplatform\src\Deviser.WI\`
-5. Run Deviser Platform 
+6. Install Node.js and bower packages.
+`npm install`
+`bower install`
+7. Run Deviser Platform 
 `dotnet run`
-6. Open the url `https://localhost:5000`
-7. Follow the installation wizzard.
+8. Open the url `https://localhost:5000`
+9. Follow the installation wizzard.
 
 To play around with source code, get an editor (Preferred IDE: Visual Studio or Visual Studio Code). 
 
