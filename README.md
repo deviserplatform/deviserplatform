@@ -2,7 +2,7 @@
 ## Welcome to Deviser Platform
 An open-source, cross-platform, rapid application and web content development framework [https://www.deviser.io](https://www.deviser.io)
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/_dFH5SdDZyY/0.jpg)](https://www.youtube.com/watch?v=_dFH5SdDZyY)
+[![IMAGE ALT TEXT HERE](https://www.deviser.io/assets/images/video_snapshot.png)](https://www.youtube.com/watch?v=_dFH5SdDZyY)
 
 ### About
 Deviser is an open-source unique platform to develop modern web applications and web content management systems based on ASP.NET Core that runs on Windows, Linux and macOS . This platform enables developers to create modern web applications and empowers any user groups to create dynamic contents by just drag-and-drop on a dynamic layout in no time. Deviser Platform is completely free and Open Source on Github. [Read more](https://www.deviser.io/About) about the project **Vision** and **Mission.**
