@@ -6448,11 +6448,11 @@ a.text-dark:hover, a.text-dark:focus {
    * Minus
    */
 .hamburger--minus .hamburger-inner::before, .hamburger--minus .hamburger-inner::after {
-  transition: bottom 0.08s 0s ease-out, top 0.08s 0s ease-out, opacity 0s linear; }
+  transition: bottom 0.08s 0s ease-out, top 0.08s 0s ease-out, opacity 0s linear; }
 
 .hamburger--minus.is-active .hamburger-inner::before, .hamburger--minus.is-active .hamburger-inner::after {
   opacity: 0;
-  transition: bottom 0.08s ease-out, top 0.08s ease-out, opacity 0s 0.08s linear; }
+  transition: bottom 0.08s ease-out, top 0.08s ease-out, opacity 0s 0.08s linear; }
 
 .hamburger--minus.is-active .hamburger-inner::before {
   top: 0; }
@@ -6509,7 +6509,7 @@ a.text-dark:hover, a.text-dark:focus {
   transition-duration: 0.22s;
   transition-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19); }
   .hamburger--spin .hamburger-inner::before {
-    transition: top 0.1s 0.25s ease-in, opacity 0.1s ease-in; }
+    transition: top 0.1s 0.25s ease-in, opacity 0.1s ease-in; }
   .hamburger--spin .hamburger-inner::after {
     transition: bottom 0.1s 0.25s ease-in, transform 0.22s cubic-bezier(0.55, 0.055, 0.675, 0.19); }
 
@@ -6520,7 +6520,7 @@ a.text-dark:hover, a.text-dark:focus {
   .hamburger--spin.is-active .hamburger-inner::before {
     top: 0;
     opacity: 0;
-    transition: top 0.1s ease-out, opacity 0.1s 0.12s ease-out; }
+    transition: top 0.1s ease-out, opacity 0.1s 0.12s ease-out; }
   .hamburger--spin.is-active .hamburger-inner::after {
     bottom: 0;
     transform: rotate(-90deg);
@@ -6533,7 +6533,7 @@ a.text-dark:hover, a.text-dark:focus {
   transition-duration: 0.22s;
   transition-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19); }
   .hamburger--spin-r .hamburger-inner::before {
-    transition: top 0.1s 0.25s ease-in, opacity 0.1s ease-in; }
+    transition: top 0.1s 0.25s ease-in, opacity 0.1s ease-in; }
   .hamburger--spin-r .hamburger-inner::after {
     transition: bottom 0.1s 0.25s ease-in, transform 0.22s cubic-bezier(0.55, 0.055, 0.675, 0.19); }
 
@@ -6544,7 +6544,7 @@ a.text-dark:hover, a.text-dark:focus {
   .hamburger--spin-r.is-active .hamburger-inner::before {
     top: 0;
     opacity: 0;
-    transition: top 0.1s ease-out, opacity 0.1s 0.12s ease-out; }
+    transition: top 0.1s ease-out, opacity 0.1s 0.12s ease-out; }
   .hamburger--spin-r.is-active .hamburger-inner::after {
     bottom: 0;
     transform: rotate(90deg);
@@ -6656,7 +6656,7 @@ a.text-dark:hover, a.text-dark:focus {
   transition-duration: 0.075s;
   transition-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19); }
   .hamburger--squeeze .hamburger-inner::before {
-    transition: top 0.075s 0.12s ease, opacity 0.075s ease; }
+    transition: top 0.075s 0.12s ease, opacity 0.075s ease; }
   .hamburger--squeeze .hamburger-inner::after {
     transition: bottom 0.075s 0.12s ease, transform 0.075s cubic-bezier(0.55, 0.055, 0.675, 0.19); }
 
@@ -6667,7 +6667,7 @@ a.text-dark:hover, a.text-dark:focus {
   .hamburger--squeeze.is-active .hamburger-inner::before {
     top: 0;
     opacity: 0;
-    transition: top 0.075s ease, opacity 0.075s 0.12s ease; }
+    transition: top 0.075s ease, opacity 0.075s 0.12s ease; }
   .hamburger--squeeze.is-active .hamburger-inner::after {
     bottom: 0;
     transform: rotate(-90deg);
@@ -6747,6 +6747,29 @@ body {
 .form-control:focus, .btn:focus, .btn.focus, .btn-primary:focus, .btn-primary.focus,
 .btn:not(:disabled):not(.disabled):active:focus, .btn:not(:disabled):not(.disabled).active:focus, .show > .btn.dropdown-toggle:focus {
   box-shadow: none; }
+
+.progress-overlay {
+  background: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  align-items: center;
+  justify-content: center;
+  display: flex; }
+  .progress-overlay .progress-container .progress-loading {
+    justify-content: center;
+    display: flex; }
+    .progress-overlay .progress-container .progress-loading svg {
+      height: 100px; }
+      .progress-overlay .progress-container .progress-loading svg rect {
+        fill: #ef4934; }
+  .progress-overlay .progress-container .progress-text {
+    color: #fff;
+    font-size: 1.5em;
+    text-align: center;
+    padding-top: 15px; }
 
 .banner {
   background: url(/assets/images/banner-bg2.jpg) no-repeat;

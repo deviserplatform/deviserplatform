@@ -5,16 +5,17 @@
     'ui.bootstrap',
     'ui.select',
     'dev.sdlib',
+    'dev.modal',
     'deviser.services',
     'deviser.config'
     ]);
 
-    app.controller('SiteSettingsCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'devUtil',
+    app.controller('SiteSettingsCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'devUtil', 'modalService',
         'siteSettingService', 'pageService', 'layoutService', 'themeService', 'languageService', 'applicationService', siteSettingsCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
-    function siteSettingsCtrl($scope, $timeout, $filter, $q, globals, devUtil,
+    function siteSettingsCtrl($scope, $timeout, $filter, $q, globals, devUtil, modalService,
         siteSettingService, pageService, layoutService, themeService, languageService, applicationService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
@@ -53,10 +54,17 @@
 
         function restartApplication() {
             applicationService.restart().then(function (result) {
-                location.reload();
+                reloadAfterRestart();
             }, function (error) {
-                showMessage("error", "Cannot update site setting please contact administrator");
-            })
+                reloadAfterRestart();
+            });
+        }
+
+        function reloadAfterRestart() {
+            modalService.showProgressModel('Please wait...');
+            setTimeout(function () {
+                location.reload();
+            }, 5000);
         }
 
         function cancel() {

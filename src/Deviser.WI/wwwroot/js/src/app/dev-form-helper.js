@@ -11,7 +11,7 @@
     function init() {
         /*Event bindings*/
         $("body").on("submit", "form.dev-form", formSubmit);
-        $("body").on("click", "a.dev-ajax-load", ajaxAnchorClick)
+        $("body").on("click", "a.dev-ajax-load", ajaxAnchorClick);
     }
 
 

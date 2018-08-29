@@ -105,7 +105,7 @@ body {
 }
 
 // After all the bootstrap css
-.glyphicon { 
+.glyphicon {
     display: inline-block;
     font-family: FontAwesome;
     font-style: normal;
@@ -697,8 +697,8 @@ Customized Bootstrap Tables
 /*Form control*/
 /***********************************************************/
 
-.form-control{
-    height:inherit;
+.form-control {
+    height: inherit;
 }
 
 .btn, .input-group-addon, .form-control {
@@ -937,7 +937,7 @@ body.page-edit {
         .edit-wrapper {
             overflow-y: auto;
             max-height: 80vh;
-            overflow-x:hidden;
+            overflow-x: hidden;
         }
 
         .toolbox {
@@ -1251,7 +1251,8 @@ body.edit-content-modal {
 /*Image manager*/
 .image-manager {
     .image-preview-container {
-        display:table;
+        display: table;
+
         .image-preview-header {
             float: right;
 
@@ -1322,6 +1323,43 @@ body.edit-content-modal {
         border-right: 1px solid #ddd;
         border-bottom: 1px solid #ddd;
         padding: 10px;
+    }
+}
+
+.progress-model {
+    .modal-dialog {
+        margin: 40vh 30%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        .modal-content {
+            background-color: unset;
+            border: none;
+            box-shadow: none;
+            background-clip: unset;
+            -webkit-box-shadow: none;
+        }
+
+        .progress-loading {
+            svg {
+                margin: 0 38%;
+                height: 100px;
+
+                rect {
+                    fill: $devPrimary;
+                }
+            }
+        }
+
+        .progress-text {
+            color: #fff;
+            font-size: 1.5em;
+            text-align: center;
+            padding-top: 15px;
+        }
     }
 }
 

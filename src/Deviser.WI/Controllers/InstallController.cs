@@ -16,6 +16,7 @@ using Deviser.Core.Data.Repositories;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using static Deviser.WI.Program;
+using Microsoft.AspNetCore.Http;
 
 namespace Deviser.WI.Controllers
 {
@@ -63,7 +64,7 @@ namespace Deviser.WI.Controllers
         public IActionResult Index(InstallModel installModel)
         {
             if (_installationProvider.IsPlatformInstalled)
-                return RedirectToAction("Index", "Page");
+                return new StatusCodeResult(StatusCodes.Status405MethodNotAllowed);
 
             if (ModelState.IsValid)
             {
@@ -74,21 +75,34 @@ namespace Deviser.WI.Controllers
                 {
                     _installationProvider.InstallPlatform(installModel);
                     ApplicationManager.Instance.Restart();
-                    return View("Success");
+                    return Ok();
                 }
                 catch (SqlException ex)
                 {
-                    ModelState.AddModelError("", $"Invalid connection to database, kindly check the connection string parameters: {ex.Message}");
-                    return View(installModel);
+                    string error = $"Invalid connection to database, kindly check the connection string parameters: {ex.Message}";
+                    ModelState.AddModelError("", error);
+                    return new ObjectResult(error)
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", ex.Message);
-                    return View(installModel);
+                    string error = ex.Message;
+                    ModelState.AddModelError("", error);
+                    return new ObjectResult(error)
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
                 }
 
             }
-            return View(installModel);
+            return new StatusCodeResult(StatusCodes.Status400BadRequest);
+        }
+
+        public IActionResult Success()
+        {
+            return View();
         }
     }    
 }

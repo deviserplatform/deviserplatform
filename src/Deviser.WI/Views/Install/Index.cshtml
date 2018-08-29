@@ -13,8 +13,8 @@
                 <hr />
             </div>
         </div>
-        <form asp-action="Index">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form id="installForm" asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="error-summary text-danger"></div>
             <div class="form-group row">
                 <label asp-for="AdminEmail" class="col-4 col-form-label"></label>
                 <div class="col">
@@ -122,8 +122,8 @@
 
             $(function () {
 
-                $inputDatabaseProvider.on('change', onDBProviderISChange)
-                $inputIsIntegratedSecurity.on('change', onDBProviderISChange)
+                $inputDatabaseProvider.on('change', onDBProviderISChange);
+                $inputIsIntegratedSecurity.on('change', onDBProviderISChange);
 
                 changeDbProvider(parseInt($inputDatabaseProvider.val()), $inputIsIntegratedSecurity.prop('checked'));
 
@@ -132,7 +132,9 @@
                         messages: {
                             required: "Accept the license to install.",
                         }
-                    });
+                });
+
+                $('#installForm').on('submit', formSubmit);
 
                 //console.log($inputDatabaseProvider.val());
                 //console.log($inputIsIntegratedSecurity.prop('checked'));
@@ -267,6 +269,44 @@
 
                 }
 
+            }
+
+            function formSubmit() {
+                event.preventDefault();
+
+                var $form = $(this),
+                    url = $form.attr('action'),
+                    fromData = $form.serialize(),
+                    formMethod = $form.attr('method').toUpperCase(),
+                    result = $form.validate(),
+                    hasError = Object.keys(result.invalid).length > 0;
+
+                if (!hasError) {
+                    $('.progress-overlay').removeClass('hide');
+                    var request = $.ajax({
+                        type: formMethod,
+                        url: url,
+                        data: fromData, // serializes the form's elements.
+                        headers: {
+                            IsAjaxRequest: true
+                        }
+                    });
+
+                    request.done(function (data, textStatus, jqXHR) {
+                        console.log(data); // show response from the server.                        
+                        setTimeout(function () {
+                            window.location.href = '/Install/Success';
+                        }, 10000);
+                    });
+
+                    request.fail(function (data, textStatus, errorThrown) {
+                        console.log(data); // show response from the server.
+                        $('.error-summary').text(data);
+                        $('.progress-overlay').addClass('hide');
+                    });
+                }
+
+                
             }
 
         }());

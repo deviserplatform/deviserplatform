@@ -6756,6 +6756,30 @@ body.edit-content-modal {
   border-bottom: 1px solid #ddd;
   padding: 10px; }
 
+.progress-model .modal-dialog {
+  margin: 40vh 30%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; }
+  .progress-model .modal-dialog .modal-content {
+    background-color: unset;
+    border: none;
+    box-shadow: none;
+    background-clip: unset;
+    -webkit-box-shadow: none; }
+  .progress-model .modal-dialog .progress-loading svg {
+    margin: 0 38%;
+    height: 100px; }
+    .progress-model .modal-dialog .progress-loading svg rect {
+      fill: #ef4934; }
+  .progress-model .modal-dialog .progress-text {
+    color: #fff;
+    font-size: 1.5em;
+    text-align: center;
+    padding-top: 15px; }
+
 .footer {
   padding: 1%;
   position: fixed;

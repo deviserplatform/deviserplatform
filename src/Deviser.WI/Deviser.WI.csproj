@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <None Update="Views\**\*;Modules\**\*;Sites\**\*" CopyToOutputDirectory="PreserveNewest" />
-    <Content Update="installconfig.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
   
   <ItemGroup>
