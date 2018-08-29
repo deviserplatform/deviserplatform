@@ -14,7 +14,7 @@ For non-security related bugs, please log a new issue.
 3. Get featues/fixes.
 
 ### Reporting security issues and bugs
-Security issues and bugs should be reported privately, via email to [secure@deviser.io](mailto:secure@deviser.io?subject=Deviser Security Issue). Response should be received within 24 hours. Unlikely, if there is no response, please follow up via email to ensure we received your original message.
+Security issues and bugs should be reported privately, via email to [secure@deviser.io](mailto:secure@deviser.io?subject=Deviser%20Security%20Issue). Response should be received within 24 hours. Unlikely, if there is no response, please follow up via email to ensure we received your original message.
 
 ### Helping each other
 1. Open one of the [issues](https://github.com/deviserplatform/deviserplatform/issues)
