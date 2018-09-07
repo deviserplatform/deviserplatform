@@ -23,6 +23,23 @@ Follow the guidelines to start developing your applications:
 * [Concepts](https://www.deviser.io/docs/guide/concepts.html)
 * [Create my first page](https://www.deviser.io/docs/guide/pages/index.html)
 
+## Features / Tasks
+- [x] Dynamic Contents
+- [x] Dynamic Layout
+- [x] External Authentication providers
+- [x] Page Management
+- [x] User Mands das das d da da daagement
+- [x] Properties and Option List
+- [x] Module Management
+- [x] DB Migration for Modules
+- [x] Themes
+- [ ] Deviser Admin (Similar to [Django](https://github.com/django/django) in .NET)
+- [ ] Blog Module
+- [ ] File Manager
+- [ ] Forum Module
+- [ ] Platform Upgrader with DB migration
+- [ ] Module Installation, Upgrade and Uninstallation
+
 ## Build from source
 1. Install [.NET Core SDK](https://www.microsoft.com/net/download)
 2. Install [Node.js](https://nodejs.org)
