@@ -64,7 +64,7 @@
             modalService.showProgressModel('Please wait...');
             setTimeout(function () {
                 location.reload();
-            }, 5000);
+            }, 10000);
         }
 
         function cancel() {

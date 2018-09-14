@@ -6,6 +6,7 @@
     <ServerGarbageCollection>false</ServerGarbageCollection>    
     <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>    
     <TypeScriptToolsVersion>3.0</TypeScriptToolsVersion>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

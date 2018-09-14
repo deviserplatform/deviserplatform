@@ -100,7 +100,7 @@ gulp.task('clean:min', function () {
     return del(paths.releaseRoot, { force: true });
 });
 
-gulp.task('clean', ['clean:min']);
+gulp.task('clean', gulp.parallel('clean:min'));
 
 
 gulp.task('min:libjs', function () {
@@ -144,13 +144,13 @@ gulp.task('test',
         return gulp.src(paths.sassPath)
             .pipe(filelog());
 
-});
+}); 
 
-gulp.task('clean', ['clean:min']);
+gulp.task('clean', gulp.parallel('clean:min'));
 
-gulp.task('min', ['min:libjs', 'min:appjs', 'min:css']);
+gulp.task('min', gulp.series('min:libjs', 'min:appjs', 'min:css'));
 
-gulp.task('watch', ['sass'], function () {
+gulp.task('watch', gulp.parallel('sass'), function () {
     //var sassPaths = [];
     //sassPaths.push(paths.sassPath);
     //sassPaths.push(paths.skinSassPath);

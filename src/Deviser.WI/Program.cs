@@ -30,14 +30,15 @@ namespace Deviser.WI
 
         public static IWebHost _WebHost;
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var appManager = ApplicationManager.Instance;
 
-            do
+            while(true)
             {
-                appManager.Start(args);
-            } while (appManager.Restarting);
+                await appManager.Start(args);
+                Console.WriteLine("Application Restarting...");
+            } //while (appManager.Restarting);
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
@@ -73,7 +74,7 @@ namespace Deviser.WI
                 }
             }
 
-            public void Start(string[] args)
+            public async Task Start(string[] args)
             {
                 if (_running)
                     return;
@@ -86,7 +87,7 @@ namespace Deviser.WI
                 _running = true;
 
                 _WebHost = CreateWebHostBuilder(args).Build();
-                _WebHost.RunAsync(_tokenSource.Token).GetAwaiter().GetResult();
+                await _WebHost.RunAsync(_tokenSource.Token);
             }
 
             public async Task Stop()
