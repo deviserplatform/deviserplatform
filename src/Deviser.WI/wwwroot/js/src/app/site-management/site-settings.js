@@ -1,13 +1,13 @@
 ﻿(function () {
 
     var app = angular.module('deviser.siteSettings', [
-    'ui.router',
-    'ui.bootstrap',
-    'ui.select',
-    'dev.sdlib',
-    'dev.modal',
-    'deviser.services',
-    'deviser.config'
+        'ui.router',
+        'ui.bootstrap',
+        'ui.select',
+        'dev.sdlib',
+        'dev.modal',
+        'deviser.services',
+        'deviser.config'
     ]);
 
     app.controller('SiteSettingsCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'devUtil', 'modalService',
@@ -18,6 +18,7 @@
     function siteSettingsCtrl($scope, $timeout, $filter, $q, globals, devUtil, modalService,
         siteSettingService, pageService, layoutService, themeService, languageService, applicationService) {
         var vm = this;
+
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
 
@@ -39,6 +40,42 @@
             getLayouts();
             getThemes();
             getSiteLanguages();
+            initSignalR();
+        }
+
+        function initSignalR() {
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl("/appHub")
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            connection.on("OnStarted", function (message) {
+                console.log(message);
+                onStarted();
+            });
+
+            connect(connection);
+
+            function connect(conn) {
+                conn.start().catch(function (e) {
+                    sleep(3000);
+                    console.log("Reconnecting Socket");
+                    connect(conn);
+                });
+            }
+
+            connection.onclose(function (e) {
+                connect(connection);
+            });
+
+            function sleep(milliseconds) {
+                var start = new Date().getTime();
+                for (var i = 0; i < 1e7; i++) {
+                    if (new Date().getTime() - start > milliseconds) {
+                        break;
+                    }
+                }
+            }
         }
 
         /*Event handlers*/
@@ -53,18 +90,16 @@
         }
 
         function restartApplication() {
+            modalService.showProgressModel('Please wait...');
             applicationService.restart().then(function (result) {
-                reloadAfterRestart();
+                //reloadAfterRestart();
             }, function (error) {
-                reloadAfterRestart();
+                //reloadAfterRestart();
             });
         }
 
-        function reloadAfterRestart() {
-            modalService.showProgressModel('Please wait...');
-            setTimeout(function () {
-                location.reload();
-            }, 10000);
+        function onStarted() {
+            location.reload();
         }
 
         function cancel() {

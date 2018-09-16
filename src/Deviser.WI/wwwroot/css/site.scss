@@ -553,8 +553,9 @@ body {
 
 /*General Content*/
 .content-wrapper {
-    min-height: calc(100vh - 176px);
+    min-height: 100vh;
     padding-top: 108px;
+    padding-bottom: 68px;
 
     &.page-content-logged-in {
         padding-top: 158px;
@@ -673,6 +674,13 @@ body {
 .security-container {
     padding: 20px;
 
+    .validation-summary-errors {
+        ul{
+            list-style:none;
+            padding:0;
+        }
+    }
+
     .btn-primary {
         width: 100%;
     }
@@ -727,6 +735,8 @@ body {
 .footer {
     padding: 20px 0;
     width: 100%;
+    position: absolute;
+    bottom: 0;
 
     a {
         color: $white;

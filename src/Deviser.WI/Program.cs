@@ -6,107 +6,72 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Deviser.WI
 {
     public class Program
     {
-        //public static void Main(string[] args)
-        //{
-        //    try
-        //    {
-        //        CreateWebHostBuilder(args).Build().Run();
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        throw ex;
-        //    }
-        //}
-
-        //public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-        //    WebHost.CreateDefaultBuilder(args)
-        //        .UseStartup<Startup>();
-
-        public static IWebHost _WebHost;
-
         public static async Task Main(string[] args)
         {
-            var appManager = ApplicationManager.Instance;
+            bool isCancelKeyPressed = false;
 
-            while(true)
+            Console.CancelKeyPress += (sender, eventArgs) =>
             {
-                await appManager.Start(args);
-                Console.WriteLine("Application Restarting...");
-            } //while (appManager.Restarting);
+                isCancelKeyPressed = true;
+                // Don't terminate the process immediately, wait for the Main thread to exit gracefully.
+                eventArgs.Cancel = true;
+            };
+
+            while (true)
+            {
+                Console.WriteLine("Application is starting");
+                await ApplicationManager.Instance.Start(args);
+                Console.WriteLine("Application has been terminated");
+                if (isCancelKeyPressed)
+                    break;
+            }
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();
+    }
 
-        public class ApplicationManager
+    public class ApplicationManager
+    {
+        private static ApplicationManager _instance;
+        private static IApplicationLifetime _applicationLifetime;
+        private ApplicationManager()
         {
 
-            private static ApplicationManager _appManager;
-            private IWebHost _web;
-            private CancellationTokenSource _tokenSource;
-            private bool _running;
-            private bool _restart;
+        }
 
-            public bool Restarting => _restart;
-
-            private ApplicationManager()
+        public static ApplicationManager Instance
+        {
+            get
             {
-                _running = false;
-                _restart = false;
-
+                if (_instance == null)
+                    _instance = new ApplicationManager();
+                return _instance;
             }
+        }
 
-            public static ApplicationManager Instance
-            {
-                get
-                {
-                    if (_appManager == null)
-                        _appManager = new ApplicationManager();
+        public async Task Start(string[] args)
+        {
+            var webHost = Program.CreateWebHostBuilder(args).Build();
+            _applicationLifetime = webHost.Services.GetService<IApplicationLifetime>();
+            await webHost.RunAsync();
+        }
 
-                    return _appManager;
-                }
-            }
+        public void Stop()
+        {
+            _applicationLifetime.StopApplication();
+        }
 
-            public async Task Start(string[] args)
-            {
-                if (_running)
-                    return;
-
-                if (_tokenSource != null && _tokenSource.IsCancellationRequested)
-                    return;
-
-                _tokenSource = new CancellationTokenSource();
-                _tokenSource.Token.ThrowIfCancellationRequested();
-                _running = true;
-
-                _WebHost = CreateWebHostBuilder(args).Build();
-                await _WebHost.RunAsync(_tokenSource.Token);
-            }
-
-            public async Task Stop()
-            {
-                if (!_running)
-                    return;
-
-                _tokenSource.Cancel(throwOnFirstException: false);
-                await _WebHost.WaitForShutdownAsync(_tokenSource.Token);
-                _running = false;
-            }
-
-            public async Task Restart()
-            {
-                await Stop();
-
-                _restart = true;
-                _tokenSource = null;
-            }
+        public void Restart()
+        {
+            Stop();
         }
     }
 }

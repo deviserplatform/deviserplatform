@@ -28,6 +28,7 @@ using Deviser.Core.Data.Extension;
 using Deviser.Core.Common.Internal;
 using AutoMapper;
 using System.Diagnostics;
+using Deviser.Core.Library.Hubs;
 
 namespace Deviser.Core.Library.DependencyInjection
 {
@@ -125,6 +126,8 @@ namespace Deviser.Core.Library.DependencyInjection
                 })
                 .AddControllersAsServices();
 
+            services.AddSignalR();
+
             services.AddSession();
 
             // Add application services.
@@ -184,6 +187,11 @@ namespace Deviser.Core.Library.DependencyInjection
             };
 
             app.UsePageContext(routeBuilder);
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ApplicationHub>("/appHub");
+            });
 
             return app.UseMvc(routeBuilder);
         }

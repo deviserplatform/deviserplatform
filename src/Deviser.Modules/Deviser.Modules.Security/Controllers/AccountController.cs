@@ -100,7 +100,7 @@ namespace Deviser.Modules.Security.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt. Kindly verify the entered email and password is correct");
                     return View(model);
                 }
             }

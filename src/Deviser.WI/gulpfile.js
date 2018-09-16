@@ -27,6 +27,7 @@ paths.bowerFiles = {
         paths.webroot + 'js/moment.js',        
         paths.bowerRoot + 'metisMenu/dist/metisMenu.js',
         paths.bowerRoot + 'lodash/dist/lodash.js',
+        paths.bowerRoot + 'aspnet/signalr/dist/browser/signalr.js',
         paths.bowerRoot + 'angular/angular.js',
         paths.webroot +'js/admin/main.js',
         paths.bowerRoot + 'angular-sanitize/angular-sanitize.js',
@@ -150,12 +151,12 @@ gulp.task('clean', gulp.parallel('clean:min'));
 
 gulp.task('min', gulp.series('min:libjs', 'min:appjs', 'min:css'));
 
-gulp.task('watch', gulp.parallel('sass'), function () {
+gulp.task('watch', function () {
     //var sassPaths = [];
     //sassPaths.push(paths.sassPath);
     //sassPaths.push(paths.skinSassPath);
-    gulp.watch(paths.sassPath, ['sass']);
-    gulp.watch(paths.skinSassPath, ['skin:sass']);
+    gulp.watch(paths.sassPath, gulp.parallel('sass'));
+    gulp.watch(paths.skinSassPath, gulp.parallel('skin:sass'));
 });
 
 

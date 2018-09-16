@@ -10,6 +10,9 @@ using System;
 using System.IO;
 using Deviser.Core.Library.Infrastructure;
 using Deviser.Core.Library.DependencyInjection;
+using Deviser.Core.Library.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using System.Threading.Tasks;
 
 namespace Deviser.WI
 {
@@ -24,7 +27,7 @@ namespace Deviser.WI
                 .MinimumLevel.Debug()
                 .WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "logs", "log-{Date}.txt"))
                 .CreateLogger();
-            
+
             Configuration = configuration;
         }
 
@@ -37,9 +40,10 @@ namespace Deviser.WI
 
             services = services.AddDeviserPlatform(Configuration);
 
+
             // Add Autofac
             var builder = new ContainerBuilder();
-            builder.RegisterModule<DefaultModule>();            
+            builder.RegisterModule<DefaultModule>();
             builder.Populate(services);
             ApplicationContainer = builder.Build();
             // Create the IServiceProvider based on the container.
@@ -71,11 +75,17 @@ namespace Deviser.WI
             }
 
             app.UseDeviserPlatform(container);
-            
+
             // If you want to dispose of resources that have been resolved in the
             // application container, register for the "ApplicationStopped" event.
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
+            var hubContext = container.Resolve<IHubContext<ApplicationHub>>();
 
+            //Call "OnStarted" method on all connected clients using SignalR
+            Task.Delay(5000).ContinueWith(t =>
+            {
+                hubContext.Clients.All.SendAsync("OnStarted", "server").GetAwaiter().GetResult();
+            });
         }
     }
 }

@@ -136,6 +136,8 @@
 
                 $('#installForm').on('submit', formSubmit);
 
+                initSignalR();
+
                 //console.log($inputDatabaseProvider.val());
                 //console.log($inputIsIntegratedSecurity.prop('checked'));
             });
@@ -293,10 +295,7 @@
                     });
 
                     request.done(function (data, textStatus, jqXHR) {
-                        console.log(data); // show response from the server.                        
-                        setTimeout(function () {
-                            window.location.href = '/Install/Success';
-                        }, 15000);
+                        
                     });
 
                     request.fail(function (data, textStatus, errorThrown) {
@@ -307,6 +306,45 @@
                 }
 
                 
+            }
+
+            function initSignalR() {
+                var connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/appHub")
+                    .configureLogging(signalR.LogLevel.Information)
+                    .build();
+
+                connection.on("OnStarted", function (message) {
+                    console.log(message);
+                    onStarted();
+                });
+
+                connect(connection);
+
+                function connect(conn) {
+                    conn.start().catch(function (e) {
+                        sleep(3000);
+                        console.log("Reconnecting Socket");
+                        connect(conn);
+                    });
+                }
+
+                connection.onclose(function (e) {
+                    connect(connection);
+                });
+
+                function sleep(milliseconds) {
+                    var start = new Date().getTime();
+                    for (var i = 0; i < 1e7; i++) {
+                        if (new Date().getTime() - start > milliseconds) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            function onStarted() {
+                window.location.href = '/Install/Success';
             }
 
         }());
