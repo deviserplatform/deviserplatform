@@ -15,6 +15,7 @@ namespace Deviser.Core.Common.Internal
             "Deviser.Core.Library",
             "Deviser.Core.Common",
             "Deviser.Core.Data",
+            "Deviser.Admin",
             //"Microsoft.AspNetCore.Mvc",
             //"Microsoft.AspNetCore.Mvc.Abstractions",
             //"Microsoft.AspNetCore.Mvc.ApiExplorer",

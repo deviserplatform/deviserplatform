@@ -1,4 +1,5 @@
 ﻿using Deviser.Admin.Config;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,13 +14,14 @@ namespace Deviser.Admin
         public FieldConfig<TEntity> FieldConfig { get; }
         public FieldSetConfig<TEntity> FieldSetConfig { get; }
         public ListConfig<TEntity> ListConfig { get; }
-        public EntityConfiguration EntityConfiguration { get; set; }
+        public EntityConfig EntityConfig { get; }
 
         public AdminConfig()
         {
             FieldConfig = new FieldConfig<TEntity>();
             FieldSetConfig = new FieldSetConfig<TEntity>();
             ListConfig = new ListConfig<TEntity>();
+            EntityConfig = new EntityConfig();
         }
     }
 
@@ -60,8 +62,40 @@ namespace Deviser.Admin
 
     public class Field
     {
+
+        private string _fieldName;
+
         public FieldType FieldType { get; set; }
+
+        [JsonIgnore]
         public LambdaExpression FieldExpression { get; set; }
+
+        [JsonIgnore]
+        public Type FieldClrType
+        {
+            get
+            {
+                if (FieldExpression == null)
+                    return null;
+                return FieldExpression.Type.GenericTypeArguments[1];
+            }
+        }
+
+        public string FieldName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_fieldName))
+                    return _fieldName;
+
+                if (FieldExpression == null)
+                    return null;
+
+                _fieldName = FieldClrType.Name;
+                return _fieldName;
+            }
+        }
+
         public FieldOption FieldOption { get; set; }
     }
 
@@ -70,7 +104,8 @@ namespace Deviser.Admin
         public string DisplayName { get; set; }
         public string Description { get; set; }
         public string Format { get; set; }
-        public string MaxLength { get; set; }
+        public int MaxLength { get; set; }
+        public string NullDisplayText { get; set; }
         public bool IsHide { get; set; }
         public bool IsReadOnly { get; set; }
         public bool IsRequired { get; set; }

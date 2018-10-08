@@ -6,7 +6,7 @@ namespace Deviser.Admin.Config
 {
     public interface IAdminConfigStore
     {
-        AdminConfig<TEntity> GetOrAdd(Type type, AdminConfig<TEntity> element);
-        bool TryGet(Type type, out AdminConfig<TEntity> element);        
+        object GetOrAdd(Type type, object element);
+        bool TryGet(Type type, out object element);
     }
 }

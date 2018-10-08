@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Deviser.Admin.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Admin
 {
@@ -19,7 +21,7 @@ namespace Deviser.Admin
     }
     public class TestClass
     {
-        public class AdminConfigurator : IAdminConfigurator
+        public class AdminConfigurator : IAdminConfigurator<DbContext>
         {
             public void ConfigureAdmin(IAdminSite adminSite)
             {
