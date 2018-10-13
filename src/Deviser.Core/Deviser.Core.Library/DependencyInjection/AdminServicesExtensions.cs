@@ -29,6 +29,9 @@ using Deviser.Core.Common.Internal;
 using AutoMapper;
 using System.Diagnostics;
 using Deviser.Core.Library.Hubs;
+using Deviser.Admin;
+using System.Linq.Expressions;
+using Deviser.Core.Common.Extensions;
 
 namespace Deviser.Core.Library.DependencyInjection
 {
@@ -45,16 +48,12 @@ namespace Deviser.Core.Library.DependencyInjection
 
             SharedObjects.ServiceProvider = sp;
 
-
-            //if (installationProvider.IsPlatformInstalled)
-            //{
             services.AddDbContext<DeviserDbContext>(
                    (internalServiceProvider, dbContextOptionBuilder) =>
                    {
-                           //dbContextOptionBuilder.UseInternalServiceProvider(sp);                    
-                           installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder);
+                       //dbContextOptionBuilder.UseInternalServiceProvider(sp);                    
+                       installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder);
                    });
-            //}
 
             services.AddIdentity<User, Role>()
                .AddEntityFrameworkStores<DeviserDbContext>()
@@ -117,6 +116,8 @@ namespace Deviser.Core.Library.DependencyInjection
 
             RegisterModuleDependencies(services);
 
+            RegisterModuleDbContexts(services);
+
             services
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
@@ -125,6 +126,8 @@ namespace Deviser.Core.Library.DependencyInjection
                     options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
                 })
                 .AddControllersAsServices();
+
+            services.AddDeviserAdmin();
 
             services.AddSignalR();
 
@@ -144,6 +147,7 @@ namespace Deviser.Core.Library.DependencyInjection
             //var defaultRequestCulture = new RequestCulture(new CultureInfo(enUSCulture));
 
             var installationProvider = container.Resolve<IInstallationProvider>();
+            var serviceProvider = container.Resolve<IServiceProvider>();
             if (installationProvider.IsPlatformInstalled)
             {
                 var languageRepository = container.Resolve<ILanguageRepository>();
@@ -193,32 +197,99 @@ namespace Deviser.Core.Library.DependencyInjection
                 routes.MapHub<ApplicationHub>("/appHub");
             });
 
+            app.UseDeviserAdmin(serviceProvider);
+
             return app.UseMvc(routeBuilder);
         }
 
         private static void RegisterModuleDependencies(IServiceCollection serviceCollection)
         {
-            var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.ApplicationEntryPoint);
-            List<TypeInfo> moduleServiceCollectors = new List<TypeInfo>();
-
-            Type moduleServiceCollectionType = typeof(IModuleConfigurator);
-            MethodInfo registerServiceMethodInfo = moduleServiceCollectionType.GetMethod("ConfigureServices");
-            foreach (var assembly in assemblies)
+            try
             {
-                var controllerTypes = assembly.DefinedTypes.Where(t => moduleServiceCollectionType.IsAssignableFrom(t)).ToList();
+                var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.ApplicationEntryPoint);
+                Type moduleConfiguratorType = typeof(IModuleConfigurator);
+                List<TypeInfo> moduleServiceCollectors = assemblies.GetDerivedTypeInfos(moduleConfiguratorType); //new List<TypeInfo>();
 
-                if (controllerTypes != null && controllerTypes.Count > 0)
-                    moduleServiceCollectors.AddRange(controllerTypes);
-            }
+                var registerServiceMethodInfo = moduleConfiguratorType.GetMethod("ConfigureServices");
 
-            if (moduleServiceCollectors.Count > 0)
-            {
-                foreach (var serviceCollectorType in moduleServiceCollectors)
+                if (moduleServiceCollectors.Count > 0)
                 {
-                    var obj = Activator.CreateInstance(serviceCollectorType);
-                    registerServiceMethodInfo.Invoke(obj, new object[] { serviceCollection });
+                    foreach (var serviceCollectorType in moduleServiceCollectors)
+                    {
+                        var obj = Activator.CreateInstance(serviceCollectorType);
+                        registerServiceMethodInfo.Invoke(obj, new object[] { serviceCollection });
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+        }
+        private static void RegisterModuleDbContexts(IServiceCollection serviceCollection)
+        {
+            try
+            {
+                var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.ApplicationEntryPoint);
+                List<TypeInfo> moduleDbContextBaseTypes = assemblies.GetDerivedTypeInfos(typeof(ModuleDbContext));
+                MethodInfo addDbContextMethodInfo = GetAddDbContextMethodInfo();
+
+                if (moduleDbContextBaseTypes.Count > 0)
+                {
+                    foreach (var modDbContextType in moduleDbContextBaseTypes)
+                    {
+                        var modDbContextMethodInfo = addDbContextMethodInfo.MakeGenericMethod(modDbContextType);
+                        var moduleAssembly = modDbContextType.Assembly.GetName().Name;
+
+                        if (moduleAssembly == "Deviser.Modules.Blog")
+                        {
+                            var optionsAction = GetActionExpression(moduleAssembly);
+                            modDbContextMethodInfo.Invoke(serviceCollection, new object[] { serviceCollection, optionsAction, ServiceLifetime.Scoped, ServiceLifetime.Scoped });
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+        }
+        private static MethodInfo GetAddDbContextMethodInfo()
+        {
+            MethodInfo addDbContextMethodInfo = null;
+
+            var methodInfos = typeof(EntityFrameworkServiceCollectionExtensions)
+                .GetMethods().Where(m => m.Name == "AddDbContext" && m.GetGenericArguments().Count() == 1).ToList();
+
+            foreach (var mi in methodInfos)
+            {
+                var parameters = mi.GetParameters();
+                if (parameters[0].ParameterType == typeof(IServiceCollection) && !parameters[0].IsOptional &&
+                    parameters[1].ParameterType == typeof(Action<IServiceProvider, DbContextOptionsBuilder>) && !parameters[1].IsOptional)
+                {
+                    addDbContextMethodInfo = mi;
+                    break;
+                }
+            }
+
+            return addDbContextMethodInfo;
+        }
+        private static Action<IServiceProvider, DbContextOptionsBuilder> GetActionExpression(string assembly)
+        {
+            var installationProvider = SharedObjects.ServiceProvider.GetRequiredService<IInstallationProvider>();
+
+            Action<IServiceProvider, DbContextOptionsBuilder> optionsAction = (internalServiceprovider, dbContextOptionBuilder) =>
+            {
+                installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder, assembly/*"Deviser.Modules.Blog"*/);
+            };
+
+            return optionsAction;
+
 
         }
     }

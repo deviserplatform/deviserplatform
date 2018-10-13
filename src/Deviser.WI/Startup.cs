@@ -13,6 +13,17 @@ using Deviser.Core.Library.DependencyInjection;
 using Deviser.Core.Library.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using Deviser.Modules.Blog.Models;
+using Deviser.Core.Common.Internal;
+using Deviser.Core.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Deviser.Core.Common;
+using System.Reflection;
+using System.Collections.Generic;
+using Deviser.Core.Data.Extension;
+using System.Linq;
+using System.Globalization;
+using Deviser.Core.Common.Extensions;
 
 namespace Deviser.WI
 {
@@ -40,6 +51,15 @@ namespace Deviser.WI
 
             services = services.AddDeviserPlatform(Configuration);
 
+            //TODO : Call AddDbContext for all base classes of ModuleDbContext
+            //var installationProvider = SharedObjects.ServiceProvider.GetRequiredService<IInstallationProvider>();
+            //services.AddDbContext<BlogDbContext>(
+            //       (dbContextOptionBuilder) =>
+            //       {
+            //           installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder, "Deviser.Modules.Blog");
+            //       });
+            
+            //services.AddDbContext
 
             // Add Autofac
             var builder = new ContainerBuilder();

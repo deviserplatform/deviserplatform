@@ -12,21 +12,21 @@ using System.Threading.Tasks;
 
 namespace Deviser.WI
 {
-    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DeviserDbContext>
-    {
-        public DeviserDbContext CreateDbContext(string[] args)
-        {
-            //Debugger.Launch();
+    //public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DeviserDbContext>
+    //{
+    //    public DeviserDbContext CreateDbContext(string[] args)
+    //    {
+    //        //Debugger.Launch();
 
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.Development.json")
-                .Build();
-            var builder = new DbContextOptionsBuilder<DeviserDbContext>();
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            //builder.UseNpgsql(connectionString, b => b.MigrationsAssembly("Deviser.WI"));
-            builder.UseSqlServer(connectionString, b => b.MigrationsAssembly("Deviser.WI"));
-            return new DeviserDbContext(builder.Options);
-        }
-    }
+    //        IConfigurationRoot configuration = new ConfigurationBuilder()
+    //            .SetBasePath(Directory.GetCurrentDirectory())
+    //            .AddJsonFile("appsettings.Development.json")
+    //            .Build();
+    //        var builder = new DbContextOptionsBuilder<DeviserDbContext>();
+    //        var connectionString = configuration.GetConnectionString("DefaultConnection");
+    //        //builder.UseNpgsql(connectionString, b => b.MigrationsAssembly("Deviser.WI"));
+    //        builder.UseSqlServer(connectionString, b => b.MigrationsAssembly("Deviser.WI"));
+    //        return new DeviserDbContext(builder.Options);
+    //    }
+    //}
 }
