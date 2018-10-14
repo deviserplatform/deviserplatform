@@ -65,9 +65,9 @@ namespace Deviser.Admin.Config
                         */
 
                         var objAdminConfigurator = Activator.CreateInstance(adminConfiguratorType);
-                        var genericInterface = typeof(IAdminConfigurator<>);
-                        var adminConfiguratorInterface = genericInterface.MakeGenericType(dbContextType);                            
-                        var configureAdminMethodInfo = adminConfiguratorInterface.GetMethod("ConfigureAdmin"); 
+                        var genericInterface = typeof(IAdminConfigurator);
+                        //var adminConfiguratorInterface = genericInterface.MakeGenericType(dbContextType);
+                        var configureAdminMethodInfo = genericInterface.GetMethod("ConfigureAdmin"); 
                         configureAdminMethodInfo.Invoke(objAdminConfigurator, new object[] { adminSite });                        
 
                         _adminConfigStore.GetOrAdd(adminConfiguratorType.AsType(), adminSite);

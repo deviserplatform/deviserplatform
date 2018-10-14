@@ -10,12 +10,16 @@ namespace Deviser.Core.Data
     public partial class DeviserDbContext : IdentityDbContext<User, Role, Guid>
     {
 
-
-        public DeviserDbContext(DbContextOptions options)
+        public DeviserDbContext(DbContextOptions<DeviserDbContext> options)
             : base(options)
         {
-            
         }
+
+        //public DeviserDbContext(DbContextOptions options)
+        //    : base(options)
+        //{
+
+        //}
 
         //protected override void OnConfiguring(DbContextOptionsBuilder options)
         //{
@@ -82,7 +86,7 @@ namespace Deviser.Core.Data
 
             modelBuilder.Entity<IdentityUserRole<Guid>>(entity =>
             {
-                entity.ToTable("UserRole");                
+                entity.ToTable("UserRole");
             });
 
             modelBuilder.Entity<IdentityUserLogin<Guid>>(entity =>
@@ -302,12 +306,12 @@ namespace Deviser.Core.Data
                 entity.Property(e => e.Name).IsRequired();
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
             });
-            
+
             modelBuilder.Entity<LayoutTypeProperty>(entity =>
             {
                 entity.HasOne(d => d.LayoutType).WithMany(p => p.LayoutTypeProperties).HasForeignKey(d => d.LayoutTypeId).OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(d => d.Property).WithMany(p => p.LayoutTypeProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);               
+                entity.HasOne(d => d.Property).WithMany(p => p.LayoutTypeProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasKey(d => new { d.LayoutTypeId, d.PropertyId });
             });
@@ -364,13 +368,13 @@ namespace Deviser.Core.Data
         public virtual DbSet<Language> Language { get; set; }
         public virtual DbSet<Layout> Layout { get; set; }
         public virtual DbSet<LayoutType> LayoutType { get; set; }
-        public virtual DbSet<LayoutTypeProperty> LayoutTypeProperty { get; set; }        
+        public virtual DbSet<LayoutTypeProperty> LayoutTypeProperty { get; set; }
         public virtual DbSet<Module> Module { get; set; }
         public virtual DbSet<ModuleAction> ModuleAction { get; set; }
         public virtual DbSet<ModuleActionType> ModuleActionType { get; set; }
         public virtual DbSet<ModulePermission> ModulePermission { get; set; }
         public virtual DbSet<OptionList> OptionList { get; set; }
-        public virtual DbSet<Permission> Permission { get; set; }        
+        public virtual DbSet<Permission> Permission { get; set; }
         public virtual DbSet<Page> Page { get; set; }
         public virtual DbSet<PageContent> PageContent { get; set; }
         public virtual DbSet<PageModule> PageModule { get; set; }

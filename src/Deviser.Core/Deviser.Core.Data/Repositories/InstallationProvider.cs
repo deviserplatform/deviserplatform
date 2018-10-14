@@ -34,9 +34,12 @@ namespace Deviser.Core.Data.Repositories
         bool IsDatabaseExist { get; }
 
         void InstallPlatform(InstallModel installModel);
-        void InsertData(DbContextOptions dbOption);
+        void InsertData(DbContextOptions<DeviserDbContext> dbOption);
         string GetConnectionString(InstallModel model);
         DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null);
+        DbContextOptionsBuilder<TContext> GetDbContextOptionsBuilder<TContext>(DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null)
+            where TContext : DbContext;
+
     }
 
     public class InstallationProvider : IInstallationProvider
@@ -98,8 +101,8 @@ namespace Deviser.Core.Data.Repositories
         {
             string connectionString = GetConnectionString(installModel);
             string settingFile = Path.Combine(_hostingEnvironment.ContentRootPath, $"appsettings.{_hostingEnvironment.EnvironmentName}.json");
-            DbContextOptionsBuilder dbContextOptionsBuilder = GetDbContextOptionsBuilder(installModel);
-            DbContextOptions dbOption = dbContextOptionsBuilder.Options;
+            DbContextOptionsBuilder<DeviserDbContext> dbContextOptionsBuilder = GetDbContextOptionsBuilder<DeviserDbContext>(installModel);
+            DbContextOptions<DeviserDbContext> dbOption = dbContextOptionsBuilder.Options;
             _isInstallInProgress = true;
             _installModel = installModel;
             if (!IsDatabaseExistsFor(connectionString))
@@ -149,7 +152,7 @@ namespace Deviser.Core.Data.Repositories
             _isInstallInProgress = false;
         }
 
-        public void InsertData(DbContextOptions dbOption)
+        public void InsertData(DbContextOptions<DeviserDbContext> dbOption)
         {
             using (var context = new DeviserDbContext(dbOption))
             {
@@ -207,6 +210,8 @@ namespace Deviser.Core.Data.Repositories
 
         public DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null)
         {
+            //DbContextOptionsBuilder<DeviserDbContext>
+
             InstallModel installModel = GetInstallationModel();
             if (installModel == null)
                 return null;
@@ -220,6 +225,25 @@ namespace Deviser.Core.Data.Repositories
             return _dbContextOptionsBuilder;
         }
 
+        public DbContextOptionsBuilder<TContext> GetDbContextOptionsBuilder<TContext>(DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null)
+            where TContext : DbContext
+        {
+            //DbContextOptionsBuilder<DeviserDbContext>
+
+            InstallModel installModel = GetInstallationModel();
+            if (installModel == null)
+                return null;            
+
+            _dbContextOptionsBuilder = GetDbContextOptionsBuilder(installModel, optionsBuilder, moduleAssembly);
+
+            if (_dbContextOptionsBuilder == null)
+                throw new NullReferenceException("Platform is not installed properly. Kindly install it properly");
+
+
+            return (DbContextOptionsBuilder<TContext>)_dbContextOptionsBuilder;
+        }
+
+
         public DbContextOptions GetDbContextOptions(InstallModel installModel)
         {
             return GetDbContextOptionsBuilder(installModel).Options;
@@ -227,11 +251,93 @@ namespace Deviser.Core.Data.Repositories
 
         private DbContextOptionsBuilder GetDbContextOptionsBuilder(InstallModel installModel)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<DeviserDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder();
             return GetDbContextOptionsBuilder(installModel, optionsBuilder);
         }
 
+        private DbContextOptionsBuilder<TContext> GetDbContextOptionsBuilder<TContext>(InstallModel installModel)
+            where TContext:DbContext
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<TContext>();
+            return GetDbContextOptionsBuilder<TContext>(installModel, optionsBuilder);
+        }
+
         private DbContextOptionsBuilder GetDbContextOptionsBuilder(InstallModel installModel, DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null)
+        {
+            string connectionString = IsPlatformInstalled ? _configuration.GetConnectionString("DefaultConnection") : GetConnectionString(installModel);
+
+
+            if (installModel.DatabaseProvider == DatabaseProvider.SQLServer || installModel.DatabaseProvider == DatabaseProvider.SQLLocalDb)
+            {
+                if (string.IsNullOrEmpty(moduleAssembly))
+                {
+                    optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                }
+                else
+                {
+                    optionsBuilder.UseSqlServer(connectionString, (x) =>
+                    {
+                        x.MigrationsAssembly(moduleAssembly);
+                        x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
+                    })
+                    .ReplaceService<IHistoryRepository, SqlServerModuleHistoryRepository>();
+                }
+
+            }
+            else if (installModel.DatabaseProvider == DatabaseProvider.PostgreSQL)
+            {
+                if (string.IsNullOrEmpty(moduleAssembly))
+                {
+                    optionsBuilder.UseNpgsql(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                }
+                else
+                {
+                    optionsBuilder.UseNpgsql(connectionString, (x) =>
+                    {
+                        x.MigrationsAssembly(moduleAssembly);
+                        x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
+                    })
+                    .ReplaceService<IHistoryRepository, NpgsqlModuleHistoryRepository>();
+                }
+            }
+            else if (installModel.DatabaseProvider == DatabaseProvider.MySQL)
+            {
+                if (string.IsNullOrEmpty(moduleAssembly))
+                {
+                    optionsBuilder.UseMySql(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                }
+                else
+                {
+                    optionsBuilder.UseMySql(connectionString, (x) =>
+                    {
+                        x.MigrationsAssembly(moduleAssembly);
+                        x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
+                    })
+                    .ReplaceService<IHistoryRepository, MySQLModuleHistoryRepository>();
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(moduleAssembly))
+                {
+                    optionsBuilder.UseSqlite(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                }
+                else
+                {
+                    optionsBuilder.UseSqlite(connectionString, (x) =>
+                    {
+                        x.MigrationsAssembly(moduleAssembly);
+                        x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
+                    })
+                    .ReplaceService<IHistoryRepository, SqliteModuleHistoryRepository>();
+                }
+            }
+
+            return optionsBuilder;
+        }
+
+        private DbContextOptionsBuilder<TContext> GetDbContextOptionsBuilder<TContext>(InstallModel installModel, DbContextOptionsBuilder<TContext> optionsBuilder, string moduleAssembly = null)
+            where TContext : DbContext
         {
             string connectionString = IsPlatformInstalled ? _configuration.GetConnectionString("DefaultConnection") : GetConnectionString(installModel);
 

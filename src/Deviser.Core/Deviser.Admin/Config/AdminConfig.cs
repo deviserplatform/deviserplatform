@@ -12,6 +12,7 @@ namespace Deviser.Admin
     public interface IAdminConfig
     {
         Type EntityType { get; }
+        IFieldConfig FieldConfig { get; }
     }
 
     public class AdminConfig<TEntity> : IAdminConfig
@@ -23,6 +24,8 @@ namespace Deviser.Admin
         public EntityConfig EntityConfig { get; }
         public Type EntityType { get; }
 
+        IFieldConfig IAdminConfig.FieldConfig => FieldConfig;
+
         public AdminConfig()
         {
             EntityType = typeof(TEntity);
@@ -33,8 +36,14 @@ namespace Deviser.Admin
         }
     }
 
+    public interface IFieldConfig
+    {
+        List<List<Field>> Fields { get; }
+        List<Field> ExcludedFields { get; }
+    }
+
     
-    public class FieldConfig<TEntity>
+    public class FieldConfig<TEntity> : IFieldConfig
         where TEntity : class
     {
         public List<List<Field>> Fields { get; }

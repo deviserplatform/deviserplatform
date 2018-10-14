@@ -52,7 +52,7 @@ namespace Deviser.Core.Library.DependencyInjection
                    (internalServiceProvider, dbContextOptionBuilder) =>
                    {
                        //dbContextOptionBuilder.UseInternalServiceProvider(sp);                    
-                       installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder);
+                       installationProvider.GetDbContextOptionsBuilder<DeviserDbContext>(dbContextOptionBuilder);
                    });
 
             services.AddIdentity<User, Role>()
