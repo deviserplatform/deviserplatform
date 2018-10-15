@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Deviser.Admin
 {
@@ -13,6 +14,9 @@ namespace Deviser.Admin
     {
         Type EntityType { get; }
         IFieldConfig FieldConfig { get; }
+        IFieldSetConfig FieldSetConfig { get; }
+        IListConfig ListConfig { get; }
+        EntityConfig EntityConfig { get; }
     }
 
     public class AdminConfig<TEntity> : IAdminConfig
@@ -25,6 +29,8 @@ namespace Deviser.Admin
         public Type EntityType { get; }
 
         IFieldConfig IAdminConfig.FieldConfig => FieldConfig;
+        IFieldSetConfig IAdminConfig.FieldSetConfig => FieldSetConfig;
+        IListConfig IAdminConfig.ListConfig => ListConfig;
 
         public AdminConfig()
         {
@@ -42,7 +48,16 @@ namespace Deviser.Admin
         List<Field> ExcludedFields { get; }
     }
 
-    
+    public interface IFieldSetConfig
+    {
+        List<FieldSet> FieldSets { get; }
+    }
+
+    public interface IListConfig
+    {
+        List<Field> Fields { get; }
+    }
+
     public class FieldConfig<TEntity> : IFieldConfig
         where TEntity : class
     {
@@ -57,7 +72,7 @@ namespace Deviser.Admin
         }
     }
 
-    public class FieldSetConfig<TEntity>
+    public class FieldSetConfig<TEntity> : IFieldSetConfig
         where TEntity : class
     {
         public List<FieldSet> FieldSets { get; }
@@ -68,7 +83,7 @@ namespace Deviser.Admin
         }
     }
 
-    public class ListConfig<TEntity>
+    public class ListConfig<TEntity>: IListConfig
     {
         public List<Field> Fields { get; }
 
@@ -109,7 +124,20 @@ namespace Deviser.Admin
                 if (FieldExpression == null)
                     return null;
 
-                _fieldName = FieldClrType.Name;
+                MemberExpression memberExpression;
+
+                if (FieldExpression.Body is UnaryExpression)
+                {
+                    UnaryExpression unaryExpression = (UnaryExpression)(FieldExpression.Body);
+                    memberExpression = (MemberExpression)(unaryExpression.Operand);
+                }
+                else
+                {
+                    memberExpression = (MemberExpression)(FieldExpression.Body);
+                }
+
+
+                _fieldName = ((PropertyInfo)memberExpression.Member).Name;
                 return _fieldName;
             }
         }

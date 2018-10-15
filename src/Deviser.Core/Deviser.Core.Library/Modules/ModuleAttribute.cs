@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.Modules
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class ModuleAttribute : RouteValueAttribute
     {
         public ModuleAttribute(string moduleName)
@@ -14,7 +14,7 @@ namespace Deviser.Core.Library.Modules
         {
             if (string.IsNullOrEmpty(moduleName))
             {
-                throw new ArgumentException("Area name must not be empty", nameof(moduleName));
+                throw new ArgumentException("Module name must not be empty", nameof(moduleName));
             }
         }
     }

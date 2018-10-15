@@ -63,6 +63,7 @@ namespace Deviser.Admin.Config
             };
 
         public string SiteName { get; set; }
+        public Type DbContextType => _dbContextType;
         public IDictionary<Type, IAdminConfig> AdminConfigs { get; }
 
 
@@ -74,7 +75,6 @@ namespace Deviser.Admin.Config
             _dbContext = dbContext;
             _modelMetadataProvider = modelMetadataProvider;
             _dbContextType = _dbContext.GetType();
-
             AdminConfigs = new Dictionary<Type, IAdminConfig>();
         }
 
@@ -86,7 +86,7 @@ namespace Deviser.Admin.Config
             if (entityType == null)
                 throw new InvalidOperationException($"The entity type {entityClrType} cannot be found on this context {_dbContext}");
 
-            if(AdminConfigs.ContainsKey(entityClrType))
+            if (AdminConfigs.ContainsKey(entityClrType))
                 throw new InvalidOperationException($"The entity type {entityClrType} has already been registered for this admin site, duplicate site registrations are not allowed");
 
             var adminConfig = new AdminConfig<TEntity>();
@@ -102,9 +102,12 @@ namespace Deviser.Admin.Config
             {
                 adminConfigAction(adminConfig);
             }
+            PopulateEntityConfig(entityType, adminConfig);
 
             bool hasExlcludeFields = adminConfig?.FieldConfig?.ExcludedFields?.Count > 0;
-            PopulateEntityConfig(entityType, adminConfig);
+            bool hasListFields = adminConfig?.ListConfig.Fields.Count > 0;
+
+
             if (hasExlcludeFields)
             {
                 PopulateFields(entityClrType, entityType, adminConfig, adminConfig.FieldConfig.ExcludedFields);
@@ -132,18 +135,33 @@ namespace Deviser.Admin.Config
                     }
                 }
             }
-            if (adminConfig?.ListConfig?.Fields?.Count > 0)
+
+            if (hasListFields)
             {
                 foreach (var field in adminConfig.ListConfig.Fields)
                 {
                     PopulateFieldOptions(field, entityType);
                 }
             }
-
-
-
-
+            else
+            {
+                var properties = entityType.GetProperties();
+                foreach (var prop in properties)
+                {                    
+                    var field = new Field
+                    {
+                        FieldExpression = GetFieldExpression(entityClrType, prop)
+                    };                    
+                    PopulateFieldOptions(field, entityType);
+                    adminConfig.ListConfig.Fields.Add(field);
+                }
+            }
         }
+
+
+
+
+
 
         private void PopulateFields<TEntity>(Type entityClrType, IEntityType entityType, AdminConfig<TEntity> adminConfig, List<Field> excludeField = null) where TEntity : class
         {
@@ -274,7 +292,7 @@ namespace Deviser.Admin.Config
                 field.FieldOption.MaxLength = efProperty.GetMaxLength() ?? 0;
             }
 
-            if(field.FieldType== FieldType.Unknown)
+            if (field.FieldType == FieldType.Unknown)
             {
                 field.FieldType = GetFieldType(field);
             }

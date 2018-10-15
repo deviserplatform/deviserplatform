@@ -9,6 +9,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Deviser.Admin.Data;
 
 namespace Deviser.Admin.Controllers
 {
@@ -17,40 +18,95 @@ namespace Deviser.Admin.Controllers
     {
         //Logger
         private readonly ILogger<AdminController<TAdminConfigurator>> _logger;
-
-        private readonly Type _adminConfiguratorType;
-        private readonly IAdminSiteProvider _adminSiteProvider;
-        private readonly DbContext _dbContext;
-        private readonly IAdminSite _adminSite;
+        private readonly IAdminRepository<TAdminConfigurator> _adminRepository;
+        
 
         public AdminController(IServiceProvider serviceProvider)
         {
-            _adminConfiguratorType = typeof(TAdminConfigurator);
             _logger = serviceProvider.GetService<ILogger<AdminController<TAdminConfigurator>>>();
-            _adminSiteProvider = serviceProvider.GetService<IAdminSiteProvider>();
-            _adminSite = _adminSiteProvider.GetAdminConfig(_adminConfiguratorType);
-            if (_adminSite == null)
-                throw new InvalidOperationException($"Admin site is not found for type {_adminConfiguratorType}");
+            _adminRepository = new AdminRepository<TAdminConfigurator>(serviceProvider);
         }
 
         [HttpGet]
-        [Route("api/{entity}/meta/list")]
-        public IActionResult GetMetaInfo(string entity)
+        [Route("modules/[area]/api/{entity}/meta/list")]
+        public IActionResult GetListMetaInfo(string entity)
         {
             try
-            {
-                var type = _adminSite.AdminConfigs.Keys.FirstOrDefault(t => t.Name == entity);
-                IAdminConfig adminConfig;
-                if (_adminSite.AdminConfigs.TryGetValue(type, out adminConfig))
+            {   
+                var adminConfig = _adminRepository.GetAdminConfig(entity);
+                if (adminConfig!=null)
                 {
-                    var fields = adminConfig.FieldConfig.Fields;
-                    return Ok(fields);
+                    var listConfig = adminConfig.ListConfig;
+                    return Ok(listConfig);
                 }
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(string.Format("Error occured while restarting the application"), ex);
+                _logger.LogError($"Error occured while getting meta info for entity: {entity}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("modules/[area]/api/{entity}/meta/fields")]
+        public IActionResult GetFieldMetaInfo(string entity)
+        {
+            try
+            {
+                var adminConfig = _adminRepository.GetAdminConfig(entity);
+                if (adminConfig != null)
+                {
+                    var fieldConfig = new { adminConfig.FieldConfig, adminConfig.FieldSetConfig };
+                    return Ok(fieldConfig);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while getting meta info for entity: {entity}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        // GET: All records
+        [HttpGet]
+        [Route("modules/[area]/api/{entity}")]
+        public IActionResult GetAllRecords(string entity)
+        {
+            try
+            {                
+                var result = _adminRepository.GetAllFor(entity);
+                if (result != null)
+                {
+                    return Ok(result);
+                }   
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while getting all records for entity: {entity}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        // GET: All records
+        [HttpGet]
+        [Route("modules/[area]/api/{entity}/{id}")]
+        public IActionResult GetAllRecords(string entity, string id)
+        {
+            try
+            {
+                var result = _adminRepository.GetItemFor(entity, id);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while getting a record for entity: {entity}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
