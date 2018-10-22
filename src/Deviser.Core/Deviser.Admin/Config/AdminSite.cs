@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Deviser.Admin.Attributes;
 using System.Collections;
+using Deviser.Admin.Data;
 
 namespace Deviser.Admin.Config
 {
@@ -192,10 +193,11 @@ namespace Deviser.Admin.Config
         /// <returns>Expression<Func<TEntity, TKey>> as LambdaExpression</returns>
         private LambdaExpression GetFieldExpression(Type entityClrType, IProperty efProperty)
         {
-            ParameterExpression param = Expression.Parameter(entityClrType);
-            MemberExpression memberExpression = Expression.Property(param, efProperty.PropertyInfo);
-            //var keyExpression = Expression.Lambda<Func<TEntity, TKey>>(memberExpression, param);
-            var fieldExpression = Expression.Lambda(memberExpression, param);
+            //ParameterExpression param = Expression.Parameter(entityClrType);
+            //MemberExpression memberExpression = Expression.Property(param, efProperty.PropertyInfo);            
+            //var fieldExpression = Expression.Lambda(memberExpression, param);
+
+            var fieldExpression = ExpressionHelper.GetPropertyExpression(entityClrType, efProperty.PropertyInfo);
             return fieldExpression;
         }
 

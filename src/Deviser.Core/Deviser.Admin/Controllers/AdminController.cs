@@ -19,7 +19,7 @@ namespace Deviser.Admin.Controllers
         //Logger
         private readonly ILogger<AdminController<TAdminConfigurator>> _logger;
         private readonly IAdminRepository<TAdminConfigurator> _adminRepository;
-        
+
 
         public AdminController(IServiceProvider serviceProvider)
         {
@@ -28,13 +28,13 @@ namespace Deviser.Admin.Controllers
         }
 
         [HttpGet]
-        [Route("modules/[area]/api/{entity}/meta/list")]
+        [Route("modules/[area]/api/{entity:required}/meta/list")]
         public IActionResult GetListMetaInfo(string entity)
         {
             try
-            {   
+            {
                 var adminConfig = _adminRepository.GetAdminConfig(entity);
-                if (adminConfig!=null)
+                if (adminConfig != null)
                 {
                     var listConfig = adminConfig.ListConfig;
                     return Ok(listConfig);
@@ -49,7 +49,7 @@ namespace Deviser.Admin.Controllers
         }
 
         [HttpGet]
-        [Route("modules/[area]/api/{entity}/meta/fields")]
+        [Route("modules/[area]/api/{entity:required}/meta/fields")]
         public IActionResult GetFieldMetaInfo(string entity)
         {
             try
@@ -71,16 +71,16 @@ namespace Deviser.Admin.Controllers
 
         // GET: All records
         [HttpGet]
-        [Route("modules/[area]/api/{entity}")]
-        public IActionResult GetAllRecords(string entity)
+        [Route("modules/[area]/api/{entity:required}")]
+        public IActionResult GetAllRecords(string entity, int pageNo = 1, int pageSize = 50, string orderBy = null)
         {
             try
-            {                
-                var result = _adminRepository.GetAllFor(entity);
+            {
+                var result = _adminRepository.GetAllFor(entity, pageNo, pageSize, orderBy);
                 if (result != null)
                 {
                     return Ok(result);
-                }   
+                }
                 return NotFound();
             }
             catch (Exception ex)
@@ -92,8 +92,8 @@ namespace Deviser.Admin.Controllers
 
         // GET: All records
         [HttpGet]
-        [Route("modules/[area]/api/{entity}/{id}")]
-        public IActionResult GetAllRecords(string entity, string id)
+        [Route("modules/[area]/api/{entity:required}/{id:required}")]
+        public IActionResult GetItem(string entity, string id)
         {
             try
             {
@@ -107,6 +107,66 @@ namespace Deviser.Admin.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Error occured while getting a record for entity: {entity}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("modules/[area]/api/{entity:required}")]
+        public async Task<IActionResult> Create(string entity, [FromBody]object entityObject)
+        {
+            try
+            {
+                var result = _adminRepository.CreateItemFor(entity, entityObject);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while creating a record for entity: {entity}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        [Route("modules/[area]/api/{entity:required}")]
+        public async Task<IActionResult> Update(string entity, [FromBody]object entityObject)
+        {
+            try
+            {
+                var result = _adminRepository.UpdateItemFor(entity, entityObject);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while updating a record for entity: {entity}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpDelete]
+        [Route("modules/[area]/api/{entity:required}/{id:required}")]
+        public async Task<IActionResult> Delete(string entity, string id)
+        {
+            try
+            {
+                var result = _adminRepository.DeleteItemFor(entity, id);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while deleting a record for entity: {entity}, id:{id}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
