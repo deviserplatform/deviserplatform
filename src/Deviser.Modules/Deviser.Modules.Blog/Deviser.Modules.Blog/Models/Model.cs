@@ -1,4 +1,5 @@
-﻿using Deviser.Core.Data.Extension;
+﻿using Deviser.Admin.Attributes;
+using Deviser.Core.Data.Extension;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -44,12 +45,24 @@ namespace Deviser.Modules.Blog.Models
 
     public class Post
     {
+        [Order]
         public Guid Id { get; set; }
+
+        [Order]
         public string Title { get; set; }
+
+        [Order]
         public string Content { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public string CreatedBy { get; set; }
+
+        [Order]
         public List<PostTag> PostTags { get; set; }
+
+        [Order]
+        public DateTime CreatedOn { get; set; }
+
+        [Order]
+        public string CreatedBy { get; set; }
+        
     }
 
     public class Tag

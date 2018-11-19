@@ -1,20 +1,15 @@
-﻿using Deviser.Admin.Config;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.Extensions.Logging;
+﻿using Deviser.Admin.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Deviser.Admin.Data;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
-namespace Deviser.Admin.Controllers
+namespace Deviser.Admin.Web.Controllers
 {
     public class AdminController<TAdminConfigurator> : Controller
-        where TAdminConfigurator : IAdminConfigurator
+       where TAdminConfigurator : IAdminConfigurator
     {
         //Logger
         private readonly ILogger<AdminController<TAdminConfigurator>> _logger;
@@ -25,6 +20,32 @@ namespace Deviser.Admin.Controllers
         {
             _logger = serviceProvider.GetService<ILogger<AdminController<TAdminConfigurator>>>();
             _adminRepository = new AdminRepository<TAdminConfigurator>(serviceProvider);
+        }
+
+        [Route("modules/[area]/admin")]
+        public IActionResult Admin()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Route("modules/[area]/api/{entity:required}/meta")]
+        public IActionResult GetMetaInfo(string entity)
+        {
+            try
+            {
+                var adminConfig = _adminRepository.GetAdminConfig(entity);
+                if (adminConfig != null)
+                {                    
+                    return Ok(adminConfig);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while getting meta info for entity: {entity}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpGet]

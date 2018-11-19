@@ -32,6 +32,7 @@ using Deviser.Core.Library.Hubs;
 using Deviser.Admin;
 using System.Linq.Expressions;
 using Deviser.Core.Common.Extensions;
+using Deviser.Admin.Web.DependencyInjection;
 
 namespace Deviser.Core.Library.DependencyInjection
 {
@@ -133,6 +134,13 @@ namespace Deviser.Core.Library.DependencyInjection
 
             services.AddSession();
 
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
             // Add application services.
             services.AddTransient<IEmailSender, MessageSender>();
             services.AddTransient<ISmsSender, MessageSender>();
@@ -198,6 +206,13 @@ namespace Deviser.Core.Library.DependencyInjection
             });
 
             app.UseDeviserAdmin(serviceProvider);
+
+            //// Shows UseCors with CorsPolicyBuilder.
+            //app.UseCors(builder =>
+            //   builder.WithOrigins("http://example.com"));
+
+            app.UseCors("MyPolicy");
+
 
             return app.UseMvc(routeBuilder);
         }

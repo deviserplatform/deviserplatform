@@ -24,6 +24,8 @@ namespace Deviser.Modules.Blog
                 .AddField(s => s.Content)
                 .AddField(s => s.CreatedOn)
                 .AddField(s => s.CreatedBy);
+
+                config.Property(s => s.Title).ShowOn();
             });
         }
     }

@@ -121,7 +121,7 @@ namespace Deviser.Admin.Data
         }
 
 
-        private PagedResult<TEntity> GetAll<TEntity>(int pageNo, int pageSize, string orderByProp)
+        private PagedResult<TEntity> GetAll<TEntity>(int pageNo, int pageSize, string orderByProperties)
             where TEntity : class
         {
             var eType = typeof(TEntity);
@@ -134,24 +134,48 @@ namespace Deviser.Admin.Data
             // Get total number of records
             int total = dbSet.Count();
 
-            IQueryable<TEntity> query;
+            IQueryable<TEntity> query = dbSet;
 
-            if (!string.IsNullOrEmpty(orderByProp) && ExpressionHelper.PropertyExists<TEntity>(orderByProp.Replace("-", "")))
+            //Creates OrderBy/OrderByDescending/ThenBy/ThenByDescending expression based on orderByProperties
+            if (!string.IsNullOrEmpty(orderByProperties))
             {
-                var orderByMethod = nameof(Queryable.OrderBy);
-                if (orderByProp.StartsWith("-"))
+                Expression orderByExpression = queryableData.Expression;
+                var props = orderByProperties.Split(',');
+                var orderByMethod = "";
+                foreach (var prop in props)
                 {
-                    orderByProp = orderByProp.Replace("-", "");
-                    orderByMethod = nameof(Queryable.OrderByDescending);
+                    if (ExpressionHelper.PropertyExists<TEntity>(prop.Replace("-", "")))
+                    {
+                        string orderByProp = prop;
+                        if (string.IsNullOrEmpty(orderByMethod))
+                        {
+                            if (orderByProp.StartsWith("-"))
+                            {
+                                orderByProp = orderByProp.Replace("-", "");
+                                orderByMethod = nameof(Queryable.OrderByDescending);
+                            }
+                            else
+                            {
+                                orderByMethod = nameof(Queryable.OrderBy);
+                            }
+                        }
+                        else
+                        {
+                            if (orderByProp.StartsWith("-"))
+                            {
+                                orderByProp = orderByProp.Replace("-", "");
+                                orderByMethod = nameof(Queryable.ThenByDescending);
+                            }
+                            else
+                            {
+                                orderByMethod = nameof(Queryable.ThenBy);
+                            }
+                        }
+
+                        orderByExpression = ExpressionHelper.GetOrderByExpression(orderByProp, eType, orderByExpression, orderByMethod);
+                    }
                 }
-
-                MethodCallExpression orderByExpression = ExpressionHelper.GetOrderByExpression(orderByProp, eType, queryableData.Expression, orderByMethod);
-
                 query = queryableData.Provider.CreateQuery<TEntity>(orderByExpression);
-            }
-            else
-            {
-                query = dbSet;
             }
 
             query.Skip(skip)
@@ -183,7 +207,7 @@ namespace Deviser.Admin.Data
             where TEntity : class
         {
             var eType = typeof(TEntity);
-            TEntity itemToAdd = ((Newtonsoft.Json.Linq.JObject)item).ToObject<TEntity>();            
+            TEntity itemToAdd = ((Newtonsoft.Json.Linq.JObject)item).ToObject<TEntity>();
             var dbSet = _dbContext.Set<TEntity>();
             var queryableData = dbSet.Add(itemToAdd);
             _dbContext.SaveChanges();

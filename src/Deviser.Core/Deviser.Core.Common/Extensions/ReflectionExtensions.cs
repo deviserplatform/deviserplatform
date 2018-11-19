@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
@@ -20,6 +21,28 @@ namespace Deviser.Core.Common.Extensions
                     derivedTypes.AddRange(moduleDbContextTypes);
             }
             return derivedTypes;
+        }
+
+        public static string GetMemberName(LambdaExpression fieldExpression)
+        {
+            if (fieldExpression == null)
+                return null;
+
+            MemberExpression memberExpression;
+
+            if (fieldExpression.Body is UnaryExpression)
+            {
+                UnaryExpression unaryExpression = (UnaryExpression)(fieldExpression.Body);
+                memberExpression = (MemberExpression)(unaryExpression.Operand);
+            }
+            else
+            {
+                memberExpression = (MemberExpression)(fieldExpression.Body);
+            }
+
+
+            var fieldName = ((PropertyInfo)memberExpression.Member).Name;
+            return fieldName;
         }
     }
 }

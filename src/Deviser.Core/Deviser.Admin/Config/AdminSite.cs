@@ -103,7 +103,18 @@ namespace Deviser.Admin.Config
             {
                 adminConfigAction(adminConfig);
             }
+
             PopulateEntityConfig(entityType, adminConfig);
+
+            var pk = adminConfig.EntityConfig.PrimaryKey;
+            foreach(var prop in pk.Properties)
+            {
+                var field = new Field
+                {
+                    FieldExpression = GetFieldExpression(entityClrType, prop)
+                };
+                adminConfig.KeyFields.Add(field);
+            }
 
             bool hasExlcludeFields = adminConfig?.FieldConfig?.ExcludedFields?.Count > 0;
             bool hasListFields = adminConfig?.ListConfig.Fields.Count > 0;
@@ -119,7 +130,7 @@ namespace Deviser.Admin.Config
                 {
                     foreach (var field in fieldRow)
                     {
-                        PopulateFieldOptions(field, entityType);
+                        PopulateFieldOptions(field, entityType, adminConfig.FieldConditions);
                     }
                 }
             }
@@ -131,7 +142,7 @@ namespace Deviser.Admin.Config
                     {
                         foreach (var field in fieldRow)
                         {
-                            PopulateFieldOptions(field, entityType);
+                            PopulateFieldOptions(field, entityType, adminConfig.FieldConditions);
                         }
                     }
                 }
@@ -141,19 +152,19 @@ namespace Deviser.Admin.Config
             {
                 foreach (var field in adminConfig.ListConfig.Fields)
                 {
-                    PopulateFieldOptions(field, entityType);
+                    PopulateFieldOptions(field, entityType, adminConfig.FieldConditions);
                 }
             }
             else
             {
-                var properties = entityType.GetProperties();
+                var properties = GetProperties(entityType);
                 foreach (var prop in properties)
-                {                    
+                {
                     var field = new Field
                     {
                         FieldExpression = GetFieldExpression(entityClrType, prop)
-                    };                    
-                    PopulateFieldOptions(field, entityType);
+                    };
+                    PopulateFieldOptions(field, entityType, adminConfig.FieldConditions);
                     adminConfig.ListConfig.Fields.Add(field);
                 }
             }
@@ -167,7 +178,7 @@ namespace Deviser.Admin.Config
         private void PopulateFields<TEntity>(Type entityClrType, IEntityType entityType, AdminConfig<TEntity> adminConfig, List<Field> excludeField = null) where TEntity : class
         {
 
-            var properties = entityType.GetProperties();
+            var properties = GetProperties(entityType);
             foreach (var prop in properties)
             {
                 bool isExclude = (excludeField != null && excludeField.Any(f => f.FieldClrType == prop.ClrType));
@@ -183,6 +194,20 @@ namespace Deviser.Admin.Config
                     });
                 }
             }
+        }
+
+        private List<IProperty> GetProperties(IEntityType entityType)
+        {
+            return entityType
+                .GetProperties()
+                .OrderBy(p => GetOrder(p))
+                .ToList();
+        }
+
+        private int GetOrder(IProperty property)
+        {
+            var attr = property.PropertyInfo.GetCustomAttributes(typeof(OrderAttribute), false);
+            return attr != null && attr.Length > 0 ? ((OrderAttribute)attr.Single()).Order : 0;
         }
 
         /// <summary>
@@ -209,7 +234,7 @@ namespace Deviser.Admin.Config
             adminConfig.EntityConfig.Navigations = entityType.GetNavigations();
         }
 
-        private void PopulateFieldOptions(Field field, IEntityType entityType)
+        private void PopulateFieldOptions(Field field, IEntityType entityType, FieldConditions fieldConditions)
         {
             var attributes = field.FieldClrType.GetTypeInfo().GetCustomAttributes();
             var efProperty = entityType.GetProperties().FirstOrDefault(p => p.ClrType == field.FieldClrType);
@@ -300,6 +325,26 @@ namespace Deviser.Admin.Config
             }
 
             field.FieldOption.IsRequired = metadata.IsRequired || !efProperty.IsColumnNullable();
+
+            //FieldConditions
+            var showCondition = fieldConditions?.ShowOnConditions?.FirstOrDefault(f => f.FieldName == field.FieldName);
+            if (showCondition != null)
+            {
+                field.FieldOption.ShowOn = showCondition.ConditionExpression;
+            }
+
+            var enableCondition = fieldConditions?.EnableOnConditions?.FirstOrDefault(f => f.FieldName == field.FieldName);
+            if (enableCondition != null)
+            {
+                field.FieldOption.EnableOn = enableCondition.ConditionExpression;
+            }
+
+            var validateCondition = fieldConditions?.ValidateOnConditions?.FirstOrDefault(f => f.FieldName == field.FieldName);
+            if (validateCondition != null)
+            {
+                field.FieldOption.ValidateOn = validateCondition.ConditionExpression;
+            }
+
         }
 
         private FieldType GetFieldType(Field field)

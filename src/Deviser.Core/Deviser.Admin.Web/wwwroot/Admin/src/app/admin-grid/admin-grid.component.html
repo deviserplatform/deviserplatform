@@ -1,0 +1,26 @@
+<div *ngIf="metaInfo && metaInfo.listConfig && metaInfo.listConfig.fields">
+
+  <table>
+    <thead>
+      <tr>
+        <th *ngFor="let field of metaInfo.listConfig.fields">{{field.fieldName}}</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>      
+    </thead>
+    <tbody *ngIf="entityRecords && entityRecords.data">
+      <tr *ngFor="let item of entityRecords.data">
+        <td *ngFor="let field of metaInfo.listConfig.fields">
+          {{item[field.fieldNameCameCase]}}
+        </td>
+        <td>
+           <a routerLink="/detail/{{ item | recordId:metaInfo.keyFields}}">Edit</a>
+        </td>
+        <td>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

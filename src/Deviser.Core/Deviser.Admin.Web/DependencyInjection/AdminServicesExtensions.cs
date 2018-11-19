@@ -5,17 +5,19 @@ using Microsoft.EntityFrameworkCore;
 using Deviser.Admin.Config;
 using Microsoft.AspNetCore.Builder;
 
-namespace Deviser.Admin
+namespace Deviser.Admin.Web.DependencyInjection
 {
     public static class AdminServicesExtensions
     {
-        public static IServiceCollection AddDeviserAdmin(this IServiceCollection serviceCollection)
+        public static IServiceCollection AddDeviserAdmin(this IServiceCollection services)
         {
 
-            serviceCollection.AddSingleton<IAdminConfigStore, AdminConfigStore>();
-            serviceCollection.AddSingleton<IAdminSiteProvider, AdminSiteProvider>();            
+            services.AddSingleton<IAdminConfigStore, AdminConfigStore>();
+            services.AddSingleton<IAdminSiteProvider, AdminSiteProvider>();
 
-            return serviceCollection;
+            services.ConfigureOptions(typeof(UIConfigureOptions));
+
+            return services;
         }
 
         public static IApplicationBuilder UseDeviserAdmin(this IApplicationBuilder app, IServiceProvider serviceProvider)

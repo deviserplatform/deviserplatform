@@ -1,4 +1,5 @@
 ﻿using Deviser.Admin.Config;
+using Deviser.Core.Common.Extensions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using System;
@@ -13,9 +14,12 @@ namespace Deviser.Admin
     public interface IAdminConfig
     {
         Type EntityType { get; }
+        List<Field> KeyFields { get; }
         IFieldConfig FieldConfig { get; }
         IFieldSetConfig FieldSetConfig { get; }
         IListConfig ListConfig { get; }
+
+        [JsonIgnore]
         EntityConfig EntityConfig { get; }
     }
 
@@ -27,6 +31,9 @@ namespace Deviser.Admin
         public ListConfig<TEntity> ListConfig { get; }
         public EntityConfig EntityConfig { get; }
         public Type EntityType { get; }
+        public List<Field> KeyFields { get; }
+
+        public FieldConditions FieldConditions { get; }
 
         IFieldConfig IAdminConfig.FieldConfig => FieldConfig;
         IFieldSetConfig IAdminConfig.FieldSetConfig => FieldSetConfig;
@@ -39,6 +46,13 @@ namespace Deviser.Admin
             FieldSetConfig = new FieldSetConfig<TEntity>();
             ListConfig = new ListConfig<TEntity>();
             EntityConfig = new EntityConfig();
+            KeyFields = new List<Field>();
+            FieldConditions = new FieldConditions();
+        }
+
+        public void ShowOn(LambdaExpression fieldExpression, Expression<Func<TEntity, bool>> predicate)
+        {
+
         }
     }
 
@@ -123,22 +137,17 @@ namespace Deviser.Admin
 
                 if (FieldExpression == null)
                     return null;
-
-                MemberExpression memberExpression;
-
-                if (FieldExpression.Body is UnaryExpression)
-                {
-                    UnaryExpression unaryExpression = (UnaryExpression)(FieldExpression.Body);
-                    memberExpression = (MemberExpression)(unaryExpression.Operand);
-                }
-                else
-                {
-                    memberExpression = (MemberExpression)(FieldExpression.Body);
-                }
-
-
-                _fieldName = ((PropertyInfo)memberExpression.Member).Name;
+                
+                _fieldName = ReflectionExtensions.GetMemberName(FieldExpression);
                 return _fieldName;
+            }
+        }
+
+        public string FieldNameCameCase
+        {
+            get
+            {
+                return FieldName.Camelize();
             }
         }
 
@@ -154,11 +163,50 @@ namespace Deviser.Admin
         public string Format { get; set; }
         public int MaxLength { get; set; }
         public string NullDisplayText { get; set; }
-        public bool IsHide { get; set; }
+        public bool IsHidden { get; set; }
         public bool IsReadOnly { get; set; }
-        public bool IsRequired { get; set; }
+        public bool IsRequired { get; set; }        
+        public Expression ShowOn { get; set; }
+        public Expression EnableOn { get; set; }
+        public Expression ValidateOn { get; set; }
         public ValidationType ValidationType { get; set; }
         public string ValidatorRegEx { get; set; }
+    }
+
+    public class FieldCondition
+    {
+        private string _fieldName;
+        public LambdaExpression FieldExpression { get; set; }
+        public string FieldName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_fieldName))
+                    return _fieldName;
+
+                if (FieldExpression == null)
+                    return null;
+
+                _fieldName = ReflectionExtensions.GetMemberName(FieldExpression);
+                return _fieldName;
+            }
+        }
+        public LambdaExpression ConditionExpression { get; set; }
+    }
+
+    public class FieldConditions
+    {
+        public List<FieldCondition> ShowOnConditions { get; }
+        public List<FieldCondition> EnableOnConditions { get; }
+        public List<FieldCondition> ValidateOnConditions { get; }
+
+        public FieldConditions()
+        {
+            ShowOnConditions = new List<FieldCondition>();
+            EnableOnConditions = new List<FieldCondition>();
+            ValidateOnConditions = new List<FieldCondition>();
+        }
+
     }
 
     public enum FieldType
@@ -200,5 +248,12 @@ namespace Deviser.Admin
         public string CssClasses { get; set; }
         public string Description { get; set; }
         public List<List<Field>> Fields { get; set; }
+    }
+
+    public class PropertyBuilder<TEntity>
+        where TEntity : class
+    {
+        public AdminConfig<TEntity> AdminConfig { get; set; }
+        public LambdaExpression FieldExpression { get; set; }
     }
 }

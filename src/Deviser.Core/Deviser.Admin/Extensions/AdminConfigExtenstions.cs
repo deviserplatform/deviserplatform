@@ -92,5 +92,46 @@ namespace Deviser.Admin.Extensions
             });
             return config;
         }
+
+        public static PropertyBuilder<TEntity> Property<TEntity, TProperty>(this AdminConfig<TEntity> adminConfig, Expression<Func<TEntity, TProperty>> expression)
+            where TEntity : class
+        {
+            //var field = adminConfig?.FieldConfig?.Fields?.FirstOrDefault(f => f.)
+            return new PropertyBuilder<TEntity>()
+            {
+                AdminConfig = adminConfig,
+                FieldExpression = expression
+            };
+        }
+
+        public static void ShowOn<TEntity>(this PropertyBuilder<TEntity> propertyBuilder, Expression<Func<TEntity, bool>> predicate)
+            where TEntity : class
+        {
+            propertyBuilder.AdminConfig.FieldConditions.ShowOnConditions.Add(new FieldCondition
+            {
+                ConditionExpression = predicate,
+                FieldExpression = propertyBuilder.FieldExpression
+            } );
+        }
+
+        public static void EnableOn<TEntity>(this PropertyBuilder<TEntity> propertyBuilder, Expression<Func<TEntity, bool>> predicate)
+            where TEntity : class
+        {
+            propertyBuilder.AdminConfig.FieldConditions.EnableOnConditions.Add(new FieldCondition
+            {
+                ConditionExpression = predicate,
+                FieldExpression = propertyBuilder.FieldExpression
+            });
+        }
+
+        public static void ValidateOn<TEntity>(this PropertyBuilder<TEntity> propertyBuilder, Expression<Func<TEntity, bool>> predicate)
+            where TEntity : class
+        {
+            propertyBuilder.AdminConfig.FieldConditions.ValidateOnConditions.Add(new FieldCondition
+            {
+                ConditionExpression = predicate,
+                FieldExpression = propertyBuilder.FieldExpression
+            });
+        }
     }
 }

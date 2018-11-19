@@ -1,4 +1,4 @@
-﻿using Deviser.Admin.Controllers;
+﻿using Deviser.Admin.Web.Controllers;
 using Deviser.Core.Library.Modules;
 using System;
 using System.Collections.Generic;
