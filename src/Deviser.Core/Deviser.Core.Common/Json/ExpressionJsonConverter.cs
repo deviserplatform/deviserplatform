@@ -22,11 +22,11 @@ namespace Deviser.Core.Common.Json
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            if (value is Expression)
+            if (value is LambdaExpression)
             {
-                var expr = value as Expression;
+                var expr = value as LambdaExpression;
                 var jsBody = expr.CompileToJavascript(new JavascriptCompilationOptions(JsCompilationFlags.BodyOnly));
-                var jsExpr = $"return {jsBody}";
+                var jsExpr = $"return {jsBody};";
                 serializer.Serialize(writer, jsExpr);
             }
         }
