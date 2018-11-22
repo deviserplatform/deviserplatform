@@ -5,7 +5,7 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-    <SpaRoot>wwwroot\Admin\</SpaRoot>
+    <SpaRoot>wwwroot\Admin</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
   </PropertyGroup>
 
@@ -23,13 +23,16 @@
 
   <ItemGroup>
     <!--<Folder Include="wwwroot\Admin\" />-->
-    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+    <None Include="$(SpaRoot)\**"/>
+    <Content Remove="$(SpaRoot)\node_modules\**" />
+    <None Remove="$(SpaRoot)\node_modules\**"/>
+    <Compile Remove="$(SpaRoot)\node_modules\**" />
+      
     <!--<EmbeddedResource Include="$(SpaRoot)\src\**\*" />-->
     <EmbeddedResource Remove="$(SpaRoot)\node_modules\**" />
+    <EmbeddedResource Remove="wwwroot\Admin\node_modules\**" />
     <EmbeddedResource Include="$(SpaRoot)\dist\**\*" />
-    <EmbeddedResource Remove="wwwroot\Admin\dist\Admin\main.44365f263843dcb8831c.js" />
-    <None Remove="wwwroot\Admin\dist\Admin\main.44365f263843dcb8831c.js" />
-    <None Remove="wwwroot\Admin\dist\Admin\main.44365f263843dcb8831c.js" />
+    
     <Content Update="**\*.cshtml" Pack="false" />
   </ItemGroup>
 

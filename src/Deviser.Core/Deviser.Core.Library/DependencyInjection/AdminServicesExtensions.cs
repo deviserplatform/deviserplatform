@@ -33,6 +33,7 @@ using Deviser.Admin;
 using System.Linq.Expressions;
 using Deviser.Core.Common.Extensions;
 using Deviser.Admin.Web.DependencyInjection;
+using Deviser.Core.Common.Json;
 
 namespace Deviser.Core.Library.DependencyInjection
 {
@@ -126,8 +127,10 @@ namespace Deviser.Core.Library.DependencyInjection
                 {
                     options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
                 })
-                .AddControllersAsServices();
-
+                .AddControllersAsServices()
+                /*.AddJsonOptions(options => {
+                    options.SerializerSettings.Converters.Add(new ExpressionJsonConverter());
+                })*/;
             services.AddDeviserAdmin();
 
             services.AddSignalR();

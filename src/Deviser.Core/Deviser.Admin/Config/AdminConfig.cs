@@ -1,7 +1,9 @@
 ﻿using Deviser.Admin.Config;
 using Deviser.Core.Common.Extensions;
+using Deviser.Core.Common.Json;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,6 +35,7 @@ namespace Deviser.Admin
         public Type EntityType { get; }
         public List<Field> KeyFields { get; }
 
+        [JsonIgnore]
         public FieldConditions FieldConditions { get; }
 
         IFieldConfig IAdminConfig.FieldConfig => FieldConfig;
@@ -165,10 +168,17 @@ namespace Deviser.Admin
         public string NullDisplayText { get; set; }
         public bool IsHidden { get; set; }
         public bool IsReadOnly { get; set; }
-        public bool IsRequired { get; set; }        
-        public Expression ShowOn { get; set; }
-        public Expression EnableOn { get; set; }
-        public Expression ValidateOn { get; set; }
+        public bool IsRequired { get; set; }
+
+        [JsonConverter(typeof(ExpressionJsonConverter))]
+        public LambdaExpression ShowOn { get; set; }
+
+        [JsonConverter(typeof(ExpressionJsonConverter))]
+        public LambdaExpression EnableOn { get; set; }
+
+        [JsonConverter(typeof(ExpressionJsonConverter))]
+        public LambdaExpression ValidateOn { get; set; }        
+
         public ValidationType ValidationType { get; set; }
         public string ValidatorRegEx { get; set; }
     }

@@ -15,13 +15,13 @@ import { RecordIdPipe } from './pipes/record-id.pipe';
   declarations: [
     AppComponent,
     AdminFormComponent,
-    AdminGridComponent,    
-    FormsModule,
+    AdminGridComponent,
     MessagesComponent,    
     RecordIdPipe
   ],
   imports: [
     AppRoutingModule,
+    FormsModule,
     BrowserModule,
     HttpClientModule,
     ReactiveFormsModule
