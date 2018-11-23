@@ -1,6 +1,23 @@
-<h1>Admin</h1>
-<nav>
-    <a routerLink="/list">Blog</a>
-</nav>
-<router-outlet></router-outlet>
-<app-messages></app-messages>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-3">            
+            <nav class="nav flex-column nav-pills">
+                <span class="nav-title">Blog Admin</span>
+                <a class="nav-link active" routerLink="/list">Blog</a>
+            </nav>
+        </div>
+        <div class="col-9">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <app-messages></app-messages>
+        </div>
+    </div>
+</div>
+
+
+
+
+

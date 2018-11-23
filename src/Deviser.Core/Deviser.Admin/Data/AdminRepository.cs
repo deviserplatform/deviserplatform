@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using System.ComponentModel;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.Storage;
-
+using Deviser.Core.Common;
 
 namespace Deviser.Admin.Data
 {
@@ -21,7 +21,7 @@ namespace Deviser.Admin.Data
         IAdminSite AdminConfig { get; }
 
         IAdminConfig GetAdminConfig(string entityType);
-        object GetAllFor(string entityType, int pageNo = 1, int pageSize = 50, string orderBy = null);
+        object GetAllFor(string entityType, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null);
         object GetItemFor(string entityType, string itemId);
         object CreateItemFor(string entityType, object entityObject);
         object UpdateItemFor(string entityType, object entity);
@@ -66,7 +66,7 @@ namespace Deviser.Admin.Data
             return null;
         }
 
-        public object GetAllFor(string entityType, int pageNo = 1, int pageSize = 50, string orderBy = null)
+        public object GetAllFor(string entityType, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null)
         {
             var eType = GetEntityType(entityType);
 
@@ -178,8 +178,7 @@ namespace Deviser.Admin.Data
                 query = queryableData.Provider.CreateQuery<TEntity>(orderByExpression);
             }
 
-            query.Skip(skip)
-                .Take(pageSize);
+            query = query.Skip(skip).Take(pageSize);
 
             var result = query.ToList();
 

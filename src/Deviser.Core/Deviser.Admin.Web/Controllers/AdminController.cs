@@ -1,4 +1,5 @@
 ﻿using Deviser.Admin.Data;
+using Deviser.Core.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -93,7 +94,7 @@ namespace Deviser.Admin.Web.Controllers
         // GET: All records
         [HttpGet]
         [Route("modules/[area]/api/{entity:required}")]
-        public IActionResult GetAllRecords(string entity, int pageNo = 1, int pageSize = 50, string orderBy = null)
+        public IActionResult GetAllRecords(string entity, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null)
         {
             try
             {

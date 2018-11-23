@@ -29,6 +29,8 @@ namespace Deviser.Core.Common
         public const int ImageOptimizeMaxHeight = 1204;
         public const int ImageOptimizeQualityPercent = 80;
 
+        public const int AdminDefaultPageCount = 10;
+
         public static Guid PageTypeURL
         {
             get

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { AdminService } from '../services/admin.service';
+import { AdminService } from '../common/services/admin.service';
 
 @Component({
   selector: 'app-admin-form',

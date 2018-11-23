@@ -1,26 +1,64 @@
-<div *ngIf="metaInfo && metaInfo.listConfig && metaInfo.listConfig.fields">
+<div class="card" *ngIf="metaInfo && metaInfo.listConfig && metaInfo.listConfig.fields && pagination">
+  <div class="card-header">
+    Featured
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <div class="dataTables_length">
+          <label>Show
+            <select name="dataTable_length" class="form-control form-control-sm" 
+              [(ngModel)]="pagination.pageSize"
+              (change)="onChangePage($event)">
+              <option *ngFor="let pageSize of pagination.pageSizes" [ngValue]="pageSize">{{pageSize}}</option>
+            </select>
+            entries</label>
+        </div>
+        selected page size {{pagination.pageSize}}
+      </div>
+      <!-- <div class="col-sm-12 col-md-6">
+        <div class="dataTables_filter">
+          <label>
+            Search: <input type="search" class="form-control form-control-sm" placeholder="" aria-controls="dataTable">
+          </label>
+        </div>
+      </div> -->
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid"
+          aria-describedby="dataTable_info" style="width: 100%;">
+          <thead>
+            <tr>
+              <th *ngFor="let field of metaInfo.listConfig.fields">{{field.fieldName}}</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="entityRecords && entityRecords.data && entityRecords.data.length>0">
+            <tr *ngFor="let item of entityRecords.data">
+              <td *ngFor="let field of metaInfo.listConfig.fields">
+                {{item[field.fieldNameCameCase]}}
+              </td>
+              <td>
+                <a routerLink="/detail/{{ item | recordId:metaInfo.keyFields}}">Edit</a>
+              </td>
+              <td>
 
-  <table>
-    <thead>
-      <tr>
-        <th *ngFor="let field of metaInfo.listConfig.fields">{{field.fieldName}}</th>
-        <th>Edit</th>
-        <th>Delete</th>
-      </tr>      
-    </thead>
-    <tbody *ngIf="entityRecords && entityRecords.data">
-      <tr *ngFor="let item of entityRecords.data">
-        <td *ngFor="let field of metaInfo.listConfig.fields">
-          {{item[field.fieldNameCameCase]}}
-        </td>
-        <td>
-           <a routerLink="/detail/{{ item | recordId:metaInfo.keyFields}}">Edit</a>
-        </td>
-        <td>
-
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-5">
+        <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing {{pagination.currentWindowStart}} to {{pagination.currentWindowEnd}} of {{pagination.totalRecordCount}}
+          entries</div>
+      </div>
+      <div class="col-sm-12 col-md-7">
+          <pagination [totalItems]="pagination.totalRecordCount" [ngModel]="pagination.pageNo" [itemsPerPage]="pagination.pageSize" (pageChanged)="onChangePage($event)"></pagination>
+      </div>
+    </div>
+  </div>
 </div>

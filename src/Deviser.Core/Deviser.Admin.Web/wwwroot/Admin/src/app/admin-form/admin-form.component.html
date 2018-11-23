@@ -1,14 +1,22 @@
-<div *ngIf="metaInfo && metaInfo.fieldConfig && metaInfo.fieldConfig.fields" class="container">
-  <h1>Hero Form</h1>
-  <form>
-    <div *ngFor="let formRow of metaInfo.fieldConfig.fields" class="form-row">
-      <div *ngFor="let field of formRow" class="form-group col">
-        <label for="{{field.fieldNameCameCase}}">{{field.fieldName}}</label>
-        <input type="text" class="form-control" id="field.fieldNameCameCase" [required]="field.isRequired">
+<div *ngIf="metaInfo && metaInfo.fieldConfig && metaInfo.fieldConfig.fields" class="card">
+  <div class="card-header">
+    Blog Edit
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <form>
+          <div *ngFor="let formRow of metaInfo.fieldConfig.fields" class="form-row">
+            <div *ngFor="let field of formRow" class="form-group col">
+              <label for="{{field.fieldNameCameCase}}">{{field.fieldName}}</label>
+              <input type="text" class="form-control" id="field.fieldNameCameCase" [required]="field.isRequired">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-success">Submit</button>
+
+        </form>
       </div>
     </div>
-
-    <button type="submit" class="btn btn-success">Submit</button>
-    
-  </form>
+  </div>
 </div>
