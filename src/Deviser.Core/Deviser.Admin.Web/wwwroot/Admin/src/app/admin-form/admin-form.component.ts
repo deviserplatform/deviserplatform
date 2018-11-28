@@ -4,6 +4,7 @@ import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 import { AdminService } from '../common/services/admin.service';
+import { AdminConfig } from '../common/domain-types/admin-config';
 
 @Component({
   selector: 'app-admin-form',
@@ -11,8 +12,8 @@ import { AdminService } from '../common/services/admin.service';
   styleUrls: ['./admin-form.component.scss']
 })
 export class AdminFormComponent implements OnInit {
-  
-  metaInfo: any;
+
+  metaInfo: AdminConfig;
   record: any;
 
   profileForm = this.fb.group({
@@ -26,7 +27,7 @@ export class AdminFormComponent implements OnInit {
     }),
   });
 
-  constructor( private route: ActivatedRoute,
+  constructor(private route: ActivatedRoute,
     private adminService: AdminService,
     private fb: FormBuilder,
     private location: Location) { }
@@ -38,14 +39,18 @@ export class AdminFormComponent implements OnInit {
 
   getMetaInfo(): void {
     this.adminService.getMetaInfo('Blog', 'Post')
-      .subscribe(metaInfo => this.metaInfo = metaInfo);
+      .subscribe(metaInfo => this.onGetMetaInfo(metaInfo));
   }
 
 
-  getRecord():void {
+  getRecord(): void {
     const id = this.route.snapshot.paramMap.get('id');
     this.adminService.getRecord('Blog', 'Post', id)
       .subscribe(record => this.record = record);
+  }
+
+  onGetMetaInfo(metaInfo: AdminConfig) {
+    this.metaInfo = metaInfo;
   }
 
   onSubmit() {

@@ -6,6 +6,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 
 import { MessageService } from './message.service';
 import { Pagination } from '../domain-types/pagination';
+import { AdminConfig } from '../domain-types/admin-config';
 
 @Injectable({
   providedIn: 'root'
@@ -21,12 +22,11 @@ export class AdminService {
   constructor(private http: HttpClient,
     private messageService: MessageService) { }
 
-  getMetaInfo(moduleName: string, entityName: string): Observable<any> {
+  getMetaInfo(moduleName: string, entityName: string): Observable<AdminConfig> {
     let serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}/meta`;
-    return this.http.get<any>(serviceUrl)
-      .pipe(
+    return this.http.get<AdminConfig>(serviceUrl).pipe(
         tap(_ => this.log('fetched meta info')),
-        catchError(this.handleError('getMetaInfo', []))
+        catchError(this.handleError<AdminConfig>('getMetaInfo'))
       );
   }
 

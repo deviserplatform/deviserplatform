@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { AdminService } from '../common/services/admin.service';
 import { Pagination } from '../common/domain-types/pagination'
+import { AdminConfig } from '../common/domain-types/admin-config';
 
 @Component({
   selector: 'app-admin-grid',
@@ -12,7 +13,7 @@ import { Pagination } from '../common/domain-types/pagination'
 })
 export class AdminGridComponent implements OnInit {
 
-  metaInfo: any;
+  metaInfo: AdminConfig;
   entityRecords : any;
   pagination: Pagination;
   

@@ -1,8 +1,8 @@
 import { Field } from './field';
 
 export interface FieldSet {
-    GroupName: string;
-    CssClasses: string;
-    Description: string;
-    Fields: Field[][];
+    groupName: string;
+    cssClasses: string;
+    description: string;
+    fields: Field[][];
 }
