@@ -80,6 +80,7 @@ namespace Deviser.Admin
     {
         public List<List<Field>> Fields { get; }
 
+        [JsonIgnore]
         public List<Field> ExcludedFields { get; }
 
         public FieldConfig()
@@ -100,7 +101,7 @@ namespace Deviser.Admin
         }
     }
 
-    public class ListConfig<TEntity>: IListConfig
+    public class ListConfig<TEntity> : IListConfig
     {
         public List<Field> Fields { get; }
 
@@ -115,6 +116,7 @@ namespace Deviser.Admin
 
         private string _fieldName;
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public FieldType FieldType { get; set; }
 
         [JsonIgnore]
@@ -140,7 +142,7 @@ namespace Deviser.Admin
 
                 if (FieldExpression == null)
                     return null;
-                
+
                 _fieldName = ReflectionExtensions.GetMemberName(FieldExpression);
                 return _fieldName;
             }
@@ -177,7 +179,7 @@ namespace Deviser.Admin
         public LambdaExpression EnableOn { get; set; }
 
         [JsonConverter(typeof(ExpressionJsonConverter))]
-        public LambdaExpression ValidateOn { get; set; }        
+        public LambdaExpression ValidateOn { get; set; }
 
         public ValidationType ValidationType { get; set; }
         public string ValidatorRegEx { get; set; }
@@ -241,15 +243,22 @@ namespace Deviser.Admin
         Password = 17,
         Hidden = 18,
         CheckBox = 19,
-        Currency=20,
-        Url=21,
-        CreditCard=22,
-        Custom=23
+        Currency = 20,
+        Url = 21,
+        CreditCard = 22,
+        Custom = 23
     }
 
     public enum ValidationType
     {
-        Email, NumberOnly, LettersOnly, Password, UserExist, UserExistByEmail, RegEx, Custom
+        Email = 0,
+        NumberOnly = 1,
+        LettersOnly = 2,
+        Password = 3,
+        UserExist = 4,
+        UserExistByEmail = 5,
+        RegEx = 6,
+        Custom = 7
     }
 
     public class FieldSet

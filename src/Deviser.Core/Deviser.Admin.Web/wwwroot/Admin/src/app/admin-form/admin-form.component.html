@@ -5,7 +5,7 @@
   <div class="card-body">
     <div class="row">
       <div class="col">
-        <form>
+        <!-- <form>
           <div *ngFor="let formRow of metaInfo.fieldConfig.fields" class="form-row">
             <div *ngFor="let field of formRow" class="form-group col">
               <label for="{{field.fieldNameCameCase}}">{{field.fieldName}}</label>
@@ -15,7 +15,47 @@
 
           <button type="submit" class="btn btn-success">Submit</button>
 
+        </form> -->
+        
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+  
+          <label>
+            First Name:
+            <input type="text" formControlName="firstName">
+          </label>
+        
+          <label>
+            Last Name:
+            <input type="text" formControlName="lastName">
+          </label>
+
+          <div formGroupName="address">
+            <h3>Address</h3>
+          
+            <label>
+              Street:
+              <input type="text" formControlName="street">
+            </label>
+          
+            <label>
+              City:
+              <input type="text" formControlName="city">
+            </label>
+            
+            <label>
+              State:
+              <input type="text" formControlName="state">
+            </label>
+          
+            <label>
+              Zip Code:
+              <input type="text" formControlName="zip">
+            </label>
+          </div>
+        
+          <button type="submit" [disabled]="!profileForm.valid">Submit</button>
         </form>
+
       </div>
     </div>
   </div>
