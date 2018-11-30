@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 import { AdminService } from '../common/services/admin.service';
 import { AdminConfig } from '../common/domain-types/admin-config';
+import { FormControlService } from '../common/services/form-control.service';
 
 @Component({
   selector: 'app-admin-form',
@@ -15,7 +16,8 @@ export class AdminFormComponent implements OnInit {
 
   metaInfo: AdminConfig;
   record: any;
-
+  adminForm: FormGroup;
+  
   profileForm = this.fb.group({
     firstName: [''],
     lastName: [''],
@@ -27,8 +29,11 @@ export class AdminFormComponent implements OnInit {
     }),
   });
 
+  
+
   constructor(private route: ActivatedRoute,
     private adminService: AdminService,
+    private formControlService:FormControlService,
     private fb: FormBuilder,
     private location: Location) { }
 
@@ -51,6 +56,7 @@ export class AdminFormComponent implements OnInit {
 
   onGetMetaInfo(metaInfo: AdminConfig) {
     this.metaInfo = metaInfo;
+    this.adminForm = this.formControlService.toFormGroup(metaInfo);
   }
 
   onSubmit() {

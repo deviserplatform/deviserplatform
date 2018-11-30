@@ -148,7 +148,7 @@ namespace Deviser.Admin
             }
         }
 
-        public string FieldNameCameCase
+        public string FieldNameCamelCase
         {
             get
             {

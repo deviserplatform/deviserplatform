@@ -4,6 +4,6 @@ import { FieldOption } from './field-option';
 export interface Field {
     fieldType: FieldType;
     fieldName: string;
-    fieldNameCameCase: string;
+    fieldNameCamelCase: string;
     fieldOption: FieldOption;
 }
