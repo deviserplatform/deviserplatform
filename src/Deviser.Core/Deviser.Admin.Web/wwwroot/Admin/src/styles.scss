@@ -44,10 +44,23 @@
  @import "node_modules/bootstrap/scss/print";
  
 
+
+$white: #ffffff;
+
  .nav{
      .nav-title{
         height: 65px;
         font-size: 18px;
         line-height: 60px;
      }
+ }
+
+ .btn{
+     svg{
+         fill: $white;
+     }
+ }
+
+ label{
+    display: inline-flex;
  }

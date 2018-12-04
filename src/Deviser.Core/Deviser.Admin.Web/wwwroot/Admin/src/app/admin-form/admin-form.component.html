@@ -1,29 +1,30 @@
 <div *ngIf="metaInfo && metaInfo.fieldConfig && metaInfo.fieldConfig.fields" class="card">
   <div class="card-header">
-    Blog Edit
+      <button (click)="goBack()"><</button> Blog Edit
   </div>
   <div class="card-body">
     <div class="row">
       <div class="col">
-        <!-- <form>
-          <div *ngFor="let formRow of metaInfo.fieldConfig.fields" class="form-row">
-            <div *ngFor="let field of formRow" class="form-group col">
-              <label for="{{field.fieldNameCameCase}}">{{field.fieldName}}</label>
-              <input type="text" class="form-control" id="field.fieldNameCameCase" [required]="field.isRequired">
+
+        <form [formGroup]="adminForm" (ngSubmit)="onSubmit()">
+          <div *ngFor="let fieldRow of metaInfo.fieldConfig.fields" class="form-row">
+            <div *ngFor="let field of fieldRow" class="form-group col">
+              <app-form-control [form]="adminForm" [field]="field"></app-form-control>
+              <!-- <pre>{{field|json}}</pre> -->
             </div>
           </div>
 
-          <button type="submit" class="btn btn-success">Submit</button>
+          <button type="submit" [disabled]="!profileForm.valid">Submit</button>
+        </form>
 
-        </form> -->
-        
-        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-  
+
+        <!-- <form [formGroup]="profileForm">
+
           <label>
             First Name:
             <input type="text" formControlName="firstName">
           </label>
-        
+
           <label>
             Last Name:
             <input type="text" formControlName="lastName">
@@ -31,31 +32,29 @@
 
           <div formGroupName="address">
             <h3>Address</h3>
-          
+
             <label>
               Street:
               <input type="text" formControlName="street">
             </label>
-          
+
             <label>
               City:
               <input type="text" formControlName="city">
             </label>
-            
+
             <label>
               State:
               <input type="text" formControlName="state">
             </label>
-          
+
             <label>
               Zip Code:
               <input type="text" formControlName="zip">
             </label>
           </div>
-        
-          <button type="submit" [disabled]="!profileForm.valid">Submit</button>
-        </form>
 
+        </form> -->
       </div>
     </div>
   </div>

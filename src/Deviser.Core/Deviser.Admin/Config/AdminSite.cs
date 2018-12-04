@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Deviser.Admin.Attributes;
 using System.Collections;
 using Deviser.Admin.Data;
+using System.Threading;
 
 namespace Deviser.Admin.Config
 {
@@ -20,6 +21,7 @@ namespace Deviser.Admin.Config
     {
         public const string IEnumerableOfIFormFileName = "IEnumerable`" + nameof(IFormFile);
 
+        private static readonly string _defaultDateFormat = $"{Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern} HH:mm:ss";
         private readonly DbContext _dbContext;
         private readonly Type _dbContextType;
         private readonly IModelMetadataProvider _modelMetadataProvider;
@@ -107,7 +109,7 @@ namespace Deviser.Admin.Config
             PopulateEntityConfig(entityType, adminConfig);
 
             var pk = adminConfig.EntityConfig.PrimaryKey;
-            foreach(var prop in pk.Properties)
+            foreach (var prop in pk.Properties)
             {
                 var field = new Field
                 {
@@ -292,6 +294,11 @@ namespace Deviser.Admin.Config
             if (string.IsNullOrEmpty(field.FieldOption.Format) /*&& displayFormatAttribute != null*/)
             {
                 field.FieldOption.Format = metadata.DisplayFormatString; //displayFormatAttribute.DataFormatString;
+
+                if (string.IsNullOrEmpty(field.FieldOption.Format))
+                {
+                    field.FieldOption.Format = _defaultDateFormat;
+                }
             }
 
             if (string.IsNullOrEmpty(field.FieldOption.Description) /*&& displayAttribute != null*/)

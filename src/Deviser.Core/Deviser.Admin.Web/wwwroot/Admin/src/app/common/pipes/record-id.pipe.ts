@@ -7,14 +7,13 @@ import { Field } from '../domain-types/field';
 export class RecordIdPipe implements PipeTransform {
 
   transform(record: any, keyFields: Field[]): string {
-    if(keyFields){
-      if(keyFields.length==1){
-        let keyField = keyFields[0];
+    if (keyFields) {
+      if (keyFields.length === 1) {
+        const keyField = keyFields[0];
         return record[keyField.fieldNameCamelCase];
-      }
-      else {
-        let ids = [];
-        for (let keyField of keyFields){
+      } else {
+        const ids = [];
+        for (const keyField of keyFields) {
           ids.push(record[keyField.fieldNameCamelCase]);
         }
         return ids.join(',');

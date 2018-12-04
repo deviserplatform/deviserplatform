@@ -4,25 +4,33 @@
   </div>
   <div class="card-body">
     <div class="row">
-      <div class="col-sm-12 col-md-6">
-        <div class="dataTables_length">
-          <label>Show
-            <select name="dataTable_length" class="form-control form-control-sm" 
-              [(ngModel)]="pagination.pageSize"
-              (change)="onChangePage($event)">
-              <option *ngFor="let pageSize of pagination.pageSizes" [ngValue]="pageSize">{{pageSize}}</option>
-            </select>
-            entries</label>
-        </div>
-        selected page size {{pagination.pageSize}}
-      </div>
-      <!-- <div class="col-sm-12 col-md-6">
+      <div class="col">
+        <div class="float-left">
+          <button type="button" class="btn btn-primary" (click)="onNewItem()">
+            <i class="my-icon" aria-label="My icon" [inlineSVG]="'../../assets/icons/baseline-add-24px.svg'"></i> New
+          </button>
+        </div> 
+        <div class="float-right">
+          <div class="dataTables_length">
+            <label>Show 
+              <select name="dataTable_length" class="form-control form-control-sm" [(ngModel)]="pagination.pageSize"
+                (change)="onChangePage($event)">
+                <option *ngFor="let pageSize of pagination.pageSizes" [ngValue]="pageSize">{{pageSize}}</option>
+              </select>
+               entries</label>
+          </div>
+          <!-- selected page size {{pagination.pageSize}} -->
+
+          <!-- <div class="col-sm-12 col-md-6">
         <div class="dataTables_filter">
           <label>
             Search: <input type="search" class="form-control form-control-sm" placeholder="" aria-controls="dataTable">
           </label>
         </div>
       </div> -->
+        </div>
+
+      </div>
     </div>
     <div class="row">
       <div class="col-sm-12">
@@ -38,7 +46,7 @@
           <tbody *ngIf="entityRecords && entityRecords.data && entityRecords.data.length>0">
             <tr *ngFor="let item of entityRecords.data">
               <td *ngFor="let field of metaInfo.listConfig.fields">
-                {{item[field.fieldNameCamelCase]}}
+                {{item[field.fieldNameCamelCase] | formatField:field}}
               </td>
               <td>
                 <a routerLink="/detail/{{ item | recordId:metaInfo.keyFields}}">Edit</a>
@@ -53,11 +61,13 @@
     </div>
     <div class="row">
       <div class="col-sm-12 col-md-5">
-        <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing {{pagination.currentWindowStart}} to {{pagination.currentWindowEnd}} of {{pagination.totalRecordCount}}
+        <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing
+          {{pagination.currentWindowStart}} to {{pagination.currentWindowEnd}} of {{pagination.totalRecordCount}}
           entries</div>
       </div>
       <div class="col-sm-12 col-md-7">
-          <pagination [totalItems]="pagination.totalRecordCount" [ngModel]="pagination.pageNo" [itemsPerPage]="pagination.pageSize" (pageChanged)="onChangePage($event)"></pagination>
+        <pagination [totalItems]="pagination.totalRecordCount" [ngModel]="pagination.pageNo" [itemsPerPage]="pagination.pageSize"
+          (pageChanged)="onChangePage($event)"></pagination>
       </div>
     </div>
   </div>

@@ -12,52 +12,56 @@ export class FormControlService {
 
   constructor(private fb: FormBuilder) { }
 
-  toFormGroup(adminConfig: AdminConfig): FormGroup {
-    let adminForm: any = {};
+  toFormGroup(adminConfig: AdminConfig, record: any = null): FormGroup {
+    const adminForm: any = {};
 
     if (adminConfig && adminConfig.fieldConfig &&
       adminConfig.fieldConfig.fields && adminConfig.fieldConfig.fields.length > 0) {
-      let fields = adminConfig.fieldConfig.fields;
-      adminForm['fields'] = this.fb.group({});
+      const fields = adminConfig.fieldConfig.fields;
 
       fields.forEach(fieldRow => {
         if (fieldRow && fieldRow.length > 0) {
           fieldRow.forEach(field => {
-            adminForm['fields'][field.fieldNameCamelCase] = this.getFormControl(field);
+            adminForm[field.fieldNameCamelCase] = this.getFormControl(field, record);
           });
         }
       });
 
-    }
-    else if (adminConfig && adminConfig.fieldSetConfig &&
+      // adminForm['fields'] = this.fb.group(fieldsGroup);
+      // adminForm =  this.fb.group(fieldsGroup);
+
+    } else if (adminConfig && adminConfig.fieldSetConfig &&
       adminConfig.fieldSetConfig.fieldSets && adminConfig.fieldSetConfig.fieldSets.length > 0) {
-      let fieldSets = adminConfig.fieldSetConfig.fieldSets;
+      const fieldSets = adminConfig.fieldSetConfig.fieldSets;
       fieldSets.forEach(fieldSet => {
         if (fieldSet && fieldSet.fields && fieldSet.fields.length > 0) {
-          adminForm['fieldSet'] = this.fb.group({});
-          adminForm['fieldSet'][fieldSet.groupName] = this.fb.group({});
-
           fieldSet.fields.forEach(fieldRow => {
             if (fieldRow && fieldRow.length > 0) {
 
               fieldRow.forEach(field => {
-                adminForm['fieldSet'][fieldSet.groupName][field.fieldNameCamelCase] = this.getFormControl(field);
+                adminForm[field.fieldNameCamelCase] = this.getFormControl(field, record);
               });
             }
 
           });
-        }        
+        }
       });
     }
 
-    return new FormGroup(adminForm);
+    return this.fb.group(adminForm);
   }
 
-  private getFormControl(field: Field): FormControl {
+  private getFormControl(field: Field, record: any): FormControl {
     let formControl: FormControl;
 
-    formControl = field.fieldOption.isReadOnly ? new FormControl('', Validators.required)
-      : new FormControl('');
+    let controlValue = record && record[field.fieldNameCamelCase] ? record[field.fieldNameCamelCase] : '';
+
+    if (field.fieldType === FieldType.DateTime) {
+      controlValue = new Date(controlValue);
+    }
+
+    formControl = field.fieldOption.isReadOnly ? new FormControl(controlValue, Validators.required)
+      : new FormControl(controlValue);
 
     return formControl;
   }
