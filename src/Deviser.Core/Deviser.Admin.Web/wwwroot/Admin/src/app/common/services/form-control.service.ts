@@ -15,6 +15,13 @@ export class FormControlService {
   toFormGroup(adminConfig: AdminConfig, record: any = null): FormGroup {
     const adminForm: any = {};
 
+
+    if (adminConfig && adminConfig.keyFields) {
+      adminConfig.keyFields.forEach(field => {
+        adminForm[field.fieldNameCamelCase] = this.getFormControl(field, record);
+      });
+    }
+
     if (adminConfig && adminConfig.fieldConfig &&
       adminConfig.fieldConfig.fields && adminConfig.fieldConfig.fields.length > 0) {
       const fields = adminConfig.fieldConfig.fields;
@@ -57,10 +64,10 @@ export class FormControlService {
     let controlValue = record && record[field.fieldNameCamelCase] ? record[field.fieldNameCamelCase] : '';
 
     if (field.fieldType === FieldType.DateTime) {
-      controlValue = new Date(controlValue);
+      controlValue = controlValue ? new Date(controlValue) : new Date();
     }
 
-    formControl = field.fieldOption.isReadOnly ? new FormControl(controlValue, Validators.required)
+    formControl = field.fieldOption && field.fieldOption.isReadOnly ? new FormControl(controlValue, Validators.required)
       : new FormControl(controlValue);
 
     return formControl;

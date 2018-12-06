@@ -14,24 +14,27 @@ import { AdminConfig } from '../domain-types/admin-config';
 export class AdminService {
 
 
-  private baseUrl = 'https://localhost:44304/modules'
-
-
-
+  private baseUrl = 'https://localhost:44304/modules';
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type':  'application/json',
+      'Authorization': 'my-auth-token'
+    })
+  };
 
   constructor(private http: HttpClient,
     private messageService: MessageService) { }
 
   getMetaInfo(moduleName: string, entityName: string): Observable<AdminConfig> {
-    let serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}/meta`;
+    const serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}/meta`;
     return this.http.get<AdminConfig>(serviceUrl).pipe(
-        tap(_ => this.log('fetched meta info')),
-        catchError(this.handleError<AdminConfig>('getMetaInfo'))
-      );
+      tap(_ => this.log('fetched meta info')),
+      catchError(this.handleError<AdminConfig>('getMetaInfo'))
+    );
   }
 
   getAllRecords(moduleName: string, entityName: string, pagination: Pagination = null): Observable<any> {
-    let serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}`;
+    const serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}`;
 
 
     let params = new HttpParams();
@@ -51,12 +54,40 @@ export class AdminService {
   }
 
   getRecord(moduleName: string, entityName: string, id: string): Observable<any> {
-    let serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}/${id}`;
+    const serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}/${id}`;
 
     return this.http.get<any>(serviceUrl)
       .pipe(
-        tap(_ => this.log('fetched all records')),
+        tap(_ => this.log(`fetched a record for id: ${id}`)),
         catchError(this.handleError('getAllRecords', []))
+      );
+  }
+
+  createRecord(moduleName: string, entityName: string, record: any) {
+    const serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}/`;
+    return this.http.post<any>(serviceUrl, record, this.httpOptions)
+    .pipe(
+      tap(_ => this.log('created a record')),
+      catchError(this.handleError('createRecord', []))
+    );
+  }
+
+  updateRecord(moduleName: string, entityName: string, record: any) {
+    const serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}/`;
+    return this.http.put<any>(serviceUrl, record, this.httpOptions)
+    .pipe(
+      tap(_ => this.log('updated a record')),
+      catchError(this.handleError('updateRecord', []))
+    );
+  }
+
+  deleteRecord(moduleName: string, entityName: string, id: string) {
+    const serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}/${id}`;
+
+    return this.http.delete<any>(serviceUrl)
+      .pipe(
+        tap(_ => this.log(`deleted a record id:${id}`)),
+        catchError(this.handleError('deleteRecord', []))
       );
   }
 

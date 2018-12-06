@@ -246,7 +246,8 @@ namespace Deviser.Admin
         Currency = 20,
         Url = 21,
         CreditCard = 22,
-        Custom = 23
+        Custom = 23,
+        KeyField=24,
     }
 
     public enum ValidationType

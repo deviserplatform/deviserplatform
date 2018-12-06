@@ -113,7 +113,8 @@ namespace Deviser.Admin.Config
             {
                 var field = new Field
                 {
-                    FieldExpression = GetFieldExpression(entityClrType, prop)
+                    FieldExpression = GetFieldExpression(entityClrType, prop),
+                    FieldType = FieldType.KeyField
                 };
                 adminConfig.KeyFields.Add(field);
             }

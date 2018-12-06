@@ -7,6 +7,7 @@ import { forkJoin, Observable } from 'rxjs';
 import { AdminService } from '../common/services/admin.service';
 import { AdminConfig } from '../common/domain-types/admin-config';
 import { FormControlService } from '../common/services/form-control.service';
+import { FormMode } from '../common/domain-types/form-mode';
 
 @Component({
   selector: 'app-admin-form',
@@ -18,7 +19,7 @@ export class AdminFormComponent implements OnInit {
   metaInfo: AdminConfig;
   record: any;
   adminForm: FormGroup;
-
+  formMode: FormMode;
   // adminForm = this.fb.group({
   //   fieldss: this.fb.group({
   //     title: [''],
@@ -52,43 +53,45 @@ export class AdminFormComponent implements OnInit {
   }
 
 
-  getData() {
+  getData(): void {
     const id = this.route.snapshot.paramMap.get('id');
+    this.formMode = id ? FormMode.Update : FormMode.New;
 
-    if (id) {
+    if (this.formMode === FormMode.Update) {
       const metaInfo$ = this.adminService.getMetaInfo('Blog', 'Post');
       const record$ = this.adminService.getRecord('Blog', 'Post', id);
       forkJoin([metaInfo$, record$]).subscribe(results => {
         this.record = results[1];
         this.onGetMetaInfo(results[0]);
       });
-    } else {
+    } else if (this.formMode === FormMode.New) {
       this.adminService.getMetaInfo('Blog', 'Post')
         .subscribe(metaInfo => this.onGetMetaInfo(metaInfo));
     }
 
   }
 
-  // getMetaInfo(): void {
-  //   this.adminService.getMetaInfo('Blog', 'Post')
-  //     .subscribe(metaInfo => this.onGetMetaInfo(metaInfo));
-  // }
-
-
-  // getRecord(): void {
-  //   const id = this.route.snapshot.paramMap.get('id');
-  //   this.adminService.getRecord('Blog', 'Post', id)
-  //     .subscribe(record => this.record = record);
-  // }
-
-  onGetMetaInfo(metaInfo: AdminConfig) {
+  onGetMetaInfo(metaInfo: AdminConfig): void {
     this.metaInfo = metaInfo;
     this.adminForm = this.formControlService.toFormGroup(metaInfo, this.record);
   }
 
-  onSubmit() {
+  onSubmit(): void {
     // TODO: Use EventEmitter with form value
-    console.warn(this.profileForm.value);
+
+    console.warn(this.adminForm.value);
+    if (this.formMode === FormMode.New) {
+      this.adminService.createRecord('Blog', 'Post', this.adminForm.value)
+        .subscribe(formValue => this.patchFormValue(formValue));
+    } else if (this.formMode === FormMode.Update) {
+      this.adminService.updateRecord('Blog', 'Post', this.adminForm.value)
+      .subscribe(formValue => this.patchFormValue(formValue));
+    }
+  }
+
+  patchFormValue(formValue: any): void {
+    this.adminForm.patchValue(formValue);
+    this.goBack();
   }
 
   goBack(): void {

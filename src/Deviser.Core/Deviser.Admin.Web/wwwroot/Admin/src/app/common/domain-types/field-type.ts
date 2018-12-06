@@ -22,5 +22,6 @@ export enum FieldType {
     Currency = 'Currency',
     Url = 'Url',
     CreditCard = 'CreditCard',
-    Custom = 'Custom'
+    Custom = 'Custom',
+    KeyField = 'KeyField',
 }

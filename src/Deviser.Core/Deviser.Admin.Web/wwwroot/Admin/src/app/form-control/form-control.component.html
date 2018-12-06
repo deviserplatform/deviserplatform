@@ -2,6 +2,10 @@
 
   <ng-container [ngSwitch]="field.fieldType">
 
+    <ng-container *ngSwitchCase="fieldType.KeyField">      
+      <input type="hidden" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" readonly>
+    </ng-container>
+
     <ng-container *ngSwitchCase="fieldType.Static">
       <label for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
       <input type="text" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" class="form-control"
@@ -35,7 +39,8 @@
 
     <ng-container *ngSwitchCase="fieldType.DateTime">
       <label for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <input type="tel" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" class="form-control" bsDatepicker>
+      <input type="tel" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" class="form-control"
+        bsDatepicker>
     </ng-container>
 
   </ng-container>

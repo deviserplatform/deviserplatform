@@ -12,6 +12,8 @@ using System.ComponentModel;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.Storage;
 using Deviser.Core.Common;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace Deviser.Admin.Data
 {
@@ -206,7 +208,11 @@ namespace Deviser.Admin.Data
             where TEntity : class
         {
             var eType = typeof(TEntity);
-            TEntity itemToAdd = ((Newtonsoft.Json.Linq.JObject)item).ToObject<TEntity>();
+
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.Converters.Add(new Core.Common.Json.GuidConverter());
+
+            TEntity itemToAdd = ((JObject)item).ToObject<TEntity>(serializer);
             var dbSet = _dbContext.Set<TEntity>();
             var queryableData = dbSet.Add(itemToAdd);
             _dbContext.SaveChanges();
@@ -217,7 +223,7 @@ namespace Deviser.Admin.Data
             where TEntity : class
         {
             var eType = typeof(TEntity);
-            TEntity itemToAdd = ((Newtonsoft.Json.Linq.JObject)item).ToObject<TEntity>();
+            TEntity itemToAdd = ((JObject)item).ToObject<TEntity>();
             var dbSet = _dbContext.Set<TEntity>();
             var queryableData = dbSet.Update(itemToAdd);
             _dbContext.SaveChanges();
