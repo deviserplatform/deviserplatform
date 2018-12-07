@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { Router } from '@angular/router';
 
 import { AdminService } from '../common/services/admin.service';
-import { Pagination } from '../common/domain-types/pagination'
 import { AdminConfig } from '../common/domain-types/admin-config';
-import { Router } from '@angular/router';
+import { Pagination } from '../common/domain-types/pagination';
+import { ConfirmDialogComponent } from '../common/components/confirm-dialog/confirm-dialog.component';
+import { RecordIdPipe } from '../common/pipes/record-id.pipe';
+
 
 @Component({
   selector: 'app-admin-grid',
@@ -17,8 +21,11 @@ export class AdminGridComponent implements OnInit {
   entityRecords: any;
   pagination: Pagination;
 
+  @ViewChild(ConfirmDialogComponent)
+  private confirmDialogComponent: ConfirmDialogComponent;
 
   constructor(private adminService: AdminService,
+    private recordIdPipe: RecordIdPipe,
     private router: Router) { }
 
   ngOnInit() {
@@ -54,5 +61,25 @@ export class AdminGridComponent implements OnInit {
     this.router.navigateByUrl('detail/');
   }
 
+  openDeleteConfirmationModal(item: any) {
+    this.confirmDialogComponent.openModal(item);
+  }
+
+  onYesToDelete(item): void {
+    console.log('confirm');
+    const itemId = this.recordIdPipe.transform(item, this.metaInfo.keyFields);
+    this.adminService.deleteRecord('Blog', 'Post', itemId)
+      .subscribe(response => this.onDeleteResponse(response));
+  }
+
+  onDeleteResponse(response: any): void {
+    console.log(response);
+    this.getAllRecords(this.pagination);
+  }
+
+  onNoToDelete(): void {
+    console.log('declined');
+
+  }
 
 }

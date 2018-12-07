@@ -9,27 +9,7 @@
           <button type="button" class="btn btn-primary" (click)="onNewItem()">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'../../assets/icons/baseline-add.svg'"></i> New
           </button>
-        </div> 
-        <div class="float-right">
-          <div class="dataTables_length">
-            <label>Show 
-              <select name="dataTable_length" class="form-control form-control-sm" [(ngModel)]="pagination.pageSize"
-                (change)="onChangePage($event)">
-                <option *ngFor="let pageSize of pagination.pageSizes" [ngValue]="pageSize">{{pageSize}}</option>
-              </select>
-               entries</label>
-          </div>
-          <!-- selected page size {{pagination.pageSize}} -->
-
-          <!-- <div class="col-sm-12 col-md-6">
-        <div class="dataTables_filter">
-          <label>
-            Search: <input type="search" class="form-control form-control-sm" placeholder="" aria-controls="dataTable">
-          </label>
         </div>
-      </div> -->
-        </div>
-
       </div>
     </div>
     <div class="row">
@@ -54,9 +34,9 @@
                 </a>
               </td>
               <td>
-                  <a class="btn btn-danger" title="Delete">
-                    <i class="my-icon" aria-label="My icon" [inlineSVG]="'../../assets/icons/baseline-delete.svg'"></i>
-                  </a>
+                <a class="btn btn-danger" title="Delete" (click)="openDeleteConfirmationModal(item)">
+                  <i class="my-icon" aria-label="My icon" [inlineSVG]="'../../assets/icons/baseline-delete.svg'"></i>
+                </a>
               </td>
             </tr>
           </tbody>
@@ -64,15 +44,34 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-12 col-md-5">
-        <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing
-          {{pagination.currentWindowStart}} to {{pagination.currentWindowEnd}} of {{pagination.totalRecordCount}}
-          entries</div>
+      <div class="col">
+        <div class="form-row">
+          <div class="col-auto dataTables_length">
+            <label class="d-inline"> Items per page </label>
+          </div>
+          <div class="col-auto">
+            <select name="dataTable_length" class="form-control form-control-sm" [(ngModel)]="pagination.pageSize"
+              (change)="onChangePage($event)">
+              <option *ngFor="let pageSize of pagination.pageSizes" [ngValue]="pageSize">{{pageSize}}</option>
+            </select>
+          </div>
+          <div class="col-auto dataTables_info" role="status" aria-live="polite">Showing
+            {{pagination.currentWindowStart}} to {{pagination.currentWindowEnd}} of {{pagination.totalRecordCount}}
+            entries
+          </div>
+        </div>
+
       </div>
-      <div class="col-sm-12 col-md-7">
+      <div class="col d-flex flex-row-reverse">
         <pagination [totalItems]="pagination.totalRecordCount" [ngModel]="pagination.pageNo" [itemsPerPage]="pagination.pageSize"
-          (pageChanged)="onChangePage($event)"></pagination>
+          (pageChanged)="onChangePage($event)" [boundaryLinks]="true" [maxSize]="3" previousText="&lsaquo;" nextText="&rsaquo;"
+          firstText="&laquo;" lastText="&raquo;"></pagination>
+
       </div>
     </div>
   </div>
 </div>
+
+<app-confirm-dialog [title]="'Confirmation'" [content]="'Are you sure to delete this item?'" [btnConfirmText]="'Yes'" [btnCancelText]="'No'"
+(confirm)="onYesToDelete($event)"
+(cancel)="onNoToDelete($event)"></app-confirm-dialog>

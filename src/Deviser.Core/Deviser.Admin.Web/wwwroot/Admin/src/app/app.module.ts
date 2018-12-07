@@ -1,12 +1,15 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
+
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { InlineSVGModule } from 'ng-inline-svg';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,7 +19,8 @@ import { AdminFormComponent } from './admin-form/admin-form.component';
 import { RecordIdPipe } from './common/pipes/record-id.pipe';
 import { FormControlComponent } from './form-control/form-control.component';
 import { FormatFieldPipe } from './common/pipes/format-field.pipe';
-import { DatePipe } from '@angular/common';
+import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
+
 
 @NgModule({
   declarations: [
@@ -26,7 +30,8 @@ import { DatePipe } from '@angular/common';
     FormControlComponent,
     MessagesComponent,
     RecordIdPipe,
-    FormatFieldPipe
+    FormatFieldPipe,
+    ConfirmDialogComponent
   ],
   imports: [
     AppRoutingModule,
@@ -35,10 +40,14 @@ import { DatePipe } from '@angular/common';
     HttpClientModule,
     PaginationModule.forRoot(),
     BsDatepickerModule.forRoot(),
+    ModalModule.forRoot(),
     InlineSVGModule.forRoot(),
     ReactiveFormsModule
   ],
-  providers: [DatePipe],
+  providers: [
+    DatePipe,
+    RecordIdPipe
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
