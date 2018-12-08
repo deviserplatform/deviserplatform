@@ -240,7 +240,7 @@ namespace Deviser.Admin.Config
         private void PopulateFieldOptions(Field field, IEntityType entityType, FieldConditions fieldConditions)
         {
             var attributes = field.FieldClrType.GetTypeInfo().GetCustomAttributes();
-            var efProperty = entityType.GetProperties().FirstOrDefault(p => p.ClrType == field.FieldClrType);
+            var efProperty = entityType.GetProperties().FirstOrDefault(p => p.Name == field.FieldName);
             field.FieldOption = new FieldOption();
 
 

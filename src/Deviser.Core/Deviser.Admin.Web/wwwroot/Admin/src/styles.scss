@@ -47,20 +47,49 @@
 
 $white: #ffffff;
 
- .nav{
-     .nav-title{
-        height: 65px;
-        font-size: 18px;
-        line-height: 60px;
-     }
- }
 
- .btn{
+
+.admin-container{
+    .nav{
+        .nav-title{
+           height: 65px;
+           font-size: 18px;
+           line-height: 60px;
+        }
+    }
+   
+    .btn{
+        svg{
+            fill: $white;
+        }
+    }
+   
+    label{
+       display: inline-flex;
+    }
+
+    .date-control{
      svg{
-         fill: $white;
-     }
- }
+         height: 1.3rem;
+     }   
+    }
 
- label{
-    display: inline-flex;
- }
+    .admin-grid{
+        .action-bar{
+            margin-bottom: 1rem;
+        }
+    }
+
+    .admin-form{
+        .card-footer{
+            .btn-cancel{
+                margin-right: 1rem;
+            }
+        }
+    }
+
+    .is-invalid{
+        color: $red;
+    }
+}
+ 

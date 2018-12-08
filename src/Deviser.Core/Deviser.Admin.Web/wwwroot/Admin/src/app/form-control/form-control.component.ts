@@ -18,7 +18,16 @@ export class FormControlComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  }
 
+  get f() { return this.form.controls; }
+
+  hasError(field:Field): boolean{
+    return this.f[field.fieldNameCamelCase].errors && this.f[field.fieldNameCamelCase].touched;
+  }
+ 
+  hasRequiredError(field: Field):boolean{
+    return this.f[field.fieldNameCamelCase].errors.required;
   }
 
 }

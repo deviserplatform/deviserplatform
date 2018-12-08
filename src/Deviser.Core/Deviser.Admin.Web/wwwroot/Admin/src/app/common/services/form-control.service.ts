@@ -67,7 +67,7 @@ export class FormControlService {
       controlValue = controlValue ? new Date(controlValue) : new Date();
     }
 
-    formControl = field.fieldOption && field.fieldOption.isReadOnly ? new FormControl(controlValue, Validators.required)
+    formControl = field.fieldOption && field.fieldOption.isRequired ? new FormControl(controlValue, Validators.required)
       : new FormControl(controlValue);
 
     return formControl;

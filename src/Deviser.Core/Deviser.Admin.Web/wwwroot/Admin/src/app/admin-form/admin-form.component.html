@@ -1,70 +1,35 @@
-<div *ngIf="metaInfo && metaInfo.fieldConfig && metaInfo.fieldConfig.fields" class="card">
-  <div class="card-header">
-      <button class="btn btn-primary" (click)="goBack()">
+<div class="admin-container">
+  <div class="admin-form">
+    <div *ngIf="metaInfo && metaInfo.fieldConfig && metaInfo.fieldConfig.fields" class="card">
+      <div class="card-header">
+        <button class="btn btn-secondary" (click)="goBack()">
           <i class="my-icon" aria-label="My icon" [inlineSVG]="'../../assets/icons/baseline-keyboard_arrow_left.svg'"></i>
-      </button> Blog Edit
-  </div>
-  <div class="card-body">
-    <div class="row">
-      <div class="col">
+        </button> Blog Edit
+      </div>
+      <form [formGroup]="adminForm" (ngSubmit)="onSubmit()">
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
 
-        <form [formGroup]="adminForm" (ngSubmit)="onSubmit()">
+              <ng-container *ngFor="let keyField of metaInfo.keyFields">
+                <app-form-control [form]="adminForm" [field]="keyField"></app-form-control>
+              </ng-container>
 
-          <ng-container *ngFor="let keyField of metaInfo.keyFields">              
-              <app-form-control [form]="adminForm" [field]="keyField"></app-form-control>
-          </ng-container>
-          
+              <div *ngFor="let fieldRow of metaInfo.fieldConfig.fields" class="form-row">
+                <div *ngFor="let field of fieldRow" class="form-group col">
+                  <app-form-control [form]="adminForm" [field]="field"></app-form-control>
+                  <!-- <pre>{{field|json}}</pre> -->
+                </div>
+              </div>
 
-
-          <div *ngFor="let fieldRow of metaInfo.fieldConfig.fields" class="form-row">
-            <div *ngFor="let field of fieldRow" class="form-group col">
-              <app-form-control [form]="adminForm" [field]="field"></app-form-control>
-              <!-- <pre>{{field|json}}</pre> -->
             </div>
           </div>
-
-          <button type="submit" [disabled]="!profileForm.valid">Submit</button>
-        </form>
-
-
-        <!-- <form [formGroup]="profileForm">
-
-          <label>
-            First Name:
-            <input type="text" formControlName="firstName">
-          </label>
-
-          <label>
-            Last Name:
-            <input type="text" formControlName="lastName">
-          </label>
-
-          <div formGroupName="address">
-            <h3>Address</h3>
-
-            <label>
-              Street:
-              <input type="text" formControlName="street">
-            </label>
-
-            <label>
-              City:
-              <input type="text" formControlName="city">
-            </label>
-
-            <label>
-              State:
-              <input type="text" formControlName="state">
-            </label>
-
-            <label>
-              Zip Code:
-              <input type="text" formControlName="zip">
-            </label>
-          </div>
-
-        </form> -->
-      </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+          <button type="button" class="btn btn-secondary btn-cancel" (click)="goBack()" data-dismiss="modal">Cancel</button>
+          <button class="btn btn-primary" type="submit" [disabled]="!adminForm.valid">Submit</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
