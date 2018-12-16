@@ -16,10 +16,17 @@
               </ng-container>
 
               <div *ngFor="let fieldRow of metaInfo.fieldConfig.fields" class="form-row">
-                <div *ngFor="let field of fieldRow" class="form-group col">
-                  <app-form-control [form]="adminForm" [field]="field"></app-form-control>
+                <fieldset *ngFor="let field of fieldRow" class="form-group col" [disabled]="!isFieldEnabled(field)">
+                    <ng-container *ngIf="isFieldShown(field)">
+                        <app-form-control 
+                        [form]="adminForm"
+                        [field]="field"
+                        [isShown]="isFieldShown(field)"
+                        [isDisabled]="!isFieldEnabled(field)"
+                        [isValidate]="isFieldValidate(field)"></app-form-control>
+                    </ng-container>
                   <!-- <pre>{{field|json}}</pre> -->
-                </div>
+                </fieldset>
               </div>
 
             </div>

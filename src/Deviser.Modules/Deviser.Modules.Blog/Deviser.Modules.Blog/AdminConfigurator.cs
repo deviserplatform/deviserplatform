@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Deviser.Admin;
 using Deviser.Admin.Extensions;
+using Deviser.Core.Common.DomainTypes.Admin;
 using Deviser.Modules.Blog.Models;
 
 namespace Deviser.Modules.Blog
@@ -21,11 +22,12 @@ namespace Deviser.Modules.Blog
             {
                 config.FieldConfig
                 .AddField(s => s.Title)
-                .AddField(s => s.Content)
+                .AddField(s => s.Content, new FieldOption { ValidationType = ValidationType.UserExist })
                 .AddField(s => s.CreatedOn)
                 .AddField(s => s.CreatedBy);
 
-                config.Property(s => s.Title).ShowOn(p=>p.Content=="Test");
+                config.Property(s => s.Content)
+                .ValidateOn(p=>p.Title=="Test");
             });
         }
     }

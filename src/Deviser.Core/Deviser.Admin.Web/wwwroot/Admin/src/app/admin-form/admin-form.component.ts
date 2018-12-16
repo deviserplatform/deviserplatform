@@ -8,6 +8,7 @@ import { AdminService } from '../common/services/admin.service';
 import { AdminConfig } from '../common/domain-types/admin-config';
 import { FormControlService } from '../common/services/form-control.service';
 import { FormMode } from '../common/domain-types/form-mode';
+import { Field } from '../common/domain-types/field';
 
 @Component({
   selector: 'app-admin-form',
@@ -20,25 +21,6 @@ export class AdminFormComponent implements OnInit {
   record: any;
   adminForm: FormGroup;
   formMode: FormMode;
-  // adminForm = this.fb.group({
-  //   fieldss: this.fb.group({
-  //     title: [''],
-  //     content: ['']
-  //   }),
-  // });
-
-  profileForm = this.fb.group({
-    firstName: [''],
-    lastName: [''],
-    address: this.fb.group({
-      street: [''],
-      city: [''],
-      state: [''],
-      zip: ['']
-    }),
-  });
-
-
 
   constructor(private route: ActivatedRoute,
     private adminService: AdminService,
@@ -85,13 +67,38 @@ export class AdminFormComponent implements OnInit {
         .subscribe(formValue => this.patchFormValue(formValue));
     } else if (this.formMode === FormMode.Update) {
       this.adminService.updateRecord('Blog', 'Post', this.adminForm.value)
-      .subscribe(formValue => this.patchFormValue(formValue));
+        .subscribe(formValue => this.patchFormValue(formValue));
     }
   }
 
   patchFormValue(formValue: any): void {
     this.adminForm.patchValue(formValue);
     this.goBack();
+  }
+
+  isFieldShown(field: Field) {
+    let result = this.getFieldPredicate(field, 'showOn');
+    return result;
+  }
+
+  isFieldEnabled(field: Field) {
+    let result = this.getFieldPredicate(field, 'enableOn');
+    return result;
+  }
+
+  isFieldValidate(field: Field) {
+    let result = this.getFieldPredicate(field, 'validateOn');
+    return result;
+  }
+
+  getFieldPredicate(field: Field, action: string) {
+    if (field && field.fieldOption && field.fieldOption[action]) {
+      let fieldExpression = field.fieldOption[action];
+      let predicate = Function(...fieldExpression.parameters, fieldExpression.expression);
+      let result = predicate(this.adminForm.value);
+      return result;
+    }
+    return true;
   }
 
   goBack(): void {

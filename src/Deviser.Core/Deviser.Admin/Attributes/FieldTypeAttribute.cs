@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Deviser.Core.Common.DomainTypes.Admin;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;

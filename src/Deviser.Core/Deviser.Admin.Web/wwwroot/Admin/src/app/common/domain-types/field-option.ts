@@ -1,4 +1,5 @@
 import { ValidationType } from './validation-type';
+import { FieldExpression } from './FieldExpression';
 
 export interface FieldOption {
     displayName: string;
@@ -9,9 +10,9 @@ export interface FieldOption {
     isHidden: boolean;
     isReadOnly: boolean;
     isRequired: boolean;
-    showOn: string;
-    enableOn: string;
-    validateOn: string;
+    showOn: FieldExpression;
+    enableOn: FieldExpression;
+    validateOn: FieldExpression;
     validationType: ValidationType;
     validatorRegEx: string;
 }

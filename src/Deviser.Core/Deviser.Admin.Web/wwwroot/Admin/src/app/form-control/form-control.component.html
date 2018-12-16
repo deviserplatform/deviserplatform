@@ -8,14 +8,14 @@
 
     <ng-container *ngSwitchCase="fieldType.Static">
       <label for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <input type="text" class="form-control" 
-        [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" readonly>
+      <input type="text" class="form-control" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
+        readonly>
     </ng-container>
 
     <ng-container *ngSwitchCase="fieldType.TextBox">
       <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <input type="text" class="form-control"
-      [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }">
+      <input type="text" class="form-control" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
+        [ngClass]="{ 'is-invalid': hasError(field) }">
       <div *ngIf="hasError(field)" class="invalid-feedback">
         <div *ngIf="hasRequiredError(field)">{{field.fieldOption.displayName}} is required</div>
       </div>
@@ -23,7 +23,8 @@
 
     <ng-container *ngSwitchCase="fieldType.Number">
       <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <input type="number" class="form-control" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }">
+      <input type="number" class="form-control" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
+        [ngClass]="{ 'is-invalid': hasError(field) }">
       <div *ngIf="hasError(field)" class="invalid-feedback">
         <div *ngIf="hasRequiredError(field)">{{field.fieldOption.displayName}} is required</div>
       </div>
@@ -31,7 +32,8 @@
 
     <ng-container *ngSwitchCase="fieldType.EmailAddress">
       <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <input type="email" class="form-control" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }">
+      <input type="email" class="form-control" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
+        [ngClass]="{ 'is-invalid': hasError(field) }">
       <div *ngIf="hasError(field)" class="invalid-feedback">
         <div *ngIf="hasRequiredError(field)">{{field.fieldOption.displayName}} is required</div>
       </div>
@@ -39,7 +41,8 @@
 
     <ng-container *ngSwitchCase="fieldType.Phone">
       <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <input type="tel" class="form-control" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }">
+      <input type="tel" class="form-control" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
+        [ngClass]="{ 'is-invalid': hasError(field) }">
       <div *ngIf="hasError(field)" class="invalid-feedback">
         <div *ngIf="hasRequiredError(field)">{{field.fieldOption.displayName}} is required</div>
       </div>
@@ -47,7 +50,8 @@
 
     <ng-container *ngSwitchCase="fieldType.TextArea">
       <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <textarea [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" class="form-control" [ngClass]="{ 'is-invalid': hasError(field) }"></textarea>
+      <textarea [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" class="form-control"
+        [ngClass]="{ 'is-invalid': hasError(field) }"></textarea>
       <div *ngIf="hasError(field)" class="invalid-feedback">
         <div *ngIf="hasRequiredError(field)">{{field.fieldOption.displayName}} is required</div>
       </div>
@@ -58,7 +62,7 @@
 
       <div class="input-group date-control">
         <input type="tel" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" class="form-control"
-        [ngClass]="{ 'is-invalid': hasError(field) }" #dp="bsDatepicker" bsDatepicker>
+          [ngClass]="{ 'is-invalid': hasError(field) }" #dp="bsDatepicker" bsDatepicker>
         <div class="input-group-append">
           <button class="btn btn-secondary" type="button" (click)="dp.toggle()">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'../../assets/icons/baseline-calendar_today.svg'"></i>
@@ -68,7 +72,7 @@
           <div *ngIf="hasRequiredError(field)">{{field.fieldOption.displayName}} is required</div>
         </div>
       </div>
-      
+
     </ng-container>
 
   </ng-container>

@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
+using System.Linq;
+using Deviser.Core.Common.DomainTypes.Admin;
 
 namespace Deviser.Core.Common.Json
 {
@@ -27,7 +29,13 @@ namespace Deviser.Core.Common.Json
                 var expr = value as LambdaExpression;
                 var jsBody = expr.CompileToJavascript(new JavascriptCompilationOptions(JsCompilationFlags.BodyOnly));
                 var jsExpr = $"return {jsBody};";
-                serializer.Serialize(writer, jsExpr);
+                var exprObject = new FieldExpression
+                {
+                    Parameters = expr.Parameters.Select(p => p.Name).ToList(),
+                    Expression = jsExpr
+                };
+
+                serializer.Serialize(writer, exprObject);
             }
         }
     }

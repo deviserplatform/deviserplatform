@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Deviser.Admin.Config;
 using Microsoft.AspNetCore.Builder;
+using Deviser.Admin.Validation;
 
 namespace Deviser.Admin.Web.DependencyInjection
 {
@@ -14,6 +15,9 @@ namespace Deviser.Admin.Web.DependencyInjection
 
             services.AddSingleton<IAdminConfigStore, AdminConfigStore>();
             services.AddSingleton<IAdminSiteProvider, AdminSiteProvider>();
+
+            services.AddScoped<IPasswordValidator, PasswordValidator>();
+            services.AddScoped<IUserByEmailValidator, UserValidator>();
 
             services.ConfigureOptions(typeof(UIConfigureOptions));
 

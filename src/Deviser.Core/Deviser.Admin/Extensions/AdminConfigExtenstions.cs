@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Deviser.Core.Common.DomainTypes.Admin;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -104,17 +105,18 @@ namespace Deviser.Admin.Extensions
             };
         }
 
-        public static void ShowOn<TEntity>(this PropertyBuilder<TEntity> propertyBuilder, Expression<Func<TEntity, bool>> predicate)
+        public static PropertyBuilder<TEntity> ShowOn<TEntity>(this PropertyBuilder<TEntity> propertyBuilder, Expression<Func<TEntity, bool>> predicate)
             where TEntity : class
         {
             propertyBuilder.AdminConfig.FieldConditions.ShowOnConditions.Add(new FieldCondition
             {
                 ConditionExpression = predicate,
                 FieldExpression = propertyBuilder.FieldExpression
-            } );
+            });
+            return propertyBuilder;
         }
 
-        public static void EnableOn<TEntity>(this PropertyBuilder<TEntity> propertyBuilder, Expression<Func<TEntity, bool>> predicate)
+        public static PropertyBuilder<TEntity> EnableOn<TEntity>(this PropertyBuilder<TEntity> propertyBuilder, Expression<Func<TEntity, bool>> predicate)
             where TEntity : class
         {
             propertyBuilder.AdminConfig.FieldConditions.EnableOnConditions.Add(new FieldCondition
@@ -122,9 +124,10 @@ namespace Deviser.Admin.Extensions
                 ConditionExpression = predicate,
                 FieldExpression = propertyBuilder.FieldExpression
             });
+            return propertyBuilder;
         }
 
-        public static void ValidateOn<TEntity>(this PropertyBuilder<TEntity> propertyBuilder, Expression<Func<TEntity, bool>> predicate)
+        public static PropertyBuilder<TEntity> ValidateOn<TEntity>(this PropertyBuilder<TEntity> propertyBuilder, Expression<Func<TEntity, bool>> predicate)
             where TEntity : class
         {
             propertyBuilder.AdminConfig.FieldConditions.ValidateOnConditions.Add(new FieldCondition
@@ -132,6 +135,7 @@ namespace Deviser.Admin.Extensions
                 ConditionExpression = predicate,
                 FieldExpression = propertyBuilder.FieldExpression
             });
+            return propertyBuilder;
         }
     }
 }

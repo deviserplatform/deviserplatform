@@ -14,6 +14,7 @@ using Deviser.Admin.Attributes;
 using System.Collections;
 using Deviser.Admin.Data;
 using System.Threading;
+using Deviser.Core.Common.DomainTypes.Admin;
 
 namespace Deviser.Admin.Config
 {
