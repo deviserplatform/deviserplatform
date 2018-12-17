@@ -20,6 +20,7 @@ import { RecordIdPipe } from './common/pipes/record-id.pipe';
 import { FormControlComponent } from './form-control/form-control.component';
 import { FormatFieldPipe } from './common/pipes/format-field.pipe';
 import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
+import { ValidationErrorComponent } from './validation-error/validation-error.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { ConfirmDialogComponent } from './common/components/confirm-dialog/confi
     MessagesComponent,
     RecordIdPipe,
     FormatFieldPipe,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    ValidationErrorComponent
   ],
   imports: [
     AppRoutingModule,

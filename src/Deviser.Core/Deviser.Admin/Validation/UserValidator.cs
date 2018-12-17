@@ -28,7 +28,7 @@ namespace Deviser.Admin.Validation
             //    }
             //}
 
-            if (string.IsNullOrEmpty(user.UserName))
+           if (string.IsNullOrEmpty(user.UserName))
             {
                 //Assuming the platform users email as user name
                 user.UserName = user.Email;

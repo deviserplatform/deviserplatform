@@ -46,13 +46,9 @@ export class FormControlComponent implements OnInit {
 
 
   get f() { return this.form.controls; }
-
+  
   hasError(field: Field): boolean {
     return this.f[field.fieldNameCamelCase].errors && this.f[field.fieldNameCamelCase].touched;
-  }
-
-  hasRequiredError(field: Field): boolean {
-    return this.f[field.fieldNameCamelCase].errors.required;
   }
 
   onIsValidateChange(isValidate: boolean): void {
@@ -88,7 +84,7 @@ export class FormControlComponent implements OnInit {
           break;
       }
 
-      formControl.setValidators([Validators.required]);
+      formControl.setValidators([Validators.required]);      
 
       if (asyncValidators.length > 0) {
         formControl.setAsyncValidators(asyncValidators);
@@ -97,7 +93,7 @@ export class FormControlComponent implements OnInit {
     else {
       formControl.setValidators(null);
 
-      if (formControl.asyncValidator.length > 0) {
+      if (formControl.asyncValidator && formControl.asyncValidator.length > 0) {
         formControl.setAsyncValidators(null);
       }
 

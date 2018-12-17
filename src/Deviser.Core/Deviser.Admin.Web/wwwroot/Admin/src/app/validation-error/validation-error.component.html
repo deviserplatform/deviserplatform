@@ -1,0 +1,22 @@
+<div class="invalid-feedback">
+  <div *ngIf="errors.required">{{field.fieldOption.displayName}} is required</div>
+  <div *ngIf="errors.email">{{field.fieldOption.displayName}} must be a valid email address</div>
+  <div *ngIf="errors.pattern && field.fieldOption.validationType == validationType.NumberOnly">{{field.fieldOption.displayName}} must be numbers only</div>
+  <div *ngIf="errors.pattern && field.fieldOption.validationType == validationType.LettersOnly">{{field.fieldOption.displayName}} must be letters only</div>
+  <div *ngIf="errors.pattern && field.fieldOption.validationType == validationType.RegEx">{{field.fieldOption.displayName}} {{field.fieldOption.regExErrorMessage}}</div>
+  <div *ngIf="errors.duplicateUser">
+    <span *ngFor="let error of errors.duplicateUser.errors">
+      {{error.description}}
+    </span>
+  </div>
+  <div *ngIf="errors.duplicateEmail">
+    <span *ngFor="let error of errors.duplicateEmail.errors">
+      {{error.description}}
+    </span>
+  </div>
+  <div *ngIf="errors.invalidPassword">
+    <span *ngFor="let error of errors.invalidPassword.errors">
+      {{error.description}}
+    </span>
+  </div>
+</div>

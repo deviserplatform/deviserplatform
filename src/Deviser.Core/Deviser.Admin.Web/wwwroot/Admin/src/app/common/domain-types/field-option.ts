@@ -15,4 +15,5 @@ export interface FieldOption {
     validateOn: FieldExpression;
     validationType: ValidationType;
     validatorRegEx: string;
+    regExErrorMessage: string;
 }

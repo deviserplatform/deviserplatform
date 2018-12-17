@@ -242,7 +242,9 @@ namespace Deviser.Admin.Config
         {
             var attributes = field.FieldClrType.GetTypeInfo().GetCustomAttributes();
             var efProperty = entityType.GetProperties().FirstOrDefault(p => p.Name == field.FieldName);
-            field.FieldOption = new FieldOption();
+
+            if (field.FieldOption == null)
+                field.FieldOption = new FieldOption();
 
 
             var metadata = field.FieldOption.Metadata = _modelMetadataProvider.GetMetadataForType(field.FieldClrType);

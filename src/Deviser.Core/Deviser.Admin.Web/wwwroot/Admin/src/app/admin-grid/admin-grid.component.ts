@@ -65,7 +65,7 @@ export class AdminGridComponent implements OnInit {
     this.confirmDialogComponent.openModal(item);
   }
 
-  onYesToDelete(item): void {
+  onYesToDelete(item: any): void {
     console.log('confirm');
     const itemId = this.recordIdPipe.transform(item, this.metaInfo.keyFields);
     this.adminService.deleteRecord('Blog', 'Post', itemId)
@@ -77,7 +77,7 @@ export class AdminGridComponent implements OnInit {
     this.getAllRecords(this.pagination);
   }
 
-  onNoToDelete(): void {
+  onNoToDelete(item: any): void {
     console.log('declined');
 
   }
