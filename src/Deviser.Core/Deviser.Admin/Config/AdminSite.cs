@@ -70,7 +70,6 @@ namespace Deviser.Admin.Config
         public Type DbContextType => _dbContextType;
         public IDictionary<Type, IAdminConfig> AdminConfigs { get; }
 
-
         public AdminSite(DbContext dbContext, IModelMetadataProvider modelMetadataProvider)
         {
             if (dbContext == null)
@@ -82,7 +81,7 @@ namespace Deviser.Admin.Config
             AdminConfigs = new Dictionary<Type, IAdminConfig>();
         }
 
-        public void Register<TEntity>(Action<AdminConfig<TEntity>> adminConfigAction = null) where TEntity : class
+        public void Build<TEntity>(AdminConfig<TEntity> adminConfig, bool hasConfiguration = false) where TEntity : class
         {
             var entityClrType = typeof(TEntity);
             var entityType = _dbContext.Model.FindEntityType(entityClrType);
@@ -92,19 +91,14 @@ namespace Deviser.Admin.Config
 
             if (AdminConfigs.ContainsKey(entityClrType))
                 throw new InvalidOperationException($"The entity type {entityClrType} has already been registered for this admin site, duplicate site registrations are not allowed");
-
-            var adminConfig = new AdminConfig<TEntity>();
+                      
 
             AdminConfigs.Add(entityClrType, adminConfig);
 
-            if (adminConfigAction == null)
+            if (!hasConfiguration)
             {
                 //Register by default settings and fields
                 PopulateFields(entityClrType, entityType, adminConfig);
-            }
-            else
-            {
-                adminConfigAction(adminConfig);
             }
 
             PopulateEntityConfig(entityType, adminConfig);
@@ -134,7 +128,7 @@ namespace Deviser.Admin.Config
                 {
                     foreach (var field in fieldRow)
                     {
-                        PopulateFieldOptions(field, entityType, adminConfig.FieldConditions);
+                        PopulateFieldOptions(field, entityType, adminConfig);
                     }
                 }
             }
@@ -146,7 +140,7 @@ namespace Deviser.Admin.Config
                     {
                         foreach (var field in fieldRow)
                         {
-                            PopulateFieldOptions(field, entityType, adminConfig.FieldConditions);
+                            PopulateFieldOptions(field, entityType, adminConfig);
                         }
                     }
                 }
@@ -156,7 +150,7 @@ namespace Deviser.Admin.Config
             {
                 foreach (var field in adminConfig.ListConfig.Fields)
                 {
-                    PopulateFieldOptions(field, entityType, adminConfig.FieldConditions);
+                    PopulateFieldOptions(field, entityType, adminConfig);
                 }
             }
             else
@@ -168,16 +162,11 @@ namespace Deviser.Admin.Config
                     {
                         FieldExpression = GetFieldExpression(entityClrType, prop)
                     };
-                    PopulateFieldOptions(field, entityType, adminConfig.FieldConditions);
+                    PopulateFieldOptions(field, entityType, adminConfig);
                     adminConfig.ListConfig.Fields.Add(field);
                 }
             }
         }
-
-
-
-
-
 
         private void PopulateFields<TEntity>(Type entityClrType, IEntityType entityType, AdminConfig<TEntity> adminConfig, List<Field> excludeField = null) where TEntity : class
         {
@@ -238,8 +227,10 @@ namespace Deviser.Admin.Config
             adminConfig.EntityConfig.Navigations = entityType.GetNavigations();
         }
 
-        private void PopulateFieldOptions(Field field, IEntityType entityType, FieldConditions fieldConditions)
+        private void PopulateFieldOptions<TEntity>(Field field, IEntityType entityType, AdminConfig<TEntity> adminConfig)
+            where TEntity : class
         {
+            FieldConditions fieldConditions = adminConfig.FieldConditions;
             var attributes = field.FieldClrType.GetTypeInfo().GetCustomAttributes();
             var efProperty = entityType.GetProperties().FirstOrDefault(p => p.Name == field.FieldName);
 
@@ -327,7 +318,7 @@ namespace Deviser.Admin.Config
 
             if (field.FieldOption.MaxLength == 0)
             {
-                field.FieldOption.MaxLength = efProperty.GetMaxLength() ?? 0;
+                field.FieldOption.MaxLength = efProperty?.GetMaxLength() ?? 0;
             }
 
             if (field.FieldType == FieldType.Unknown)
@@ -335,7 +326,7 @@ namespace Deviser.Admin.Config
                 field.FieldType = GetFieldType(field);
             }
 
-            field.FieldOption.IsRequired = metadata.IsRequired || !efProperty.IsColumnNullable();
+            field.FieldOption.IsRequired = metadata.IsRequired || (!efProperty?.IsColumnNullable() ?? false);
 
             //FieldConditions
             var showCondition = fieldConditions?.ShowOnConditions?.FirstOrDefault(f => f.FieldName == field.FieldName);
@@ -354,6 +345,27 @@ namespace Deviser.Admin.Config
             if (validateCondition != null)
             {
                 field.FieldOption.ValidateOn = validateCondition.ConditionExpression;
+            }
+
+            //Check wheter the field is one to many or many to many
+            var isMultiple = field.FieldClrType.GetInterfaces().Any(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>));
+            var navigation = adminConfig.EntityConfig.Navigations.FirstOrDefault(n => n.Name == field.FieldName);
+            if (navigation != null)
+            {
+                if (isMultiple && navigation.FieldInfo.FieldType.IsGenericType)
+                {
+                    var releatedClrType = navigation.FieldInfo.FieldType.GenericTypeArguments[0];
+                    var releatedEntityType = _dbContext.Model.FindEntityType(releatedClrType);
+                    var releatedEntityNavigations = releatedEntityType.GetNavigations();
+                    var grandChildEntity = releatedEntityNavigations.FirstOrDefault(n => n.ForeignKey != navigation.ForeignKey);
+                    field.FieldOption.RelationType = grandChildEntity != null ? RelationType.ManyToMany : RelationType.OneToMany;
+                }
+                else
+                {
+                    var releatedClrType = navigation.FieldInfo.FieldType;
+                    var releatedEntityType = _dbContext.Model.FindEntityType(releatedClrType);
+                }
+
             }
 
         }

@@ -4,7 +4,7 @@ namespace Deviser.Admin
 {
     public interface IAdminConfigurator
     {
-        void ConfigureAdmin(IAdminSite adminSite);
+        void ConfigureAdmin(IAdminBuilder adminBuilder);
     }
 
     public interface IAdminConfigurator<TContext> : IAdminConfigurator

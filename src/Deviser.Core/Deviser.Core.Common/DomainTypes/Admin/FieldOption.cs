@@ -30,6 +30,9 @@ namespace Deviser.Core.Common.DomainTypes.Admin
 
         [JsonConverter(typeof(StringEnumConverter))]
         public ValidationType ValidationType { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public RelationType RelationType { get; set; }
         public string ValidatorRegEx { get; set; }
         public string RegExErrorMessage { get; set; }
     }

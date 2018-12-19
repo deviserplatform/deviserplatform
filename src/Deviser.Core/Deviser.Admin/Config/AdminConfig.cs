@@ -16,28 +16,32 @@ namespace Deviser.Admin
 {
     public interface IAdminConfig
     {
+        ICollection<IAdminConfig> ChildConfigs { get; }
         Type EntityType { get; }
-        List<Field> KeyFields { get; }
-        IFieldConfig FieldConfig { get; }
-        IFieldSetConfig FieldSetConfig { get; }
-        IListConfig ListConfig { get; }
-
         [JsonIgnore]
         EntityConfig EntityConfig { get; }
+        IFieldConfig FieldConfig { get; }
+        IFieldSetConfig FieldSetConfig { get; }
+        [JsonIgnore]
+        FieldConditions FieldConditions { get; }
+        List<Field> KeyFields { get; }
+        IListConfig ListConfig { get; }
+
     }
 
     public class AdminConfig<TEntity> : IAdminConfig
         where TEntity : class
     {
+        public ICollection<IAdminConfig> ChildConfigs { get; }
+        public Type EntityType { get; }
+        [JsonIgnore]
+        public EntityConfig EntityConfig { get; }
         public FieldConfig<TEntity> FieldConfig { get; }
         public FieldSetConfig<TEntity> FieldSetConfig { get; }
-        public ListConfig<TEntity> ListConfig { get; }
-        public EntityConfig EntityConfig { get; }
-        public Type EntityType { get; }
-        public List<Field> KeyFields { get; }
-
         [JsonIgnore]
         public FieldConditions FieldConditions { get; }
+        public List<Field> KeyFields { get; }
+        public ListConfig<TEntity> ListConfig { get; }
 
         IFieldConfig IAdminConfig.FieldConfig => FieldConfig;
         IFieldSetConfig IAdminConfig.FieldSetConfig => FieldSetConfig;
@@ -45,6 +49,7 @@ namespace Deviser.Admin
 
         public AdminConfig()
         {
+            ChildConfigs = new List<IAdminConfig>();
             EntityType = typeof(TEntity);
             FieldConfig = new FieldConfig<TEntity>();
             FieldSetConfig = new FieldSetConfig<TEntity>();
@@ -110,12 +115,5 @@ namespace Deviser.Admin
         {
             Fields = new List<Field>();
         }
-    }
-
-    public class PropertyBuilder<TEntity>
-        where TEntity : class
-    {
-        public AdminConfig<TEntity> AdminConfig { get; set; }
-        public LambdaExpression FieldExpression { get; set; }
     }
 }

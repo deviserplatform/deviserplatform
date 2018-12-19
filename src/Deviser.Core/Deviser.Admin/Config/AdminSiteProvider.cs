@@ -53,8 +53,10 @@ namespace Deviser.Admin.Config
                 using (var contextObj = (DbContext)_serviceProvider.GetRequiredService(dbContextType))
                 {
                     try
-                    {
+                    {   
                         IAdminSite adminSite = new AdminSite(contextObj, _serviceProvider.GetRequiredService<IModelMetadataProvider>());
+                        AdminBuilder adminBuilder = new AdminBuilder(adminSite);
+
                         if (!contextObj.Database.Exists())
                             throw new InvalidOperationException($"Database is not exist for {dbContextType}, create a database and try again");
 
@@ -68,7 +70,7 @@ namespace Deviser.Admin.Config
                         var genericInterface = typeof(IAdminConfigurator);
                         //var adminConfiguratorInterface = genericInterface.MakeGenericType(dbContextType);
                         var configureAdminMethodInfo = genericInterface.GetMethod("ConfigureAdmin"); 
-                        configureAdminMethodInfo.Invoke(objAdminConfigurator, new object[] { adminSite });                        
+                        configureAdminMethodInfo.Invoke(objAdminConfigurator, new object[] { adminBuilder });                        
 
                         _adminConfigStore.GetOrAdd(adminConfiguratorType.AsType(), adminSite);
 

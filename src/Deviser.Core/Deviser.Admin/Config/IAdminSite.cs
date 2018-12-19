@@ -9,7 +9,7 @@ namespace Deviser.Admin
         string SiteName { get; set; }
         Type DbContextType { get; }
         IDictionary<Type, IAdminConfig> AdminConfigs { get; }
-        void Register<TEntity>(Action<AdminConfig<TEntity>> adminConfig=null)
+        void Build<TEntity>(AdminConfig<TEntity> adminConfig, bool hasConfiguration = false)
             where TEntity : class;
     }
 }
