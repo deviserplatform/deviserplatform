@@ -41,23 +41,27 @@ namespace Deviser.Modules.Blog
 
         public void ConfigureAdmin(IAdminBuilder adminBuilder)
         {
-            adminBuilder.Register<Tag>();
+            adminBuilder.Register<PostTag>(form =>
+            {
+                form.FieldBuilder
+                     .AddComplexField<Post>(s => s.Post, ComplexFieldType.ManyToOne, expr => expr.Title);
+            });
 
             adminBuilder.Register<Post>(form =>
             {
                 form.FieldBuilder
                      .AddField(s => s.Title)
                      .AddField(s => s.Content, fieldOption => { fieldOption.ValidationType = ValidationType.UserExist; })
-                     .AddField(s => s.PostTags)
+                     .AddComplexField<Tag>(s => s.PostTags, ComplexFieldType.ManyToMany, expr => expr.TagName)
                      .AddField(s => s.CreatedOn)
                      .AddField(s => s.CreatedBy);
 
                 form.Property(s => s.Content)
                 .ValidateOn(p => p.Title == "Test");
 
-                form.AddChildConfig(s => s.PostTags, (childConfig) =>
+                form.AddChildConfig(s => s.PostTags, (childForm) =>
                   {
-                      childConfig.FieldBuilder.AddField(s => s.Capacity);
+                      childForm.FieldBuilder.AddField(s => s.Capacity);
                   });
 
                 //form.FieldSetBuilder

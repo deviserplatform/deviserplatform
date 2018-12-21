@@ -15,8 +15,8 @@ namespace Deviser.Admin.Builders
         public FormBuilder(IAdminConfig adminConfig)
         {
             _adminConfig = adminConfig;
-            FieldBuilder = new FieldBuilder<TEntity>(_adminConfig.FieldConfig);
-            FieldSetBuilder = new FieldSetBuilder<TEntity>(_adminConfig.FieldSetConfig);
+            FieldBuilder = new FieldBuilder<TEntity>(_adminConfig.FieldConfig, _adminConfig);
+            FieldSetBuilder = new FieldSetBuilder<TEntity>(_adminConfig.FieldSetConfig, _adminConfig);
         }
 
         public PropertyBuilder<TEntity> Property<TProperty>(Expression<Func<TEntity, TProperty>> expression)

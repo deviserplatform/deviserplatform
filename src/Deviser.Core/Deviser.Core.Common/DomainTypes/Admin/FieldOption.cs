@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Deviser.Core.Common.DomainTypes.Admin
@@ -33,6 +35,15 @@ namespace Deviser.Core.Common.DomainTypes.Admin
 
         [JsonConverter(typeof(StringEnumConverter))]
         public RelationType RelationType { get; set; }
+
+        [JsonIgnore]
+        public Type ReleatedEntityType { get; set; }
+
+        [JsonIgnore]
+        public LambdaExpression ReleatedEntityDisplayExpression { get; set; }
+
+        public List<ForeignKeyField> ForeignKeyFields { get; set; }
+
         public string ValidatorRegEx { get; set; }
         public string RegExErrorMessage { get; set; }
     }

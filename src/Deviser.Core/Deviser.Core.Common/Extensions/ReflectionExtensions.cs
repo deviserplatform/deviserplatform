@@ -44,5 +44,10 @@ namespace Deviser.Core.Common.Extensions
             var fieldName = ((PropertyInfo)memberExpression.Member).Name;
             return fieldName;
         }
+
+        public static bool IsCollectionType(Type type)
+        {
+            return type?.GetInterfaces()?.Any(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>)) ?? false;
+        }
     }
 }
