@@ -1,22 +1,21 @@
 ﻿using Deviser.Core.Common.Extensions;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
+
 
 namespace Deviser.Core.Common.DomainTypes.Admin
 {
-    public class Field
+    public class ForeignKeyProperty
     {
-
         private string _fieldName;
-
-        [JsonConverter(typeof(StringEnumConverter))]
-        public FieldType FieldType { get; set; }
+        private string _principalFieldName;
 
         [JsonIgnore]
         public LambdaExpression FieldExpression { get; set; }
+
+        [JsonIgnore]
+        public LambdaExpression PrincipalFieldExpression { get; set; }
 
         [JsonIgnore]
         public Type FieldClrType
@@ -26,6 +25,17 @@ namespace Deviser.Core.Common.DomainTypes.Admin
                 if (FieldExpression == null)
                     return null;
                 return FieldExpression.Type.GenericTypeArguments[1];
+            }
+        }
+
+        [JsonIgnore]
+        public Type PrincipalFieldClrType
+        {
+            get
+            {
+                if (PrincipalFieldExpression == null)
+                    return null;
+                return PrincipalFieldExpression.Type.GenericTypeArguments[1];
             }
         }
 
@@ -44,6 +54,21 @@ namespace Deviser.Core.Common.DomainTypes.Admin
             }
         }
 
+        public string PrincipalFieldName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_principalFieldName))
+                    return _principalFieldName;
+
+                if (PrincipalFieldExpression == null)
+                    return null;
+
+                _principalFieldName = ReflectionExtensions.GetMemberName(PrincipalFieldExpression);
+                return _principalFieldName;
+            }
+        }
+
         public string FieldNameCamelCase
         {
             get
@@ -52,6 +77,12 @@ namespace Deviser.Core.Common.DomainTypes.Admin
             }
         }
 
-        public FieldOption FieldOption { get; set; }
+        public string PrincipalFieldNameCamelCase
+        {
+            get
+            {
+                return PrincipalFieldName.Camelize();
+            }
+        }
     }
 }

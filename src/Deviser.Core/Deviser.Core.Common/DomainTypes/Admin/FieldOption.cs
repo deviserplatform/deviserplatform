@@ -40,6 +40,7 @@ namespace Deviser.Core.Common.DomainTypes.Admin
         public Type ReleatedEntityType { get; set; }
 
         [JsonIgnore]
+        //public Expression<Func<object, string>> ReleatedEntityDisplayExpression { get; set; }
         public LambdaExpression ReleatedEntityDisplayExpression { get; set; }
 
         public List<ForeignKeyField> ForeignKeyFields { get; set; }

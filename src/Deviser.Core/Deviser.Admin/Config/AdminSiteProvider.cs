@@ -54,7 +54,7 @@ namespace Deviser.Admin.Config
                 {
                     try
                     {   
-                        IAdminSite adminSite = new AdminSite(contextObj, _serviceProvider.GetRequiredService<IModelMetadataProvider>());
+                        IAdminSite adminSite = new AdminSite(_serviceProvider, contextObj, _serviceProvider.GetRequiredService<IModelMetadataProvider>());
                         AdminBuilder adminBuilder = new AdminBuilder(adminSite);
 
                         if (!contextObj.Database.Exists())

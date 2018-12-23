@@ -44,7 +44,7 @@ namespace Deviser.Modules.Blog
             adminBuilder.Register<PostTag>(form =>
             {
                 form.FieldBuilder
-                     .AddComplexField<Post>(s => s.Post, ComplexFieldType.ManyToOne, expr => expr.Title);
+                     .AddManyToOneField(s => s.Post, expr => expr.Title);
             });
 
             adminBuilder.Register<Post>(form =>
@@ -52,7 +52,7 @@ namespace Deviser.Modules.Blog
                 form.FieldBuilder
                      .AddField(s => s.Title)
                      .AddField(s => s.Content, fieldOption => { fieldOption.ValidationType = ValidationType.UserExist; })
-                     .AddComplexField<Tag>(s => s.PostTags, ComplexFieldType.ManyToMany, expr => expr.TagName)
+                     .AddInlineManyToManyField<Tag>(s => s.PostTags,expr => expr.TagName)
                      .AddField(s => s.CreatedOn)
                      .AddField(s => s.CreatedBy);
 

@@ -15,6 +15,8 @@ using System.Collections;
 using Deviser.Admin.Data;
 using System.Threading;
 using Deviser.Core.Common.DomainTypes.Admin;
+using Deviser.Core.Common.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Deviser.Admin.Config
 {
@@ -26,6 +28,7 @@ namespace Deviser.Admin.Config
         private readonly DbContext _dbContext;
         private readonly Type _dbContextType;
         private readonly IModelMetadataProvider _modelMetadataProvider;
+        private readonly IServiceProvider _serviceProvider;
         // Mapping from datatype names and data annotation hints to values for the <input/> element's "type" attribute.
         private static readonly Dictionary<string, FieldType> _defaultInputTypes =
             new Dictionary<string, FieldType>(StringComparer.OrdinalIgnoreCase)
@@ -70,11 +73,13 @@ namespace Deviser.Admin.Config
         public Type DbContextType => _dbContextType;
         public IDictionary<Type, IAdminConfig> AdminConfigs { get; }
 
-        public AdminSite(DbContext dbContext, IModelMetadataProvider modelMetadataProvider)
+
+        public AdminSite(IServiceProvider serviceProvider, DbContext dbContext, IModelMetadataProvider modelMetadataProvider)
         {
             if (dbContext == null)
                 throw new ArgumentNullException("Constructor paramater dbContent cannot be null");
 
+            _serviceProvider = serviceProvider;
             _dbContext = dbContext;
             _modelMetadataProvider = modelMetadataProvider;
             _dbContextType = _dbContext.GetType();
@@ -173,6 +178,8 @@ namespace Deviser.Admin.Config
                     adminConfig.ListConfig.Fields.Add(field);
                 }
             }
+
+            LoadMasterData(adminConfig);
         }
 
         private void PopulateFields<TEntity>(Type entityClrType, IEntityType entityType, AdminConfig<TEntity> adminConfig, List<Field> excludeField = null) where TEntity : class
@@ -521,17 +528,23 @@ namespace Deviser.Admin.Config
 
         private ForeignKeyField GetForeignKeyField(IForeignKey foreignKey)
         {
-            var fKeyProp = foreignKey.Properties[0];
-            var fKeyExpr = GetFieldExpression(foreignKey.DeclaringEntityType.ClrType, fKeyProp);
+            var foreignKeyField = new ForeignKeyField();
 
-            var principalProp = foreignKey.PrincipalKey.Properties[0];
-            var principalExpr = GetFieldExpression(foreignKey.PrincipalKey.DeclaringEntityType.ClrType, principalProp);
-
-            return new ForeignKeyField
+            for (var index = 0; index < foreignKey.PrincipalKey.Properties.Count; index++)
             {
-                FieldExpression = fKeyExpr,
-                PrincipalFieldExpression = principalExpr
-            };
+                var fKeyProp = foreignKey.Properties[index];
+                var fKeyExpr = GetFieldExpression(foreignKey.DeclaringEntityType.ClrType, fKeyProp);
+
+                var principalProp = foreignKey.PrincipalKey.Properties[index];
+                var principalExpr = GetFieldExpression(foreignKey.PrincipalKey.DeclaringEntityType.ClrType, principalProp);
+
+                foreignKeyField.Properties.Add(new ForeignKeyProperty
+                {
+                    FieldExpression = fKeyExpr,
+                    PrincipalFieldExpression = principalExpr
+                });
+            }
+            return foreignKeyField;
         }
 
         private IKey GetPrimaryKey(Type clrType)
@@ -539,6 +552,100 @@ namespace Deviser.Admin.Config
             var entityType = _dbContext.Model.FindEntityType(clrType);
             var key = entityType.FindPrimaryKey();
             return key;
+        }
+
+        private void LoadMasterData<TEntity>(AdminConfig<TEntity> adminConfig) where TEntity : class
+        {
+            //Loading Master Data
+            var relatedFileds = adminConfig.AllFormFields
+                .Where(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne)
+                .ToList();
+
+            foreach (var relatedField in relatedFileds)
+            {
+                var eClrType = relatedField.FieldOption.ReleatedEntityType;
+                Func<List<LookUpField>> masterDataDelegate = () => CallGenericMethod<List<LookUpField>>(nameof(GetLookUpData), eClrType, new object[] { relatedField.FieldOption.ReleatedEntityDisplayExpression });
+                adminConfig.LookUps.Add(relatedField.FieldName, masterDataDelegate);
+            }
+        }
+
+        private TReturnType CallGenericMethod<TReturnType>(string methodName, Type genericType, object[] parmeters)
+            where TReturnType : class
+        {
+            try
+            {
+                var getItemMethodInfo = typeof(AdminSite).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
+                var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericType);
+                var result = getItemMethod.Invoke(this, parmeters);
+                return result as TReturnType;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        private List<LookUpField> GetLookUpData<TEntity>(LambdaExpression displayExpr)
+            where TEntity : class
+        {
+            try
+            {
+                IServiceScopeFactory _serviceScopeFactory = _serviceProvider.GetRequiredService<IServiceScopeFactory>();
+                using (var scope = _serviceScopeFactory.CreateScope())
+                {
+                    using (var dbContext = (DbContext)scope.ServiceProvider.GetService(_dbContextType))
+                    {
+                        var primaryKeyExpr = GetPrimaryKeyExpressions<TEntity>(dbContext);
+                        var del = displayExpr.Compile();
+
+                        var items = dbContext
+                            .Set<TEntity>()
+                            .Select(item => new LookUpField()
+                            {
+                                Key = GetLookUpKey(item, primaryKeyExpr),
+                                DisplayName = del.DynamicInvoke(new object[] { item }) as string //del.Method.Invoke(del, new object[]{ item }) as string
+                        })
+                            .ToList();
+                        return items;
+                    } 
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        private List<Expression<Func<TEntity, object>>> GetPrimaryKeyExpressions<TEntity>(DbContext dbContext)
+            where TEntity : class
+        {
+            Type eClrType = typeof(TEntity);
+            var eType = dbContext.Model.FindEntityType(eClrType);
+            var primaryKey = eType.FindPrimaryKey();
+            var properties = primaryKey.Properties;
+            var eTypeParamExpr = Expression.Parameter(eClrType);
+            List<Expression<Func<TEntity, object>>> keySelectorExpressions = new List<Expression<Func<TEntity, object>>>();
+            foreach (var prop in properties)
+            {
+                MemberExpression memberExpression = Expression.Property(eTypeParamExpr, prop.PropertyInfo);
+                Expression objectMemberExpr = Expression.Convert(memberExpression, typeof(object)); //Convert Value/Reference type to object using boxing/lifting
+                var pkValExpr = Expression.Lambda<Func<TEntity, object>>(objectMemberExpr, eTypeParamExpr);
+                keySelectorExpressions.Add(pkValExpr);
+            }
+            return keySelectorExpressions;
+        }
+
+        private Dictionary<string, object> GetLookUpKey<TEntity>(TEntity item, List<Expression<Func<TEntity, object>>> primaryKeyExpr)
+            where TEntity : class
+        {
+            var lookUpKey = new Dictionary<string, object>();
+            foreach (var expr in primaryKeyExpr)
+            {
+                lookUpKey.Add(ReflectionExtensions.GetMemberName(expr), expr.Compile()(item));
+            }
+            return lookUpKey;
         }
     }
 }

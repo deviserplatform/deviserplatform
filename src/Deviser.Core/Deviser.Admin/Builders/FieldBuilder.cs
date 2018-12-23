@@ -45,8 +45,7 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public FieldBuilder<TEntity> AddComplexField<TReleatedEntity>(Expression<Func<TEntity, object>> expression,
-            ComplexFieldType complexFieldType,
+        public FieldBuilder<TEntity> AddManyToOneField<TReleatedEntity>(Expression<Func<TEntity, TReleatedEntity>> expression,
             Expression<Func<TReleatedEntity, string>> displayExpression,
             Action<FieldOption> fieldOptionAction = null)
             where TReleatedEntity : class
@@ -54,13 +53,13 @@ namespace Deviser.Admin.Builders
             if (_adminConfig.FieldConfig.ExcludedFields.Count > 0)
                 AddRemoveInvalidOperationException();
 
-            var field = CreateComplexField(expression, complexFieldType, displayExpression, fieldOptionAction);
+            var field = CreateComplexField(expression, RelationType.ManyToOne, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
+
             _fieldConfig.AddField(field);
             return this;
         }
 
-        public FieldBuilder<TEntity> AddInlineComplexField<TReleatedEntity>(Expression<Func<TEntity, object>> expression,
-            ComplexFieldType complexFieldType,
+        public FieldBuilder<TEntity> AddInlineManyToOneField<TReleatedEntity>(Expression<Func<TEntity, TReleatedEntity>> expression,
             Expression<Func<TReleatedEntity, string>> displayExpression,
             Action<FieldOption> fieldOptionAction = null)
             where TReleatedEntity : class
@@ -68,7 +67,34 @@ namespace Deviser.Admin.Builders
             if (_adminConfig.FieldConfig.ExcludedFields.Count > 0)
                 AddRemoveInvalidOperationException();
 
-            var field = CreateComplexField(expression, complexFieldType, displayExpression, fieldOptionAction);
+            var field = CreateComplexField(expression, RelationType.ManyToOne, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
+            _fieldConfig.AddInLineField(field);
+            return this;
+        }
+
+        public FieldBuilder<TEntity> AddManyToManyField<TReleatedEntity>(Expression<Func<TEntity, object>> expression,
+            Expression<Func<TReleatedEntity, string>> displayExpression,
+            Action<FieldOption> fieldOptionAction = null)
+            where TReleatedEntity : class
+        {
+            if (_adminConfig.FieldConfig.ExcludedFields.Count > 0)
+                AddRemoveInvalidOperationException();
+
+            var field = CreateComplexField(expression, RelationType.ManyToMany, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
+
+            _fieldConfig.AddField(field);
+            return this;
+        }
+
+        public FieldBuilder<TEntity> AddInlineManyToManyField<TReleatedEntity>(Expression<Func<TEntity, object>> expression,
+            Expression<Func<TReleatedEntity, string>> displayExpression,
+            Action<FieldOption> fieldOptionAction = null)
+            where TReleatedEntity : class
+        {
+            if (_adminConfig.FieldConfig.ExcludedFields.Count > 0)
+                AddRemoveInvalidOperationException();
+
+            var field = CreateComplexField(expression, RelationType.ManyToMany, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
             _fieldConfig.AddInLineField(field);
             return this;
         }
@@ -122,18 +148,19 @@ namespace Deviser.Admin.Builders
         /// <param name="expression"></param>
         /// <param name="fieldOptionAction"></param>
         /// <returns></returns>
-        private Field CreateComplexField<TReleatedEntity, TProperty>(Expression<Func<TEntity, TProperty>> expression,
-            ComplexFieldType complexFieldType,
-            Expression<Func<TReleatedEntity, string>> displayExpression,
+        private Field CreateComplexField<TProperty>(Expression<Func<TEntity, TProperty>> expression,
+            RelationType releationType,
+            Type releatedEntityType,
+            LambdaExpression displayExpression,
             Action<FieldOption> fieldOptionAction = null)
-            where TReleatedEntity : class
+            //where TReleatedEntity : class
             where TProperty : class
         {
             FieldOption fieldOption = new FieldOption();
             fieldOptionAction?.Invoke(fieldOption);
             fieldOption.ReleatedEntityDisplayExpression = displayExpression;
-            fieldOption.RelationType = (RelationType)complexFieldType;
-            fieldOption.ReleatedEntityType = typeof(TReleatedEntity);
+            fieldOption.RelationType = releationType;
+            fieldOption.ReleatedEntityType = releatedEntityType;
 
             return new Field
             {

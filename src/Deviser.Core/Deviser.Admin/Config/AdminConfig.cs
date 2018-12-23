@@ -36,6 +36,8 @@ namespace Deviser.Admin
         List<Field> KeyFields { get; }
 
         IListConfig ListConfig { get; }
+
+        LookUpDictionary LookUps { get; }
     }
 
     public class AdminConfig<TEntity> : IAdminConfig
@@ -82,22 +84,26 @@ namespace Deviser.Admin
 
         public ListConfig<TEntity> ListConfig { get; }
 
+        public LookUpDictionary LookUps { get; }
+
         IFieldConfig IAdminConfig.FieldConfig => FieldConfig;
 
         IFieldSetConfig IAdminConfig.FieldSetConfig => FieldSetConfig;
 
         IListConfig IAdminConfig.ListConfig => ListConfig;
+                
 
         public AdminConfig()
         {
             ChildConfigs = new List<IAdminConfig>();
             EntityType = typeof(TEntity);
-            FieldConfig = new FieldConfig<TEntity>();
-            FieldSetConfig = new FieldSetConfig<TEntity>();
-            ListConfig = new ListConfig<TEntity>();
             EntityConfig = new EntityConfig();
-            KeyFields = new List<Field>();
+            FieldConfig = new FieldConfig<TEntity>();
             FieldConditions = new FieldConditions();
+            FieldSetConfig = new FieldSetConfig<TEntity>();            
+            KeyFields = new List<Field>();
+            ListConfig = new ListConfig<TEntity>();
+            LookUps = new LookUpDictionary();
         }
 
         public void ShowOn(LambdaExpression fieldExpression, Expression<Func<TEntity, bool>> predicate)
