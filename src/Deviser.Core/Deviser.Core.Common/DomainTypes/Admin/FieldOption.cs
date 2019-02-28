@@ -1,4 +1,5 @@
-﻿using Deviser.Core.Common.Json;
+﻿using Deviser.Core.Common.Extensions;
+using Deviser.Core.Common.Json;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -36,8 +37,16 @@ namespace Deviser.Core.Common.DomainTypes.Admin
         [JsonConverter(typeof(StringEnumConverter))]
         public RelationType RelationType { get; set; }
 
-        [JsonIgnore]
+        [JsonConverter(typeof(TypeJsonConverter))]
         public Type ReleatedEntityType { get; set; }
+
+        public string ReleatedEntityTypeCamelCase
+        {
+            get
+            {
+                return ReleatedEntityType?.Name?.Camelize();
+            }
+        }
 
         [JsonIgnore]
         //public Expression<Func<object, string>> ReleatedEntityDisplayExpression { get; set; }

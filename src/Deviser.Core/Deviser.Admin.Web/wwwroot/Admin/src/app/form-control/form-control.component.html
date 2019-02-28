@@ -16,7 +16,7 @@
       <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
       <input type="text" class="form-control" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
         [ngClass]="{ 'is-invalid': hasError(field) }">
-        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
     </ng-container>
 
     <ng-container *ngSwitchCase="fieldType.Number">
@@ -30,21 +30,21 @@
       <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
       <input type="email" class="form-control" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
         [ngClass]="{ 'is-invalid': hasError(field) }">
-        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
     </ng-container>
 
     <ng-container *ngSwitchCase="fieldType.Phone">
       <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
       <input type="tel" class="form-control" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
         [ngClass]="{ 'is-invalid': hasError(field) }">
-        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
     </ng-container>
 
     <ng-container *ngSwitchCase="fieldType.TextArea">
       <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
       <textarea [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" class="form-control"
         [ngClass]="{ 'is-invalid': hasError(field) }"></textarea>
-        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
     </ng-container>
 
     <ng-container *ngSwitchCase="fieldType.DateTime">
@@ -61,6 +61,20 @@
         <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
       </div>
 
+    </ng-container>
+
+
+    <ng-container *ngSwitchCase="fieldType.MultiSelect">
+      <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+      <textarea  class="form-control"
+        [ngClass]="{ 'is-invalid': hasError(field) }"></textarea>
+
+      <ng-select [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }" 
+                [items]="ages" [selectOnTab]="true" bindValue="value" labelForId="age"
+                placeholder="Select age">
+      </ng-select>
+
+      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
     </ng-container>
 
   </ng-container>

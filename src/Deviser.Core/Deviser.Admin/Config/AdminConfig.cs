@@ -21,6 +21,7 @@ namespace Deviser.Admin
 
         ICollection<IAdminConfig> ChildConfigs { get; }
 
+        [JsonConverter(typeof(TypeJsonConverter))]
         Type EntityType { get; }
 
         [JsonIgnore]
@@ -116,6 +117,8 @@ namespace Deviser.Admin
     {
         List<List<Field>> Fields { get; }
         List<Field> ExcludedFields { get; }
+
+        [JsonIgnore]
         List<Field> AllIncludeFields { get; }
         void AddField(Field field);
         void AddInLineField(Field field);
@@ -126,6 +129,8 @@ namespace Deviser.Admin
     public interface IFieldSetConfig
     {
         List<FieldSet> FieldSets { get; }
+
+        [JsonIgnore]
         List<Field> AllIncludeFields { get; }
     }
 
@@ -144,6 +149,7 @@ namespace Deviser.Admin
         [JsonIgnore]
         public List<Field> ExcludedFields { get; }
 
+        [JsonIgnore]
         public List<Field> AllIncludeFields
         {
             get
@@ -198,6 +204,7 @@ namespace Deviser.Admin
         private Dictionary<string, Field> allFields;
         public List<FieldSet> FieldSets { get; }
 
+        [JsonIgnore]
         public List<Field> AllIncludeFields
         {
             get

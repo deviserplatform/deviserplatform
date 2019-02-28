@@ -565,7 +565,7 @@ namespace Deviser.Admin.Config
             {
                 var eClrType = relatedField.FieldOption.ReleatedEntityType;
                 Func<List<LookUpField>> masterDataDelegate = () => CallGenericMethod<List<LookUpField>>(nameof(GetLookUpData), eClrType, new object[] { relatedField.FieldOption.ReleatedEntityDisplayExpression });
-                adminConfig.LookUps.Add(relatedField.FieldName, masterDataDelegate);
+                adminConfig.LookUps.Add(relatedField.FieldOption.ReleatedEntityType.Name, masterDataDelegate);
             }
         }
 
@@ -605,10 +605,10 @@ namespace Deviser.Admin.Config
                             {
                                 Key = GetLookUpKey(item, primaryKeyExpr),
                                 DisplayName = del.DynamicInvoke(new object[] { item }) as string //del.Method.Invoke(del, new object[]{ item }) as string
-                        })
+                            })
                             .ToList();
                         return items;
-                    } 
+                    }
                 }
             }
             catch (Exception ex)

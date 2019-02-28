@@ -10,6 +10,8 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { NgSelectModule } from '@ng-select/ng-select';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -28,22 +30,23 @@ import { ValidationErrorComponent } from './validation-error/validation-error.co
     AppComponent,
     AdminFormComponent,
     AdminGridComponent,
+    ConfirmDialogComponent,
     FormControlComponent,
+    FormatFieldPipe,
     MessagesComponent,
     RecordIdPipe,
-    FormatFieldPipe,
-    ConfirmDialogComponent,
     ValidationErrorComponent
   ],
   imports: [
     AppRoutingModule,
-    FormsModule,
     BrowserModule,
-    HttpClientModule,
-    PaginationModule.forRoot(),
     BsDatepickerModule.forRoot(),
-    ModalModule.forRoot(),
+    FormsModule,
+    HttpClientModule,
     InlineSVGModule.forRoot(),
+    ModalModule.forRoot(),
+    NgSelectModule,
+    PaginationModule.forRoot(),
     ReactiveFormsModule
   ],
   providers: [
