@@ -8,6 +8,7 @@ import { ValidationType } from '../common/domain-types/validation-type';
 import { EmailExistValidator } from '../common/validators/async-email-exist.validator';
 import { PasswordValidator } from '../common/validators/async-password.validator';
 import { UserExistValidator } from '../common/validators/async-user-exist.validator';
+import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
 
 @Component({
   selector: 'app-form-control',
@@ -16,21 +17,41 @@ import { UserExistValidator } from '../common/validators/async-user-exist.valida
 })
 export class FormControlComponent implements OnInit {
 
+  // @Input() entityType: string;
   @Input() field: Field;
   @Input() form: FormGroup;
-
   @Input() isShown: boolean;
   @Input() isDisabled: boolean;
   @Input() isValidate: boolean;
+  // @Input() keyFields: Field[];
+  @Input() lookUps: LookUpDictionary;
 
+  //To access FieldType enum
   fieldType = FieldType;
+  _lookUpData: any[];
 
   constructor(private emailExistValidator: EmailExistValidator,
     private passwordValidator: PasswordValidator,
-    private userExistValidator: UserExistValidator) { }
+    private userExistValidator: UserExistValidator) {
+    this._lookUpData = [];
+
+    
+  }
 
   ngOnInit() {
-
+    if (this.field && this.field.fieldOption && this.field.fieldOption.releatedEntityTypeCamelCase &&
+      this.field.fieldOption.foreignKeyFields) {
+      let lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.releatedEntityTypeCamelCase];
+      
+      lookUpGeneric.forEach(item => {
+        let propValue: any = {};
+        propValue.displayName = item.displayName; //copy display name from generic lookup  
+        for (let keyName in item.key) {
+          propValue[keyName] = item.key[keyName];
+        }
+        this._lookUpData.push(propValue);
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -43,10 +64,12 @@ export class FormControlComponent implements OnInit {
     }
   }
 
-
+  get lookUpData() {
+    return this._lookUpData;
+  }
 
   get f() { return this.form.controls; }
-  
+
   hasError(field: Field): boolean {
     return this.f[field.fieldNameCamelCase].errors && this.f[field.fieldNameCamelCase].touched;
   }
@@ -84,7 +107,7 @@ export class FormControlComponent implements OnInit {
           break;
       }
 
-      formControl.setValidators([Validators.required]);      
+      formControl.setValidators([Validators.required]);
 
       if (asyncValidators.length > 0) {
         formControl.setAsyncValidators(asyncValidators);

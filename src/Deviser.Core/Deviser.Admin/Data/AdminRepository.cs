@@ -60,12 +60,7 @@ namespace Deviser.Admin.Data
         public IAdminConfig GetAdminConfig(string entityType)
         {
             var eType = GetEntityType(entityType);
-            IAdminConfig adminConfig;
-            if (_adminSite.AdminConfigs.TryGetValue(eType, out adminConfig))
-            {
-                return adminConfig;
-            }
-            return null;
+            return GetAdminConfig(eType);
         }
 
         public object GetAllFor(string entityType, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null)
@@ -190,7 +185,7 @@ namespace Deviser.Admin.Data
         private TEntity GetItem<TEntity>(string itemId)
             where TEntity : class
         {
-            var eType = typeof(TEntity);
+            var eType = typeof(TEntity);            
 
             var dbSet = _dbContext.Set<TEntity>();
             var queryableData = dbSet.AsQueryable();
@@ -200,8 +195,33 @@ namespace Deviser.Admin.Data
             MethodCallExpression whereCallExpression = ExpressionHelper.GetWhereExpression(eType, queryableData.Expression, filterExpression);
 
             var query = queryableData.Provider.CreateQuery<TEntity>(whereCallExpression);
+
+            query = AddIncludes(query);
+
             var result = query.FirstOrDefault();
             return result;
+        }
+
+        private IQueryable<TEntity> AddIncludes<TEntity>(IQueryable<TEntity> query) where TEntity : class
+        {
+            var eType = typeof(TEntity);
+            var adminConfig = GetAdminConfig(eType);
+            //ManyToMany Includes
+            var m2mFields = adminConfig.AllFormFields.Where(f => f.FieldOption.RelationType == Core.Common.DomainTypes.Admin.RelationType.ManyToMany).ToList();
+            foreach (var m2mField in m2mFields)
+            {
+                var includeString = $"{m2mField.FieldName}.{m2mField.FieldOption.ReleatedEntityType.Name}";
+                query = query.Include(includeString);
+            }
+
+            //OneToMany Includes
+            var m2oFields = adminConfig.AllFormFields.Where(f => f.FieldOption.RelationType == Core.Common.DomainTypes.Admin.RelationType.ManyToOne).ToList();
+            foreach (var m2oField in m2oFields)
+            {
+                query = query.Include(m2oField.FieldName);
+            }
+
+            return query;
         }
 
         private TEntity CreateItem<TEntity>(object item)
@@ -272,6 +292,16 @@ namespace Deviser.Admin.Data
         //    }
         //    return null;
         //}
+
+        private IAdminConfig GetAdminConfig(Type eType)
+        {
+            IAdminConfig adminConfig;
+            if (_adminSite.AdminConfigs.TryGetValue(eType, out adminConfig))
+            {
+                return adminConfig;
+            }
+            return null;
+        }
 
         private Type GetEntityType(string entityType)
         {

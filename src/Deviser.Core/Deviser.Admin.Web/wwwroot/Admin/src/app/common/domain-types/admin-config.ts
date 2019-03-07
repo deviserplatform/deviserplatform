@@ -2,11 +2,14 @@ import { Field } from './field';
 import { FieldConfig } from './field-config';
 import { FieldSetConfig } from './field-set-config';
 import { ListConfig } from './list-config';
+import { LookUpDictionary } from './look-up-dictionary';
 
 export interface AdminConfig {
+    childConfigs: AdminConfig[];
     entityType: string;
-    keyFields: Field[];
     fieldConfig: FieldConfig;
     fieldSetConfig: FieldSetConfig;
+    keyFields: Field[];    
     listConfig: ListConfig;
+    LookUps: LookUpDictionary
 }

@@ -368,9 +368,9 @@ namespace Deviser.Admin.Config
 
                     field.FieldOption.ForeignKeyFields = new List<ForeignKeyField>();
 
-                    foreach (var nav in releatedEntityNavigations)
+                    foreach (var reNav in releatedEntityNavigations)
                     {
-                        var fKField = GetForeignKeyField(nav.ForeignKey);
+                        var fKField = GetForeignKeyField(reNav.ForeignKey, entityType.ClrType);
                         field.FieldOption.ForeignKeyFields.Add(fKField);
                     }
 
@@ -380,7 +380,7 @@ namespace Deviser.Admin.Config
                 {
                     field.FieldType = FieldType.Select;
 
-                    var fKField = GetForeignKeyField(navigation.ForeignKey);
+                    var fKField = GetForeignKeyField(navigation.ForeignKey, entityType.ClrType);
                     field.FieldOption.ForeignKeyFields = new List<ForeignKeyField>()
                     {
                         fKField
@@ -526,20 +526,23 @@ namespace Deviser.Admin.Config
             yield return "Object";
         }
 
-        private ForeignKeyField GetForeignKeyField(IForeignKey foreignKey)
+        private ForeignKeyField GetForeignKeyField(IForeignKey foreignKey, Type entityType)
         {
             var foreignKeyField = new ForeignKeyField();
 
             for (var index = 0; index < foreignKey.PrincipalKey.Properties.Count; index++)
             {
                 var fKeyProp = foreignKey.Properties[index];
-                var fKeyExpr = GetFieldExpression(foreignKey.DeclaringEntityType.ClrType, fKeyProp);
+                var fKDEType = foreignKey.DeclaringEntityType.ClrType;
+                var fKeyExpr = GetFieldExpression(fKDEType, fKeyProp);
 
                 var principalProp = foreignKey.PrincipalKey.Properties[index];
-                var principalExpr = GetFieldExpression(foreignKey.PrincipalKey.DeclaringEntityType.ClrType, principalProp);
+                var pKDEType = foreignKey.PrincipalKey.DeclaringEntityType.ClrType;
+                var principalExpr = GetFieldExpression(pKDEType, principalProp);
 
                 foreignKeyField.Properties.Add(new ForeignKeyProperty
                 {
+                    IsPKProperty = entityType == pKDEType,
                     FieldExpression = fKeyExpr,
                     PrincipalFieldExpression = principalExpr
                 });

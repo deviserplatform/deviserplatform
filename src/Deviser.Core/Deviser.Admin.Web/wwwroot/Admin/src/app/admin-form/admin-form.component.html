@@ -19,11 +19,14 @@
                 <fieldset *ngFor="let field of fieldRow" class="form-group col" [disabled]="!isFieldEnabled(field)">
                     <ng-container *ngIf="isFieldShown(field)">
                         <app-form-control 
+                        
                         [form]="adminForm"
                         [field]="field"
                         [isShown]="isFieldShown(field)"
                         [isDisabled]="!isFieldEnabled(field)"
-                        [isValidate]="isFieldValidate(field)"></app-form-control>
+                        [isValidate]="isFieldValidate(field)"
+                        
+                        [lookUps]="metaInfo.lookUps"></app-form-control>
                     </ng-container>
                   <!-- <pre>{{field|json}}</pre> -->
                 </fieldset>

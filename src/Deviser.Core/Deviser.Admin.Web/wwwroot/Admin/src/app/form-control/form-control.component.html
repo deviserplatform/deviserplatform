@@ -65,12 +65,11 @@
 
 
     <ng-container *ngSwitchCase="fieldType.MultiSelect">
-      <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <textarea  class="form-control"
-        [ngClass]="{ 'is-invalid': hasError(field) }"></textarea>
+      <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>      
 
       <ng-select [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }" 
-                [items]="ages" [selectOnTab]="true" bindValue="value" labelForId="age"
+                [items]="lookUpData" [selectOnTab]="true" bindLabel="displayName"                
+                labelForId="age" [multiple]="true"
                 placeholder="Select age">
       </ng-select>
 
