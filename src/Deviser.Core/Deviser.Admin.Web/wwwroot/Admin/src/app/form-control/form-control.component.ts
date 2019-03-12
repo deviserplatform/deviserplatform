@@ -43,13 +43,14 @@ export class FormControlComponent implements OnInit {
       this.field.fieldOption.foreignKeyFields) {
       let lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.releatedEntityTypeCamelCase];
       let formVal = this.form.value;
+      let controlVal = formVal[this.field.fieldNameCamelCase];
       let pkProperties = [];
       let fkProperties = [];
 
       this.field.fieldOption.foreignKeyFields.forEach(fkField => {
         pkProperties = pkProperties.concat(fkField.properties.filter(prop => prop.isPKProperty));
         fkProperties = fkProperties.concat(fkField.properties.filter(prop => !prop.isPKProperty));
-      });      
+      });
 
       lookUpGeneric.forEach(item => {
         let propValue: any = {};
@@ -59,15 +60,35 @@ export class FormControlComponent implements OnInit {
         //set primary key value based on primary key properties
         pkProperties.forEach(pkProp => {
           propValue[pkProp.fieldNameCamelCase] = formVal[pkProp.principalFieldNameCamelCase]
-        })
+        });
 
         //set foreign key value based on foreign key properties
         fkProperties.forEach(fkProp => {
           propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.principalFieldNameCamelCase]
-        })
+        });
 
         this._lookUpData.push(propValue);
       });
+
+      //Parse control value and set displayName
+      if (controlVal && controlVal.length > 0) {
+        controlVal.forEach(item => {
+
+          let masterItem = this._lookUpData.find(lookUp => {
+            let isMatch = false;
+            for (let i = 0; i < fkProperties.length; i++) {
+              let prop = fkProperties[i];
+              isMatch = lookUp[prop.fieldNameCamelCase] === item[prop.fieldNameCamelCase];
+              if (isMatch)
+                return isMatch;
+            }
+            return false; // propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.principalFieldNameCamelCase]
+          });
+
+          item.displayName = masterItem.displayName
+        });
+      }
+
     }
   }
 
