@@ -35,20 +35,37 @@ export class FormControlComponent implements OnInit {
     private userExistValidator: UserExistValidator) {
     this._lookUpData = [];
 
-    
+
   }
 
   ngOnInit() {
     if (this.field && this.field.fieldOption && this.field.fieldOption.releatedEntityTypeCamelCase &&
       this.field.fieldOption.foreignKeyFields) {
       let lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.releatedEntityTypeCamelCase];
-      
+      let formVal = this.form.value;
+      let pkProperties = [];
+      let fkProperties = [];
+
+      this.field.fieldOption.foreignKeyFields.forEach(fkField => {
+        pkProperties = pkProperties.concat(fkField.properties.filter(prop => prop.isPKProperty));
+        fkProperties = fkProperties.concat(fkField.properties.filter(prop => !prop.isPKProperty));
+      });      
+
       lookUpGeneric.forEach(item => {
         let propValue: any = {};
-        propValue.displayName = item.displayName; //copy display name from generic lookup  
-        for (let keyName in item.key) {
-          propValue[keyName] = item.key[keyName];
-        }
+        //copy display name from generic lookup  
+        propValue.displayName = item.displayName;
+
+        //set primary key value based on primary key properties
+        pkProperties.forEach(pkProp => {
+          propValue[pkProp.fieldNameCamelCase] = formVal[pkProp.principalFieldNameCamelCase]
+        })
+
+        //set foreign key value based on foreign key properties
+        fkProperties.forEach(fkProp => {
+          propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.principalFieldNameCamelCase]
+        })
+
         this._lookUpData.push(propValue);
       });
     }

@@ -362,15 +362,15 @@ namespace Deviser.Admin.Config
                 if (field.FieldOption.RelationType == RelationType.ManyToMany)
                 {
                     field.FieldType = FieldType.MultiSelect;
-                    var releatedClrType = navigation.FieldInfo.FieldType.GenericTypeArguments[0];
-                    var releatedEntityType = _dbContext.Model.FindEntityType(releatedClrType);
-                    var releatedEntityNavigations = releatedEntityType.GetNavigations();
+                    var fieldClrType = navigation.FieldInfo.FieldType.GenericTypeArguments[0];
+                    var fieldEntityType = _dbContext.Model.FindEntityType(fieldClrType);
+                    var fieldNavigations = fieldEntityType.GetNavigations();
 
                     field.FieldOption.ForeignKeyFields = new List<ForeignKeyField>();
 
-                    foreach (var reNav in releatedEntityNavigations)
+                    foreach (var fieldNav in fieldNavigations)
                     {
-                        var fKField = GetForeignKeyField(reNav.ForeignKey, entityType.ClrType);
+                        var fKField = GetForeignKeyField(fieldNav.ForeignKey, entityType.ClrType);
                         field.FieldOption.ForeignKeyFields.Add(fKField);
                     }
 
@@ -533,16 +533,16 @@ namespace Deviser.Admin.Config
             for (var index = 0; index < foreignKey.PrincipalKey.Properties.Count; index++)
             {
                 var fKeyProp = foreignKey.Properties[index];
-                var fKDEType = foreignKey.DeclaringEntityType.ClrType;
-                var fKeyExpr = GetFieldExpression(fKDEType, fKeyProp);
+                var fkDecType = foreignKey.DeclaringEntityType.ClrType;
+                var fKeyExpr = GetFieldExpression(fkDecType, fKeyProp);
 
                 var principalProp = foreignKey.PrincipalKey.Properties[index];
-                var pKDEType = foreignKey.PrincipalKey.DeclaringEntityType.ClrType;
-                var principalExpr = GetFieldExpression(pKDEType, principalProp);
+                var pKDecType = foreignKey.PrincipalKey.DeclaringEntityType.ClrType;
+                var principalExpr = GetFieldExpression(pKDecType, principalProp);
 
                 foreignKeyField.Properties.Add(new ForeignKeyProperty
                 {
-                    IsPKProperty = entityType == pKDEType,
+                    IsPKProperty = entityType == pKDecType,
                     FieldExpression = fKeyExpr,
                     PrincipalFieldExpression = principalExpr
                 });
