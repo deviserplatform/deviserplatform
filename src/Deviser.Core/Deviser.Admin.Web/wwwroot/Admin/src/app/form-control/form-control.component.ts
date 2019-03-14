@@ -9,6 +9,8 @@ import { EmailExistValidator } from '../common/validators/async-email-exist.vali
 import { PasswordValidator } from '../common/validators/async-password.validator';
 import { UserExistValidator } from '../common/validators/async-user-exist.validator';
 import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 
 @Component({
   selector: 'app-form-control',
@@ -29,6 +31,7 @@ export class FormControlComponent implements OnInit {
   //To access FieldType enum
   fieldType = FieldType;
   _lookUpData: any[];
+  Editor = ClassicEditor;
 
   constructor(private emailExistValidator: EmailExistValidator,
     private passwordValidator: PasswordValidator,

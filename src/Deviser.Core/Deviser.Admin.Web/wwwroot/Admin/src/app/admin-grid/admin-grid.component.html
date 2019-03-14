@@ -26,8 +26,8 @@
             </thead>
             <tbody *ngIf="entityRecords && entityRecords.data && entityRecords.data.length>0">
               <tr *ngFor="let item of entityRecords.data">
-                <td *ngFor="let field of metaInfo.listConfig.fields">
-                  {{item[field.fieldNameCamelCase] | formatField:field}}
+                <td *ngFor="let field of metaInfo.listConfig.fields" [innerHTML]="item[field.fieldNameCamelCase] | formatField:field" >
+                  
                 </td>
                 <td>
                   <a class="btn btn-dark" title="Edit" routerLink="/detail/{{ item | recordId:metaInfo.keyFields}}">
