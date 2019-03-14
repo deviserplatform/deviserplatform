@@ -14,6 +14,9 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Deviser.Core.Common;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using Deviser.Core.Common.DomainTypes.Admin;
+using Deviser.Detached;
+using Deviser.Core.Common.Extensions;
 
 namespace Deviser.Admin.Data
 {
@@ -185,7 +188,7 @@ namespace Deviser.Admin.Data
         private TEntity GetItem<TEntity>(string itemId)
             where TEntity : class
         {
-            var eType = typeof(TEntity);            
+            var eType = typeof(TEntity);
 
             var dbSet = _dbContext.Set<TEntity>();
             var queryableData = dbSet.AsQueryable();
@@ -204,10 +207,8 @@ namespace Deviser.Admin.Data
 
         private IQueryable<TEntity> AddIncludes<TEntity>(IQueryable<TEntity> query) where TEntity : class
         {
-            var eType = typeof(TEntity);
-            var adminConfig = GetAdminConfig(eType);
             //ManyToMany Includes
-            var m2mFields = adminConfig.AllFormFields.Where(f => f.FieldOption.RelationType == Core.Common.DomainTypes.Admin.RelationType.ManyToMany).ToList();
+            var m2mFields = GetManyToManyFields<TEntity>();
             foreach (var m2mField in m2mFields)
             {
                 var includeString = $"{m2mField.FieldName}.{m2mField.FieldOption.ReleatedEntityType.Name}";
@@ -215,7 +216,7 @@ namespace Deviser.Admin.Data
             }
 
             //OneToMany Includes
-            var m2oFields = adminConfig.AllFormFields.Where(f => f.FieldOption.RelationType == Core.Common.DomainTypes.Admin.RelationType.ManyToOne).ToList();
+            var m2oFields = GetManyToOneFields<TEntity>();
             foreach (var m2oField in m2oFields)
             {
                 query = query.Include(m2oField.FieldName);
@@ -245,10 +246,40 @@ namespace Deviser.Admin.Data
             var eType = typeof(TEntity);
             TEntity itemToAdd = ((JObject)item).ToObject<TEntity>();
             var dbSet = _dbContext.Set<TEntity>();
-            var queryableData = dbSet.Update(itemToAdd);
+
+            var navigationFields = GetFieldsFor<TEntity>(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne);
+
+            var graphConfigs = GetGraphConfigs(navigationFields);
+           
+            var queryableData = _dbContext.UpdateGraph(itemToAdd, graphConfigs);//dbSet.Update(itemToAdd);
             _dbContext.SaveChanges();
             return itemToAdd;
 
+        }
+
+        private List<GraphConfig> GetGraphConfigs(List<Field> fields)
+        {
+            var graphConfig = new List<GraphConfig>();
+            foreach (var field in fields)
+            {
+                if (field.FieldExpression.Body.Type.IsCollectionType())
+                {
+                    graphConfig.Add(new GraphConfig
+                    {
+                        FieldExpression = field.FieldExpression.Body as MemberExpression,
+                        GraphConfigType = GraphConfigType.OwnedCollection
+                    });
+                }
+                else
+                {
+                    graphConfig.Add(new GraphConfig
+                    {
+                        FieldExpression = field.FieldExpression.Body as MemberExpression,
+                        GraphConfigType = GraphConfigType.OwnedEntity
+                    });
+                }
+            }
+            return graphConfig;
         }
 
         private TEntity DeleteItem<TEntity>(string itemId)
@@ -301,6 +332,25 @@ namespace Deviser.Admin.Data
                 return adminConfig;
             }
             return null;
+        }
+
+        private List<Field> GetManyToManyFields<TEntity>() where TEntity : class
+        {
+            return GetFieldsFor<TEntity>(f => f.FieldOption.RelationType == RelationType.ManyToMany);
+        }
+
+        private List<Field> GetManyToOneFields<TEntity>() where TEntity : class
+        {
+            return GetFieldsFor<TEntity>(f => f.FieldOption.RelationType == RelationType.ManyToOne);
+        }
+
+        private List<Field> GetFieldsFor<TEntity>(Func<Field, bool> predicate) where TEntity : class
+        {
+            var eType = typeof(TEntity);
+            var adminConfig = GetAdminConfig(eType);
+            //ManyToMany Includes
+            var m2mFields = adminConfig.AllFormFields.Where(predicate).ToList();
+            return m2mFields;
         }
 
         private Type GetEntityType(string entityType)
