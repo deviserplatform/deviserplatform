@@ -45,8 +45,15 @@
       <textarea [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" class="form-control"
         [ngClass]="{ 'is-invalid': hasError(field) }"></textarea>
       <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
-    </ng-container>
+    </ng-container> 
 
+    <ng-container *ngSwitchCase="fieldType.RichText">
+      <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+      <ckeditor [editor]="Editor" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
+        [ngClass]="{ 'is-invalid': hasError(field) }"></ckeditor>
+      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+    </ng-container>
+     
     <ng-container *ngSwitchCase="fieldType.DateTime">
       <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
 

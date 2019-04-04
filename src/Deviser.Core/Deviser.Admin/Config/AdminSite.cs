@@ -240,7 +240,7 @@ namespace Deviser.Admin.Config
 
         private void PopulateFieldOptions(Field field, IEntityType entityType, FieldConditions fieldConditions, EntityConfig entityConfig)
         {
-            var attributes = field.FieldClrType.GetTypeInfo().GetCustomAttributes();
+            var attributes = (field.FieldExpression.Body as MemberExpression).Member.GetCustomAttributes();
             var efProperty = entityType.GetProperties().FirstOrDefault(p => p.Name == field.FieldName);
 
             if (field.FieldOption == null)
@@ -254,7 +254,10 @@ namespace Deviser.Admin.Config
             //var displayAttribute = attributes.OfType<DisplayAttribute>().FirstOrDefault();
             //var displayFormatAttribute = attributes.OfType<DisplayFormatAttribute>().FirstOrDefault();
             //var displayNameAttribute = attributes.OfType<DisplayNameAttribute>().FirstOrDefault();
-            var fieldTypeAttribute = attributes.OfType<FieldTypeAttribute>().FirstOrDefault();
+
+            var fieldTypeAttribute = attributes.OfType<FieldInfoAttribute>().FirstOrDefault();
+
+            field.FieldType = fieldTypeAttribute != null ? fieldTypeAttribute.FieldType : FieldType.Unknown;
 
             //TODO: Localization in future
             //IStringLocalizer localizer = null;

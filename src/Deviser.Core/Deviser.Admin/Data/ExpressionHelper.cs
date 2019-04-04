@@ -66,6 +66,17 @@ namespace Deviser.Admin.Data
             return whereCallExpression;
         }
 
+        public static MethodCallExpression GetSelectExpression(Type eType, Expression parentExpression, LambdaExpression selectExpression)
+        {
+            MethodCallExpression selectCallExpression = Expression.Call(
+                typeof(Queryable),
+                nameof(Queryable.Select),
+                new Type[] { eType },
+                parentExpression,
+                selectExpression);
+            return selectCallExpression;
+        }
+
         //public static IQueryable<T> OrderByProperty<T>(
         //   this IQueryable<T> source, string propertyName)
         //{

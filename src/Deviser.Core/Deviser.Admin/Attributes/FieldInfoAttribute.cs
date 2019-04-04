@@ -9,11 +9,11 @@ namespace Deviser.Admin.Attributes
     [AttributeUsage(
         AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Method | AttributeTargets.Parameter,
         AllowMultiple = false)]
-    public class FieldTypeAttribute : ValidationAttribute
+    public class FieldInfoAttribute : ValidationAttribute
     {
         private static readonly string[] _fieldTypeStrings = Enum.GetNames(typeof(FieldType));
 
-        public FieldTypeAttribute(FieldType fieldType)
+        public FieldInfoAttribute(FieldType fieldType)
         {
             FieldType = fieldType;
 
@@ -44,7 +44,7 @@ namespace Deviser.Admin.Attributes
         ///     Constructor that accepts the string name of a custom data type
         /// </summary>
         /// <param name="customDataType">The string name of the custom data type.</param>
-        public FieldTypeAttribute(string customFieldType)
+        public FieldInfoAttribute(string customFieldType)
             : this(FieldType.Custom)
         {
             CustomFieldType = customFieldType;

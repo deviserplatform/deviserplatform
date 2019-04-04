@@ -25,7 +25,11 @@ namespace Deviser.Core.Common.DomainTypes.Admin
             {
                 if (FieldExpression == null)
                     return null;
-                return FieldExpression.Type.GenericTypeArguments[1];
+
+                if (FieldExpression.Body.Type.IsCollectionType())
+                    return FieldExpression.Body.Type.GenericTypeArguments[0];
+
+                return FieldExpression.Body.Type;
             }
         }
 

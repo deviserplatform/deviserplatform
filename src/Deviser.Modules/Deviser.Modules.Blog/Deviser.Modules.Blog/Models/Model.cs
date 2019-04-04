@@ -1,4 +1,5 @@
 ﻿using Deviser.Admin.Attributes;
+using Deviser.Core.Common.DomainTypes.Admin;
 using Deviser.Core.Data.Extension;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -52,6 +53,7 @@ namespace Deviser.Modules.Blog.Models
         public string Title { get; set; }
 
         [Order]
+        [FieldInfoAttribute(FieldType.RichText)]
         public string Content { get; set; }
 
         [Order]

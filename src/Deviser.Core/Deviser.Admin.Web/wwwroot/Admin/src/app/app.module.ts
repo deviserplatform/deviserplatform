@@ -23,6 +23,7 @@ import { FormControlComponent } from './form-control/form-control.component';
 import { FormatFieldPipe } from './common/pipes/format-field.pipe';
 import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
 import { ValidationErrorComponent } from './validation-error/validation-error.component';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import { ValidationErrorComponent } from './validation-error/validation-error.co
     AppRoutingModule,
     BrowserModule,
     BsDatepickerModule.forRoot(),
+    CKEditorModule,
     FormsModule,
     HttpClientModule,
     InlineSVGModule.forRoot(),

@@ -51,13 +51,14 @@ namespace Deviser.Modules.Blog
             {
                 form.FieldBuilder
                      .AddField(s => s.Title)
-                     .AddField(s => s.Content, fieldOption => { fieldOption.ValidationType = ValidationType.UserExist; })
-                     .AddInlineManyToManyField<Tag>(s => s.PostTags,expr => expr.TagName)
+                     //.AddField(s => s.Content, fieldOption => { fieldOption.ValidationType = ValidationType.UserExist; })
+                     .AddField(s => s.Content)
+                     .AddInlineManyToManyField<Tag>(s => s.PostTags, expr => expr.TagName)
                      .AddField(s => s.CreatedOn)
                      .AddField(s => s.CreatedBy);
 
-                form.Property(s => s.Content)
-                .ValidateOn(p => p.Title == "Test");
+                //form.Property(s => s.Content)
+                //.ValidateOn(p => p.Title == "Test");
 
                 form.AddChildConfig(s => s.PostTags, (childForm) =>
                   {
