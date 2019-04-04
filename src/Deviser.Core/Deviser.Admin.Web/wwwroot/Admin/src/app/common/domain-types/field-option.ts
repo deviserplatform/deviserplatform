@@ -1,14 +1,14 @@
 import { ValidationType } from './validation-type';
 import { FieldExpression } from './FieldExpression';
 import { RelationType } from './relation-type';
-import { ForeignKeyField } from './foreign-key-field';
+import { ReleatedField } from './releated-field';
 
 export interface FieldOption {
     enableOn: FieldExpression;
     description: string;
     displayName: string;    
     format: string;
-    foreignKeyFields: ForeignKeyField[];
+    releatedFields: ReleatedField[];
     isHidden: boolean;
     isReadOnly: boolean;
     isRequired: boolean;    

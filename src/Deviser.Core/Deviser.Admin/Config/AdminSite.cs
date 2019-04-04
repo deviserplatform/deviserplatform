@@ -366,12 +366,12 @@ namespace Deviser.Admin.Config
                     var fieldEntityType = _dbContext.Model.FindEntityType(fieldClrType);
                     var fieldNavigations = fieldEntityType.GetNavigations();
 
-                    field.FieldOption.ForeignKeyFields = new List<ForeignKeyField>();
+                    field.FieldOption.ReleatedFields = new List<ReleatedField>();
 
                     foreach (var fieldNav in fieldNavigations)
                     {
-                        var fKField = GetForeignKeyField(fieldNav.ForeignKey, entityType.ClrType);
-                        field.FieldOption.ForeignKeyFields.Add(fKField);
+                        var releatedFields = GetReleatedFields(fieldNav.ForeignKey, entityType.ClrType);
+                        field.FieldOption.ReleatedFields.AddRange(releatedFields);
                     }
 
                     //TODO: Validate ManyToMay relationship using the hints from following commented code
@@ -380,11 +380,8 @@ namespace Deviser.Admin.Config
                 {
                     field.FieldType = FieldType.Select;
 
-                    var fKField = GetForeignKeyField(navigation.ForeignKey, entityType.ClrType);
-                    field.FieldOption.ForeignKeyFields = new List<ForeignKeyField>()
-                    {
-                        fKField
-                    };
+                    var fKField = GetReleatedFields(navigation.ForeignKey, entityType.ClrType);
+                    field.FieldOption.ReleatedFields = fKField;
 
                     //TODO: Validate ManyToOne relationship using the hints from following commented code
                 }
@@ -526,9 +523,9 @@ namespace Deviser.Admin.Config
             yield return "Object";
         }
 
-        private ForeignKeyField GetForeignKeyField(IForeignKey foreignKey, Type entityType)
+        private List<ReleatedField> GetReleatedFields(IForeignKey foreignKey, Type entityType)
         {
-            var foreignKeyField = new ForeignKeyField();
+            var releatedField = new List<ReleatedField>();
 
             for (var index = 0; index < foreignKey.PrincipalKey.Properties.Count; index++)
             {
@@ -540,14 +537,14 @@ namespace Deviser.Admin.Config
                 var pKDecType = foreignKey.PrincipalKey.DeclaringEntityType.ClrType;
                 var principalExpr = GetFieldExpression(pKDecType, principalProp);
 
-                foreignKeyField.Properties.Add(new ForeignKeyProperty
+                releatedField.Add(new ReleatedField
                 {
-                    IsPKProperty = entityType == pKDecType,
+                    IsParentField  = entityType == pKDecType,
                     FieldExpression = fKeyExpr,
-                    PrincipalFieldExpression = principalExpr
+                    SourceFieldExpression = principalExpr
                 });
             }
-            return foreignKeyField;
+            return releatedField;
         }
 
         private IKey GetPrimaryKey(Type clrType)

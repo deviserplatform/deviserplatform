@@ -16,7 +16,7 @@ namespace Deviser.Core.Common.DomainTypes.Admin
         public string Description { get; set; }
         public string DisplayName { get; set; }        
         public string Format { get; set; }
-        public List<ForeignKeyField> ForeignKeyFields { get; set; }
+        public List<ReleatedField> ReleatedFields { get; set; }
         public bool IsHidden { get; set; }
         public bool IsReadOnly { get; set; }
         public bool IsRequired { get; set; }

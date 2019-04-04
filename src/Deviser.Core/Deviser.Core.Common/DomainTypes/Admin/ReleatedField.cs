@@ -4,15 +4,14 @@ using Newtonsoft.Json;
 using System;
 using System.Linq.Expressions;
 
-
 namespace Deviser.Core.Common.DomainTypes.Admin
 {
-    public class ForeignKeyProperty
+    public class ReleatedField
     {
         private string _fieldName;
         private string _principalFieldName;
 
-        public bool IsPKProperty { get; set; }
+        public bool IsParentField { get; set; }
 
         [JsonIgnore]
         public LambdaExpression FieldExpression { get; set; }
@@ -41,10 +40,10 @@ namespace Deviser.Core.Common.DomainTypes.Admin
         }
 
         [JsonIgnore]
-        public LambdaExpression PrincipalFieldExpression { get; set; }
+        public LambdaExpression SourceFieldExpression { get; set; }
 
         [JsonConverter(typeof(TypeJsonConverter))]
-        public Type FKEntityType
+        public Type FieldEntityType
         {
             get
             {
@@ -52,61 +51,39 @@ namespace Deviser.Core.Common.DomainTypes.Admin
                     return null;
                 return FieldExpression.Type.GenericTypeArguments[0];
             }
-        }
+        }       
 
         [JsonConverter(typeof(TypeJsonConverter))]
-        public Type FKFieldType
+        public Type SourceEntityType
         {
             get
             {
-                if (FieldExpression == null)
+                if (SourceFieldExpression == null)
                     return null;
-                return FieldExpression.Type.GenericTypeArguments[1];
+                return SourceFieldExpression.Type.GenericTypeArguments[0];
             }
         }
 
-        [JsonConverter(typeof(TypeJsonConverter))]
-        public Type PKEntityType
-        {
-            get
-            {
-                if (PrincipalFieldExpression == null)
-                    return null;
-                return PrincipalFieldExpression.Type.GenericTypeArguments[0];
-            }
-        }
-
-        [JsonConverter(typeof(TypeJsonConverter))]
-        public Type PKFieldType
-        {
-            get
-            {
-                if (PrincipalFieldExpression == null)
-                    return null;
-                return PrincipalFieldExpression.Type.GenericTypeArguments[1];
-            }
-        }
-
-        public string PrincipalFieldName
+        public string SourceFieldName
         {
             get
             {
                 if (!string.IsNullOrEmpty(_principalFieldName))
                     return _principalFieldName;
 
-                if (PrincipalFieldExpression == null)
+                if (SourceFieldExpression == null)
                     return null;
 
-                _principalFieldName = ReflectionExtensions.GetMemberName(PrincipalFieldExpression);
+                _principalFieldName = ReflectionExtensions.GetMemberName(SourceFieldExpression);
                 return _principalFieldName;
             }
         }
 
-        public string PrincipalFieldNameCamelCase
+        public string SourceFieldNameCamelCase
         {
             get
             {
-                return PrincipalFieldName.Camelize();
+                return SourceFieldName.Camelize();
             }
         }
     }

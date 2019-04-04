@@ -9,6 +9,7 @@ import { EmailExistValidator } from '../common/validators/async-email-exist.vali
 import { PasswordValidator } from '../common/validators/async-password.validator';
 import { UserExistValidator } from '../common/validators/async-user-exist.validator';
 import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
+import { ReleatedField } from '../common/domain-types/releated-field';
 
 @Component({
   selector: 'app-form-control',
@@ -40,17 +41,15 @@ export class FormControlComponent implements OnInit {
 
   ngOnInit() {
     if (this.field && this.field.fieldOption && this.field.fieldOption.releatedEntityTypeCamelCase &&
-      this.field.fieldOption.foreignKeyFields) {
+      this.field.fieldOption.releatedFields) {
       let lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.releatedEntityTypeCamelCase];
       let formVal = this.form.value;
       let controlVal = formVal[this.field.fieldNameCamelCase];
-      let pkProperties = [];
-      let fkProperties = [];
+      let pkFields:ReleatedField[] = [];
+      let fkFields:ReleatedField[] = [];
 
-      this.field.fieldOption.foreignKeyFields.forEach(fkField => {
-        pkProperties = pkProperties.concat(fkField.properties.filter(prop => prop.isPKProperty));
-        fkProperties = fkProperties.concat(fkField.properties.filter(prop => !prop.isPKProperty));
-      });
+      pkFields = this.field.fieldOption.releatedFields.filter(rf=>rf.isParentField);
+      fkFields = this.field.fieldOption.releatedFields.filter(rf=>!rf.isParentField);
 
       lookUpGeneric.forEach(item => {
         let propValue: any = {};
@@ -58,13 +57,13 @@ export class FormControlComponent implements OnInit {
         propValue.displayName = item.displayName;
 
         //set primary key value based on primary key properties
-        pkProperties.forEach(pkProp => {
-          propValue[pkProp.fieldNameCamelCase] = formVal[pkProp.principalFieldNameCamelCase]
+        pkFields.forEach(pkProp => {
+          propValue[pkProp.fieldNameCamelCase] = formVal[pkProp.sourceFieldNameCamelCase]
         });
 
         //set foreign key value based on foreign key properties
-        fkProperties.forEach(fkProp => {
-          propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.principalFieldNameCamelCase]
+        fkFields.forEach(fkProp => {
+          propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.sourceFieldNameCamelCase]
         });
 
         this._lookUpData.push(propValue);
@@ -76,8 +75,8 @@ export class FormControlComponent implements OnInit {
 
           let masterItem = this._lookUpData.find(lookUp => {
             let isMatch = false;
-            for (let i = 0; i < fkProperties.length; i++) {
-              let prop = fkProperties[i];
+            for (let i = 0; i < fkFields.length; i++) {
+              let prop = fkFields[i];
               isMatch = lookUp[prop.fieldNameCamelCase] === item[prop.fieldNameCamelCase];
               if (isMatch)
                 return isMatch;
