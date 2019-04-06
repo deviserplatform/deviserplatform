@@ -1,9 +1,9 @@
-export interface ReleatedField {
-    fieldName: string;
-    fieldNameCamelCase: string;
-    fieldEntityType: string;
+import { BaseField } from "./base-field";
+
+export interface ReleatedField extends BaseField {    
+    fieldClrType: string;
     isParentField: boolean;
-    sourceEntityType: string;
+    sourceClrType: string;
     sourceFieldName: string;
     sourceFieldNameCamelCase: string
 }

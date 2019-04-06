@@ -34,7 +34,7 @@ namespace Deviser.Admin
         [JsonIgnore]
         FieldConditions FieldConditions { get; }
 
-        List<Field> KeyFields { get; }
+        List<KeyField> KeyFields { get; }
 
         IListConfig ListConfig { get; }
 
@@ -81,7 +81,7 @@ namespace Deviser.Admin
         [JsonIgnore]
         public FieldConditions FieldConditions { get; }
 
-        public List<Field> KeyFields { get; }
+        public List<KeyField> KeyFields { get; }
 
         public ListConfig<TEntity> ListConfig { get; }
 
@@ -102,7 +102,7 @@ namespace Deviser.Admin
             FieldConfig = new FieldConfig<TEntity>();
             FieldConditions = new FieldConditions();
             FieldSetConfig = new FieldSetConfig<TEntity>();            
-            KeyFields = new List<Field>();
+            KeyFields = new List<KeyField>();
             ListConfig = new ListConfig<TEntity>();
             LookUps = new LookUpDictionary();
         }

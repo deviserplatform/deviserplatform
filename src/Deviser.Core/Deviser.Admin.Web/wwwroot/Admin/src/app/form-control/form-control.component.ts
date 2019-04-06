@@ -12,6 +12,7 @@ import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 import { ReleatedField } from '../common/domain-types/releated-field';
+import { RelationType } from '../common/domain-types/relation-type';
 
 @Component({
   selector: 'app-form-control',
@@ -43,16 +44,42 @@ export class FormControlComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.parseControlValue()
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+
+    if (changes.isValidate && changes.isValidate.currentValue != null) {
+      //Dynamic validation can be changed only when this field is not required by backend
+      if (!this.field.fieldOption.isRequired) {
+        this.onIsValidateChange(changes.isValidate.currentValue);
+      }
+    }
+  }
+
+  parseControlValue() {
+    if (this.field && this.field.fieldOption && this.field.fieldOption.relationType) {
+      if (this.field.fieldOption.relationType == RelationType.ManyToMany) {
+        this.parseM2mControlVal();
+      }
+      else if (this.field.fieldOption.relationType == RelationType.ManyToOne) {
+        this.parseM2oControlVal();
+      }
+    }
+
+  }
+
+  parseM2mControlVal() {
     if (this.field && this.field.fieldOption && this.field.fieldOption.releatedEntityTypeCamelCase &&
       this.field.fieldOption.releatedFields) {
       let lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.releatedEntityTypeCamelCase];
       let formVal = this.form.value;
       let controlVal = formVal[this.field.fieldNameCamelCase];
-      let pkFields:ReleatedField[] = [];
-      let fkFields:ReleatedField[] = [];
+      let pkFields: ReleatedField[] = [];
+      let fkFields: ReleatedField[] = [];
 
-      pkFields = this.field.fieldOption.releatedFields.filter(rf=>rf.isParentField);
-      fkFields = this.field.fieldOption.releatedFields.filter(rf=>!rf.isParentField);
+      pkFields = this.field.fieldOption.releatedFields.filter(rf => rf.isParentField);
+      fkFields = this.field.fieldOption.releatedFields.filter(rf => !rf.isParentField);
 
       lookUpGeneric.forEach(item => {
         let propValue: any = {};
@@ -94,14 +121,43 @@ export class FormControlComponent implements OnInit {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  parseM2oControlVal() {
+    let formVal = this.form.value;
+    let lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.releatedEntityTypeCamelCase];
+    let fkFields = this.field.fieldOption.releatedFields.filter(rf => !rf.isParentField);
+    let controlVal = formVal[this.field.fieldNameCamelCase];
 
-    if (changes.isValidate && changes.isValidate.currentValue != null) {
-      //Dynamic validation can be changed only when this field is not required by backend
-      if (!this.field.fieldOption.isRequired) {
-        this.onIsValidateChange(changes.isValidate.currentValue);
-      }
+    lookUpGeneric.forEach(item => {
+      let propValue: any = {};
+      //copy display name from generic lookup  
+      propValue.displayName = item.displayName;
+
+      fkFields.forEach(fkProp => {
+        propValue[fkProp.sourceFieldNameCamelCase] = item.key[fkProp.sourceFieldNameCamelCase]
+      });
+
+      this._lookUpData.push(propValue);
+    });
+
+
+    if (controlVal) {
+      let masterItem = this._lookUpData.find(lookUp => {
+        let isMatch = false;
+        for (let i = 0; i < fkFields.length; i++) {
+          let prop = fkFields[i];
+          isMatch = lookUp[prop.sourceFieldNameCamelCase] === controlVal[prop.sourceFieldNameCamelCase];
+          if (isMatch)
+            return isMatch;
+        }
+        return false; // propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.principalFieldNameCamelCase]
+      });
+
+      controlVal.displayName = masterItem.displayName
+
     }
+
+
+
   }
 
   get lookUpData() {

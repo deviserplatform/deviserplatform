@@ -53,6 +53,7 @@ namespace Deviser.Modules.Blog
                      .AddField(s => s.Title)
                      //.AddField(s => s.Content, fieldOption => { fieldOption.ValidationType = ValidationType.UserExist; })
                      .AddField(s => s.Content)
+                     .AddInlineManyToOneField(s => s.Category, expr => expr.Name)
                      .AddInlineManyToManyField<Tag>(s => s.PostTags, expr => expr.TagName)
                      .AddField(s => s.CreatedOn)
                      .AddField(s => s.CreatedBy);

@@ -20,28 +20,41 @@ namespace Deviser.Modules.Blog.Models
         {
             modelBuilder.Entity<Post>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                entity.Property(e => e.Title).IsRequired();
-                entity.Property(e => e.CreatedOn).IsRequired();
+                entity.Property(p => p.Id).ValueGeneratedOnAdd();
+                entity.Property(p => p.Title).IsRequired();
+                entity.Property(p => p.CreatedOn).IsRequired();
+                entity.HasOne(p => p.Category).WithMany(c => c.Posts).HasForeignKey(p => p.CategoryId);
             });
 
             modelBuilder.Entity<Tag>(entity =>
             {
-                entity.Property(e => e.TagId).ValueGeneratedOnAdd();
-                entity.HasAlternateKey(e => e.TagName);
+                entity.Property(t => t.Id).ValueGeneratedOnAdd();
+                entity.HasAlternateKey(t => t.TagName);
             });
 
             modelBuilder.Entity<PostTag>(entity =>
             {
-                entity.HasKey(t => new { t.PostId, t.TagId });
+                entity.HasKey(pt => new { pt.PostId, pt.TagId });
                 entity.HasOne(pt => pt.Post).WithMany(p => p.PostTags).HasForeignKey(pt => pt.PostId);
                 entity.HasOne(pt => pt.Tag).WithMany(t => t.PostTags).HasForeignKey(pt => pt.TagId);
             });
         }
 
+        public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Post> Posts { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<PostTag> PostTags { get; set; }
+    }
+
+    public class Category
+    {
+        [Order]
+        public Guid Id { get; set; }
+
+        [Order]
+        public string Name { get; set; }
+
+        public List<Post> Posts { get; set; }
     }
 
     public class Post
@@ -53,8 +66,14 @@ namespace Deviser.Modules.Blog.Models
         public string Title { get; set; }
 
         [Order]
-        [FieldInfoAttribute(FieldType.RichText)]
+        [FieldInfo(FieldType.RichText)]
         public string Content { get; set; }
+
+        [Order]
+        public Guid CategoryId { get; set; }
+
+        [Order]
+        public Category Category { get; set; }
 
         [Order]
         public List<PostTag> PostTags { get; set; }
@@ -69,7 +88,7 @@ namespace Deviser.Modules.Blog.Models
 
     public class Tag
     {
-        public Guid TagId { get; set; }
+        public Guid Id { get; set; }
 
         public string TagName { get; set; }
 

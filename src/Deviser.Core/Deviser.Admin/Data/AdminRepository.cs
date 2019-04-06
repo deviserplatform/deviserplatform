@@ -250,7 +250,7 @@ namespace Deviser.Admin.Data
             var navigationFields = GetFieldsFor<TEntity>(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne);
 
             var graphConfigs = GetGraphConfigs(navigationFields);
-           
+
             var queryableData = _dbContext.UpdateGraph(itemToAdd, graphConfigs);//dbSet.Update(itemToAdd);
             _dbContext.SaveChanges();
             return itemToAdd;
@@ -261,13 +261,14 @@ namespace Deviser.Admin.Data
         {
             var graphConfig = new List<GraphConfig>();
             foreach (var field in fields)
-            {
+            {   
                 if (field.FieldExpression.Body.Type.IsCollectionType())
                 {
+                    bool isManyToMany = field.FieldOption.RelationType == RelationType.ManyToMany;
                     graphConfig.Add(new GraphConfig
                     {
                         FieldExpression = field.FieldExpression.Body as MemberExpression,
-                        GraphConfigType = GraphConfigType.OwnedCollection
+                        GraphConfigType = isManyToMany? GraphConfigType.OwnedCollection : GraphConfigType.AssociatedCollection
                     });
                 }
                 else
@@ -275,7 +276,7 @@ namespace Deviser.Admin.Data
                     graphConfig.Add(new GraphConfig
                     {
                         FieldExpression = field.FieldExpression.Body as MemberExpression,
-                        GraphConfigType = GraphConfigType.OwnedEntity
+                        GraphConfigType = GraphConfigType.AssociatedEntity
                     });
                 }
             }

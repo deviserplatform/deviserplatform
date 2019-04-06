@@ -6,55 +6,58 @@ using System.Linq.Expressions;
 
 namespace Deviser.Core.Common.DomainTypes.Admin
 {
-    public class ReleatedField
+    /// <summary>
+    /// <see cref="ReleatedField"/> represents expected structure and data source of ManyToMany join entity
+    /// </summary>
+    public class ReleatedField : BaseField
     {
         private string _fieldName;
         private string _principalFieldName;
 
         public bool IsParentField { get; set; }
 
-        [JsonIgnore]
-        public LambdaExpression FieldExpression { get; set; }
+        //[JsonIgnore]
+        //public LambdaExpression FieldExpression { get; set; }
 
-        public string FieldName
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(_fieldName))
-                    return _fieldName;
+        //public string FieldName
+        //{
+        //    get
+        //    {
+        //        if (!string.IsNullOrEmpty(_fieldName))
+        //            return _fieldName;
 
-                if (FieldExpression == null)
-                    return null;
+        //        if (FieldExpression == null)
+        //            return null;
 
-                _fieldName = ReflectionExtensions.GetMemberName(FieldExpression);
-                return _fieldName;
-            }
-        }
+        //        _fieldName = ReflectionExtensions.GetMemberName(FieldExpression);
+        //        return _fieldName;
+        //    }
+        //}
 
-        public string FieldNameCamelCase
-        {
-            get
-            {
-                return FieldName.Camelize();
-            }
-        }
+        //public string FieldNameCamelCase
+        //{
+        //    get
+        //    {
+        //        return FieldName.Camelize();
+        //    }
+        //}
 
         [JsonIgnore]
         public LambdaExpression SourceFieldExpression { get; set; }
 
-        [JsonConverter(typeof(TypeJsonConverter))]
-        public Type FieldEntityType
-        {
-            get
-            {
-                if (FieldExpression == null)
-                    return null;
-                return FieldExpression.Type.GenericTypeArguments[0];
-            }
-        }       
+        //[JsonConverter(typeof(TypeJsonConverter))]
+        //public Type FieldClrType
+        //{
+        //    get
+        //    {
+        //        if (FieldExpression == null)
+        //            return null;
+        //        return FieldExpression.Type.GenericTypeArguments[0];
+        //    }
+        //}       
 
         [JsonConverter(typeof(TypeJsonConverter))]
-        public Type SourceEntityType
+        public Type SourceClrType
         {
             get
             {

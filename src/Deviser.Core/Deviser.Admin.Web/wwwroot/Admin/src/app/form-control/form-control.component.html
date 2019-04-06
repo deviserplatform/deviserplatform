@@ -75,8 +75,18 @@
       <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>      
 
       <ng-select [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }" 
-                [items]="lookUpData" [selectOnTab]="true" bindLabel="displayName"                
-                labelForId="age" [multiple]="true"
+                [items]="lookUpData" [selectOnTab]="true" bindLabel="displayName" [multiple]="true"
+                placeholder="Select age">
+      </ng-select>
+
+      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="fieldType.Select">
+      <label [ngClass]="{ 'is-invalid': hasError(field) }" for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>      
+
+      <ng-select [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }" 
+                [items]="lookUpData" [selectOnTab]="true" bindLabel="displayName" [multiple]="false"
                 placeholder="Select age">
       </ng-select>
 

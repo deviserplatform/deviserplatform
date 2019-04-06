@@ -108,15 +108,34 @@ namespace Deviser.Admin.Config
 
             PopulateEntityConfig(entityType, adminConfig);
 
+            //Adding primary keys to KeyField
             var pk = adminConfig.EntityConfig.PrimaryKey;
-            foreach (var prop in pk.Properties)
+            if(pk!=null && pk.Properties!=null && pk.Properties.Count > 0)
             {
-                var field = new Field
+                foreach (var prop in pk.Properties)
                 {
-                    FieldExpression = GetFieldExpression(entityClrType, prop),
-                    FieldType = FieldType.KeyField
-                };
-                adminConfig.KeyFields.Add(field);
+                    var field = new KeyField
+                    {
+                        FieldExpression = GetFieldExpression(entityClrType, prop),
+                        KeyFieldType = KeyFieldType.PrimaryKey
+                    };
+                    adminConfig.KeyFields.Add(field);
+                }
+            }
+            
+
+            var fk = adminConfig.EntityConfig.PrimaryKey;
+            if (fk != null && fk.Properties != null && fk.Properties.Count > 0)
+            {
+                foreach (var prop in fk.Properties)
+                {
+                    var field = new KeyField
+                    {
+                        FieldExpression = GetFieldExpression(entityClrType, prop),
+                        KeyFieldType = KeyFieldType.ForeignKey
+                    };
+                    adminConfig.KeyFields.Add(field);
+                } 
             }
 
             bool hasExlcludeFields = adminConfig?.FieldConfig?.ExcludedFields?.Count > 0;
@@ -169,7 +188,7 @@ namespace Deviser.Admin.Config
             {
                 var properties = GetProperties(entityType);
                 foreach (var prop in properties)
-                {
+                {                    
                     var field = new Field
                     {
                         FieldExpression = GetFieldExpression(entityClrType, prop)
@@ -204,6 +223,7 @@ namespace Deviser.Admin.Config
         {
             return entityType
                 .GetProperties()
+                .Where(p=> !p.IsForeignKey() && !p.IsPrimaryKey()) //Get only non key fields!
                 .OrderBy(p => GetOrder(p))
                 .ToList();
         }
