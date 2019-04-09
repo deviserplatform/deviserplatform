@@ -234,6 +234,29 @@ namespace Deviser.Admin.Data
             serializer.Converters.Add(new Core.Common.Json.GuidConverter());
 
             TEntity itemToAdd = ((JObject)item).ToObject<TEntity>(serializer);
+
+            var m2ofields = GetManyToOneFields<TEntity>();
+            foreach (var m2oField in m2ofields)
+            {
+                var fieldPropInfo = ExpressionHelper.GetPropertyInfo(m2oField.FieldExpression);
+                var field = fieldPropInfo.GetValue(itemToAdd, null); //item.Category
+                var fieldType = fieldPropInfo.PropertyType;
+                var entityType = _dbContext.Model.FindEntityType(fieldType);
+                var entityPkeys = entityType.FindPrimaryKey();
+
+                var pkPropInfo = entityPkeys.Properties.First().PropertyInfo;
+                var id = pkPropInfo.GetValue(field, null); //item.Category.Id
+                                
+                var targetPropInfo = ExpressionHelper.GetPropertyInfo(m2oField.FieldOption.ReleatedFields.First().FieldExpression);
+
+                targetPropInfo.SetValue(itemToAdd, id, null); //item.CategoryId = item.Category.Id
+
+                fieldPropInfo.SetValue(itemToAdd, null, null); //item.Category = null;
+
+                //TODO: item.CategoryId = item.Category.Id
+                //TODO: item.Category = null;
+            }
+
             var dbSet = _dbContext.Set<TEntity>();
             var queryableData = dbSet.Add(itemToAdd);
             _dbContext.SaveChanges();
@@ -244,16 +267,16 @@ namespace Deviser.Admin.Data
             where TEntity : class
         {
             var eType = typeof(TEntity);
-            TEntity itemToAdd = ((JObject)item).ToObject<TEntity>();
+            TEntity itemToUpdate = ((JObject)item).ToObject<TEntity>();
             var dbSet = _dbContext.Set<TEntity>();
 
             var navigationFields = GetFieldsFor<TEntity>(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne);
 
             var graphConfigs = GetGraphConfigs(navigationFields);
 
-            var queryableData = _dbContext.UpdateGraph(itemToAdd, graphConfigs);//dbSet.Update(itemToAdd);
+            var queryableData = _dbContext.UpdateGraph(itemToUpdate, graphConfigs);//dbSet.Update(itemToAdd);
             _dbContext.SaveChanges();
-            return itemToAdd;
+            return itemToUpdate;
 
         }
 

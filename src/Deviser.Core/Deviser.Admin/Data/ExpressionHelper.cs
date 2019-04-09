@@ -40,6 +40,11 @@ namespace Deviser.Admin.Data
             return orderByExpression;
         }
 
+        public static PropertyInfo GetPropertyInfo(LambdaExpression lambdaExpression)
+        {
+            return (lambdaExpression?.Body as MemberExpression)?.Member as PropertyInfo;
+        }
+
         public static MethodCallExpression GetOrderByExpression(string orderByProp, Type eType, Expression parentExpression, string orderByMethod)
         {
             ParameterExpression paramterExpression = Expression.Parameter(eType);

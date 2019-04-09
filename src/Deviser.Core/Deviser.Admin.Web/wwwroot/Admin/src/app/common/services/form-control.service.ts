@@ -16,9 +16,9 @@ export class FormControlService {
 
   toFormGroup(adminConfig: AdminConfig, record: any = null): FormGroup {
     const adminForm: any = {};
-    
+
     if (adminConfig && adminConfig.keyFields) {
-      let pkFields = adminConfig.keyFields.filter(kf=> kf.keyFieldType == KeyFieldType.PrimaryKey);
+      let pkFields = adminConfig.keyFields.filter(kf => kf.keyFieldType == KeyFieldType.PrimaryKey);
       pkFields.forEach(field => {
         adminForm[field.fieldNameCamelCase] = this.getKeyControl(field, record);
       });
@@ -74,10 +74,17 @@ export class FormControlService {
     return formControl;
   }
 
-  private getKeyControl(keyField:KeyField, record:any){
+  private getKeyControl(keyField: KeyField, record: any) {
     let formControl: FormControl;
-    let controlValue = record && record[keyField.fieldNameCamelCase] ? record[keyField.fieldNameCamelCase] : '';
-    formControl = new FormControl(controlValue, Validators.required);
+    let hasValue = record && record[keyField.fieldNameCamelCase];
+    let controlValue = hasValue ? record[keyField.fieldNameCamelCase] : '';
+    if (hasValue) {
+      formControl = new FormControl(controlValue, Validators.required);
+    }
+    else {
+      formControl = new FormControl(controlValue);
+    }
+    
     return formControl;
   }
 
