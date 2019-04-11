@@ -17,7 +17,7 @@ import { Field } from '../common/domain-types/field';
 })
 export class AdminFormComponent implements OnInit {
 
-  metaInfo: AdminConfig;
+  adminConfig: AdminConfig;
   record: any;
   adminForm: FormGroup;
   formMode: FormMode;
@@ -29,7 +29,7 @@ export class AdminFormComponent implements OnInit {
     private location: Location) { }
 
   ngOnInit() {
-    // this.getMetaInfo();
+    // this.getAdminConfig();
     // this.getRecord();
     this.getData();
   }
@@ -40,22 +40,22 @@ export class AdminFormComponent implements OnInit {
     this.formMode = id ? FormMode.Update : FormMode.New;
 
     if (this.formMode === FormMode.Update) {
-      const metaInfo$ = this.adminService.getMetaInfo('Blog', 'Post');
+      const adminConfig$ = this.adminService.getAdminConfig('Blog', 'Post');
       const record$ = this.adminService.getRecord('Blog', 'Post', id);
-      forkJoin([metaInfo$, record$]).subscribe(results => {
+      forkJoin([adminConfig$, record$]).subscribe(results => {
         this.record = results[1];
-        this.onGetMetaInfo(results[0]);
+        this.onGetAdminConfig(results[0]);
       });
     } else if (this.formMode === FormMode.New) {
-      this.adminService.getMetaInfo('Blog', 'Post')
-        .subscribe(metaInfo => this.onGetMetaInfo(metaInfo));
+      this.adminService.getAdminConfig('Blog', 'Post')
+        .subscribe(adminConfig => this.onGetAdminConfig(adminConfig));
     }
 
   }
 
-  onGetMetaInfo(metaInfo: AdminConfig): void {
-    this.metaInfo = metaInfo;
-    this.adminForm = this.formControlService.toFormGroup(metaInfo, this.record);
+  onGetAdminConfig(adminConfig: AdminConfig): void {
+    this.adminConfig = adminConfig;
+    this.adminForm = this.formControlService.toFormGroup(adminConfig, this.record);
   }
 
   onSubmit(): void {

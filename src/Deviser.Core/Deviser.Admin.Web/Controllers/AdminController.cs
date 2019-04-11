@@ -58,7 +58,7 @@ namespace Deviser.Admin.Web.Controllers
                 var adminConfig = _adminRepository.GetAdminConfig(entity);
                 if (adminConfig != null)
                 {
-                    var listConfig = adminConfig.ListConfig;
+                    var listConfig = adminConfig.FormConfig.ListConfig;
                     return Ok(listConfig);
                 }
                 return NotFound();
@@ -79,7 +79,7 @@ namespace Deviser.Admin.Web.Controllers
                 var adminConfig = _adminRepository.GetAdminConfig(entity);
                 if (adminConfig != null)
                 {
-                    var fieldConfig = new { adminConfig.FieldConfig, adminConfig.FieldSetConfig };
+                    var fieldConfig = new { adminConfig.FormConfig.FieldConfig, adminConfig.FormConfig.FieldSetConfig };
                     return Ok(fieldConfig);
                 }
                 return NotFound();

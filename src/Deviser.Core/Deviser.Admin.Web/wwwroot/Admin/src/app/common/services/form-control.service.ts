@@ -17,16 +17,16 @@ export class FormControlService {
   toFormGroup(adminConfig: AdminConfig, record: any = null): FormGroup {
     const adminForm: any = {};
 
-    if (adminConfig && adminConfig.keyFields) {
-      let pkFields = adminConfig.keyFields.filter(kf => kf.keyFieldType == KeyFieldType.PrimaryKey);
+    if (adminConfig && adminConfig.formConfig.keyFields) {
+      let pkFields = adminConfig.formConfig.keyFields.filter(kf => kf.keyFieldType == KeyFieldType.PrimaryKey);
       pkFields.forEach(field => {
         adminForm[field.fieldNameCamelCase] = this.getKeyControl(field, record);
       });
     }
 
-    if (adminConfig && adminConfig.fieldConfig &&
-      adminConfig.fieldConfig.fields && adminConfig.fieldConfig.fields.length > 0) {
-      const fields = adminConfig.fieldConfig.fields;
+    if (adminConfig && adminConfig.formConfig && adminConfig.formConfig.fieldConfig &&
+      adminConfig.formConfig.fieldConfig.fields && adminConfig.formConfig.fieldConfig.fields.length > 0) {
+      const fields = adminConfig.formConfig.fieldConfig.fields;
 
       fields.forEach(fieldRow => {
         if (fieldRow && fieldRow.length > 0) {
@@ -39,9 +39,9 @@ export class FormControlService {
       // adminForm['fields'] = this.fb.group(fieldsGroup);
       // adminForm =  this.fb.group(fieldsGroup);
 
-    } else if (adminConfig && adminConfig.fieldSetConfig &&
-      adminConfig.fieldSetConfig.fieldSets && adminConfig.fieldSetConfig.fieldSets.length > 0) {
-      const fieldSets = adminConfig.fieldSetConfig.fieldSets;
+    } else if (adminConfig && adminConfig.formConfig.fieldSetConfig &&
+      adminConfig.formConfig.fieldSetConfig.fieldSets && adminConfig.formConfig.fieldSetConfig.fieldSets.length > 0) {
+      const fieldSets = adminConfig.formConfig.fieldSetConfig.fieldSets;
       fieldSets.forEach(fieldSet => {
         if (fieldSet && fieldSet.fields && fieldSet.fields.length > 0) {
           fieldSet.fields.forEach(fieldRow => {

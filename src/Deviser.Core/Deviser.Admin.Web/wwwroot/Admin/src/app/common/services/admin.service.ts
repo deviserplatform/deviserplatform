@@ -25,11 +25,11 @@ export class AdminService {
   constructor(private http: HttpClient,
     private messageService: MessageService) { }
 
-  getMetaInfo(moduleName: string, entityName: string): Observable<AdminConfig> {
+  getAdminConfig(moduleName: string, entityName: string): Observable<AdminConfig> {
     const serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}/meta`;
     return this.http.get<AdminConfig>(serviceUrl).pipe(
       tap(_ => this.log('fetched meta info')),
-      catchError(this.handleError<AdminConfig>('getMetaInfo'))
+      catchError(this.handleError<AdminConfig>('getAdminConfig'))
     );
   }
 

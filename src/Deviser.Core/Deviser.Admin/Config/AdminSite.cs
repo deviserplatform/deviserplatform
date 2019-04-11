@@ -119,7 +119,7 @@ namespace Deviser.Admin.Config
                         FieldExpression = GetFieldExpression(entityClrType, prop),
                         KeyFieldType = KeyFieldType.PrimaryKey
                     };
-                    adminConfig.KeyFields.Add(field);
+                    adminConfig.FormConfig.KeyFields.Add(field);
                 }
             }
             
@@ -134,23 +134,23 @@ namespace Deviser.Admin.Config
                         FieldExpression = GetFieldExpression(entityClrType, prop),
                         KeyFieldType = KeyFieldType.ForeignKey
                     };
-                    adminConfig.KeyFields.Add(field);
+                    adminConfig.FormConfig.KeyFields.Add(field);
                 } 
             }
 
-            bool hasExlcludeFields = adminConfig?.FieldConfig?.ExcludedFields?.Count > 0;
-            bool hasListFields = adminConfig?.ListConfig.Fields.Count > 0;
+            bool hasExlcludeFields = adminConfig?.FormConfig?.FieldConfig?.ExcludedFields?.Count > 0;
+            bool hasListFields = adminConfig?.FormConfig?.ListConfig.Fields.Count > 0;
 
 
             if (hasExlcludeFields)
             {
-                PopulateFields(entityClrType, entityType, adminConfig, adminConfig.FieldConfig.ExcludedFields);
+                PopulateFields(entityClrType, entityType, adminConfig, adminConfig.FormConfig.FieldConfig.ExcludedFields);
             }
 
-            var fields = adminConfig.AllFormFields;
+            var fields = adminConfig.FormConfig.AllFormFields;
             foreach (var field in fields)
             {
-                PopulateFieldOptions(field, entityType, adminConfig.FieldConditions, adminConfig.EntityConfig);
+                PopulateFieldOptions(field, entityType, adminConfig.FormConfig.FieldConditions, adminConfig.EntityConfig);
             }
 
             //else if (adminConfig?.FieldConfig?.Fields?.Count > 0)
@@ -179,9 +179,9 @@ namespace Deviser.Admin.Config
 
             if (hasListFields)
             {
-                foreach (var field in adminConfig.ListConfig.Fields)
+                foreach (var field in adminConfig.FormConfig.ListConfig.Fields)
                 {
-                    PopulateFieldOptions(field, entityType, adminConfig.FieldConditions, adminConfig.EntityConfig);
+                    PopulateFieldOptions(field, entityType, adminConfig.FormConfig.FieldConditions, adminConfig.EntityConfig);
                 }
             }
             else
@@ -193,8 +193,8 @@ namespace Deviser.Admin.Config
                     {
                         FieldExpression = GetFieldExpression(entityClrType, prop)
                     };
-                    PopulateFieldOptions(field, entityType, adminConfig.FieldConditions, adminConfig.EntityConfig);
-                    adminConfig.ListConfig.Fields.Add(field);
+                    PopulateFieldOptions(field, entityType, adminConfig.FormConfig.FieldConditions, adminConfig.EntityConfig);
+                    adminConfig.FormConfig.ListConfig.Fields.Add(field);
                 }
             }
 
@@ -211,7 +211,7 @@ namespace Deviser.Admin.Config
 
                 if (!isExclude)
                 {
-                    adminConfig.FieldConfig.AddField(new Field
+                    adminConfig.FormConfig.FieldConfig.AddField(new Field
                     {
                         FieldExpression = GetFieldExpression(entityClrType, prop)
                     });
@@ -580,7 +580,7 @@ namespace Deviser.Admin.Config
         private void LoadMasterData<TEntity>(AdminConfig<TEntity> adminConfig) where TEntity : class
         {
             //Loading Master Data
-            var relatedFileds = adminConfig.AllFormFields
+            var relatedFileds = adminConfig.FormConfig.AllFormFields
                 .Where(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne)
                 .ToList();
 

@@ -16,16 +16,66 @@ namespace Deviser.Admin
 {
     public interface IAdminConfig
     {
-        [JsonIgnore]
-        List<Field> AllFormFields { get; }
-
-        ICollection<IAdminConfig> ChildConfigs { get; }
+        ICollection<IChildConfig> ChildConfigs { get; }
 
         [JsonConverter(typeof(TypeJsonConverter))]
         Type EntityType { get; }
 
         [JsonIgnore]
         EntityConfig EntityConfig { get; }
+
+        LookUpDictionary LookUps { get; }
+
+        IFormConfig FormConfig { get; }
+    }
+
+    public class AdminConfig<TEntity> : IAdminConfig
+        where TEntity : class
+    {
+        
+        public ICollection<IChildConfig> ChildConfigs { get; }
+
+        public Type EntityType { get; }
+
+        [JsonIgnore]
+        public EntityConfig EntityConfig { get; }
+
+        public IFormConfig FormConfig { get; }
+
+        public LookUpDictionary LookUps { get; }
+
+        public AdminConfig()
+        {
+            ChildConfigs = new List<IChildConfig>();
+            EntityType = typeof(TEntity);
+            EntityConfig = new EntityConfig();
+            FormConfig = new FormConfig<TEntity>();
+            LookUps = new LookUpDictionary();
+        }
+
+        public void ShowOn(LambdaExpression fieldExpression, Expression<Func<TEntity, bool>> predicate)
+        {
+
+        }
+    }
+
+    public interface IChildConfig
+    {
+        Field Field { get; }
+        IFormConfig FormConfig { get; }
+    }
+
+    public class ChildConfig: IChildConfig
+    {
+        public Field Field { get; set; }
+
+        public IFormConfig FormConfig { get; set; }
+    }
+
+    public interface IFormConfig
+    {
+        [JsonIgnore]
+        List<Field> AllFormFields { get; }
 
         IFieldConfig FieldConfig { get; }
 
@@ -37,80 +87,6 @@ namespace Deviser.Admin
         List<KeyField> KeyFields { get; }
 
         IListConfig ListConfig { get; }
-
-        LookUpDictionary LookUps { get; }
-    }
-
-    public class AdminConfig<TEntity> : IAdminConfig
-        where TEntity : class
-    {
-        [JsonIgnore]
-        public List<Field> AllFormFields
-        {
-            get
-            {
-                var fields = FieldConfig.AllIncludeFields;
-                var fieldSetFields = FieldSetConfig.AllIncludeFields;
-                var returnList = new List<Field>();
-
-                if (fields != null && fields.Count > 0)
-                {
-                    returnList.AddRange(fields);
-                }
-
-                if (fieldSetFields != null && fieldSetFields.Count > 0)
-                {
-                    returnList.AddRange(fieldSetFields);
-                }
-
-                return returnList;
-            }
-        }
-
-        public ICollection<IAdminConfig> ChildConfigs { get; }
-
-        public Type EntityType { get; }
-
-        [JsonIgnore]
-        public EntityConfig EntityConfig { get; }
-
-        public FieldConfig<TEntity> FieldConfig { get; }
-
-        public FieldSetConfig<TEntity> FieldSetConfig { get; }
-
-        [JsonIgnore]
-        public FieldConditions FieldConditions { get; }
-
-        public List<KeyField> KeyFields { get; }
-
-        public ListConfig<TEntity> ListConfig { get; }
-
-        public LookUpDictionary LookUps { get; }
-
-        IFieldConfig IAdminConfig.FieldConfig => FieldConfig;
-
-        IFieldSetConfig IAdminConfig.FieldSetConfig => FieldSetConfig;
-
-        IListConfig IAdminConfig.ListConfig => ListConfig;
-                
-
-        public AdminConfig()
-        {
-            ChildConfigs = new List<IAdminConfig>();
-            EntityType = typeof(TEntity);
-            EntityConfig = new EntityConfig();
-            FieldConfig = new FieldConfig<TEntity>();
-            FieldConditions = new FieldConditions();
-            FieldSetConfig = new FieldSetConfig<TEntity>();            
-            KeyFields = new List<KeyField>();
-            ListConfig = new ListConfig<TEntity>();
-            LookUps = new LookUpDictionary();
-        }
-
-        public void ShowOn(LambdaExpression fieldExpression, Expression<Func<TEntity, bool>> predicate)
-        {
-
-        }
     }
 
     public interface IFieldConfig
@@ -137,6 +113,59 @@ namespace Deviser.Admin
     public interface IListConfig
     {
         List<Field> Fields { get; }
+    }
+
+    public class FormConfig<TEntity> : IFormConfig
+        where TEntity : class
+    {
+        [JsonIgnore]
+        public List<Field> AllFormFields
+        {
+            get
+            {
+                var fields = FieldConfig.AllIncludeFields;
+                var fieldSetFields = FieldSetConfig.AllIncludeFields;
+                var returnList = new List<Field>();
+
+                if (fields != null && fields.Count > 0)
+                {
+                    returnList.AddRange(fields);
+                }
+
+                if (fieldSetFields != null && fieldSetFields.Count > 0)
+                {
+                    returnList.AddRange(fieldSetFields);
+                }
+
+                return returnList;
+            }
+        }
+
+        public FieldConfig<TEntity> FieldConfig { get; }
+
+        public FieldSetConfig<TEntity> FieldSetConfig { get; }
+
+        [JsonIgnore]
+        public FieldConditions FieldConditions { get; }
+
+        public List<KeyField> KeyFields { get; }
+
+        public ListConfig<TEntity> ListConfig { get; }
+
+        IFieldConfig IFormConfig.FieldConfig => FieldConfig;
+
+        IFieldSetConfig IFormConfig.FieldSetConfig => FieldSetConfig;
+
+        IListConfig IFormConfig.ListConfig => ListConfig;
+
+        public FormConfig()
+        {
+            FieldConfig = new FieldConfig<TEntity>();
+            FieldConditions = new FieldConditions();
+            FieldSetConfig = new FieldSetConfig<TEntity>();
+            KeyFields = new List<KeyField>();
+            ListConfig = new ListConfig<TEntity>();
+        }
     }
 
     public class FieldConfig<TEntity> : IFieldConfig

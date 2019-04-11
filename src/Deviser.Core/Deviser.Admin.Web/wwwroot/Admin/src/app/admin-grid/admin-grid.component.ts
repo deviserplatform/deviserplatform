@@ -17,7 +17,7 @@ import { RecordIdPipe } from '../common/pipes/record-id.pipe';
 })
 export class AdminGridComponent implements OnInit {
 
-  metaInfo: AdminConfig;
+  adminConfig: AdminConfig;
   entityRecords: any;
   pagination: Pagination;
 
@@ -29,14 +29,14 @@ export class AdminGridComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.getMetaInfo();
+    this.getAdminConfig();
     this.getAllRecords();
   }
 
 
-  getMetaInfo(): void {
-    this.adminService.getMetaInfo('Blog', 'Post')
-      .subscribe(metaInfo => this.metaInfo = metaInfo);
+  getAdminConfig(): void {
+    this.adminService.getAdminConfig('Blog', 'Post')
+      .subscribe(adminConfig => this.adminConfig = adminConfig);
   }
 
   getAllRecords(pagination: Pagination = null): void {
@@ -67,7 +67,7 @@ export class AdminGridComponent implements OnInit {
 
   onYesToDelete(item: any): void {
     console.log('confirm');
-    const itemId = this.recordIdPipe.transform(item, this.metaInfo.keyFields);
+    const itemId = this.recordIdPipe.transform(item, this.adminConfig.formConfig.keyFields);
     this.adminService.deleteRecord('Blog', 'Post', itemId)
       .subscribe(response => this.onDeleteResponse(response));
   }

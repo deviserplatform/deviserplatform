@@ -241,10 +241,10 @@ namespace Deviser.Admin.Data
                 var fieldPropInfo = ExpressionHelper.GetPropertyInfo(m2oField.FieldExpression);
                 var field = fieldPropInfo.GetValue(itemToAdd, null); //item.Category
                 var fieldType = fieldPropInfo.PropertyType;
-                var entityType = _dbContext.Model.FindEntityType(fieldType);
-                var entityPkeys = entityType.FindPrimaryKey();
+                var fieldEntityType = _dbContext.Model.FindEntityType(fieldType);
+                var fieldPK = fieldEntityType.FindPrimaryKey();
 
-                var pkPropInfo = entityPkeys.Properties.First().PropertyInfo;
+                var pkPropInfo = fieldPK.Properties.First().PropertyInfo; //Assuming the entity has only one primary key
                 var id = pkPropInfo.GetValue(field, null); //item.Category.Id
                                 
                 var targetPropInfo = ExpressionHelper.GetPropertyInfo(m2oField.FieldOption.ReleatedFields.First().FieldExpression);
@@ -373,7 +373,7 @@ namespace Deviser.Admin.Data
             var eType = typeof(TEntity);
             var adminConfig = GetAdminConfig(eType);
             //ManyToMany Includes
-            var m2mFields = adminConfig.AllFormFields.Where(predicate).ToList();
+            var m2mFields = adminConfig.FormConfig.AllFormFields.Where(predicate).ToList();
             return m2mFields;
         }
 

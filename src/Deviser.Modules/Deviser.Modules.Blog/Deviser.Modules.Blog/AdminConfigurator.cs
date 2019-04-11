@@ -63,7 +63,8 @@ namespace Deviser.Modules.Blog
 
                 form.AddChildConfig(s => s.PostTags, (childForm) =>
                   {
-                      childForm.FieldBuilder.AddField(s => s.Capacity);
+                      childForm.FieldBuilder.AddField(s => s.PostId);
+                      childForm.FieldBuilder.AddField(s => s.TagId);
                   });
 
                 //form.FieldSetBuilder
