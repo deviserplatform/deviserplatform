@@ -6,6 +6,8 @@
       <input type="hidden" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" readonly>
     </ng-container>
 
+
+
     <ng-container *ngSwitchCase="fieldType.Static">
       <label for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
       <input type="text" class="form-control" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"

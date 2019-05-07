@@ -61,10 +61,12 @@ namespace Deviser.Modules.Blog
                 //form.Property(s => s.Content)
                 //.ValidateOn(p => p.Title == "Test");
 
-                form.AddChildConfig(s => s.PostTags, (childForm) =>
+                form.AddChildConfig(s => s.Comments, (childForm) =>
                   {
-                      childForm.FieldBuilder.AddField(s => s.PostId);
-                      childForm.FieldBuilder.AddField(s => s.TagId);
+                      childForm.FieldBuilder
+                      .AddField(s => s.UserName)
+                      .AddField(s => s.Comment)
+                      .AddField(s => s.CreatedOn);
                   });
 
                 //form.FieldSetBuilder

@@ -24,6 +24,8 @@ import { FormatFieldPipe } from './common/pipes/format-field.pipe';
 import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
 import { ValidationErrorComponent } from './validation-error/validation-error.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { EntityFormComponent } from './entity-form/entity-form.component';
+import { ChildGridComponent } from './child-grid/child-grid.component';
 
 
 @NgModule({
@@ -36,7 +38,9 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     FormatFieldPipe,
     MessagesComponent,
     RecordIdPipe,
-    ValidationErrorComponent
+    ValidationErrorComponent,
+    EntityFormComponent,
+    ChildGridComponent
   ],
   imports: [
     AppRoutingModule,

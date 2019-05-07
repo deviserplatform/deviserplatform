@@ -1,0 +1,26 @@
+<div class="row" *ngIf="formConfig && formConfig.fieldConfig && formConfig.fieldConfig.fields">
+  <div class="col">
+
+    <ng-container *ngFor="let keyField of formConfig.keyFields">
+      <app-form-control [form]="form" [field]="keyField"></app-form-control>
+    </ng-container>
+
+    <div *ngFor="let fieldRow of formConfig.fieldConfig.fields" class="form-row">
+      <fieldset *ngFor="let field of fieldRow" class="form-group col" [disabled]="!isFieldEnabled(field)">
+          <ng-container *ngIf="isFieldShown(field)">
+              <app-form-control 
+              
+              [form]="form"
+              [field]="field"
+              [isShown]="isFieldShown(field)"
+              [isDisabled]="!isFieldEnabled(field)"
+              [isValidate]="isFieldValidate(field)"
+              
+              [lookUps]="lookUps"></app-form-control>
+          </ng-container>
+        <!-- <pre>{{field|json}}</pre> -->
+      </fieldset>
+    </div>
+
+  </div>
+</div>

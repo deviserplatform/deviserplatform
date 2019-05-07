@@ -1,44 +1,56 @@
 <div class="admin-container">
   <div class="admin-form">
-    <div *ngIf="adminConfig && adminConfig.formConfig && adminConfig.formConfig.fieldConfig && adminConfig.formConfig.fieldConfig.fields" class="card">
-      <div class="card-header">
-        <button class="btn btn-secondary" (click)="goBack()">
-          <i class="my-icon" aria-label="My icon" [inlineSVG]="'../../assets/icons/baseline-keyboard_arrow_left.svg'"></i>
-        </button> Blog Edit
-      </div>
+    <div *ngIf="adminConfig && adminConfig.formConfig" class="card">
       <form [formGroup]="adminForm" (ngSubmit)="onSubmit()">
+        <div class="card-header d-flex">
+          <div class="mr-auto p-2">
+            <button type="button" class="btn btn-secondary" (click)="goBack()">
+              <i class="my-icon" aria-label="My icon"
+                [inlineSVG]="'../../assets/icons/baseline-keyboard_arrow_left.svg'"></i>
+            </button>
+          </div>
+          <div class="p-2">            
+            <button class="btn btn-primary" type="submit" [disabled]="!adminForm.valid">
+                <i class="my-icon" aria-label="My icon" [inlineSVG]="'../../assets/icons/baseline-save.svg'"></i> Save
+            </button>
+          </div>
+        </div>
+
         <div class="card-body">
-          <div class="row">
-            <div class="col">
+          <app-entity-form [form]="adminForm" [formConfig]="adminConfig.formConfig" [lookUps]="adminConfig.lookUps">
+          </app-entity-form>
 
-              <ng-container *ngFor="let keyField of adminConfig.formConfig.keyFields">
-                <app-form-control [form]="adminForm" [field]="keyField"></app-form-control>
-              </ng-container>
+          <div class="card" *ngIf="adminConfig.childConfigs && adminConfig.childConfigs.length > 0">
+            <div class="card-header">
+              <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                <li class="nav-item" *ngFor="let childConfig of adminConfig.childConfigs">
+                  <a class="nav-link active" role="tab" aria-controls="home"
+                    [ngClass]="{'active':childConfig==selectedConfig}" (click)="selectTab(childConfig)"
+                    aria-selected="true">{{childConfig.field.fieldName}}</a>
+                </li>
+              </ul>
+            </div>
+            <div class="card-body">
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade" aria-labelledby="home-tab"
+                  [ngClass]="{'show active':childConfig==selectedConfig}"
+                  *ngFor="let childConfig of adminConfig.childConfigs">
+                  <!-- {{childConfig.field.fieldName}} -->
 
-              <div *ngFor="let fieldRow of adminConfig.formConfig.fieldConfig.fields" class="form-row">
-                <fieldset *ngFor="let field of fieldRow" class="form-group col" [disabled]="!isFieldEnabled(field)">
-                    <ng-container *ngIf="isFieldShown(field)">
-                        <app-form-control 
-                        
-                        [form]="adminForm"
-                        [field]="field"
-                        [isShown]="isFieldShown(field)"
-                        [isDisabled]="!isFieldEnabled(field)"
-                        [isValidate]="isFieldValidate(field)"
-                        
-                        [lookUps]="adminConfig.lookUps"></app-form-control>
-                    </ng-container>
-                  <!-- <pre>{{field|json}}</pre> -->
-                </fieldset>
+                  <app-child-grid [formControlName]="childConfig.field.fieldNameCamelCase" [parentForm]="adminForm"
+                    [formConfig]="childConfig.formConfig"></app-child-grid>
+
+                </div>
               </div>
-
             </div>
           </div>
         </div>
-        <div class="card-footer d-flex justify-content-end">
-          <button type="button" class="btn btn-secondary btn-cancel" (click)="goBack()" data-dismiss="modal">Cancel</button>
-          <button class="btn btn-primary" type="submit" [disabled]="!adminForm.valid">Submit</button>
-        </div>
+        <!-- <div class="card-footer d-flex justify-content-end">
+          <button type="button" class="btn btn-secondary btn-cancel" (click)="goBack()"
+            data-dismiss="modal">Cancel</button>
+
+          <button class="btn btn-primary" type="submit" [disabled]="!adminForm.valid">Save</button>
+        </div> -->
       </form>
     </div>
   </div>

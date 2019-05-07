@@ -61,10 +61,10 @@ namespace Deviser.ClientDependency
             {
                 output.TagName = null;
                 var dependencyLoader = DependencyManager.GetLoader(_httpContextAccessor.HttpContext);
-                var fileVersionProvider = new FileVersionProvider(
-                    _hostingEnvironment.WebRootFileProvider,
-                    _cache,
-                    ViewContext.HttpContext.Request.PathBase);
+                //var fileVersionProvider = new FileVersionProvider(
+                //    _hostingEnvironment.WebRootFileProvider,
+                //    _cache,
+                //    ViewContext.HttpContext.Request.PathBase);
                 //var sb = new StringBuilder();
                 var dependencyFiles = dependencyLoader.DependencyFiles
                        .Where(df => df.DependencyType == DependencyType)

@@ -100,17 +100,34 @@ namespace Deviser.Admin.Config
 
             AdminConfigs.Add(entityClrType, adminConfig);
 
+            BuildForm(adminConfig.FormConfig, adminConfig.EntityConfig, hasConfiguration, entityClrType, entityType);
+
+            if (adminConfig.ChildConfigs != null && adminConfig.ChildConfigs.Count > 0)
+            {
+                foreach(var childConfig in adminConfig.ChildConfigs)
+                {
+                    var childCrlType = childConfig.Field.FieldClrType;
+                    var childEntityType = _dbContext.Model.FindEntityType(childCrlType);
+                    BuildForm(childConfig.FormConfig, childConfig.EntityConfig, hasConfiguration, childCrlType, childEntityType);
+                }
+            }
+
+            LoadMasterData(adminConfig);
+        }
+
+        private void BuildForm(IFormConfig formConfig, EntityConfig entityConfig, bool hasConfiguration, Type entityClrType, IEntityType entityType)
+        {
             if (!hasConfiguration)
             {
                 //Register by default settings and fields
-                PopulateFields(entityClrType, entityType, adminConfig);
+                PopulateFields(entityClrType, entityType, formConfig);
             }
 
-            PopulateEntityConfig(entityType, adminConfig);
+            PopulateEntityConfig(entityType, entityConfig);
 
             //Adding primary keys to KeyField
-            var pk = adminConfig.EntityConfig.PrimaryKey;
-            if(pk!=null && pk.Properties!=null && pk.Properties.Count > 0)
+            var pk = entityConfig.PrimaryKey;
+            if (pk != null && pk.Properties != null && pk.Properties.Count > 0)
             {
                 foreach (var prop in pk.Properties)
                 {
@@ -119,12 +136,12 @@ namespace Deviser.Admin.Config
                         FieldExpression = GetFieldExpression(entityClrType, prop),
                         KeyFieldType = KeyFieldType.PrimaryKey
                     };
-                    adminConfig.FormConfig.KeyFields.Add(field);
+                    formConfig.KeyFields.Add(field);
                 }
             }
-            
 
-            var fk = adminConfig.EntityConfig.PrimaryKey;
+
+            var fk = entityConfig.PrimaryKey;
             if (fk != null && fk.Properties != null && fk.Properties.Count > 0)
             {
                 foreach (var prop in fk.Properties)
@@ -134,23 +151,23 @@ namespace Deviser.Admin.Config
                         FieldExpression = GetFieldExpression(entityClrType, prop),
                         KeyFieldType = KeyFieldType.ForeignKey
                     };
-                    adminConfig.FormConfig.KeyFields.Add(field);
-                } 
+                    formConfig.KeyFields.Add(field);
+                }
             }
 
-            bool hasExlcludeFields = adminConfig?.FormConfig?.FieldConfig?.ExcludedFields?.Count > 0;
-            bool hasListFields = adminConfig?.FormConfig?.ListConfig.Fields.Count > 0;
+            bool hasExlcludeFields = formConfig?.FieldConfig?.ExcludedFields?.Count > 0;
+            bool hasListFields = formConfig?.ListConfig.Fields.Count > 0;
 
 
             if (hasExlcludeFields)
             {
-                PopulateFields(entityClrType, entityType, adminConfig, adminConfig.FormConfig.FieldConfig.ExcludedFields);
+                PopulateFields(entityClrType, entityType, formConfig, formConfig.FieldConfig.ExcludedFields);
             }
 
-            var fields = adminConfig.FormConfig.AllFormFields;
+            var fields = formConfig.AllFormFields;
             foreach (var field in fields)
             {
-                PopulateFieldOptions(field, entityType, adminConfig.FormConfig.FieldConditions, adminConfig.EntityConfig);
+                PopulateFieldOptions(field, entityType, formConfig.FieldConditions, entityConfig);
             }
 
             //else if (adminConfig?.FieldConfig?.Fields?.Count > 0)
@@ -179,29 +196,27 @@ namespace Deviser.Admin.Config
 
             if (hasListFields)
             {
-                foreach (var field in adminConfig.FormConfig.ListConfig.Fields)
+                foreach (var field in formConfig.ListConfig.Fields)
                 {
-                    PopulateFieldOptions(field, entityType, adminConfig.FormConfig.FieldConditions, adminConfig.EntityConfig);
+                    PopulateFieldOptions(field, entityType, formConfig.FieldConditions, entityConfig);
                 }
             }
             else
             {
                 var properties = GetProperties(entityType);
                 foreach (var prop in properties)
-                {                    
+                {
                     var field = new Field
                     {
                         FieldExpression = GetFieldExpression(entityClrType, prop)
                     };
-                    PopulateFieldOptions(field, entityType, adminConfig.FormConfig.FieldConditions, adminConfig.EntityConfig);
-                    adminConfig.FormConfig.ListConfig.Fields.Add(field);
+                    PopulateFieldOptions(field, entityType, formConfig.FieldConditions, entityConfig);
+                    formConfig.ListConfig.Fields.Add(field);
                 }
             }
-
-            LoadMasterData(adminConfig);
         }
 
-        private void PopulateFields<TEntity>(Type entityClrType, IEntityType entityType, AdminConfig<TEntity> adminConfig, List<Field> excludeField = null) where TEntity : class
+        private void PopulateFields(Type entityClrType, IEntityType entityType, IFormConfig formConfig, List<Field> excludeField = null)
         {
 
             var properties = GetProperties(entityType);
@@ -211,7 +226,7 @@ namespace Deviser.Admin.Config
 
                 if (!isExclude)
                 {
-                    adminConfig.FormConfig.FieldConfig.AddField(new Field
+                    formConfig.FieldConfig.AddField(new Field
                     {
                         FieldExpression = GetFieldExpression(entityClrType, prop)
                     });
@@ -223,7 +238,7 @@ namespace Deviser.Admin.Config
         {
             return entityType
                 .GetProperties()
-                .Where(p=> !p.IsForeignKey() && !p.IsPrimaryKey()) //Get only non key fields!
+                .Where(p => !p.IsForeignKey() && !p.IsPrimaryKey()) //Get only non key fields!
                 .OrderBy(p => GetOrder(p))
                 .ToList();
         }
@@ -250,12 +265,12 @@ namespace Deviser.Admin.Config
             return fieldExpression;
         }
 
-        private void PopulateEntityConfig<TEntity>(IEntityType entityType, AdminConfig<TEntity> adminConfig) where TEntity : class
+        private void PopulateEntityConfig(IEntityType entityType, EntityConfig entityConfig)
         {
-            adminConfig.EntityConfig.DbContextType = _dbContextType;
-            adminConfig.EntityConfig.PrimaryKey = entityType.FindPrimaryKey();
-            adminConfig.EntityConfig.ForeignKeys = entityType.GetForeignKeys();
-            adminConfig.EntityConfig.Navigations = entityType.GetNavigations();
+            entityConfig.DbContextType = _dbContextType;
+            entityConfig.PrimaryKey = entityType.FindPrimaryKey();
+            entityConfig.ForeignKeys = entityType.GetForeignKeys();
+            entityConfig.Navigations = entityType.GetNavigations();
         }
 
         private void PopulateFieldOptions(Field field, IEntityType entityType, FieldConditions fieldConditions, EntityConfig entityConfig)
@@ -562,7 +577,7 @@ namespace Deviser.Admin.Config
 
                 releatedField.Add(new ReleatedField
                 {
-                    IsParentField  = entityType == pKDecType,
+                    IsParentField = entityType == pKDecType,
                     FieldExpression = fKeyExpr,
                     SourceFieldExpression = principalExpr
                 });

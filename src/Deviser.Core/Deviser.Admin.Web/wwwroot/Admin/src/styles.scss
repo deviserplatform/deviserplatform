@@ -80,11 +80,9 @@ $white: #ffffff;
         }
     }
 
-    .admin-form{
-        .card-footer{
-            .btn-cancel{
-                margin-right: 1rem;
-            }
+    .admin-form{        
+        .btn-cancel{
+            margin-right: 1rem;
         }
         .invalid-feedback{
             display: block;

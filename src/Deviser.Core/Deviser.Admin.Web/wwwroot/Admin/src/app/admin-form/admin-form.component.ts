@@ -9,6 +9,7 @@ import { AdminConfig } from '../common/domain-types/admin-config';
 import { FormControlService } from '../common/services/form-control.service';
 import { FormMode } from '../common/domain-types/form-mode';
 import { Field } from '../common/domain-types/field';
+import { ChildConfig } from '../common/domain-types/child-config';
 
 @Component({
   selector: 'app-admin-form',
@@ -21,6 +22,7 @@ export class AdminFormComponent implements OnInit {
   record: any;
   adminForm: FormGroup;
   formMode: FormMode;
+  selectedConfig: ChildConfig;
 
   constructor(private route: ActivatedRoute,
     private adminService: AdminService,
@@ -55,6 +57,7 @@ export class AdminFormComponent implements OnInit {
 
   onGetAdminConfig(adminConfig: AdminConfig): void {
     this.adminConfig = adminConfig;
+    this.selectedConfig = this.adminConfig.childConfigs[0];
     this.adminForm = this.formControlService.toFormGroup(adminConfig, this.record);
   }
 
@@ -76,29 +79,14 @@ export class AdminFormComponent implements OnInit {
     this.goBack();
   }
 
-  isFieldShown(field: Field) {
-    let result = this.getFieldPredicate(field, 'showOn');
-    return result;
+  getChildForm(childFieldName: string): FormGroup {
+    let childFormObj = this.adminForm.controls[childFieldName].value;
+    let childForm: FormGroup = this.fb.group(childFormObj);
+    return childForm;
   }
 
-  isFieldEnabled(field: Field) {
-    let result = this.getFieldPredicate(field, 'enableOn');
-    return result;
-  }
-
-  isFieldValidate(field: Field) {
-    let result = this.getFieldPredicate(field, 'validateOn');
-    return result;
-  }
-
-  getFieldPredicate(field: Field, action: string) {
-    if (field && field.fieldOption && field.fieldOption[action]) {
-      let fieldExpression = field.fieldOption[action];
-      let predicate = Function(...fieldExpression.parameters, fieldExpression.expression);
-      let result = predicate(this.adminForm.value);
-      return result;
-    }
-    return true;
+  selectTab(config) {
+    this.selectedConfig = config;
   }
 
   goBack(): void {

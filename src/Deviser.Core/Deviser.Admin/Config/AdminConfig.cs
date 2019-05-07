@@ -1,16 +1,11 @@
 ﻿using Deviser.Admin.Config;
 using Deviser.Core.Common.DomainTypes.Admin;
-using Deviser.Core.Common.Extensions;
 using Deviser.Core.Common.Json;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Deviser.Admin
 {
@@ -32,7 +27,7 @@ namespace Deviser.Admin
     public class AdminConfig<TEntity> : IAdminConfig
         where TEntity : class
     {
-        
+
         public ICollection<IChildConfig> ChildConfigs { get; }
 
         public Type EntityType { get; }
@@ -61,15 +56,25 @@ namespace Deviser.Admin
 
     public interface IChildConfig
     {
+        [JsonIgnore]
+        EntityConfig EntityConfig { get; }
         Field Field { get; }
         IFormConfig FormConfig { get; }
     }
 
-    public class ChildConfig: IChildConfig
+    public class ChildConfig : IChildConfig
     {
+        [JsonIgnore]
+        public EntityConfig EntityConfig { get; }
+
         public Field Field { get; set; }
 
         public IFormConfig FormConfig { get; set; }
+
+        public ChildConfig()
+        {
+            EntityConfig = new EntityConfig();
+        }
     }
 
     public interface IFormConfig
@@ -222,7 +227,7 @@ namespace Deviser.Admin
         }
 
         public void RemoveField(Field field)
-        {            
+        {
             ExcludedFields.Add(field);
         }
     }
@@ -250,9 +255,9 @@ namespace Deviser.Admin
 
         public void AddFieldSet(FieldSet fieldSet)
         {
-            foreach(var fieldRow in fieldSet.Fields)
+            foreach (var fieldRow in fieldSet.Fields)
             {
-                foreach(var field in fieldRow)
+                foreach (var field in fieldRow)
                 {
                     AddToDictionary(field);
                 }

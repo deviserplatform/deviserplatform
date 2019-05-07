@@ -43,6 +43,8 @@ namespace Deviser.Admin.Data
         private readonly IAdminSite _adminSite;
         private readonly Type _adminConfiguratorType;
         private readonly IAdminSiteProvider _adminSiteProvider;
+        JsonSerializer _serializer = new JsonSerializer();
+
 
 
         public AdminRepository(IServiceProvider serviceProvider)
@@ -53,6 +55,7 @@ namespace Deviser.Admin.Data
             _adminConfiguratorType = typeof(TAdminConfigurator);
             _adminSite = _adminSiteProvider.GetAdminConfig(_adminConfiguratorType);
             _dbContext = (DbContext)serviceProvider.GetService(_adminSite.DbContextType);
+            _serializer.Converters.Add(new Core.Common.Json.GuidConverter());
 
             if (_adminSite == null)
                 throw new InvalidOperationException($"Admin site is not found for type {_adminConfiguratorType}");
@@ -222,6 +225,35 @@ namespace Deviser.Admin.Data
                 query = query.Include(m2oField.FieldName);
             }
 
+            //Child Includes
+            var eType = typeof(TEntity);
+            var adminConfig = GetAdminConfig(eType);
+
+            //var childFields = GetChildEntityFields<TEntity>();
+            foreach (var childConfig in adminConfig.ChildConfigs)
+            {
+                var childFieldName = childConfig.Field.FieldName;//$"{m2mField.FieldName}.{m2mField.FieldOption.ReleatedEntityType.Name}";
+
+                var cM2mFields = childConfig.FormConfig.AllFormFields.Where(f => f.FieldOption.RelationType == RelationType.ManyToMany).ToList();
+                var cM2oFields = childConfig.FormConfig.AllFormFields.Where(f => f.FieldOption.RelationType == RelationType.ManyToOne).ToList();
+
+                query = query.Include(childFieldName);
+
+                //Child ManyToMany Includes
+                foreach (var m2mField in cM2mFields)
+                {
+                    var includeString = $"{childFieldName}.{m2mField.FieldName}.{m2mField.FieldOption.ReleatedEntityType.Name}";
+                    query = query.Include(includeString);
+                }
+
+                //Child OneToMany Includes                
+                foreach (var m2oField in cM2oFields)
+                {
+                    var includeString = $"{childFieldName}.{m2oField.FieldName}";
+                    query = query.Include(includeString);
+                }
+            }
+
             return query;
         }
 
@@ -230,10 +262,7 @@ namespace Deviser.Admin.Data
         {
             var eType = typeof(TEntity);
 
-            JsonSerializer serializer = new JsonSerializer();
-            serializer.Converters.Add(new Core.Common.Json.GuidConverter());
-
-            TEntity itemToAdd = ((JObject)item).ToObject<TEntity>(serializer);
+            TEntity itemToAdd = ((JObject)item).ToObject<TEntity>(_serializer);
 
             var m2ofields = GetManyToOneFields<TEntity>();
             foreach (var m2oField in m2ofields)
@@ -246,15 +275,12 @@ namespace Deviser.Admin.Data
 
                 var pkPropInfo = fieldPK.Properties.First().PropertyInfo; //Assuming the entity has only one primary key
                 var id = pkPropInfo.GetValue(field, null); //item.Category.Id
-                                
+
                 var targetPropInfo = ExpressionHelper.GetPropertyInfo(m2oField.FieldOption.ReleatedFields.First().FieldExpression);
 
                 targetPropInfo.SetValue(itemToAdd, id, null); //item.CategoryId = item.Category.Id
 
                 fieldPropInfo.SetValue(itemToAdd, null, null); //item.Category = null;
-
-                //TODO: item.CategoryId = item.Category.Id
-                //TODO: item.Category = null;
             }
 
             var dbSet = _dbContext.Set<TEntity>();
@@ -267,31 +293,55 @@ namespace Deviser.Admin.Data
             where TEntity : class
         {
             var eType = typeof(TEntity);
-            TEntity itemToUpdate = ((JObject)item).ToObject<TEntity>();
+            TEntity itemToUpdate = ((JObject)item).ToObject<TEntity>(_serializer);
             var dbSet = _dbContext.Set<TEntity>();
 
+            List<GraphConfig> graphConfigs = new List<GraphConfig>();
+
             var navigationFields = GetFieldsFor<TEntity>(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne);
+            if (navigationFields != null && navigationFields.Count > 0)
+            {
+                var releatedGraphConfigs = GetGraphConfigsForReleation(navigationFields);
+                graphConfigs.AddRange(releatedGraphConfigs);
+            }
 
-            var graphConfigs = GetGraphConfigs(navigationFields);
 
-            var queryableData = _dbContext.UpdateGraph(itemToUpdate, graphConfigs);//dbSet.Update(itemToAdd);
+            var childConfigFields = GetChildEntityFields<TEntity>();
+            if (childConfigFields != null && childConfigFields.Count > 0)
+            {
+                var childGraphConfigs = GetGraphConfigsForChildEntities(childConfigFields);
+                graphConfigs.AddRange(childGraphConfigs);
+                //TODO: include releated graph configs for each childConfigField. This needs changes in Deviser.Detached as well
+            }
+
+            if (graphConfigs.Count > 0)
+            {
+                //entity have releations and/or child configs
+                var queryableData = _dbContext.UpdateGraph(itemToUpdate, graphConfigs);
+            }
+            else
+            {
+                //entity does not have any releations and/or child configs
+                dbSet.Update(itemToUpdate);
+            }
+
             _dbContext.SaveChanges();
             return itemToUpdate;
 
         }
 
-        private List<GraphConfig> GetGraphConfigs(List<Field> fields)
+        private List<GraphConfig> GetGraphConfigsForReleation(IEnumerable<Field> fields)
         {
             var graphConfig = new List<GraphConfig>();
             foreach (var field in fields)
-            {   
+            {
                 if (field.FieldExpression.Body.Type.IsCollectionType())
                 {
                     bool isManyToMany = field.FieldOption.RelationType == RelationType.ManyToMany;
                     graphConfig.Add(new GraphConfig
                     {
                         FieldExpression = field.FieldExpression.Body as MemberExpression,
-                        GraphConfigType = isManyToMany? GraphConfigType.OwnedCollection : GraphConfigType.AssociatedCollection
+                        GraphConfigType = isManyToMany ? GraphConfigType.OwnedCollection : GraphConfigType.AssociatedCollection
                     });
                 }
                 else
@@ -300,6 +350,31 @@ namespace Deviser.Admin.Data
                     {
                         FieldExpression = field.FieldExpression.Body as MemberExpression,
                         GraphConfigType = GraphConfigType.AssociatedEntity
+                    });
+                }
+            }
+            return graphConfig;
+        }
+
+        private List<GraphConfig> GetGraphConfigsForChildEntities(IEnumerable<Field> fields)
+        {
+            var graphConfig = new List<GraphConfig>();
+            foreach (var field in fields)
+            {
+                if (field.FieldExpression.Body.Type.IsCollectionType())
+                {
+                    graphConfig.Add(new GraphConfig
+                    {
+                        FieldExpression = field.FieldExpression.Body as MemberExpression,
+                        GraphConfigType = GraphConfigType.OwnedCollection
+                    });
+                }
+                else
+                {
+                    graphConfig.Add(new GraphConfig
+                    {
+                        FieldExpression = field.FieldExpression.Body as MemberExpression,
+                        GraphConfigType = GraphConfigType.OwnedEntity
                     });
                 }
             }
@@ -374,6 +449,15 @@ namespace Deviser.Admin.Data
             var adminConfig = GetAdminConfig(eType);
             //ManyToMany Includes
             var m2mFields = adminConfig.FormConfig.AllFormFields.Where(predicate).ToList();
+            return m2mFields;
+        }
+
+        private List<Field> GetChildEntityFields<TEntity>() where TEntity : class
+        {
+            var eType = typeof(TEntity);
+            var adminConfig = GetAdminConfig(eType);
+            //ManyToMany Includes
+            var m2mFields = adminConfig.ChildConfigs.Select(cc => cc.Field).ToList();
             return m2mFields;
         }
 

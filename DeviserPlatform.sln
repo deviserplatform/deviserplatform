@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{91BD4D35-CFF1-48D1-BAF6-BA0E3FB96B3B}"
 EndProject
@@ -63,7 +63,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{3977
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Admin.ConfiguratorTest", "samples\Deviser.Admin.ConfiguratorTest\Deviser.Admin.ConfiguratorTest.csproj", "{2C6E715B-E85A-4E0C-902F-F2FAF28B8EC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deviser.Detached", "src\Deviser.Core\Deviser.Detached\Deviser.Detached.csproj", "{55707AAA-C0D8-41F5-919B-760FA99C0CD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Detached", "src\Deviser.Core\Deviser.Detached\Deviser.Detached.csproj", "{55707AAA-C0D8-41F5-919B-760FA99C0CD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
