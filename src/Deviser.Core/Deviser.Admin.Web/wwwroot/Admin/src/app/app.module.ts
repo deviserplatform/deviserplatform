@@ -5,13 +5,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
-
-import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { AlertModule } from 'ngx-bootstrap/alert';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgSelectModule } from '@ng-select/ng-select';
-
+import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -27,6 +26,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { EntityFormComponent } from './entity-form/entity-form.component';
 import { ChildGridComponent } from './child-grid/child-grid.component';
 import { CheckboxListComponent } from './common/components/checkbox-list/checkbox-list.component';
+import { AdminAlertComponent } from './common/components/admin-alert/admin-alert.component';
 
 
 @NgModule({
@@ -42,9 +42,11 @@ import { CheckboxListComponent } from './common/components/checkbox-list/checkbo
     ValidationErrorComponent,
     EntityFormComponent,
     ChildGridComponent,
-    CheckboxListComponent
+    CheckboxListComponent,
+    AdminAlertComponent
   ],
   imports: [
+    AlertModule.forRoot(),
     AppRoutingModule,
     BrowserModule,
     BsDatepickerModule.forRoot(),

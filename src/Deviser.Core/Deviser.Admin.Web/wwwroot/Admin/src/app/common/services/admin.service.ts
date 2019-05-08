@@ -49,7 +49,7 @@ export class AdminService {
     return this.http.get<any>(serviceUrl, { params: params })
       .pipe(
         tap(_ => this.log('fetched all records')),
-        catchError(this.handleError('getAllRecords', []))
+        catchError(this.handleError('getAllRecords', null))
       );
   }
 
@@ -59,7 +59,7 @@ export class AdminService {
     return this.http.get<any>(serviceUrl)
       .pipe(
         tap(_ => this.log(`fetched a record for id: ${id}`)),
-        catchError(this.handleError('getAllRecords', []))
+        catchError(this.handleError('getAllRecords', null))
       );
   }
 
@@ -68,7 +68,7 @@ export class AdminService {
     return this.http.post<any>(serviceUrl, record, this.httpOptions)
     .pipe(
       tap(_ => this.log('created a record')),
-      catchError(this.handleError('createRecord', []))
+      catchError(this.handleError('createRecord', null))
     );
   }
 
@@ -77,7 +77,7 @@ export class AdminService {
     return this.http.put<any>(serviceUrl, record, this.httpOptions)
     .pipe(
       tap(_ => this.log('updated a record')),
-      catchError(this.handleError('updateRecord', []))
+      catchError(this.handleError('updateRecord', null))
     );
   }
 
@@ -87,7 +87,7 @@ export class AdminService {
     return this.http.delete<any>(serviceUrl)
       .pipe(
         tap(_ => this.log(`deleted a record id:${id}`)),
-        catchError(this.handleError('deleteRecord', []))
+        catchError(this.handleError('deleteRecord', null))
       );
   }
 

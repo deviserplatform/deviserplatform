@@ -9,14 +9,16 @@
                 [inlineSVG]="'../../assets/icons/baseline-keyboard_arrow_left.svg'"></i>
             </button>
           </div>
-          <div class="p-2">            
+          <div class="p-2">
             <button class="btn btn-primary" type="submit" [disabled]="!adminForm.valid">
-                <i class="my-icon" aria-label="My icon" [inlineSVG]="'../../assets/icons/baseline-save.svg'"></i> Save
+              <i class="my-icon" aria-label="My icon" [inlineSVG]="'../../assets/icons/baseline-save.svg'"></i> Save
             </button>
           </div>
         </div>
 
         <div class="card-body">
+          <app-admin-alert class="admin-alerts" [alerts]="alerts"></app-admin-alert>
+          
           <app-entity-form [form]="adminForm" [formConfig]="adminConfig.formConfig" [lookUps]="adminConfig.lookUps">
           </app-entity-form>
 
@@ -54,4 +56,5 @@
       </form>
     </div>
   </div>
+
 </div>

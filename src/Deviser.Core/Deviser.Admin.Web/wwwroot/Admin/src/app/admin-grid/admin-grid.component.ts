@@ -8,6 +8,7 @@ import { AdminConfig } from '../common/domain-types/admin-config';
 import { Pagination } from '../common/domain-types/pagination';
 import { ConfirmDialogComponent } from '../common/components/confirm-dialog/confirm-dialog.component';
 import { RecordIdPipe } from '../common/pipes/record-id.pipe';
+import { Alert, AlertType } from '../common/domain-types/alert';
 
 
 @Component({
@@ -18,6 +19,7 @@ import { RecordIdPipe } from '../common/pipes/record-id.pipe';
 export class AdminGridComponent implements OnInit {
 
   adminConfig: AdminConfig;
+  alerts: Alert[];
   entityRecords: any;
   pagination: Pagination;
 
@@ -26,7 +28,9 @@ export class AdminGridComponent implements OnInit {
 
   constructor(private adminService: AdminService,
     private recordIdPipe: RecordIdPipe,
-    private router: Router) { }
+    private router: Router) { 
+      this.alerts = [];
+    }
 
   ngOnInit() {
     this.getAdminConfig();
@@ -73,8 +77,19 @@ export class AdminGridComponent implements OnInit {
   }
 
   onDeleteResponse(response: any): void {
-    console.log(response);
-    this.getAllRecords(this.pagination);
+    if(response){
+      console.log(response);
+      this.getAllRecords(this.pagination);
+    }
+    else{
+      let alert: Alert = {
+        alterType: AlertType.Error,
+        message: "Unable to delete this item, please contact administrator",
+        timeout: 5000
+      }
+      this.alerts.push(alert);
+    }
+    
   }
 
   onNoToDelete(item: any): void {

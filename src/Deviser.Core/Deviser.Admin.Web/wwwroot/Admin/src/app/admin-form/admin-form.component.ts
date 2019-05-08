@@ -10,6 +10,7 @@ import { FormControlService } from '../common/services/form-control.service';
 import { FormMode } from '../common/domain-types/form-mode';
 import { Field } from '../common/domain-types/field';
 import { ChildConfig } from '../common/domain-types/child-config';
+import { Alert, AlertType } from '../common/domain-types/alert';
 
 @Component({
   selector: 'app-admin-form',
@@ -19,16 +20,20 @@ import { ChildConfig } from '../common/domain-types/child-config';
 export class AdminFormComponent implements OnInit {
 
   adminConfig: AdminConfig;
+  alerts: Alert[];
   record: any;
   adminForm: FormGroup;
   formMode: FormMode;
   selectedConfig: ChildConfig;
 
+
   constructor(private route: ActivatedRoute,
     private adminService: AdminService,
     private formControlService: FormControlService,
     private fb: FormBuilder,
-    private location: Location) { }
+    private location: Location) {
+    this.alerts = [];
+  }
 
   ngOnInit() {
     // this.getAdminConfig();
@@ -56,9 +61,11 @@ export class AdminFormComponent implements OnInit {
   }
 
   onGetAdminConfig(adminConfig: AdminConfig): void {
-    this.adminConfig = adminConfig;
-    this.selectedConfig = this.adminConfig.childConfigs[0];    
-    this.adminForm = this.formControlService.toFormGroup(adminConfig, this.record);
+    if (adminConfig) {
+      this.adminConfig = adminConfig;
+      this.selectedConfig = this.adminConfig.childConfigs[0];
+      this.adminForm = this.formControlService.toFormGroup(adminConfig, this.record);
+    }
   }
 
   onSubmit(): void {
@@ -75,8 +82,19 @@ export class AdminFormComponent implements OnInit {
   }
 
   patchFormValue(formValue: any): void {
-    this.adminForm.patchValue(formValue);
-    this.goBack();
+    if (formValue) {
+      this.adminForm.patchValue(formValue);
+      this.goBack();
+    }
+    else {
+      let alert: Alert = {
+        alterType: AlertType.Error,
+        message: "Unable to update/save this item, please contact administrator",
+        timeout: 5000
+      }
+      this.alerts.push(alert);
+    }
+
   }
 
   getChildForm(childFieldName: string): FormGroup {
