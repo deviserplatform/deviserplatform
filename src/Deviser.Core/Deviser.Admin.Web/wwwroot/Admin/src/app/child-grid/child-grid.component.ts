@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors, Validator } from "@angular/forms";
 
 import { FormConfig } from '../common/domain-types/form-config';
@@ -6,6 +6,7 @@ import { Field } from '../common/domain-types/field';
 import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { FormControlService } from '../common/services/form-control.service';
+import { ConfirmDialogComponent } from '../common/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-child-grid',
@@ -31,6 +32,9 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
   @Input() formConfig: FormConfig;
   @Input() lookUps: LookUpDictionary;
   ViewState: typeof ViewState = ViewState;
+
+  @ViewChild(ConfirmDialogComponent)
+  private confirmDialogComponent: ConfirmDialogComponent;
 
   childForm: FormGroup;
   childRecords: [any];
@@ -84,6 +88,20 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
     let index = this.childRecords.indexOf(this.selectedItem);
     this.childRecords[index] = this.childForm.value;
     this.viewState = ViewState.LIST;
+  }
+
+  openDeleteConfirmationModal(item: any) {
+    this.confirmDialogComponent.openModal(item);
+  }
+
+  onYesToDelete(item: any): void {
+    console.log('confirm');
+    let index = this.childRecords.indexOf(this.selectedItem);
+    this.childRecords.splice(index, 1);
+  }
+
+  onNoToDelete(item: any): void {
+    console.log('declined');
   }
 
   writeValue(obj: [any]): void {

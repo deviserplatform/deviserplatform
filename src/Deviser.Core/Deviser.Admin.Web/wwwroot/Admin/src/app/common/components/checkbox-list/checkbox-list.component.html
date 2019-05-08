@@ -1,0 +1,7 @@
+<ng-container [formGroup]="internalForm">
+  <div formArrayName="checklist" class="custom-control custom-checkbox"
+    *ngFor="let item of internalForm.controls.checklist.controls; let i = index">
+    <input [id]="'item'+i" type="checkbox" class="custom-control-input" [formControlName]="i">
+    <label class="custom-control-label" *ngIf="items[i]" [for]="'item'+i">{{items[i][bindLabel]}}</label>
+  </div>
+</ng-container>

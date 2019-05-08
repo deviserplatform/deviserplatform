@@ -4,6 +4,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, Form
 import { FormConfig } from '../common/domain-types/form-config';
 import { Field } from '../common/domain-types/field';
 import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
+import { FieldType } from '../common/domain-types/field-type';
 
 @Component({
   selector: 'app-entity-form',
@@ -27,6 +28,8 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   @Input() formConfig: FormConfig;
   @Input() lookUps: LookUpDictionary;
 
+  //To access FieldType enum
+  fieldType = FieldType;
   childRecords: any;
 
   constructor() { }

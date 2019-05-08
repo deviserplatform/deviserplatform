@@ -48,12 +48,16 @@
     <div class="col">
       <app-entity-form [form]="childForm" [formConfig]="formConfig" [lookUps]="lookUps">
       </app-entity-form>
-    <span>Child form goes here...</span>
     </div>
   </div>
   <div class="d-flex justify-content-end">
     <button type="button" class="btn btn-secondary btn-cancel" (click)="onCancelItem()">Cancel</button>
-    <button type="button" class="btn btn-primary" *ngIf="viewState == ViewState.ADD" [disabled]="!childForm.valid" (click)="onAddItem()">Add</button>
-    <button type="button" class="btn btn-primary" *ngIf="viewState == ViewState.EDIT" [disabled]="!childForm.valid" (click)="onUpdateItem()">Update</button>
+    <button type="button" class="btn btn-primary" *ngIf="viewState == ViewState.ADD" [disabled]="!childForm.valid"
+      (click)="onAddItem()">Add</button>
+    <button type="button" class="btn btn-primary" *ngIf="viewState == ViewState.EDIT" [disabled]="!childForm.valid"
+      (click)="onUpdateItem()">Update</button>
   </div>
 </div>
+
+<app-confirm-dialog [title]="'Confirmation'" [content]="'Are you sure to delete this item?'" [btnConfirmText]="'Yes'"
+  [btnCancelText]="'No'" (confirm)="onYesToDelete($event)" (cancel)="onNoToDelete($event)"></app-confirm-dialog>

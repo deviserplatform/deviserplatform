@@ -57,7 +57,7 @@ export class AdminFormComponent implements OnInit {
 
   onGetAdminConfig(adminConfig: AdminConfig): void {
     this.adminConfig = adminConfig;
-    this.selectedConfig = this.adminConfig.childConfigs[0];
+    this.selectedConfig = this.adminConfig.childConfigs[0];    
     this.adminForm = this.formControlService.toFormGroup(adminConfig, this.record);
   }
 

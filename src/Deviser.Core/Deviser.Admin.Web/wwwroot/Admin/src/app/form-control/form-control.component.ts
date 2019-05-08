@@ -44,7 +44,7 @@ export class FormControlComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.parseControlValue()
+    this.parseControlValue();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -77,6 +77,7 @@ export class FormControlComponent implements OnInit {
       let controlVal = formVal[this.field.fieldNameCamelCase];
       let pkFields: ReleatedField[] = [];
       let fkFields: ReleatedField[] = [];
+      let selectedItems: any[] = [];
 
       pkFields = this.field.fieldOption.releatedFields.filter(rf => rf.isParentField);
       fkFields = this.field.fieldOption.releatedFields.filter(rf => !rf.isParentField);
@@ -113,9 +114,13 @@ export class FormControlComponent implements OnInit {
             }
             return false; // propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.principalFieldNameCamelCase]
           });
-
-          item.displayName = masterItem.displayName
+          selectedItems.push(masterItem);
+          // item.displayName = masterItem.displayName; //Not required, since selected items are patched directly
         });
+
+        let patchVal: any = {};
+        patchVal[this.field.fieldNameCamelCase] = selectedItems;
+        this.form.patchValue(patchVal);
       }
 
     }
@@ -152,12 +157,11 @@ export class FormControlComponent implements OnInit {
         return false; // propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.principalFieldNameCamelCase]
       });
 
-      controlVal.displayName = masterItem.displayName
-
+      //controlVal.displayName = masterItem.displayName; //Not required, since selected item is patched directly
+      let patchVal: any = {};
+      patchVal[this.field.fieldNameCamelCase] = masterItem;
+      this.form.patchValue(patchVal);
     }
-
-
-
   }
 
   get lookUpData() {

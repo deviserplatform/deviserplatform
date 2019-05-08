@@ -66,7 +66,8 @@ namespace Deviser.Modules.Blog
                       childForm.FieldBuilder
                       .AddField(s => s.UserName)
                       .AddField(s => s.Comment)
-                      .AddField(s => s.CreatedOn);
+                      .AddField(s => s.CreatedOn)
+                      .AddField(s => s.IsApproved);
                   });
 
                 //form.FieldSetBuilder

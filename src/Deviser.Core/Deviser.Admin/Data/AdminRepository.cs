@@ -265,6 +265,17 @@ namespace Deviser.Admin.Data
             TEntity itemToAdd = ((JObject)item).ToObject<TEntity>(_serializer);
 
             var m2ofields = GetManyToOneFields<TEntity>();
+
+            SetManyToOneFields(itemToAdd, m2ofields);
+
+            var dbSet = _dbContext.Set<TEntity>();
+            var queryableData = dbSet.Add(itemToAdd);
+            _dbContext.SaveChanges();
+            return itemToAdd;
+        }
+
+        private void SetManyToOneFields<TEntity>(TEntity itemToAdd, List<Field> m2ofields) where TEntity : class
+        {
             foreach (var m2oField in m2ofields)
             {
                 var fieldPropInfo = ExpressionHelper.GetPropertyInfo(m2oField.FieldExpression);
@@ -282,11 +293,6 @@ namespace Deviser.Admin.Data
 
                 fieldPropInfo.SetValue(itemToAdd, null, null); //item.Category = null;
             }
-
-            var dbSet = _dbContext.Set<TEntity>();
-            var queryableData = dbSet.Add(itemToAdd);
-            _dbContext.SaveChanges();
-            return itemToAdd;
         }
 
         private TEntity UpdateItem<TEntity>(object item)

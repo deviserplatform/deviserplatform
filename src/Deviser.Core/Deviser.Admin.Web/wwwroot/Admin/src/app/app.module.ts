@@ -26,6 +26,7 @@ import { ValidationErrorComponent } from './validation-error/validation-error.co
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { EntityFormComponent } from './entity-form/entity-form.component';
 import { ChildGridComponent } from './child-grid/child-grid.component';
+import { CheckboxListComponent } from './common/components/checkbox-list/checkbox-list.component';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { ChildGridComponent } from './child-grid/child-grid.component';
     RecordIdPipe,
     ValidationErrorComponent,
     EntityFormComponent,
-    ChildGridComponent
+    ChildGridComponent,
+    CheckboxListComponent
   ],
   imports: [
     AppRoutingModule,
