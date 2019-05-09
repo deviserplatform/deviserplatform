@@ -28,12 +28,12 @@
             </td>
             <td>
               <a class="btn btn-dark" title="Edit" (click)="onEditItem(item)">
-                <i class="my-icon" aria-label="My icon" [inlineSVG]="'../../assets/icons/baseline-edit.svg'"></i>
+                <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-edit.svg' | envPath"></i>
               </a>
             </td>
             <td>
               <a class="btn btn-danger" title="Delete" (click)="openDeleteConfirmationModal(item)">
-                <i class="my-icon" aria-label="My icon" [inlineSVG]="'../../assets/icons/baseline-delete.svg'"></i>
+                <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-delete.svg' | envPath"></i>
               </a>
             </td>
           </tr>

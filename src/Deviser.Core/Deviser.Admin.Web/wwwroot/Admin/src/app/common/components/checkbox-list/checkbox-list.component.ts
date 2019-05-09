@@ -36,6 +36,11 @@ export class CheckboxListComponent implements OnInit, ControlValueAccessor, Vali
 
   public onTouched: () => void = () => { };
 
+  get checklistControls() {
+    let checklist:FormArray = (this.internalForm.get('checklist') as FormArray)
+    return checklist.controls;
+  }
+
   writeValue(values: any[]): void {
     this.initiallySelectedItems = values;
     if (this.initiallySelectedItems.length == 0) {

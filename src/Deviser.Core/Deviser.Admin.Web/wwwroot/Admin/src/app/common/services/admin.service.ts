@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -7,6 +7,8 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { MessageService } from './message.service';
 import { Pagination } from '../domain-types/pagination';
 import { AdminConfig } from '../domain-types/admin-config';
+import { WINDOW } from './window.service';
+import { DAConfig } from '../domain-types/da-config';
 
 @Injectable({
   providedIn: 'root'
@@ -14,27 +16,42 @@ import { AdminConfig } from '../domain-types/admin-config';
 export class AdminService {
 
 
-  private baseUrl = 'https://localhost:44304/modules';
-  private httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type':  'application/json',
-      'Authorization': 'my-auth-token'
-    })
-  };
+  private baseUrl;
+  private httpOptions;
+
+  private daConfig: DAConfig;
 
   constructor(private http: HttpClient,
-    private messageService: MessageService) { }
+    private messageService: MessageService,
+    @Inject(WINDOW) private window: any) {
 
-  getAdminConfig(moduleName: string, entityName: string): Observable<AdminConfig> {
-    const serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}/meta`;
+    this.httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'my-auth-token'
+      })
+    };
+
+    this.daConfig = window.daConfig;
+
+    if (this.daConfig.isEmbedded) {
+      this.baseUrl = `${window.location.origin}/modules`;
+    }
+    else {
+      this.baseUrl = `${this.daConfig.debugBaseUrl}/modules`;
+    }
+  }
+
+  getAdminConfig(): Observable<AdminConfig> {
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/meta`;
     return this.http.get<AdminConfig>(serviceUrl).pipe(
       tap(_ => this.log('fetched meta info')),
       catchError(this.handleError<AdminConfig>('getAdminConfig'))
     );
   }
 
-  getAllRecords(moduleName: string, entityName: string, pagination: Pagination = null): Observable<any> {
-    const serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}`;
+  getAllRecords(pagination: Pagination = null): Observable<any> {
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}`;
 
 
     let params = new HttpParams();
@@ -53,8 +70,8 @@ export class AdminService {
       );
   }
 
-  getRecord(moduleName: string, entityName: string, id: string): Observable<any> {
-    const serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}/${id}`;
+  getRecord(id: string): Observable<any> {
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/${id}`;
 
     return this.http.get<any>(serviceUrl)
       .pipe(
@@ -63,26 +80,26 @@ export class AdminService {
       );
   }
 
-  createRecord(moduleName: string, entityName: string, record: any) {
-    const serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}/`;
+  createRecord(record: any) {
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/`;
     return this.http.post<any>(serviceUrl, record, this.httpOptions)
-    .pipe(
-      tap(_ => this.log('created a record')),
-      catchError(this.handleError('createRecord', null))
-    );
+      .pipe(
+        tap(_ => this.log('created a record')),
+        catchError(this.handleError('createRecord', null))
+      );
   }
 
-  updateRecord(moduleName: string, entityName: string, record: any) {
-    const serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}/`;
+  updateRecord(record: any) {
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/`;
     return this.http.put<any>(serviceUrl, record, this.httpOptions)
-    .pipe(
-      tap(_ => this.log('updated a record')),
-      catchError(this.handleError('updateRecord', null))
-    );
+      .pipe(
+        tap(_ => this.log('updated a record')),
+        catchError(this.handleError('updateRecord', null))
+      );
   }
 
-  deleteRecord(moduleName: string, entityName: string, id: string) {
-    const serviceUrl: string = this.baseUrl + `/${moduleName}/api/${entityName}/${id}`;
+  deleteRecord(id: string) {
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/${id}`;
 
     return this.http.delete<any>(serviceUrl)
       .pipe(

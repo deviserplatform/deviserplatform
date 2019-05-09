@@ -6,12 +6,12 @@
           <div class="mr-auto p-2">
             <button type="button" class="btn btn-secondary" (click)="goBack()">
               <i class="my-icon" aria-label="My icon"
-                [inlineSVG]="'../../assets/icons/baseline-keyboard_arrow_left.svg'"></i>
+                [inlineSVG]="'assets/icons/baseline-keyboard_arrow_left.svg' | envPath"></i>
             </button>
           </div>
           <div class="p-2">
             <button class="btn btn-primary" type="submit" [disabled]="!adminForm.valid">
-              <i class="my-icon" aria-label="My icon" [inlineSVG]="'../../assets/icons/baseline-save.svg'"></i> Save
+              <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-save.svg' | envPath"></i> Save
             </button>
           </div>
         </div>

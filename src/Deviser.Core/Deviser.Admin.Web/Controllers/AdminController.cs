@@ -23,9 +23,10 @@ namespace Deviser.Admin.Web.Controllers
             _adminRepository = new AdminRepository<TAdminConfigurator>(serviceProvider);
         }
 
-        [Route("modules/[area]/admin")]
-        public IActionResult Admin()
+        [Route("modules/[area]/admin/{entity:required}")]
+        public IActionResult Admin(string entity)
         {
+            ViewBag.Entity = entity;
             return View();
         }
 

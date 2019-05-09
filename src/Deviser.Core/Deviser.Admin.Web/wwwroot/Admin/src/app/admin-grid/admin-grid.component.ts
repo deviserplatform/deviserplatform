@@ -1,7 +1,7 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, Inject } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
-import { Router } from '@angular/router';
+import { Router, DefaultUrlSerializer, UrlTree } from '@angular/router';
 
 import { AdminService } from '../common/services/admin.service';
 import { AdminConfig } from '../common/domain-types/admin-config';
@@ -9,6 +9,8 @@ import { Pagination } from '../common/domain-types/pagination';
 import { ConfirmDialogComponent } from '../common/components/confirm-dialog/confirm-dialog.component';
 import { RecordIdPipe } from '../common/pipes/record-id.pipe';
 import { Alert, AlertType } from '../common/domain-types/alert';
+import { DOCUMENT } from '@angular/common';
+import { WINDOW } from '../common/services/window.service';
 
 
 @Component({
@@ -28,9 +30,9 @@ export class AdminGridComponent implements OnInit {
 
   constructor(private adminService: AdminService,
     private recordIdPipe: RecordIdPipe,
-    private router: Router) { 
-      this.alerts = [];
-    }
+    private router: Router) {
+    this.alerts = [];
+  }
 
   ngOnInit() {
     this.getAdminConfig();
@@ -39,12 +41,12 @@ export class AdminGridComponent implements OnInit {
 
 
   getAdminConfig(): void {
-    this.adminService.getAdminConfig('Blog', 'Post')
+    this.adminService.getAdminConfig()
       .subscribe(adminConfig => this.adminConfig = adminConfig);
   }
 
   getAllRecords(pagination: Pagination = null): void {
-    this.adminService.getAllRecords('Blog', 'Post', pagination)
+    this.adminService.getAllRecords(pagination)
       .subscribe(entityRecords => this.onGetAllRecords(entityRecords));
   }
 
@@ -72,16 +74,16 @@ export class AdminGridComponent implements OnInit {
   onYesToDelete(item: any): void {
     console.log('confirm');
     const itemId = this.recordIdPipe.transform(item, this.adminConfig.formConfig.keyFields);
-    this.adminService.deleteRecord('Blog', 'Post', itemId)
+    this.adminService.deleteRecord(itemId)
       .subscribe(response => this.onDeleteResponse(response));
   }
 
   onDeleteResponse(response: any): void {
-    if(response){
+    if (response) {
       console.log(response);
       this.getAllRecords(this.pagination);
     }
-    else{
+    else {
       let alert: Alert = {
         alterType: AlertType.Error,
         message: "Unable to delete this item, please contact administrator",
@@ -89,12 +91,17 @@ export class AdminGridComponent implements OnInit {
       }
       this.alerts.push(alert);
     }
-    
   }
 
   onNoToDelete(item: any): void {
     console.log('declined');
 
   }
+}
 
+
+class CustomUrlSerializer extends DefaultUrlSerializer {
+  parse(url: string): UrlTree {
+    return super.parse(url);
+  }
 }

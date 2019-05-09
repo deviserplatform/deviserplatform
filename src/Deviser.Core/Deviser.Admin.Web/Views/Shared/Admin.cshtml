@@ -1,9 +1,21 @@
 ﻿
-<require type="Css" priority="111" path="/admin/dist/admin/styles.3bb2a9d4949b7dc120a9.css"></require>
+<require type="Css" priority="111" path="/admin/dist/styles.css"></require>
 
+<script>
+    (function () {
+        var daConfig = {
+            isEmbedded: true, //true for embedded in admin module, false for standalone
+            debugBaseUrl: "https://localhost:44304",
+            module: "@ViewContext.RouteData.Values["area"]",
+            entity: "@ViewBag.Entity",
+            assetPath:"/admin/dist"
+        }
+        window.daConfig = daConfig;
+    }());
+</script>
 
 <app-root></app-root>
 
-<require type="Script" priority="111" path="/admin/dist/admin/runtime.ec2944dd8b20ec099bf3.js"></require>
-<require type="Script" priority="112" path="/admin/dist/admin/polyfills.c6871e56cb80756a5498.js"></require>
-<require type="Script" priority="113" path="/admin/dist/admin/main.44365f263843dcb8831c.js"></require>
+<require type="Script" priority="111" path="/admin/dist/runtime.js"></require>
+<require type="Script" priority="112" path="/admin/dist/polyfills.js"></require>
+<require type="Script" priority="113" path="/admin/dist/main.js"></require>

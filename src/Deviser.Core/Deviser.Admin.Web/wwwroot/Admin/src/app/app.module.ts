@@ -27,6 +27,8 @@ import { EntityFormComponent } from './entity-form/entity-form.component';
 import { ChildGridComponent } from './child-grid/child-grid.component';
 import { CheckboxListComponent } from './common/components/checkbox-list/checkbox-list.component';
 import { AdminAlertComponent } from './common/components/admin-alert/admin-alert.component';
+import { WINDOW_PROVIDERS } from './common/services/window.service';
+import { EnvPathPipe } from './common/pipes/env-path.pipe';
 
 
 @NgModule({
@@ -43,7 +45,8 @@ import { AdminAlertComponent } from './common/components/admin-alert/admin-alert
     EntityFormComponent,
     ChildGridComponent,
     CheckboxListComponent,
-    AdminAlertComponent
+    AdminAlertComponent,
+    EnvPathPipe
   ],
   imports: [
     AlertModule.forRoot(),
@@ -61,7 +64,8 @@ import { AdminAlertComponent } from './common/components/admin-alert/admin-alert
   ],
   providers: [
     DatePipe,
-    RecordIdPipe
+    RecordIdPipe,
+    WINDOW_PROVIDERS
   ],
   bootstrap: [AppComponent]
 })

@@ -87,7 +87,7 @@
           class="form-control" [ngClass]="{ 'is-invalid': hasError(field) }" #dp="bsDatepicker" bsDatepicker>
         <div class="input-group-append">
           <button class="btn btn-secondary" type="button" (click)="dp.toggle()">
-            <i class="my-icon" aria-label="My icon" [inlineSVG]="'../../assets/icons/baseline-calendar_today.svg'"></i>
+            <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-calendar_today.svg' | envPath"></i>
           </button>
         </div>
         <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>

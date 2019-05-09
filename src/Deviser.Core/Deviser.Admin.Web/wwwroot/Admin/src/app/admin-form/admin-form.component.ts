@@ -47,14 +47,14 @@ export class AdminFormComponent implements OnInit {
     this.formMode = id ? FormMode.Update : FormMode.New;
 
     if (this.formMode === FormMode.Update) {
-      const adminConfig$ = this.adminService.getAdminConfig('Blog', 'Post');
-      const record$ = this.adminService.getRecord('Blog', 'Post', id);
+      const adminConfig$ = this.adminService.getAdminConfig();
+      const record$ = this.adminService.getRecord(id);
       forkJoin([adminConfig$, record$]).subscribe(results => {
         this.record = results[1];
         this.onGetAdminConfig(results[0]);
       });
     } else if (this.formMode === FormMode.New) {
-      this.adminService.getAdminConfig('Blog', 'Post')
+      this.adminService.getAdminConfig()
         .subscribe(adminConfig => this.onGetAdminConfig(adminConfig));
     }
 
@@ -73,10 +73,10 @@ export class AdminFormComponent implements OnInit {
 
     console.warn(this.adminForm.value);
     if (this.formMode === FormMode.New) {
-      this.adminService.createRecord('Blog', 'Post', this.adminForm.value)
+      this.adminService.createRecord(this.adminForm.value)
         .subscribe(formValue => this.patchFormValue(formValue));
     } else if (this.formMode === FormMode.Update) {
-      this.adminService.updateRecord('Blog', 'Post', this.adminForm.value)
+      this.adminService.updateRecord(this.adminForm.value)
         .subscribe(formValue => this.patchFormValue(formValue));
     }
   }
