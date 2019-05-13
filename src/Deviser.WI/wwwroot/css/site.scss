@@ -6,7 +6,7 @@
  */
 
 @import "admin/bootstrap4/scss/functions";
-@import "admin/bootstrap4/scss/variables";
+@import "site_variables.scss";
 @import "admin/bootstrap4/scss/mixins";
 @import "admin/bootstrap4/scss/root";
 @import "admin/bootstrap4/scss/reboot";
@@ -41,24 +41,6 @@
 @import "admin/bootstrap4/scss/utilities";
 @import "admin/bootstrap4/scss/print";
 @import "hamburgers/hamburgers";
-
-
-$devPrimary: rgb(239, 73, 52);
-$devPrimaryDark: darken($devPrimary, 25%);
-$devWhite: rgb(255, 255, 255);
-$lightGrey: rgb(245,245,246);
-$lightGreyTransparent: rgba(245,245,246, 0.8);
-$darkGrey: rgb(139,142,147);
-
-$twitterLight: rgba(30, 160, 242, 0.9);
-$facebookLight: rgba(66, 103, 178, 0.9);
-$googleLight: rgba(213, 75, 61, 0.9);
-
-$twitter: rgba(30, 160, 242, 1);
-$facebook: rgba(66, 103, 178, 1);
-$google: rgba(213, 75, 61, 1);
-
-
 
 body {
     font-family: 'Rubik', 'Open Sans', sans-serif;

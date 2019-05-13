@@ -8,8 +8,10 @@
 var paths = {
     webroot: './wwwroot/',
     sassPath: './wwwroot/css/admin/main.scss',
+    adminSassPath: './wwwroot/css/admin/admin.scss',
     skinSassPath: './wwwroot/css/site.scss',
     sassDest: './wwwroot/css/admin',
+    adminSassDest: './wwwroot/css/admin',
     skinSassDest: './wwwroot/css'
 };
 
@@ -97,6 +99,13 @@ gulp.task('skin:sass', function () {
         .pipe(gulp.dest(paths.skinSassDest));
 });
 
+gulp.task('admin:sass', function () {
+    return gulp.src(paths.adminSassPath)
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest(paths.adminSassDest));
+});
+
+
 gulp.task('clean:min', function () {    
     return del(paths.releaseRoot, { force: true });
 });
@@ -157,6 +166,7 @@ gulp.task('watch', function () {
     //sassPaths.push(paths.skinSassPath);
     gulp.watch(paths.sassPath, gulp.parallel('sass'));
     gulp.watch(paths.skinSassPath, gulp.parallel('skin:sass'));
+    gulp.watch(paths.adminSassPath, gulp.parallel('admin:sass'));
 });
 
 
