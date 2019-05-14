@@ -2,7 +2,13 @@
 
     $('#side-menu').metisMenu();
 
-    $('#menu1').metisMenu();
+
+
+    var overlayScrollbarsFn = $('.overlay-scroll').overlayScrollbars;
+    if (overlayScrollbarsFn) {
+        overlayScrollbarsFn({});
+    }
+    
 
     $('.nav-tabs a').click(function (e) {
         e.preventDefault();

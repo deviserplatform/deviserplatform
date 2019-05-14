@@ -7057,65 +7057,58 @@ a.text-dark:hover, a.text-dark:focus {
   transform: rotate(225deg) translate(0, -50%); }
 
 /*# sourceMappingURL=metisMenu.css.map */
-.sidebar-nav ul {
-  padding: 0;
-  margin: 0;
-  list-style: none; }
+.sidebar-nav {
+  /*li + li {
+        margin-top: 5px;
+    }
 
-.sidebar-nav .metismenu {
-  background: #2b3643;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column; }
-
-.sidebar-nav li + li {
-  margin-top: 5px; }
-
-.sidebar-nav li:first-child {
-  margin-top: 5px; }
-
-.sidebar-nav li:last-child {
-  margin-bottom: 5px; }
-
-.sidebar-nav > li {
-  /*-webkit-box-flex: 1;
+    li:first-child {
+        margin-top: 5px;
+    }*/ }
+  .sidebar-nav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none; }
+  .sidebar-nav .metismenu {
+    background: #2b3643;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column; }
+  .sidebar-nav li:last-child {
+    margin-bottom: 5px; }
+  .sidebar-nav > li {
+    /*-webkit-box-flex: 1;
     -ms-flex: 1 1 0%;
     flex: 1 1 0%;*/
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  position: relative; }
-
-.sidebar-nav a {
-  position: relative;
-  display: block;
-  padding: 13px 15px;
-  color: #adb5bd;
-  outline-width: 0;
-  transition: all .3s ease-out; }
-
-.sidebar-nav ul a {
-  padding: 10px 15px 10px 30px; }
-
-.sidebar-nav ul ul a {
-  padding: 10px 15px 10px 45px; }
-
-.sidebar-nav a:hover, .sidebar-nav a:focus, .sidebar-nav a:active, .sidebar-nav .mm-active > a {
-  color: #f8f9fa;
-  text-decoration: none;
-  background: #3f4c62; }
-
-.sidebar-nav .root {
-  a: hover, a; }
-  .sidebar-nav .root :focus, .sidebar-nav .root a:active, .sidebar-nav .root .mm-active > a {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    position: relative; }
+  .sidebar-nav a {
+    position: relative;
+    display: block;
+    padding: 13px 15px;
+    color: #adb5bd;
+    outline-width: 0;
+    transition: all .3s ease-out; }
+  .sidebar-nav ul a {
+    padding: 10px 15px 10px 30px; }
+  .sidebar-nav ul ul a {
+    padding: 10px 15px 10px 45px; }
+  .sidebar-nav a:hover, .sidebar-nav a:focus, .sidebar-nav a:active, .sidebar-nav .mm-active > a {
+    color: #f8f9fa;
+    text-decoration: none; }
+  .sidebar-nav a:hover, .sidebar-nav a:focus {
+    background: #1d252d; }
+  .sidebar-nav a:active, .sidebar-nav .mm-active > a {
     background: #ec3d28; }
 
 .admin-wrapper {
@@ -7125,11 +7118,23 @@ a.text-dark:hover, a.text-dark:focus {
   .admin-wrapper .admin-sidebar {
     /*overflow-y: auto;*/
     background: #2b3643;
+    border-top: 1px solid #3f4c62;
     bottom: 0;
     left: 0;
     overflow-x: hidden;
     position: fixed;
     top: 50px;
     width: 280px; }
-  .admin-wrapper .admin-content {
+  .admin-wrapper .admin-body {
     margin-left: 280px; }
+    .admin-wrapper .admin-body .admin-content {
+      padding-top: 30px;
+      padding-left: 20px; }
+    .admin-wrapper .admin-body .admin-footer {
+      background: #2b3643;
+      bottom: 0;
+      padding-top: 20px;
+      position: fixed; }
+      .admin-wrapper .admin-body .admin-footer a, .admin-wrapper .admin-body .admin-footer p {
+        color: #fff;
+        font-size: 0.9rem; }

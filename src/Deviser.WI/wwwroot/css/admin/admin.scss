@@ -52,6 +52,7 @@
     .admin-sidebar {
         /*overflow-y: auto;*/
         background: $dark;
+        border-top: 1px solid $gray-700;
         bottom: 0;
         left: 0;
         overflow-x: hidden;
@@ -60,7 +61,24 @@
         width: 280px
     }
 
-    .admin-content {
+    .admin-body {
         margin-left: 280px;
+
+        .admin-content {
+            padding-top: 30px;
+            padding-left: 20px;
+        }
+
+        .admin-footer {
+            background: $gray-800;
+            bottom: 0;
+            padding-top: 20px;
+            position: fixed;
+
+            a, p {
+                color: $white;
+                font-size: 0.9rem;
+            }
+        }
     }
 }

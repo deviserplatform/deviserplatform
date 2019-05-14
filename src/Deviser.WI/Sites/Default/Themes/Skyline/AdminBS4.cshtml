@@ -12,7 +12,7 @@
 <require type="Css" include="Development" priority="12" path="~/lib/angular-ui-select/dist/select.css" test="test"></require>
 <require type="Css" include="Development" priority="14" path="~/lib/textAngular/dist/textAngular.css" test="test"></require>
 <require type="Css" include="Development" priority="15" path="~/css/admin/admin.css" test="test"></require>
-<require type="Css" include="Development" priority="16" path="//cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.css" test="test"></require>
+<require type="Css" include="Development" priority="16" path="//cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.7.0/css/OverlayScrollbars.min.css" test="test"></require>
 <!-- END GLOBAL MANDATORY STYLES -->
 
 <require type="Script" include="Development" location="Head" priority="10" path="~/lib/jquery/dist/jquery.js" test="test"></require>
@@ -23,7 +23,7 @@
 <require type="Script" include="Development" location="Head" priority="14" path="~/lib/lodash/dist/lodash.js"></require>
 <require type="Script" include="Development" location="Head" priority="15" path="~/js/metisMenu.min.js"></require>
 <require type="Script" include="Development" priority="16" path="~/lib/aspnet/signalr/dist/browser/signalr.js"></require>
-<require type="Script" include="Development" priority="17" path="//cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></require>
+<require type="Script" include="Development" priority="17" path="//cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.7.0/js/jquery.overlayScrollbars.min.js"></require>
 
 <require type="Script" include="Development" priority="31" path="~/js/src/app/dev-form-helper.js"></require>
 <require type="Script" include="Development" priority="32" path="~/js/admin/main.js"></require>
@@ -67,65 +67,29 @@
 @await Component.InvokeAsync("ControlBar")
 <div class="admin-wrapper">
 
-    <div class="admin-sidebar" data-simplebar data-simplebar-auto-hide="false">
+    <div class="admin-sidebar overlay-scroll">
 
         <nav class="sidebar-nav">
             <ul class="metismenu" id="side-menu" dev-nav="AdminBS4" dev-nav-page="SystemOnly"></ul>
         </nav>
 
     </div>
-    <div class="admin-content">
-        @RenderBody()
-        <div class="container-fluid">
-            <h1 class="mt-4">Simple Sidebar</h1>
-            <p>The starting state of the menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will change.</p>
-            <p>Make sure to keep all page content within the <code>#page-content-wrapper</code>. The top navbar is optional, and just for demonstration. Just create an element with the <code>#menu-toggle</code> ID which will toggle the menu when clicked.</p>
+    <div class="admin-body">
+        <div class="admin-content">
+            <section class="content-header">
+                <h1 class="page-header">@currentPage.PageTranslation.First().Title</h1>
+            </section>
+            <section class="content-body container-fluid">
+                @RenderBody()
+            </section>
         </div>
-    </div>
-</div>
-
-
-
-
-
-@*<div id="content-wrapper" class="d-flex flex-column">
-    <div id="content">
-        <!-- Begin Page Content -->
-        <div class="container-fluid">
-            <!-- Page Heading -->
-            <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                <h1 class="h3 mb-0 text-gray-800">@currentPage.PageTranslation.First().Title</h1>
-                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Lorem Report</a>
-            </div>
-
-            @RenderBody()
-        </div>
-    </div>*@
-
-@*<!-- Footer -->
-    <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
+        <footer class="admin-footer container-fluid">
             <div class="copyright text-center my-auto">
                 <p>
                     Copyright &copy; @DateTime.Now.Year Karthick Sundararajan. Released on <a href="https://github.com/deviserplatform/deviserplatform" title="Source" target="_blank"> <i class="fa fa-github"></i></a>
                     under the <a href="/install/License" title="License" target="_blank">MIT License</a>
                 </p>
             </div>
-        </div>
-    </footer>
-    <!-- End of Footer -->*@
-
-
-@*<div id="page-wrapper">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <h1 class="page-header">@currentPage.PageTranslation.First().Title</h1>
-                    @RenderBody()
-                </div>
-                <!-- /.col-lg-12 -->
-            </div>
-            <!-- /.row -->
-        </div>
-        <!-- /.container-fluid -->
-    </div>*@
+        </footer>
+    </div>
+</div>

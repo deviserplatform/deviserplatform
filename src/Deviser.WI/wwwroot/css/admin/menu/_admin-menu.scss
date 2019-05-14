@@ -163,15 +163,13 @@
         -ms-flex-direction: column;
         flex-direction: column;
     }
-
-    li + li {
+    /*li + li {
         margin-top: 5px;
     }
 
     li:first-child {
         margin-top: 5px;
-    }
-
+    }*/
     li:last-child {
         margin-bottom: 5px;
     }
@@ -210,12 +208,13 @@
     a:hover, a:focus, a:active, .mm-active > a {
         color: #f8f9fa;
         text-decoration: none;
-        background: $gray-700;
     }
 
-    .root {
-        a: hover, a:focus, a:active, .mm-active > a {
-            background: $primary;
-        }
+    a:hover, a:focus {
+        background: $gray-900;
+    }
+
+    a:active, .mm-active > a {
+        background: $primary;
     }
 }
