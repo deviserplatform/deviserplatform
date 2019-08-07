@@ -42,47 +42,49 @@ namespace Deviser.Admin.Config
             //    var provider = scope.ServiceProvider;
 
             var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.PlatformAssembly);
-            List<TypeInfo> adminConfiguratorTypes = assemblies.GetDerivedTypeInfos(typeof(IAdminConfigurator<>));
+            List<TypeInfo> adminConfiguratorTypes = assemblies.GetDerivedTypeInfos(typeof(IAdminConfigurator));
+
+            //assemblies.GetDerivedTypeInfos(typeof(IAdminConfigurator))[0].GetInterfaces()[1].IsGenericType
 
             foreach (var adminConfiguratorType in adminConfiguratorTypes)
             {
-                Type acInterface = adminConfiguratorType.GetInterfaces().First();
-                Type dbContextType = acInterface.GetGenericArguments()[0];
+                var acInterface = adminConfiguratorType.GetInterfaces().Where(i => i.IsGenericType).FirstOrDefault();
+                Type dbContextType = acInterface?.GetGenericArguments().FirstOrDefault();
+                bool hasDbContext = dbContextType != null;
+                IAdminSite adminSite;
+                AdminBuilder adminBuilder;
+                /** 
+                    * 1. Crete AdminSite instance
+                    * 2. Create AdminConfigurator instance
+                    * 3. Invoke IAdminConfigurator.ConfigureAdmin and pass adminSite as argument
+                */
 
-
-                using (var contextObj = (DbContext)_serviceProvider.GetRequiredService(dbContextType))
+                if (hasDbContext)
                 {
-                    try
-                    {   
-                        IAdminSite adminSite = new AdminSite(_serviceProvider, contextObj, _serviceProvider.GetRequiredService<IModelMetadataProvider>());
-                        AdminBuilder adminBuilder = new AdminBuilder(adminSite);
+                    using (var contextObj = (DbContext)_serviceProvider.GetRequiredService(dbContextType))
+                    {
+
+                        adminSite = new AdminSite(_serviceProvider, contextObj, _serviceProvider.GetRequiredService<IModelMetadataProvider>());
+                        adminBuilder = new AdminBuilder(adminSite);
 
                         if (!contextObj.Database.Exists())
                             throw new InvalidOperationException($"Database is not exist for {dbContextType}, create a database and try again");
-
-                        /** 
-                         * 1. Crete AdminSite instance
-                         * 2. Create AdminConfigurator instance
-                         * 3. Invoke IAdminConfigurator.ConfigureAdmin and pass adminSite as argument
-                        */
-
-                        var objAdminConfigurator = Activator.CreateInstance(adminConfiguratorType);
-                        var genericInterface = typeof(IAdminConfigurator);
-                        //var adminConfiguratorInterface = genericInterface.MakeGenericType(dbContextType);
-                        var configureAdminMethodInfo = genericInterface.GetMethod("ConfigureAdmin"); 
-                        configureAdminMethodInfo.Invoke(objAdminConfigurator, new object[] { adminBuilder });                        
-
-                        _adminConfigStore.GetOrAdd(adminConfiguratorType.AsType(), adminSite);
-
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
                     }
                 }
+                else
+                {
+                    adminSite = new AdminSite(_serviceProvider, _serviceProvider.GetRequiredService<IModelMetadataProvider>());
+                    adminBuilder = new AdminBuilder(adminSite);
+                }
 
+                var objAdminConfigurator = Activator.CreateInstance(adminConfiguratorType);
+                var genericInterface = typeof(IAdminConfigurator);
+                //var adminConfiguratorInterface = genericInterface.MakeGenericType(dbContextType);
+                var configureAdminMethodInfo = genericInterface.GetMethod("ConfigureAdmin");
+                configureAdminMethodInfo.Invoke(objAdminConfigurator, new object[] { adminBuilder });
+
+                _adminConfigStore.GetOrAdd(adminConfiguratorType.AsType(), adminSite);
             }
-            //}
         }
 
 

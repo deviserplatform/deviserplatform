@@ -73,9 +73,12 @@ namespace Deviser.Admin.Config
         public Type DbContextType => _dbContextType;
         public IDictionary<Type, IAdminConfig> AdminConfigs { get; }
 
+        private static AdminType _adminType; 
+
 
         public AdminSite(IServiceProvider serviceProvider, DbContext dbContext, IModelMetadataProvider modelMetadataProvider)
         {
+            _adminType = AdminType.Entity;
             if (dbContext == null)
                 throw new ArgumentNullException("Constructor paramater dbContent cannot be null");
 
@@ -86,36 +89,55 @@ namespace Deviser.Admin.Config
             AdminConfigs = new Dictionary<Type, IAdminConfig>();
         }
 
+        public AdminSite(IServiceProvider serviceProvider, IModelMetadataProvider modelMetadataProvider)
+        {
+            _adminType = AdminType.Custom;
+            _serviceProvider = serviceProvider;
+            _modelMetadataProvider = modelMetadataProvider;
+            AdminConfigs = new Dictionary<Type, IAdminConfig>();
+        }
+
         public void Build<TEntity>(AdminConfig<TEntity> adminConfig, bool hasConfiguration = false) where TEntity : class
         {
             var entityClrType = typeof(TEntity);
-            var entityType = _dbContext.Model.FindEntityType(entityClrType);
 
-            if (entityType == null)
-                throw new InvalidOperationException($"The entity type {entityClrType} cannot be found on this context {_dbContext}");
-
-            if (AdminConfigs.ContainsKey(entityClrType))
-                throw new InvalidOperationException($"The entity type {entityClrType} has already been registered for this admin site, duplicate site registrations are not allowed");
-
-
-            AdminConfigs.Add(entityClrType, adminConfig);
-
-            BuildForm(adminConfig.FormConfig, adminConfig.EntityConfig, hasConfiguration, entityClrType, entityType);
-
-            if (adminConfig.ChildConfigs != null && adminConfig.ChildConfigs.Count > 0)
+            if(_adminType == AdminType.Entity)
             {
-                foreach(var childConfig in adminConfig.ChildConfigs)
+                //TODO: Validate adminConfig for entity type
+
+                var entityType = _dbContext.Model.FindEntityType(entityClrType);
+
+                if (entityType == null)
+                    throw new InvalidOperationException($"The entity type {entityClrType} cannot be found on this context {_dbContext}");
+
+                if (AdminConfigs.ContainsKey(entityClrType))
+                    throw new InvalidOperationException($"The entity type {entityClrType} has already been registered for this admin site, duplicate site registrations are not allowed");
+                
+                
+
+                BuildEntityForm(adminConfig.FormConfig, adminConfig.EntityConfig, hasConfiguration, entityClrType, entityType);
+
+                if (adminConfig.ChildConfigs != null && adminConfig.ChildConfigs.Count > 0)
                 {
-                    var childCrlType = childConfig.Field.FieldClrType;
-                    var childEntityType = _dbContext.Model.FindEntityType(childCrlType);
-                    BuildForm(childConfig.FormConfig, childConfig.EntityConfig, hasConfiguration, childCrlType, childEntityType);
+                    foreach (var childConfig in adminConfig.ChildConfigs)
+                    {
+                        var childCrlType = childConfig.Field.FieldClrType;
+                        var childEntityType = _dbContext.Model.FindEntityType(childCrlType);
+                        BuildEntityForm(childConfig.FormConfig, childConfig.EntityConfig, hasConfiguration, childCrlType, childEntityType);
+                    }
                 }
+
+                LoadMasterData(adminConfig);
+            }
+            else if(_adminType == AdminType.Custom)
+            {
+                //TODO: Validate adminConfig for custom type
             }
 
-            LoadMasterData(adminConfig);
+            AdminConfigs.Add(entityClrType, adminConfig);
         }
 
-        private void BuildForm(IFormConfig formConfig, EntityConfig entityConfig, bool hasConfiguration, Type entityClrType, IEntityType entityType)
+        private void BuildEntityForm(IFormConfig formConfig, EntityConfig entityConfig, bool hasConfiguration, Type entityClrType, IEntityType entityType)
         {
             if (!hasConfiguration)
             {
@@ -169,30 +191,6 @@ namespace Deviser.Admin.Config
             {
                 PopulateFieldOptions(field, entityType, formConfig.FieldConditions, entityConfig);
             }
-
-            //else if (adminConfig?.FieldConfig?.Fields?.Count > 0)
-            //{
-            //    foreach (var fieldRow in adminConfig.FieldConfig.Fields)
-            //    {
-            //        foreach (var field in fieldRow)
-            //        {
-            //            PopulateFieldOptions(field, entityType, adminConfig);
-            //        }
-            //    }
-            //}
-            //else if (adminConfig?.FieldSetConfig?.FieldSets?.Count > 0)
-            //{
-            //    foreach (var fieldSet in adminConfig.FieldSetConfig.FieldSets)
-            //    {
-            //        foreach (var fieldRow in fieldSet.Fields)
-            //        {
-            //            foreach (var field in fieldRow)
-            //            {
-            //                PopulateFieldOptions(field, entityType, adminConfig);
-            //            }
-            //        }
-            //    }
-            //}
 
             if (hasListFields)
             {

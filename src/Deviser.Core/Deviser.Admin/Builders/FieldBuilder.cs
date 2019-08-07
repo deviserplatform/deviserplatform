@@ -28,7 +28,7 @@ namespace Deviser.Admin.Builders
         public FieldBuilder<TEntity> AddField<TProperty>(Expression<Func<TEntity, TProperty>> expression, Action<FieldOption> fieldOptionAction = null)
         {
             if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
-                AddRemoveInvalidOperationException();
+                ThrowAddRemoveInvalidOperationException();
 
             var field = CreateSimpleField(expression, fieldOptionAction);
             _formConfig.FieldConfig.AddField(field);
@@ -38,20 +38,20 @@ namespace Deviser.Admin.Builders
         public FieldBuilder<TEntity> AddInlineField<TProperty>(Expression<Func<TEntity, TProperty>> expression, Action<FieldOption> fieldOptionAction = null)
         {
             if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
-                AddRemoveInvalidOperationException();
+                ThrowAddRemoveInvalidOperationException();
 
             var field = CreateSimpleField(expression, fieldOptionAction);
             _formConfig.FieldConfig.AddInLineField(field);
             return this;
         }
 
-        public FieldBuilder<TEntity> AddManyToOneField<TReleatedEntity>(Expression<Func<TEntity, TReleatedEntity>> expression,
+        public FieldBuilder<TEntity> AddSelectField<TReleatedEntity>(Expression<Func<TEntity, TReleatedEntity>> expression,
             Expression<Func<TReleatedEntity, string>> displayExpression,
             Action<FieldOption> fieldOptionAction = null)
             where TReleatedEntity : class
         {
             if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
-                AddRemoveInvalidOperationException();
+                ThrowAddRemoveInvalidOperationException();
 
             var field = CreateComplexField(expression, RelationType.ManyToOne, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
 
@@ -59,26 +59,26 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public FieldBuilder<TEntity> AddInlineManyToOneField<TReleatedEntity>(Expression<Func<TEntity, TReleatedEntity>> expression,
+        public FieldBuilder<TEntity> AddInlineSelectField<TReleatedEntity>(Expression<Func<TEntity, TReleatedEntity>> expression,
             Expression<Func<TReleatedEntity, string>> displayExpression,
             Action<FieldOption> fieldOptionAction = null)
             where TReleatedEntity : class
         {
             if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
-                AddRemoveInvalidOperationException();
+                ThrowAddRemoveInvalidOperationException();
 
             var field = CreateComplexField(expression, RelationType.ManyToOne, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
             _formConfig.FieldConfig.AddInLineField(field);
             return this;
         }
 
-        public FieldBuilder<TEntity> AddManyToManyField<TReleatedEntity>(Expression<Func<TEntity, object>> expression,
+        public FieldBuilder<TEntity> AddMultiselectField<TReleatedEntity>(Expression<Func<TEntity, object>> expression,
             Expression<Func<TReleatedEntity, string>> displayExpression,
             Action<FieldOption> fieldOptionAction = null)
             where TReleatedEntity : class
         {
             if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
-                AddRemoveInvalidOperationException();
+                ThrowAddRemoveInvalidOperationException();
 
             var field = CreateComplexField(expression, RelationType.ManyToMany, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
 
@@ -86,13 +86,13 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public FieldBuilder<TEntity> AddInlineManyToManyField<TReleatedEntity>(Expression<Func<TEntity, object>> expression,
+        public FieldBuilder<TEntity> AddInlineMultiSelectField<TReleatedEntity>(Expression<Func<TEntity, object>> expression,
             Expression<Func<TReleatedEntity, string>> displayExpression,
             Action<FieldOption> fieldOptionAction = null)
             where TReleatedEntity : class
         {
             if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
-                AddRemoveInvalidOperationException();
+                ThrowAddRemoveInvalidOperationException();
 
             var field = CreateComplexField(expression, RelationType.ManyToMany, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
             _formConfig.FieldConfig.AddInLineField(field);
@@ -109,7 +109,7 @@ namespace Deviser.Admin.Builders
         public FieldBuilder<TEntity> RemoveField<TProperty>(Expression<Func<TEntity, TProperty>> expression)
         {
             if (_formConfig.AllFormFields.Count > 0)
-                AddRemoveInvalidOperationException();
+                ThrowAddRemoveInvalidOperationException();
 
             var field = new Field()
             {
@@ -187,7 +187,7 @@ namespace Deviser.Admin.Builders
             };
         }
 
-        private void AddRemoveInvalidOperationException()
+        private void ThrowAddRemoveInvalidOperationException()
         {
             throw new InvalidOperationException(Resources.AddRemoveInvalidOperation);
         }

@@ -44,17 +44,18 @@ namespace Deviser.Modules.Blog
             adminBuilder.Register<PostTag>(form =>
             {
                 form.FieldBuilder
-                     .AddManyToOneField(s => s.Post, expr => expr.Title);
+                     .AddSelectField(s => s.Post, expr => expr.Title);
             });
 
             adminBuilder.Register<Post>(form =>
             {
+
                 form.FieldBuilder
                      .AddField(s => s.Title)
                      //.AddField(s => s.Content, fieldOption => { fieldOption.ValidationType = ValidationType.UserExist; })
                      .AddField(s => s.Content)
-                     .AddInlineManyToOneField(s => s.Category, expr => expr.Name)
-                     .AddInlineManyToManyField<Tag>(s => s.PostTags, expr => expr.TagName)
+                     .AddInlineSelectField(s => s.Category, expr => expr.Name)
+                     .AddInlineMultiSelectField<Tag>(s => s.PostTags, expr => expr.TagName)
                      .AddField(s => s.CreatedOn)
                      .AddField(s => s.CreatedBy);
 

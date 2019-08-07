@@ -1,4 +1,5 @@
 ﻿using Deviser.Admin.Builders;
+using Deviser.Admin.Config;
 using Deviser.Core.Common.DomainTypes.Admin;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace Deviser.Admin
         }
 
 
-        public AdminBuilder Register<TEntity>(Action<FormBuilder<TEntity>> formBuilderAction = null)
+        public AdminBuilder Register<TEntity>(Action<FormBuilder<TEntity>> formBuilderAction = null, AdminType adminConfigType = AdminType.Entity)
             where TEntity : class
         {
             var adminConfig = new AdminConfig<TEntity>();
