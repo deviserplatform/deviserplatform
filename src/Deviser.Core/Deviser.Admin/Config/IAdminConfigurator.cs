@@ -10,7 +10,6 @@ namespace Deviser.Admin
     public interface IAdminConfigurator<TContext> : IAdminConfigurator
         where TContext : DbContext
     {
-        //void ConfigureAdmin(IAdminSite adminSite);
-            
+        
     }
 }

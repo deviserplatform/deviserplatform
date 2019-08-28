@@ -110,6 +110,23 @@
                                         </ui-select>
                                     </div>
                                 </div>
+                                <div class="form-group" ng-if="pmVM.modules &&  pmVM.modules.length>0" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.admin.id">
+                                    <label class="col-sm-4 control-label">Module</label>
+                                    <div class="col-sm-8">
+                                        <ui-select name="pageType" ng-model="pmVM.selectedItem.adminPage.moduleId" theme="bootstrap">
+                                            <ui-select-match placeholder="Choose a Module">{{$select.selected.value.name}}</ui-select-match>
+                                            <ui-select-choices repeat="module.value.id as (key, module) in pmVM.modules | filter: $select.search">
+                                                <div ng-bind-html="module.value.name | highlight: $select.search"></div>
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </div>
+                                </div>
+                                <div class="form-group" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.admin.id">
+                                    <label class="col-sm-4 control-label">Entity Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" name="name" class="form-control" placeholder="Enter page name" ng-model="pmVM.selectedItem.adminPage.entityName" required>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-horizontal edit-page" ng-repeat="translation in pmVM.selectedItem.pageTranslation | selectLanguage:pmVM.currentLocale">
                                 <div class="form-group" ng-class="{'has-error': managePage.name.$invalid && (managePage.name.$dirty || managePage.$submitted)}">
@@ -142,13 +159,13 @@
                                         <input type="text" class="form-control" placeholder="Enter keywords" ng-model="translation.keywords">
                                     </div>
                                 </div>
-                                <div class="form-group" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.Url.id">
+                                <div class="form-group" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.url.id">
                                     <label class="col-sm-4 control-label">Redirect Link</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" placeholder="Enter Redirect Link" ng-model="translation.redirectUrl">
                                     </div>
                                 </div>
-                                <div class="form-group" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.Url.id">
+                                <div class="form-group" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.url.id">
                                     <label class="col-sm-4 control-label">Open Link in New Window</label>
                                     <div class="col-sm-8">
                                         <a ng-click="translation.isLinkNewWindow=!translation.isLinkNewWindow">
@@ -164,7 +181,7 @@
                                         <textarea type="text" class="form-control" placeholder="Enter page header tags" ng-model="translation.pageHeaderTags" rows="4"></textarea>
                                     </div>
                                 </div>
-                                
+
                             </div>
                             <div class="form-horizontal edit-page">
                                 <div class="form-group">

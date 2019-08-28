@@ -16,6 +16,8 @@ namespace Deviser.Core.Library.Infrastructure
             {
                 Mapper.Initialize(config =>
                 {
+                    config.CreateMap<AdminPage, Core.Common.DomainTypes.AdminPage>().ReverseMap();
+
                     config.CreateMap<ContentPermission, Core.Common.DomainTypes.ContentPermission>().ReverseMap();
 
                     config.CreateMap<Core.Common.DomainTypes.ContentType, ContentType>()

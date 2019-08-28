@@ -13,7 +13,7 @@
 
 
     app.controller('PageManagementCtrl', ['$scope', '$timeout', '$filter', '$q', 'modalService',
-        'globals', 'pageService', 'themeService', 'languageService', 'roleService', editCtrl]);
+        'globals', 'pageService', 'themeService', 'languageService', 'roleService', 'moduleService', editCtrl]);
 
     app.filter('selectLanguage', function () {
 
@@ -37,7 +37,7 @@
     ////////////////////////////////
     /*Function declarations only*/
     function editCtrl($scope, $timeout, $filter, $q, modalService,
-        globals, pageService, themeService, languageService, roleService) {
+        globals, pageService, themeService, languageService, roleService, moduleService) {
         var vm = this;
         var SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         var pageViewPermissionId = globals.appSettings.permissions.pageView;
@@ -102,6 +102,7 @@
             getRoles();
             getThemes();
             getLanguages();
+            getModules();
         }
 
         function getPages() {
@@ -136,6 +137,14 @@
                 vm.roles = roles;
             }, function (error) {
                 showMessage("error", "Cannot get all roles, please contact administrator");
+            });
+        }
+
+        function getModules() {
+            moduleService.get().then(function (modules) {
+                vm.modules = modules;
+            }, function (error) {
+                showMessage("error", "Cannot get all modules, please contact administrator");
             });
         }
 

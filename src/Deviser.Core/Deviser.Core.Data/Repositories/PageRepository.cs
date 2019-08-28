@@ -80,6 +80,7 @@ namespace Deviser.Core.Data.Repositories
                 using (var context = new DeviserDbContext(DbOptions))
                 {
                     var allPagesInFlat = context.Page
+                        .Include(p => p.AdminPage)
                         .Include(p => p.PageTranslation)
                         .Include(p => p.PagePermissions)
                         .AsNoTracking().ToList();

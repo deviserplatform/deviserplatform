@@ -37,11 +37,15 @@
                 allUsers: '086357bf-01b1-494c-a8b8-54fdfa7c4c9e'
             },
             pageTypes: {
+                admin: {
+                    id: '5308b86c-a2fc-4220-8ba2-47e7bec1938d',
+                    name: 'Admin'
+                },
                 standard: {
                     id: '4c06dcfd-214f-45af-8404-ff84b412ab01',
                     name: 'Standard'
                 },
-                Url: {
+                url: {
                     id: 'bfefa535-7af1-4ddc-82c0-c906c948367a',
                     name: 'URL'
                 }

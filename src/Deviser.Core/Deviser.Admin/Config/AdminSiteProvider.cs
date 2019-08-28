@@ -69,24 +69,28 @@ namespace Deviser.Admin.Config
 
                         if (!contextObj.Database.Exists())
                             throw new InvalidOperationException($"Database is not exist for {dbContextType}, create a database and try again");
+
+                        ConfigureAdminSites(adminConfiguratorType, adminSite, adminBuilder);
                     }
                 }
                 else
                 {
                     adminSite = new AdminSite(_serviceProvider, _serviceProvider.GetRequiredService<IModelMetadataProvider>());
                     adminBuilder = new AdminBuilder(adminSite);
+                    ConfigureAdminSites(adminConfiguratorType, adminSite, adminBuilder);
                 }
-
-                var objAdminConfigurator = Activator.CreateInstance(adminConfiguratorType);
-                var genericInterface = typeof(IAdminConfigurator);
-                //var adminConfiguratorInterface = genericInterface.MakeGenericType(dbContextType);
-                var configureAdminMethodInfo = genericInterface.GetMethod("ConfigureAdmin");
-                configureAdminMethodInfo.Invoke(objAdminConfigurator, new object[] { adminBuilder });
-
-                _adminConfigStore.GetOrAdd(adminConfiguratorType.AsType(), adminSite);
             }
         }
 
+        private void ConfigureAdminSites(TypeInfo adminConfiguratorType, IAdminSite adminSite, AdminBuilder adminBuilder)
+        {
+            var objAdminConfigurator = Activator.CreateInstance(adminConfiguratorType);
+            var genericInterface = typeof(IAdminConfigurator);
+            //var adminConfiguratorInterface = genericInterface.MakeGenericType(dbContextType);
+            var configureAdminMethodInfo = genericInterface.GetMethod("ConfigureAdmin");
+            configureAdminMethodInfo.Invoke(objAdminConfigurator, new object[] { adminBuilder });
 
+            _adminConfigStore.GetOrAdd(adminConfiguratorType.AsType(), adminSite);
+        }
     }
 }

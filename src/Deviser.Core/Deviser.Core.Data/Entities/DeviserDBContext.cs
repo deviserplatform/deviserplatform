@@ -170,7 +170,7 @@ namespace Deviser.Core.Data
 
                 entity.HasOne(d => d.PageType).WithMany(p => p.Page).HasForeignKey(d => d.PageTypeId).OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(d => d.Parent).WithMany((System.Linq.Expressions.Expression<System.Func<Page, System.Collections.Generic.IEnumerable<Page>>>)(p => p.ChildPage)).HasForeignKey(d => d.ParentId);
+                entity.HasOne(d => d.Parent).WithMany(p => p.ChildPage).HasForeignKey(d => d.ParentId);
 
                 entity.Ignore(e => e.IsActive);
                 entity.Ignore(e => e.IsBreadCrumb);
@@ -256,6 +256,15 @@ namespace Deviser.Core.Data
                 entity.Property(e => e.URL).HasMaxLength(255);
 
                 entity.HasOne(d => d.Page).WithMany(p => p.PageTranslation).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<AdminPage>(entity =>
+            {
+                entity.HasKey(e => e.PageId);
+
+                entity.HasOne(a => a.Page).WithOne(p => p.AdminPage).HasForeignKey<AdminPage>(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(a => a.Module).WithMany(p => p.AdminPage).HasForeignKey(d => d.ModuleId).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<SiteSetting>(entity =>
@@ -362,6 +371,7 @@ namespace Deviser.Core.Data
             });
         }
 
+        public virtual DbSet<AdminPage> AdminPage { get; set; }
         public virtual DbSet<ContentPermission> ContentPermission { get; set; }
         public virtual DbSet<ContentType> ContentType { get; set; }
         public virtual DbSet<ContentTypeProperty> ContentTypeProperty { get; set; }
@@ -373,6 +383,7 @@ namespace Deviser.Core.Data
         public virtual DbSet<ModuleAction> ModuleAction { get; set; }
         public virtual DbSet<ModuleActionType> ModuleActionType { get; set; }
         public virtual DbSet<ModulePermission> ModulePermission { get; set; }
+        public virtual DbSet<ModuleActionProperty> ModuleActionProperty { get; set; }
         public virtual DbSet<OptionList> OptionList { get; set; }
         public virtual DbSet<Permission> Permission { get; set; }
         public virtual DbSet<Page> Page { get; set; }
@@ -383,7 +394,6 @@ namespace Deviser.Core.Data
         public virtual DbSet<PageTranslation> PageTranslation { get; set; }
         public virtual DbSet<PageContentTranslation> PageContentTranslation { get; set; }
         public virtual DbSet<SiteSetting> SiteSetting { get; set; }
-        public virtual DbSet<ModuleActionProperty> ModuleActionProperty { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<IdentityUserRole<Guid>> UserRole { get; set; }
