@@ -9,5 +9,6 @@ namespace Deviser.Core.Common.DomainTypes
         public Guid ModuleId { get; set; }
         public Guid PageId { get; set; }
         public string EntityName { get; set; }
+        public string ModuleName { get; set; }
     }
 }

@@ -15,10 +15,10 @@ namespace Deviser.Modules.ContactForm.Data
         //    ModuleMetaInfo = Global.ModuleMetaInfo;
         //}
 
-        public ContactDbContext(DbContextOptions options)
+        public ContactDbContext(DbContextOptions<ContactDbContext> options)
             : base(options)
-        {
-            ModuleMetaInfo = Global.ModuleMetaInfo;
+        {            
+            
         }
 
         //public ContactDbContext(IServiceProvider serviceProvider)

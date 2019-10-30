@@ -62,7 +62,7 @@ namespace Deviser.Core.Data.Repositories
 
         //Custom Field Declaration
         public Page GetPageTree()
-        {            
+        {
             try
             {
                 /*IEnumerable<> returnData = context.Pages.Include(x => x.ChildPages
@@ -80,7 +80,7 @@ namespace Deviser.Core.Data.Repositories
                 using (var context = new DeviserDbContext(DbOptions))
                 {
                     var allPagesInFlat = context.Page
-                        .Include(p => p.AdminPage)
+                        .Include(p => p.AdminPage).ThenInclude(ap => ap.Module)
                         .Include(p => p.PageTranslation)
                         .Include(p => p.PagePermissions)
                         .AsNoTracking().ToList();
@@ -107,7 +107,7 @@ namespace Deviser.Core.Data.Repositories
 
             page.ChildPage = pagesInFlat
                 .Where(p => p.ParentId == page.Id)
-                .OrderBy(p=>p.PageOrder)
+                .OrderBy(p => p.PageOrder)
                 .ToList();
 
             if (page.ChildPage != null)
@@ -189,7 +189,7 @@ namespace Deviser.Core.Data.Repositories
 
                 using (var context = new DeviserDbContext(DbOptions))
                 {
-                    
+
                     var dbResult = context.Page
                             .Where(e => e.Id == pageId).AsNoTracking()
                             .FirstOrDefault();
@@ -218,7 +218,7 @@ namespace Deviser.Core.Data.Repositories
                 //}
 
                 using (var context = new DeviserDbContext(DbOptions))
-                {                    
+                {
                     var dbResult = context.Page
                             .Where(e => e.Id == pageId).AsNoTracking()
                             .Include(p => p.PagePermissions)
@@ -248,7 +248,7 @@ namespace Deviser.Core.Data.Repositories
                 //}
 
                 using (var context = new DeviserDbContext(DbOptions))
-                {                    
+                {
                     var dbResult = context.Page
                             .Where(e => e.Id == pageId).AsNoTracking()
                             .Include(p => p.PageTranslation)

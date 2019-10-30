@@ -24,6 +24,7 @@ using Deviser.Core.Data.Extension;
 using System.Linq;
 using System.Globalization;
 using Deviser.Core.Common.Extensions;
+using Deviser.Modules.ContactForm.Data;
 
 namespace Deviser.WI
 {
@@ -58,7 +59,7 @@ namespace Deviser.WI
             //       {
             //           installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder, "Deviser.Modules.Blog");
             //       });
-            
+
             //services.AddDbContext
 
             // Add Autofac

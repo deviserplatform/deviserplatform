@@ -34,6 +34,7 @@ using System.Linq.Expressions;
 using Deviser.Core.Common.Extensions;
 using Deviser.Admin.Web.DependencyInjection;
 using Deviser.Core.Common.Json;
+using Deviser.Core.Common.Module;
 
 namespace Deviser.Core.Library.DependencyInjection
 {
@@ -44,11 +45,12 @@ namespace Deviser.Core.Library.DependencyInjection
 
             services.AddSingleton<IInstallationProvider, InstallationProvider>();
             services.AddSingleton<ISiteSettingRepository, SiteSettingRepository>();
+            services.AddSingleton<IModuleRegistry, ModuleRegistry>();
 
-            var sp = services.BuildServiceProvider();
-            IInstallationProvider installationProvider = sp.GetRequiredService<IInstallationProvider>();
+            InternalServiceProvider.Instance.BuildServiceProvider(services);
+            
+            IInstallationProvider installationProvider = InternalServiceProvider.Instance.ServiceProvider.GetRequiredService<IInstallationProvider>();
 
-            SharedObjects.ServiceProvider = sp;
 
             services.AddDbContext<DeviserDbContext>(
                    (internalServiceProvider, dbContextOptionBuilder) =>
@@ -62,7 +64,7 @@ namespace Deviser.Core.Library.DependencyInjection
                .AddDefaultTokenProviders();
 
             MapperConfig.CreateMaps();
-            sp = services.BuildServiceProvider();
+            InternalServiceProvider.Instance.BuildServiceProvider(services);
 
             //Add framework services.
             //services.AddDbContext<DeviserDbContext>(options =>
@@ -73,7 +75,7 @@ namespace Deviser.Core.Library.DependencyInjection
             {
 
 
-                var siteSettingRepository = sp.GetService<ISiteSettingRepository>(); //sp.GetService<ISiteSettingRepository>();
+                var siteSettingRepository = InternalServiceProvider.Instance.ServiceProvider.GetService<ISiteSettingRepository>(); //sp.GetService<ISiteSettingRepository>();
                 var siteSettings = siteSettingRepository.GetSettings();
 
                 var enableFacebookAuth = siteSettings.FirstOrDefault(s => s.SettingName == "EnableFacebookAuth").SettingValue;
@@ -118,7 +120,7 @@ namespace Deviser.Core.Library.DependencyInjection
 
             RegisterModuleDependencies(services);
 
-            RegisterModuleDbContexts(services);
+            //RegisterModuleDbContexts(services);
 
             services
                 .AddMvc()
@@ -226,46 +228,61 @@ namespace Deviser.Core.Library.DependencyInjection
             {
                 var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.ApplicationEntryPoint);
                 Type moduleConfiguratorType = typeof(IModuleConfigurator);
-                List<TypeInfo> moduleServiceCollectors = assemblies.GetDerivedTypeInfos(moduleConfiguratorType); //new List<TypeInfo>();
-
+                List<TypeInfo> moduleConfigurators = assemblies.GetDerivedTypeInfos(moduleConfiguratorType); //new List<TypeInfo>();
+                var moduleRegistery = InternalServiceProvider.Instance.ServiceProvider.GetService<IModuleRegistry>();
                 var registerServiceMethodInfo = moduleConfiguratorType.GetMethod("ConfigureServices");
 
-                if (moduleServiceCollectors.Count > 0)
+
+                if (moduleConfigurators.Count > 0)
                 {
-                    foreach (var serviceCollectorType in moduleServiceCollectors)
+                    foreach (var moduleConfigurator in moduleConfigurators)
                     {
-                        var obj = Activator.CreateInstance(serviceCollectorType);
-                        registerServiceMethodInfo.Invoke(obj, new object[] { serviceCollection });
+                        var moduleManifest = new ModuleManifest();
+                        moduleManifest.ModuleMetaInfo.ModuleAssembly = moduleConfigurator.Assembly.FullName;
+                        var moduleConfig = Activator.CreateInstance(moduleConfigurator) as IModuleConfigurator;
+                        //registerServiceMethodInfo.Invoke(obj, new object[] { serviceCollection });
+                        moduleConfig.ConfigureModule(moduleManifest);
+                        moduleRegistery.TryRegisterModule(moduleManifest.ModuleMetaInfo);
+                        moduleConfig.ConfigureServices(serviceCollection);
+
+                        //RegisterModuleDbContexts
+                        RegisterModuleDbContexts(moduleConfigurator.Assembly, serviceCollection);
+
                     }
                 }
             }
             catch (Exception ex)
             {
-
                 throw;
             }
 
         }
-        private static void RegisterModuleDbContexts(IServiceCollection serviceCollection)
+
+        private static void RegisterModuleDbContexts(Assembly moduleAssemlby, IServiceCollection serviceCollection)
         {
             try
             {
-                var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.ApplicationEntryPoint);
-                List<TypeInfo> moduleDbContextBaseTypes = assemblies.GetDerivedTypeInfos(typeof(ModuleDbContext));
-                MethodInfo addDbContextMethodInfo = GetAddDbContextMethodInfo();
-
-                if (moduleDbContextBaseTypes.Count > 0)
+                //var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.ApplicationEntryPoint);
+                List<TypeInfo> moduleDbContextDerivedTypes = moduleAssemlby.GetDerivedTypeInfos(typeof(ModuleDbContext));
+                var installationProvider = InternalServiceProvider.Instance.ServiceProvider.GetRequiredService<IInstallationProvider>();
+                if (moduleDbContextDerivedTypes.Count > 0)
                 {
-                    foreach (var modDbContextType in moduleDbContextBaseTypes)
+                    foreach (var moduleDbContextType in moduleDbContextDerivedTypes)
                     {
-                        var modDbContextMethodInfo = addDbContextMethodInfo.MakeGenericMethod(modDbContextType);
-                        var moduleAssembly = modDbContextType.Assembly.GetName().Name;
+                        //MethodInfo addDbContextMethodInfo = GetAddDbContextMethodInfo();
 
-                        if (moduleAssembly == "Deviser.Modules.Blog")
-                        {
-                            var optionsAction = GetActionExpression(moduleAssembly);
-                            modDbContextMethodInfo.Invoke(serviceCollection, new object[] { serviceCollection, optionsAction, ServiceLifetime.Scoped, ServiceLifetime.Scoped });
-                        }
+                        //var modDbContextMethodInfo = addDbContextMethodInfo.MakeGenericMethod(moduleDbContextType);
+                        var moduleAssembly = moduleDbContextType.Assembly.GetName().Name;
+                        //var dbContextOptionExprFactory = new DbContextOptionExprFactory(moduleAssembly, installationProvider);
+
+                        ////if (moduleAssembly == "Deviser.Modules.Blog")
+                        ////{
+                        //var optionsAction = dbContextOptionExprFactory.GetActionExpression(); //GetActionExpression(moduleAssembly);
+                        //modDbContextMethodInfo.Invoke(serviceCollection, new object[] { serviceCollection, optionsAction, ServiceLifetime.Scoped, ServiceLifetime.Scoped });
+                        ////}
+
+                        CallGenericMethod(nameof(RegisterModuleDbContext), moduleDbContextType,
+                            new object[] { moduleAssembly, installationProvider, serviceCollection });
 
                     }
                 }
@@ -277,38 +294,77 @@ namespace Deviser.Core.Library.DependencyInjection
             }
 
         }
-        private static MethodInfo GetAddDbContextMethodInfo()
+        
+        //private static MethodInfo GetAddDbContextMethodInfo()
+        //{
+        //    MethodInfo addDbContextMethodInfo = null;
+
+        //    var methodInfos = typeof(EntityFrameworkServiceCollectionExtensions)
+        //        .GetMethods().Where(m => m.Name == "AddDbContext" && m.GetGenericArguments().Count() == 1).ToList();
+
+        //    foreach (var mi in methodInfos)
+        //    {
+        //        var parameters = mi.GetParameters();
+        //        if (parameters[0].ParameterType == typeof(IServiceCollection) && !parameters[0].IsOptional &&
+        //            parameters[1].ParameterType == typeof(Action<IServiceProvider, DbContextOptionsBuilder>) && !parameters[1].IsOptional)
+        //        {
+        //            addDbContextMethodInfo = mi;
+        //            break;
+        //        }
+        //    }
+
+        //    return addDbContextMethodInfo;
+        //}
+        //private static Action<IServiceProvider, DbContextOptionsBuilder> GetActionExpression(string assembly)
+        //{
+        //    var installationProvider = SharedObjects.ServiceProvider.GetRequiredService<IInstallationProvider>();
+
+        //    Action<IServiceProvider, DbContextOptionsBuilder> optionsAction = (internalServiceprovider, dbContextOptionBuilder) =>
+        //    {
+        //        installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder, assembly/*"Deviser.Modules.Blog"*/);
+        //    };
+
+        //    return optionsAction;
+        //}
+
+        private static void RegisterModuleDbContext<TDbContext>(string moduleAssembly,
+            IInstallationProvider installationProvider,
+            IServiceCollection serviceCollection)
+            where TDbContext : DbContext
         {
-            MethodInfo addDbContextMethodInfo = null;
-
-            var methodInfos = typeof(EntityFrameworkServiceCollectionExtensions)
-                .GetMethods().Where(m => m.Name == "AddDbContext" && m.GetGenericArguments().Count() == 1).ToList();
-
-            foreach (var mi in methodInfos)
-            {
-                var parameters = mi.GetParameters();
-                if (parameters[0].ParameterType == typeof(IServiceCollection) && !parameters[0].IsOptional &&
-                    parameters[1].ParameterType == typeof(Action<IServiceProvider, DbContextOptionsBuilder>) && !parameters[1].IsOptional)
-                {
-                    addDbContextMethodInfo = mi;
-                    break;
-                }
-            }
-
-            return addDbContextMethodInfo;
+            serviceCollection.AddDbContext<TDbContext>(
+                   (internalServiceProvider, dbContextOptionBuilder) =>
+                   {
+                       //dbContextOptionBuilder.UseInternalServiceProvider(sp);                    
+                       installationProvider.GetDbContextOptionsBuilder<TDbContext>(dbContextOptionBuilder, moduleAssembly);
+                   });
         }
-        private static Action<IServiceProvider, DbContextOptionsBuilder> GetActionExpression(string assembly)
-        {
-            var installationProvider = SharedObjects.ServiceProvider.GetRequiredService<IInstallationProvider>();
 
+        private static void CallGenericMethod(string methodName, Type genericType, object[] parmeters)
+        {
+            var getItemMethodInfo = typeof(AdminServicesExtensions).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
+            var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericType);
+            var result = getItemMethod.Invoke(null, parmeters);
+        }
+    }
+
+    internal class DbContextOptionExprFactory
+    {
+        private readonly string _assembly;
+        private readonly IInstallationProvider _installationProvider;
+        internal DbContextOptionExprFactory(string assembly, IInstallationProvider installationProvider)
+        {
+            _assembly = assembly;
+            _installationProvider = installationProvider;
+        }
+
+        internal Action<IServiceProvider, DbContextOptionsBuilder> GetActionExpression()
+        {
             Action<IServiceProvider, DbContextOptionsBuilder> optionsAction = (internalServiceprovider, dbContextOptionBuilder) =>
             {
-                installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder, assembly/*"Deviser.Modules.Blog"*/);
+                _installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder, _assembly/*"Deviser.Modules.Blog"*/);
             };
-
             return optionsAction;
-
-
         }
     }
 }

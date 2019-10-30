@@ -155,7 +155,7 @@ namespace Deviser.Core.Library
         private MenuItem GetMenuItemIteratively(Page page, string currentCulture, string siteRoot)
         {
             var menuItem = CreateMenuItem(page, currentCulture, siteRoot);
-            menuItem.Parent = page.Parent != null ? CreateMenuItem(page.Parent, currentCulture, siteRoot) :null;
+            menuItem.Parent = page.Parent != null ? CreateMenuItem(page.Parent, currentCulture, siteRoot) : null;
 
             if (page.ChildPage != null && page.ChildPage.Count > 0)
             {
@@ -172,10 +172,10 @@ namespace Deviser.Core.Library
         private MenuItem CreateMenuItem(Page page, string currentCulture, string siteRoot)
         {
             var menuItem = new MenuItem();
-            var pageTranslation = page.PageTranslation.FirstOrDefault(t => t.Locale == currentCulture);            
+            var pageTranslation = page.PageTranslation.FirstOrDefault(t => t.Locale == currentCulture);
 
             menuItem.Page = page;
-            menuItem.HasChild = page.ChildPage != null && page.ChildPage.Count > 0;            
+            menuItem.HasChild = page.ChildPage != null && page.ChildPage.Count > 0;
             menuItem.PageLevel = page.PageLevel != null ? (int)page.PageLevel : 0;
             menuItem.IsActive = page.IsActive;
             menuItem.IsBreadCrumb = page.IsBreadCrumb;
@@ -187,6 +187,11 @@ namespace Deviser.Core.Library
                 if (page.PageTypeId == Globals.PageTypeStandard)
                 {
                     menuItem.URL = siteRoot + pageTranslation.URL;
+                }
+                else if (page.PageTypeId == Globals.PageTypeAdmin)
+                {
+                    menuItem.URL = $"{siteRoot}/modules/{page.AdminPage.ModuleName}/";
+
                 }
                 else
                 {

@@ -1,25 +1,25 @@
-﻿using Deviser.Core.Common.Module;
+﻿using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Common.Module;
 using Deviser.Core.Library.Modules;
-using Deviser.Modules.ContactForm.Data;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace Deviser.Modules.ContactForm
+namespace Deviser.Modules.Blog
 {
     public class ModuleConfigurator : IModuleConfigurator
-    {
+    {       
         public void ConfigureModule(IModuleManifest moduleManifest)
-        {            
-            moduleManifest.ModuleMetaInfo.ModuleName = "Contact";
+        {
+            moduleManifest.ModuleMetaInfo.ModuleName = "Blog";
             moduleManifest.ModuleMetaInfo.ModuleVersion = typeof(ModuleConfigurator).GetTypeInfo().Assembly.GetName().Version.ToString();
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IContactProvider, ContactProvider>();
+            
         }
     }
 }

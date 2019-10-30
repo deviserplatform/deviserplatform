@@ -9,18 +9,20 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Internal;
 using Deviser.Core.Common.Internal;
+using Deviser.Core.Common.Module;
 
 namespace Deviser.Core.Data.Extension
 {
-    public class ModuleDbContext : DbContext
+    public abstract class ModuleDbContext : DbContext
     {
         //private IInstallationProvider _installationProvider;
-        public ModuleMetaInfo ModuleMetaInfo { get; set; }
+        public ModuleMetaInfo ModuleMetaInfo { get; }
 
         public ModuleDbContext(DbContextOptions options)
             : base(options)
         {
-
+            var moduleRegistry = InternalServiceProvider.Instance.ServiceProvider.GetService<IModuleRegistry>();
+            ModuleMetaInfo = moduleRegistry.GetModuleMetaInfoByAssembly(GetType().Assembly.FullName);
         }
 
         //public ModuleDbContext(IServiceProvider serviceProvider)
@@ -51,8 +53,8 @@ namespace Deviser.Core.Data.Extension
             if(string.IsNullOrEmpty(ModuleMetaInfo.ModuleName))
                 throw new ArgumentNullException(nameof(ModuleMetaInfo.ModuleName));
 
-            if (string.IsNullOrEmpty(ModuleMetaInfo.ModuleAssembly))
-                throw new ArgumentNullException(nameof(ModuleMetaInfo.ModuleAssembly));
+            //if (string.IsNullOrEmpty(ModuleMetaInfo.ModuleAssembly))
+            //    throw new ArgumentNullException(nameof(ModuleMetaInfo.ModuleAssembly));
 
             //if (_installationProvider != null)
             //{

@@ -10,10 +10,10 @@ namespace Deviser.Modules.Blog.Models
 {
     public class BlogDbContext : ModuleDbContext
     {
-        public BlogDbContext(DbContextOptions options)
+        public BlogDbContext(DbContextOptions<BlogDbContext> options)
             : base(options)
         {
-            ModuleMetaInfo = Global.ModuleMetaInfo;
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

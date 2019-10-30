@@ -47,6 +47,14 @@ namespace Deviser.Core.Common
             }
         }
 
+        public static Guid PageTypeAdmin
+        {
+            get
+            {
+                return new Guid("5308B86C-A2FC-4220-8BA2-47E7BEC1938D");
+            }
+        }
+
         public static string HostMapPath
         {
             get

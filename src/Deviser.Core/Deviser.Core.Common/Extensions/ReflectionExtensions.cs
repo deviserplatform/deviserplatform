@@ -11,16 +11,21 @@ namespace Deviser.Core.Common.Extensions
     {
         public static List<TypeInfo> GetDerivedTypeInfos(this IEnumerable<Assembly> assemblies, Type baseType)
         {
-            List<TypeInfo> derivedTypes = new List<TypeInfo>();
+            List<TypeInfo> derivedTypeList = new List<TypeInfo>();
             foreach (var assembly in assemblies)
             {
-                var moduleDbContextTypes = assembly.DefinedTypes.Where((t) => (baseType.IsAssignableFrom(t) ||
-                (t.GetInterfaces().Any(i=>i.IsGenericType && i.GetGenericTypeDefinition()==baseType)))).ToList();
+                List<TypeInfo> derivedTypes = assembly.GetDerivedTypeInfos(baseType);
 
-                if (moduleDbContextTypes?.Count > 0)
-                    derivedTypes.AddRange(moduleDbContextTypes);
+                if (derivedTypes?.Count > 0)
+                    derivedTypeList.AddRange(derivedTypes);
             }
-            return derivedTypes;
+            return derivedTypeList;
+        }
+
+        public static List<TypeInfo> GetDerivedTypeInfos(this Assembly assembly, Type baseType)
+        {
+            return assembly.DefinedTypes.Where((t) => (baseType.IsAssignableFrom(t) ||
+                            (t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == baseType)))).ToList();
         }
 
         public static string GetMemberName(LambdaExpression fieldExpression)
