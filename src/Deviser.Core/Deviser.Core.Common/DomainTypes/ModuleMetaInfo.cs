@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace Deviser.Core.Common.DomainTypes
@@ -11,5 +12,7 @@ namespace Deviser.Core.Common.DomainTypes
         public string ModuleAssembly { get; set; }
 
         public string ModuleVersion { get; set; }
+
+        public TypeInfo AdminConfiguratorTypeInfo { get; set; }
     }
 }

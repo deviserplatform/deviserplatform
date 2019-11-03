@@ -279,7 +279,7 @@ namespace Deviser.Core.Data.Repositories
                     {
                         x.MigrationsAssembly(moduleAssembly);
                         x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
-                    })
+                    })                    
                     .ReplaceService<IHistoryRepository, SqlServerModuleHistoryRepository>();
                 }
 

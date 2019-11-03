@@ -48,7 +48,7 @@ namespace Deviser.Core.Library.DependencyInjection
             services.AddSingleton<IModuleRegistry, ModuleRegistry>();
 
             InternalServiceProvider.Instance.BuildServiceProvider(services);
-            
+
             IInstallationProvider installationProvider = InternalServiceProvider.Instance.ServiceProvider.GetRequiredService<IInstallationProvider>();
 
 
@@ -242,7 +242,9 @@ namespace Deviser.Core.Library.DependencyInjection
                         var moduleConfig = Activator.CreateInstance(moduleConfigurator) as IModuleConfigurator;
                         //registerServiceMethodInfo.Invoke(obj, new object[] { serviceCollection });
                         moduleConfig.ConfigureModule(moduleManifest);
+                        moduleManifest.ModuleMetaInfo.AdminConfiguratorTypeInfo = GetAdminConfiguratorInModule(moduleConfigurator.Assembly);
                         moduleRegistery.TryRegisterModule(moduleManifest.ModuleMetaInfo);
+
                         moduleConfig.ConfigureServices(serviceCollection);
 
                         //RegisterModuleDbContexts
@@ -294,7 +296,18 @@ namespace Deviser.Core.Library.DependencyInjection
             }
 
         }
-        
+
+        public static TypeInfo GetAdminConfiguratorInModule(Assembly assembly)
+        {
+            List<TypeInfo> adminConfiguratorTypes = assembly.GetDerivedTypeInfos(typeof(IAdminConfigurator));
+            if (adminConfiguratorTypes.Count > 1)
+            {
+                throw new InvalidOperationException($"Module cannot have more than one implementation of {nameof(IAdminConfigurator)}");
+            }
+
+            return adminConfiguratorTypes.FirstOrDefault();
+        }
+
         //private static MethodInfo GetAddDbContextMethodInfo()
         //{
         //    MethodInfo addDbContextMethodInfo = null;
@@ -345,26 +358,6 @@ namespace Deviser.Core.Library.DependencyInjection
             var getItemMethodInfo = typeof(AdminServicesExtensions).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
             var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericType);
             var result = getItemMethod.Invoke(null, parmeters);
-        }
-    }
-
-    internal class DbContextOptionExprFactory
-    {
-        private readonly string _assembly;
-        private readonly IInstallationProvider _installationProvider;
-        internal DbContextOptionExprFactory(string assembly, IInstallationProvider installationProvider)
-        {
-            _assembly = assembly;
-            _installationProvider = installationProvider;
-        }
-
-        internal Action<IServiceProvider, DbContextOptionsBuilder> GetActionExpression()
-        {
-            Action<IServiceProvider, DbContextOptionsBuilder> optionsAction = (internalServiceprovider, dbContextOptionBuilder) =>
-            {
-                _installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder, _assembly/*"Deviser.Modules.Blog"*/);
-            };
-            return optionsAction;
         }
     }
 }

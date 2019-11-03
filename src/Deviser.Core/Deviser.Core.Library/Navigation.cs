@@ -190,8 +190,7 @@ namespace Deviser.Core.Library
                 }
                 else if (page.PageTypeId == Globals.PageTypeAdmin)
                 {
-                    menuItem.URL = $"{siteRoot}/modules/{page.AdminPage.ModuleName}/";
-
+                    menuItem.URL = $"{siteRoot}modules/{page?.AdminPage?.ModuleName}/admin/{page?.AdminPage?.EntityName}";
                 }
                 else
                 {
