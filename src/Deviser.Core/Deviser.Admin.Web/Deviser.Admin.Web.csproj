@@ -41,4 +41,8 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Admin\dist\" />
+  </ItemGroup>
 </Project>
