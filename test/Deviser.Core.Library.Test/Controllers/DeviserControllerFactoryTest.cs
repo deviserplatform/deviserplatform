@@ -96,81 +96,81 @@ namespace Deviser.Core.Library.Test.Controllers
             dbContext.Page.RemoveRange(dbContext.Page);
         }
 
-        [Fact]
-        public void GetModuleEditResultSuccess()
-        {
-            //Arrange
-            //var actionContextMock = new Mock<ActionContext>();
-            var scopeServiceMock = new Mock<IScopeService>();
-            var pageManager = new PageManager(_container);
-            var moduleRepository = new ModuleRepository(_container);
-            var dbContext = _serviceProvider.GetRequiredService<DeviserDbContext>();
-            var pageId = SetupPageAndModules();
-            var currentPage = pageManager.GetPageAndDependencies(pageId);
-            scopeServiceMock.Setup(s => s.PageContext.CurrentPage).Returns(currentPage);
+        //[Fact]
+        //public void GetModuleEditResultSuccess()
+        //{
+        //    //Arrange
+        //    //var actionContextMock = new Mock<ActionContext>();
+        //    var scopeServiceMock = new Mock<IScopeService>();
+        //    var pageManager = new PageManager(_container);
+        //    var moduleRepository = new ModuleRepository(_container);
+        //    var dbContext = _serviceProvider.GetRequiredService<DeviserDbContext>();
+        //    var pageId = SetupPageAndModules();
+        //    var currentPage = pageManager.GetPageAndDependencies(pageId);
+        //    scopeServiceMock.Setup(s => s.PageContext.CurrentPage).Returns(currentPage);
 
 
-            var httpContext = CreateHttpContext("GET");
+        //    var httpContext = CreateHttpContext("GET");
 
-            var router = new Mock<IRouter>(MockBehavior.Strict).Object;
-            var actionContext = new ActionContext();
-            actionContext.HttpContext = httpContext;
-            actionContext.RouteData = new RouteData();
-            actionContext.RouteData.Routers.Add(router);
+        //    var router = new Mock<IRouter>(MockBehavior.Strict).Object;
+        //    var actionContext = new ActionContext();
+        //    actionContext.HttpContext = httpContext;
+        //    actionContext.RouteData = new RouteData();
+        //    actionContext.RouteData.Routers.Add(router);
 
-            //actionContextMock.Setup(ac => ac.RouteData).Returns(new RouteData());
-            //actionContextMock.Setup(ac => ac.RouteData.Routers).Returns(new List<IRouter>());
-            var deviserControllerFactory = new DeviserControllerFactory(_container, scopeServiceMock.Object);
-            var modules = moduleRepository.Get();
-            var editModule = modules.First(m => m.ModuleAction.Any(ma => ma.ControllerName == "Edit"));
-            var editModuleAction =
-                editModule.ModuleAction.First(
-                    ma => ma.ModuleActionTypeId == Guid.Parse("192278B6-7BF2-40C2-A776-B9CA5FB04FBB"));
-            var pageModule = currentPage.PageModule.First(pm => pm.ModuleId == editModule.Id);
+        //    //actionContextMock.Setup(ac => ac.RouteData).Returns(new RouteData());
+        //    //actionContextMock.Setup(ac => ac.RouteData.Routers).Returns(new List<IRouter>());
+        //    var deviserControllerFactory = new DeviserControllerFactory(_container, scopeServiceMock.Object);
+        //    var modules = moduleRepository.Get();
+        //    var editModule = modules.First(m => m.ModuleAction.Any(ma => ma.ControllerName == "Edit"));
+        //    var editModuleAction =
+        //        editModule.ModuleAction.First(
+        //            ma => ma.ModuleActionTypeId == Guid.Parse("192278B6-7BF2-40C2-A776-B9CA5FB04FBB"));
+        //    var pageModule = currentPage.PageModule.First(pm => pm.ModuleId == editModule.Id);
 
-            //Act
-            var result = deviserControllerFactory.GetModuleEditResultAsString(actionContext, pageModule, editModuleAction.Id).Result;
+        //    //Act
+        //    var result = deviserControllerFactory.GetModuleEditResultAsString(actionContext, pageModule, editModuleAction.Id).Result;
             
-            //Assert
-            Assert.NotNull(result);
-            Assert.True(!string.IsNullOrEmpty(result));
-            Assert.True(!result.Contains("Module load exception"));
+        //    //Assert
+        //    Assert.NotNull(result);
+        //    Assert.True(!string.IsNullOrEmpty(result));
+        //    Assert.True(!result.Contains("Module load exception"));
 
-            //Clean
-            dbContext.PageModule.RemoveRange(dbContext.PageModule);
-            dbContext.Module.RemoveRange(dbContext.Module);
-            dbContext.Page.RemoveRange(dbContext.Page);
-        }
+        //    //Clean
+        //    dbContext.PageModule.RemoveRange(dbContext.PageModule);
+        //    dbContext.Module.RemoveRange(dbContext.Module);
+        //    dbContext.Page.RemoveRange(dbContext.Page);
+        //}
 
-        [Fact]
-        public void GetModuleEditResultFail()
-        {
-            //Arrange
-            var actionContextMock = new Mock<ActionContext>();
-            var scopeServiceMock = new Mock<IScopeService>();
-            var pageManager = new PageManager(_container);
-            var dbContext = _serviceProvider.GetRequiredService<DeviserDbContext>();
-            var pageId = SetupPageAndModules();
-            dbContext.PageModule.RemoveRange(dbContext.PageModule);
-            dbContext.SaveChanges();
-            var currentPage = pageManager.GetPageAndDependencies(pageId);
-            scopeServiceMock.Setup(s => s.PageContext.CurrentPage).Returns(currentPage);
-            actionContextMock.Setup(ac => ac.RouteData.Routers).Returns(new List<IRouter>());
-            var deviserControllerFactory = new DeviserControllerFactory(_container, scopeServiceMock.Object);
+        //[Fact]
+        //public void GetModuleEditResultFail()
+        //{
+        //    //Arrange
+        //    var actionContextMock = new Mock<ActionContext>();
+        //    var scopeServiceMock = new Mock<IScopeService>();
+        //    var pageManager = new PageManager(_container);
+        //    var dbContext = _serviceProvider.GetRequiredService<DeviserDbContext>();
+        //    var pageId = SetupPageAndModules();
+        //    dbContext.PageModule.RemoveRange(dbContext.PageModule);
+        //    dbContext.SaveChanges();
+        //    var currentPage = pageManager.GetPageAndDependencies(pageId);
+        //    scopeServiceMock.Setup(s => s.PageContext.CurrentPage).Returns(currentPage);
+        //    actionContextMock.Setup(ac => ac.RouteData.Routers).Returns(new List<IRouter>());
+        //    var deviserControllerFactory = new DeviserControllerFactory(_container, scopeServiceMock.Object);
 
-            //Act
-            var result = deviserControllerFactory.GetModuleEditResultAsString(actionContextMock.Object, new PageModule(), Guid.NewGuid()).Result;
+        //    //Act
+        //    var result = deviserControllerFactory.GetModuleEditResultAsString(actionContextMock.Object, new PageModule(), Guid.NewGuid()).Result;
 
-            //Assert
-            Assert.NotNull(result);
-            Assert.True(!string.IsNullOrEmpty(result));
-            Assert.True(result.Contains("Module load exception"));
+        //    //Assert
+        //    Assert.NotNull(result);
+        //    Assert.True(!string.IsNullOrEmpty(result));
+        //    Assert.True(result.Contains("Module load exception"));
 
-            //Clean
-            dbContext.PageModule.RemoveRange(dbContext.PageModule);
-            dbContext.Module.RemoveRange(dbContext.Module);
-            dbContext.Page.RemoveRange(dbContext.Page);
-        }
+        //    //Clean
+        //    dbContext.PageModule.RemoveRange(dbContext.PageModule);
+        //    dbContext.Module.RemoveRange(dbContext.Module);
+        //    dbContext.Page.RemoveRange(dbContext.Page);
+        //}
 
         private Guid SetupPageAndModules()
         {

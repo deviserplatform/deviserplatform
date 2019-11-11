@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace Deviser.Admin.Web.Controllers
 {
-    public class AdminController<TAdminConfigurator> : Controller
-       where TAdminConfigurator : IAdminConfigurator
+    public class AdminController<TAdminConfigurator> : Controller, IAdminController
+        where TAdminConfigurator : IAdminConfigurator
     {
         //Logger
         private readonly ILogger<AdminController<TAdminConfigurator>> _logger;
@@ -38,7 +38,7 @@ namespace Deviser.Admin.Web.Controllers
             {
                 var adminConfig = _adminRepository.GetAdminConfig(entity);
                 if (adminConfig != null)
-                {                    
+                {
                     return Ok(adminConfig);
                 }
                 return NotFound();

@@ -50,7 +50,7 @@ namespace Deviser.WI
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
 
-            services = services.AddDeviserPlatform(Configuration);
+           services.AddDeviserPlatform(Configuration);
 
             //TODO : Call AddDbContext for all base classes of ModuleDbContext
             //var installationProvider = SharedObjects.ServiceProvider.GetRequiredService<IInstallationProvider>();

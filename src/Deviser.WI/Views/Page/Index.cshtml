@@ -26,6 +26,15 @@
     console.log('@scopeService.ScopeId');
 </script>
 
-<div sde-page="@Model" sde-module-results="@moduleActionResults" class="page-content">
+@if (moduleActionResults != null)
+{
 
-</div>
+    <div sde-page="@Model" sde-module-results="@moduleActionResults" class="page-content">
+
+    </div>
+}
+else
+{
+    @ViewBag.AdminResult
+}
+

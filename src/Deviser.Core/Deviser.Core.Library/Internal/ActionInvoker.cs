@@ -48,22 +48,34 @@ namespace Deviser.Core.Library.Internal
         }
 
         public async Task<IActionResult> InvokeAction(HttpContext httpContext, ModuleAction moduleAction, ActionContext actionContext)
+        {            
+            return await InvokeAction(httpContext, moduleAction.ControllerNamespace, moduleAction.ControllerName, moduleAction.ActionName, actionContext);
+        }
+
+        public async Task<IActionResult> InvokeAction(HttpContext httpContext, string controllerNamespace, string controllerName, string actionName, ActionContext actionContext)
         {
             IActionResult result = null;
 
-            var targetController = _allControllers.FirstOrDefault(c => c.Namespace == moduleAction.ControllerNamespace && c.Name == moduleAction.ControllerName + ControllerTypeNameSuffix);
+            var targetController = _allControllers.FirstOrDefault(c => c.Namespace == controllerNamespace && c.Name == controllerName + ControllerTypeNameSuffix);
 
             if (targetController == null)
-                throw new Exception("Module Controller not found");
+                throw new Exception("Controller not found");
 
-            var targetAction = targetController.GetMethods().FirstOrDefault(m => m.Name == moduleAction.ActionName);
+            var targetAction = targetController.GetMethods().FirstOrDefault(m => m.Name == actionName);
 
             if (targetAction == null)
-                throw new Exception("Module Action not found");
+                throw new Exception("Action not found");
 
             var executor = _cache.GetExecutor(targetAction, targetController);
 
             var actionArguments = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            foreach (var param in actionContext.ActionDescriptor.Parameters)
+            {
+                if (actionContext.RouteData.Values.ContainsKey(param.Name))
+                {
+                    actionArguments.Add(param.Name, actionContext.RouteData.Values[param.Name]);
+                }
+            }
 
             var arguments = PrepareArguments(actionArguments, executor);
 

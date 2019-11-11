@@ -16,7 +16,7 @@
 <require type="Script" include="Development" location="Head" priority="14" path="~/lib/lodash/dist/lodash.js"></require>
 <require type="Script" include="Development" location="Head" priority="15" path="~/js/metisMenu.min.js"></require>
 
-<require type="Script" include="Development" priority="31" path="~/js/src/app/dev-form-helper.js"></require>
+@*<require type="Script" include="Development" priority="31" path="~/js/src/app/dev-form-helper.js"></require>*@
 <require type="Script" include="Development" priority="32" path="~/js/admin/main.js"></require>
 
 @await Component.InvokeAsync("ControlBar")
@@ -30,13 +30,21 @@
 
     </div>
     <div class="admin-body">
-        <div class="admin-content">
-            <section class="content-header">
-                <h1 class="page-header">@currentPage.PageTranslation.First().Title</h1>
-            </section>
-            <section class="content-body container-fluid">
-                @RenderBody()
-            </section>
+        <div class="admin-content container-fluid">
+            <div class="row">
+                <div class="col">
+                    <section class="content-header">
+                        <h1 class="page-header">@currentPage.PageTranslation.First().Title</h1>
+                    </section>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <section class="content-body">
+                        @RenderBody()
+                    </section>
+                </div>
+            </div>
         </div>
         <footer class="admin-footer container-fluid">
             <div class="copyright text-center my-auto">

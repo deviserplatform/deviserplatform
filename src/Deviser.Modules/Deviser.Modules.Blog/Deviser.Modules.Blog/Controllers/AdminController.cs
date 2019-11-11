@@ -7,7 +7,7 @@ using System.Text;
 namespace Deviser.Modules.Blog.Controllers
 {
     [Module("Blog")]
-    public class AdminController : AdminController<AdminConfigurator>        
+    public class AdminController : AdminController<AdminConfigurator>
     {
         public AdminController(IServiceProvider serviceProvider)
             : base(serviceProvider)

@@ -8,13 +8,12 @@ namespace Deviser.Core.Common.Module
 {
     public class ModuleRegistry : IModuleRegistry
     {
-        private readonly ConcurrentDictionary<string, string> _moduleNameAssemblyMapping;
-        private readonly ConcurrentDictionary<string, ModuleMetaInfo> _moduleAssemblyMetaInfo;
+        private static readonly ConcurrentDictionary<string, string> _moduleNameAssemblyMapping = new ConcurrentDictionary<string, string>();
+        private static readonly ConcurrentDictionary<string, ModuleMetaInfo> _moduleAssemblyMetaInfo = new ConcurrentDictionary<string, ModuleMetaInfo>();
 
         public ModuleRegistry()
         {
-            _moduleNameAssemblyMapping = new ConcurrentDictionary<string, string>();
-            _moduleAssemblyMetaInfo = new ConcurrentDictionary<string, ModuleMetaInfo>();
+
         }
 
         /// <summary>
@@ -29,13 +28,13 @@ namespace Deviser.Core.Common.Module
                 return false;
             }
 
-            if (_moduleAssemblyMetaInfo.ContainsKey(moduleMetaInfo.ModuleAssembly))
+            if (_moduleAssemblyMetaInfo.ContainsKey(moduleMetaInfo.ModuleAssemblyFullName))
             {
                 return false;
             }
 
-            _moduleNameAssemblyMapping.TryAdd(moduleMetaInfo.ModuleName, moduleMetaInfo.ModuleAssembly);
-            _moduleAssemblyMetaInfo.TryAdd(moduleMetaInfo.ModuleAssembly, moduleMetaInfo);
+            _moduleNameAssemblyMapping.TryAdd(moduleMetaInfo.ModuleName, moduleMetaInfo.ModuleAssemblyFullName);
+            _moduleAssemblyMetaInfo.TryAdd(moduleMetaInfo.ModuleAssemblyFullName, moduleMetaInfo);
             return true;
         }
 
@@ -49,7 +48,7 @@ namespace Deviser.Core.Common.Module
         {
             if (_moduleNameAssemblyMapping.TryGetValue(moduleName, out string assemblyName))
             {
-                _moduleAssemblyMetaInfo.TryGetValue(moduleName, out ModuleMetaInfo moduleMetaInfo);
+                _moduleAssemblyMetaInfo.TryGetValue(assemblyName, out ModuleMetaInfo moduleMetaInfo);
                 return moduleMetaInfo;
             }
             return null;

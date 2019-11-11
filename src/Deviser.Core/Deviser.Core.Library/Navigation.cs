@@ -184,14 +184,14 @@ namespace Deviser.Core.Library
             {
                 menuItem.PageName = pageTranslation.Name;
                 menuItem.IsLinkNewWindow = pageTranslation.IsLinkNewWindow;
-                if (page.PageTypeId == Globals.PageTypeStandard)
+                if (page.PageTypeId == Globals.PageTypeStandard || page.PageTypeId == Globals.PageTypeAdmin)
                 {
                     menuItem.URL = siteRoot + pageTranslation.URL;
                 }
-                else if (page.PageTypeId == Globals.PageTypeAdmin)
-                {
-                    menuItem.URL = $"{siteRoot}modules/{page?.AdminPage?.ModuleName}/admin/{page?.AdminPage?.EntityName}";
-                }
+                //else if (page.PageTypeId == Globals.PageTypeAdmin)
+                //{
+                //    menuItem.URL = $"{siteRoot}modules/{page?.AdminPage?.ModuleName}/admin/{page?.AdminPage?.EntityName}";
+                //}
                 else
                 {
                     menuItem.URL = pageTranslation.RedirectUrl;

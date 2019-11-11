@@ -85,9 +85,19 @@ namespace Deviser.WI.Controllers
                     {
                         if (_scopeService.PageContext.HasPageViewPermission)
                         {
-                            Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await _deviserControllerFactory.GetPageModuleResults(Context);
-                            ViewBag.ModuleActionResults = moduleActionResults;
-                            return View(currentPage);
+                            if (currentPage.PageTypeId == Globals.PageTypeStandard)
+                            {
+                                Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await _deviserControllerFactory.GetPageModuleResults(Context);
+                                ViewBag.ModuleActionResults = moduleActionResults;
+                                return View(currentPage);
+
+                            }
+                            else if(currentPage.PageTypeId == Globals.PageTypeAdmin)
+                            {
+                                var result = await _deviserControllerFactory.GetAdminPageResult(Context);
+                                ViewBag.AdminResult = result;
+                                return View(currentPage);
+                            }   
                         }
                         else
                         {

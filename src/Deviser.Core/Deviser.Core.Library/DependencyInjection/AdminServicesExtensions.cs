@@ -238,7 +238,7 @@ namespace Deviser.Core.Library.DependencyInjection
                     foreach (var moduleConfigurator in moduleConfigurators)
                     {
                         var moduleManifest = new ModuleManifest();
-                        moduleManifest.ModuleMetaInfo.ModuleAssembly = moduleConfigurator.Assembly.FullName;
+                        moduleManifest.ModuleMetaInfo.ModuleAssemblyFullName = moduleConfigurator.Assembly.FullName;
                         var moduleConfig = Activator.CreateInstance(moduleConfigurator) as IModuleConfigurator;
                         //registerServiceMethodInfo.Invoke(obj, new object[] { serviceCollection });
                         moduleConfig.ConfigureModule(moduleManifest);
