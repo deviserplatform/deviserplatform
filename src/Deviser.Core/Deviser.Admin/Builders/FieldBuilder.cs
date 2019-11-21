@@ -25,6 +25,16 @@ namespace Deviser.Admin.Builders
             _formConfig = formConfig;
         }
 
+        public FieldBuilder<TEntity> AddKeyField<TProperty>(Expression<Func<TEntity, TProperty>> expression)
+        {
+            if (_formConfig.KeyField.FieldExpression != null)
+            {
+                throw new InvalidOperationException(Resources.MoreKeyFiledInvalidOperation);
+            }
+            _formConfig.KeyField.FieldExpression = expression;
+            return this;
+        }
+
         public FieldBuilder<TEntity> AddField<TProperty>(Expression<Func<TEntity, TProperty>> expression, Action<FieldOption> fieldOptionAction = null)
         {
             if (_formConfig.FieldConfig.ExcludedFields.Count > 0)

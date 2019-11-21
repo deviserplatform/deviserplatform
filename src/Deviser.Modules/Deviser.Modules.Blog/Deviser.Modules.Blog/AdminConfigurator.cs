@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using AutoMapper;
 using Deviser.Admin;
 using Deviser.Admin.Extensions;
 using Deviser.Core.Common.DomainTypes.Admin;
@@ -41,23 +43,44 @@ namespace Deviser.Modules.Blog
 
         public void ConfigureAdmin(IAdminBuilder adminBuilder)
         {
-            adminBuilder.Register<PostTag>(form =>
+            adminBuilder.MapperConfiguration = new MapperConfiguration(cfg =>
             {
-                form.FieldBuilder
-                     .AddSelectField(s => s.Post, expr => expr.Title);
+                cfg.CreateMap<Post, DTO.Post>()
+                .ForMember(dest => dest.Tags, opt =>
+                {
+                    opt.Condition(src => src.PostTags != null && src.PostTags.Count > 0);
+                    opt.MapFrom(src => src.PostTags.Select(pt => pt.Tag));
+                }).ReverseMap()
+                .ForMember(dest => dest.PostTags, opt =>
+                {
+                    opt.Condition(src => src.Tags != null && src.Tags.Count > 0);
+                    opt.MapFrom(src => src.Tags.Select(t => new PostTag { TagId = t.Id, PostId = src.Id }));
+                });
+                cfg.CreateMap<Tag, DTO.Tag>().ReverseMap();
+                cfg.CreateMap<Comments, DTO.Comments>().ReverseMap();
+                cfg.CreateMap<Category, DTO.Category>().ReverseMap();
             });
 
-            adminBuilder.Register<Post>(form =>
+
+            //adminBuilder.Register<PostTag>(form =>
+            //{
+
+            //    form.FieldBuilder
+            //         .AddSelectField(s => s.Post, expr => expr.Title);
+            //});
+
+            adminBuilder.Register<DTO.Post>(form =>
             {
 
                 form.FieldBuilder
-                     .AddField(s => s.Title)
-                     //.AddField(s => s.Content, fieldOption => { fieldOption.ValidationType = ValidationType.UserExist; })
-                     .AddField(s => s.Content)
-                     .AddInlineSelectField(s => s.Category, expr => expr.Name)
-                     .AddInlineMultiSelectField<Tag>(s => s.PostTags, expr => expr.TagName)
-                     .AddField(s => s.CreatedOn)
-                     .AddField(s => s.CreatedBy);
+                .AddKeyField(p => p.Id)
+                .AddField(p => p.Title)
+                //.AddField(s => s.Content, fieldOption => { fieldOption.ValidationType = ValidationType.UserExist; })
+                .AddField(s => s.Content)
+                .AddInlineSelectField(s => s.Category, expr => expr.Name)
+                .AddInlineMultiSelectField<DTO.Tag>(s => s.Tags, expr => expr.TagName)
+                .AddField(p => p.CreatedOn)
+                .AddField(p => p.CreatedBy);
 
                 //form.Property(s => s.Content)
                 //.ValidateOn(p => p.Title == "Test");
@@ -65,10 +88,11 @@ namespace Deviser.Modules.Blog
                 form.AddChildConfig(s => s.Comments, (childForm) =>
                   {
                       childForm.FieldBuilder
-                      .AddField(s => s.UserName)
-                      .AddField(s => s.Comment)
-                      .AddField(s => s.CreatedOn)
-                      .AddField(s => s.IsApproved);
+                      .AddKeyField(c => c.Id)
+                      .AddField(c => c.UserName)
+                      .AddField(c => c.Comment)
+                      .AddField(c => c.CreatedOn)
+                      .AddField(c => c.IsApproved);
                   });
 
                 //form.FieldSetBuilder

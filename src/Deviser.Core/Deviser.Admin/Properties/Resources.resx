@@ -120,4 +120,7 @@
   <data name="AddRemoveInvalidOperation" xml:space="preserve">
     <value>Either fields can be Added or Removed, but not both!</value>
   </data>
+  <data name="MoreKeyFiledInvalidOperation" xml:space="preserve">
+    <value>More than one KeyField cannot be configured. </value>
+  </data>
 </root>

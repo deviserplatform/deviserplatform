@@ -23,7 +23,7 @@ namespace Deviser.Admin.Data
     public interface IAdminRepository<TAdminConfigurator>
         where TAdminConfigurator : IAdminConfigurator
     {
-        IAdminSite AdminConfig { get; }
+        IAdminSite AdminSite { get; }
 
         IAdminConfig GetAdminConfig(string entityType);
         object GetAllFor(string entityType, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null);
@@ -61,18 +61,19 @@ namespace Deviser.Admin.Data
                 throw new InvalidOperationException($"Admin site is not found for type {_adminConfiguratorType}");
         }
 
-        public IAdminSite AdminConfig => _adminSite;
+        public IAdminSite AdminSite => _adminSite;
 
-        public IAdminConfig GetAdminConfig(string entityType)
+        public IAdminConfig GetAdminConfig(string strModelType)
         {
-            var eType = GetEntityType(entityType);
-            return GetAdminConfig(eType);
+            var modelType = GetModelType(strModelType);
+            return GetAdminConfig(modelType);
         }
 
-        public object GetAllFor(string entityType, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null)
+        public object GetAllFor(string strModelType, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null)
         {
-            var eType = GetEntityType(entityType);
-
+            var modelType = GetModelType(strModelType);
+            var adminConfig = GetAdminConfig(modelType);
+            var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
             //var genericMethodInfo = typeof(DbContext).GetMethod("Set");
             //var setGenericMethod = genericMethodInfo.MakeGenericMethod(eType);
             //var dbSet = setGenericMethod.Invoke(_dbContext, null);
@@ -82,50 +83,62 @@ namespace Deviser.Admin.Data
             //var result = toListGenericMethod.Invoke(null, new object[] { dbSet });
 
 
-            var result = CallGenericMethod(nameof(GetAll), eType, new object[] { pageNo, pageSize, orderBy });
-
+            var result = CallGenericMethod(nameof(GetAll), new Type[] { modelType, entityClrType }, new object[] { pageNo, pageSize, orderBy });
             return result;
         }
 
-        public object GetItemFor(string entityType, string itemId)
+        public object GetItemFor(string strModelType, string itemId)
         {
-            var eType = GetEntityType(entityType);
-            var result = CallGenericMethod(nameof(GetItem), eType, new object[] { itemId });
+            var modelType = GetModelType(strModelType);
+            var adminConfig = GetAdminConfig(modelType);
+            var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
+
+            var result = CallGenericMethod(nameof(GetItem), new Type[] { modelType, entityClrType }, new object[] { itemId });
             return result;
         }
 
-        public object CreateItemFor(string entityType, object entity)
+        public object CreateItemFor(string strModelType, object entity)
         {
-            var eType = GetEntityType(entityType);
-            var result = CallGenericMethod(nameof(CreateItem), eType, new object[] { entity });
+            var modelType = GetModelType(strModelType);
+            var adminConfig = GetAdminConfig(modelType);
+            var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
+
+            var result = CallGenericMethod(nameof(CreateItem), new Type[] { modelType, entityClrType }, new object[] { entity });
             return result;
         }
 
-        public object UpdateItemFor(string entityType, object entity)
+        public object UpdateItemFor(string strModelType, object entity)
         {
-            var eType = GetEntityType(entityType);
-            var result = CallGenericMethod(nameof(UpdateItem), eType, new object[] { entity });
+            var modelType = GetModelType(strModelType);
+            var adminConfig = GetAdminConfig(modelType);
+            var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
+
+            var result = CallGenericMethod(nameof(UpdateItem), new Type[] { modelType, entityClrType }, new object[] { entity });
             return result;
         }
 
-        public object DeleteItemFor(string entityType, string itemId)
+        public object DeleteItemFor(string strModelType, string itemId)
         {
-            var eType = GetEntityType(entityType);
-            var result = CallGenericMethod(nameof(DeleteItem), eType, new object[] { itemId });
+            var modelType = GetModelType(strModelType);
+            var adminConfig = GetAdminConfig(modelType);
+            var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
+
+            var result = CallGenericMethod(nameof(DeleteItem), new Type[] { modelType, entityClrType }, new object[] { itemId });
             return result;
         }
 
-        private object CallGenericMethod(string methodName, Type genericType, object[] parmeters)
+        private object CallGenericMethod(string methodName, Type[] genericTypes, object[] parmeters)
         {
             var getItemMethodInfo = typeof(AdminRepository<TAdminConfigurator>).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
-            var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericType);
+            var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericTypes);
             var result = getItemMethod.Invoke(this, parmeters);
             return result;
         }
 
 
-        private PagedResult<TEntity> GetAll<TEntity>(int pageNo, int pageSize, string orderByProperties)
+        private PagedResult<TModel> GetAll<TModel, TEntity>(int pageNo, int pageSize, string orderByProperties)
             where TEntity : class
+            where TModel : class
         {
             var eType = typeof(TEntity);
             var dbSet = _dbContext.Set<TEntity>();
@@ -183,16 +196,24 @@ namespace Deviser.Admin.Data
 
             query = query.Skip(skip).Take(pageSize);
 
-            var result = query.ToList();
+            var dbResult = query.ToList();
+            var result = _adminSite.Mapper.Map<List<TModel>>(dbResult);
 
-            return new PagedResult<TEntity>(result, pageNo, pageSize, total);
+            return new PagedResult<TModel>(result, pageNo, pageSize, total);
         }
 
-        private TEntity GetItem<TEntity>(string itemId)
+        private TModel GetItem<TModel, TEntity>(string itemId)
             where TEntity : class
+            where TModel : class
+        {            
+            TEntity dbResult = GetDbItem<TEntity>(itemId);
+            var result = _adminSite.Mapper.Map<TModel>(dbResult);
+            return result;
+        }
+
+        private TEntity GetDbItem<TEntity>(string itemId) where TEntity : class
         {
             var eType = typeof(TEntity);
-
             var dbSet = _dbContext.Set<TEntity>();
             var queryableData = dbSet.AsQueryable();
 
@@ -204,8 +225,8 @@ namespace Deviser.Admin.Data
 
             query = AddIncludes(query);
 
-            var result = query.FirstOrDefault();
-            return result;
+            var dbResult = query.FirstOrDefault();
+            return dbResult;
         }
 
         private IQueryable<TEntity> AddIncludes<TEntity>(IQueryable<TEntity> query) where TEntity : class
@@ -257,12 +278,12 @@ namespace Deviser.Admin.Data
             return query;
         }
 
-        private TEntity CreateItem<TEntity>(object item)
+        private TModel CreateItem<TModel, TEntity>(object item)
             where TEntity : class
+            where TModel : class
         {
-            var eType = typeof(TEntity);
-
-            TEntity itemToAdd = ((JObject)item).ToObject<TEntity>(_serializer);
+            TModel modelToAdd = ((JObject)item).ToObject<TModel>(_serializer);
+            TEntity itemToAdd = _adminSite.Mapper.Map<TEntity>(modelToAdd);
 
             var m2ofields = GetManyToOneFields<TEntity>();
 
@@ -271,7 +292,9 @@ namespace Deviser.Admin.Data
             var dbSet = _dbContext.Set<TEntity>();
             var queryableData = dbSet.Add(itemToAdd);
             _dbContext.SaveChanges();
-            return itemToAdd;
+
+            var result = _adminSite.Mapper.Map<TModel>(itemToAdd);
+            return result;
         }
 
         private void SetManyToOneFields<TEntity>(TEntity itemToAdd, List<Field> m2ofields) where TEntity : class
@@ -295,11 +318,13 @@ namespace Deviser.Admin.Data
             }
         }
 
-        private TEntity UpdateItem<TEntity>(object item)
+        private TModel UpdateItem<TModel, TEntity>(object item)
             where TEntity : class
+            where TModel : class
         {
-            var eType = typeof(TEntity);
-            TEntity itemToUpdate = ((JObject)item).ToObject<TEntity>(_serializer);
+            TModel modelToUpdate = ((JObject)item).ToObject<TModel>(_serializer);
+            TEntity itemToUpdate = _adminSite.Mapper.Map<TEntity>(modelToUpdate);
+
             var dbSet = _dbContext.Set<TEntity>();
 
             List<GraphConfig> graphConfigs = new List<GraphConfig>();
@@ -332,7 +357,8 @@ namespace Deviser.Admin.Data
             }
 
             _dbContext.SaveChanges();
-            return itemToUpdate;
+            var result = _adminSite.Mapper.Map<TModel>(itemToUpdate);
+            return result;
 
         }
 
@@ -387,16 +413,16 @@ namespace Deviser.Admin.Data
             return graphConfig;
         }
 
-        private TEntity DeleteItem<TEntity>(string itemId)
+        private TModel DeleteItem<TModel, TEntity>(string itemId)
             where TEntity : class
-        {
-            var eType = typeof(TEntity);
-            TEntity itemToDelete = GetItem<TEntity>(itemId);
+            where TModel : class
+        {            
+            TEntity itemToDelete = GetDbItem<TEntity>(itemId);
             var dbSet = _dbContext.Set<TEntity>();
             var queryableData = dbSet.Remove(itemToDelete);
             _dbContext.SaveChanges();
-            return itemToDelete;
-
+            var result = _adminSite.Mapper.Map<TModel>(itemToDelete);
+            return result;
         }
 
         //private MethodInfo GetWhereMethod()
@@ -467,9 +493,9 @@ namespace Deviser.Admin.Data
             return m2mFields;
         }
 
-        private Type GetEntityType(string entityType)
+        private Type GetModelType(string strModelType)
         {
-            return _adminSite.AdminConfigs.Keys.FirstOrDefault(t => t.Name == entityType);
+            return _adminSite.AdminConfigs.Keys.FirstOrDefault(t => t.Name == strModelType);
         }
 
         private LambdaExpression CreatePrimaryKeyFilter(List<string> keyValues, Type entityType)

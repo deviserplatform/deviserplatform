@@ -51,8 +51,7 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-
-        public AdminConfig<TEntity> AdminConfig { get; set; }
-        public LambdaExpression FieldExpression { get; set; }
+        //public AdminConfig<TEntity> AdminConfig { get; set; }
+        //public LambdaExpression FieldExpression { get; set; }
     }
 }

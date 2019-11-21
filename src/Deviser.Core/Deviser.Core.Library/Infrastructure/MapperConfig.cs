@@ -126,6 +126,7 @@ namespace Deviser.Core.Library.Infrastructure
             try
             {
                 var mapper = Mapper.Instance;
+                var typeMaps = mapper.ConfigurationProvider.GetAllTypeMaps();
                 return mapper != null ? true : false;
             }
             catch

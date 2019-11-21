@@ -4,6 +4,8 @@ using Deviser.Core.Data.Extension;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Text;
 
 namespace Deviser.Modules.Blog.Models
@@ -13,7 +15,7 @@ namespace Deviser.Modules.Blog.Models
         public BlogDbContext(DbContextOptions<BlogDbContext> options)
             : base(options)
         {
-            
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -85,6 +87,31 @@ namespace Deviser.Modules.Blog.Models
         public List<PostTag> PostTags { get; set; }
 
         [Order]
+        [NotMapped]
+        public IEnumerable<Tag> Tags
+        {
+            set
+            {
+                var tags = value;
+                if (tags != null && tags.Count() > 0)
+                {
+                    PostTags = new List<PostTag>();
+                    foreach (var tag in tags)
+                    {
+                        PostTags.Add(new PostTag
+                        {
+                            Post = this,
+                            PostId = Id,
+                            TagId = tag.Id,
+                            Tag = tag
+                        });
+                    }
+                }
+            }
+            get => PostTags.Select(e => e.Tag);
+        }
+
+        [Order]
         public List<Comments> Comments { get; set; }
 
         [Order]
@@ -92,7 +119,7 @@ namespace Deviser.Modules.Blog.Models
 
         [Order]
         public string CreatedBy { get; set; }
-        
+
     }
 
     public class Tag

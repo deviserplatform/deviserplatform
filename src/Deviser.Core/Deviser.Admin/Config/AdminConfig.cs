@@ -9,23 +9,25 @@ using System.Linq.Expressions;
 
 namespace Deviser.Admin
 {
-    public interface IAdminConfig
+    public interface IAdminBaseConfig
+    {
+        [JsonIgnore]
+        EntityConfig EntityConfig { get; set; }
+        IFormConfig FormConfig { get; }
+    }
+
+    public interface IAdminConfig : IAdminBaseConfig
     {
         ICollection<IChildConfig> ChildConfigs { get; }
 
         [JsonConverter(typeof(TypeJsonConverter))]
         Type EntityType { get; }
 
-        [JsonIgnore]
-        EntityConfig EntityConfig { get; }
-
         LookUpDictionary LookUps { get; }
-
-        IFormConfig FormConfig { get; }
     }
 
-    public class AdminConfig<TEntity> : IAdminConfig
-        where TEntity : class
+    public class AdminConfig<TModel> : IAdminConfig
+        where TModel : class
     {
 
         public ICollection<IChildConfig> ChildConfigs { get; }
@@ -33,7 +35,7 @@ namespace Deviser.Admin
         public Type EntityType { get; }
 
         [JsonIgnore]
-        public EntityConfig EntityConfig { get; }
+        public EntityConfig EntityConfig { get; set; }
 
         public IFormConfig FormConfig { get; }
 
@@ -42,30 +44,26 @@ namespace Deviser.Admin
         public AdminConfig()
         {
             ChildConfigs = new List<IChildConfig>();
-            EntityType = typeof(TEntity);
-            EntityConfig = new EntityConfig();
-            FormConfig = new FormConfig<TEntity>();
+            EntityType = typeof(TModel);
+            FormConfig = new FormConfig<TModel>();
             LookUps = new LookUpDictionary();
         }
 
-        public void ShowOn(LambdaExpression fieldExpression, Expression<Func<TEntity, bool>> predicate)
+        public void ShowOn(LambdaExpression fieldExpression, Expression<Func<TModel, bool>> predicate)
         {
 
         }
     }
 
-    public interface IChildConfig
+    public interface IChildConfig : IAdminBaseConfig
     {
-        [JsonIgnore]
-        EntityConfig EntityConfig { get; }
         Field Field { get; }
-        IFormConfig FormConfig { get; }
     }
 
     public class ChildConfig : IChildConfig
     {
         [JsonIgnore]
-        public EntityConfig EntityConfig { get; }
+        public EntityConfig EntityConfig { get; set; }
 
         public Field Field { get; set; }
 
@@ -73,7 +71,7 @@ namespace Deviser.Admin
 
         public ChildConfig()
         {
-            EntityConfig = new EntityConfig();
+
         }
     }
 
@@ -89,7 +87,7 @@ namespace Deviser.Admin
         [JsonIgnore]
         FieldConditions FieldConditions { get; }
 
-        List<KeyField> KeyFields { get; }
+        KeyField KeyField { get; }
 
         IListConfig ListConfig { get; }
     }
@@ -153,7 +151,7 @@ namespace Deviser.Admin
         [JsonIgnore]
         public FieldConditions FieldConditions { get; }
 
-        public List<KeyField> KeyFields { get; }
+        public KeyField KeyField { get; }
 
         public ListConfig<TEntity> ListConfig { get; }
 
@@ -168,7 +166,7 @@ namespace Deviser.Admin
             FieldConfig = new FieldConfig<TEntity>();
             FieldConditions = new FieldConditions();
             FieldSetConfig = new FieldSetConfig<TEntity>();
-            KeyFields = new List<KeyField>();
+            KeyField = new KeyField();
             ListConfig = new ListConfig<TEntity>();
         }
     }
