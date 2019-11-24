@@ -185,6 +185,30 @@ namespace Deviser.Admin.Config
             return typeMap;
         }
 
+        //public List<ReleatedField> GetReleatedFields(IForeignKey foreignKey, Type entityType)
+        //{
+        //    var releatedField = new List<ReleatedField>();
+
+        //    for (var index = 0; index < foreignKey.PrincipalKey.Properties.Count; index++)
+        //    {
+        //        var fKeyProp = foreignKey.Properties[index];
+        //        var fkDecType = foreignKey.DeclaringEntityType.ClrType;
+        //        var fKeyExpr = GetFieldExpression(fkDecType, fKeyProp);
+
+        //        var principalProp = foreignKey.PrincipalKey.Properties[index];
+        //        var pKDecType = foreignKey.PrincipalKey.DeclaringEntityType.ClrType;
+        //        var principalExpr = GetFieldExpression(pKDecType, principalProp);
+
+        //        releatedField.Add(new ReleatedField
+        //        {
+        //            IsParentField = entityType == pKDecType,
+        //            FieldExpression = fKeyExpr,
+        //            SourceFieldExpression = principalExpr
+        //        });
+        //    }
+        //    return releatedField;
+        //}
+
         private Type GetEntityClrTypeFor(Type modelType)
         {
             Type entityClrType = _typeMaps.FirstOrDefault(tm => tm.SourceType == modelType)?.DestinationType;
@@ -590,30 +614,6 @@ namespace Deviser.Admin.Config
             }
 
             yield return "Object";
-        }
-
-        private List<ReleatedField> GetReleatedFields(IForeignKey foreignKey, Type entityType)
-        {
-            var releatedField = new List<ReleatedField>();
-
-            for (var index = 0; index < foreignKey.PrincipalKey.Properties.Count; index++)
-            {
-                var fKeyProp = foreignKey.Properties[index];
-                var fkDecType = foreignKey.DeclaringEntityType.ClrType;
-                var fKeyExpr = GetFieldExpression(fkDecType, fKeyProp);
-
-                var principalProp = foreignKey.PrincipalKey.Properties[index];
-                var pKDecType = foreignKey.PrincipalKey.DeclaringEntityType.ClrType;
-                var principalExpr = GetFieldExpression(pKDecType, principalProp);
-
-                releatedField.Add(new ReleatedField
-                {
-                    IsParentField = entityType == pKDecType,
-                    FieldExpression = fKeyExpr,
-                    SourceFieldExpression = principalExpr
-                });
-            }
-            return releatedField;
         }
 
         private IKey GetPrimaryKey(Type clrType)

@@ -11,7 +11,7 @@ namespace Deviser.Detached
         object CreateEmptyEntityWithKey(object entity);
         IKey GetPrimaryKey(Type clrType);
         IKey GetPrimaryKey(object entity);
-        EntityKey GetPrimaryKeyValues(object instance);
+        EntityKey GetEntityKey(object instance);
         IEnumerable<PropertyInfo> GetPrimaryKeyFieldsFor(object entity);
         IEntityType GetEntityType(Type clrType);
         IEnumerable<INavigation> GetRequiredNavigationPropertiesForType(Type clrType);

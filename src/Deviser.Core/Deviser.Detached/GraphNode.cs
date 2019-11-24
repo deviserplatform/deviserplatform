@@ -138,14 +138,14 @@ namespace Deviser.Detached
                 var updateValues = GetValue<IEnumerable>(updating) ?? new List<object>();
                 var dbCollection = GetValue<IEnumerable>(persisted) ?? CreateMissingCollection(persisted, innerElementType);
 
-                var dbHash = dbCollection.Cast<object>().ToDictionary(item => entityManager.GetPrimaryKeyValues(item));
+                var dbHash = dbCollection.Cast<object>().ToDictionary(item => entityManager.GetEntityKey(item));
                 
                 // Iterate through the elements from the updated graph and try to match them against the db graph
                 var updateList = updateValues.OfType<object>().ToList();
                 for (int i = 0; i < updateList.Count; i++)
                 {
                     var updateItem = updateList[i];
-                    var key = entityManager.GetPrimaryKeyValues(updateItem);
+                    var key = entityManager.GetEntityKey(updateItem);
 
                     // try to find item with same key in db collection
                     object dbItem;

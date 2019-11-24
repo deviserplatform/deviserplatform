@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Deviser.Core.Common.DomainTypes.Admin;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
 
@@ -16,5 +18,7 @@ namespace Deviser.Admin
             where TEntity : class;
 
         TypeMap GetTypeMapFor(Type modelType);
+
+        //List<ReleatedField> GetReleatedFields(IForeignKey foreignKey, Type entityType);
     }
 }

@@ -61,7 +61,7 @@ namespace Deviser.Detached
             return key;
         }
 
-        public EntityKey GetPrimaryKeyValues(object instance)
+        public EntityKey GetEntityKey(object instance)
         {
             var key = GetPrimaryKey(instance);
             EntityKey entityKey = new EntityKey();
@@ -83,8 +83,8 @@ namespace Deviser.Detached
                 return false;
             }
 
-            var newValKeys = GetPrimaryKeyValues(newValue);
-            var dbValKeys = GetPrimaryKeyValues(dbValue);
+            var newValKeys = GetEntityKey(newValue);
+            var dbValKeys = GetEntityKey(dbValue);
             var areEqual = newValKeys == dbValKeys;
             return areEqual;
         }
@@ -109,9 +109,15 @@ namespace Deviser.Detached
         public TEntity LoadPersisted<TEntity>(TEntity entity, List<string> includeStringPaths)
             where TEntity : class
         {
-            var entityKey = GetPrimaryKeyValues(entity);
-            List<object> keyValues = entityKey.GetAllValues();
+            List<object> keyValues = GetPrimaryKeyValues(entity);
             return LoadPersisted<TEntity>(keyValues, includeStringPaths).FirstOrDefault();
+        }
+
+        public List<object> GetPrimaryKeyValues(object entity)
+        {
+            var entityKey = GetEntityKey(entity);
+            List<object> keyValues = entityKey.GetAllValues();
+            return keyValues;
         }
 
         private IList<TEntity> LoadPersisted<TEntity>(List<object> keyValues, List<string> includeStringPaths)

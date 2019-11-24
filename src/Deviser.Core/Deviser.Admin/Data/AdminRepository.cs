@@ -44,6 +44,7 @@ namespace Deviser.Admin.Data
         private readonly IAdminSite _adminSite;
         private readonly Type _adminConfiguratorType;
         private readonly IAdminSiteProvider _adminSiteProvider;
+        private readonly EntityManager _entityManager;
         JsonSerializer _serializer = new JsonSerializer();
 
 
@@ -56,6 +57,7 @@ namespace Deviser.Admin.Data
             _adminConfiguratorType = typeof(TAdminConfigurator);
             _adminSite = _adminSiteProvider.GetAdminConfig(_adminConfiguratorType);
             _dbContext = (DbContext)serviceProvider.GetService(_adminSite.DbContextType);
+            _entityManager = new EntityManager(_dbContext);
             _serializer.Converters.Add(new Core.Common.Json.GuidConverter());
 
             if (_adminSite == null)
@@ -329,7 +331,7 @@ namespace Deviser.Admin.Data
 
             var m2ofields = GetManyToOneFields(adminConfig);
 
-            SetManyToOneFields(itemToAdd, m2ofields);
+            SetManyToOneFields(adminConfig, itemToAdd, m2ofields);
 
             var dbSet = _dbContext.Set<TEntity>();
             var queryableData = dbSet.Add(itemToAdd);
@@ -339,11 +341,13 @@ namespace Deviser.Admin.Data
             return result;
         }
 
-        private void SetManyToOneFields<TEntity>(TEntity itemToAdd, List<Field> m2ofields) where TEntity : class
+        private void SetManyToOneFields<TEntity>(IAdminConfig adminConfig, TEntity itemToAdd, List<Field> m2ofields) where TEntity : class
         {
+            var entityClrType = typeof(TEntity);
             foreach (var m2oField in m2ofields)
             {
-                var fieldPropInfo = ExpressionHelper.GetPropertyInfo(m2oField.FieldExpression);
+                var entityFieldExpression = GetEntityFieldExpressionFor(entityClrType, m2oField.FieldClrType);
+                var fieldPropInfo = ExpressionHelper.GetPropertyInfo(entityFieldExpression);
                 var field = fieldPropInfo.GetValue(itemToAdd, null); //item.Category
                 var fieldType = fieldPropInfo.PropertyType;
                 var fieldEntityType = _dbContext.Model.FindEntityType(fieldType);
@@ -352,7 +356,7 @@ namespace Deviser.Admin.Data
                 var pkPropInfo = fieldPK.Properties.First().PropertyInfo; //Assuming the entity has only one primary key
                 var id = pkPropInfo.GetValue(field, null); //item.Category.Id
 
-                var targetPropInfo = ExpressionHelper.GetPropertyInfo(m2oField.FieldOption.ReleatedFields.First().FieldExpression);
+                var targetPropInfo = fieldEntityType.GetNavigations().First().ForeignKey.Properties.First().PropertyInfo;
 
                 targetPropInfo.SetValue(itemToAdd, id, null); //item.CategoryId = item.Category.Id
 
@@ -403,35 +407,21 @@ namespace Deviser.Admin.Data
             }
 
             _dbContext.SaveChanges();
-            var result = _adminSite.Mapper.Map<TModel>(itemToUpdate);
+            var itemId = _entityManager.GetPrimaryKeyValues(itemToUpdate).First().ToString();
+            var updatedItem = GetItem<TModel, TEntity>(itemId);
+            var result = _adminSite.Mapper.Map<TModel>(updatedItem);
             return result;
 
         }
 
         private List<GraphConfig> GetGraphConfigsForReleation(Type entityClrType, IEnumerable<Field> fields)
         {
-            var graphConfig = new List<GraphConfig>();
-            var typeMap = _adminSite.GetTypeMapFor(entityClrType);
+            var graphConfig = new List<GraphConfig>();            
             foreach (var field in fields)
-            {
-                var propertyMap = GetPropertyMapFor(typeMap, field.FieldClrType);
-
-                if (propertyMap != null)
+            {                
+                LambdaExpression entityFieldExpression = GetEntityFieldExpressionFor(entityClrType, field.FieldClrType);
+                if (entityFieldExpression != null)
                 {
-                    LambdaExpression entityFieldExpression = null; //ExpressionHelper.GetPropertyExpression(entityClrType, fieldTypeMap.DestinationType.Name);
-
-                    if (propertyMap.CustomMapExpression == null)
-                    {
-                        entityFieldExpression = ExpressionHelper.GetPropertyExpression(entityClrType, propertyMap.SourceMember.Name);
-                    }
-                    else
-                    {
-                        var srcExpression = (propertyMap.CustomMapExpression.Body as MethodCallExpression)?.Arguments.FirstOrDefault(expr => expr is MemberExpression) as MemberExpression;
-                        entityFieldExpression = ExpressionHelper.GetPropertyExpression(entityClrType, srcExpression.Member.Name);
-                    }
-
-
-
                     if (entityFieldExpression.Body.Type.IsCollectionType())
                     {
                         bool isManyToMany = field.FieldOption.RelationType == RelationType.ManyToMany;
@@ -454,6 +444,25 @@ namespace Deviser.Admin.Data
 
             }
             return graphConfig;
+        }
+
+        private LambdaExpression GetEntityFieldExpressionFor(Type entityClrType, Type fieldClrType)
+        {
+            var typeMap = _adminSite.GetTypeMapFor(entityClrType);
+            var propertyMap = GetPropertyMapFor(typeMap, fieldClrType);
+            LambdaExpression entityFieldExpression = null; //ExpressionHelper.GetPropertyExpression(entityClrType, fieldTypeMap.DestinationType.Name);
+
+            if (propertyMap.CustomMapExpression == null)
+            {
+                entityFieldExpression = ExpressionHelper.GetPropertyExpression(entityClrType, propertyMap.SourceMember.Name);
+            }
+            else
+            {
+                var srcExpression = (propertyMap.CustomMapExpression.Body as MethodCallExpression)?.Arguments.FirstOrDefault(expr => expr is MemberExpression) as MemberExpression;
+                entityFieldExpression = ExpressionHelper.GetPropertyExpression(entityClrType, srcExpression.Member.Name);
+            }
+
+            return entityFieldExpression;
         }
 
         private List<GraphConfig> GetGraphConfigsForChildEntities(Type entityClrType, IEnumerable<Field> fields)

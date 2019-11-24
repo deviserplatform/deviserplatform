@@ -70,7 +70,7 @@ namespace Deviser.Modules.Blog
             //});
 
             adminBuilder.Register<DTO.Post>(form =>
-            {
+            {   
 
                 form.FieldBuilder
                 .AddKeyField(p => p.Id)
