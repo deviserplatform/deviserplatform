@@ -36,8 +36,8 @@ namespace Deviser.Admin.Data
         {
             ParameterExpression paramterExpression = Expression.Parameter(type);
             MemberExpression propertyExpression = Expression.Property(paramterExpression, propertyInfo);
-            LambdaExpression orderByExpression = Expression.Lambda(propertyExpression, paramterExpression);
-            return orderByExpression;
+            LambdaExpression lambdaExpression = Expression.Lambda(propertyExpression, paramterExpression);
+            return lambdaExpression;
         }
 
         public static PropertyInfo GetPropertyInfo(LambdaExpression lambdaExpression)

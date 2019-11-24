@@ -39,11 +39,8 @@ export class FormControlService {
   }
 
   private getFormGroup(formConfig: FormConfig, adminForm: any, record: any, forChildRecords: boolean = false) {
-    if (formConfig.keyFields) {
-      let pkFields = formConfig.keyFields.filter(kf => kf.keyFieldType == KeyFieldType.PrimaryKey);
-      pkFields.forEach(field => {
-        adminForm[field.fieldNameCamelCase] = this.getKeyControl(field, record);
-      });
+    if (formConfig.keyField) {
+      adminForm[formConfig.keyField.fieldNameCamelCase] = this.getKeyControl(formConfig.keyField, record);
     }
     adminForm = this.getFormEnity(formConfig, adminForm, record, forChildRecords);
     return adminForm;

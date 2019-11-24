@@ -14,5 +14,7 @@ namespace Deviser.Admin
         
         void Build<TEntity>(AdminConfig<TEntity> adminConfig, bool hasConfiguration = false)
             where TEntity : class;
+
+        TypeMap GetTypeMapFor(Type modelType);
     }
 }

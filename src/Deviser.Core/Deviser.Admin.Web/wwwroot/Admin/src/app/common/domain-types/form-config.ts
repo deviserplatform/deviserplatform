@@ -6,6 +6,6 @@ import { ListConfig } from "./list-config";
 export interface FormConfig {    
     fieldConfig: FieldConfig;
     fieldSetConfig: FieldSetConfig;
-    keyFields: KeyField[];    
+    keyField: KeyField;    
     listConfig: ListConfig;
 }

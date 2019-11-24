@@ -175,10 +175,23 @@ namespace Deviser.Admin.Config
             AdminConfigs.Add(modelType, adminConfig);
         }
 
+        public TypeMap GetTypeMapFor(Type modelType)
+        {
+            TypeMap typeMap = _typeMaps.FirstOrDefault(tm => tm.SourceType == modelType);
+            if (typeMap == null)
+            {
+                typeMap = _typeMaps.FirstOrDefault(tm => tm.DestinationType == modelType);
+            }
+            return typeMap;
+        }
+
         private Type GetEntityClrTypeFor(Type modelType)
         {
             Type entityClrType = _typeMaps.FirstOrDefault(tm => tm.SourceType == modelType)?.DestinationType;
-            entityClrType = _typeMaps.FirstOrDefault(tm => tm.DestinationType == modelType)?.SourceType;
+            if (entityClrType == null)
+            {
+                entityClrType = _typeMaps.FirstOrDefault(tm => tm.DestinationType == modelType)?.SourceType;
+            }
             return entityClrType;
         }
 

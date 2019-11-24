@@ -70,17 +70,17 @@ export class FormControlComponent implements OnInit {
   }
 
   parseM2mControlVal() {
-    if (this.field && this.field.fieldOption && this.field.fieldOption.releatedEntityTypeCamelCase &&
-      this.field.fieldOption.releatedFields) {
+    if (this.field && this.field.fieldOption && this.field.fieldOption.releatedEntityTypeCamelCase) {
       let lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.releatedEntityTypeCamelCase];
       let formVal = this.form.value;
+      let keyNames = Object.keys(lookUpGeneric[0].key);
       let controlVal = formVal[this.field.fieldNameCamelCase];
-      let pkFields: ReleatedField[] = [];
-      let fkFields: ReleatedField[] = [];
+      // let pkFields: ReleatedField[] = [];
+      // let fkFields: ReleatedField[] = [];
       let selectedItems: any[] = [];
 
-      pkFields = this.field.fieldOption.releatedFields.filter(rf => rf.isParentField);
-      fkFields = this.field.fieldOption.releatedFields.filter(rf => !rf.isParentField);
+      // pkFields = this.field.fieldOption.releatedFields.filter(rf => rf.isParentField);
+      // fkFields = this.field.fieldOption.releatedFields.filter(rf => !rf.isParentField);
 
       lookUpGeneric.forEach(item => {
         let propValue: any = {};
@@ -88,14 +88,14 @@ export class FormControlComponent implements OnInit {
         propValue.displayName = item.displayName;
 
         //set primary key value based on primary key properties
-        pkFields.forEach(pkProp => {
-          propValue[pkProp.fieldNameCamelCase] = formVal[pkProp.sourceFieldNameCamelCase]
+        keyNames.forEach(keyName => {
+          propValue[keyName] = item.key[keyName]
         });
 
         //set foreign key value based on foreign key properties
-        fkFields.forEach(fkProp => {
-          propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.sourceFieldNameCamelCase]
-        });
+        // fkFields.forEach(fkProp => {
+        //   propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.sourceFieldNameCamelCase]
+        // });
 
         this._lookUpData.push(propValue);
       });
@@ -106,9 +106,9 @@ export class FormControlComponent implements OnInit {
 
           let masterItem = this._lookUpData.find(lookUp => {
             let isMatch = false;
-            for (let i = 0; i < fkFields.length; i++) {
-              let prop = fkFields[i];
-              isMatch = lookUp[prop.fieldNameCamelCase] === item[prop.fieldNameCamelCase];
+            for (let i = 0; i < keyNames.length; i++) {
+              let prop = keyNames[i];
+              isMatch = lookUp[prop] === item[prop];
               if (isMatch)
                 return isMatch;
             }
@@ -129,7 +129,7 @@ export class FormControlComponent implements OnInit {
   parseM2oControlVal() {
     let formVal = this.form.value;
     let lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.releatedEntityTypeCamelCase];
-    let fkFields = this.field.fieldOption.releatedFields.filter(rf => !rf.isParentField);
+    let keyNames = Object.keys(lookUpGeneric[0].key);
     let controlVal = formVal[this.field.fieldNameCamelCase];
 
     lookUpGeneric.forEach(item => {
@@ -137,8 +137,8 @@ export class FormControlComponent implements OnInit {
       //copy display name from generic lookup  
       propValue.displayName = item.displayName;
 
-      fkFields.forEach(fkProp => {
-        propValue[fkProp.sourceFieldNameCamelCase] = item.key[fkProp.sourceFieldNameCamelCase]
+      keyNames.forEach(keyName => {
+        propValue[keyName] = item.key[keyName]
       });
 
       this._lookUpData.push(propValue);
@@ -148,9 +148,9 @@ export class FormControlComponent implements OnInit {
     if (controlVal) {
       let masterItem = this._lookUpData.find(lookUp => {
         let isMatch = false;
-        for (let i = 0; i < fkFields.length; i++) {
-          let prop = fkFields[i];
-          isMatch = lookUp[prop.sourceFieldNameCamelCase] === controlVal[prop.sourceFieldNameCamelCase];
+        for (let i = 0; i < keyNames.length; i++) {
+          let prop = keyNames[i];
+          isMatch = lookUp[prop] === controlVal[prop];
           if (isMatch)
             return isMatch;
         }
