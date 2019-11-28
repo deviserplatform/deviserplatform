@@ -1,4 +1,5 @@
 ﻿using Deviser.Admin.Data;
+using Deviser.Admin.Services;
 using Deviser.Core.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +15,16 @@ namespace Deviser.Admin.Web.Controllers
     {
         //Logger
         private readonly ILogger<AdminController<TAdminConfigurator>> _logger;
-        private readonly IAdminRepository<TAdminConfigurator> _adminRepository;
+        //private readonly IAdminRepository<TAdminConfigurator> _adminRepository;
+        private readonly IServiceProvider _serviceProvider;
 
+        private string Area => RouteData.Values["area"] as string;
 
         public AdminController(IServiceProvider serviceProvider)
         {
+            _serviceProvider = serviceProvider;
             _logger = serviceProvider.GetService<ILogger<AdminController<TAdminConfigurator>>>();
-            _adminRepository = new AdminRepository<TAdminConfigurator>(serviceProvider);
+            //_adminRepository = new AdminRepository<TAdminConfigurator>(serviceProvider);
         }
 
         [Route("modules/[area]/admin/{entity:required}")]
@@ -35,8 +39,9 @@ namespace Deviser.Admin.Web.Controllers
         public IActionResult GetMetaInfo(string entity)
         {
             try
-            {
-                var adminConfig = _adminRepository.GetAdminConfig(entity);
+            {   
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var adminConfig = coreAdminService.GetAdminConfig(entity); //_adminRepository.GetAdminConfig(entity);
                 if (adminConfig != null)
                 {
                     return Ok(adminConfig);
@@ -56,7 +61,8 @@ namespace Deviser.Admin.Web.Controllers
         {
             try
             {
-                var adminConfig = _adminRepository.GetAdminConfig(entity);
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var adminConfig = coreAdminService.GetAdminConfig(entity); //_adminRepository.GetAdminConfig(entity);
                 if (adminConfig != null)
                 {
                     var listConfig = adminConfig.FormConfig.ListConfig;
@@ -77,7 +83,8 @@ namespace Deviser.Admin.Web.Controllers
         {
             try
             {
-                var adminConfig = _adminRepository.GetAdminConfig(entity);
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var adminConfig = coreAdminService.GetAdminConfig(entity); //_adminRepository.GetAdminConfig(entity);
                 if (adminConfig != null)
                 {
                     var fieldConfig = new { adminConfig.FormConfig.FieldConfig, adminConfig.FormConfig.FieldSetConfig };
@@ -92,14 +99,20 @@ namespace Deviser.Admin.Web.Controllers
             }
         }
 
-        // GET: All records
         [HttpGet]
         [Route("modules/[area]/api/{entity:required}")]
-        public IActionResult GetAllRecords(string entity, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null)
+        public async Task<IActionResult> GetAllRecords(string entity, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null)
         {
             try
             {
-                var result = _adminRepository.GetAllFor(entity, pageNo, pageSize, orderBy);
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(entity);
+                if(modelType == null)
+                {
+                    return BadRequest($"Entity {entity} not fould");
+                }
+
+                var result = await coreAdminService.GetAllFor(modelType, pageNo, pageSize, orderBy); //_adminRepository.GetAllFor(entity, pageNo, pageSize, orderBy);
                 if (result != null)
                 {
                     return Ok(result);
@@ -112,15 +125,21 @@ namespace Deviser.Admin.Web.Controllers
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-
-        // GET: All records
+                
         [HttpGet]
         [Route("modules/[area]/api/{entity:required}/{id:required}")]
-        public IActionResult GetItem(string entity, string id)
+        public async Task<IActionResult> GetItem(string entity, string id)
         {
             try
             {
-                var result = _adminRepository.GetItemFor(entity, id);
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(entity);
+                if (modelType == null)
+                {
+                    return BadRequest($"Entity {entity} not fould");
+                }
+
+                var result = await coreAdminService.GetItemFor(modelType, id); //_adminRepository.GetItemFor(entity, id);
                 if (result != null)
                 {
                     return Ok(result);
@@ -140,7 +159,14 @@ namespace Deviser.Admin.Web.Controllers
         {
             try
             {
-                var result = _adminRepository.CreateItemFor(entity, entityObject);
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(entity);
+                if (modelType == null)
+                {
+                    return BadRequest($"Entity {entity} not fould");
+                }
+
+                var result = await coreAdminService.CreateItemFor(modelType, entityObject); //_adminRepository.CreateItemFor(entity, entityObject);
                 if (result != null)
                 {
                     return Ok(result);
@@ -160,7 +186,14 @@ namespace Deviser.Admin.Web.Controllers
         {
             try
             {
-                var result = _adminRepository.UpdateItemFor(entity, entityObject);
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(entity);
+                if (modelType == null)
+                {
+                    return BadRequest($"Entity {entity} not fould");
+                }
+
+                var result = await coreAdminService.UpdateItemFor(modelType, entityObject); //_adminRepository.UpdateItemFor(entity, entityObject);
                 if (result != null)
                 {
                     return Ok(result);
@@ -180,7 +213,14 @@ namespace Deviser.Admin.Web.Controllers
         {
             try
             {
-                var result = _adminRepository.DeleteItemFor(entity, id);
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(entity);
+                if (modelType == null)
+                {
+                    return BadRequest($"Entity {entity} not fould");
+                }
+
+                var result = await coreAdminService.DeleteItemFor(modelType, id); //_adminRepository.DeleteItemFor(entity, id);
                 if (result != null)
                 {
                     return Ok(result);

@@ -65,7 +65,7 @@ namespace Deviser.Admin.Config
                 { "time", "{0:HH:mm:ss.fff}" },
             };
 
-        private readonly AdminType _adminType;
+
         private readonly DbContext _dbContext;
         private readonly Type _dbContextType;
         private readonly IModelMetadataProvider _modelMetadataProvider;
@@ -73,13 +73,14 @@ namespace Deviser.Admin.Config
         private List<TypeMap> _typeMaps;
 
         public IDictionary<Type, IAdminConfig> AdminConfigs { get; }
+        public AdminType AdminType { get; }
         public Type DbContextType => _dbContextType;
         public IMapper Mapper { get; set; }
         public string SiteName { get; set; }
 
         public AdminSite(IServiceProvider serviceProvider, DbContext dbContext, IModelMetadataProvider modelMetadataProvider)
         {
-            _adminType = AdminType.Entity;
+            AdminType = AdminType.Entity;
             if (dbContext == null)
                 throw new ArgumentNullException("Constructor paramater dbContent cannot be null");
 
@@ -92,7 +93,7 @@ namespace Deviser.Admin.Config
 
         public AdminSite(IServiceProvider serviceProvider, IModelMetadataProvider modelMetadataProvider)
         {
-            _adminType = AdminType.Custom;
+            AdminType = AdminType.Custom;
             _serviceProvider = serviceProvider;
             _modelMetadataProvider = modelMetadataProvider;
             AdminConfigs = new Dictionary<Type, IAdminConfig>();
@@ -102,7 +103,7 @@ namespace Deviser.Admin.Config
         {
             var modelType = typeof(TModel);
 
-            if (_adminType == AdminType.Entity)
+            if (AdminType == AdminType.Entity)
             {
                 //TODO: Validate adminConfig for entity type
 
@@ -113,7 +114,7 @@ namespace Deviser.Admin.Config
 
                 if (Mapper == null)
                 {
-                    throw new InvalidOperationException($"Automapper configuration is required when creating admin site using AdminType: {_adminType}");
+                    throw new InvalidOperationException($"Automapper configuration is required when creating admin site using AdminType: {AdminType}");
                 }
 
                 if (_typeMaps == null)
@@ -167,7 +168,7 @@ namespace Deviser.Admin.Config
 
                 LoadMasterData(adminConfig);
             }
-            else if (_adminType == AdminType.Custom)
+            else if (AdminType == AdminType.Custom)
             {
                 //TODO: Validate adminConfig for custom type
             }

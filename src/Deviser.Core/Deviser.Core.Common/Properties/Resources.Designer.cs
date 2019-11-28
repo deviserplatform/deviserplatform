@@ -68,8 +68,5 @@ namespace Deviser.Core.Common.Properties {
                 return ResourceManager.GetString("CandidateResolver_DifferentCasedReference", resourceCulture);
             }
         }
-
-        internal static string FormatCandidateResolver_DifferentCasedReference(object p0)
-            => string.Format(CandidateResolver_DifferentCasedReference, p0);
     }
 }

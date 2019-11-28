@@ -13,7 +13,7 @@ namespace Deviser.Admin
     public class AdminBuilder : IAdminBuilder
     {
         private readonly IAdminSite _adminSite;
-        
+
         public AdminBuilder(IAdminSite adminSite)
         {
             _adminSite = adminSite;
@@ -21,19 +21,34 @@ namespace Deviser.Admin
 
         public MapperConfiguration MapperConfiguration { get; set; }
 
-        public AdminBuilder Register<TEntity>(Action<FormBuilder<TEntity>> formBuilderAction = null, AdminType adminConfigType = AdminType.Entity)
+        public AdminBuilder Register<TEntity>(Action<FormBuilder<TEntity>> formBuilderAction = null)
             where TEntity : class
         {
             var adminConfig = new AdminConfig<TEntity>();
-            var hasConfiguration = formBuilderAction != null;
+            BuildAdmin(adminConfig, formBuilderAction);
+            return this;
+        }
 
+
+
+        public AdminBuilder Register<TEntity, TAdminService>(Action<FormBuilder<TEntity>> formBuilderAction = null)
+            where TEntity : class
+            where TAdminService : IAdminService<TEntity>
+        {
+            var adminConfig = new AdminConfig<TEntity>();
+            adminConfig.AdminServiceType = typeof(TAdminService);
+            BuildAdmin(adminConfig, formBuilderAction);
+            return this;
+        }
+
+        private void BuildAdmin<TEntity>(AdminConfig<TEntity> adminConfig, Action<FormBuilder<TEntity>> formBuilderAction) where TEntity : class
+        {
+            var hasConfiguration = formBuilderAction != null;
             _adminSite.Mapper = MapperConfiguration?.CreateMapper();
 
             formBuilderAction?.Invoke(new FormBuilder<TEntity>(adminConfig));
 
             _adminSite.Build(adminConfig, hasConfiguration);
-
-            return this;
         }
     }
 }

@@ -18,27 +18,24 @@ using Deviser.Core.Common.DomainTypes.Admin;
 using Deviser.Detached;
 using Deviser.Core.Common.Extensions;
 using AutoMapper;
+using System.Threading.Tasks;
 
 namespace Deviser.Admin.Data
 {
-    public interface IAdminRepository<TAdminConfigurator>
-        where TAdminConfigurator : IAdminConfigurator
-    {
-        IAdminSite AdminSite { get; }
+    public interface IAdminRepository
 
-        IAdminConfig GetAdminConfig(string entityType);
-        object GetAllFor(string entityType, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null);
-        object GetItemFor(string entityType, string itemId);
-        object CreateItemFor(string entityType, object entityObject);
-        object UpdateItemFor(string entityType, object entity);
-        object DeleteItemFor(string entityType, string itemId);
+    {
+        Task<PagedResult<TModel>> GetAllFor<TModel>(int pageNo, int pageSize, string orderByProperties) where TModel : class;
+        Task<TModel> GetItemFor<TModel>(string itemId) where TModel : class;
+        Task<TModel> CreateItemFor<TModel>(TModel item) where TModel : class;
+        Task<TModel> UpdateItemFor<TModel>(TModel item) where TModel : class;
+        Task<TModel> DeleteItemFor<TModel>(string itemId) where TModel : class;
     }
 
-    public class AdminRepository<TAdminConfigurator> : IAdminRepository<TAdminConfigurator>
-        where TAdminConfigurator : IAdminConfigurator
+    public class AdminRepository : IAdminRepository
     {
         //Logger
-        private readonly ILogger<AdminRepository<TAdminConfigurator>> _logger;
+        private readonly ILogger<AdminRepository> _logger;
 
         private readonly DbContext _dbContext;
         private readonly IAdminSite _adminSite;
@@ -49,97 +46,85 @@ namespace Deviser.Admin.Data
 
 
 
-        public AdminRepository(IServiceProvider serviceProvider)
+        public AdminRepository(IAdminSite adminSite, IServiceProvider serviceProvider)
         {
-            _logger = serviceProvider.GetService<ILogger<AdminRepository<TAdminConfigurator>>>();
-            _adminSiteProvider = serviceProvider.GetService<IAdminSiteProvider>();
-
-            _adminConfiguratorType = typeof(TAdminConfigurator);
-            _adminSite = _adminSiteProvider.GetAdminConfig(_adminConfiguratorType);
-            _dbContext = (DbContext)serviceProvider.GetService(_adminSite.DbContextType);
-            _entityManager = new EntityManager(_dbContext);
-            _serializer.Converters.Add(new Core.Common.Json.GuidConverter());
+            _logger = serviceProvider.GetService<ILogger<AdminRepository>>();
+            _adminSite = adminSite;
 
             if (_adminSite == null)
                 throw new InvalidOperationException($"Admin site is not found for type {_adminConfiguratorType}");
+
+            _dbContext = (DbContext)serviceProvider.GetService(_adminSite.DbContextType);
+            _entityManager = new EntityManager(_dbContext);
+            _serializer.Converters.Add(new Core.Common.Json.GuidConverter());
         }
 
-        public IAdminSite AdminSite => _adminSite;
-
-        public IAdminConfig GetAdminConfig(string strModelType)
+        public async Task<PagedResult<TModel>> GetAllFor<TModel>(int pageNo, int pageSize, string orderByProperties)
+            where TModel : class
         {
-            var modelType = GetModelType(strModelType);
-            return GetAdminConfig(modelType);
-        }
-
-        public object GetAllFor(string strModelType, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null)
-        {
-            var modelType = GetModelType(strModelType);
-            var adminConfig = GetAdminConfig(modelType);
-            var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
-            //var genericMethodInfo = typeof(DbContext).GetMethod("Set");
-            //var setGenericMethod = genericMethodInfo.MakeGenericMethod(eType);
-            //var dbSet = setGenericMethod.Invoke(_dbContext, null);
-
-            //var toListMethodInfo = typeof(Enumerable).GetMethod("ToList");
-            //var toListGenericMethod = toListMethodInfo.MakeGenericMethod(eType);
-            //var result = toListGenericMethod.Invoke(null, new object[] { dbSet });
-
-
-            var result = CallGenericMethod(nameof(GetAll), new Type[] { modelType, entityClrType }, new object[] { pageNo, pageSize, orderBy });
-            return result;
-        }
-
-        public object GetItemFor(string strModelType, string itemId)
-        {
-            var modelType = GetModelType(strModelType);
+            var modelType = typeof(TModel);
             var adminConfig = GetAdminConfig(modelType);
             var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
 
-            var result = CallGenericMethod(nameof(GetItem), new Type[] { modelType, entityClrType }, new object[] { itemId });
+            var result = await CallGenericMethod<PagedResult<TModel>>(nameof(GetAll), new Type[] { modelType, entityClrType }, new object[] { pageNo, pageSize, orderByProperties });
             return result;
         }
 
-        public object CreateItemFor(string strModelType, object entity)
+        public async Task<TModel> GetItemFor<TModel>(string itemId)
+            where TModel : class
         {
-            var modelType = GetModelType(strModelType);
+            var modelType = typeof(TModel);
             var adminConfig = GetAdminConfig(modelType);
             var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
 
-            var result = CallGenericMethod(nameof(CreateItem), new Type[] { modelType, entityClrType }, new object[] { entity });
+            var result = await CallGenericMethod<TModel>(nameof(GetItem), new Type[] { modelType, entityClrType }, new object[] { itemId });
             return result;
         }
 
-        public object UpdateItemFor(string strModelType, object entity)
+        public async Task<TModel> CreateItemFor<TModel>(TModel item)
+            where TModel : class
         {
-            var modelType = GetModelType(strModelType);
+            var modelType = typeof(TModel);
             var adminConfig = GetAdminConfig(modelType);
             var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
 
-            var result = CallGenericMethod(nameof(UpdateItem), new Type[] { modelType, entityClrType }, new object[] { entity });
+            var result = await CallGenericMethod<TModel>(nameof(CreateItem), new Type[] { modelType, entityClrType }, new object[] { item });
             return result;
         }
 
-        public object DeleteItemFor(string strModelType, string itemId)
+        public async Task<TModel> UpdateItemFor<TModel>(TModel item)
+            where TModel : class
         {
-            var modelType = GetModelType(strModelType);
+            var modelType = typeof(TModel);
             var adminConfig = GetAdminConfig(modelType);
             var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
 
-            var result = CallGenericMethod(nameof(DeleteItem), new Type[] { modelType, entityClrType }, new object[] { itemId });
+            var result = await CallGenericMethod<TModel>(nameof(UpdateItem), new Type[] { modelType, entityClrType }, new object[] { item });
             return result;
         }
 
-        private object CallGenericMethod(string methodName, Type[] genericTypes, object[] parmeters)
+        public async Task<TModel> DeleteItemFor<TModel>(string itemId)
+            where TModel : class
         {
-            var getItemMethodInfo = typeof(AdminRepository<TAdminConfigurator>).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
+            var modelType = typeof(TModel);
+            var adminConfig = GetAdminConfig(modelType);
+            var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
+
+            var result = await CallGenericMethod<TModel>(nameof(DeleteItem), new Type[] { modelType, entityClrType }, new object[] { itemId });
+            return result;
+        }
+
+        private async Task<TResult> CallGenericMethod<TResult>(string methodName, Type[] genericTypes, object[] parmeters)
+            where TResult : class
+        {
+            var getItemMethodInfo = typeof(AdminRepository).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
             var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericTypes);
-            var result = getItemMethod.Invoke(this, parmeters);
-            return result;
+            var result = (Task<TResult>)getItemMethod.Invoke(this, parmeters);
+            return await result;
         }
 
 
-        private PagedResult<TModel> GetAll<TModel, TEntity>(int pageNo, int pageSize, string orderByProperties)
+        private async Task<PagedResult<TModel>> GetAll<TModel, TEntity>(int pageNo, int pageSize, string orderByProperties)
             where TEntity : class
             where TModel : class
         {
@@ -199,22 +184,107 @@ namespace Deviser.Admin.Data
 
             query = query.Skip(skip).Take(pageSize);
 
-            var dbResult = query.ToList();
+            var dbResult = await query.ToListAsync();
             var result = _adminSite.Mapper.Map<List<TModel>>(dbResult);
 
             return new PagedResult<TModel>(result, pageNo, pageSize, total);
         }
 
-        private TModel GetItem<TModel, TEntity>(string itemId)
+        private async Task<TModel> GetItem<TModel, TEntity>(string itemId)
             where TEntity : class
             where TModel : class
         {
-            TEntity dbResult = GetDbItem<TModel, TEntity>(itemId);
+            TEntity dbResult = await GetDbItem<TModel, TEntity>(itemId);
             var result = _adminSite.Mapper.Map<TModel>(dbResult);
             return result;
         }
 
-        private TEntity GetDbItem<TModel, TEntity>(string itemId) where TEntity : class
+        private async Task<TModel> CreateItem<TModel, TEntity>(TModel item)
+            where TEntity : class
+            where TModel : class
+        {
+            var modelType = typeof(TModel);
+            var adminConfig = GetAdminConfig(modelType);
+
+
+            TModel modelToAdd = item;//((JObject)item).ToObject<TModel>(_serializer);
+            TEntity itemToAdd = _adminSite.Mapper.Map<TEntity>(modelToAdd);
+
+            var m2ofields = GetManyToOneFields(adminConfig);
+
+            SetManyToOneFields(adminConfig, itemToAdd, m2ofields);
+
+            var dbSet = _dbContext.Set<TEntity>();
+            var queryableData = dbSet.Add(itemToAdd);
+            await _dbContext.SaveChangesAsync();
+
+            var result = _adminSite.Mapper.Map<TModel>(itemToAdd);
+            return result;
+        }
+
+        private async Task<TModel> UpdateItem<TModel, TEntity>(TModel item)
+            where TEntity : class
+            where TModel : class
+        {
+            var modelType = typeof(TModel);
+            var entityClrType = typeof(TEntity);
+            var adminConfig = GetAdminConfig(modelType);
+
+            TModel modelToUpdate = item;//((JObject)item).ToObject<TModel>(_serializer);
+            TEntity itemToUpdate = _adminSite.Mapper.Map<TEntity>(modelToUpdate);
+
+            var dbSet = _dbContext.Set<TEntity>();
+
+            List<GraphConfig> graphConfigs = new List<GraphConfig>();
+
+            var navigationFields = GetFieldsFor(adminConfig, f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne);
+            if (navigationFields != null && navigationFields.Count > 0)
+            {
+                var releatedGraphConfigs = GetGraphConfigsForReleation(entityClrType, navigationFields);
+                graphConfigs.AddRange(releatedGraphConfigs);
+            }
+
+
+            var childConfigFields = GetChildEntityFields(adminConfig);
+            if (childConfigFields != null && childConfigFields.Count > 0)
+            {
+                var childGraphConfigs = GetGraphConfigsForChildEntities(entityClrType, childConfigFields);
+                graphConfigs.AddRange(childGraphConfigs);
+                //TODO: include releated graph configs for each childConfigField. This needs changes in Deviser.Detached as well
+            }
+
+            if (graphConfigs.Count > 0)
+            {
+                //entity have releations and/or child configs
+                var queryableData = _dbContext.UpdateGraph(itemToUpdate, graphConfigs);
+            }
+            else
+            {
+                //entity does not have any releations and/or child configs
+                dbSet.Update(itemToUpdate);
+            }
+
+            await _dbContext.SaveChangesAsync();
+            var itemId = _entityManager.GetPrimaryKeyValues(itemToUpdate).First().ToString();
+            var updatedItem = await GetItem<TModel, TEntity>(itemId);
+            var result = _adminSite.Mapper.Map<TModel>(updatedItem);
+            return result;
+
+        }
+
+        private async Task<TModel> DeleteItem<TModel, TEntity>(string itemId)
+            where TEntity : class
+            where TModel : class
+        {
+            TEntity itemToDelete = await GetDbItem<TModel, TEntity>(itemId);
+            var dbSet = _dbContext.Set<TEntity>();
+            var queryableData = dbSet.Remove(itemToDelete);
+            await _dbContext.SaveChangesAsync();
+            var result = _adminSite.Mapper.Map<TModel>(itemToDelete);
+            return result;
+        }
+
+        private async Task<TEntity> GetDbItem<TModel, TEntity>(string itemId) where TEntity : class
         {
             var modelType = typeof(TModel);
             var entityClrType = typeof(TEntity);
@@ -230,8 +300,31 @@ namespace Deviser.Admin.Data
 
             query = AddIncludes(adminConfig, query);
 
-            var dbResult = query.FirstOrDefault();
+            var dbResult = await query.FirstOrDefaultAsync();
             return dbResult;
+        }
+
+        private void SetManyToOneFields<TEntity>(IAdminConfig adminConfig, TEntity itemToAdd, List<Field> m2ofields) where TEntity : class
+        {
+            var entityClrType = typeof(TEntity);
+            foreach (var m2oField in m2ofields)
+            {
+                var entityFieldExpression = GetEntityFieldExpressionFor(entityClrType, m2oField.FieldClrType);
+                var fieldPropInfo = ExpressionHelper.GetPropertyInfo(entityFieldExpression);
+                var field = fieldPropInfo.GetValue(itemToAdd, null); //item.Category
+                var fieldType = fieldPropInfo.PropertyType;
+                var fieldEntityType = _dbContext.Model.FindEntityType(fieldType);
+                var fieldPK = fieldEntityType.FindPrimaryKey();
+
+                var pkPropInfo = fieldPK.Properties.First().PropertyInfo; //Assuming the entity has only one primary key
+                var id = pkPropInfo.GetValue(field, null); //item.Category.Id
+
+                var targetPropInfo = fieldEntityType.GetNavigations().First().ForeignKey.Properties.First().PropertyInfo;
+
+                targetPropInfo.SetValue(itemToAdd, id, null); //item.CategoryId = item.Category.Id
+
+                fieldPropInfo.SetValue(itemToAdd, null, null); //item.Category = null;
+            }
         }
 
         private IQueryable<TEntity> AddIncludes<TEntity>(IAdminConfig adminConfig, IQueryable<TEntity> query) where TEntity : class
@@ -318,107 +411,11 @@ namespace Deviser.Admin.Data
             return typeMap.PropertyMaps.FirstOrDefault(pm => pm.DestinationType == destinationPropType || (pm.DestinationType.IsGenericType && pm.DestinationType.GenericTypeArguments.First() == destinationPropType));
         }
 
-        private TModel CreateItem<TModel, TEntity>(object item)
-            where TEntity : class
-            where TModel : class
-        {
-            var modelType = typeof(TModel);
-            var adminConfig = GetAdminConfig(modelType);
-
-
-            TModel modelToAdd = ((JObject)item).ToObject<TModel>(_serializer);
-            TEntity itemToAdd = _adminSite.Mapper.Map<TEntity>(modelToAdd);
-
-            var m2ofields = GetManyToOneFields(adminConfig);
-
-            SetManyToOneFields(adminConfig, itemToAdd, m2ofields);
-
-            var dbSet = _dbContext.Set<TEntity>();
-            var queryableData = dbSet.Add(itemToAdd);
-            _dbContext.SaveChanges();
-
-            var result = _adminSite.Mapper.Map<TModel>(itemToAdd);
-            return result;
-        }
-
-        private void SetManyToOneFields<TEntity>(IAdminConfig adminConfig, TEntity itemToAdd, List<Field> m2ofields) where TEntity : class
-        {
-            var entityClrType = typeof(TEntity);
-            foreach (var m2oField in m2ofields)
-            {
-                var entityFieldExpression = GetEntityFieldExpressionFor(entityClrType, m2oField.FieldClrType);
-                var fieldPropInfo = ExpressionHelper.GetPropertyInfo(entityFieldExpression);
-                var field = fieldPropInfo.GetValue(itemToAdd, null); //item.Category
-                var fieldType = fieldPropInfo.PropertyType;
-                var fieldEntityType = _dbContext.Model.FindEntityType(fieldType);
-                var fieldPK = fieldEntityType.FindPrimaryKey();
-
-                var pkPropInfo = fieldPK.Properties.First().PropertyInfo; //Assuming the entity has only one primary key
-                var id = pkPropInfo.GetValue(field, null); //item.Category.Id
-
-                var targetPropInfo = fieldEntityType.GetNavigations().First().ForeignKey.Properties.First().PropertyInfo;
-
-                targetPropInfo.SetValue(itemToAdd, id, null); //item.CategoryId = item.Category.Id
-
-                fieldPropInfo.SetValue(itemToAdd, null, null); //item.Category = null;
-            }
-        }
-
-        private TModel UpdateItem<TModel, TEntity>(object item)
-            where TEntity : class
-            where TModel : class
-        {
-            var modelType = typeof(TModel);
-            var entityClrType = typeof(TEntity);
-            var adminConfig = GetAdminConfig(modelType);
-
-            TModel modelToUpdate = ((JObject)item).ToObject<TModel>(_serializer);
-            TEntity itemToUpdate = _adminSite.Mapper.Map<TEntity>(modelToUpdate);
-
-            var dbSet = _dbContext.Set<TEntity>();
-
-            List<GraphConfig> graphConfigs = new List<GraphConfig>();
-
-            var navigationFields = GetFieldsFor(adminConfig, f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne);
-            if (navigationFields != null && navigationFields.Count > 0)
-            {
-                var releatedGraphConfigs = GetGraphConfigsForReleation(entityClrType, navigationFields);
-                graphConfigs.AddRange(releatedGraphConfigs);
-            }
-
-
-            var childConfigFields = GetChildEntityFields(adminConfig);
-            if (childConfigFields != null && childConfigFields.Count > 0)
-            {
-                var childGraphConfigs = GetGraphConfigsForChildEntities(entityClrType, childConfigFields);
-                graphConfigs.AddRange(childGraphConfigs);
-                //TODO: include releated graph configs for each childConfigField. This needs changes in Deviser.Detached as well
-            }
-
-            if (graphConfigs.Count > 0)
-            {
-                //entity have releations and/or child configs
-                var queryableData = _dbContext.UpdateGraph(itemToUpdate, graphConfigs);
-            }
-            else
-            {
-                //entity does not have any releations and/or child configs
-                dbSet.Update(itemToUpdate);
-            }
-
-            _dbContext.SaveChanges();
-            var itemId = _entityManager.GetPrimaryKeyValues(itemToUpdate).First().ToString();
-            var updatedItem = GetItem<TModel, TEntity>(itemId);
-            var result = _adminSite.Mapper.Map<TModel>(updatedItem);
-            return result;
-
-        }
-
         private List<GraphConfig> GetGraphConfigsForReleation(Type entityClrType, IEnumerable<Field> fields)
         {
-            var graphConfig = new List<GraphConfig>();            
+            var graphConfig = new List<GraphConfig>();
             foreach (var field in fields)
-            {                
+            {
                 LambdaExpression entityFieldExpression = GetEntityFieldExpressionFor(entityClrType, field.FieldClrType);
                 if (entityFieldExpression != null)
                 {
@@ -498,17 +495,7 @@ namespace Deviser.Admin.Data
             return graphConfig;
         }
 
-        private TModel DeleteItem<TModel, TEntity>(string itemId)
-            where TEntity : class
-            where TModel : class
-        {
-            TEntity itemToDelete = GetDbItem<TModel, TEntity>(itemId);
-            var dbSet = _dbContext.Set<TEntity>();
-            var queryableData = dbSet.Remove(itemToDelete);
-            _dbContext.SaveChanges();
-            var result = _adminSite.Mapper.Map<TModel>(itemToDelete);
-            return result;
-        }
+
 
         //private MethodInfo GetWhereMethod()
         //{

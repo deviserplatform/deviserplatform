@@ -79,7 +79,7 @@ namespace Deviser.Core.Common.Internal
                 {
                     if (dependenciesWithNoDuplicates.ContainsKey(dependency.Name))
                     {
-                        throw new InvalidOperationException(Resources.FormatCandidateResolver_DifferentCasedReference(dependency.Name));
+                        throw new InvalidOperationException(string.Format(Resources.CandidateResolver_DifferentCasedReference, dependency.Name));
                     }
                     dependenciesWithNoDuplicates.Add(dependency.Name, CreateDependency(dependency, referenceAssemblies));
                 }

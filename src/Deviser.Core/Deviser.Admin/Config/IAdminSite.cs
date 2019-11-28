@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Deviser.Admin.Config;
 using Deviser.Core.Common.DomainTypes.Admin;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -10,6 +11,7 @@ namespace Deviser.Admin
     public interface IAdminSite
     {
         IDictionary<Type, IAdminConfig> AdminConfigs { get; }
+        AdminType AdminType { get; }
         Type DbContextType { get; }
         IMapper Mapper { get; set; }
         string SiteName { get; set; }

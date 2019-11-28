@@ -70,6 +70,33 @@ namespace Deviser.Admin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AdminConfigurator cannot be found for the module {0}..
+        /// </summary>
+        internal static string AdminConfiguratorNotFound {
+            get {
+                return ResourceManager.GetString("AdminConfiguratorNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AdminService is not found for model {0}..
+        /// </summary>
+        internal static string AdminServiceNotFoundInvalidOperation {
+            get {
+                return ResourceManager.GetString("AdminServiceNotFoundInvalidOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requested model {0} is not found ..
+        /// </summary>
+        internal static string ModelNotFoundInvalidOperation {
+            get {
+                return ResourceManager.GetString("ModelNotFoundInvalidOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to More than one KeyField cannot be configured. .
         /// </summary>
         internal static string MoreKeyFiledInvalidOperation {

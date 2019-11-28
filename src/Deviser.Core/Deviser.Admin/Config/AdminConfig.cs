@@ -18,6 +18,8 @@ namespace Deviser.Admin
 
     public interface IAdminConfig : IAdminBaseConfig
     {
+        Type AdminServiceType { get; set; }
+
         ICollection<IChildConfig> ChildConfigs { get; }
 
         [JsonConverter(typeof(TypeJsonConverter))]
@@ -29,6 +31,7 @@ namespace Deviser.Admin
     public class AdminConfig<TModel> : IAdminConfig
         where TModel : class
     {
+        public Type AdminServiceType { get; set; }
 
         public ICollection<IChildConfig> ChildConfigs { get; }
 
@@ -39,7 +42,7 @@ namespace Deviser.Admin
 
         public IFormConfig FormConfig { get; }
 
-        public LookUpDictionary LookUps { get; }
+        public LookUpDictionary LookUps { get; }        
 
         public AdminConfig()
         {

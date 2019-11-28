@@ -120,6 +120,15 @@
   <data name="AddRemoveInvalidOperation" xml:space="preserve">
     <value>Either fields can be Added or Removed, but not both!</value>
   </data>
+  <data name="AdminConfiguratorNotFound" xml:space="preserve">
+    <value>AdminConfigurator cannot be found for the module {0}.</value>
+  </data>
+  <data name="AdminServiceNotFoundInvalidOperation" xml:space="preserve">
+    <value>AdminService is not found for model {0}.</value>
+  </data>
+  <data name="ModelNotFoundInvalidOperation" xml:space="preserve">
+    <value>Requested model {0} is not found .</value>
+  </data>
   <data name="MoreKeyFiledInvalidOperation" xml:space="preserve">
     <value>More than one KeyField cannot be configured. </value>
   </data>
