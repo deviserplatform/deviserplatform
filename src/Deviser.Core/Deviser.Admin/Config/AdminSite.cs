@@ -186,30 +186,6 @@ namespace Deviser.Admin.Config
             return typeMap;
         }
 
-        //public List<ReleatedField> GetReleatedFields(IForeignKey foreignKey, Type entityType)
-        //{
-        //    var releatedField = new List<ReleatedField>();
-
-        //    for (var index = 0; index < foreignKey.PrincipalKey.Properties.Count; index++)
-        //    {
-        //        var fKeyProp = foreignKey.Properties[index];
-        //        var fkDecType = foreignKey.DeclaringEntityType.ClrType;
-        //        var fKeyExpr = GetFieldExpression(fkDecType, fKeyProp);
-
-        //        var principalProp = foreignKey.PrincipalKey.Properties[index];
-        //        var pKDecType = foreignKey.PrincipalKey.DeclaringEntityType.ClrType;
-        //        var principalExpr = GetFieldExpression(pKDecType, principalProp);
-
-        //        releatedField.Add(new ReleatedField
-        //        {
-        //            IsParentField = entityType == pKDecType,
-        //            FieldExpression = fKeyExpr,
-        //            SourceFieldExpression = principalExpr
-        //        });
-        //    }
-        //    return releatedField;
-        //}
-
         private Type GetEntityClrTypeFor(Type modelType)
         {
             Type entityClrType = _typeMaps.FirstOrDefault(tm => tm.SourceType == modelType)?.DestinationType;
@@ -325,6 +301,12 @@ namespace Deviser.Admin.Config
         {
             var attributes = (field.FieldExpression.Body as MemberExpression).Member.GetCustomAttributes(true);
             var efProperty = entityConfig?.EntityType?.GetProperties().FirstOrDefault(p => p.Name == field.FieldName);
+            var navigation = entityConfig?.Navigations?.FirstOrDefault(n => n.Name == field.FieldName);
+            if (efProperty == null && entityConfig?.EntityType != null && navigation != null)
+            {
+                var releatedField = GetReleatedFields(navigation.ForeignKey, entityConfig.EntityType.ClrType).FirstOrDefault();
+                efProperty = entityConfig.EntityType.GetProperties().FirstOrDefault(p => p.Name == releatedField.FieldName);
+            }
 
             if (field.FieldOption == null)
                 field.FieldOption = new FieldOption();
@@ -502,6 +484,30 @@ namespace Deviser.Admin.Config
 
             //}
 
+        }
+
+        private List<ReleatedField> GetReleatedFields(IForeignKey foreignKey, Type entityType)
+        {
+            var releatedField = new List<ReleatedField>();
+
+            for (var index = 0; index < foreignKey.PrincipalKey.Properties.Count; index++)
+            {
+                var fKeyProp = foreignKey.Properties[index];
+                var fkDecType = foreignKey.DeclaringEntityType.ClrType;
+                var fKeyExpr = GetFieldExpression(fkDecType, fKeyProp);
+
+                var principalProp = foreignKey.PrincipalKey.Properties[index];
+                var pKDecType = foreignKey.PrincipalKey.DeclaringEntityType.ClrType;
+                var principalExpr = GetFieldExpression(pKDecType, principalProp);
+
+                releatedField.Add(new ReleatedField
+                {
+                    IsParentField = entityType == pKDecType,
+                    FieldExpression = fKeyExpr,
+                    SourceFieldExpression = principalExpr
+                });
+            }
+            return releatedField;
         }
 
         private FieldType GetFieldType(Field field)

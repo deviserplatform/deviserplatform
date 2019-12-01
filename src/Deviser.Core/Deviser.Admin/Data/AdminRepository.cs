@@ -312,6 +312,12 @@ namespace Deviser.Admin.Data
                 var entityFieldExpression = GetEntityFieldExpressionFor(entityClrType, m2oField.FieldClrType);
                 var fieldPropInfo = ExpressionHelper.GetPropertyInfo(entityFieldExpression);
                 var field = fieldPropInfo.GetValue(itemToAdd, null); //item.Category
+
+                if (field == null)
+                {
+                    continue;
+                }
+
                 var fieldType = fieldPropInfo.PropertyType;
                 var fieldEntityType = _dbContext.Model.FindEntityType(fieldType);
                 var fieldPK = fieldEntityType.FindPrimaryKey();
