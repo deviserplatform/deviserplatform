@@ -72,7 +72,7 @@ namespace Deviser.Modules.Blog
             adminBuilder.Register<DTO.Post>(form =>
             {   
 
-                form.FieldBuilder
+                form.Fields
                 .AddKeyField(p => p.Id)
                 .AddField(p => p.Title)
                 //.AddField(s => s.Content, fieldOption => { fieldOption.ValidationType = ValidationType.UserExist; })
@@ -87,7 +87,7 @@ namespace Deviser.Modules.Blog
 
                 form.AddChildConfig(s => s.Comments, (childForm) =>
                   {
-                      childForm.FieldBuilder
+                      childForm.Fields
                       .AddKeyField(c => c.Id)
                       .AddField(c => c.UserName)
                       .AddField(c => c.Comment)

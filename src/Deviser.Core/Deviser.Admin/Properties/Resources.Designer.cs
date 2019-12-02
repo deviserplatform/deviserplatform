@@ -88,6 +88,15 @@ namespace Deviser.Admin.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Field is not found in the configuration, please add the field using FieldBuilder..
+        /// </summary>
+        internal static string FieldNotFoundInvaidOperation {
+            get {
+                return ResourceManager.GetString("FieldNotFoundInvaidOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requested model {0} is not found ..
         /// </summary>
         internal static string ModelNotFoundInvalidOperation {
@@ -99,9 +108,9 @@ namespace Deviser.Admin.Properties {
         /// <summary>
         ///   Looks up a localized string similar to More than one KeyField cannot be configured. .
         /// </summary>
-        internal static string MoreKeyFiledInvalidOperation {
+        internal static string MoreKeyFieldsInvalidOperation {
             get {
-                return ResourceManager.GetString("MoreKeyFiledInvalidOperation", resourceCulture);
+                return ResourceManager.GetString("MoreKeyFieldsInvalidOperation", resourceCulture);
             }
         }
     }

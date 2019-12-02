@@ -150,7 +150,7 @@ namespace Deviser.Admin.Config
 
                         if (childEntityClrType == null)
                         {
-                            throw new InvalidOperationException($"The entity type for the ModelType: {childModelType} cannot be found in MapperConfiguration, please automapper configuration for ModelType and EntityType");
+                            throw new InvalidOperationException($"The entity type for the ModelType: {childModelType} cannot be found in MapperConfiguration, please check MapperConfiguration");
                         }
 
                         var childEntityType = _dbContext.Model.FindEntityType(entityClrType);
@@ -165,14 +165,23 @@ namespace Deviser.Admin.Config
                         BuildEntityForm(childConfig, hasConfiguration, childModelType);
                     }
                 }
-
-                LoadMasterData(adminConfig);
             }
             else if (AdminType == AdminType.Custom)
             {
                 //TODO: Validate adminConfig for custom type
+                
+                BuildEntityForm(adminConfig, hasConfiguration, modelType);
+                if (adminConfig.ChildConfigs != null && adminConfig.ChildConfigs.Count > 0)
+                {
+                    foreach (var childConfig in adminConfig.ChildConfigs)
+                    {
+                        var childModelType = childConfig.Field.FieldClrType;
+                        BuildEntityForm(childConfig, hasConfiguration, childModelType);
+                    }
+                }
             }
 
+            LoadMasterData(adminConfig);
             AdminConfigs.Add(modelType, adminConfig);
         }
 
@@ -637,13 +646,47 @@ namespace Deviser.Admin.Config
                 .Where(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne)
                 .ToList();
 
-            foreach (var relatedField in relatedFileds)
+            if (AdminType == AdminType.Entity)
             {
-                var relatedModelType = relatedField.FieldOption.ReleatedEntityType;
-                var entityClrType = GetEntityClrTypeFor(relatedModelType);
+                foreach (var relatedField in relatedFileds)
+                {
+                    var relatedModelType = relatedField.FieldOption.ReleatedEntityType;
+                    var entityClrType = GetEntityClrTypeFor(relatedModelType);
 
-                Func<List<LookUpField>> masterDataDelegate = () => CallGenericMethod<List<LookUpField>>(nameof(GetLookUpData), new Type[] { relatedModelType, entityClrType }, new object[] { relatedField.FieldOption.ReleatedEntityDisplayExpression });
-                adminConfig.LookUps.Add(relatedField.FieldOption.ReleatedEntityType.Name, masterDataDelegate);
+                    Func<List<LookUpField>> masterDataDelegate = () => CallGenericMethod<List<LookUpField>>(nameof(GetLookUpDataFromEntity), new Type[] { relatedModelType, entityClrType }, new object[] { relatedField.FieldOption.ReleatedEntityDisplayExpression });
+                    adminConfig.LookUps.Add(relatedField.FieldOption.ReleatedEntityType.Name, masterDataDelegate);
+                }
+            }
+            else if (AdminType == AdminType.Custom)
+            {
+                foreach (var relatedFiled in relatedFileds)
+                {
+                    Func<List<LookUpField>> masterDataDelegate = () =>
+                    {
+                        List<LookUpField> lookUpFields = new List<LookUpField>();
+
+                        var entityLookupExprDelegate = relatedFiled.FieldOption.ReleatedEntityLookupExpression.Compile();
+                        var entityLookupExprKeyDelegate = relatedFiled.FieldOption.ReleatedEntityLookupKeyExpression.Compile();
+                        var displayExprDelegate = relatedFiled.FieldOption.ReleatedEntityDisplayExpression.Compile();
+                        var keyFieldName = ReflectionExtensions.GetMemberName(relatedFiled.FieldOption.ReleatedEntityLookupKeyExpression);
+
+                        var items = entityLookupExprDelegate.DynamicInvoke(new object[] { _serviceProvider }) as IList;
+
+                        foreach (var item in items)
+                        {
+                            var keyValue = entityLookupExprKeyDelegate.DynamicInvoke(new object[] { item });
+                            var displayName = displayExprDelegate.DynamicInvoke(new object[] { item }) as string;
+                            lookUpFields.Add(new LookUpField()
+                            {
+                                Key = new Dictionary<string, object>() { { keyFieldName, keyValue } },
+                                DisplayName = displayName
+                            });
+                        }
+
+                        return lookUpFields;
+                    };
+                    adminConfig.LookUps.Add(relatedFiled.FieldOption.ReleatedEntityType.Name, masterDataDelegate);
+                }
             }
         }
 
@@ -664,7 +707,7 @@ namespace Deviser.Admin.Config
             }
         }
 
-        private List<LookUpField> GetLookUpData<TModel, TEntity>(LambdaExpression displayExpr)
+        private List<LookUpField> GetLookUpDataFromEntity<TModel, TEntity>(LambdaExpression displayExpr)
             where TEntity : class
             where TModel : class
         {

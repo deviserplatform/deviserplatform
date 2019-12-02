@@ -3,36 +3,84 @@ using Deviser.Admin.Data;
 using Deviser.Core.Common.DomainTypes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using Deviser.Core.Data.Repositories;
+using Microsoft.AspNetCore.Identity;
 
 namespace Deviser.Modules.UserManagement
 {
     public class AdminService : IAdminService<User>
     {
+        private readonly IUserRepository _userRepository;
+        private readonly UserManager<Core.Data.Entities.User> _userManager;
+
+        public AdminService(IUserRepository userRepository, UserManager<Core.Data.Entities.User> userManager)
+        {
+            _userRepository = userRepository;
+            _userManager = userManager;
+        }
+
         public async Task<User> CreateItem(User item)
         {
-            throw new NotImplementedException();
+            if (item != null)
+            {
+                var user = Mapper.Map<Core.Data.Entities.User>(item);
+                user.Id = Guid.NewGuid();
+                user.UserName = item.Email;
+                var result = await _userManager.CreateAsync(user, item.Password);
+                if (result.Succeeded)
+                {
+                    Mapper.Map<User>(user);
+                }
+            }
+            return null;
         }
 
         public async Task<User> DeleteItem(string itemId)
         {
-            throw new NotImplementedException();
+            var user = _userManager.Users.FirstOrDefault(u => u.Id == Guid.Parse(itemId));
+            if (user != null)
+            {
+                var result = await _userManager.DeleteAsync(user);
+                if (result != null)
+                {
+                    return Mapper.Map<User>(user);
+                }
+            }
+            return null;
         }
 
         public async Task<PagedResult<User>> GetAll(int pageNo, int pageSize, string orderByProperties)
         {
-            throw new NotImplementedException();
+            var users = _userRepository.GetUsers();
+            int skip = (pageNo - 1) * pageSize;
+            int total = users.Count;
+            var result = users.Skip(skip).Take(pageSize);
+            return new PagedResult<User>(result, pageNo, pageSize, total);
         }
 
         public async Task<User> GetItem(string itemId)
         {
-            throw new NotImplementedException();
+            var user = _userManager.Users.FirstOrDefault(u => u.Id == Guid.Parse(itemId));
+            if (user != null)
+            {
+                return Mapper.Map<User>(user);
+            }
+            return null;
         }
 
         public async Task<User> UpdateItem(User item)
         {
-            throw new NotImplementedException();
+            var user = Mapper.Map<Core.Data.Entities.User>(item);
+            var result = await _userManager.UpdateAsync(user);
+            if (result != null)
+            {
+                return Mapper.Map<User>(user);
+            }
+            return null;
         }
     }
 }

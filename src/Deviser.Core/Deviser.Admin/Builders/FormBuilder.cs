@@ -9,20 +9,20 @@ namespace Deviser.Admin.Builders
         where TEntity : class
     {
         private IAdminConfig _adminConfig;
-        public FieldBuilder<TEntity> FieldBuilder { get; }
+        public FieldBuilder<TEntity> Fields { get; }
         public FieldSetBuilder<TEntity> FieldSetBuilder { get; }
 
         public FormBuilder(IAdminConfig adminConfig)
         {
             _adminConfig = adminConfig;
-            FieldBuilder = new FieldBuilder<TEntity>(_adminConfig.FormConfig);
+            Fields = new FieldBuilder<TEntity>(_adminConfig.FormConfig);
             FieldSetBuilder = new FieldSetBuilder<TEntity>(_adminConfig.FormConfig);
         }
 
         public PropertyBuilder<TEntity> Property<TProperty>(Expression<Func<TEntity, TProperty>> expression)
         {
             //var field = adminConfig?.FieldConfig?.Fields?.FirstOrDefault(f => f.)
-            return new PropertyBuilder<TEntity>(_adminConfig.FormConfig.FieldConditions, expression);
+            return new PropertyBuilder<TEntity>(_adminConfig, expression);
         }
 
         public FormBuilder<TEntity> AddChildConfig<TProperty>(Expression<Func<TEntity, ICollection<TProperty>>> expression,

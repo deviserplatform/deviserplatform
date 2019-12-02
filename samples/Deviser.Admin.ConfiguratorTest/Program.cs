@@ -33,7 +33,7 @@ namespace Deviser.Admin.ConfiguratorTest
         {
             adminBuilder.Register<User>(form =>
             {
-                form.FieldBuilder
+                form.Fields
                 .AddField(u => u.FirstName).AddInlineField(u => u.LastName);
 
                 form.FieldSetBuilder

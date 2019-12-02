@@ -3,6 +3,8 @@ using Deviser.Core.Common.DomainTypes;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Deviser.Core.Data.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Deviser.Modules.UserManagement
 {
@@ -11,13 +13,18 @@ namespace Deviser.Modules.UserManagement
         public void ConfigureAdmin(IAdminBuilder adminBuilder)
         {
             adminBuilder.Register<User, AdminService>(form =>
-           {
-               form.FieldBuilder
-               .AddField(u => u.Id)
-               .AddField(u => u.UserName)
-               .AddField(u => u.FirstName)
-               .AddField(u => u.LastName);
-           });
+            {
+                form.Fields
+                    .AddKeyField(u => u.Id)
+                    .AddField(u => u.UserName)
+                    .AddField(u => u.FirstName)
+                    .AddField(u => u.LastName)
+                    .AddMultiselectField(u => u.Roles);
+
+                form.Property(u => u.Roles).HasLookup(sp => sp.GetService<IRoleRepository>().GetRoles(),
+                    ke => ke.Id,
+                    de => de.Name);
+            });
         }
     }
 }

@@ -45,6 +45,12 @@ namespace Deviser.Core.Common.DomainTypes.Admin
         //public Expression<Func<object, string>> ReleatedEntityDisplayExpression { get; set; }
         public LambdaExpression ReleatedEntityDisplayExpression { get; set; }
 
+        [JsonIgnore]
+        public LambdaExpression ReleatedEntityLookupExpression { get; set; }
+
+        [JsonIgnore]
+        public LambdaExpression ReleatedEntityLookupKeyExpression { get; set; }
+
         [JsonConverter(typeof(ExpressionJsonConverter))]
         public LambdaExpression ShowOn { get; set; }        
 

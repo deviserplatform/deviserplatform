@@ -126,10 +126,13 @@
   <data name="AdminServiceNotFoundInvalidOperation" xml:space="preserve">
     <value>AdminService is not found for model {0}.</value>
   </data>
+  <data name="FieldNotFoundInvaidOperation" xml:space="preserve">
+    <value>Field is not found in the configuration, please add the field using FieldBuilder.</value>
+  </data>
   <data name="ModelNotFoundInvalidOperation" xml:space="preserve">
     <value>Requested model {0} is not found .</value>
   </data>
-  <data name="MoreKeyFiledInvalidOperation" xml:space="preserve">
+  <data name="MoreKeyFieldsInvalidOperation" xml:space="preserve">
     <value>More than one KeyField cannot be configured. </value>
   </data>
 </root>

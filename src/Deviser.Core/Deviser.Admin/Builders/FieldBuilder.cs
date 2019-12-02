@@ -10,11 +10,11 @@ using System.Text;
 namespace Deviser.Admin.Builders
 {
     /// <summary>
-    /// Builds the filed config 
+    /// Builds the filed configuration 
     /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
-    public class FieldBuilder<TEntity>
-        where TEntity : class
+    /// <typeparam name="TModel"></typeparam>
+    public class FieldBuilder<TModel>
+        where TModel : class
     {
         //private IFieldConfig _fieldConfig;
         private IFormConfig _formConfig;
@@ -25,98 +25,129 @@ namespace Deviser.Admin.Builders
             _formConfig = formConfig;
         }
 
-        public FieldBuilder<TEntity> AddKeyField<TProperty>(Expression<Func<TEntity, TProperty>> expression)
+        /// <summary>
+        /// Adds a KeyField to this form
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="expression">An expression to specify the key field</param>
+        /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
+        public FieldBuilder<TModel> AddKeyField<TProperty>(Expression<Func<TModel, TProperty>> expression)
         {
             if (_formConfig.KeyField.FieldExpression != null)
             {
-                throw new InvalidOperationException(Resources.MoreKeyFiledInvalidOperation);
+                throw new InvalidOperationException(Resources.MoreKeyFieldsInvalidOperation);
             }
             _formConfig.KeyField.FieldExpression = expression;
             return this;
         }
 
-        public FieldBuilder<TEntity> AddField<TProperty>(Expression<Func<TEntity, TProperty>> expression, Action<FieldOption> fieldOptionAction = null)
+        /// <summary>
+        /// Adds a new field (new row) to this form
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="expression">An expression to specify a field</param>
+        /// <param name="fieldOptionAction">Additional options can be specified here</param>
+        /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
+        public FieldBuilder<TModel> AddField<TProperty>(Expression<Func<TModel, TProperty>> expression, Action<FieldOption> fieldOptionAction = null)
         {
-            if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
-                ThrowAddRemoveInvalidOperationException();
-
             var field = CreateSimpleField(expression, fieldOptionAction);
             _formConfig.FieldConfig.AddField(field);
             return this;
         }
 
-        public FieldBuilder<TEntity> AddInlineField<TProperty>(Expression<Func<TEntity, TProperty>> expression, Action<FieldOption> fieldOptionAction = null)
+        /// <summary>
+        /// Adds a new field (in-line) to this form
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="expression">An expression to specify a field</param>
+        /// <param name="fieldOptionAction">Additional options can be specified here</param>
+        /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
+        public FieldBuilder<TModel> AddInlineField<TProperty>(Expression<Func<TModel, TProperty>> expression, Action<FieldOption> fieldOptionAction = null)
         {
-            if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
-                ThrowAddRemoveInvalidOperationException();
-
             var field = CreateSimpleField(expression, fieldOptionAction);
             _formConfig.FieldConfig.AddInLineField(field);
             return this;
         }
 
-        public FieldBuilder<TEntity> AddSelectField<TReleatedEntity>(Expression<Func<TEntity, TReleatedEntity>> expression,
-            Expression<Func<TReleatedEntity, string>> displayExpression,
+        /// <summary>
+        /// Adds a new select field (new row) to this form. This method assumes that an Entity in EFCore for the TModel has been configured in MapperConfiguration 
+        /// </summary>
+        /// <typeparam name="TReleatedEntity"></typeparam>
+        /// <param name="expression">An expression to specify a field</param>
+        /// <param name="displayExpression">An expression to specify display property of select items</param>
+        /// <param name="fieldOptionAction">Additional options can be specified here</param>
+        /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
+        public FieldBuilder<TModel> AddSelectField<TReleatedEntity>(Expression<Func<TModel, TReleatedEntity>> expression,
+            Expression<Func<TReleatedEntity, string>> displayExpression = null,
             Action<FieldOption> fieldOptionAction = null)
             where TReleatedEntity : class
         {
-            if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
-                ThrowAddRemoveInvalidOperationException();
-
             var field = CreateComplexField(expression, RelationType.ManyToOne, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
-
             _formConfig.FieldConfig.AddField(field);
             return this;
         }
 
-        public FieldBuilder<TEntity> AddInlineSelectField<TReleatedEntity>(Expression<Func<TEntity, TReleatedEntity>> expression,
-            Expression<Func<TReleatedEntity, string>> displayExpression,
+        /// <summary>
+        /// Adds a new select field (in-line) to this form. This method assumes that an Entity in EFCore for the TModel has been configured in MapperConfiguration 
+        /// </summary>
+        /// <typeparam name="TReleatedEntity"></typeparam>
+        /// <param name="expression">An expression to specify a field</param>
+        /// <param name="displayExpression">An expression to specify display property of select items</param>
+        /// <param name="fieldOptionAction">Additional options can be specified here</param>
+        /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
+        public FieldBuilder<TModel> AddInlineSelectField<TReleatedEntity>(Expression<Func<TModel, TReleatedEntity>> expression,
+            Expression<Func<TReleatedEntity, string>> displayExpression = null,
             Action<FieldOption> fieldOptionAction = null)
             where TReleatedEntity : class
         {
-            if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
-                ThrowAddRemoveInvalidOperationException();
-
             var field = CreateComplexField(expression, RelationType.ManyToOne, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
             _formConfig.FieldConfig.AddInLineField(field);
             return this;
         }
 
-        public FieldBuilder<TEntity> AddMultiselectField<TReleatedEntity>(Expression<Func<TEntity, object>> expression,
-            Expression<Func<TReleatedEntity, string>> displayExpression,
+        /// <summary>
+        /// Adds a new multi-select field (new row) to this form. This method assumes that an Entity in EFCore for the TModel has been configured in MapperConfiguration 
+        /// </summary>
+        /// <typeparam name="TReleatedEntity"></typeparam>
+        /// <param name="expression">An expression to specify a field</param>
+        /// <param name="displayExpression">An expression to specify display property of select items</param>
+        /// <param name="fieldOptionAction">Additional options can be specified here</param>
+        /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
+        public FieldBuilder<TModel> AddMultiselectField<TReleatedEntity>(Expression<Func<TModel, IList<TReleatedEntity>>> expression,
+            Expression<Func<TReleatedEntity, string>> displayExpression = null,
             Action<FieldOption> fieldOptionAction = null)
             where TReleatedEntity : class
         {
-            if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
-                ThrowAddRemoveInvalidOperationException();
-
             var field = CreateComplexField(expression, RelationType.ManyToMany, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
-
             _formConfig.FieldConfig.AddField(field);
             return this;
         }
 
-        public FieldBuilder<TEntity> AddInlineMultiSelectField<TReleatedEntity>(Expression<Func<TEntity, object>> expression,
-            Expression<Func<TReleatedEntity, string>> displayExpression,
+        /// <summary>
+        /// Adds a new multi-select field (in-line) to this form. This method assumes that an Entity in EFCore for the TModel has been configured in MapperConfiguration 
+        /// </summary>
+        /// <typeparam name="TReleatedEntity"></typeparam>
+        /// <param name="expression">An expression to specify a field</param>
+        /// <param name="displayExpression">An expression to specify display property of select items</param>
+        /// <param name="fieldOptionAction">Additional options can be specified here</param>
+        /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
+        public FieldBuilder<TModel> AddInlineMultiSelectField<TReleatedEntity>(Expression<Func<TModel, IList<TReleatedEntity>>> expression,
+            Expression<Func<TReleatedEntity, string>> displayExpression = null,
             Action<FieldOption> fieldOptionAction = null)
             where TReleatedEntity : class
         {
-            if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
-                ThrowAddRemoveInvalidOperationException();
-
             var field = CreateComplexField(expression, RelationType.ManyToMany, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
             _formConfig.FieldConfig.AddInLineField(field);
             return this;
         }
-
 
         /// <summary>
         /// Remove Field cannot be combined with AddField/AddInlineField/AddComplexField/AddInlineComplexField
         /// </summary>
         /// <typeparam name="TProperty"></typeparam>
-        /// <param name="expression"></param>
+        /// <param name="expression">An expression to remove a field</param>
         /// <returns></returns>
-        public FieldBuilder<TEntity> RemoveField<TProperty>(Expression<Func<TEntity, TProperty>> expression)
+        public FieldBuilder<TModel> RemoveField<TProperty>(Expression<Func<TModel, TProperty>> expression)
         {
             if (_formConfig.AllFormFields.Count > 0)
                 ThrowAddRemoveInvalidOperationException();
@@ -130,27 +161,6 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        //private FieldBuilder<TEntity> AddField(IFieldConfig fieldConfig, Field field)
-        //{
-        //    fieldConfig.AddField(field);
-        //    //fieldConfig.Fields.Add(new List<Field>() {
-        //    //    field
-        //    //});
-        //    return this;
-        //}
-
-        //private FieldBuilder<TEntity> AddInlineField(IFieldConfig fieldConfig, Field field)
-        //{
-        //    //if (fieldConfig.Fields.Count == 0)
-        //    //    fieldConfig.Fields.Add(new List<Field>());
-
-        //    //var FieldRow = fieldConfig.Fields.Last();
-
-        //    //FieldRow.Add(field);
-        //    fieldConfig.AddInLineField(field);
-        //    return this;
-        //}
-
         /// <summary>
         /// Creates a complex field from given expression
         /// </summary>
@@ -158,17 +168,20 @@ namespace Deviser.Admin.Builders
         /// <param name="expression"></param>
         /// <param name="fieldOptionAction"></param>
         /// <returns></returns>
-        private Field CreateComplexField<TProperty>(Expression<Func<TEntity, TProperty>> expression,
+        private Field CreateComplexField<TProperty>(Expression<Func<TModel, TProperty>> expression,
             RelationType releationType,
             Type releatedEntityType,
-            LambdaExpression displayExpression,
+            LambdaExpression lookupDisplayExpression,
             Action<FieldOption> fieldOptionAction = null)
             //where TReleatedEntity : class
             where TProperty : class
         {
+            if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
+                ThrowAddRemoveInvalidOperationException();
+
             FieldOption fieldOption = new FieldOption();
             fieldOptionAction?.Invoke(fieldOption);
-            fieldOption.ReleatedEntityDisplayExpression = displayExpression;
+            fieldOption.ReleatedEntityDisplayExpression = lookupDisplayExpression;
             fieldOption.RelationType = releationType;
             fieldOption.ReleatedEntityType = releatedEntityType;
 
@@ -186,8 +199,11 @@ namespace Deviser.Admin.Builders
         /// <param name="expression"></param>
         /// <param name="fieldOptionAction"></param>
         /// <returns></returns>
-        private Field CreateSimpleField<TProperty>(Expression<Func<TEntity, TProperty>> expression, Action<FieldOption> fieldOptionAction = null)
+        private Field CreateSimpleField<TProperty>(Expression<Func<TModel, TProperty>> expression, Action<FieldOption> fieldOptionAction = null)
         {
+            if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
+                ThrowAddRemoveInvalidOperationException();
+
             FieldOption fieldOption = new FieldOption();
             fieldOptionAction?.Invoke(fieldOption);
             return new Field
