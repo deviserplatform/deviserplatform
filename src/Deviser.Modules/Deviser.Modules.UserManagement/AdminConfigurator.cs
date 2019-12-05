@@ -19,6 +19,9 @@ namespace Deviser.Modules.UserManagement
                     .AddField(u => u.UserName)
                     .AddField(u => u.FirstName)
                     .AddField(u => u.LastName)
+                    .AddField(u => u.Email)
+                    .AddField(u => u.Password)
+                    .AddField(u => u.PasswordConfirm)
                     .AddMultiselectField(u => u.Roles);
 
                 form.Property(u => u.Roles).HasLookup(sp => sp.GetService<IRoleRepository>().GetRoles(),

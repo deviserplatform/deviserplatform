@@ -73,7 +73,7 @@ export class AdminGridComponent implements OnInit {
 
   onYesToDelete(item: any): void {
     console.log('confirm');
-    const itemId = this.recordIdPipe.transform(item, this.adminConfig.formConfig.keyField);
+    const itemId = this.recordIdPipe.transform(item, this.adminConfig.modelConfig.keyField);
     this.adminService.deleteRecord(itemId)
       .subscribe(response => this.onDeleteResponse(response));
   }

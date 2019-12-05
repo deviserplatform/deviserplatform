@@ -5,7 +5,7 @@ import { Field } from '../domain-types/field';
 import { FieldType } from '../domain-types/field-type';
 import { KeyField } from '../domain-types/key-field';
 import { KeyFieldType } from '../domain-types/key-field-type';
-import { FormConfig } from '../domain-types/form-config';
+import { ModelConfig } from '../domain-types/model-config';
 
 
 @Injectable({
@@ -18,7 +18,7 @@ export class FormControlService {
   toFormGroup(adminConfig: AdminConfig, record: any = null): FormGroup {
     let adminForm: any = {};
 
-    adminForm = this.getFormGroup(adminConfig.formConfig, adminForm, record);
+    adminForm = this.getFormGroup(adminConfig.modelConfig, adminForm, record);
 
     if (adminConfig.childConfigs && adminConfig.childConfigs.length > 0) {
 
@@ -32,24 +32,26 @@ export class FormControlService {
     return this.fb.group(adminForm);
   }
 
-  toChildFormGroup(formConfig: FormConfig, record: any = null): FormGroup {
+  toChildFormGroup(modelConfig: ModelConfig, record: any = null): FormGroup {
     let adminForm: any = {};
-    adminForm = this.getFormGroup(formConfig, adminForm, record);
+    adminForm = this.getFormGroup(modelConfig, adminForm, record);
     return this.fb.group(adminForm);
   }
 
-  private getFormGroup(formConfig: FormConfig, adminForm: any, record: any, forChildRecords: boolean = false) {
-    if (formConfig.keyField) {
-      adminForm[formConfig.keyField.fieldNameCamelCase] = this.getKeyControl(formConfig.keyField, record);
+  private getFormGroup(modelConfig: ModelConfig, adminForm: any, record: any, forChildRecords: boolean = false) {
+    if (modelConfig.keyField) {
+      adminForm[modelConfig.keyField.fieldNameCamelCase] = this.getKeyControl(modelConfig.keyField, record);
     }
-    adminForm = this.getFormEnity(formConfig, adminForm, record, forChildRecords);
+    adminForm = this.getFormEnity(modelConfig, adminForm, record, forChildRecords);
     return adminForm;
   }
 
-  private getFormEnity(formConfig: FormConfig, adminForm: any, record: any, forChildRecords: boolean): any {
-    if (formConfig && formConfig.fieldConfig &&
-      formConfig.fieldConfig.fields && formConfig.fieldConfig.fields.length > 0) {
-      const fields = formConfig.fieldConfig.fields;
+  private getFormEnity(modelConfig: ModelConfig, adminForm: any, record: any, forChildRecords: boolean): any {
+    if (modelConfig && modelConfig.formConfig && 
+      modelConfig.formConfig.fieldConfig && 
+      modelConfig.formConfig.fieldConfig.fields && 
+      modelConfig.formConfig.fieldConfig.fields.length > 0) {
+        const fields = modelConfig.formConfig.fieldConfig.fields;
 
       fields.forEach(fieldRow => {
         if (fieldRow && fieldRow.length > 0) {
@@ -62,9 +64,11 @@ export class FormControlService {
       // adminForm['fields'] = this.fb.group(fieldsGroup); 
       // adminForm =  this.fb.group(fieldsGroup);
 
-    } else if (formConfig.fieldSetConfig && formConfig.fieldSetConfig.fieldSets &&
-      formConfig.fieldSetConfig.fieldSets.length > 0) {
-      const fieldSets = formConfig.fieldSetConfig.fieldSets;
+    } else if (modelConfig && modelConfig.formConfig && 
+      modelConfig.formConfig.fieldSetConfig && 
+      modelConfig.formConfig.fieldSetConfig.fieldSets &&
+      modelConfig.formConfig.fieldSetConfig.fieldSets.length > 0) {
+      const fieldSets = modelConfig.formConfig.fieldSetConfig.fieldSets;
       fieldSets.forEach(fieldSet => {
         if (fieldSet && fieldSet.fields && fieldSet.fields.length > 0) {
           fieldSet.fields.forEach(fieldRow => {

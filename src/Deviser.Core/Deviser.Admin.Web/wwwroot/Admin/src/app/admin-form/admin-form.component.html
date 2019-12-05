@@ -1,6 +1,6 @@
 <div class="admin-container">
   <div class="admin-form">
-    <div *ngIf="adminConfig && adminConfig.formConfig" class="card">
+    <div *ngIf="adminConfig && adminConfig.modelConfig" class="card">
       <form [formGroup]="adminForm" (ngSubmit)="onSubmit()">
         <div class="card-header d-flex">
           <div class="mr-auto p-2">
@@ -19,7 +19,7 @@
         <div class="card-body">
           <app-admin-alert class="admin-alerts" [alerts]="alerts"></app-admin-alert>
           
-          <app-entity-form [form]="adminForm" [formConfig]="adminConfig.formConfig" [lookUps]="adminConfig.lookUps">
+          <app-entity-form [form]="adminForm" [modelConfig]="adminConfig.modelConfig" [lookUps]="adminConfig.lookUps">
           </app-entity-form>
 
           <div class="card" *ngIf="adminConfig.childConfigs && adminConfig.childConfigs.length > 0">
@@ -40,7 +40,7 @@
                   <!-- {{childConfig.field.fieldName}} -->
 
                   <app-child-grid [formControlName]="childConfig.field.fieldNameCamelCase" [parentForm]="adminForm"
-                    [formConfig]="childConfig.formConfig"></app-child-grid>
+                    [modelConfig]="childConfig.modelConfig" [lookUps]="adminConfig.lookUps"></app-child-grid>
 
                 </div>
               </div>

@@ -15,8 +15,8 @@ namespace Deviser.Admin.Builders
         public FormBuilder(IAdminConfig adminConfig)
         {
             _adminConfig = adminConfig;
-            Fields = new FieldBuilder<TEntity>(_adminConfig.FormConfig);
-            FieldSetBuilder = new FieldSetBuilder<TEntity>(_adminConfig.FormConfig);
+            Fields = new FieldBuilder<TEntity>(_adminConfig.ModelConfig);
+            FieldSetBuilder = new FieldSetBuilder<TEntity>(_adminConfig.ModelConfig);
         }
 
         public PropertyBuilder<TEntity> Property<TProperty>(Expression<Func<TEntity, TProperty>> expression)
@@ -38,7 +38,7 @@ namespace Deviser.Admin.Builders
                 {
                     FieldExpression = expression
                 },
-                FormConfig = childConfig.FormConfig
+                ModelConfig = childConfig.ModelConfig
             });
             return this;
         }

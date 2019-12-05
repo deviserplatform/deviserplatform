@@ -70,7 +70,7 @@
 
 //                adminSite.Register<Student>(config =>
 //                {
-//                    config.ListConfig
+//                    config.GridConfig
 //                    .AddField(s => s.FirstName)
 //                    .AddField(s => s.LastName)
 //                    .AddField(s => s.BirthDate);

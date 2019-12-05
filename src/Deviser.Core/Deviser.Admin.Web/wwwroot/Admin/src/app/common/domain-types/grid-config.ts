@@ -1,5 +1,5 @@
 import { Field } from './field';
 
-export interface ListConfig {
+export interface GridConfig {
     fields: Field[][];
 }

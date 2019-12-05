@@ -126,7 +126,7 @@ namespace Deviser.Admin.Config
 
                 if (entityClrType == null)
                 {
-                    throw new InvalidOperationException($"The entity type for the ModelType: {modelType} cannot be found in MapperConfiguration, please automapper configuration for ModelType and EntityType");
+                    throw new InvalidOperationException($"The entity type for the ModelType: {modelType} cannot be found in MapperConfiguration, please automapper configuration for ModelType and ModelType");
                 }
 
                 var entityType = _dbContext.Model.FindEntityType(entityClrType);
@@ -207,38 +207,38 @@ namespace Deviser.Admin.Config
 
         private void BuildEntityForm(IAdminBaseConfig adminBaseConfig, bool hasConfiguration, Type modelType)
         {
-            IFormConfig formConfig = adminBaseConfig.FormConfig;
+            IModelConfig modelConfig = adminBaseConfig.ModelConfig;
             EntityConfig entityConfig = adminBaseConfig.EntityConfig;
             if (!hasConfiguration)
             {
                 //Register by default settings and fields
-                PopulateFields(modelType, formConfig);
+                PopulateFields(modelType, modelConfig);
             }
 
             //PopulateEntityConfig(entityType, entityConfig);
 
             //Adding primary keys to KeyField
 
-            bool hasExlcludeFields = formConfig?.FieldConfig?.ExcludedFields?.Count > 0;
-            bool hasListFields = formConfig?.ListConfig.Fields.Count > 0;
+            bool hasExlcludeFields = modelConfig?.FormConfig?.FieldConfig?.ExcludedFields?.Count > 0;
+            bool hasListFields = modelConfig?.GridConfig.Fields.Count > 0;
 
 
             if (hasExlcludeFields)
             {
-                PopulateFields(modelType, formConfig, formConfig.FieldConfig.ExcludedFields);
+                PopulateFields(modelType, modelConfig, modelConfig.FormConfig.FieldConfig.ExcludedFields);
             }
 
-            var fields = formConfig.AllFormFields;
+            var fields = modelConfig.FormConfig.AllFormFields;
             foreach (var field in fields)
             {
-                PopulateFieldOptions(field, formConfig.FieldConditions, entityConfig);
+                PopulateFieldOptions(field, modelConfig.FormConfig.FieldConditions, entityConfig);
             }
 
             if (hasListFields)
             {
-                foreach (var field in formConfig.ListConfig.Fields)
+                foreach (var field in modelConfig.GridConfig.Fields)
                 {
-                    PopulateFieldOptions(field, formConfig.FieldConditions, entityConfig);
+                    PopulateFieldOptions(field, modelConfig.FormConfig.FieldConditions, entityConfig);
                 }
             }
             else
@@ -250,13 +250,13 @@ namespace Deviser.Admin.Config
                     {
                         FieldExpression = ExpressionHelper.GetPropertyExpression(modelType, prop)
                     };
-                    PopulateFieldOptions(field, formConfig.FieldConditions, entityConfig);
-                    formConfig.ListConfig.Fields.Add(field);
+                    PopulateFieldOptions(field, modelConfig.FormConfig.FieldConditions, entityConfig);
+                    modelConfig.GridConfig.Fields.Add(field);
                 }
             }
         }
 
-        private void PopulateFields(Type modelType, IFormConfig formConfig, List<Field> excludeField = null)
+        private void PopulateFields(Type modelType, IModelConfig modelConfig, List<Field> excludeField = null)
         {
             List<PropertyInfo> properties = modelType.GetProperties().ToList();
 
@@ -266,7 +266,7 @@ namespace Deviser.Admin.Config
 
                 if (!isExclude)
                 {
-                    formConfig.FieldConfig.AddField(new Field
+                    modelConfig.FormConfig.FieldConfig.AddField(new Field
                     {
                         FieldExpression = ExpressionHelper.GetPropertyExpression(modelType, prop)
                     });
@@ -642,7 +642,7 @@ namespace Deviser.Admin.Config
         private void LoadMasterData<TModel>(AdminConfig<TModel> adminConfig) where TModel : class
         {
             //Loading Master Data
-            var relatedFileds = adminConfig.FormConfig.AllFormFields
+            var relatedFileds = adminConfig.ModelConfig.FormConfig.AllFormFields
                 .Where(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne)
                 .ToList();
 

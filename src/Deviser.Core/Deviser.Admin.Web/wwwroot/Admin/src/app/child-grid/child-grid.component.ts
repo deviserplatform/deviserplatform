@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, forwardRef, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors, Validator } from "@angular/forms";
 
-import { FormConfig } from '../common/domain-types/form-config';
+import { ModelConfig } from '../common/domain-types/model-config';
 import { Field } from '../common/domain-types/field';
 import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -29,7 +29,7 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
 
 
   @Input() parentForm: FormGroup;
-  @Input() formConfig: FormConfig;
+  @Input() modelConfig: ModelConfig;
   @Input() lookUps: LookUpDictionary;
   ViewState: typeof ViewState = ViewState;
 
@@ -58,14 +58,14 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
   ngOnInit() {
     // this._childForm = new BehaviorSubject(this._formControlService.toChildFormGroup(this.formConfig, {}));
     // this._childForm.subscribe(childForm => this.childForm = childForm);
-    this.childForm = this._formControlService.toChildFormGroup(this.formConfig, {});
+    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, {});
   }
 
   onNewItem(): void {
     this.viewState = ViewState.ADD;
     this.selectedItem = {};
     // this._childForm.next(this._formControlService.toChildFormGroup(this.formConfig, this.selectedItem));
-    this.childForm = this._formControlService.toChildFormGroup(this.formConfig, this.selectedItem);
+    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, this.selectedItem);
   }
 
   onAddItem(): void {
@@ -80,7 +80,7 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
 
   onEditItem(item): void {
     this.selectedItem = item;
-    this.childForm = this._formControlService.toChildFormGroup(this.formConfig, this.selectedItem);
+    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, this.selectedItem);
     this.viewState = ViewState.EDIT;
   }
 

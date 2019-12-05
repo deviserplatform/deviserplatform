@@ -83,7 +83,7 @@ namespace Deviser.Admin.Extensions
         //    return config;
         //}
 
-        //public static ListConfig<TEntity> AddField<TEntity, TProperty>(this ListConfig<TEntity> config, Expression<Func<TEntity, TProperty>> expression)
+        //public static GridConfig<TEntity> AddField<TEntity, TProperty>(this GridConfig<TEntity> config, Expression<Func<TEntity, TProperty>> expression)
         //   where TEntity : class
         //{
         //    config.Fields.Add(new Field

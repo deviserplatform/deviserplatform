@@ -1,7 +1,7 @@
 import { Field } from "./field";
-import { FormConfig } from "./form-config";
+import { ModelConfig } from "./model-config";
 
 export interface ChildConfig {
     field: Field
-    formConfig: FormConfig
+    modelConfig: ModelConfig
 }

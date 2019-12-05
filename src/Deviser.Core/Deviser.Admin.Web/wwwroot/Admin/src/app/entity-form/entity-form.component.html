@@ -1,11 +1,11 @@
-<div class="row" *ngIf="formConfig && formConfig.fieldConfig && formConfig.fieldConfig.fields">
+<div class="row" *ngIf="modelConfig && modelConfig.formConfig && modelConfig.formConfig.fieldConfig && modelConfig.formConfig.fieldConfig.fields">
   <div class="col">
 
-    <ng-container *ngFor="let keyField of formConfig.keyFields">
+    <ng-container *ngFor="let keyField of modelConfig.formConfig.keyFields">
       <app-form-control [form]="form" [field]="keyField"></app-form-control>
     </ng-container>
 
-    <div *ngFor="let fieldRow of formConfig.fieldConfig.fields" class="form-row">
+    <div *ngFor="let fieldRow of modelConfig.formConfig.fieldConfig.fields" class="form-row">
       <fieldset *ngFor="let field of fieldRow" class="form-group col" [disabled]="!isFieldEnabled(field)">
           <ng-container *ngIf="isFieldShown(field)">
               <app-form-control 

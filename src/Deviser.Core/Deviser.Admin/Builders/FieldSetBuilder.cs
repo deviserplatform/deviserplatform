@@ -9,21 +9,21 @@ namespace Deviser.Admin.Builders
     public class FieldSetBuilder<TEntity>
         where TEntity : class
     {   
-        private IFormConfig _formConfig;
+        private IModelConfig _modelConfig;
 
-        public FieldSetBuilder(IFormConfig formConfig)
+        public FieldSetBuilder(IModelConfig modelConfig)
         {
-            _formConfig = formConfig;
+            _modelConfig = modelConfig;
         }
 
         public FieldSetBuilder<TEntity> AddFieldSet(string groupName,
             Func<FieldBuilder<TEntity>, FieldBuilder<TEntity>> fieldBuilderAction, string cssClass = null, string description = null)
         {
-            if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
+            if (_modelConfig.FormConfig.FieldConfig.ExcludedFields.Count > 0)
                 throw new InvalidOperationException(Resources.AddRemoveInvalidOperation);
 
-            var fieldConfig = new FieldConfig<TEntity>();
-            var fieldBuilder = new FieldBuilder<TEntity>(_formConfig);
+            var fieldConfig = new FieldConfig();
+            var fieldBuilder = new FieldBuilder<TEntity>(_modelConfig);
 
             fieldBuilderAction.Invoke(fieldBuilder);
 
@@ -35,7 +35,7 @@ namespace Deviser.Admin.Builders
                 Fields = fieldConfig.Fields
             };
 
-            _formConfig.FieldSetConfig.FieldSets.Add(fieldSet);
+            _modelConfig.FormConfig.FieldSetConfig.FieldSets.Add(fieldSet);
 
             return this;
         }

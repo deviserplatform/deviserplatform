@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors, Validator } from "@angular/forms";
 
-import { FormConfig } from '../common/domain-types/form-config';
+import { ModelConfig } from '../common/domain-types/model-config';
 import { Field } from '../common/domain-types/field';
 import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
 import { FieldType } from '../common/domain-types/field-type';
@@ -25,7 +25,7 @@ import { FieldType } from '../common/domain-types/field-type';
 export class EntityFormComponent implements OnInit, ControlValueAccessor, Validator {
 
   @Input() form: FormGroup;
-  @Input() formConfig: FormConfig;
+  @Input() modelConfig: ModelConfig;
   @Input() lookUps: LookUpDictionary;
 
   //To access FieldType enum

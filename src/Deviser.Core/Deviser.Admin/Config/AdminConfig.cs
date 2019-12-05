@@ -13,7 +13,7 @@ namespace Deviser.Admin
     {
         [JsonIgnore]
         EntityConfig EntityConfig { get; set; }
-        IFormConfig FormConfig { get; }
+        IModelConfig ModelConfig { get; }
     }
 
     public interface IAdminConfig : IAdminBaseConfig
@@ -23,7 +23,7 @@ namespace Deviser.Admin
         ICollection<IChildConfig> ChildConfigs { get; }
 
         [JsonConverter(typeof(TypeJsonConverter))]
-        Type EntityType { get; }
+        Type ModelType { get; }
 
         LookUpDictionary LookUps { get; }
     }
@@ -35,20 +35,20 @@ namespace Deviser.Admin
 
         public ICollection<IChildConfig> ChildConfigs { get; }
 
-        public Type EntityType { get; }
+        public Type ModelType { get; }
 
         [JsonIgnore]
         public EntityConfig EntityConfig { get; set; }
 
-        public IFormConfig FormConfig { get; }
+        public IModelConfig ModelConfig { get; }
 
         public LookUpDictionary LookUps { get; }        
 
         public AdminConfig()
         {
             ChildConfigs = new List<IChildConfig>();
-            EntityType = typeof(TModel);
-            FormConfig = new FormConfig<TModel>();
+            ModelType = typeof(TModel);
+            ModelConfig = new ModelConfig();
             LookUps = new LookUpDictionary();
         }
 
@@ -70,7 +70,7 @@ namespace Deviser.Admin
 
         public Field Field { get; set; }
 
-        public IFormConfig FormConfig { get; set; }
+        public IModelConfig ModelConfig { get; set; }
 
         public ChildConfig()
         {
@@ -80,19 +80,17 @@ namespace Deviser.Admin
 
     public interface IFormConfig
     {
-        [JsonIgnore]
-        List<Field> AllFormFields { get; }
-
+        [JsonIgnore] List<Field> AllFormFields { get; }
         IFieldConfig FieldConfig { get; }
-
         IFieldSetConfig FieldSetConfig { get; }
+        [JsonIgnore] FieldConditions FieldConditions { get; }
+    }
 
-        [JsonIgnore]
-        FieldConditions FieldConditions { get; }
-
+    public interface IModelConfig
+    {
         KeyField KeyField { get; }
-
-        IListConfig ListConfig { get; }
+        IGridConfig GridConfig { get; }
+        IFormConfig FormConfig { get; }
     }
 
     public interface IFieldConfig
@@ -116,13 +114,26 @@ namespace Deviser.Admin
         List<Field> AllIncludeFields { get; }
     }
 
-    public interface IListConfig
+    public interface IGridConfig
     {
         List<Field> Fields { get; }
     }
 
-    public class FormConfig<TEntity> : IFormConfig
-        where TEntity : class
+    public class ModelConfig : IModelConfig
+    {
+        public IFormConfig FormConfig { get; }
+        public IGridConfig GridConfig { get; }
+        public KeyField KeyField { get; }
+
+        public ModelConfig()
+        {
+            FormConfig = new FormConfig();
+            GridConfig = new GridConfig();
+            KeyField = new KeyField();
+        }
+    }
+
+    public class FormConfig : IFormConfig
     {
         [JsonIgnore]
         public List<Field> AllFormFields
@@ -146,56 +157,33 @@ namespace Deviser.Admin
                 return returnList;
             }
         }
-
-        public FieldConfig<TEntity> FieldConfig { get; }
-
-        public FieldSetConfig<TEntity> FieldSetConfig { get; }
-
-        [JsonIgnore]
+        public IFieldConfig FieldConfig { get; }
+        public IFieldSetConfig FieldSetConfig { get; }
         public FieldConditions FieldConditions { get; }
-
-        public KeyField KeyField { get; }
-
-        public ListConfig<TEntity> ListConfig { get; }
-
-        IFieldConfig IFormConfig.FieldConfig => FieldConfig;
-
-        IFieldSetConfig IFormConfig.FieldSetConfig => FieldSetConfig;
-
-        IListConfig IFormConfig.ListConfig => ListConfig;
 
         public FormConfig()
         {
-            FieldConfig = new FieldConfig<TEntity>();
+            FieldConfig = new FieldConfig();
             FieldConditions = new FieldConditions();
-            FieldSetConfig = new FieldSetConfig<TEntity>();
-            KeyField = new KeyField();
-            ListConfig = new ListConfig<TEntity>();
+            FieldSetConfig = new FieldSetConfig();
         }
     }
 
-    public class FieldConfig<TEntity> : IFieldConfig
-        where TEntity : class
+    public class FieldConfig : IFieldConfig
     {
 
-        private Dictionary<string, Field> allFields;
+        private readonly Dictionary<string, Field> _allFields;
         public List<List<Field>> Fields { get; }
 
         [JsonIgnore]
         public List<Field> ExcludedFields { get; }
 
         [JsonIgnore]
-        public List<Field> AllIncludeFields
-        {
-            get
-            {
-                return allFields?.Values?.ToList();
-            }
-        }
+        public List<Field> AllIncludeFields => _allFields?.Values?.ToList();
 
         public FieldConfig()
         {
-            allFields = new Dictionary<string, Field>();
+            _allFields = new Dictionary<string, Field>();
             Fields = new List<List<Field>>();
             ExcludedFields = new List<Field>();
         }
@@ -216,15 +204,15 @@ namespace Deviser.Admin
             if (Fields.Count == 0)
                 Fields.Add(new List<Field>());
 
-            var FieldRow = Fields.Last();
+            var fieldRow = Fields.Last();
 
-            FieldRow.Add(field);
+            fieldRow.Add(field);
         }
 
         private void AddToDictionary(Field field)
         {
-            if (!allFields.ContainsKey(field.FieldName))
-                allFields.Add(field.FieldName, field);
+            if (!_allFields.ContainsKey(field.FieldName))
+                _allFields.Add(field.FieldName, field);
         }
 
         public void RemoveField(Field field)
@@ -233,24 +221,17 @@ namespace Deviser.Admin
         }
     }
 
-    public class FieldSetConfig<TEntity> : IFieldSetConfig
-        where TEntity : class
+    public class FieldSetConfig : IFieldSetConfig
     {
-        private Dictionary<string, Field> allFields;
+        private readonly Dictionary<string, Field> _allFields;
         public List<FieldSet> FieldSets { get; }
 
         [JsonIgnore]
-        public List<Field> AllIncludeFields
-        {
-            get
-            {
-                return allFields?.Values?.ToList();
-            }
-        }
+        public List<Field> AllIncludeFields => _allFields?.Values?.ToList();
 
         public FieldSetConfig()
         {
-            allFields = new Dictionary<string, Field>();
+            _allFields = new Dictionary<string, Field>();
             FieldSets = new List<FieldSet>();
         }
 
@@ -269,17 +250,17 @@ namespace Deviser.Admin
 
         private void AddToDictionary(Field field)
         {
-            if (!allFields.ContainsKey(field.FieldName))
-                allFields.Add(field.FieldName, field);
+            if (!_allFields.ContainsKey(field.FieldName))
+                _allFields.Add(field.FieldName, field);
         }
 
     }
 
-    public class ListConfig<TEntity> : IListConfig
+    public class GridConfig : IGridConfig
     {
         public List<Field> Fields { get; }
 
-        public ListConfig()
+        public GridConfig()
         {
             Fields = new List<Field>();
         }

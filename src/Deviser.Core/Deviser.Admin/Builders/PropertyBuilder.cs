@@ -22,10 +22,10 @@ namespace Deviser.Admin.Builders
         public PropertyBuilder(IAdminConfig adminConfig, LambdaExpression fieldExpression)
         {
             _adminConfig = adminConfig;
-            _fieldConditions = adminConfig.FormConfig.FieldConditions;
+            _fieldConditions = adminConfig.ModelConfig.FormConfig.FieldConditions;
             _fieldExpression = fieldExpression;
             var fieldName = ReflectionExtensions.GetMemberName(fieldExpression);
-            _field = _adminConfig.FormConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
+            _field = _adminConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
 
             if (_field == null)
             {
