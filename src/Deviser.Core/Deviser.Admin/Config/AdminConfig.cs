@@ -42,19 +42,14 @@ namespace Deviser.Admin
 
         public IModelConfig ModelConfig { get; }
 
-        public LookUpDictionary LookUps { get; }        
+        public LookUpDictionary LookUps { get; }
 
         public AdminConfig()
         {
-            ChildConfigs = new List<IChildConfig>();
+            ChildConfigs = new HashSet<IChildConfig>();
             ModelType = typeof(TModel);
             ModelConfig = new ModelConfig();
             LookUps = new LookUpDictionary();
-        }
-
-        public void ShowOn(LambdaExpression fieldExpression, Expression<Func<TModel, bool>> predicate)
-        {
-
         }
     }
 
@@ -80,7 +75,7 @@ namespace Deviser.Admin
 
     public interface IFormConfig
     {
-        [JsonIgnore] List<Field> AllFormFields { get; }
+        [JsonIgnore] ICollection<Field> AllFormFields { get; }
         IFieldConfig FieldConfig { get; }
         IFieldSetConfig FieldSetConfig { get; }
         [JsonIgnore] FieldConditions FieldConditions { get; }
@@ -91,15 +86,16 @@ namespace Deviser.Admin
         KeyField KeyField { get; }
         IGridConfig GridConfig { get; }
         IFormConfig FormConfig { get; }
+        IDictionary<string, CustomForm> CustomForms { get; }
     }
 
     public interface IFieldConfig
     {
-        List<List<Field>> Fields { get; }
-        List<Field> ExcludedFields { get; }
+        ICollection<ICollection<Field>> Fields { get; }
+        ICollection<Field> ExcludedFields { get; }
 
         [JsonIgnore]
-        List<Field> AllIncludeFields { get; }
+        ICollection<Field> AllIncludeFields { get; }
         void AddField(Field field);
         void AddInLineField(Field field);
         void RemoveField(Field field);
@@ -108,25 +104,34 @@ namespace Deviser.Admin
 
     public interface IFieldSetConfig
     {
-        List<FieldSet> FieldSets { get; }
+        ICollection<FieldSet> FieldSets { get; }
 
         [JsonIgnore]
-        List<Field> AllIncludeFields { get; }
+        ICollection<Field> AllIncludeFields { get; }
     }
 
     public interface IGridConfig
     {
-        List<Field> Fields { get; }
+        ICollection<Field> Fields { get; }
+        ICollection<Field> ExcludedFields { get; }
+
+        [JsonIgnore]
+        ICollection<Field> AllIncludeFields { get; }
+
+        void AddField(Field field);
+        void RemoveField(Field field);
     }
 
     public class ModelConfig : IModelConfig
     {
+        public IDictionary<string, CustomForm> CustomForms { get; }
         public IFormConfig FormConfig { get; }
         public IGridConfig GridConfig { get; }
         public KeyField KeyField { get; }
-
+        
         public ModelConfig()
         {
+            CustomForms = new Dictionary<string, CustomForm>();
             FormConfig = new FormConfig();
             GridConfig = new GridConfig();
             KeyField = new KeyField();
@@ -136,7 +141,7 @@ namespace Deviser.Admin
     public class FormConfig : IFormConfig
     {
         [JsonIgnore]
-        public List<Field> AllFormFields
+        public ICollection<Field> AllFormFields
         {
             get
             {
@@ -171,21 +176,20 @@ namespace Deviser.Admin
 
     public class FieldConfig : IFieldConfig
     {
-
         private readonly Dictionary<string, Field> _allFields;
-        public List<List<Field>> Fields { get; }
+        public ICollection<ICollection<Field>> Fields { get; }
 
         [JsonIgnore]
-        public List<Field> ExcludedFields { get; }
+        public ICollection<Field> ExcludedFields { get; }
 
         [JsonIgnore]
-        public List<Field> AllIncludeFields => _allFields?.Values?.ToList();
+        public ICollection<Field> AllIncludeFields => _allFields?.Values?.ToList();
 
         public FieldConfig()
         {
             _allFields = new Dictionary<string, Field>();
-            Fields = new List<List<Field>>();
-            ExcludedFields = new List<Field>();
+            Fields = new List<ICollection<Field>>();
+            ExcludedFields = new HashSet<Field>();
         }
 
         public void AddField(Field field)
@@ -211,8 +215,7 @@ namespace Deviser.Admin
 
         private void AddToDictionary(Field field)
         {
-            if (!_allFields.ContainsKey(field.FieldName))
-                _allFields.Add(field.FieldName, field);
+            _allFields.Add(field.FieldName, field);
         }
 
         public void RemoveField(Field field)
@@ -224,15 +227,15 @@ namespace Deviser.Admin
     public class FieldSetConfig : IFieldSetConfig
     {
         private readonly Dictionary<string, Field> _allFields;
-        public List<FieldSet> FieldSets { get; }
+        public ICollection<FieldSet> FieldSets { get; }
 
         [JsonIgnore]
-        public List<Field> AllIncludeFields => _allFields?.Values?.ToList();
+        public ICollection<Field> AllIncludeFields => _allFields?.Values?.ToList();
 
         public FieldSetConfig()
         {
             _allFields = new Dictionary<string, Field>();
-            FieldSets = new List<FieldSet>();
+            FieldSets = new HashSet<FieldSet>();
         }
 
         public void AddFieldSet(FieldSet fieldSet)
@@ -258,11 +261,33 @@ namespace Deviser.Admin
 
     public class GridConfig : IGridConfig
     {
-        public List<Field> Fields { get; }
+        private readonly Dictionary<string, Field> _allFields;
+        public ICollection<Field> Fields { get; }
+        public ICollection<Field> ExcludedFields { get; }
+        public ICollection<Field> AllIncludeFields { get; }
 
         public GridConfig()
         {
-            Fields = new List<Field>();
+            _allFields = new Dictionary<string, Field>();
+            Fields = new HashSet<Field>();
+            ExcludedFields = new HashSet<Field>();
+        }
+
+        public void AddField(Field field)
+        {
+            AddToDictionary(field);
+
+            Fields.Add(field);
+        }
+
+        public void RemoveField(Field field)
+        {
+            ExcludedFields.Add(field);
+        }
+
+        private void AddToDictionary(Field field)
+        {
+            _allFields.Add(field.FieldName, field);
         }
     }
 

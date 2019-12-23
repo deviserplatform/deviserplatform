@@ -127,7 +127,7 @@
     <value>AdminService is not found for model {0}.</value>
   </data>
   <data name="FieldNotFoundInvaidOperation" xml:space="preserve">
-    <value>Field is not found in the configuration, please add the field using FieldBuilder.</value>
+    <value>Field is not found in the configuration, please add the field using FormBuilder.</value>
   </data>
   <data name="ModelNotFoundInvalidOperation" xml:space="preserve">
     <value>Requested model {0} is not found .</value>

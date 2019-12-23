@@ -65,14 +65,14 @@ namespace Deviser.Modules.Blog
             //adminBuilder.Register<PostTag>(form =>
             //{
 
-            //    form.FieldBuilder
+            //    form.FormBuilder
             //         .AddSelectField(s => s.Post, expr => expr.Title);
             //});
 
-            adminBuilder.Register<DTO.Post>(form =>
+            adminBuilder.Register<DTO.Post>(modelBuilder =>
             {   
 
-                form.Fields
+                modelBuilder.FormBuilder
                 .AddKeyField(p => p.Id)
                 .AddField(p => p.Title)
                 //.AddField(s => s.Content, fieldOption => { fieldOption.ValidationType = ValidationType.UserExist; })
@@ -85,9 +85,9 @@ namespace Deviser.Modules.Blog
                 //form.Property(s => s.Content)
                 //.ValidateOn(p => p.Title == "Test");
 
-                form.AddChildConfig(s => s.Comments, (childForm) =>
+                modelBuilder.AddChildConfig(s => s.Comments, (childForm) =>
                   {
-                      childForm.Fields
+                      childForm.FormBuilder
                       .AddKeyField(c => c.Id)
                       .AddField(c => c.UserName)
                       .AddField(c => c.Comment)

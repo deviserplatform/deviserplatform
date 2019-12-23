@@ -88,7 +88,7 @@ namespace Deviser.Admin.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Field is not found in the configuration, please add the field using FieldBuilder..
+        ///   Looks up a localized string similar to Field is not found in the configuration, please add the field using FormBuilder..
         /// </summary>
         internal static string FieldNotFoundInvaidOperation {
             get {

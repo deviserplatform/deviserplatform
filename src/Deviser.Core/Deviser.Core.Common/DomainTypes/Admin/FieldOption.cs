@@ -11,6 +11,8 @@ namespace Deviser.Core.Common.DomainTypes.Admin
 {
     public class FieldOption
     {
+        public FieldType FieldType { get; set; }
+
         [JsonConverter(typeof(ExpressionJsonConverter))]
         public LambdaExpression EnableOn { get; set; }
         public string Description { get; set; }

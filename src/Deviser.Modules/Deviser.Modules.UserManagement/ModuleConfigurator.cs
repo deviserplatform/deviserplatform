@@ -18,7 +18,7 @@ namespace Deviser.Modules.UserManagement
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<AdminService>();
+            services.AddScoped<UserAdminService>();
         }
     }
 }

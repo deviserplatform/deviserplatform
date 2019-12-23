@@ -21,32 +21,31 @@ namespace Deviser.Admin
 
         public MapperConfiguration MapperConfiguration { get; set; }
 
-        public AdminBuilder Register<TEntity>(Action<FormBuilder<TEntity>> formBuilderAction = null)
+        public AdminBuilder Register<TEntity>(Action<ModelBuilder<TEntity>> modelBuilderAction = null)
             where TEntity : class
         {
             var adminConfig = new AdminConfig<TEntity>();
-            BuildAdmin(adminConfig, formBuilderAction);
+            BuildAdmin(adminConfig, modelBuilderAction);
             return this;
         }
 
 
 
-        public AdminBuilder Register<TEntity, TAdminService>(Action<FormBuilder<TEntity>> formBuilderAction = null)
-            where TEntity : class
-            where TAdminService : IAdminService<TEntity>
+        public AdminBuilder Register<TModel, TAdminService>(Action<ModelBuilder<TModel>> modelBuilderAction = null)
+            where TModel : class
+            where TAdminService : IAdminService<TModel>
         {
-            var adminConfig = new AdminConfig<TEntity>();
-            adminConfig.AdminServiceType = typeof(TAdminService);
-            BuildAdmin(adminConfig, formBuilderAction);
+            var adminConfig = new AdminConfig<TModel> {AdminServiceType = typeof(TAdminService)};
+            BuildAdmin(adminConfig, modelBuilderAction);
             return this;
         }
 
-        private void BuildAdmin<TEntity>(AdminConfig<TEntity> adminConfig, Action<FormBuilder<TEntity>> formBuilderAction) where TEntity : class
+        private void BuildAdmin<TModel>(AdminConfig<TModel> adminConfig, Action<ModelBuilder<TModel>> modelBuilderAction) where TModel : class
         {
-            var hasConfiguration = formBuilderAction != null;
+            var hasConfiguration = modelBuilderAction != null;
             _adminSite.Mapper = MapperConfiguration?.CreateMapper();
 
-            formBuilderAction?.Invoke(new FormBuilder<TEntity>(adminConfig));
+            modelBuilderAction?.Invoke(new ModelBuilder<TModel>(adminConfig));
 
             _adminSite.Build(adminConfig, hasConfiguration);
         }

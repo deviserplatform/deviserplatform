@@ -12,12 +12,12 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Deviser.Modules.UserManagement
 {
-    public class AdminService : IAdminService<User>
+    public class UserAdminService : IAdminService<User>
     {
         private readonly IUserRepository _userRepository;
         private readonly UserManager<Core.Data.Entities.User> _userManager;
 
-        public AdminService(IUserRepository userRepository, UserManager<Core.Data.Entities.User> userManager)
+        public UserAdminService(IUserRepository userRepository, UserManager<Core.Data.Entities.User> userManager)
         {
             _userRepository = userRepository;
             _userManager = userManager;
@@ -81,6 +81,46 @@ namespace Deviser.Modules.UserManagement
                 return Mapper.Map<User>(user);
             }
             return null;
+        }
+
+        public async Task<FormResult> ResetPassword(PasswordReset passwordReset)
+        {
+
+            if (passwordReset == null || passwordReset.UserId == Guid.Empty ||
+                string.IsNullOrEmpty(passwordReset.CurrentPassword) || string.IsNullOrEmpty(passwordReset.NewPassword))
+            {
+                return new FormResult()
+                {
+                    FormResultStatus = FormResultStatus.Error,
+                    SuccessMessage = "Invalid parameters"
+                };
+            }
+
+
+            var currentPassword = passwordReset.CurrentPassword;
+            var newPassword = passwordReset.NewPassword;
+
+            var user = _userManager.Users.FirstOrDefault(u => u.Id == passwordReset.UserId);
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+            if (result.Succeeded)
+            {
+                return new FormResult()
+                {
+                    FormResultStatus = FormResultStatus.Success,
+                    SuccessMessage = "Password has been reset successfully"
+                };
+            }
+            else
+            {
+                return new FormResult()
+                {
+                    FormResultStatus = FormResultStatus.Error,
+                    SuccessMessage = "Unable to reset Password",
+                    ResultModel = result
+                };
+
+            }
         }
     }
 }

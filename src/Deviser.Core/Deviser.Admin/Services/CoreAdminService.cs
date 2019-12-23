@@ -23,7 +23,7 @@ namespace Deviser.Admin.Services
         private readonly IServiceProvider _serviceProvider;
         private readonly IModuleRegistry _moduleRegistry;
         private readonly IAdminRepository _adminRepository;
-        JsonSerializer _serializer = new JsonSerializer();
+        private readonly JsonSerializer _serializer;
 
         public CoreAdminService(string moduleName, IServiceProvider serviceProvider)
         {
@@ -32,7 +32,10 @@ namespace Deviser.Admin.Services
             _moduleRegistry = serviceProvider.GetService<IModuleRegistry>();
             _serviceProvider = serviceProvider;
 
+            _serializer = new JsonSerializer();
+            _serializer.NullValueHandling = NullValueHandling.Ignore;
             _serializer.Converters.Add(new Core.Common.Json.GuidConverter());
+
 
             var adminConfiguratorType = _moduleRegistry.GetModuleMetaInfoByModuleName(moduleName)?.AdminConfiguratorTypeInfo;
             if (adminConfiguratorType == null)

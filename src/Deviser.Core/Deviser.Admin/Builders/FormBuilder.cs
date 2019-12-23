@@ -1,45 +1,52 @@
-﻿using System;
+﻿using Deviser.Admin.Properties;
+using Deviser.Core.Common.DomainTypes.Admin;
+using Deviser.Core.Common.Extensions;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Deviser.Admin.Config;
 
 namespace Deviser.Admin.Builders
 {
-    public class FormBuilder<TEntity>
-        where TEntity : class
+    /// <summary>
+    /// Builds the form configuration 
+    /// </summary>
+    /// <typeparam name="TModel"></typeparam>
+    public class FormBuilder<TModel> : FieldBuilder<TModel>
+        where TModel : class
     {
-        private IAdminConfig _adminConfig;
-        public FieldBuilder<TEntity> Fields { get; }
-        public FieldSetBuilder<TEntity> FieldSetBuilder { get; }
-
-        public FormBuilder(IAdminConfig adminConfig)
+        //private readonly IModelConfig _modelConfig;
+        
+        public FormBuilder(IFormConfig formConfig, KeyField keyField)
+        : base(formConfig, keyField)
         {
-            _adminConfig = adminConfig;
-            Fields = new FieldBuilder<TEntity>(_adminConfig.ModelConfig);
-            FieldSetBuilder = new FieldSetBuilder<TEntity>(_adminConfig.ModelConfig);
+            //_fieldConfig = fieldConfig;
+            //_modelConfig = modelConfig;
         }
 
-        public PropertyBuilder<TEntity> Property<TProperty>(Expression<Func<TEntity, TProperty>> expression)
+        public FormBuilder<TModel> AddFieldSet(string groupName,
+            Func<FieldBuilder<TModel>, FieldBuilder<TModel>> fieldBuilderAction, string cssClass = null, string description = null)
         {
-            //var field = adminConfig?.FieldConfig?.Fields?.FirstOrDefault(f => f.)
-            return new PropertyBuilder<TEntity>(_adminConfig, expression);
-        }
+            if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
+                throw new InvalidOperationException(Resources.AddRemoveInvalidOperation);
 
-        public FormBuilder<TEntity> AddChildConfig<TProperty>(Expression<Func<TEntity, ICollection<TProperty>>> expression,
-            Action<FormBuilder<TProperty>> childFormBuilderAction)
-            where TProperty : class
-        {
-            AdminConfig<TProperty> childConfig = new AdminConfig<TProperty>();
-            var childFormBuilder = new FormBuilder<TProperty>(childConfig);
-            childFormBuilderAction(childFormBuilder);
-            _adminConfig.ChildConfigs.Add(new ChildConfig
+            var fieldConfig = new FieldConfig();
+            var fieldBuilder = new FieldBuilder<TModel>(_formConfig, _keyField);
+
+            fieldBuilderAction.Invoke(fieldBuilder);
+
+            var fieldSet = new FieldSet
             {
-                Field = new Core.Common.DomainTypes.Admin.Field
-                {
-                    FieldExpression = expression
-                },
-                ModelConfig = childConfig.ModelConfig
-            });
+                GroupName = groupName,
+                CssClasses = cssClass,
+                Description = description,
+                Fields = fieldConfig.Fields
+            };
+
+            _formConfig.FieldSetConfig.FieldSets.Add(fieldSet);
+
             return this;
         }
     }

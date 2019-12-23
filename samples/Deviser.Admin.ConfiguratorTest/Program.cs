@@ -31,12 +31,12 @@ namespace Deviser.Admin.ConfiguratorTest
 
         public void ConfigureAdmin(IAdminBuilder adminBuilder)
         {
-            adminBuilder.Register<User>(form =>
+            adminBuilder.Register<User>(modelBuilder =>
             {
-                form.Fields
+                modelBuilder.FormBuilder
                 .AddField(u => u.FirstName).AddInlineField(u => u.LastName);
 
-                form.FieldSetBuilder
+                modelBuilder.FormBuilder
                 .AddFieldSet("General", fieldBuilder =>
                                         fieldBuilder.AddField(s => s.FirstName).AddInlineField(s => s.LastName)
                                     );

@@ -15,6 +15,6 @@ namespace Deviser.Core.Common.DomainTypes.Admin
         public string GroupName { get; set; }
         public string CssClasses { get; set; }
         public string Description { get; set; }
-        public List<List<Field>> Fields { get; set; }
+        public ICollection<ICollection<Field>> Fields { get; set; }
     }
 }
