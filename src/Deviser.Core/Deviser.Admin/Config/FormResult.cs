@@ -4,18 +4,30 @@ using System.Text;
 
 namespace Deviser.Admin.Config
 {
-    public class FormResult
+    public class FormResult : IFormResult
     {
         public string SuccessMessage { get; set; }
         public string ErrorMessage { get; set; }
-        public object ResultModel { get; set; }
-        public FormResultStatus FormResultStatus { get; set; }
+        public object Result { get; }
+        public bool IsSucceeded { get; set; }
+
+        public FormResult(object result = null)
+        {
+            Result = result;
+        }
     }
 
-    public enum FormResultStatus
+    public class FormResult<TResult> : IFormResult<TResult>
     {
-        Unknown = 0,
-        Success = 1,
-        Error = 2
+        public string SuccessMessage { get; set; }
+        public string ErrorMessage { get; set; }
+        public TResult Value { get; }
+        public object Result { get; }
+        public bool IsSucceeded { get; set; }
+
+        public FormResult(TResult result = default(TResult))
+        {
+            Result = Value = result;
+        }
     }
 }

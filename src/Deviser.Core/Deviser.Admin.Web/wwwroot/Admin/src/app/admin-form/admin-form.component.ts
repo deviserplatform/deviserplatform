@@ -25,7 +25,8 @@ export class AdminFormComponent implements OnInit {
   adminForm: FormGroup;
   formMode: FormMode;
   selectedConfig: ChildConfig;
-
+  formTabs: any[];
+  selectedFormTab: any;
 
   constructor(private route: ActivatedRoute,
     private adminService: AdminService,
@@ -33,6 +34,7 @@ export class AdminFormComponent implements OnInit {
     private fb: FormBuilder,
     private location: Location) {
     this.alerts = [];
+    this.formTabs = [];
   }
 
   ngOnInit() {
@@ -44,7 +46,7 @@ export class AdminFormComponent implements OnInit {
 
   getData(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    this.formMode = id ? FormMode.Update : FormMode.New;
+    this.formMode = id ? FormMode.Update : FormMode.Add;
 
     if (this.formMode === FormMode.Update) {
       const adminConfig$ = this.adminService.getAdminConfig();
@@ -53,7 +55,7 @@ export class AdminFormComponent implements OnInit {
         this.record = results[1];
         this.onGetAdminConfig(results[0]);
       });
-    } else if (this.formMode === FormMode.New) {
+    } else if (this.formMode === FormMode.Add) {
       this.adminService.getAdminConfig()
         .subscribe(adminConfig => this.onGetAdminConfig(adminConfig));
     }
@@ -65,6 +67,27 @@ export class AdminFormComponent implements OnInit {
       this.adminConfig = adminConfig;
       this.selectedConfig = this.adminConfig.childConfigs[0];
       this.adminForm = this.formControlService.toFormGroup(adminConfig, this.record);
+      this.formTabs.push({
+        formName: this.adminConfig.modelType,
+        formTitle: this.adminConfig.modelType,
+        formGroup: this.adminForm,
+        formConfig: this.adminConfig.modelConfig.formConfig,
+        isMainForm: true
+      });
+      this.selectedFormTab = this.formTabs[0];
+      if (this.formMode == FormMode.Update && this.adminConfig.modelConfig.customForms) {
+        for (let customFormName in this.adminConfig.modelConfig.customForms) {
+          let customForm = this.adminConfig.modelConfig.customForms[customFormName];
+          let customFormGroup = this.formControlService.toFormGroupForCustomForms(customForm.formConfig, customForm.keyField, {});
+          this.formTabs.push({
+            formName: customFormName,
+            formTitle: customForm.formConfig.formOption.formTitle,
+            formGroup: customFormGroup,
+            formConfig: customForm.formConfig,
+            isMainForm: false
+          });
+        }
+      }
     }
   }
 
@@ -72,13 +95,17 @@ export class AdminFormComponent implements OnInit {
     // TODO: Use EventEmitter with form value
 
     console.warn(this.adminForm.value);
-    if (this.formMode === FormMode.New) {
+    if (this.formMode === FormMode.Add) {
       this.adminService.createRecord(this.adminForm.value)
         .subscribe(formValue => this.patchFormValue(formValue));
     } else if (this.formMode === FormMode.Update) {
       this.adminService.updateRecord(this.adminForm.value)
         .subscribe(formValue => this.patchFormValue(formValue));
     }
+  }
+
+  onAction(actionName:string){
+    console.log(actionName);
   }
 
   patchFormValue(formValue: any): void {
@@ -103,7 +130,11 @@ export class AdminFormComponent implements OnInit {
     return childForm;
   }
 
-  selectTab(config) {
+  selectFormTab(formTab) {
+    this.selectedFormTab = formTab;
+  }
+
+  selectChildFormTab(config) {
     this.selectedConfig = config;
   }
 

@@ -95,6 +95,7 @@ namespace Deviser.Modules.Blog
                       .AddField(c => c.IsApproved);
                   });
 
+                
                 //form.FieldSetBuilder
                 //.AddFieldSet("General", fieldBuilder =>
                 //                        fieldBuilder.AddField(s => s.FirstName).AddInlineField(s => s.LastName)

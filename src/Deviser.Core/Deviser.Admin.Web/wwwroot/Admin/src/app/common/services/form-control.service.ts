@@ -6,6 +6,7 @@ import { FieldType } from '../domain-types/field-type';
 import { KeyField } from '../domain-types/key-field';
 import { KeyFieldType } from '../domain-types/key-field-type';
 import { ModelConfig } from '../domain-types/model-config';
+import { FormConfig } from '../domain-types/form-config';
 
 
 @Injectable({
@@ -16,42 +17,52 @@ export class FormControlService {
   constructor(private fb: FormBuilder) { }
 
   toFormGroup(adminConfig: AdminConfig, record: any = null): FormGroup {
-    let adminForm: any = {};
+    let formObj: any = {};
 
-    adminForm = this.getFormGroup(adminConfig.modelConfig, adminForm, record);
+    formObj = this.getFormGroup(adminConfig.modelConfig, formObj, record);
 
     if (adminConfig.childConfigs && adminConfig.childConfigs.length > 0) {
 
       adminConfig.childConfigs.forEach(childConfig => {
         // let childForm: any[] = [];
         // let childRecords = record[childConfig.field.fieldNameCamelCase] ? record[childConfig.field.fieldNameCamelCase] : [];
-        adminForm[childConfig.field.fieldNameCamelCase] = this.getFormControl(childConfig.field, record, true);
+        formObj[childConfig.field.fieldNameCamelCase] = this.getFormControl(childConfig.field, record, true);
       });
     }
 
-    return this.fb.group(adminForm);
+    return this.fb.group(formObj);
   }
 
   toChildFormGroup(modelConfig: ModelConfig, record: any = null): FormGroup {
-    let adminForm: any = {};
-    adminForm = this.getFormGroup(modelConfig, adminForm, record);
-    return this.fb.group(adminForm);
+    let formObj: any = {};
+    formObj = this.getFormGroup(modelConfig, formObj, record);
+    return this.fb.group(formObj);
   }
 
-  private getFormGroup(modelConfig: ModelConfig, adminForm: any, record: any, forChildRecords: boolean = false) {
-    if (modelConfig.keyField) {
-      adminForm[modelConfig.keyField.fieldNameCamelCase] = this.getKeyControl(modelConfig.keyField, record);
+  toFormGroupForCustomForms(formConfig: FormConfig, keyField: KeyField, record: any) {
+    let formObj: any = {};
+    formObj = this.buildAndGetFormGroup(formConfig, keyField, formObj, record);
+    return this.fb.group(formObj);
+  }
+
+  private getFormGroup(modelConfig: ModelConfig, formObj: any, record: any, forChildRecords: boolean = false) {
+    return this.buildAndGetFormGroup(modelConfig.formConfig, modelConfig.keyField, formObj, record, forChildRecords);
+  }
+
+  private buildAndGetFormGroup(formConfig: FormConfig, keyField: KeyField, formObj: any, record: any, forChildRecords: boolean = false) {
+    if (keyField) {
+      formObj[keyField.fieldNameCamelCase] = this.getKeyControl(keyField, record);
     }
-    adminForm = this.getFormEnity(modelConfig, adminForm, record, forChildRecords);
-    return adminForm;
+    formObj = this.getFormModel(formConfig, formObj, record, forChildRecords);
+    return formObj;
   }
 
-  private getFormEnity(modelConfig: ModelConfig, adminForm: any, record: any, forChildRecords: boolean): any {
-    if (modelConfig && modelConfig.formConfig && 
-      modelConfig.formConfig.fieldConfig && 
-      modelConfig.formConfig.fieldConfig.fields && 
-      modelConfig.formConfig.fieldConfig.fields.length > 0) {
-        const fields = modelConfig.formConfig.fieldConfig.fields;
+  private getFormModel(formConfig: FormConfig, adminForm: any, record: any, forChildRecords: boolean): any {
+    if (formConfig &&
+      formConfig.fieldConfig &&
+      formConfig.fieldConfig.fields &&
+      formConfig.fieldConfig.fields.length > 0) {
+      const fields = formConfig.fieldConfig.fields;
 
       fields.forEach(fieldRow => {
         if (fieldRow && fieldRow.length > 0) {
@@ -64,11 +75,11 @@ export class FormControlService {
       // adminForm['fields'] = this.fb.group(fieldsGroup); 
       // adminForm =  this.fb.group(fieldsGroup);
 
-    } else if (modelConfig && modelConfig.formConfig && 
-      modelConfig.formConfig.fieldSetConfig && 
-      modelConfig.formConfig.fieldSetConfig.fieldSets &&
-      modelConfig.formConfig.fieldSetConfig.fieldSets.length > 0) {
-      const fieldSets = modelConfig.formConfig.fieldSetConfig.fieldSets;
+    } else if (formConfig &&
+      formConfig.fieldSetConfig &&
+      formConfig.fieldSetConfig.fieldSets &&
+      formConfig.fieldSetConfig.fieldSets.length > 0) {
+      const fieldSets = formConfig.fieldSetConfig.fieldSets;
       fieldSets.forEach(fieldSet => {
         if (fieldSet && fieldSet.fields && fieldSet.fields.length > 0) {
           fieldSet.fields.forEach(fieldRow => {

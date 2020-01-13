@@ -11,11 +11,13 @@ namespace Deviser.Admin.Builders
     {
         private readonly IAdminConfig _adminConfig;
         public FormBuilder<TModel> FormBuilder { get; }
+        public GridBuilder<TModel> GridBuilder { get; }
 
         public ModelBuilder(IAdminConfig adminConfig)
         {
             _adminConfig = adminConfig;
             FormBuilder = new FormBuilder<TModel>(_adminConfig.ModelConfig.FormConfig, _adminConfig.ModelConfig.KeyField);
+            GridBuilder = new GridBuilder<TModel>(_adminConfig.ModelConfig);
         }
 
         public PropertyBuilder<TModel> Property<TProperty>(Expression<Func<TModel, TProperty>> expression)
@@ -44,8 +46,13 @@ namespace Deviser.Admin.Builders
         public ModelBuilder<TModel> AddCustomForm<TCustomModel>(string formName, Action<CustomFormBuilder<TCustomModel>> formBuilderAction)
             where TCustomModel : class
         {
-            var customForm = new CustomForm();
+            var customForm = new CustomForm()
+            {
+                FormName = formName,
+                ModelType = typeof(TCustomModel)
+            };
             formBuilderAction.Invoke(new CustomFormBuilder<TCustomModel>(customForm));
+            _adminConfig.ModelConfig.CustomForms.Add(formName, customForm);
             return this;
         }
     }

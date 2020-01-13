@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
+using Deviser.Admin.Config;
 using Deviser.Admin.Properties;
 using Deviser.Core.Common.DomainTypes.Admin;
 
@@ -29,6 +31,16 @@ namespace Deviser.Admin.Builders
         {
             var field = CreateSimpleField(expression, fieldOptionAction);
             _modelConfig.GridConfig.AddField(field); //FormConfig.FieldConfig.AddField(field);
+            return this;
+        }
+
+        public GridBuilder<TModel> AddRowAction(string actionName, string actionButtonText, Expression<Func<IServiceProvider, TModel, Task<FormResult>>> formActionExpression)
+        {
+            _modelConfig.GridConfig.RowActions.Add(actionName, new AdminAction
+            {
+                ButtonText = actionButtonText,
+                FormActionExpression = formActionExpression
+            });
             return this;
         }
 

@@ -2,33 +2,81 @@
   <div class="admin-form">
     <div *ngIf="adminConfig && adminConfig.modelConfig" class="card">
       <form [formGroup]="adminForm" (ngSubmit)="onSubmit()">
-        <div class="card-header d-flex">
-          <div class="mr-auto p-2">
-            <button type="button" class="btn btn-secondary" (click)="goBack()">
-              <i class="my-icon" aria-label="My icon"
-                [inlineSVG]="'assets/icons/baseline-keyboard_arrow_left.svg' | envPath"></i>
-            </button>
-          </div>
-          <div class="p-2">
-            <button class="btn btn-primary" type="submit" [disabled]="!adminForm.valid">
-              <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-save.svg' | envPath"></i> Save
-            </button>
-          </div>
+        <div class="card-header d-flex flex-row">
+          <div class=""></div>
+          <!-- <div class="mr-auto p-2">
+              <button type="button" class="btn btn-secondary" (click)="goBack()">
+                <i class="my-icon" aria-label="My icon"
+                  [inlineSVG]="'assets/icons/baseline-keyboard_arrow_left.svg' | envPath"></i>
+              </button>
+            </div>
+            <div class="p-2">
+              <button class="btn btn-primary" type="submit" [disabled]="!adminForm.valid">
+                <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-save.svg' | envPath"></i>
+                Save
+              </button>
+            </div> -->
+          <ul class="nav nav-tabs card-header-tabs" role="tablist">
+            <li class="nav-item" *ngFor="let formTab of formTabs">
+              <a class="nav-link" role="tab" [ngClass]="{'active':formTab==selectedFormTab}"
+                (click)="selectFormTab(formTab)" aria-selected="true">{{formTab.formTitle}}</a>
+            </li>
+          </ul>
+
         </div>
 
         <div class="card-body">
           <app-admin-alert class="admin-alerts" [alerts]="alerts"></app-admin-alert>
-          
-          <app-entity-form [form]="adminForm" [modelConfig]="adminConfig.modelConfig" [lookUps]="adminConfig.lookUps">
-          </app-entity-form>
+
+          <div class="tab-content">
+
+
+            <div class="tab-pane fade" [ngClass]="{'  show active':formTab==selectedFormTab}"
+              *ngFor="let formTab of formTabs">
+
+              <div class="form-action-container">
+                <div class="form-actions d-flex">
+                  
+                  <button type="button" class="mr-auto btn btn-dark" (click)="goBack()">
+                    <i class="my-icon" aria-label="My icon"
+                      [inlineSVG]="'assets/icons/baseline-keyboard_arrow_left.svg' | envPath"></i>
+                  </button>
+
+                  <ng-container *ngIf="formTab.formConfig.formActions">
+                    <button class="btn btn-secondary" type="button" [disabled]="!adminForm.valid"
+                      *ngFor="let item of formTab.formConfig.formActions | keyvalue" (click)="onAction(item.key)">
+                      {{item.value.buttonText}}
+                    </button>
+                  </ng-container>
+
+                  <ng-container *ngIf="formTab.isMainForm">
+                    <button class="btn btn-primary" type="submit" [disabled]="!adminForm.valid">
+                      <i class="my-icon" aria-label="My icon"
+                        [inlineSVG]="'assets/icons/baseline-save.svg' | envPath"></i>
+                      Save
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="!formTab.isMainForm">
+                    <button class="btn btn-primary" type="submit" [disabled]="!adminForm.valid">
+                      {{formTab.formConfig.formOption.saveButtonText}}
+                    </button>
+                  </ng-container>
+                </div>
+              </div>
+
+              <app-entity-form [form]="formTab.formGroup" [formConfig]="formTab.formConfig" [formMode]="formMode"
+                [lookUps]="adminConfig.lookUps">
+              </app-entity-form>
+            </div>
+          </div>
+
 
           <div class="card" *ngIf="adminConfig.childConfigs && adminConfig.childConfigs.length > 0">
             <div class="card-header">
               <ul class="nav nav-tabs card-header-tabs" role="tablist">
                 <li class="nav-item" *ngFor="let childConfig of adminConfig.childConfigs">
-                  <a class="nav-link active" role="tab" aria-controls="home"
-                    [ngClass]="{'active':childConfig==selectedConfig}" (click)="selectTab(childConfig)"
-                    aria-selected="true">{{childConfig.field.fieldName}}</a>
+                  <a class="nav-link active" role="tab" [ngClass]="{'active':childConfig==selectedConfig}"
+                    (click)="selectChildFormTab(childConfig)" aria-selected="true">{{childConfig.field.fieldName}}</a>
                 </li>
               </ul>
             </div>
@@ -40,7 +88,8 @@
                   <!-- {{childConfig.field.fieldName}} -->
 
                   <app-child-grid [formControlName]="childConfig.field.fieldNameCamelCase" [parentForm]="adminForm"
-                    [modelConfig]="childConfig.modelConfig" [lookUps]="adminConfig.lookUps"></app-child-grid>
+                    [formMode]="formMode" [modelConfig]="childConfig.modelConfig" [lookUps]="adminConfig.lookUps">
+                  </app-child-grid>
 
                 </div>
               </div>

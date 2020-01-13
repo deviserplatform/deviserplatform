@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using Deviser.Admin.Config;
+using System.Threading.Tasks;
 
 namespace Deviser.Admin.Builders
 {
@@ -17,13 +18,13 @@ namespace Deviser.Admin.Builders
     public class FormBuilder<TModel> : FieldBuilder<TModel>
         where TModel : class
     {
-        //private readonly IModelConfig _modelConfig;
-        
+        private readonly IFormConfig _formConfig;
+
+
         public FormBuilder(IFormConfig formConfig, KeyField keyField)
         : base(formConfig, keyField)
         {
-            //_fieldConfig = fieldConfig;
-            //_modelConfig = modelConfig;
+            _formConfig = formConfig;
         }
 
         public FormBuilder<TModel> AddFieldSet(string groupName,
@@ -47,6 +48,25 @@ namespace Deviser.Admin.Builders
 
             _formConfig.FieldSetConfig.FieldSets.Add(fieldSet);
 
+            return this;
+        }
+
+        public FormBuilder<TModel> AddFormAction(string actionName, string actionButtonText, Expression<Func<IServiceProvider, TModel, Task<FormResult>>> formActionExpression)
+        {
+            _formConfig.FormActions.Add(actionName, new AdminAction
+            {
+                ButtonText = actionButtonText,
+                FormActionExpression = formActionExpression
+            });
+
+            return this;
+        }
+
+        public FormBuilder<TModel> SetFormOption(Action<FormOption> formOptionAction)
+        {
+            var formOption = new FormOption();
+            formOptionAction?.Invoke(formOption);
+            _formConfig.FormOption = formOption;            
             return this;
         }
     }

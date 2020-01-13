@@ -18,6 +18,9 @@ namespace Deviser.Core.Common.DomainTypes.Admin
         public string Description { get; set; }
         public string DisplayName { get; set; }        
         public string Format { get; set; }
+        
+        [JsonConverter(typeof(StringEnumConverter))]
+        public AddInMode AddIn { get; set; } = AddInMode.Both;
         public List<ReleatedField> ReleatedFields { get; set; }
         public bool IsHidden { get; set; }
         public bool IsReadOnly { get; set; }

@@ -85,13 +85,12 @@ namespace Deviser.Modules.UserManagement
 
         public async Task<FormResult> ResetPassword(PasswordReset passwordReset)
         {
-
             if (passwordReset == null || passwordReset.UserId == Guid.Empty ||
                 string.IsNullOrEmpty(passwordReset.CurrentPassword) || string.IsNullOrEmpty(passwordReset.NewPassword))
             {
                 return new FormResult()
                 {
-                    FormResultStatus = FormResultStatus.Error,
+                    IsSucceeded = false,
                     SuccessMessage = "Invalid parameters"
                 };
             }
@@ -107,20 +106,42 @@ namespace Deviser.Modules.UserManagement
             {
                 return new FormResult()
                 {
-                    FormResultStatus = FormResultStatus.Success,
+                    IsSucceeded = true,
                     SuccessMessage = "Password has been reset successfully"
                 };
             }
-            else
+
+            return new FormResult(result)
+            {
+                IsSucceeded = false,
+                SuccessMessage = "Unable to reset Password",
+            };
+        }
+
+        public async Task<FormResult> UnlockUserAccount(User user)
+        {
+            var dbUser = _userManager.Users.FirstOrDefault(u => u.Id == user.Id);
+            var result = await _userManager.SetLockoutEnabledAsync(dbUser, false);
+            if (result.Succeeded)
+            {
+                await _userManager.ResetAccessFailedCountAsync(dbUser);
+            }
+
+            if (result.Succeeded)
             {
                 return new FormResult()
                 {
-                    FormResultStatus = FormResultStatus.Error,
-                    SuccessMessage = "Unable to reset Password",
-                    ResultModel = result
+                    IsSucceeded = true,
+                    SuccessMessage = "User has been unlocked successfully"
                 };
-
             }
+
+            return new FormResult(result)
+            {
+                IsSucceeded = false,
+                SuccessMessage = "Unable to unlock the user",
+            };
+
         }
     }
 }

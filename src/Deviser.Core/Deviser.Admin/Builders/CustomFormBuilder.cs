@@ -18,16 +18,7 @@ namespace Deviser.Admin.Builders
             _customForm = customForm;
         }
 
-        public CustomFormBuilder<TModel> SetFormOption(Action<FormOption> formOptionAction)
-        {
-            var formOption = new FormOption();
-            formOptionAction?.Invoke(formOption);
-            _customForm.FormOption = formOption;
-            formOptionAction?.Invoke(formOption);
-            return this;
-        }
-
-        public CustomFormBuilder<TModel> SetFormSubmitAction(Expression<Func<IServiceProvider, TModel, Task<FormResult>>> submitActionExpression)
+        public CustomFormBuilder<TModel> OnSubmit(Expression<Func<IServiceProvider, TModel, Task<FormResult>>> submitActionExpression)
         {
             _customForm.SubmitActionExpression = submitActionExpression;
             return this;

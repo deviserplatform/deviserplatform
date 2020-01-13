@@ -78,15 +78,17 @@ namespace Deviser.Admin
         [JsonIgnore] ICollection<Field> AllFormFields { get; }
         IFieldConfig FieldConfig { get; }
         IFieldSetConfig FieldSetConfig { get; }
-        [JsonIgnore] FieldConditions FieldConditions { get; }
+        [JsonIgnore] FieldConditions FieldConditions { get; }        
+        IDictionary<string, AdminAction> FormActions { get; }
+        FormOption FormOption { get; set; }
     }
 
     public interface IModelConfig
     {
-        KeyField KeyField { get; }
-        IGridConfig GridConfig { get; }
-        IFormConfig FormConfig { get; }
         IDictionary<string, CustomForm> CustomForms { get; }
+        IFormConfig FormConfig { get; }
+        IGridConfig GridConfig { get; }
+        KeyField KeyField { get; }        
     }
 
     public interface IFieldConfig
@@ -112,11 +114,10 @@ namespace Deviser.Admin
 
     public interface IGridConfig
     {
-        ICollection<Field> Fields { get; }
+        [JsonIgnore] ICollection<Field> AllIncludeFields { get; }
         ICollection<Field> ExcludedFields { get; }
-
-        [JsonIgnore]
-        ICollection<Field> AllIncludeFields { get; }
+        ICollection<Field> Fields { get; }
+        IDictionary<string, AdminAction> RowActions { get; }
 
         void AddField(Field field);
         void RemoveField(Field field);
@@ -129,19 +130,20 @@ namespace Deviser.Admin
         public IGridConfig GridConfig { get; }
         public KeyField KeyField { get; }
         
+
         public ModelConfig()
         {
             CustomForms = new Dictionary<string, CustomForm>();
             FormConfig = new FormConfig();
             GridConfig = new GridConfig();
             KeyField = new KeyField();
+            
         }
     }
 
     public class FormConfig : IFormConfig
     {
-        [JsonIgnore]
-        public ICollection<Field> AllFormFields
+        [JsonIgnore] public ICollection<Field> AllFormFields
         {
             get
             {
@@ -163,14 +165,17 @@ namespace Deviser.Admin
             }
         }
         public IFieldConfig FieldConfig { get; }
-        public IFieldSetConfig FieldSetConfig { get; }
         public FieldConditions FieldConditions { get; }
+        public IFieldSetConfig FieldSetConfig { get; }
+        public IDictionary<string, AdminAction> FormActions { get; }
+        public FormOption FormOption { get; set; }
 
         public FormConfig()
         {
             FieldConfig = new FieldConfig();
             FieldConditions = new FieldConditions();
             FieldSetConfig = new FieldSetConfig();
+            FormActions = new Dictionary<string, AdminAction>();
         }
     }
 
@@ -262,15 +267,18 @@ namespace Deviser.Admin
     public class GridConfig : IGridConfig
     {
         private readonly Dictionary<string, Field> _allFields;
-        public ICollection<Field> Fields { get; }
-        public ICollection<Field> ExcludedFields { get; }
+
         public ICollection<Field> AllIncludeFields { get; }
+        public ICollection<Field> ExcludedFields { get; }
+        public ICollection<Field> Fields { get; }
+        public IDictionary<string, AdminAction> RowActions { get; }
 
         public GridConfig()
         {
             _allFields = new Dictionary<string, Field>();
             Fields = new HashSet<Field>();
             ExcludedFields = new HashSet<Field>();
+            RowActions = new Dictionary<string, AdminAction>();
         }
 
         public void AddField(Field field)

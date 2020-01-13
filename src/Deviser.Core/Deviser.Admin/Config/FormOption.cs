@@ -9,7 +9,7 @@ namespace Deviser.Admin.Config
         /// <summary>
         /// Sets Edit Button Text property in a grid view, default value is "Edit"
         /// </summary>
-        public string EditButtonText { get; set; } = "Edit";
+        //public string EditButtonText { get; set; } = "Edit";
 
         public string FormTitle { get; set; }
 

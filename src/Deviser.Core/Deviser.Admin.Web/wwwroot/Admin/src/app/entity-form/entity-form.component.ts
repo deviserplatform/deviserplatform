@@ -5,6 +5,8 @@ import { ModelConfig } from '../common/domain-types/model-config';
 import { Field } from '../common/domain-types/field';
 import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
 import { FieldType } from '../common/domain-types/field-type';
+import { FormConfig } from '../common/domain-types/form-config';
+import { FormMode } from '../common/domain-types/form-mode';
 
 @Component({
   selector: 'app-entity-form',
@@ -25,7 +27,8 @@ import { FieldType } from '../common/domain-types/field-type';
 export class EntityFormComponent implements OnInit, ControlValueAccessor, Validator {
 
   @Input() form: FormGroup;
-  @Input() modelConfig: ModelConfig;
+  @Input() formConfig: FormConfig;
+  @Input() formMode: FormMode;
   @Input() lookUps: LookUpDictionary;
 
   //To access FieldType enum
@@ -45,6 +48,8 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
       let result = this.getFieldPredicateResult(field, 'showOn');
       return result;
     }
+
+    return field.fieldOption.addIn == FormMode.Both || field.fieldOption.addIn == this.formMode
     return true; //by default field should be visible
   }
 

@@ -111,78 +111,98 @@ namespace Deviser.Admin.Config
                 case AdminType.Entity when Mapper == null:
                     throw new InvalidOperationException($"AutoMapper configuration is required when creating admin site using AdminType: {AdminType}");
                 case AdminType.Entity:
-                {
-                    if (_typeMaps == null)
                     {
-                        _typeMaps = Mapper.ConfigurationProvider.GetAllTypeMaps().ToList();
-                    }
-
-                    Type entityClrType = GetEntityClrTypeFor(modelType);
-
-                    if (entityClrType == null)
-                    {
-                        throw new InvalidOperationException($"The entity type for the ModelType: {modelType} cannot be found in MapperConfiguration, please AutoMapper configuration for ModelType and ModelType");
-                    }
-
-                    var entityType = _dbContext.Model.FindEntityType(entityClrType);
-
-                    if (entityType == null)
-                    {
-                        throw new InvalidOperationException($"The entity type for the ModelType: {modelType} cannot be found on this context {_dbContext}");
-                    }
-
-                    adminConfig.EntityConfig = new EntityConfig(_dbContextType, entityType);
-
-                    BuildEntityForm(adminConfig, hasConfiguration, modelType);
-
-                    if (adminConfig.ChildConfigs != null && adminConfig.ChildConfigs.Count > 0)
-                    {
-                        foreach (var childConfig in adminConfig.ChildConfigs)
+                        if (_typeMaps == null)
                         {
-                            var childModelType = childConfig.Field.FieldClrType;
-
-                            Type childEntityClrType = GetEntityClrTypeFor(childModelType);
-
-                            if (childEntityClrType == null)
-                            {
-                                throw new InvalidOperationException($"The entity type for the ModelType: {childModelType} cannot be found in MapperConfiguration, please check MapperConfiguration");
-                            }
-
-                            var childEntityType = _dbContext.Model.FindEntityType(entityClrType);
-
-                            if (childEntityType == null)
-                            {
-                                throw new InvalidOperationException($"The entity type for the ModelType: {modelType} cannot be found on this context {_dbContext}");
-                            }
-
-                            childConfig.EntityConfig = new EntityConfig(_dbContextType, childEntityType);
-
-                            BuildEntityForm(childConfig, hasConfiguration, childModelType);
+                            _typeMaps = Mapper.ConfigurationProvider.GetAllTypeMaps().ToList();
                         }
-                    }
 
-                    break;
-                }
+                        Type entityClrType = GetEntityClrTypeFor(modelType);
+
+                        if (entityClrType == null)
+                        {
+                            throw new InvalidOperationException($"The entity type for the ModelType: {modelType} cannot be found in MapperConfiguration, please AutoMapper configuration for ModelType and ModelType");
+                        }
+
+                        var entityType = _dbContext.Model.FindEntityType(entityClrType);
+
+                        if (entityType == null)
+                        {
+                            throw new InvalidOperationException($"The entity type for the ModelType: {modelType} cannot be found on this context {_dbContext}");
+                        }
+
+                        adminConfig.EntityConfig = new EntityConfig(_dbContextType, entityType);
+                        BuildMainFormAndCustomForm(adminConfig, hasConfiguration, modelType);
+
+                        if (adminConfig.ChildConfigs != null && adminConfig.ChildConfigs.Count > 0)
+                        {
+                            foreach (var childConfig in adminConfig.ChildConfigs)
+                            {
+                                var childModelType = childConfig.Field.FieldClrType;
+
+                                Type childEntityClrType = GetEntityClrTypeFor(childModelType);
+
+                                if (childEntityClrType == null)
+                                {
+                                    throw new InvalidOperationException($"The entity type for the ModelType: {childModelType} cannot be found in MapperConfiguration, please check MapperConfiguration");
+                                }
+
+                                var childEntityType = _dbContext.Model.FindEntityType(entityClrType);
+
+                                if (childEntityType == null)
+                                {
+                                    throw new InvalidOperationException($"The entity type for the ModelType: {modelType} cannot be found on this context {_dbContext}");
+                                }
+
+                                childConfig.EntityConfig = new EntityConfig(_dbContextType, childEntityType);
+                                BuildForm(childConfig, hasConfiguration, childModelType);
+                            }
+                        }
+
+                        break;
+                    }
+                case AdminType.Custom when adminConfig.AdminServiceType == null:
+                    throw new InvalidOperationException($"AdminService is required when creating admin site with AdminType: {AdminType}");
+                case AdminType.Custom when adminConfig.ModelConfig.KeyField == null:
+                    throw new InvalidOperationException($"KeyField is required when creating admin site with AdminType: {AdminType}");
                 case AdminType.Custom:
-                {
-                    //TODO: Validate adminConfig for custom type
-                
-                    BuildEntityForm(adminConfig, hasConfiguration, modelType);
-                    if (adminConfig.ChildConfigs != null && adminConfig.ChildConfigs.Count > 0)
                     {
-                        foreach (var childConfig in adminConfig.ChildConfigs)
-                        {
-                            var childModelType = childConfig.Field.FieldClrType;
-                            BuildEntityForm(childConfig, hasConfiguration, childModelType);
-                        }
-                    }
+                        //TODO: Validate adminConfig for custom type
 
-                    break;
-                }
+                        BuildMainFormAndCustomForm(adminConfig, hasConfiguration, modelType);
+
+                        if (adminConfig.ChildConfigs != null && adminConfig.ChildConfigs.Count > 0)
+                        {
+                            foreach (var childConfig in adminConfig.ChildConfigs)
+                            {
+                                var childModelType = childConfig.Field.FieldClrType;
+                                BuildForm(childConfig, hasConfiguration, childModelType);
+                            }
+                        }
+
+                        break;
+                    }
             }
 
             LoadMasterData(adminConfig);
             AdminConfigs.Add(modelType, adminConfig);
+        }
+
+        private void BuildMainFormAndCustomForm<TModel>(AdminConfig<TModel> adminConfig, bool hasConfiguration, Type modelType)
+            where TModel : class
+        {
+            BuildForm(adminConfig, hasConfiguration, modelType);
+
+            foreach (var customForm in adminConfig.ModelConfig.CustomForms.Values)
+            {
+                if (customForm.SubmitActionExpression == null)
+                {
+                    throw new InvalidOperationException($"SubmitActionExpression is required while adding a custom form");
+                }
+
+                //hasConfiguration must be always true, since custom forms must be configured!
+                BuildForm(customForm.FormConfig, true, customForm.ModelType);
+            }
         }
 
         public TypeMap GetTypeMapFor(Type modelType)
@@ -205,58 +225,75 @@ namespace Deviser.Admin.Config
             return entityClrType;
         }
 
-        private void BuildEntityForm(IAdminBaseConfig adminBaseConfig, bool hasConfiguration, Type modelType)
+        private void BuildForm(IFormConfig formConfig, bool hasConfiguration, Type modelType)
         {
-            IModelConfig modelConfig = adminBaseConfig.ModelConfig;
-            EntityConfig entityConfig = adminBaseConfig.EntityConfig;
+            BuildForm(formConfig, null, null, hasConfiguration, modelType);
+        }
+
+        private void BuildForm(IAdminBaseConfig adminBaseConfig, bool hasConfiguration, Type modelType)
+        {
+            BuildForm(adminBaseConfig.ModelConfig.FormConfig, adminBaseConfig.ModelConfig.GridConfig,
+                adminBaseConfig.EntityConfig, hasConfiguration, modelType);
+        }
+
+        private void BuildForm(IFormConfig formConfig, IGridConfig gridConfig, EntityConfig entityConfig, bool hasConfiguration, Type modelType)
+        {
+            //var modelConfig = adminBaseConfig.ModelConfig;
+            //var entityConfig = adminBaseConfig.EntityConfig;
             if (!hasConfiguration)
             {
                 //Register by default settings and fields
-                PopulateFields(modelType, modelConfig);
+                PopulateFields(modelType, formConfig);
             }
 
             //PopulateEntityConfig(entityType, entityConfig);
 
             //Adding primary keys to KeyField
 
-            bool hasExlcludeFields = modelConfig?.FormConfig?.FieldConfig?.ExcludedFields?.Count > 0;
-            bool hasListFields = modelConfig?.GridConfig.Fields.Count > 0;
+            var hasExcludeFields = formConfig?.FieldConfig?.ExcludedFields?.Count > 0;
 
 
-            if (hasExlcludeFields)
+
+            if (hasExcludeFields)
             {
-                PopulateFields(modelType, modelConfig, modelConfig.FormConfig.FieldConfig.ExcludedFields);
+                PopulateFields(modelType, formConfig, formConfig.FieldConfig.ExcludedFields);
             }
 
-            var fields = modelConfig.FormConfig.AllFormFields;
+            var fields = formConfig.AllFormFields;
             foreach (var field in fields)
             {
-                PopulateFieldOptions(field, modelConfig.FormConfig.FieldConditions, entityConfig);
+                PopulateFieldOptions(field, formConfig.FieldConditions, entityConfig);
             }
 
-            if (hasListFields)
+            if (gridConfig != null)
             {
-                foreach (var field in modelConfig.GridConfig.Fields)
+                var hasListFields = gridConfig.Fields.Count > 0;
+                if (hasListFields)
                 {
-                    PopulateFieldOptions(field, modelConfig.FormConfig.FieldConditions, entityConfig);
-                }
-            }
-            else
-            {
-                var properties = modelType.GetProperties().ToList();
-                foreach (var prop in properties)
-                {
-                    var field = new Field
+                    foreach (var field in gridConfig.Fields)
                     {
-                        FieldExpression = ExpressionHelper.GetPropertyExpression(modelType, prop)
-                    };
-                    PopulateFieldOptions(field, modelConfig.FormConfig.FieldConditions, entityConfig);
-                    modelConfig.GridConfig.AddField(field);
+                        PopulateFieldOptions(field, formConfig.FieldConditions, entityConfig);
+                    }
+                }
+                else
+                {
+                    var properties = modelType.GetProperties().ToList();
+                    foreach (var prop in properties)
+                    {
+                        var field = new Field
+                        {
+                            FieldExpression = ExpressionHelper.GetPropertyExpression(modelType, prop)
+                        };
+                        PopulateFieldOptions(field, formConfig.FieldConditions, entityConfig);
+                        gridConfig.AddField(field);
+                    }
                 }
             }
+
+
         }
 
-        private void PopulateFields(Type modelType, IModelConfig modelConfig, ICollection<Field> excludeField = null)
+        private void PopulateFields(Type modelType, IFormConfig formConfig, ICollection<Field> excludeField = null)
         {
             List<PropertyInfo> properties = modelType.GetProperties().ToList();
 
@@ -266,7 +303,7 @@ namespace Deviser.Admin.Config
 
                 if (!isExclude)
                 {
-                    modelConfig.FormConfig.FieldConfig.AddField(new Field
+                    formConfig.FieldConfig.AddField(new Field
                     {
                         FieldExpression = ExpressionHelper.GetPropertyExpression(modelType, prop)
                     });

@@ -7,6 +7,7 @@ import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { FormControlService } from '../common/services/form-control.service';
 import { ConfirmDialogComponent } from '../common/components/confirm-dialog/confirm-dialog.component';
+import { FormMode } from '../common/domain-types/form-mode';
 
 @Component({
   selector: 'app-child-grid',
@@ -28,6 +29,7 @@ import { ConfirmDialogComponent } from '../common/components/confirm-dialog/conf
 export class ChildGridComponent implements OnInit, ControlValueAccessor, Validator {
 
 
+  @Input() formMode: FormMode;
   @Input() parentForm: FormGroup;
   @Input() modelConfig: ModelConfig;
   @Input() lookUps: LookUpDictionary;
