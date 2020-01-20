@@ -71,9 +71,9 @@ namespace Deviser.Admin.Builders
             Expression<Func<TRelatedEntity, string>> lookupDisplayExpression)
             where TRelatedEntity : class
         {
-            _field.FieldOption.ReleatedEntityLookupExpression = lookupExpression;
-            _field.FieldOption.ReleatedEntityLookupKeyExpression = lookUpKeyExpression;
-            _field.FieldOption.ReleatedEntityDisplayExpression = lookupDisplayExpression;
+            _field.FieldOption.RelatedModelLookupExpression = lookupExpression;
+            _field.FieldOption.RelatedModelLookupKeyExpression = lookUpKeyExpression;
+            _field.FieldOption.RelatedModelDisplayExpression = lookupDisplayExpression;
             return this;
         }
 

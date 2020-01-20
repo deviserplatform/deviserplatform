@@ -77,17 +77,17 @@ namespace Deviser.Admin.Builders
         /// <summary>
         /// Adds a new select field (new row) to this form. This method assumes that an Entity in EFCore for the TModel has been configured in MapperConfiguration 
         /// </summary>
-        /// <typeparam name="TReleatedEntity"></typeparam>
+        /// <typeparam name="TRelatedModel"></typeparam>
         /// <param name="expression">An expression to specify a field</param>
         /// <param name="displayExpression">An expression to specify display property of select items</param>
         /// <param name="fieldOptionAction">Additional options can be specified here</param>
         /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
-        public FieldBuilder<TModel> AddSelectField<TReleatedEntity>(Expression<Func<TModel, TReleatedEntity>> expression,
-            Expression<Func<TReleatedEntity, string>> displayExpression = null,
+        public FieldBuilder<TModel> AddSelectField<TRelatedModel>(Expression<Func<TModel, TRelatedModel>> expression,
+            Expression<Func<TRelatedModel, string>> displayExpression = null,
             Action<FieldOption> fieldOptionAction = null)
-            where TReleatedEntity : class
+            where TRelatedModel : class
         {
-            var field = CreateComplexField(expression, RelationType.ManyToOne, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
+            var field = CreateComplexField(expression, RelationType.ManyToOne, typeof(TRelatedModel), displayExpression, fieldOptionAction);
             _formConfig.FieldConfig.AddField(field);
             return this;
         }
@@ -95,17 +95,17 @@ namespace Deviser.Admin.Builders
         /// <summary>
         /// Adds a new select field (in-line) to this form. This method assumes that an Entity in EFCore for the TModel has been configured in MapperConfiguration 
         /// </summary>
-        /// <typeparam name="TReleatedEntity"></typeparam>
+        /// <typeparam name="TRelatedModel"></typeparam>
         /// <param name="expression">An expression to specify a field</param>
         /// <param name="displayExpression">An expression to specify display property of select items</param>
         /// <param name="fieldOptionAction">Additional options can be specified here</param>
         /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
-        public FieldBuilder<TModel> AddInlineSelectField<TReleatedEntity>(Expression<Func<TModel, TReleatedEntity>> expression,
-            Expression<Func<TReleatedEntity, string>> displayExpression = null,
+        public FieldBuilder<TModel> AddInlineSelectField<TRelatedModel>(Expression<Func<TModel, TRelatedModel>> expression,
+            Expression<Func<TRelatedModel, string>> displayExpression = null,
             Action<FieldOption> fieldOptionAction = null)
-            where TReleatedEntity : class
+            where TRelatedModel : class
         {
-            var field = CreateComplexField(expression, RelationType.ManyToOne, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
+            var field = CreateComplexField(expression, RelationType.ManyToOne, typeof(TRelatedModel), displayExpression, fieldOptionAction);
             _formConfig.FieldConfig.AddInLineField(field);
             return this;
         }
@@ -113,17 +113,17 @@ namespace Deviser.Admin.Builders
         /// <summary>
         /// Adds a new multi-select field (new row) to this form. This method assumes that an Entity in EFCore for the TModel has been configured in MapperConfiguration 
         /// </summary>
-        /// <typeparam name="TReleatedEntity"></typeparam>
+        /// <typeparam name="TRelatedModel"></typeparam>
         /// <param name="expression">An expression to specify a field</param>
         /// <param name="displayExpression">An expression to specify display property of select items</param>
         /// <param name="fieldOptionAction">Additional options can be specified here</param>
         /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
-        public FieldBuilder<TModel> AddMultiselectField<TReleatedEntity>(Expression<Func<TModel, IList<TReleatedEntity>>> expression,
-            Expression<Func<TReleatedEntity, string>> displayExpression = null,
+        public FieldBuilder<TModel> AddMultiselectField<TRelatedModel>(Expression<Func<TModel, IList<TRelatedModel>>> expression,
+            Expression<Func<TRelatedModel, string>> displayExpression = null,
             Action<FieldOption> fieldOptionAction = null)
-            where TReleatedEntity : class
+            where TRelatedModel : class
         {
-            var field = CreateComplexField(expression, RelationType.ManyToMany, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
+            var field = CreateComplexField(expression, RelationType.ManyToMany, typeof(TRelatedModel), displayExpression, fieldOptionAction);
             _formConfig.FieldConfig.AddField(field);
             return this;
         }
@@ -131,17 +131,17 @@ namespace Deviser.Admin.Builders
         /// <summary>
         /// Adds a new multi-select field (in-line) to this form. This method assumes that an Entity in EFCore for the TModel has been configured in MapperConfiguration 
         /// </summary>
-        /// <typeparam name="TReleatedEntity"></typeparam>
+        /// <typeparam name="TRelatedModel"></typeparam>
         /// <param name="expression">An expression to specify a field</param>
         /// <param name="displayExpression">An expression to specify display property of select items</param>
         /// <param name="fieldOptionAction">Additional options can be specified here</param>
         /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
-        public FieldBuilder<TModel> AddInlineMultiSelectField<TReleatedEntity>(Expression<Func<TModel, IList<TReleatedEntity>>> expression,
-            Expression<Func<TReleatedEntity, string>> displayExpression = null,
+        public FieldBuilder<TModel> AddInlineMultiSelectField<TRelatedModel>(Expression<Func<TModel, IList<TRelatedModel>>> expression,
+            Expression<Func<TRelatedModel, string>> displayExpression = null,
             Action<FieldOption> fieldOptionAction = null)
-            where TReleatedEntity : class
+            where TRelatedModel : class
         {
-            var field = CreateComplexField(expression, RelationType.ManyToMany, typeof(TReleatedEntity), displayExpression, fieldOptionAction);
+            var field = CreateComplexField(expression, RelationType.ManyToMany, typeof(TRelatedModel), displayExpression, fieldOptionAction);
             _formConfig.FieldConfig.AddInLineField(field);
             return this;
         }
@@ -171,14 +171,15 @@ namespace Deviser.Admin.Builders
         /// </summary>
         /// <typeparam name="TProperty"></typeparam>
         /// <param name="expression"></param>
+        /// <param name="lookupDisplayExpression"></param>
         /// <param name="fieldOptionAction"></param>
+        /// <param name="relatedModelType"></param>
         /// <returns></returns>
         private Field CreateComplexField<TProperty>(Expression<Func<TModel, TProperty>> expression,
             RelationType releationType,
-            Type releatedEntityType,
+            Type relatedModelType,
             LambdaExpression lookupDisplayExpression,
             Action<FieldOption> fieldOptionAction = null)
-            //where TReleatedEntity : class
             where TProperty : class
         {
             if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
@@ -186,9 +187,9 @@ namespace Deviser.Admin.Builders
 
             FieldOption fieldOption = new FieldOption();
             fieldOptionAction?.Invoke(fieldOption);
-            fieldOption.ReleatedEntityDisplayExpression = lookupDisplayExpression;
+            fieldOption.RelatedModelDisplayExpression = lookupDisplayExpression;
             fieldOption.RelationType = releationType;
-            fieldOption.ReleatedEntityType = releatedEntityType;
+            fieldOption.RelatedModelType = relatedModelType;
 
             return new Field
             {

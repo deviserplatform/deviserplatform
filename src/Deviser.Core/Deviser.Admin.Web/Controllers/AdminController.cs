@@ -109,7 +109,7 @@ namespace Deviser.Admin.Web.Controllers
                 var modelType = coreAdminService.GetModelType(entity);
                 if(modelType == null)
                 {
-                    return BadRequest($"Entity {entity} not fould");
+                    return BadRequest($"Entity {entity} is not found");
                 }
 
                 var result = await coreAdminService.GetAllFor(modelType, pageNo, pageSize, orderBy); //_adminRepository.GetAllFor(entity, pageNo, pageSize, orderBy);
@@ -136,7 +136,7 @@ namespace Deviser.Admin.Web.Controllers
                 var modelType = coreAdminService.GetModelType(entity);
                 if (modelType == null)
                 {
-                    return BadRequest($"Entity {entity} not fould");
+                    return BadRequest($"Entity {entity} is not found");
                 }
 
                 var result = await coreAdminService.GetItemFor(modelType, id); //_adminRepository.GetItemFor(entity, id);
@@ -163,7 +163,7 @@ namespace Deviser.Admin.Web.Controllers
                 var modelType = coreAdminService.GetModelType(entity);
                 if (modelType == null)
                 {
-                    return BadRequest($"Entity {entity} not fould");
+                    return BadRequest($"Entity {entity} is not found");
                 }
 
                 var result = await coreAdminService.CreateItemFor(modelType, entityObject); //_adminRepository.CreateItemFor(entity, entityObject);
@@ -190,7 +190,7 @@ namespace Deviser.Admin.Web.Controllers
                 var modelType = coreAdminService.GetModelType(entity);
                 if (modelType == null)
                 {
-                    return BadRequest($"Entity {entity} not fould");
+                    return BadRequest($"Entity {entity} is not found");
                 }
 
                 var result = await coreAdminService.UpdateItemFor(modelType, entityObject); //_adminRepository.UpdateItemFor(entity, entityObject);
@@ -207,6 +207,60 @@ namespace Deviser.Admin.Web.Controllers
             }
         }
 
+        [HttpPut]
+        [Route("modules/[area]/api/{entity:required}/action/{actionName:required}")]
+        public async Task<IActionResult> ExecuteMainFormAction(string entity, string actionName, [FromBody]object entityObject)
+        {
+            try
+            {
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(entity);
+                if (modelType == null)
+                {
+                    return BadRequest($"Entity {entity} is not found");
+                }
+
+                var result = await coreAdminService.ExecuteMainFormAction(modelType, actionName, entityObject); //_adminRepository.UpdateItemFor(entity, entityObject);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while executing custom action {actionName} for entity: {entity}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        [Route("modules/[area]/api/{entity:required}/form/{formName:required}/action/{actionName:required}")]
+        public async Task<IActionResult> ExecuteCustomFormAction(string entity, string formName, string actionName, [FromBody]object entityObject)
+        {
+            try
+            {
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(entity);
+                if (modelType == null)
+                {
+                    return BadRequest($"Entity {entity} is not found");
+                }
+
+                var result = await coreAdminService.ExecuteCustomFormAction(modelType, formName, actionName, entityObject); //_adminRepository.UpdateItemFor(entity, entityObject);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while executing custom action {actionName} for entity: {entity}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpDelete]
         [Route("modules/[area]/api/{entity:required}/{id:required}")]
         public async Task<IActionResult> Delete(string entity, string id)
@@ -217,7 +271,7 @@ namespace Deviser.Admin.Web.Controllers
                 var modelType = coreAdminService.GetModelType(entity);
                 if (modelType == null)
                 {
-                    return BadRequest($"Entity {entity} not fould");
+                    return BadRequest($"Entity {entity} is not found");
                 }
 
                 var result = await coreAdminService.DeleteItemFor(modelType, id); //_adminRepository.DeleteItemFor(entity, id);

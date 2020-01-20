@@ -7,6 +7,7 @@ import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
 import { FieldType } from '../common/domain-types/field-type';
 import { FormConfig } from '../common/domain-types/form-config';
 import { FormMode } from '../common/domain-types/form-mode';
+import { ValidationType } from '../common/domain-types/validation-type';
 
 @Component({
   selector: 'app-entity-form',
@@ -44,17 +45,17 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   public onChange: () => void = () => { };
 
   isFieldShown(field: Field) {
-    if(this.hasFieldPredicate(field, 'showOn')){
+    if (this.hasFieldPredicate(field, 'showOn')) {
       let result = this.getFieldPredicateResult(field, 'showOn');
       return result;
     }
 
-    return field.fieldOption.addIn == FormMode.Both || field.fieldOption.addIn == this.formMode
-    return true; //by default field should be visible
+    return field.fieldOption.showIn == FormMode.Both || field.fieldOption.showIn == this.formMode
+    //return true; //by default field should be visible
   }
 
   isFieldEnabled(field: Field) {
-    if(this.hasFieldPredicate(field, 'enableOn')){
+    if (this.hasFieldPredicate(field, 'enableOn')) {
       let result = this.getFieldPredicateResult(field, 'enableOn');
       return result;
     }
@@ -62,11 +63,14 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   }
 
   isFieldValidate(field: Field) {
-    if(this.hasFieldPredicate(field, 'validateOn')){
+    if (this.hasFieldPredicate(field, 'validateOn')) {
       let result = this.getFieldPredicateResult(field, 'validateOn');
       return result;
     }
-    return false; //by default field should not be validated
+
+    return field.fieldOption.validationType ? true : false;
+
+    //return false; //by default field should not be validated
   }
 
   hasFieldPredicate(field: Field, action: string): boolean {

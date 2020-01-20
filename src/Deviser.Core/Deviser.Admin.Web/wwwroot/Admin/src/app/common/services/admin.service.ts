@@ -98,6 +98,24 @@ export class AdminService {
       );
   }
 
+  executeMainFormAction(actionName: string, record: any) {
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/action/${actionName}`;
+    return this.http.put<any>(serviceUrl, record, this.httpOptions)
+      .pipe(
+        tap(_ => this.log('executing main form action')),
+        catchError(this.handleError('executeMainFormAction', null))
+      );
+  }
+
+  executeCustomFormAction(formName: string, actionName: string, record: any) {
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/form/${formName}/action/${actionName}`;
+    return this.http.put<any>(serviceUrl, record, this.httpOptions)
+      .pipe(
+        tap(_ => this.log('executing custom form action')),
+        catchError(this.handleError('executeCustomFormAction', null))
+      );
+  }
+
   deleteRecord(id: string) {
     const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/${id}`;
 

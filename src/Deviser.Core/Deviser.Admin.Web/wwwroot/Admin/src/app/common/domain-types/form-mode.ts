@@ -1,5 +1,5 @@
 export enum FormMode {
     Both = 'Both',
-    Add = 'Add',
+    Create = 'Create',
     Update = 'Update'
 }

@@ -44,7 +44,7 @@ namespace Deviser.Admin.Services
             }
             _adminSite = _adminSiteProvider.GetAdminConfig(adminConfiguratorType.AsType());
 
-            if(_adminSite.AdminType == AdminType.Entity)
+            if (_adminSite.AdminType == AdminType.Entity)
             {
                 _adminRepository = new AdminRepository(_adminSite, _serviceProvider);
             }
@@ -60,6 +60,28 @@ namespace Deviser.Admin.Services
         public async Task<object> DeleteItemFor(Type modelType, string itemId)
         {
             return await CallGenericMethod(nameof(DeleteItem), new Type[] { modelType }, new object[] { itemId });
+        }
+
+        public async Task<object> ExecuteMainFormAction(Type modelType, string actionName, object entityObject)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+            if (adminConfig.ModelConfig.FormConfig.FormActions.TryGetValue(actionName, out AdminAction adminAction) && adminConfig.ModelType == entityObject.GetType())
+            {
+                return await ExecuteAdminAction(entityObject, adminAction);
+            }
+            return null;
+        }
+
+        public async Task<object> ExecuteCustomFormAction(Type modelType, string formName, string actionName, object entityObject)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName, out CustomForm customForm) &&
+                customForm.FormConfig.FormActions.TryGetValue(actionName, out AdminAction adminAction) &&
+                adminConfig.ModelType == entityObject.GetType())
+            {
+                return await ExecuteAdminAction(entityObject, adminAction);
+            }
+            return null;
         }
 
         public IAdminConfig GetAdminConfig(string strModelType)
@@ -94,7 +116,7 @@ namespace Deviser.Admin.Services
             var adminConfig = GetAdminConfig(typeof(TModel));
             TModel modelToAdd = ((JObject)item).ToObject<TModel>(_serializer);
             if (_adminSite.AdminType == AdminType.Custom)
-            {                
+            {
                 if (_serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService)
                 {
                     return await adminService.CreateItem(modelToAdd);
@@ -189,7 +211,14 @@ namespace Deviser.Admin.Services
         {
             var getItemMethodInfo = typeof(CoreAdminService).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
             var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericTypes);
-            var result = (object)await  (dynamic) getItemMethod.Invoke(this, parmeters);
+            var result = (object)await (dynamic)getItemMethod.Invoke(this, parmeters);
+            return result;
+        }
+
+        private async Task<object> ExecuteAdminAction(object entityObject, AdminAction adminAction)
+        {
+            var formActionDelegate = adminAction.FormActionExpression.Compile();
+            var result = await ((Task<object>)formActionDelegate.DynamicInvoke(new[] { _serviceProvider, entityObject }));
             return result;
         }
     }

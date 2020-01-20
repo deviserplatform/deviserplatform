@@ -20,11 +20,11 @@ namespace Deviser.Core.Common.DomainTypes.Admin
         public string Format { get; set; }
         
         [JsonConverter(typeof(StringEnumConverter))]
-        public AddInMode AddIn { get; set; } = AddInMode.Both;
-        public List<ReleatedField> ReleatedFields { get; set; }
+        public FormMode ShowIn { get; set; } = FormMode.Both;
+        public List<RelatedField> RelatedFields { get; set; }
         public bool IsHidden { get; set; }
         public bool IsReadOnly { get; set; }
-        public bool IsRequired { get; set; }
+        public bool? IsRequired { get; set; }
         public int MaxLength { get; set; }
 
         [JsonIgnore]
@@ -36,25 +36,19 @@ namespace Deviser.Core.Common.DomainTypes.Admin
         public RelationType RelationType { get; set; }
 
         [JsonConverter(typeof(TypeJsonConverter))]
-        public Type ReleatedEntityType { get; set; }
+        public Type RelatedModelType { get; set; }
 
-        public string ReleatedEntityTypeCamelCase
-        {
-            get
-            {
-                return ReleatedEntityType?.Name?.Camelize();
-            }
-        }
+        public string RelatedModelTypeCamelCase => RelatedModelType?.Name?.Camelize();
 
         [JsonIgnore]
-        //public Expression<Func<object, string>> ReleatedEntityDisplayExpression { get; set; }
-        public LambdaExpression ReleatedEntityDisplayExpression { get; set; }
+        //public Expression<Func<object, string>> RelatedEntityDisplayExpression { get; set; }
+        public LambdaExpression RelatedModelDisplayExpression { get; set; }
 
         [JsonIgnore]
-        public LambdaExpression ReleatedEntityLookupExpression { get; set; }
+        public LambdaExpression RelatedModelLookupExpression { get; set; }
 
         [JsonIgnore]
-        public LambdaExpression ReleatedEntityLookupKeyExpression { get; set; }
+        public LambdaExpression RelatedModelLookupKeyExpression { get; set; }
 
         [JsonConverter(typeof(ExpressionJsonConverter))]
         public LambdaExpression ShowOn { get; set; }        

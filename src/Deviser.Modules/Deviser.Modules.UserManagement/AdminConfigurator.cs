@@ -24,12 +24,16 @@ namespace Deviser.Modules.UserManagement
 
                 modelBuilder.FormBuilder
                     .AddKeyField(u => u.Id)
-                    .AddField(u => u.UserName)
+                    //.AddField(u => u.UserName, option => option.ValidationType = ValidationType.UserExist)
                     .AddField(u => u.FirstName)
                     .AddField(u => u.LastName)
-                    .AddField(u => u.Password, option => option.AddIn = AddInMode.Add)
-                    .AddField(u => u.PasswordConfirm, option => option.AddIn = AddInMode.Add)
-                    .AddField(u => u.Email)
+                    .AddField(u => u.Password, option =>
+                    {
+                        option.ShowIn = FormMode.Create;
+                        option.ValidationType = ValidationType.Password;
+                    })
+                    //.AddField(u => u.PasswordConfirm, option => option.AddIn = AddInMode.Add)
+                    .AddField(u => u.Email, option => option.ValidationType = ValidationType.UserExistByEmail)
                     .AddMultiselectField(u => u.Roles);
 
                 modelBuilder.FormBuilder.AddFormAction("UnlockUser", "Unlock User",

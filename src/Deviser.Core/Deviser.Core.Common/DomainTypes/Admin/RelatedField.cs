@@ -7,9 +7,9 @@ using System.Linq.Expressions;
 namespace Deviser.Core.Common.DomainTypes.Admin
 {
     /// <summary>
-    /// <see cref="ReleatedField"/> represents expected structure and data source of ManyToMany join entity
+    /// <see cref="RelatedField"/> represents expected structure and data source of ManyToMany join entity
     /// </summary>
-    public class ReleatedField : BaseField
+    public class RelatedField : BaseField
     {
         private string _fieldName;
         private string _principalFieldName;

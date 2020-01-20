@@ -1,6 +1,6 @@
 import { BaseField } from "./base-field";
 
-export interface ReleatedField extends BaseField {    
+export interface RelatedField extends BaseField {    
     fieldClrType: string;
     isParentField: boolean;
     sourceClrType: string;

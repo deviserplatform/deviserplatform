@@ -24,6 +24,7 @@ export class AdminFormComponent implements OnInit {
   record: any;
   adminForm: FormGroup;
   formMode: FormMode;
+  FormMode = FormMode;
   selectedConfig: ChildConfig;
   formTabs: any[];
   selectedFormTab: any;
@@ -46,7 +47,7 @@ export class AdminFormComponent implements OnInit {
 
   getData(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    this.formMode = id ? FormMode.Update : FormMode.Add;
+    this.formMode = id ? FormMode.Update : FormMode.Create;
 
     if (this.formMode === FormMode.Update) {
       const adminConfig$ = this.adminService.getAdminConfig();
@@ -55,7 +56,7 @@ export class AdminFormComponent implements OnInit {
         this.record = results[1];
         this.onGetAdminConfig(results[0]);
       });
-    } else if (this.formMode === FormMode.Add) {
+    } else if (this.formMode === FormMode.Create) {
       this.adminService.getAdminConfig()
         .subscribe(adminConfig => this.onGetAdminConfig(adminConfig));
     }
@@ -95,7 +96,7 @@ export class AdminFormComponent implements OnInit {
     // TODO: Use EventEmitter with form value
 
     console.warn(this.adminForm.value);
-    if (this.formMode === FormMode.Add) {
+    if (this.formMode === FormMode.Create) {
       this.adminService.createRecord(this.adminForm.value)
         .subscribe(formValue => this.patchFormValue(formValue));
     } else if (this.formMode === FormMode.Update) {
@@ -104,8 +105,34 @@ export class AdminFormComponent implements OnInit {
     }
   }
 
-  onAction(actionName:string){
-    console.log(actionName);
+  onAction(actionName: string, formName: string): void {
+    if (formName) {
+      this.adminService.executeCustomFormAction(formName, actionName, this.adminForm.value)
+        .subscribe(formValue => this.onActionResult(formValue));
+    }
+    else {
+      this.adminService.executeMainFormAction(actionName, this.adminForm.value)
+        .subscribe(formValue => this.onActionResult(formValue));
+    }
+  }
+
+  onActionResult(formValue: any): void {
+    if (formValue) {
+      let alert: Alert = {
+        alterType: AlertType.Error,
+        message: "Unable to update/save this item, please contact administrator",
+        timeout: 5000
+      }
+      this.alerts.push(alert);
+    }
+    else {
+      let alert: Alert = {
+        alterType: AlertType.Error,
+        message: "Unable to update/save this item, please contact administrator",
+        timeout: 5000
+      }
+      this.alerts.push(alert);
+    }
   }
 
   patchFormValue(formValue: any): void {

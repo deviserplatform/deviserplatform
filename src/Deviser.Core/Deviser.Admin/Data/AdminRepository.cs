@@ -340,7 +340,7 @@ namespace Deviser.Admin.Data
             var typeMap = _adminSite.GetTypeMapFor(typeof(TEntity));
             foreach (var m2mField in m2mFields)
             {
-                var includeString = GetIncludeString(typeMap, m2mField.FieldOption.ReleatedEntityType);
+                var includeString = GetIncludeString(typeMap, m2mField.FieldOption.RelatedModelType);
                 query = query.Include(includeString);
             }
 
@@ -348,7 +348,7 @@ namespace Deviser.Admin.Data
             var m2oFields = GetManyToOneFields(adminConfig);
             foreach (var m2oField in m2oFields)
             {
-                var includeString = GetIncludeString(typeMap, m2oField.FieldOption.ReleatedEntityType);
+                var includeString = GetIncludeString(typeMap, m2oField.FieldOption.RelatedModelType);
                 query = query.Include(includeString);
             }
 
@@ -366,14 +366,14 @@ namespace Deviser.Admin.Data
                 //Child ManyToMany Includes
                 foreach (var m2mField in cM2mFields)
                 {
-                    var includeString = $"{childFieldName}.{GetIncludeString(typeMap, m2mField.FieldOption.ReleatedEntityType)}";
+                    var includeString = $"{childFieldName}.{GetIncludeString(typeMap, m2mField.FieldOption.RelatedModelType)}";
                     query = query.Include(includeString);
                 }
 
                 //Child OneToMany Includes                
                 foreach (var m2oField in cM2oFields)
                 {
-                    var includeString = $"{childFieldName}.{GetIncludeString(typeMap, m2oField.FieldOption.ReleatedEntityType)}";
+                    var includeString = $"{childFieldName}.{GetIncludeString(typeMap, m2oField.FieldOption.RelatedModelType)}";
                     query = query.Include(includeString);
                 }
             }

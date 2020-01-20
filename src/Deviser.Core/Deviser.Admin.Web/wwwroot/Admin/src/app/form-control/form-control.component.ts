@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { FormGroup, FormControl, Validators, ValidatorFn, AsyncValidatorFn } from '@angular/forms';
 import { Field } from '../common/domain-types/field';
 import { FieldType } from '../common/domain-types/field-type';
@@ -11,7 +11,7 @@ import { UserExistValidator } from '../common/validators/async-user-exist.valida
 import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-import { ReleatedField } from '../common/domain-types/releated-field';
+import { RelatedField } from '../common/domain-types/related-field';
 import { RelationType } from '../common/domain-types/relation-type';
 
 @Component({
@@ -51,7 +51,7 @@ export class FormControlComponent implements OnInit {
 
     if (changes.isValidate && changes.isValidate.currentValue != null) {
       //Dynamic validation can be changed only when this field is not required by backend
-      if (!this.field.fieldOption.isRequired) {
+      if (!this.field.fieldOption.isRequired || this.field.fieldOption.validationType) {
         this.onIsValidateChange(changes.isValidate.currentValue);
       }
     }
@@ -70,8 +70,8 @@ export class FormControlComponent implements OnInit {
   }
 
   parseM2mControlVal() {
-    if (this.field && this.field.fieldOption && this.field.fieldOption.releatedEntityTypeCamelCase) {
-      let lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.releatedEntityTypeCamelCase];
+    if (this.field && this.field.fieldOption && this.field.fieldOption.relatedModelTypeCamelCase) {
+      let lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.relatedModelTypeCamelCase];
       let formVal = this.form.value;
       let keyNames = Object.keys(lookUpGeneric[0].key);
       let controlVal = formVal[this.field.fieldNameCamelCase];
@@ -128,7 +128,7 @@ export class FormControlComponent implements OnInit {
 
   parseM2oControlVal() {
     let formVal = this.form.value;
-    let lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.releatedEntityTypeCamelCase];
+    let lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.relatedModelTypeCamelCase];
     let keyNames = Object.keys(lookUpGeneric[0].key);
     let controlVal = formVal[this.field.fieldNameCamelCase];
 
@@ -185,16 +185,17 @@ export class FormControlComponent implements OnInit {
 
       switch (this.field.fieldOption.validationType) {
         case ValidationType.Email:
-          syncValidators.push(Validators.email)
+          syncValidators.push(Validators.email);
+          // syncValidators.push(Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'));
           break;
         case ValidationType.NumberOnly:
-          syncValidators.push(Validators.pattern("^[0-9]*$"))
+          syncValidators.push(Validators.pattern("^[0-9]*$"));
           break;
         case ValidationType.LettersOnly:
-          syncValidators.push(Validators.pattern("^[a-zA-Z]*$"))
+          syncValidators.push(Validators.pattern("^[a-zA-Z]*$"));
           break;
         case ValidationType.RegEx:
-          syncValidators.push(Validators.pattern(this.field.fieldOption.validatorRegEx))
+          syncValidators.push(Validators.pattern(this.field.fieldOption.validatorRegEx));
           break;
         case ValidationType.UserExist:
           asyncValidators.push(this.userExistValidator.validate.bind(this.userExistValidator));
@@ -207,11 +208,11 @@ export class FormControlComponent implements OnInit {
           break;
       }
 
-      formControl.setValidators([Validators.required]);
+      formControl.setValidators(syncValidators);
 
       if (asyncValidators.length > 0) {
         formControl.setAsyncValidators(asyncValidators);
-      }
+      }      
     }
     else {
       formControl.setValidators(null);

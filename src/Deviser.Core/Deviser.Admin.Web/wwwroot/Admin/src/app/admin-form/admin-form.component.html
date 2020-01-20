@@ -42,7 +42,7 @@
                       [inlineSVG]="'assets/icons/baseline-keyboard_arrow_left.svg' | envPath"></i>
                   </button>
 
-                  <ng-container *ngIf="formTab.formConfig.formActions">
+                  <ng-container *ngIf="formTab.formConfig.formActions && formMode === FormMode.Update">
                     <button class="btn btn-secondary" type="button" [disabled]="!adminForm.valid"
                       *ngFor="let item of formTab.formConfig.formActions | keyvalue" (click)="onAction(item.key)">
                       {{item.value.buttonText}}

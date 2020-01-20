@@ -200,7 +200,7 @@ namespace Deviser.Admin.Config
                     throw new InvalidOperationException($"SubmitActionExpression is required while adding a custom form");
                 }
 
-                //hasConfiguration must be always true, since custom forms must be configured!
+                //hasConfiguration must be always true, since custom forms must have configuration and it must be configured!
                 BuildForm(customForm.FormConfig, true, customForm.ModelType);
             }
         }
@@ -358,7 +358,7 @@ namespace Deviser.Admin.Config
                 field.FieldOption = new FieldOption();
 
 
-            var metadata = field.FieldOption.Metadata = _modelMetadataProvider.GetMetadataForType(field.FieldClrType);
+            field.FieldOption.Metadata = _modelMetadataProvider.GetMetadataForType(field.FieldClrType);
 
 
 
@@ -455,9 +455,9 @@ namespace Deviser.Admin.Config
                 field.FieldType = GetFieldType(field);
             }
 
-            if (!field.FieldOption.IsRequired)
+            if (field.FieldOption.IsRequired == null)
             {
-                field.FieldOption.IsRequired = (!efProperty?.IsColumnNullable() ?? false);
+                field.FieldOption.IsRequired = (!efProperty?.IsColumnNullable() ?? false) || !field.FieldClrType.IsNullable();
             }
 
             //FieldConditions
@@ -538,9 +538,9 @@ namespace Deviser.Admin.Config
 
         }
 
-        private List<ReleatedField> GetReleatedFields(IForeignKey foreignKey, Type entityType)
+        private List<RelatedField> GetReleatedFields(IForeignKey foreignKey, Type entityType)
         {
-            var releatedField = new List<ReleatedField>();
+            var releatedField = new List<RelatedField>();
 
             for (var index = 0; index < foreignKey.PrincipalKey.Properties.Count; index++)
             {
@@ -552,7 +552,7 @@ namespace Deviser.Admin.Config
                 var pKDecType = foreignKey.PrincipalKey.DeclaringEntityType.ClrType;
                 var principalExpr = GetFieldExpression(pKDecType, principalProp);
 
-                releatedField.Add(new ReleatedField
+                releatedField.Add(new RelatedField
                 {
                     IsParentField = entityType == pKDecType,
                     FieldExpression = fKeyExpr,
@@ -693,11 +693,11 @@ namespace Deviser.Admin.Config
             {
                 foreach (var relatedField in relatedFileds)
                 {
-                    var relatedModelType = relatedField.FieldOption.ReleatedEntityType;
+                    var relatedModelType = relatedField.FieldOption.RelatedModelType;
                     var entityClrType = GetEntityClrTypeFor(relatedModelType);
 
-                    Func<List<LookUpField>> masterDataDelegate = () => CallGenericMethod<List<LookUpField>>(nameof(GetLookUpDataFromEntity), new Type[] { relatedModelType, entityClrType }, new object[] { relatedField.FieldOption.ReleatedEntityDisplayExpression });
-                    adminConfig.LookUps.Add(relatedField.FieldOption.ReleatedEntityType.Name, masterDataDelegate);
+                    Func<List<LookUpField>> masterDataDelegate = () => CallGenericMethod<List<LookUpField>>(nameof(GetLookUpDataFromEntity), new Type[] { relatedModelType, entityClrType }, new object[] { relatedField.FieldOption.RelatedModelDisplayExpression });
+                    adminConfig.LookUps.Add(relatedField.FieldOption.RelatedModelType.Name, masterDataDelegate);
                 }
             }
             else if (AdminType == AdminType.Custom)
@@ -708,10 +708,10 @@ namespace Deviser.Admin.Config
                     {
                         List<LookUpField> lookUpFields = new List<LookUpField>();
 
-                        var entityLookupExprDelegate = relatedFiled.FieldOption.ReleatedEntityLookupExpression.Compile();
-                        var entityLookupExprKeyDelegate = relatedFiled.FieldOption.ReleatedEntityLookupKeyExpression.Compile();
-                        var displayExprDelegate = relatedFiled.FieldOption.ReleatedEntityDisplayExpression.Compile();
-                        var keyFieldName = ReflectionExtensions.GetMemberName(relatedFiled.FieldOption.ReleatedEntityLookupKeyExpression);
+                        var entityLookupExprDelegate = relatedFiled.FieldOption.RelatedModelLookupExpression.Compile();
+                        var entityLookupExprKeyDelegate = relatedFiled.FieldOption.RelatedModelLookupKeyExpression.Compile();
+                        var displayExprDelegate = relatedFiled.FieldOption.RelatedModelDisplayExpression.Compile();
+                        var keyFieldName = ReflectionExtensions.GetMemberName(relatedFiled.FieldOption.RelatedModelLookupKeyExpression);
 
                         var items = entityLookupExprDelegate.DynamicInvoke(new object[] { _serviceProvider }) as IList;
 
@@ -728,7 +728,7 @@ namespace Deviser.Admin.Config
 
                         return lookUpFields;
                     };
-                    adminConfig.LookUps.Add(relatedFiled.FieldOption.ReleatedEntityType.Name, masterDataDelegate);
+                    adminConfig.LookUps.Add(relatedFiled.FieldOption.RelatedModelType.Name, masterDataDelegate);
                 }
             }
         }
