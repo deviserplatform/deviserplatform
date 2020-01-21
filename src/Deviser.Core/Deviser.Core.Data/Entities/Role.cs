@@ -16,7 +16,7 @@ namespace Deviser.Core.Data.Entities
             Name = roleName;
         }
 
-        public virtual ICollection<IdentityUserRole<Guid>> UserRoles { get; } = new List<IdentityUserRole<Guid>>();
+        public virtual ICollection<UserRole> UserRoles { get; } = new List<UserRole>();
         public virtual ICollection<PagePermission> PagePermissions { get; set; }
         public virtual ICollection<ModulePermission> ModulePermissions { get; set; }
         public virtual ICollection<ContentPermission> ContentPermissions { get; set; }

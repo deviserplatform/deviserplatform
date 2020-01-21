@@ -33,7 +33,11 @@ namespace Deviser.Modules.UserManagement
                         option.ValidationType = ValidationType.Password;
                     })
                     //.AddField(u => u.PasswordConfirm, option => option.AddIn = AddInMode.Add)
-                    .AddField(u => u.Email, option => option.ValidationType = ValidationType.UserExistByEmail)
+                    .AddField(u => u.Email, option =>
+                    {
+                        option.ShowIn = FormMode.Create;
+                        option.ValidationType = ValidationType.UserExistByEmail;
+                    })
                     .AddMultiselectField(u => u.Roles);
 
                 modelBuilder.FormBuilder.AddFormAction("UnlockUser", "Unlock User",

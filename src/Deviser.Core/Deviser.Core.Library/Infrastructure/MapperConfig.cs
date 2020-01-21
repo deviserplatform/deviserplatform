@@ -20,7 +20,7 @@ namespace Deviser.Core.Library.Infrastructure
                     .ForMember(dest => dest.ModuleName, opt => opt.MapFrom(src => src.Module.Name))
                     .ForMember(dest => dest.ModuleName, opt => opt.Condition(src => src.Module != null))
                     .ReverseMap()
-                    .ForMember(dest=> dest.Module, opt=> opt.Ignore());
+                    .ForMember(dest => dest.Module, opt => opt.Ignore());
 
                     config.CreateMap<ContentPermission, Core.Common.DomainTypes.ContentPermission>().ReverseMap();
 
@@ -110,9 +110,12 @@ namespace Deviser.Core.Library.Infrastructure
 
                     //Roles from db needs to be ignored, because User.Roles is not Role type, it is UserRole - join entity.
                     config.CreateMap<User, Core.Common.DomainTypes.User>()
-                    .ForMember(dest => dest.Roles, opt => opt.Ignore())
+                    .ForMember(dest => dest.Roles, opt => opt
+                        .MapFrom(src => src.UserRoles != null ? src.UserRoles.Select(ur => new Common.DomainTypes.Role()
+                        { Id = ur.RoleId, Name = ur.Role.Name }).ToList() : null))
                     .ReverseMap()
-                    .ForMember(dest => dest.UserRoles, opt => opt.Ignore());
+                    .ForMember(dest => dest.UserRoles, opt => opt.MapFrom(src => 
+                        src.Roles != null ? src.Roles.Select(r => new UserRole() { RoleId = r.Id, UserId = src.Id }).ToList() : null));
 
                     config.CreateMap<SiteSetting, Core.Common.DomainTypes.SiteSetting>().ReverseMap();
 

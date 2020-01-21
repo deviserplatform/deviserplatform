@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Deviser.Core.Data.Repositories;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Modules.UserManagement
 {
@@ -64,7 +65,10 @@ namespace Deviser.Modules.UserManagement
 
         public async Task<User> GetItem(string itemId)
         {
-            var user = _userManager.Users.FirstOrDefault(u => u.Id == Guid.Parse(itemId));
+            var user = _userManager.Users
+                .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                .FirstOrDefault(u => u.Id == Guid.Parse(itemId));
+
             if (user != null)
             {
                 return Mapper.Map<User>(user);
