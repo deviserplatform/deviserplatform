@@ -43,7 +43,7 @@ export class AdminService {
   }
 
   getAdminConfig(): Observable<AdminConfig> {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/meta`;
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/meta`;
     return this.http.get<AdminConfig>(serviceUrl).pipe(
       tap(_ => this.log('fetched meta info')),
       catchError(this.handleError<AdminConfig>('getAdminConfig'))
@@ -51,7 +51,7 @@ export class AdminService {
   }
 
   getAllRecords(pagination: Pagination = null): Observable<any> {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}`;
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}`;
 
 
     let params = new HttpParams();
@@ -71,7 +71,7 @@ export class AdminService {
   }
 
   getRecord(id: string): Observable<any> {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/${id}`;
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/${id}`;
 
     return this.http.get<any>(serviceUrl)
       .pipe(
@@ -81,7 +81,7 @@ export class AdminService {
   }
 
   createRecord(record: any) {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/`;
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/`;
     return this.http.post<any>(serviceUrl, record, this.httpOptions)
       .pipe(
         tap(_ => this.log('created a record')),
@@ -90,7 +90,7 @@ export class AdminService {
   }
 
   updateRecord(record: any) {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/`;
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/`;
     return this.http.put<any>(serviceUrl, record, this.httpOptions)
       .pipe(
         tap(_ => this.log('updated a record')),
@@ -99,7 +99,7 @@ export class AdminService {
   }
 
   executeMainFormAction(actionName: string, record: any) {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/action/${actionName}`;
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/action/${actionName}`;
     return this.http.put<any>(serviceUrl, record, this.httpOptions)
       .pipe(
         tap(_ => this.log('executing main form action')),
@@ -108,7 +108,7 @@ export class AdminService {
   }
 
   customFormSubmit(formName: string, record: any){
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/form/${formName}`;
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/form/${formName}`;
     return this.http.put<any>(serviceUrl, record, this.httpOptions)
       .pipe(
         tap(_ => this.log('executing custom form submit')),
@@ -117,7 +117,7 @@ export class AdminService {
   }
 
   executeCustomFormAction(formName: string, actionName: string, record: any) {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/form/${formName}/action/${actionName}`;
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/form/${formName}/action/${actionName}`;
     return this.http.put<any>(serviceUrl, record, this.httpOptions)
       .pipe(
         tap(_ => this.log('executing custom form action')),
@@ -126,7 +126,7 @@ export class AdminService {
   }
 
   deleteRecord(id: string) {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/${id}`;
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/${id}`;
 
     return this.http.delete<any>(serviceUrl)
       .pipe(

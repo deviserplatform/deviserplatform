@@ -184,7 +184,7 @@ namespace Deviser.Core.Library.Controllers
             }
 
             var moduleName = currentPage.AdminPage.ModuleName;
-            var entityName = currentPage.AdminPage.EntityName;
+            var modelName = currentPage.AdminPage.ModelName;
             var moduleMetaInfo = _moduleRegistry.GetModuleMetaInfoByModuleName(moduleName);
 
             var assembly = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.ApplicationEntryPoint).FirstOrDefault(a => a.FullName == moduleMetaInfo.ModuleAssemblyFullName);
@@ -200,7 +200,7 @@ namespace Deviser.Core.Library.Controllers
             //routeContext.RouteData.Values.Add("action", actionName);
             //routeContext.RouteData.Values.Add("entity", entityName);
 
-            var routeParams = new RouteValueDictionary(new { entity = entityName });
+            var routeParams = new RouteValueDictionary(new { model = modelName });
             var routeValues = new RouteValueDictionary(new { area = moduleName, controller = controllerName, action = actionName });
 
             foreach (var router in actionContext.RouteData.Routers)
