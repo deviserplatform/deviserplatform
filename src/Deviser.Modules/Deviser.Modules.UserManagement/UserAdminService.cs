@@ -17,9 +17,13 @@ namespace Deviser.Modules.UserManagement
     {
         private readonly IUserRepository _userRepository;
         private readonly UserManager<Core.Data.Entities.User> _userManager;
+        private readonly RoleManager<Core.Data.Entities.Role> _roleManager;
 
-        public UserAdminService(IUserRepository userRepository, UserManager<Core.Data.Entities.User> userManager)
+        public UserAdminService(IUserRepository userRepository, 
+            UserManager<Core.Data.Entities.User> userManager,
+            RoleManager<Core.Data.Entities.Role> roleManager)
         {
+            _roleManager = roleManager;
             _userRepository = userRepository;
             _userManager = userManager;
         }
@@ -31,24 +35,26 @@ namespace Deviser.Modules.UserManagement
                 var user = Mapper.Map<Core.Data.Entities.User>(item);
                 user.Id = Guid.NewGuid();
                 user.UserName = item.Email;
-                var result = await _userManager.CreateAsync(user, item.Password);
-                if (result.Succeeded)
+                var identityResult = await _userManager.CreateAsync(user, item.Password);
+                if (identityResult.Succeeded)
                 {
-                    Mapper.Map<User>(user);
+                    var result = Mapper.Map<User>(user);
+                    return result;
                 }
             }
             return null;
         }
 
-        public async Task<User> DeleteItem(string itemId)
+        public async Task<User> DeleteItem(string userId)
         {
-            var user = _userManager.Users.FirstOrDefault(u => u.Id == Guid.Parse(itemId));
+            var user = _userManager.Users.FirstOrDefault(u => u.Id == Guid.Parse(userId));
             if (user != null)
             {
-                var result = await _userManager.DeleteAsync(user);
-                if (result != null)
+                var identityResult = await _userManager.DeleteAsync(user);
+                if (identityResult != null)
                 {
-                    return Mapper.Map<User>(user);
+                    var result = Mapper.Map<User>(user);
+                    return result;
                 }
             }
             return null;
@@ -63,33 +69,54 @@ namespace Deviser.Modules.UserManagement
             return new PagedResult<User>(result, pageNo, pageSize, total);
         }
 
-        public async Task<User> GetItem(string itemId)
+        public async Task<User> GetItem(string userId)
         {
             var user = _userManager.Users
                 .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
-                .FirstOrDefault(u => u.Id == Guid.Parse(itemId));
+                .FirstOrDefault(u => u.Id == Guid.Parse(userId));
 
             if (user != null)
             {
-                return Mapper.Map<User>(user);
+                var result = Mapper.Map<User>(user);
+                return result;
             }
             return null;
         }
 
-        public async Task<User> UpdateItem(User item)
+        public async Task<User> UpdateItem(User user)
         {
-            var user = Mapper.Map<Core.Data.Entities.User>(item);
-            var result = await _userManager.UpdateAsync(user);
-            if (result != null)
+            var dbUser = _userManager.Users.FirstOrDefault(u => u.Id == user.Id);
+            if (dbUser != null)
             {
-                return Mapper.Map<User>(user);
+                dbUser.FirstName = user.FirstName;
+                dbUser.LastName = user.LastName;
+
+                var currentRoles = await _userManager.GetRolesAsync(dbUser);
+                foreach (var role in currentRoles)
+                {
+                    await _userManager.RemoveFromRoleAsync(dbUser, role);
+                }
+
+                var roles = _roleManager.Roles.Where(r => user.Roles.Any(ur => ur.Id == r.Id)).ToList();
+
+                foreach (var role in roles)
+                {
+                    await _userManager.AddToRoleAsync(dbUser, role.Name);
+                }
+
+                var result = await _userManager.UpdateAsync(dbUser);
+                if (result != null)
+                {
+                    return Mapper.Map<User>(user);
+                }
             }
+
             return null;
         }
 
         public async Task<FormResult> ResetPassword(PasswordReset passwordReset)
         {
-            if (passwordReset == null || passwordReset.UserId == Guid.Empty ||
+            if (passwordReset == null || passwordReset.Id == Guid.Empty ||
                 string.IsNullOrEmpty(passwordReset.CurrentPassword) || string.IsNullOrEmpty(passwordReset.NewPassword))
             {
                 return new FormResult()
@@ -103,7 +130,7 @@ namespace Deviser.Modules.UserManagement
             var currentPassword = passwordReset.CurrentPassword;
             var newPassword = passwordReset.NewPassword;
 
-            var user = _userManager.Users.FirstOrDefault(u => u.Id == passwordReset.UserId);
+            var user = _userManager.Users.FirstOrDefault(u => u.Id == passwordReset.Id);
             var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
 
             if (result.Succeeded)
@@ -146,6 +173,29 @@ namespace Deviser.Modules.UserManagement
                 SuccessMessage = "Unable to unlock the user",
             };
 
+        }
+
+        public async Task<FormResult> LockUserAccount(User user)
+        {
+            var dbUser = _userManager.Users.FirstOrDefault(u => u.Id == user.Id);
+
+            var result = await _userManager.SetLockoutEnabledAsync(dbUser, true);
+            if (result.Succeeded)
+            {
+                result = await _userManager.SetLockoutEndDateAsync(dbUser, DateTimeOffset.MaxValue);
+
+                return new FormResult()
+                {
+                    IsSucceeded = true,
+                    SuccessMessage = "User has been locked successfully"
+                };
+            }
+
+            return new FormResult(result)
+            {
+                IsSucceeded = false,
+                SuccessMessage = "Unable to lock the user",
+            };
         }
     }
 }

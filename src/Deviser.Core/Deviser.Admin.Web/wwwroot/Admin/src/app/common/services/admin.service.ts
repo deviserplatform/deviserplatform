@@ -107,6 +107,15 @@ export class AdminService {
       );
   }
 
+  customFormSubmit(formName: string, record: any){
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/form/${formName}`;
+    return this.http.put<any>(serviceUrl, record, this.httpOptions)
+      .pipe(
+        tap(_ => this.log('executing custom form submit')),
+        catchError(this.handleError('executeCustomFormAction', null))
+      );
+  }
+
   executeCustomFormAction(formName: string, actionName: string, record: any) {
     const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.entity}/form/${formName}/action/${actionName}`;
     return this.http.put<any>(serviceUrl, record, this.httpOptions)

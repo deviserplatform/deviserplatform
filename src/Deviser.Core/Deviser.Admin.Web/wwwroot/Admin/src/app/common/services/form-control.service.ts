@@ -7,6 +7,7 @@ import { KeyField } from '../domain-types/key-field';
 import { KeyFieldType } from '../domain-types/key-field-type';
 import { ModelConfig } from '../domain-types/model-config';
 import { FormConfig } from '../domain-types/form-config';
+import { FormMode } from '../domain-types/form-mode';
 
 
 @Injectable({
@@ -16,10 +17,10 @@ export class FormControlService {
 
   constructor(private fb: FormBuilder) { }
 
-  toFormGroup(adminConfig: AdminConfig, record: any = null): FormGroup {
+  toFormGroup(adminConfig: AdminConfig, formMode: FormMode, record: any = null): FormGroup {
     let formObj: any = {};
 
-    formObj = this.getFormGroup(adminConfig.modelConfig, formObj, record);
+    formObj = this.getFormGroup(adminConfig.modelConfig, formMode, formObj, record);
 
     if (adminConfig.childConfigs && adminConfig.childConfigs.length > 0) {
 
@@ -33,31 +34,31 @@ export class FormControlService {
     return this.fb.group(formObj);
   }
 
-  toChildFormGroup(modelConfig: ModelConfig, record: any = null): FormGroup {
+  toChildFormGroup(modelConfig: ModelConfig, formMode: FormMode, record: any = null): FormGroup {
     let formObj: any = {};
-    formObj = this.getFormGroup(modelConfig, formObj, record);
+    formObj = this.getFormGroup(modelConfig, formMode, formObj, record);
     return this.fb.group(formObj);
   }
 
-  toFormGroupForCustomForms(formConfig: FormConfig, keyField: KeyField, record: any) {
+  toFormGroupForCustomForms(formConfig: FormConfig, formMode: FormMode, keyField: KeyField, record: any) {
     let formObj: any = {};
-    formObj = this.buildAndGetFormGroup(formConfig, keyField, formObj, record);
+    formObj = this.buildAndGetFormGroup(formConfig, formMode, keyField, formObj, record);
     return this.fb.group(formObj);
   }
 
-  private getFormGroup(modelConfig: ModelConfig, formObj: any, record: any, forChildRecords: boolean = false) {
-    return this.buildAndGetFormGroup(modelConfig.formConfig, modelConfig.keyField, formObj, record, forChildRecords);
+  private getFormGroup(modelConfig: ModelConfig, formMode: FormMode, formObj: any, record: any, forChildRecords: boolean = false) {
+    return this.buildAndGetFormGroup(modelConfig.formConfig, formMode, modelConfig.keyField, formObj, record, forChildRecords);
   }
 
-  private buildAndGetFormGroup(formConfig: FormConfig, keyField: KeyField, formObj: any, record: any, forChildRecords: boolean = false) {
+  private buildAndGetFormGroup(formConfig: FormConfig, formMode: FormMode, keyField: KeyField, formObj: any, record: any, forChildRecords: boolean = false) {
     if (keyField) {
       formObj[keyField.fieldNameCamelCase] = this.getKeyControl(keyField, record);
     }
-    formObj = this.getFormModel(formConfig, formObj, record, forChildRecords);
+    formObj = this.getFormModel(formConfig, formMode, formObj, record, forChildRecords);
     return formObj;
   }
 
-  private getFormModel(formConfig: FormConfig, adminForm: any, record: any, forChildRecords: boolean): any {
+  private getFormModel(formConfig: FormConfig, formMode: FormMode, adminForm: any, record: any, forChildRecords: boolean): any {
     if (formConfig &&
       formConfig.fieldConfig &&
       formConfig.fieldConfig.fields &&
@@ -67,7 +68,9 @@ export class FormControlService {
       fields.forEach(fieldRow => {
         if (fieldRow && fieldRow.length > 0) {
           fieldRow.forEach(field => {
-            adminForm[field.fieldNameCamelCase] = this.getFormControl(field, record, forChildRecords);
+            if (field.fieldOption.showIn == FormMode.Both || field.fieldOption.showIn == formMode) {
+              adminForm[field.fieldNameCamelCase] = this.getFormControl(field, record, forChildRecords);
+            }
           });
         }
       });
@@ -84,9 +87,10 @@ export class FormControlService {
         if (fieldSet && fieldSet.fields && fieldSet.fields.length > 0) {
           fieldSet.fields.forEach(fieldRow => {
             if (fieldRow && fieldRow.length > 0) {
-
               fieldRow.forEach(field => {
-                adminForm[field.fieldNameCamelCase] = this.getFormControl(field, record, forChildRecords);
+                if (field.fieldOption.showIn == FormMode.Both || field.fieldOption.showIn == formMode) {
+                  adminForm[field.fieldNameCamelCase] = this.getFormControl(field, record, forChildRecords);
+                }
               });
             }
 

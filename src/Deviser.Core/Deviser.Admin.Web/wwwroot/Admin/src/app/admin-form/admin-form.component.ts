@@ -11,6 +11,7 @@ import { FormMode } from '../common/domain-types/form-mode';
 import { Field } from '../common/domain-types/field';
 import { ChildConfig } from '../common/domain-types/child-config';
 import { Alert, AlertType } from '../common/domain-types/alert';
+import { FormResult } from '../common/domain-types/form-result';
 
 @Component({
   selector: 'app-admin-form',
@@ -44,7 +45,6 @@ export class AdminFormComponent implements OnInit {
     this.getData();
   }
 
-
   getData(): void {
     const id = this.route.snapshot.paramMap.get('id');
     this.formMode = id ? FormMode.Update : FormMode.Create;
@@ -67,7 +67,7 @@ export class AdminFormComponent implements OnInit {
     if (adminConfig) {
       this.adminConfig = adminConfig;
       this.selectedConfig = this.adminConfig.childConfigs[0];
-      this.adminForm = this.formControlService.toFormGroup(adminConfig, this.record);
+      this.adminForm = this.formControlService.toFormGroup(adminConfig, this.formMode, this.record);
       this.formTabs.push({
         formName: this.adminConfig.modelType,
         formTitle: this.adminConfig.modelType,
@@ -79,7 +79,7 @@ export class AdminFormComponent implements OnInit {
       if (this.formMode == FormMode.Update && this.adminConfig.modelConfig.customForms) {
         for (let customFormName in this.adminConfig.modelConfig.customForms) {
           let customForm = this.adminConfig.modelConfig.customForms[customFormName];
-          let customFormGroup = this.formControlService.toFormGroupForCustomForms(customForm.formConfig, customForm.keyField, {});
+          let customFormGroup = this.formControlService.toFormGroupForCustomForms(customForm.formConfig, this.formMode, customForm.keyField, this.record);
           this.formTabs.push({
             formName: customFormName,
             formTitle: customForm.formConfig.formOption.formTitle,
@@ -94,7 +94,6 @@ export class AdminFormComponent implements OnInit {
 
   onSubmit(): void {
     // TODO: Use EventEmitter with form value
-
     console.warn(this.adminForm.value);
     if (this.formMode === FormMode.Create) {
       this.adminService.createRecord(this.adminForm.value)
@@ -103,6 +102,11 @@ export class AdminFormComponent implements OnInit {
       this.adminService.updateRecord(this.adminForm.value)
         .subscribe(formValue => this.patchFormValue(formValue));
     }
+  }
+
+  onCustomFormSubmit(formTab: any) {
+    this.adminService.customFormSubmit(formTab.formName, formTab.formGroup.value)
+      .subscribe(formValue => this.onActionResult(formValue));
   }
 
   onAction(actionName: string, formName: string): void {
@@ -116,20 +120,20 @@ export class AdminFormComponent implements OnInit {
     }
   }
 
-  onActionResult(formValue: any): void {
-    if (formValue) {
+  onActionResult(formValue: FormResult): void {
+    if (formValue && formValue.isSucceeded) {
       let alert: Alert = {
-        alterType: AlertType.Error,
-        message: "Unable to update/save this item, please contact administrator",
-        timeout: 5000
+        alterType: AlertType.Success,
+        message: formValue.successMessage,
+        timeout: 500000
       }
       this.alerts.push(alert);
     }
     else {
       let alert: Alert = {
         alterType: AlertType.Error,
-        message: "Unable to update/save this item, please contact administrator",
-        timeout: 5000
+        message: formValue.successMessage,
+        timeout: 500000
       }
       this.alerts.push(alert);
     }

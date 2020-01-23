@@ -6,7 +6,7 @@ namespace Deviser.Modules.UserManagement
 {
     public class PasswordReset
     {
-        public Guid UserId { get; set; }
+        public Guid Id { get; set; }
         public string CurrentPassword { get; set; }
         public string NewPassword { get; set; }
     }

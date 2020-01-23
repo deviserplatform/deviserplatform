@@ -78,6 +78,15 @@ $white: #ffffff;
      }   
     }
 
+    .admin-alerts{
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin-right: auto;
+        margin-left: auto;
+        top: 4.28rem;
+    }
+
     .admin-grid{
         .action-bar{
             margin-bottom: 1rem;
@@ -118,6 +127,8 @@ $white: #ffffff;
             border-bottom: 0;
         }
     }
+
+    
 
     .is-invalid{
         color: $red;

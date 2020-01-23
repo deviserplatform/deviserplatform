@@ -27,21 +27,21 @@ namespace Deviser.Admin.Web.Controllers
             //_adminRepository = new AdminRepository<TAdminConfigurator>(serviceProvider);
         }
 
-        [Route("modules/[area]/admin/{entity:required}")]
-        public IActionResult Admin(string entity)
+        [Route("modules/[area]/admin/{model:required}")]
+        public IActionResult Admin(string model)
         {
-            ViewBag.Entity = entity;
+            ViewBag.Model = model;
             return View();
         }
 
         [HttpGet]
-        [Route("modules/[area]/api/{entity:required}/meta")]
-        public IActionResult GetMetaInfo(string entity)
+        [Route("modules/[area]/api/{model:required}/meta")]
+        public IActionResult GetMetaInfo(string model)
         {
             try
             {   
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                var adminConfig = coreAdminService.GetAdminConfig(entity); //_adminRepository.GetAdminConfig(entity);
+                var adminConfig = coreAdminService.GetAdminConfig(model); //_adminRepository.GetAdminConfig(model);
                 if (adminConfig != null)
                 {
                     return Ok(adminConfig);
@@ -50,19 +50,19 @@ namespace Deviser.Admin.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occured while getting meta info for entity: {entity}", ex);
+                _logger.LogError($"Error occured while getting meta info for model: {model}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpGet]
-        [Route("modules/[area]/api/{entity:required}/meta/list")]
-        public IActionResult GetListMetaInfo(string entity)
+        [Route("modules/[area]/api/{model:required}/meta/list")]
+        public IActionResult GetListMetaInfo(string model)
         {
             try
             {
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                var adminConfig = coreAdminService.GetAdminConfig(entity); //_adminRepository.GetAdminConfig(entity);
+                var adminConfig = coreAdminService.GetAdminConfig(model); //_adminRepository.GetAdminConfig(model);
                 if (adminConfig != null)
                 {
                     var listConfig = adminConfig.ModelConfig.GridConfig;
@@ -72,19 +72,19 @@ namespace Deviser.Admin.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occured while getting meta info for entity: {entity}", ex);
+                _logger.LogError($"Error occured while getting meta info for model: {model}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpGet]
-        [Route("modules/[area]/api/{entity:required}/meta/fields")]
-        public IActionResult GetFieldMetaInfo(string entity)
+        [Route("modules/[area]/api/{model:required}/meta/fields")]
+        public IActionResult GetFieldMetaInfo(string model)
         {
             try
             {
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                var adminConfig = coreAdminService.GetAdminConfig(entity); //_adminRepository.GetAdminConfig(entity);
+                var adminConfig = coreAdminService.GetAdminConfig(model); //_adminRepository.GetAdminConfig(model);
                 if (adminConfig != null)
                 {
                     var fieldConfig = new { adminConfig.ModelConfig.FormConfig.FieldConfig, adminConfig.ModelConfig.FormConfig.FieldSetConfig };
@@ -94,25 +94,25 @@ namespace Deviser.Admin.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occured while getting meta info for entity: {entity}", ex);
+                _logger.LogError($"Error occured while getting meta info for model: {model}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpGet]
-        [Route("modules/[area]/api/{entity:required}")]
-        public async Task<IActionResult> GetAllRecords(string entity, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null)
+        [Route("modules/[area]/api/{model:required}")]
+        public async Task<IActionResult> GetAllRecords(string model, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null)
         {
             try
             {
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                var modelType = coreAdminService.GetModelType(entity);
+                var modelType = coreAdminService.GetModelType(model);
                 if(modelType == null)
                 {
-                    return BadRequest($"Entity {entity} is not found");
+                    return BadRequest($"Model {model} is not found");
                 }
 
-                var result = await coreAdminService.GetAllFor(modelType, pageNo, pageSize, orderBy); //_adminRepository.GetAllFor(entity, pageNo, pageSize, orderBy);
+                var result = await coreAdminService.GetAllFor(modelType, pageNo, pageSize, orderBy); //_adminRepository.GetAllFor(model, pageNo, pageSize, orderBy);
                 if (result != null)
                 {
                     return Ok(result);
@@ -121,25 +121,25 @@ namespace Deviser.Admin.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occured while getting all records for entity: {entity}", ex);
+                _logger.LogError($"Error occured while getting all records for model: {model}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
                 
         [HttpGet]
-        [Route("modules/[area]/api/{entity:required}/{id:required}")]
-        public async Task<IActionResult> GetItem(string entity, string id)
+        [Route("modules/[area]/api/{model:required}/{id:required}")]
+        public async Task<IActionResult> GetItem(string model, string id)
         {
             try
             {
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                var modelType = coreAdminService.GetModelType(entity);
+                var modelType = coreAdminService.GetModelType(model);
                 if (modelType == null)
                 {
-                    return BadRequest($"Entity {entity} is not found");
+                    return BadRequest($"Model {model} is not found");
                 }
 
-                var result = await coreAdminService.GetItemFor(modelType, id); //_adminRepository.GetItemFor(entity, id);
+                var result = await coreAdminService.GetItemFor(modelType, id); //_adminRepository.GetItemFor(model, id);
                 if (result != null)
                 {
                     return Ok(result);
@@ -148,25 +148,25 @@ namespace Deviser.Admin.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occured while getting a record for entity: {entity}", ex);
+                _logger.LogError($"Error occured while getting a record for model: {model}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpPost]
-        [Route("modules/[area]/api/{entity:required}")]
-        public async Task<IActionResult> Create(string entity, [FromBody]object entityObject)
+        [Route("modules/[area]/api/{model:required}")]
+        public async Task<IActionResult> Create(string model, [FromBody]object modelObject)
         {
             try
             {
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                var modelType = coreAdminService.GetModelType(entity);
+                var modelType = coreAdminService.GetModelType(model);
                 if (modelType == null)
                 {
-                    return BadRequest($"Entity {entity} is not found");
+                    return BadRequest($"Model {model} is not found");
                 }
 
-                var result = await coreAdminService.CreateItemFor(modelType, entityObject); //_adminRepository.CreateItemFor(entity, entityObject);
+                var result = await coreAdminService.CreateItemFor(modelType, modelObject); //_adminRepository.CreateItemFor(model, modelObject);
                 if (result != null)
                 {
                     return Ok(result);
@@ -175,25 +175,25 @@ namespace Deviser.Admin.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occured while creating a record for entity: {entity}", ex);
+                _logger.LogError($"Error occured while creating a record for model: {model}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpPut]
-        [Route("modules/[area]/api/{entity:required}")]
-        public async Task<IActionResult> Update(string entity, [FromBody]object entityObject)
+        [Route("modules/[area]/api/{model:required}")]
+        public async Task<IActionResult> Update(string model, [FromBody]object modelObject)
         {
             try
             {
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                var modelType = coreAdminService.GetModelType(entity);
+                var modelType = coreAdminService.GetModelType(model);
                 if (modelType == null)
                 {
-                    return BadRequest($"Entity {entity} is not found");
+                    return BadRequest($"Model {model} is not found");
                 }
 
-                var result = await coreAdminService.UpdateItemFor(modelType, entityObject); //_adminRepository.UpdateItemFor(entity, entityObject);
+                var result = await coreAdminService.UpdateItemFor(modelType, modelObject); //_adminRepository.UpdateItemFor(model, modelObject);
                 if (result != null)
                 {
                     return Ok(result);
@@ -202,25 +202,25 @@ namespace Deviser.Admin.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occured while updating a record for entity: {entity}", ex);
+                _logger.LogError($"Error occured while updating a record for model: {model}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpPut]
-        [Route("modules/[area]/api/{entity:required}/action/{actionName:required}")]
-        public async Task<IActionResult> ExecuteMainFormAction(string entity, string actionName, [FromBody]object entityObject)
+        [Route("modules/[area]/api/{model:required}/action/{actionName:required}")]
+        public async Task<IActionResult> ExecuteMainFormAction(string model, string actionName, [FromBody]object modelObject)
         {
             try
             {
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                var modelType = coreAdminService.GetModelType(entity);
+                var modelType = coreAdminService.GetModelType(model);
                 if (modelType == null)
                 {
-                    return BadRequest($"Entity {entity} is not found");
+                    return BadRequest($"Model {model} is not found");
                 }
 
-                var result = await coreAdminService.ExecuteMainFormAction(modelType, actionName, entityObject); //_adminRepository.UpdateItemFor(entity, entityObject);
+                var result = await coreAdminService.ExecuteMainFormAction(modelType, actionName, modelObject); //_adminRepository.UpdateItemFor(model, modelObject);
                 if (result != null)
                 {
                     return Ok(result);
@@ -229,25 +229,25 @@ namespace Deviser.Admin.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occured while executing custom action {actionName} for entity: {entity}", ex);
+                _logger.LogError($"Error occured while executing custom action {actionName} for model: {model}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpPut]
-        [Route("modules/[area]/api/{entity:required}/form/{formName:required}/action/{actionName:required}")]
-        public async Task<IActionResult> ExecuteCustomFormAction(string entity, string formName, string actionName, [FromBody]object entityObject)
+        [Route("modules/[area]/api/{model:required}/form/{formName:required}/")]
+        public async Task<IActionResult> CustomFormSubmit(string model, string formName, [FromBody]object modelObject)
         {
             try
             {
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                var modelType = coreAdminService.GetModelType(entity);
+                var modelType = coreAdminService.GetCustomFormModelType(model, formName);
                 if (modelType == null)
                 {
-                    return BadRequest($"Entity {entity} is not found");
+                    return BadRequest($"Model {model} is not found");
                 }
 
-                var result = await coreAdminService.ExecuteCustomFormAction(modelType, formName, actionName, entityObject); //_adminRepository.UpdateItemFor(entity, entityObject);
+                var result = await coreAdminService.CustomFormSubmit(model, formName, modelObject); //_adminRepository.UpdateItemFor(model, modelObject);
                 if (result != null)
                 {
                     return Ok(result);
@@ -256,25 +256,52 @@ namespace Deviser.Admin.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occured while executing custom action {actionName} for entity: {entity}", ex);
+                _logger.LogError($"Error occured while executing custom form submit action for model: {model}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        [Route("modules/[area]/api/{model:required}/form/{formName:required}/action/{actionName:required}")]
+        public async Task<IActionResult> ExecuteCustomFormAction(string model, string formName, string actionName, [FromBody]object modelObject)
+        {
+            try
+            {
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(model);
+                if (modelType == null)
+                {
+                    return BadRequest($"Model {model} is not found");
+                }
+
+                var result = await coreAdminService.ExecuteCustomFormAction(modelType, formName, actionName, modelObject); //_adminRepository.UpdateItemFor(model, modelObject);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while executing custom action {actionName} for model: {model}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpDelete]
-        [Route("modules/[area]/api/{entity:required}/{id:required}")]
-        public async Task<IActionResult> Delete(string entity, string id)
+        [Route("modules/[area]/api/{model:required}/{id:required}")]
+        public async Task<IActionResult> Delete(string model, string id)
         {
             try
             {
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                var modelType = coreAdminService.GetModelType(entity);
+                var modelType = coreAdminService.GetModelType(model);
                 if (modelType == null)
                 {
-                    return BadRequest($"Entity {entity} is not found");
+                    return BadRequest($"Model {model} is not found");
                 }
 
-                var result = await coreAdminService.DeleteItemFor(modelType, id); //_adminRepository.DeleteItemFor(entity, id);
+                var result = await coreAdminService.DeleteItemFor(modelType, id); //_adminRepository.DeleteItemFor(model, id);
                 if (result != null)
                 {
                     return Ok(result);
@@ -283,7 +310,7 @@ namespace Deviser.Admin.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occured while deleting a record for entity: {entity}, id:{id}", ex);
+                _logger.LogError($"Error occured while deleting a record for model: {model}, id:{id}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

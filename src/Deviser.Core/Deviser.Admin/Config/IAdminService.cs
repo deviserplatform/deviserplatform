@@ -15,9 +15,9 @@ namespace Deviser.Admin.Config
         where TModel : class
     {
         Task<PagedResult<TModel>> GetAll(int pageNo, int pageSize, string orderByProperties);
-        Task<TModel> GetItem(string itemId);
+        Task<TModel> GetItem(string userId);
         Task<TModel> CreateItem(TModel item);
-        Task<TModel> UpdateItem(TModel item);
+        Task<TModel> UpdateItem(TModel user);
         Task<TModel> DeleteItem(string itemId);
     }
 }

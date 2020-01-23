@@ -57,7 +57,7 @@
                     </button>
                   </ng-container>
                   <ng-container *ngIf="!formTab.isMainForm">
-                    <button class="btn btn-primary" type="submit" [disabled]="!adminForm.valid">
+                    <button class="btn btn-primary" type="button" [disabled]="!formTab.formGroup.valid" (click)="onCustomFormSubmit(formTab)">
                       {{formTab.formConfig.formOption.saveButtonText}}
                     </button>
                   </ng-container>

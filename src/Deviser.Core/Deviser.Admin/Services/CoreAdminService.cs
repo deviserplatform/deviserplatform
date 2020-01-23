@@ -10,6 +10,7 @@ using Deviser.Admin.Properties;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Deviser.Core.Common.Extensions;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
@@ -65,9 +66,10 @@ namespace Deviser.Admin.Services
         public async Task<object> ExecuteMainFormAction(Type modelType, string actionName, object entityObject)
         {
             var adminConfig = GetAdminConfig(modelType);
-            if (adminConfig.ModelConfig.FormConfig.FormActions.TryGetValue(actionName, out AdminAction adminAction) && adminConfig.ModelType == entityObject.GetType())
+            var model = ((JObject)entityObject).ToObject(adminConfig.ModelType);
+            if (adminConfig.ModelConfig.FormConfig.FormActions.TryGetValue(actionName.Pascalize(), out AdminAction adminAction) && adminConfig.ModelType == model.GetType())
             {
-                return await ExecuteAdminAction(entityObject, adminAction);
+                return await CallGenericMethod(nameof(ExecuteAdminAction), new Type[] { model.GetType() }, new object[] { model, adminAction });
             }
             return null;
         }
@@ -75,11 +77,25 @@ namespace Deviser.Admin.Services
         public async Task<object> ExecuteCustomFormAction(Type modelType, string formName, string actionName, object entityObject)
         {
             var adminConfig = GetAdminConfig(modelType);
-            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName, out CustomForm customForm) &&
-                customForm.FormConfig.FormActions.TryGetValue(actionName, out AdminAction adminAction) &&
-                adminConfig.ModelType == entityObject.GetType())
+            var model = ((JObject)entityObject).ToObject(adminConfig.ModelType);
+            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out CustomForm customForm) &&
+                customForm.FormConfig.FormActions.TryGetValue(actionName.Pascalize(), out AdminAction adminAction) &&
+                adminConfig.ModelType == model.GetType())
             {
-                return await ExecuteAdminAction(entityObject, adminAction);
+                return await CallGenericMethod(nameof(ExecuteAdminAction), new Type[] { model.GetType() }, new object[] { model, adminAction });
+            }
+            return null;
+        }
+
+        public async Task<object> CustomFormSubmit(string strModelType, string formName, object entityObject)
+        {
+            var adminConfig = GetAdminConfig(strModelType);
+            var modelType = GetCustomFormModelType(strModelType, formName);
+            var model = ((JObject)entityObject).ToObject(modelType);
+            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out CustomForm customForm) &&
+                customForm.ModelType == model.GetType())
+            {
+                return await CallGenericMethod(nameof(ExecuteCustomFormSubmitAction), new Type[] { model.GetType() }, new object[] { model, customForm });
             }
             return null;
         }
@@ -103,6 +119,17 @@ namespace Deviser.Admin.Services
         public Type GetModelType(string strModelType)
         {
             return _adminSite.AdminConfigs.Keys.FirstOrDefault(t => t.Name == strModelType);
+        }
+
+        public Type GetCustomFormModelType(string strModelType, string formName)
+        {
+            var adminConfig = GetAdminConfig(strModelType);
+            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out CustomForm customForm))
+            {
+                return customForm.ModelType;
+            }
+
+            return null;
         }
 
         public async Task<object> UpdateItemFor(Type modelType, object item)
@@ -210,15 +237,27 @@ namespace Deviser.Admin.Services
         private async Task<object> CallGenericMethod(string methodName, Type[] genericTypes, object[] parmeters)
         {
             var getItemMethodInfo = typeof(CoreAdminService).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
-            var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericTypes);
-            var result = (object)await (dynamic)getItemMethod.Invoke(this, parmeters);
+            if (getItemMethodInfo != null)
+            {
+                var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericTypes);
+                var result = (object)await (dynamic)getItemMethod.Invoke(this, parmeters);
+                return result;
+            }
+
+            return null;
+        }
+
+        private async Task<IFormResult> ExecuteAdminAction<TModel>(TModel entityObject, AdminAction adminAction) where TModel : class
+        {
+            var formActionDelegate = adminAction.FormActionExpression.Compile();
+            var result = await (dynamic)formActionDelegate.DynamicInvoke(_serviceProvider, entityObject) as IFormResult;
             return result;
         }
 
-        private async Task<object> ExecuteAdminAction(object entityObject, AdminAction adminAction)
+        private async Task<IFormResult> ExecuteCustomFormSubmitAction<TModel>(TModel entityObject, CustomForm customForm) where TModel : class
         {
-            var formActionDelegate = adminAction.FormActionExpression.Compile();
-            var result = await ((Task<object>)formActionDelegate.DynamicInvoke(new[] { _serviceProvider, entityObject }));
+            var formActionDelegate = customForm.SubmitActionExpression.Compile();
+            var result = await (dynamic)formActionDelegate.DynamicInvoke(_serviceProvider, entityObject) as IFormResult;
             return result;
         }
     }

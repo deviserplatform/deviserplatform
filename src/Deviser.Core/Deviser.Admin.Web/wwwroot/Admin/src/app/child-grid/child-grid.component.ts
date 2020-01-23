@@ -60,14 +60,14 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
   ngOnInit() {
     // this._childForm = new BehaviorSubject(this._formControlService.toChildFormGroup(this.formConfig, {}));
     // this._childForm.subscribe(childForm => this.childForm = childForm);
-    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, {});
+    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, this.formMode, {});
   }
 
   onNewItem(): void {
     this.viewState = ViewState.ADD;
     this.selectedItem = {};
     // this._childForm.next(this._formControlService.toChildFormGroup(this.formConfig, this.selectedItem));
-    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, this.selectedItem);
+    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, this.formMode, this.selectedItem);
   }
 
   onAddItem(): void {
@@ -82,7 +82,7 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
 
   onEditItem(item): void {
     this.selectedItem = item;
-    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, this.selectedItem);
+    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, this.formMode, this.selectedItem);
     this.viewState = ViewState.EDIT;
   }
 

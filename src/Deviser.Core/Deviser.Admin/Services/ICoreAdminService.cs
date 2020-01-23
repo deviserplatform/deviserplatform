@@ -9,6 +9,7 @@ namespace Deviser.Admin.Services
     public interface ICoreAdminService
     {
         Type GetModelType(string strModelType);
+        Type GetCustomFormModelType(string strModelType, string formName);
         IAdminConfig GetAdminConfig(string entity);
 
         Task<object> GetAllFor(Type modelType, int pageNo, int pageSize, string orderByProperties);
@@ -18,5 +19,7 @@ namespace Deviser.Admin.Services
         Task<object> DeleteItemFor(Type modelType, string itemId);
         Task<object> ExecuteMainFormAction(Type modelType, string actionName, object entityObject);
         Task<object> ExecuteCustomFormAction(Type modelType, string formName, string actionName, object entityObject);
+        Task<object> CustomFormSubmit(string strModel, string formName, object entityObject);
+        
     }
 }

@@ -29,6 +29,7 @@ namespace Deviser.Modules.UserManagement
                     .AddField(u => u.LastName)
                     .AddField(u => u.Password, option =>
                     {
+                        option.FieldType = FieldType.Password;
                         option.ShowIn = FormMode.Create;
                         option.ValidationType = ValidationType.Password;
                     })
@@ -44,7 +45,7 @@ namespace Deviser.Modules.UserManagement
                     (sp, user) => sp.GetService<UserAdminService>().UnlockUserAccount(user));
 
                 modelBuilder.FormBuilder.AddFormAction("LockUser", "Lock User",
-                    (sp, user) => sp.GetService<UserAdminService>().UnlockUserAccount(user));
+                    (sp, user) => sp.GetService<UserAdminService>().LockUserAccount(user));
 
                 modelBuilder.Property(u => u.Roles).HasLookup(sp => sp.GetService<IRoleRepository>().GetRoles(),
                     ke => ke.Id,
@@ -53,7 +54,7 @@ namespace Deviser.Modules.UserManagement
                 modelBuilder.AddCustomForm<PasswordReset>("PasswordReset", formBuilder =>
                 {
                     formBuilder
-                        .AddKeyField(f => f.UserId)
+                        .AddKeyField(f => f.Id)
                         .AddField(f => f.CurrentPassword, option =>
                         {
                             option.FieldType = FieldType.Password;
@@ -63,6 +64,7 @@ namespace Deviser.Modules.UserManagement
                         {
                             option.FieldType = FieldType.Password;
                             option.DisplayName = "New Password";
+                            option.ValidationType = ValidationType.Password;
                         });
 
                     formBuilder.SetFormOption(formOption =>
