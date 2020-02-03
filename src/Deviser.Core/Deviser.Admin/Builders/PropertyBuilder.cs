@@ -1,12 +1,10 @@
-﻿using Deviser.Core.Common.DomainTypes.Admin;
+﻿using Deviser.Admin.Config;
+using Deviser.Admin.Properties;
+using Deviser.Core.Common.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using Deviser.Admin.Data;
-using Deviser.Admin.Properties;
-using Deviser.Core.Common.Extensions;
 
 namespace Deviser.Admin.Builders
 {

@@ -1,13 +1,14 @@
-﻿using Deviser.Core.Common.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using Deviser.Admin.Extensions;
+using Deviser.Core.Common.Extensions;
 using Deviser.Core.Common.Json;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 
-namespace Deviser.Core.Common.DomainTypes.Admin
+namespace Deviser.Admin.Config
 {
     public class FieldOption
     {

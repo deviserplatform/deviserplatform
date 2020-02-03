@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Data.Repositories;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.IO;
+using Deviser.Core.Library.Media;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Autofac;
-using Microsoft.AspNetCore.Http;
-using Deviser.Core.Library;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Net.Http.Headers;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
-using Deviser.Core.Common;
-using Deviser.Core.Library.Media;
 
 namespace DeviserWI.Controllers.API
 {
@@ -26,22 +18,22 @@ namespace DeviserWI.Controllers.API
     {
         private readonly ILogger<UploadController> _logger;
         private readonly IImageOptimizer _imageOptimizer;
+        private readonly string _localImageUploadPath;
 
-        string siteAssetPath;
-        string localImageUploadPath;
-        public UploadController(ILifetimeScope container)
+        public UploadController(ILogger<UploadController> logger,
+        IImageOptimizer imageOptimizer,
+        IWebHostEnvironment hostEnvironment)
         {
-            _logger = container.Resolve<ILogger<UploadController>>();
-            _imageOptimizer = container.Resolve<IImageOptimizer>();
-            IHostingEnvironment hostingEnv = container.Resolve<IHostingEnvironment>();
+            _logger = logger;
+            _imageOptimizer = imageOptimizer;
             try
             {
-                siteAssetPath = Path.Combine(hostingEnv.WebRootPath, Globals.SiteAssetsPath.Replace("~/", "").Replace("/", @"\"));
-                localImageUploadPath = Path.Combine(siteAssetPath, Globals.ImagesFolder);
+                var siteAssetPath = Path.Combine(hostEnvironment.WebRootPath, Globals.SiteAssetsPath.Replace("~/", "").Replace("/", @"\"));
+                _localImageUploadPath = Path.Combine(siteAssetPath, Globals.ImagesFolder);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                _logger.LogError(string.Format("Error occured while getting images"), ex);
             }
         }
 
@@ -51,7 +43,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                DirectoryInfo dir = new DirectoryInfo(localImageUploadPath);
+                DirectoryInfo dir = new DirectoryInfo(_localImageUploadPath);
                 List<FileItem> fileList = new List<FileItem>();
                 string path = "";
                 foreach (var file in dir.GetFiles())
@@ -95,9 +87,9 @@ namespace DeviserWI.Controllers.API
                         if (file.Length > 0)
                         {
                             string fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.ToString().Trim('"');
-                            string filePath = Path.Combine(localImageUploadPath, fileName);
+                            string filePath = Path.Combine(_localImageUploadPath, fileName);
                             string originalfilePath = filePath + Globals.OriginalFileSuffix;
-                            using(var memoryStream = new MemoryStream())
+                            using (var memoryStream = new MemoryStream())
                             {
                                 var sourImage = memoryStream.ToArray();
                                 await file.CopyToAsync(memoryStream);

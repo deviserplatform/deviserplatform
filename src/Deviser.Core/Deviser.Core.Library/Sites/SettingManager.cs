@@ -1,11 +1,8 @@
-﻿using Autofac;
-using Deviser.Core.Common.DomainTypes;
+﻿using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.Sites
 {
@@ -15,10 +12,11 @@ namespace Deviser.Core.Library.Sites
         private readonly ILogger<SettingManager> _logger;
         private ISiteSettingRepository _siteSettingRepository;
 
-        public SettingManager(ILifetimeScope container)
+        public SettingManager(ILogger<SettingManager> logger,
+            ISiteSettingRepository siteSettingRepository)
         {
-            _logger = container.Resolve<ILogger<SettingManager>>();
-            _siteSettingRepository = container.Resolve<ISiteSettingRepository>();
+            _logger = logger;
+            _siteSettingRepository = siteSettingRepository;
         }
 
         public SMTPSetting GetSMTPSetting()

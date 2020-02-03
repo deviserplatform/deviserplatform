@@ -1,9 +1,5 @@
-﻿using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Data.Extension;
+﻿using Deviser.Core.Data.Extension;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Deviser.Modules.ContactForm.Data
 {

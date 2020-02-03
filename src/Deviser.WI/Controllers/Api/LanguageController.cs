@@ -1,13 +1,9 @@
-﻿using Autofac;
-using AutoMapper;
-using Deviser.Core.Common.DomainTypes;
+﻿using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Multilingual;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Deviser.WI.Controllers.Api
 {
@@ -18,10 +14,11 @@ namespace Deviser.WI.Controllers.Api
         private readonly ILogger<LanguageController> _logger;
         private readonly ILanguageManager _languageManager;
 
-        public LanguageController(ILifetimeScope container)
+        public LanguageController(ILogger<LanguageController> logger, 
+            ILanguageManager languageManager)
         {
-            _logger = container.Resolve<ILogger<LanguageController>>();
-            _languageManager = container.Resolve<ILanguageManager>();
+            _logger = logger;
+            _languageManager = languageManager;
         }
 
         [HttpGet]

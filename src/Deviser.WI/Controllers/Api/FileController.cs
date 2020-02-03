@@ -1,13 +1,8 @@
-﻿using Autofac;
-using Deviser.Core.Library.IO;
+﻿using Deviser.Core.Library.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Deviser.WI.Controllers.Api
 {
@@ -17,10 +12,11 @@ namespace Deviser.WI.Controllers.Api
         private readonly ILogger<FileController> _logger;
         private readonly IFileManagement _fileManagement;
 
-        public FileController(ILifetimeScope container)
+        public FileController(ILogger<FileController> logger,
+            IFileManagement fileManagement)
         {            
-            _logger = container.Resolve<ILogger<FileController>>();
-            _fileManagement = container.Resolve<IFileManagement>();
+            _logger = logger;
+            _fileManagement = fileManagement;
         }
 
         [HttpGet]

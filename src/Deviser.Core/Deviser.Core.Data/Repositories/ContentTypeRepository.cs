@@ -1,13 +1,10 @@
-﻿using Autofac;
+﻿using AutoMapper;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -24,17 +21,21 @@ namespace Deviser.Core.Data.Repositories
     /// <summary>
     /// Data provider for both ContentTypes and ContentDataType
     /// </summary>
-    public class ContentTypeRepository : RepositoryBase, IContentTypeRepository
+    public class ContentTypeRepository : IContentTypeRepository
     {
         //Logger
         private readonly ILogger<ContentTypeRepository> _logger;
+        private readonly DbContextOptions<DeviserDbContext> _dbOptions;
+        private readonly IMapper _mapper;
 
-        //Constructor
-        public ContentTypeRepository(ILifetimeScope container)
-            : base(container)
+
+        public ContentTypeRepository(DbContextOptions<DeviserDbContext> dbOptions, 
+            ILogger<ContentTypeRepository> logger, 
+            IMapper mapper)
         {
-            _logger = container.Resolve<ILogger<ContentTypeRepository>>();
-
+            _logger = logger;
+            _dbOptions = dbOptions;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -46,9 +47,9 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
-                    var dbContentType = Mapper.Map<Entities.ContentType>(contentType);                    
+                    var dbContentType = _mapper.Map<Entities.ContentType>(contentType);                    
                     dbContentType.Id = Guid.NewGuid();
                     if (dbContentType.ContentTypeProperties != null && dbContentType.ContentTypeProperties.Count > 0)
                     {
@@ -61,7 +62,7 @@ namespace Deviser.Core.Data.Repositories
                     dbContentType.CreatedDate = dbContentType.LastModifiedDate = DateTime.Now;
                     var result = context.ContentType.Add(dbContentType).Entity;
                     context.SaveChanges();
-                    return Mapper.Map<ContentType>(result);
+                    return _mapper.Map<ContentType>(result);
                 }
             }
             catch (Exception ex)
@@ -80,12 +81,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var result = context.ContentType
                                .FirstOrDefault(e => e.Id == contentTypeId);
 
-                    return Mapper.Map<ContentType>(result);
+                    return _mapper.Map<ContentType>(result);
                 }
             }
             catch (Exception ex)
@@ -104,14 +105,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var result = context.ContentType
                                .Where(e => String.Equals(e.Name, contentTypeName, StringComparison.CurrentCultureIgnoreCase))
                                .OrderBy(ct => ct.Name)
                                .FirstOrDefault();
 
-                    return Mapper.Map<ContentType>(result);
+                    return _mapper.Map<ContentType>(result);
                 }
             }
             catch (Exception ex)
@@ -129,13 +130,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var result = context.ContentType
                         .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
                         .OrderBy(c => c.Name)
                         .ToList();
-                    return Mapper.Map<List<ContentType>>(result);
+                    return _mapper.Map<List<ContentType>>(result);
                 }
             }
             catch (Exception ex)
@@ -155,9 +156,9 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
-                    var dbContentType = Mapper.Map<Entities.ContentType>(contentType);
+                    var dbContentType = _mapper.Map<Entities.ContentType>(contentType);
 
                     if (dbContentType.ContentTypeProperties != null && dbContentType.ContentTypeProperties.Count > 0)
                     {
@@ -205,7 +206,7 @@ namespace Deviser.Core.Data.Repositories
                     var result = context.ContentType.Update(dbContentType).Entity;
                     //context.Entry(dbContentType).State = EntityState.Modified;
                     context.SaveChanges();
-                    return Mapper.Map<ContentType>(result);
+                    return _mapper.Map<ContentType>(result);
                 }
             }
             catch (Exception ex)

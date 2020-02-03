@@ -1,10 +1,10 @@
-﻿using Deviser.Core.Common.Extensions;
+﻿using System;
+using System.Linq.Expressions;
+using Deviser.Core.Common.Extensions;
 using Deviser.Core.Common.Json;
 using Newtonsoft.Json;
-using System;
-using System.Linq.Expressions;
 
-namespace Deviser.Core.Common.DomainTypes.Admin
+namespace Deviser.Admin.Config
 {
     /// <summary>
     /// <see cref="RelatedField"/> represents expected structure and data source of ManyToMany join entity
@@ -86,7 +86,7 @@ namespace Deviser.Core.Common.DomainTypes.Admin
         {
             get
             {
-                return SourceFieldName.Camelize();
+                return StringExtensions.Camelize(SourceFieldName);
             }
         }
     }

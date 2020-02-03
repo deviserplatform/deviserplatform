@@ -1,21 +1,15 @@
-﻿using Autofac;
-using Deviser.Core.Data.Repositories;
-using Deviser.Core.Library;
+﻿using AutoMapper;
 using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Library.Layouts;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library.Modules;
+using Deviser.Core.Library.Services;
+using Deviser.Core.Library.Sites;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using Deviser.Core.Library.Sites;
-using AutoMapper;
-using Deviser.Core.Library.Services;
 
 namespace DeviserWI.Controllers.API
 {
@@ -27,15 +21,22 @@ namespace DeviserWI.Controllers.API
         private readonly IPageRepository _pageRepository;
         private readonly IModuleManager _moduleManager;
         private readonly IPageManager _pageManager;
+        private readonly IMapper _mapper;
         private readonly IScopeService _scopeService;
 
-        public PageModuleController(ILifetimeScope container)
+        public PageModuleController(ILogger<PageModuleController> logger,
+            IPageRepository pageRepository,
+            IModuleManager moduleManager,
+            IPageManager pageManager,
+            IMapper mapper,
+            IScopeService scopeService)
         {
-            _logger = container.Resolve<ILogger<PageModuleController>>();
-            _pageRepository = container.Resolve<IPageRepository>();
-            _moduleManager = container.Resolve<IModuleManager>();
-            _pageManager = container.Resolve<IPageManager>();
-            _scopeService = container.Resolve<IScopeService>();
+            _logger = logger;
+            _pageRepository = pageRepository;
+            _moduleManager = moduleManager;
+            _pageManager = pageManager;
+            _mapper = mapper;
+            _scopeService = scopeService;
         }
 
         [HttpGet]
@@ -47,7 +48,7 @@ namespace DeviserWI.Controllers.API
                 var dbResult = _moduleManager.GetPageModule(id);                
                 if (dbResult != null && _moduleManager.HasEditPermission(dbResult))
                 {
-                    var result = Mapper.Map<PageModule>(dbResult);
+                    var result = _mapper.Map<PageModule>(dbResult);
                     return Ok(result);
                 }
 
@@ -69,7 +70,7 @@ namespace DeviserWI.Controllers.API
                 var dbResult = _moduleManager.GetPageModuleByPage(pageId);                
                 if (dbResult != null)
                 {  
-                    var result = Mapper.Map<List<PageModule>>(dbResult);
+                    var result = _mapper.Map<List<PageModule>>(dbResult);
                     return Ok(result);
                 }
                 return BadRequest();
@@ -90,7 +91,7 @@ namespace DeviserWI.Controllers.API
                 var dbResult = _moduleManager.GetDeletedPageModules();
                 if (dbResult != null)
                 {
-                    var result = Mapper.Map<List<PageModule>>(dbResult);
+                    var result = _mapper.Map<List<PageModule>>(dbResult);
                     return Ok(result);
                 }
                 return BadRequest();
@@ -114,7 +115,7 @@ namespace DeviserWI.Controllers.API
                     {               
 
                         var dbResult = _moduleManager.CreateUpdatePageModule(pageModule);
-                        var result = Mapper.Map<PageModule>(dbResult);
+                        var result = _mapper.Map<PageModule>(dbResult);
                         if (result != null)
                             return Ok(result);
                     }

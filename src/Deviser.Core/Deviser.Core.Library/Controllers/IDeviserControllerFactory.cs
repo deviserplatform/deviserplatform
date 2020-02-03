@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Deviser.Core.Common.DomainTypes;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using Deviser.Core.Common.DomainTypes;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using ContentResult = Deviser.Core.Common.DomainTypes.ContentResult;
-using Microsoft.AspNetCore.Html;
 
 namespace Deviser.Core.Library.Controllers
 {

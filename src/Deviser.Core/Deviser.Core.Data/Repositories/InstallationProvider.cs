@@ -1,10 +1,11 @@
 ﻿using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Common.Internal;
-using Deviser.Core.Data;
-using Deviser.Core.Data.Repositories;
 using Deviser.Core.Data.Extension;
+using Deviser.Core.Data.Installation;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
@@ -13,13 +14,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using Deviser.Core.Data.Installation;
-using Microsoft.AspNetCore.Identity;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -44,7 +41,7 @@ namespace Deviser.Core.Data.Repositories
 
     public class InstallationProvider : IInstallationProvider
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
         private UserManager<Entities.User> _userManager;
@@ -57,7 +54,7 @@ namespace Deviser.Core.Data.Repositories
         private static bool _isPlatformInstalled;
         private static bool _isDbExist;
 
-        public InstallationProvider(IHostingEnvironment hostingEnvironment, IConfiguration configuration, IServiceProvider serviceProvider)
+        public InstallationProvider(IWebHostEnvironment hostingEnvironment, IConfiguration configuration, IServiceProvider serviceProvider)
         {
             _hostingEnvironment = hostingEnvironment;
             _configuration = configuration;

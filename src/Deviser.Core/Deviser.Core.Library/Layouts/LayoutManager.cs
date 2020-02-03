@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using AutoMapper;
-using Deviser.Core.Data.Repositories;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Logging;
-using Autofac;
+﻿using AutoMapper;
 using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Data.Repositories;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
 
 namespace Deviser.Core.Library.Layouts
@@ -16,15 +15,21 @@ namespace Deviser.Core.Library.Layouts
         //Logger
         private readonly ILogger<LayoutManager> _logger;
         private readonly ILayoutRepository _layoutRepository;
+        private readonly IMapper _mapper;
         private readonly IPageRepository _pageRepository;
         private readonly IPageContentRepository _pageContentRepository;
 
-        public LayoutManager(ILifetimeScope container)
+        public LayoutManager(ILogger<LayoutManager> logger,
+            ILayoutRepository layoutRepository,
+            IMapper mapper,
+            IPageRepository pageRepository,
+            IPageContentRepository pageContentRepository)
         {
-            _logger = container.Resolve<ILogger<LayoutManager>>();
-            _layoutRepository = container.Resolve<ILayoutRepository>();
-            _pageRepository = container.Resolve<IPageRepository>();
-            _pageContentRepository = container.Resolve<IPageContentRepository>();
+            _logger = logger;
+            _layoutRepository = layoutRepository;
+            _mapper = mapper;
+            _pageRepository = pageRepository;
+            _pageContentRepository = pageContentRepository;
         }
 
 
@@ -55,7 +60,7 @@ namespace Deviser.Core.Library.Layouts
                 var result = _layoutRepository.GetDeletedLayouts();
                 return result;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(string.Format("Error occured while getting deleted layouts"), ex);
             }
@@ -126,14 +131,14 @@ namespace Deviser.Core.Library.Layouts
 
         private Layout ConvertToLayout(PageLayout pageLayout)
         {
-            Layout layout = Mapper.Map<Layout>(pageLayout);
+            Layout layout = _mapper.Map<Layout>(pageLayout);
             layout.Config = JsonConvert.SerializeObject(pageLayout.PlaceHolders); //JsonConvert.DeserializeObject<List<ContentItem>>(Model.Layout.Config, new ContentItemConverter());
             return layout;
         }
 
         private PageLayout ConvertToPageLayout(Layout layout)
         {
-            var pageLayout = Mapper.Map<PageLayout>(layout);
+            var pageLayout = _mapper.Map<PageLayout>(layout);
             pageLayout.PlaceHolders = JsonConvert.DeserializeObject<List<PlaceHolder>>(layout.Config);
             return pageLayout;
 
@@ -179,7 +184,7 @@ namespace Deviser.Core.Library.Layouts
                 var result = _layoutRepository.UpdateLayout(layout);
                 return result;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(string.Format("Error occured while restoring the layout"), ex);
             }

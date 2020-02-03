@@ -1,5 +1,5 @@
-﻿using System;
-using Deviser.Core.Common.DomainTypes;
+﻿using Deviser.Core.Common.DomainTypes;
+using System;
 using System.Collections.Generic;
 
 namespace Deviser.Core.Library

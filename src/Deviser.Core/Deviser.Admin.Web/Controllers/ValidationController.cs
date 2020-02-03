@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Deviser.Admin.Data;
 using Deviser.Admin.Validation;
-using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +14,7 @@ namespace Deviser.Admin.Web.Controllers
     {
         //Logger
         private readonly ILogger<ValidationController> _logger;
+        private readonly IMapper _mapper;
         private readonly IPasswordValidator _passwordValidator;
         private readonly IUserByEmailValidator _userByEmailValidator;
 
@@ -24,6 +23,7 @@ namespace Deviser.Admin.Web.Controllers
         {
             _logger = serviceProvider.GetService<ILogger<ValidationController>>();
             _passwordValidator = serviceProvider.GetService<IPasswordValidator>();
+            _mapper = serviceProvider.GetService<IMapper>();
             _userByEmailValidator = serviceProvider.GetService<IUserByEmailValidator>();
         }
 
@@ -33,7 +33,7 @@ namespace Deviser.Admin.Web.Controllers
         {
             try
             {
-                var user = Mapper.Map<Core.Data.Entities.User>(userDTO);
+                var user = _mapper.Map<Core.Data.Entities.User>(userDTO);
                 var result = _passwordValidator.Validate(user, userDTO.Password);
                 if (result != null)
                 {
@@ -54,7 +54,7 @@ namespace Deviser.Admin.Web.Controllers
         {
             try
             {
-                var user = Mapper.Map<Core.Data.Entities.User>(userDTO);
+                var user = _mapper.Map<Core.Data.Entities.User>(userDTO);
                 var result = _userByEmailValidator.Validate(user);
                 if (result != null)
                 {
@@ -75,7 +75,7 @@ namespace Deviser.Admin.Web.Controllers
         {
             try
             {
-                var user = Mapper.Map<Core.Data.Entities.User>(userDTO);
+                var user = _mapper.Map<Core.Data.Entities.User>(userDTO);
                 var result = _userByEmailValidator.Validate(user);
                 if (result != null)
                 {

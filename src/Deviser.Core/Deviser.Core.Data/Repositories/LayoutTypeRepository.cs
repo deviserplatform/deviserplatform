@@ -1,12 +1,10 @@
-﻿using Autofac;
+﻿using AutoMapper;
+using Deviser.Core.Common.DomainTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -19,29 +17,34 @@ namespace Deviser.Core.Data.Repositories
         LayoutType UpdateLayoutType(LayoutType dbLayoutType);
 
     }
-    public class LayoutTypeRepository : RepositoryBase, ILayoutTypeRepository
+    public class LayoutTypeRepository : ILayoutTypeRepository
     {
         //Logger
         private readonly ILogger<LayoutTypeRepository> _logger;
+        private readonly DbContextOptions<DeviserDbContext> _dbOptions;
+        private readonly IMapper _mapper;
 
         //Constructor
-        public LayoutTypeRepository(ILifetimeScope container)
-            : base(container)
+        public LayoutTypeRepository(DbContextOptions<DeviserDbContext> dbOptions,
+            ILogger<LayoutTypeRepository> logger,
+            IMapper mapper)
         {
-            _logger = container.Resolve<ILogger<LayoutTypeRepository>>();
+            _logger = logger;
+            _dbOptions = dbOptions;
+            _mapper = mapper;
         }
 
         public LayoutType CreateLayoutType(LayoutType layoutType)
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
-                    var dbLayoutType = Mapper.Map<Entities.LayoutType>(layoutType);
+                    var dbLayoutType = _mapper.Map<Entities.LayoutType>(layoutType);
                     dbLayoutType.CreatedDate = dbLayoutType.LastModifiedDate = DateTime.Now;
                     var result = context.LayoutType.Add(dbLayoutType).Entity;
                     context.SaveChanges();
-                    return Mapper.Map<LayoutType>(result);
+                    return _mapper.Map<LayoutType>(result);
                 }
             }
             catch (Exception ex)
@@ -55,13 +58,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var result = context.LayoutType
                         .Include(lt => lt.LayoutTypeProperties)
                         .FirstOrDefault(e => e.Id == layoutTypeId);
 
-                    return Mapper.Map<LayoutType>(result);
+                    return _mapper.Map<LayoutType>(result);
                 }
             }
             catch (Exception ex)
@@ -75,13 +78,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var result = context.LayoutType
                         .Include(lt => lt.LayoutTypeProperties)
                         .FirstOrDefault(e => e.Name.ToLower() == layoutTypeName.ToLower());
 
-                    return Mapper.Map<LayoutType>(result);
+                    return _mapper.Map<LayoutType>(result);
                 }
             }
             catch (Exception ex)
@@ -95,13 +98,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var result = context.LayoutType
                         .Include(c => c.LayoutTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
                         .ToList();
 
-                    return Mapper.Map<List<LayoutType>>(result);
+                    return _mapper.Map<List<LayoutType>>(result);
                 }
             }
             catch (Exception ex)
@@ -115,9 +118,9 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
-                    var dbLayoutType = Mapper.Map<Entities.LayoutType>(layoutType);
+                    var dbLayoutType = _mapper.Map<Entities.LayoutType>(layoutType);
 
                     if (dbLayoutType.LayoutTypeProperties != null && dbLayoutType.LayoutTypeProperties.Count > 0)
                     {
@@ -159,7 +162,7 @@ namespace Deviser.Core.Data.Repositories
                     dbLayoutType.LastModifiedDate = DateTime.Now;
                     var result = context.LayoutType.Update(dbLayoutType).Entity;
                     context.SaveChanges();
-                    return Mapper.Map<LayoutType>(result);
+                    return _mapper.Map<LayoutType>(result);
                 }
             }
             catch (Exception ex)

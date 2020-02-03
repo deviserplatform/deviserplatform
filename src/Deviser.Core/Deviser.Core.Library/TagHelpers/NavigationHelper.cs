@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Deviser.Core.Data.Repositories;
+﻿using Deviser.Core.Data.Repositories;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,14 +18,13 @@ using Deviser.Core.Library.Services;
 
 namespace Deviser.Core.Library.TagHelpers
 {
-    [HtmlTargetElement("*", Attributes = NavAttributeName)]    
+    [HtmlTargetElement("*", Attributes = NavAttributeName)]
     public class NavigationHelper : DeviserTagHelper
     {
         private const string NavAttributeName = "dev-nav";
         private const string PageAttributeName = "dev-nav-page";
         private const string ParentAttributeName = "dev-nav-parent";
 
-        private readonly IPageRepository _pageRepository;
         private readonly INavigation _navigation;
         private readonly IHtmlHelper _htmlHelper;
         private readonly IScopeService _scopeService;
@@ -45,13 +43,16 @@ namespace Deviser.Core.Library.TagHelpers
         [ViewContext]
         public ViewContext ViewContext { get; set; }
 
-        public NavigationHelper(ILifetimeScope container, IHttpContextAccessor httpContextAccessor, IScopeService scopeService)
+        public NavigationHelper(IHttpContextAccessor httpContextAccessor,
+            INavigation navigation,
+            IHtmlHelper htmlHelper,
+            IScopeService scopeService,
+            ILogger<NavigationHelper> logger)
              : base(httpContextAccessor)
         {
-            _pageRepository = container.Resolve<IPageRepository>();
-            _htmlHelper = container.Resolve<IHtmlHelper>();
-            _navigation = container.Resolve<INavigation>();
-            _logger = container.Resolve<ILogger<NavigationHelper>>();
+            _htmlHelper = htmlHelper;
+            _navigation = navigation;
+            _logger = logger;
             this._scopeService = scopeService;
         }
 
@@ -67,7 +68,7 @@ namespace Deviser.Core.Library.TagHelpers
             {
                 ((HtmlHelper)_htmlHelper).Contextualize(ViewContext);
                 var root = _navigation.GetMenuItemTree(_scopeService.PageContext.CurrentPageId, SystemFilter, ParentId);
-                
+
                 var htmlContent = _htmlHelper.Partial(string.Format(Globals.MenuStylePath, _scopeService.PageContext.SelectedTheme, MenuStyle), root);
                 var contentResult = GetString(htmlContent);
                 output.Content.SetHtmlContent(contentResult);
@@ -87,5 +88,5 @@ namespace Deviser.Core.Library.TagHelpers
         }
     }
 
-   
+
 }

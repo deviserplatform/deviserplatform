@@ -1,9 +1,9 @@
 ﻿using Deviser.Admin.Attributes;
-using Deviser.Core.Common.DomainTypes.Admin;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using Deviser.Admin.Config;
 
 namespace Deviser.Modules.Blog.DTO
 {

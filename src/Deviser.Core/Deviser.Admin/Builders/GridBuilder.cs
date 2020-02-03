@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using Deviser.Admin.Config;
+﻿using Deviser.Admin.Config;
 using Deviser.Admin.Properties;
-using Deviser.Core.Common.DomainTypes.Admin;
+using System;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Deviser.Admin.Builders
 {

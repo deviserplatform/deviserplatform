@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Deviser.Core.Common.DomainTypes;
+﻿using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Core.Common.Module
 {

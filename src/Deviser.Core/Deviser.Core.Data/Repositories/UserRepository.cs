@@ -1,11 +1,10 @@
+using AutoMapper;
+using Deviser.Core.Common.DomainTypes;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Deviser.Core.Common.DomainTypes;
-using Microsoft.Extensions.Logging;
-using Autofac;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -18,16 +17,21 @@ namespace Deviser.Core.Data.Repositories
 
     }
 
-    public class UserRepository : RepositoryBase, IUserRepository
+    public class UserRepository : IUserRepository
     {
         //Logger
         private readonly ILogger<UserRepository> _logger;
+        private readonly DbContextOptions<DeviserDbContext> _dbOptions;
+        private readonly IMapper _mapper;
 
         //Constructor
-        public UserRepository(ILifetimeScope container)
-            : base(container)
+        public UserRepository(DbContextOptions<DeviserDbContext> dbOptions,
+            ILogger<UserRepository> logger,
+            IMapper mapper)
         {
-            _logger = container.Resolve<ILogger<UserRepository>>();
+            _logger = logger;
+            _dbOptions = dbOptions;
+            _mapper = mapper;
         }
 
         //Custom Field Declaration
@@ -35,12 +39,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var result = context.Users
                                 .Include(u => u.UserRoles)
                                 .ToList();
-                    var resturnResult = Mapper.Map<List<User>>(result);
+                    var resturnResult = _mapper.Map<List<User>>(result);
                     foreach (var user in result)
                     {
                         if (user.UserRoles != null && user.UserRoles.Count > 0)
@@ -52,7 +56,7 @@ namespace Deviser.Core.Data.Repositories
                                 if (userRole != null)
                                 {
                                     var role = context.Roles.FirstOrDefault(e => e.Id == userRole.RoleId);
-                                    targetUser.Roles.Add(Mapper.Map<Role>(role));
+                                    targetUser.Roles.Add(_mapper.Map<Role>(role));
                                 }
                             }
                         }
@@ -72,13 +76,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var result = context.Users
                                .Where(e => e.Id == userId)
                                .Include(u => u.UserRoles)
                                .FirstOrDefault();
-                    var returnResult = Mapper.Map<User>(result);
+                    var returnResult = _mapper.Map<User>(result);
 
                     if (result.UserRoles != null && result.UserRoles.Count > 0)
                     {
@@ -88,7 +92,7 @@ namespace Deviser.Core.Data.Repositories
                             if (userRole != null)
                             {
                                 var role = context.Roles.FirstOrDefault(e => e.Id == userRole.RoleId);
-                                returnResult.Roles.Add(Mapper.Map<Role>(role));
+                                returnResult.Roles.Add(_mapper.Map<Role>(role));
                             }
                         }
                     }
@@ -107,7 +111,7 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var userId = context.User
                         .Where(u => u.UserName == userName)

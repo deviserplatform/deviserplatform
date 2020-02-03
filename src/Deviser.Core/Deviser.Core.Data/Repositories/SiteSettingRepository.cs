@@ -1,12 +1,10 @@
+using AutoMapper;
+using Deviser.Core.Common.DomainTypes;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Deviser.Core.Common.DomainTypes;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using Autofac;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -23,12 +21,16 @@ namespace Deviser.Core.Data.Repositories
         //Logger
         private readonly ILogger<SiteSettingRepository> _logger;
         private readonly DbContextOptions<DeviserDbContext> _dbOptions;
+        private readonly IMapper _mapper;
 
         //Constructor
-        public SiteSettingRepository(IServiceProvider serviceProvider)
+        public SiteSettingRepository(DbContextOptions<DeviserDbContext> dbOptions,
+            ILogger<SiteSettingRepository> logger,
+            IMapper mapper)
         {
-            _logger = serviceProvider.GetService<ILogger<SiteSettingRepository>>();
-            _dbOptions = serviceProvider.GetService<DbContextOptions<DeviserDbContext>>();
+            _logger = logger;
+            _dbOptions = dbOptions;
+            _mapper = mapper;
         }
 
         //Custom Field Declaration
@@ -46,7 +48,7 @@ namespace Deviser.Core.Data.Repositories
                 using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var dbResult = context.SiteSetting.ToList();                    
-                    var result = Mapper.Map<List<SiteSetting>>(dbResult);
+                    var result = _mapper.Map<List<SiteSetting>>(dbResult);
                     //AddResultToCache(cacheName, result);
                     return result;
                 }
@@ -82,12 +84,12 @@ namespace Deviser.Core.Data.Repositories
             {
                 using (var context = new DeviserDbContext(_dbOptions))
                 {
-                    var dbSettings = Mapper.Map<List<Entities.SiteSetting>>(settings);
+                    var dbSettings = _mapper.Map<List<Entities.SiteSetting>>(settings);
                     context.SiteSetting.UpdateRange(dbSettings);
                     context.SaveChanges();
                     var result = context.SiteSetting.ToList();
                     if (result != null)
-                        return Mapper.Map<List<SiteSetting>>(result);
+                        return _mapper.Map<List<SiteSetting>>(result);
                 }
             }
             catch (Exception ex)

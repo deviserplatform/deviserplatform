@@ -1,17 +1,9 @@
-﻿using Autofac;
-using Deviser.Core.Data.Repositories;
-using Deviser.Core.Common.DomainTypes;
+﻿using Deviser.Core.Data.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using Module = Deviser.Core.Common.DomainTypes.Module;
-using AutoMapper;
 
 namespace DeviserWI.Controllers.API
 {
@@ -22,10 +14,11 @@ namespace DeviserWI.Controllers.API
         private readonly ILogger<ModuleController> _logger;
         private readonly IModuleRepository _moduleRepository;
 
-        public ModuleController(ILifetimeScope container)
+        public ModuleController(ILogger<ModuleController> logger,
+        IModuleRepository moduleRepository)
         {
-            _logger = container.Resolve<ILogger<ModuleController>>();
-            _moduleRepository = container.Resolve<IModuleRepository>();
+            _logger = logger;
+            _moduleRepository = moduleRepository;
         }
 
         [HttpGet]

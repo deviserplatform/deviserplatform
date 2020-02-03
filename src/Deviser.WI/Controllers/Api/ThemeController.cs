@@ -1,18 +1,8 @@
-﻿using Autofac;
-using Deviser.Core.Data.Repositories;
-using Deviser.Core.Library;
-using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Library.Layouts;
-using Deviser.Core.Library.Modules;
+﻿using Deviser.Core.Library.Layouts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 
 namespace DeviserWI.Controllers.API
 {
@@ -23,10 +13,11 @@ namespace DeviserWI.Controllers.API
         private readonly ILogger<ThemeController> _logger;
         private readonly IThemeManager _themeManager;
 
-        public ThemeController(ILifetimeScope container)
+        public ThemeController(ILogger<ThemeController> logger,
+        IThemeManager themeManager)
         {
-            _logger = container.Resolve<ILogger<ThemeController>>();
-            _themeManager = container.Resolve<IThemeManager>();
+            _logger = logger;
+            _themeManager = themeManager;
         }
         
         [HttpGet]

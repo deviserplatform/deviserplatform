@@ -1,5 +1,4 @@
-﻿using Deviser.Core.Common.DomainTypes.Admin;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
@@ -8,7 +7,7 @@ namespace Deviser.Admin.Config
 {
     public class LookUpDictionary
     {
-        private Dictionary<string, Func<List<LookUpField>>> _lookUpFunctions;
+        private readonly Dictionary<string, Func<List<LookUpField>>> _lookUpFunctions;
 
         public Dictionary<string, List<LookUpField>> LookUpData
         {

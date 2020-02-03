@@ -1,8 +1,5 @@
 ﻿using AutoMapper;
 using Deviser.Admin.Config;
-using Deviser.Core.Common.DomainTypes.Admin;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
 

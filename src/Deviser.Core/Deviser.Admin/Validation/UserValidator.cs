@@ -1,11 +1,8 @@
-﻿using Deviser.Core.Common.DomainTypes.Admin;
+﻿using Deviser.Admin.Config;
+using Deviser.Admin.Extensions;
 using Deviser.Core.Data.Entities;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using Deviser.Admin.Extensions;
 
 namespace Deviser.Admin.Validation
 {

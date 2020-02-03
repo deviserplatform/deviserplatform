@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Deviser.Core.Common.DomainTypes.Admin
+﻿namespace Deviser.Admin.Config
 {
     public enum ValidationType
     {

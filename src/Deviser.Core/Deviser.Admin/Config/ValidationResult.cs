@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace Deviser.Core.Common.DomainTypes.Admin
+namespace Deviser.Admin.Config
 {
     /// <summary>
     /// Represents the result of an admin validate operation.
@@ -20,10 +18,10 @@ namespace Deviser.Core.Common.DomainTypes.Admin
         public bool Succeeded { get; protected set; }
 
         /// <summary>
-        /// An <see cref="IEnumerable{T}"/> of <see cref="ValidationError"/>s containing an errors
+        /// An <see cref="IEnumerable{T}"/> of <see cref="Deviser.Admin.Config.ValidationError"/>s containing an errors
         /// that occurred during the identity operation.
         /// </summary>
-        /// <value>An <see cref="IEnumerable{T}"/> of <see cref="ValidationError"/>s.</value>
+        /// <value>An <see cref="IEnumerable{T}"/> of <see cref="Deviser.Admin.Config.ValidationError"/>s.</value>
         public IEnumerable<ValidationError> Errors => _errors;
 
         /// <summary>
@@ -35,7 +33,7 @@ namespace Deviser.Core.Common.DomainTypes.Admin
         /// <summary>
         /// Creates an <see cref="ValidationResult"/> indicating a failed identity operation, with a list of <paramref name="errors"/> if applicable.
         /// </summary>
-        /// <param name="errors">An optional array of <see cref="ValidationError"/>s which caused the operation to fail.</param>
+        /// <param name="errors">An optional array of <see cref="Deviser.Admin.Config.ValidationError"/>s which caused the operation to fail.</param>
         /// <returns>An <see cref="ValidationResult"/> indicating a failed identity operation, with a list of <paramref name="errors"/> if applicable.</returns>
         public static ValidationResult Failed(params ValidationError[] errors)
         {

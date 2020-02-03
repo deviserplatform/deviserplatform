@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Deviser.Core.Data.Repositories;
+﻿using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
@@ -20,14 +19,17 @@ namespace Deviser.Core.Library.Multilingual
         private readonly ILogger<LanguageManager> _logger;
         private readonly ILanguageRepository _languageRepository;
         private readonly INavigation _navigation;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public LanguageManager(ILifetimeScope container)
+        public LanguageManager(ILogger<LanguageManager> logger,
+            ILanguageRepository languageRepository,
+            INavigation navigation,
+            IWebHostEnvironment hostingEnvironment)
         {
-            _logger = container.Resolve<ILogger<LanguageManager>>();
-            _languageRepository = container.Resolve<ILanguageRepository>();
-            _hostingEnvironment = container.Resolve<IHostingEnvironment>();
-            _navigation = container.Resolve<INavigation>();
+            _logger = logger;
+            _languageRepository = languageRepository;
+            _hostingEnvironment = hostingEnvironment;
+            _navigation = navigation;
         }
 
         public List<Language> GetAllLanguages(bool exceptEnabled = false)

@@ -16,14 +16,17 @@ namespace Deviser.Modules.UserManagement
     public class UserAdminService : IAdminService<User>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
         private readonly UserManager<Core.Data.Entities.User> _userManager;
         private readonly RoleManager<Core.Data.Entities.Role> _roleManager;
 
         public UserAdminService(IUserRepository userRepository, 
+            IMapper mapper,
             UserManager<Core.Data.Entities.User> userManager,
             RoleManager<Core.Data.Entities.Role> roleManager)
         {
             _roleManager = roleManager;
+            _mapper = mapper;
             _userRepository = userRepository;
             _userManager = userManager;
         }
@@ -32,13 +35,13 @@ namespace Deviser.Modules.UserManagement
         {
             if (item != null)
             {
-                var user = Mapper.Map<Core.Data.Entities.User>(item);
+                var user = _mapper.Map<Core.Data.Entities.User>(item);
                 user.Id = Guid.NewGuid();
                 user.UserName = item.Email;
                 var identityResult = await _userManager.CreateAsync(user, item.Password);
                 if (identityResult.Succeeded)
                 {
-                    var result = Mapper.Map<User>(user);
+                    var result = _mapper.Map<User>(user);
                     return result;
                 }
             }
@@ -53,7 +56,7 @@ namespace Deviser.Modules.UserManagement
                 var identityResult = await _userManager.DeleteAsync(user);
                 if (identityResult != null)
                 {
-                    var result = Mapper.Map<User>(user);
+                    var result = _mapper.Map<User>(user);
                     return result;
                 }
             }
@@ -77,7 +80,7 @@ namespace Deviser.Modules.UserManagement
 
             if (user != null)
             {
-                var result = Mapper.Map<User>(user);
+                var result = _mapper.Map<User>(user);
                 return result;
             }
             return null;
@@ -107,7 +110,7 @@ namespace Deviser.Modules.UserManagement
                 var result = await _userManager.UpdateAsync(dbUser);
                 if (result != null)
                 {
-                    return Mapper.Map<User>(user);
+                    return _mapper.Map<User>(user);
                 }
             }
 

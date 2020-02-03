@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Deviser.Admin.Config;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
-using Deviser.Admin.Config;
 
 namespace Deviser.Admin.Builders
 {
@@ -34,7 +33,7 @@ namespace Deviser.Admin.Builders
             childFormBuilderAction(childFormBuilder);
             _adminConfig.ChildConfigs.Add(new ChildConfig
             {
-                Field = new Core.Common.DomainTypes.Admin.Field
+                Field = new Field
                 {
                     FieldExpression = expression
                 },

@@ -1,12 +1,9 @@
 ﻿using Deviser.Admin;
+using Deviser.Admin.Config;
 using Deviser.Core.Common.DomainTypes;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Deviser.Core.Common.DomainTypes.Admin;
 using Deviser.Core.Data.Repositories;
 using Microsoft.Extensions.DependencyInjection;
-using FieldType = Deviser.Core.Common.DomainTypes.Admin.FieldType;
+using FieldType = Deviser.Admin.Config.FieldType;
 
 namespace Deviser.Modules.UserManagement
 {

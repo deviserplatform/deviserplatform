@@ -1,6 +1,4 @@
-﻿using Autofac;
-using Deviser.Core.Data.Repositories;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,13 +10,12 @@ namespace Deviser.Modules.ContactForm.Data
     {
         bool submitData(Contact contact);
     }
-    public class ContactProvider: RepositoryBase, IContactProvider
+    public class ContactProvider: IContactProvider
     {
        
         private readonly ILogger<ContactProvider> _logger;
-        DbContextOptions<ContactDbContext> _dbOptions;
-        public ContactProvider(IServiceProvider serviceProvider, ILifetimeScope container)
-            :base(container)
+        private readonly DbContextOptions<ContactDbContext> _dbOptions;
+        public ContactProvider(IServiceProvider serviceProvider)
         {           
             _logger = serviceProvider.GetService<ILogger<ContactProvider>>();
             _dbOptions = serviceProvider.GetService<DbContextOptions<ContactDbContext>>();

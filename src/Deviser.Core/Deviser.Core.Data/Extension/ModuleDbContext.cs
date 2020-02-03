@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Data.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Internal;
+﻿using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Common.Internal;
 using Deviser.Core.Common.Module;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Deviser.Core.Data.Extension
 {

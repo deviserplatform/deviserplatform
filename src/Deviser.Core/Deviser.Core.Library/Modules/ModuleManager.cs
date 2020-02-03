@@ -1,16 +1,11 @@
-﻿using Autofac;
-using Deviser.Core.Common;
-using Deviser.Core.Data.Repositories;
+﻿using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Library.Services;
 using Deviser.Core.Library.Sites;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Deviser.Core.Library.Services;
 
 namespace Deviser.Core.Library.Modules
 {
@@ -19,11 +14,13 @@ namespace Deviser.Core.Library.Modules
         //Logger
         private readonly ILogger<ModuleManager> _logger;
         private readonly IScopeService _scopeService;
-        public ModuleManager(ILifetimeScope container)
-            : base(container)
+        public ModuleManager(ILogger<ModuleManager> logger,
+            IScopeService scopeService,
+            IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
-            _logger = container.Resolve<ILogger<ModuleManager>>();
-            _scopeService = container.Resolve<IScopeService>();
+            _logger = logger;
+            _scopeService = scopeService;
         }
 
         public PageModule GetPageModule(Guid pageModuleId)

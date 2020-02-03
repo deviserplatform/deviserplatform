@@ -1,15 +1,13 @@
-﻿using Autofac;
+﻿using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.AspNetCore.Http;
-using System.IO;
-using System.Xml;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
-using Deviser.Core.Common;
+using System.Linq;
+using System.Text;
+using System.Xml;
 
 namespace Deviser.Core.Library.Services
 {
@@ -25,11 +23,13 @@ namespace Deviser.Core.Library.Services
         private string _requestHost;
         private string _protocolHost;
 
-        public SitemapService(ILifetimeScope container)
+        public SitemapService(INavigation navigation,
+        ILanguageRepository languageRepository,
+        IHttpContextAccessor httpContextAccessor)
         {
-            _navigation = container.Resolve<INavigation>();
-            _languageRepository = container.Resolve<ILanguageRepository>();
-            _httpContextAccessor = container.Resolve<IHttpContextAccessor>();
+            _navigation = navigation;
+            _languageRepository = languageRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public string GetXmlSitemap()
@@ -55,7 +55,7 @@ namespace Deviser.Core.Library.Services
                 }
             }
 
-            
+
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.Encoding = Encoding.UTF8;

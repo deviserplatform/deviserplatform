@@ -1,19 +1,10 @@
-﻿using Microsoft.AspNetCore.Routing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Deviser.Core.Data.Repositories;
 using Microsoft.AspNetCore.Http;
-using Deviser.Core.Data.Repositories;
-using Deviser.Core.Library;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Localization;
-using Deviser.Core.Common.DomainTypes;
+using Microsoft.AspNetCore.Routing;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
-using Deviser.Core.Library.Multilingual;
-using Deviser.Core.Common;
-using Autofac;
 
 namespace Deviser.Core.Library.Infrastructure
 {
@@ -21,19 +12,19 @@ namespace Deviser.Core.Library.Infrastructure
     {
         private readonly IPageRepository _pageRepository;
         private readonly ILanguageRepository _languageRepository;
-        private readonly ILifetimeScope _container;
         private readonly IInstallationProvider _installationProvider;
         private readonly  bool _isEverythingInstalled;
         
-        public PageUrlConstraint(ILifetimeScope container)
+        public PageUrlConstraint(IInstallationProvider installationProvider,
+            IPageRepository pageRepository,
+            ILanguageRepository languageRepository)
         {
-            _container = container;
-            _installationProvider = container.Resolve<IInstallationProvider>();
+            _installationProvider = installationProvider;
             _isEverythingInstalled = _installationProvider.IsPlatformInstalled && _installationProvider.IsDatabaseExist;
             if (_isEverythingInstalled)
             {
-                _pageRepository = container.Resolve<IPageRepository>();
-                _languageRepository = container.Resolve<ILanguageRepository>();
+                _pageRepository = pageRepository;
+                _languageRepository = languageRepository;
             }
             
         }

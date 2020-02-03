@@ -1,13 +1,12 @@
-﻿using Autofac;
-using Deviser.Core.Common;
-using Deviser.Core.Data.Repositories;
+﻿using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Data.Repositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Deviser.Core.Library.Sites
 {
@@ -16,7 +15,7 @@ namespace Deviser.Core.Library.Sites
         //Logger
         private readonly ILogger<PageManager> _logger;
 
-        protected readonly ILifetimeScope _container;
+        protected readonly IServiceProvider _serviceProvider;
         protected readonly IPageRepository _pageRepository;
         protected readonly IHttpContextAccessor _httpContextAccessor;
         protected readonly IRoleRepository _roleRepository;
@@ -25,13 +24,13 @@ namespace Deviser.Core.Library.Sites
         private string _currentUserName;
         private List<Role> _currentUserRoles;
 
-        public PageManager(ILifetimeScope container)
+        public PageManager(IServiceProvider serviceProvider)
         {
-            _container = container;
-            _logger = container.Resolve<ILogger<PageManager>>();
-            _pageRepository = container.Resolve<IPageRepository>();
-            _roleRepository = container.Resolve<IRoleRepository>();
-            _httpContextAccessor = container.Resolve<IHttpContextAccessor>();
+            _serviceProvider = serviceProvider;
+            _logger = serviceProvider.GetService<ILogger<PageManager>>();
+            _pageRepository = serviceProvider.GetService<IPageRepository>();
+            _roleRepository = serviceProvider.GetService<IRoleRepository>();
+            _httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
         }
 
         protected bool IsUserAuthenticated

@@ -1,24 +1,21 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using AutoMapper;
+using Deviser.Core.Common;
+using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Data.Repositories;
+using Deviser.Core.Library.Extensions;
+using Deviser.Core.Library.Services;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.Extensions.WebEncoders;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Deviser.Core.Common;
-using Deviser.Core.Common.DomainTypes;
-using AutoMapper;
-using Deviser.Core.Library.Services;
 using System.Globalization;
-using Deviser.Core.Common.Extensions;
-
+using System.Linq;
+using System.Text.Encodings.Web;
 using PageContent = Deviser.Core.Common.DomainTypes.PageContent;
-using Deviser.Core.Data.Repositories;
+
 //using Page = Deviser.Core.Data.Entities.Page;
 
 namespace Deviser.Core.Library.TagHelpers
@@ -31,16 +28,21 @@ namespace Deviser.Core.Library.TagHelpers
         private const string ModuleResultAttributeName = "sde-module-results";
 
         private readonly IHtmlHelper _htmlHelper;
-        private readonly IScopeService _scopeService;
+        private readonly IMapper _mapper;
         private readonly IPropertyRepository _propertyRepository;
+        private readonly IScopeService _scopeService;
 
-        public PageContentHelper(IHtmlHelper htmlHelper, IHtmlGenerator generator, 
-            IScopeService scopeService, IPropertyRepository propertyRepository)
+        public PageContentHelper(IHtmlHelper htmlHelper,
+            IMapper mapper,
+            IHtmlGenerator generator,
+            IPropertyRepository propertyRepository,
+            IScopeService scopeService)
         {
             Generator = generator;
             _htmlHelper = htmlHelper;
-            _scopeService = scopeService;
+            _mapper = mapper;
             _propertyRepository = propertyRepository;
+            _scopeService = scopeService;
         }
 
         [HtmlAttributeName(PageAttributeName)]
@@ -97,7 +99,7 @@ namespace Deviser.Core.Library.TagHelpers
 
                 GetPropertyValue(pageLayout.PlaceHolders, properties);
 
-                PageContents = Mapper.Map<ICollection<PageContent>>(CurrentPage.PageContent);
+                PageContents = _mapper.Map<ICollection<PageContent>>(CurrentPage.PageContent);
 
                 //Copy property options from master data
                 if (PageContents != null && PageContents.Count > 0)

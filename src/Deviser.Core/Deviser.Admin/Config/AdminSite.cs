@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using AutoMapper;
+using Deviser.Admin.Attributes;
+using Deviser.Admin.Data;
+using Deviser.Core.Common.Extensions;
+//using Microsoft.AspNetCore.Http;
+//using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
+using System.Threading;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Deviser.Admin.Attributes;
-using System.Collections;
-using Deviser.Admin.Data;
-using System.Threading;
-using Deviser.Core.Common.DomainTypes.Admin;
-using Deviser.Core.Common.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using AutoMapper;
 
 namespace Deviser.Admin.Config
 {
@@ -599,29 +598,31 @@ namespace Deviser.Admin.Config
                 fieldType = metadata.UnderlyingOrModelType;
             }
 
-            foreach (string typeName in GetTypeNames(metadata, fieldType))
+            foreach (string typeName in GetTypeNames(fieldType))
             {
                 yield return typeName;
             }
         }
 
-        public static IEnumerable<string> GetTypeNames(ModelMetadata modelMetadata, Type fieldType)
+        public static IEnumerable<string> GetTypeNames(Type fieldType)
         {
             // Not returning type name here for IEnumerable<IFormFile> since we will be returning
             // a more specific name, IEnumerableOfIFormFileName.
             var fieldTypeInfo = fieldType.GetTypeInfo();
 
-            if (typeof(IEnumerable<IFormFile>) != fieldType)
-            {
-                yield return fieldType.Name;
-            }
+            //if (typeof(IEnumerable<IFormFile>) != fieldType)
+            //{
+            //    yield return fieldType.Name;
+            //}
+
+            var isComplexType = !TypeDescriptor.GetConverter(fieldTypeInfo).CanConvertFrom(typeof(string));
 
             if (fieldType == typeof(string))
             {
                 // Nothing more to provide
                 yield break;
             }
-            else if (!modelMetadata.IsComplexType)
+            else if (!isComplexType)
             {
                 // IsEnum is false for the Enum class itself
                 if (fieldTypeInfo.IsEnum)
@@ -652,25 +653,25 @@ namespace Deviser.Admin.Config
                 }
             }
 
-            if (typeof(IEnumerable).IsAssignableFrom(fieldType))
-            {
-                if (typeof(IEnumerable<IFormFile>).IsAssignableFrom(fieldType))
-                {
-                    yield return IEnumerableOfIFormFileName;
+            //if (typeof(IEnumerable).IsAssignableFrom(fieldType))
+            //{
+            //    if (typeof(IEnumerable<IFormFile>).IsAssignableFrom(fieldType))
+            //    {
+            //        yield return IEnumerableOfIFormFileName;
 
-                    // Specific name has already been returned, now return the generic name.
-                    if (typeof(IEnumerable<IFormFile>) == fieldType)
-                    {
-                        yield return fieldType.Name;
-                    }
-                }
+            //        // Specific name has already been returned, now return the generic name.
+            //        if (typeof(IEnumerable<IFormFile>) == fieldType)
+            //        {
+            //            yield return fieldType.Name;
+            //        }
+            //    }
 
-                yield return "Collection";
-            }
-            else if (typeof(IFormFile) != fieldType && typeof(IFormFile).IsAssignableFrom(fieldType))
-            {
-                yield return nameof(IFormFile);
-            }
+            //    yield return "Collection";
+            //}
+            //else if (typeof(IFormFile) != fieldType && typeof(IFormFile).IsAssignableFrom(fieldType))
+            //{
+            //    yield return nameof(IFormFile);
+            //}
 
             yield return "Object";
         }

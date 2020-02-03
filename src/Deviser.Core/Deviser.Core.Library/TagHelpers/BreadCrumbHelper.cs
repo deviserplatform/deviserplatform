@@ -1,20 +1,14 @@
-﻿using Autofac;
-using Deviser.Core.Data.Repositories;
+﻿using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Data.Repositories;
+using Deviser.Core.Library.Services;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.Extensions.WebEncoders;
-using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Deviser.Core.Common;
-using Deviser.Core.Library.Services;
 
 namespace Deviser.Core.Library.TagHelpers
 {
@@ -35,12 +29,16 @@ namespace Deviser.Core.Library.TagHelpers
         [ViewContext]
         public ViewContext ViewContext { get; set; }
 
-        public BreadCrumbHelper(ILifetimeScope container, IHttpContextAccessor httpContextAccessor, IScopeService scopeService)
+        public BreadCrumbHelper(IHttpContextAccessor httpContextAccessor,
+            IScopeService scopeService,
+            IPageRepository pageRepository,
+            INavigation navigation,
+            IHtmlHelper htmlHelper)
              : base(httpContextAccessor)
         {
-            _pageRepository = container.Resolve<IPageRepository>();
-            _htmlHelper = container.Resolve<IHtmlHelper>();
-            _navigation = container.Resolve<INavigation>();
+            _pageRepository = pageRepository;
+            _htmlHelper = htmlHelper;
+            _navigation = navigation;
             _scopeService = scopeService;
         }
 

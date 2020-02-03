@@ -1,40 +1,44 @@
-﻿using Deviser.Core.Library.Modules;
+﻿using AutoMapper;
+using Deviser.Admin;
+using Deviser.Admin.Web.DependencyInjection;
+using Deviser.Core.Common;
+using Deviser.Core.Common.Extensions;
+using Deviser.Core.Common.Internal;
+using Deviser.Core.Common.Module;
+using Deviser.Core.Data;
+using Deviser.Core.Data.Entities;
+using Deviser.Core.Data.Extension;
+using Deviser.Core.Data.Repositories;
+using Deviser.Core.Library.Hubs;
+using Deviser.Core.Library.Internal;
+using Deviser.Core.Library.Messaging;
+using Deviser.Core.Library.Middleware;
+using Deviser.Core.Library.Modules;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.Extensions.Configuration;
-using Deviser.Core.Data;
-using Microsoft.EntityFrameworkCore;
-using Deviser.Core.Data.Entities;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.AspNetCore.Builder;
-using Deviser.Core.Library.Infrastructure;
-using Deviser.Core.Library.Messaging;
-using Deviser.Core.Library.Services;
-using Deviser.Core.Library.Internal;
 using System.Globalization;
-using Deviser.Core.Library.Middleware;
-using Microsoft.AspNetCore.Routing;
-using Deviser.Core.Common;
-using Autofac;
-using Deviser.Core.Data.Repositories;
-using System.Reflection;
 using System.Linq;
-using Deviser.Core.Data.Extension;
-using Deviser.Core.Common.Internal;
-using AutoMapper;
-using System.Diagnostics;
-using Deviser.Core.Library.Hubs;
-using Deviser.Admin;
-using System.Linq.Expressions;
-using Deviser.Core.Common.Extensions;
-using Deviser.Admin.Web.DependencyInjection;
-using Deviser.Core.Common.Json;
-using Deviser.Core.Common.Module;
+using System.Reflection;
+using Deviser.Core.Library.Controllers;
+using Deviser.Core.Library.Infrastructure;
+using Deviser.Core.Library.IO;
+using Deviser.Core.Library.Layouts;
+using Deviser.Core.Library.Media;
+using Deviser.Core.Library.Multilingual;
+using Deviser.Core.Library.Services;
+using Deviser.Core.Library.Sites;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Deviser.Core.Library.DependencyInjection
 {
@@ -63,7 +67,47 @@ namespace Deviser.Core.Library.DependencyInjection
                .AddEntityFrameworkStores<DeviserDbContext>()
                .AddDefaultTokenProviders();
 
-            MapperConfig.CreateMaps();
+            services.AddAutoMapper(typeof(AdminServicesExtensions).Assembly);
+
+            services.AddScoped<ViewResultExecutor>();
+            services.AddScoped<IScopeService, ScopeService>();
+            services.AddScoped<IImageOptimizer, ImageOptimizer>();
+
+
+            services.AddScoped<IActionInvoker, ActionInvoker>();
+            services.AddScoped<ITypeActivatorCache, TypeActivatorCache>();
+
+            //builder.RegisterType<ModuleInvokerProvider>().As<IModuleInvokerProvider>();
+            services.AddSingleton<IRouteConstraint, PageUrlConstraint>();
+            services.AddScoped<IDeviserControllerFactory, DeviserControllerFactory>();
+            services.AddScoped<DeviserRouteHandler>();
+
+            services.AddScoped<ILayoutRepository, LayoutRepository>();
+            services.AddScoped<ILayoutTypeRepository, LayoutTypeRepository>();
+            services.AddScoped<IContentTypeRepository, ContentTypeRepository>();
+            services.AddScoped<IModuleRepository, ModuleRepository>();
+            services.AddScoped<IPageContentRepository, PageContentRepository>();
+            services.AddScoped<IPageRepository, PageRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            //builder.RegisterType<SiteSettingRepository>().As<ISiteSettingRepository>().InstancePerDependency(); moved to core lib
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ILanguageRepository, LanguageRepository>();
+            services.AddScoped<IOptionListRepository, OptionListRepository>();
+            services.AddScoped<IPropertyRepository, PropertyRepository>();
+
+            //builder.RegisterType<ContactProvider>().As<IContactProvider>();
+
+            services.AddScoped<IPageManager, PageManager>();
+            services.AddScoped<IModuleManager, ModuleManager>();
+            services.AddScoped<IContentManager, ContentManager>();
+            services.AddScoped<ILayoutManager, LayoutManager>();
+            services.AddScoped<IThemeManager, ThemeManager>();
+            services.AddScoped<INavigation, Navigation>();
+            services.AddScoped<IFileManagement, FileManagement>();
+            services.AddScoped<ILanguageManager, LanguageManager>();
+            services.AddScoped<ISettingManager, SettingManager>();
+            services.AddScoped<ISitemapService, SitemapService>();
+
             InternalServiceProvider.Instance.BuildServiceProvider(services);
 
             //Add framework services.
@@ -116,28 +160,46 @@ namespace Deviser.Core.Library.DependencyInjection
                 }
             }
 
-            services.Add(ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, SerializerSettingsSetup>());
-
             RegisterModuleDependencies(services);
 
-            //RegisterModuleDbContexts(services);
+            //services
+            //    .AddMvc()
+            //    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            //    .AddRazorOptions(options =>
+            //    {
+            //        options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
+            //    })
+            //    .AddControllersAsServices();
 
             services
-                .AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    options.SerializerSettings.Formatting = Formatting.Indented;
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                })
                 .AddRazorOptions(options =>
                 {
                     options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
+
                 })
-                .AddControllersAsServices()
-                /*.AddJsonOptions(options => {
-                    options.SerializerSettings.Converters.Add(new ExpressionJsonConverter());
-                })*/;
+                .AddControllersAsServices();
+
             services.AddDeviserAdmin();
 
             services.AddSignalR();
 
-            services.AddSession();
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                // Make the session cookie essential
+                options.Cookie.IsEssential = true;
+            });
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
@@ -155,15 +217,17 @@ namespace Deviser.Core.Library.DependencyInjection
             return services;
         }
 
-        public static IApplicationBuilder UseDeviserPlatform(this IApplicationBuilder app, ILifetimeScope container)
+        public static IApplicationBuilder UseDeviserPlatform(this IApplicationBuilder app,
+            IServiceProvider serviceProvider)
         {
             //var defaultRequestCulture = new RequestCulture(new CultureInfo(enUSCulture));
-
-            var installationProvider = container.Resolve<IInstallationProvider>();
-            var serviceProvider = container.Resolve<IServiceProvider>();
+            
+            IWebHostEnvironment env = serviceProvider.GetService<IWebHostEnvironment>();
+            var installationProvider = serviceProvider.GetService<IInstallationProvider>();
+            
             if (installationProvider.IsPlatformInstalled)
             {
-                var languageRepository = container.Resolve<ILanguageRepository>();
+                var languageRepository = serviceProvider.GetService<ILanguageRepository>();
                 var activeLangauges = languageRepository.GetActiveLanguages();
                 var supportedCultures = activeLangauges.Select(al => new CultureInfo(al.CultureCode)).ToArray();
 
@@ -176,50 +240,82 @@ namespace Deviser.Core.Library.DependencyInjection
                 app.UseRequestLocalization(requestLocalizationOptions);
             }
 
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+            
+            app.UseCors("MyPolicy");
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
 
+            app.UseRouting();
+
             app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.Use(async (context, next) =>
+            {
+                var cultureQuery = context.Request.Query["culture"];
+                if (!string.IsNullOrWhiteSpace(cultureQuery))
+                {
+                    var culture = new CultureInfo(cultureQuery);
+
+                    CultureInfo.CurrentCulture = culture;
+                    CultureInfo.CurrentUICulture = culture;
+                }
+
+                // Call the next delegate/middleware in the pipeline
+                await next();
+            });
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
             // IMPORTANT: This session call MUST go before UseMvc()
             app.UseSession();
 
-            Action<IRouteBuilder> routeBuilder = routes =>
-            {
-                routes.MapRoute(name: Globals.moduleRoute,
-                    template: "modules/{area:exists}/{controller=Home}/{action=Index}");
+            //Action<IRouteBuilder> routeBuilder = routes =>
+            //{
+            //    routes.MapRoute(name: Globals.moduleRoute,
+            //        template: "modules/{area:exists}/{controller=Home}/{action=Index}");
 
-                routes.MapRoute(
-                   name: "default",
-                   template: "{controller=Page}/{action=Index}/{id?}");
+            //    routes.MapRoute(
+            //       name: "default",
+            //       template: "{controller=Page}/{action=Index}/{id?}");
 
-                routes.MapRoute(
-                name: "CmsRoute",
-                template: "{*permalink}",
-                defaults: new { controller = "Page", action = "Index" },
-                constraints: new { permalink = container.Resolve<IRouteConstraint>() });
-            };
+            //    routes.MapRoute(
+            //    name: "CmsRoute",
+            //    template: "{*permalink}",
+            //    defaults: new { controller = "Page", action = "Index" },
+            //    constraints: new { permalink = serviceProvider.GetService<IRouteConstraint>() });
+            //};
 
-            app.UsePageContext(routeBuilder);
-
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<ApplicationHub>("/appHub");
-            });
-
+            //Deviser Specific
+            app.UsePageContext();
             app.UseDeviserAdmin(serviceProvider);
+            
+            return app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<ApplicationHub>("/appHub");
 
-            //// Shows UseCors with CorsPolicyBuilder.
-            //app.UseCors(builder =>
-            //   builder.WithOrigins("http://example.com"));
+                endpoints.MapControllerRoute(name: Globals.moduleRoute,
+                    pattern: "modules/{area:exists}/{controller=Home}/{action=Index}");
 
-            app.UseCors("MyPolicy");
+                endpoints.MapControllerRoute(name: "default",
+                    pattern: "{controller=Page}/{action=Index}/{id?}");
 
-
-            return app.UseMvc(routeBuilder);
+                endpoints.MapControllerRoute(name: "CmsRoute",
+                    pattern: "{**permalink}",
+                    defaults: new { controller = "Page", action = "Index" },
+                    constraints: new { permalink = serviceProvider.GetService<IRouteConstraint>() });
+            });
         }
 
         private static void RegisterModuleDependencies(IServiceCollection serviceCollection)

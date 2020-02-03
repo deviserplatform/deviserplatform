@@ -1,34 +1,31 @@
-﻿using Autofac;
-using Deviser.Core.Data.Repositories;
+﻿using Deviser.Admin;
+using Deviser.Admin.Web.Controllers;
+using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Common.Extensions;
+using Deviser.Core.Common.Internal;
+using Deviser.Core.Common.Module;
+using Deviser.Core.Data.Repositories;
+using Deviser.Core.Library.Services;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Core;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Deviser.Core.Library.Internal;
-using Deviser.Core.Library.Services;
-using ContentResult = Deviser.Core.Common.DomainTypes.ContentResult;
-using Module = Deviser.Core.Common.DomainTypes.Module;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Html;
-using Deviser.Core.Common.Module;
-using Deviser.Core.Common.Internal;
-using Deviser.Core.Common;
-using Deviser.Core.Common.Extensions;
-using Deviser.Admin.Web.Controllers;
-using Deviser.Admin;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using IActionInvoker = Deviser.Core.Library.Internal.IActionInvoker;
-using System.Threading;
 using System.Runtime.CompilerServices;
-using System.Collections;
-using Microsoft.AspNetCore.Mvc.Internal;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using System.Threading;
+using System.Threading.Tasks;
+using ContentResult = Deviser.Core.Common.DomainTypes.ContentResult;
+using IActionInvoker = Deviser.Core.Library.Internal.IActionInvoker;
+using Module = Deviser.Core.Common.DomainTypes.Module;
 
 namespace Deviser.Core.Library.Controllers
 {
@@ -39,26 +36,31 @@ namespace Deviser.Core.Library.Controllers
         private readonly ILogger<DeviserControllerFactory> _logger;
         private readonly IActionInvoker _actionInvoker;
         private readonly IActionDescriptorCollectionProvider _actionDescriptorCollectionProvider;
-        private readonly ActionConstraintCache _actionConstraintCache;
+        //private readonly ActionConstraintCache _actionConstraintCache;
         private readonly IActionSelector _actionSelector;
         private readonly IScopeService _scopeService;
         private readonly IHtmlHelper _htmlHelper;
         private readonly IModuleRepository _moduleRepository;
         private readonly IModuleRegistry _moduleRegistry;
-        private readonly IPageRepository _pageRepository;
         private Cache _cache;
 
-        public DeviserControllerFactory(ILifetimeScope container, IScopeService scopeService)
+        public DeviserControllerFactory(ILogger<DeviserControllerFactory> logger,
+            IActionInvoker actionInvoker,
+            IActionDescriptorCollectionProvider actionDescriptorCollectionProvider,
+            IActionSelector actionSelector,
+            IScopeService scopeService,
+            IHtmlHelper htmlHelper,
+            IModuleRepository moduleRepository,
+            IModuleRegistry moduleRegistry)
         {
-            _logger = container.Resolve<ILogger<DeviserControllerFactory>>();
-            _actionInvoker = container.Resolve<IActionInvoker>();
-            _actionDescriptorCollectionProvider = container.Resolve<IActionDescriptorCollectionProvider>();
-            _actionConstraintCache = container.Resolve<ActionConstraintCache>();
-            _actionSelector = container.Resolve<IActionSelector>();
-            _htmlHelper = container.Resolve<IHtmlHelper>();
-            _pageRepository = container.Resolve<IPageRepository>();
-            _moduleRepository = container.Resolve<IModuleRepository>();
-            _moduleRegistry = container.Resolve<IModuleRegistry>();
+            _logger = logger;
+            _actionInvoker = actionInvoker;
+            _actionDescriptorCollectionProvider = actionDescriptorCollectionProvider;
+            //_actionConstraintCache = container.Resolve<ActionConstraintCache>();
+            _actionSelector = actionSelector;
+            _htmlHelper = htmlHelper;
+            _moduleRepository = moduleRepository;
+            _moduleRegistry = moduleRegistry;
             _scopeService = scopeService;
         }
 
@@ -306,7 +308,7 @@ namespace Deviser.Core.Library.Controllers
 
 
 
-            var actionDescriptor = SelectBestCandidate(routeContext, actionDescriptors);
+            var actionDescriptor = _actionSelector.SelectBestCandidate(routeContext, actionDescriptors); //SelectBestCandidate(routeContext, actionDescriptors);
             if (actionDescriptor == null)
                 throw new NullReferenceException("Action cannot be located, please check whether module has been installed properly");
 
@@ -364,46 +366,46 @@ namespace Deviser.Core.Library.Controllers
             return EmptyActions;
         }
 
-        public ActionDescriptor SelectBestCandidate(RouteContext context, IReadOnlyList<ActionDescriptor> candidates)
-        {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+        //public ActionDescriptor SelectBestCandidate(RouteContext context, IReadOnlyList<ActionDescriptor> candidates)
+        //{
+        //    if (context == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(context));
+        //    }
 
-            if (candidates == null)
-            {
-                throw new ArgumentNullException(nameof(candidates));
-            }
+        //    if (candidates == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(candidates));
+        //    }
 
-            var matches = EvaluateActionConstraints(context, candidates);
+        //    var matches = EvaluateActionConstraints(context, candidates);
 
-            var finalMatches = SelectBestActions(matches);
-            if (finalMatches == null || finalMatches.Count == 0)
-            {
-                return null;
-            }
-            else if (finalMatches.Count == 1)
-            {
-                var selectedAction = finalMatches[0];
+        //    var finalMatches = SelectBestActions(matches);
+        //    if (finalMatches == null || finalMatches.Count == 0)
+        //    {
+        //        return null;
+        //    }
+        //    else if (finalMatches.Count == 1)
+        //    {
+        //        var selectedAction = finalMatches[0];
 
-                return selectedAction;
-            }
-            else
-            {
-                var actionNames = string.Join(
-                    Environment.NewLine,
-                    finalMatches.Select(a => a.DisplayName));
+        //        return selectedAction;
+        //    }
+        //    else
+        //    {
+        //        var actionNames = string.Join(
+        //            Environment.NewLine,
+        //            finalMatches.Select(a => a.DisplayName));
 
-                _logger.AmbiguousActions(actionNames);
+        //        _logger.AmbiguousActions(actionNames);
 
-                var message = Resources.FormatDefaultActionSelector_AmbiguousActions(
-                    Environment.NewLine,
-                    actionNames);
+        //        var message = Resources.FormatDefaultActionSelector_AmbiguousActions(
+        //            Environment.NewLine,
+        //            actionNames);
 
-                throw new AmbiguousActionException(message);
-            }
-        }
+        //        throw new AmbiguousActionException(message);
+        //    }
+        //}
 
         /// <summary>
         /// Returns the set of best matching actions.
@@ -415,36 +417,36 @@ namespace Deviser.Core.Library.Controllers
             return actions;
         }
 
-        private IReadOnlyList<ActionDescriptor> EvaluateActionConstraints(
-            RouteContext context,
-            IReadOnlyList<ActionDescriptor> actions)
-        {
-            var candidates = new List<ActionSelectorCandidate>();
+        //private IReadOnlyList<ActionDescriptor> EvaluateActionConstraints(
+        //    RouteContext context,
+        //    IReadOnlyList<ActionDescriptor> actions)
+        //{
+        //    var candidates = new List<ActionSelectorCandidate>();
 
-            // Perf: Avoid allocations
-            for (var i = 0; i < actions.Count; i++)
-            {
-                var action = actions[i];
-                var constraints = _actionConstraintCache.GetActionConstraints(context.HttpContext, action);
-                candidates.Add(new ActionSelectorCandidate(action, constraints));
-            }
+        //    // Perf: Avoid allocations
+        //    for (var i = 0; i < actions.Count; i++)
+        //    {
+        //        var action = actions[i];
+        //        var constraints = _actionConstraintCache.GetActionConstraints(context.HttpContext, action);
+        //        candidates.Add(new ActionSelectorCandidate(action, constraints));
+        //    }
 
-            var matches = EvaluateActionConstraintsCore(context, candidates, startingOrder: null);
+        //    var matches = EvaluateActionConstraintsCore(context, candidates, startingOrder: null);
 
-            List<ActionDescriptor> results = null;
-            if (matches != null)
-            {
-                results = new List<ActionDescriptor>(matches.Count);
-                // Perf: Avoid allocations
-                for (var i = 0; i < matches.Count; i++)
-                {
-                    var candidate = matches[i];
-                    results.Add(candidate.Action);
-                }
-            }
+        //    List<ActionDescriptor> results = null;
+        //    if (matches != null)
+        //    {
+        //        results = new List<ActionDescriptor>(matches.Count);
+        //        // Perf: Avoid allocations
+        //        for (var i = 0; i < matches.Count; i++)
+        //        {
+        //            var candidate = matches[i];
+        //            results.Add(candidate.Action);
+        //        }
+        //    }
 
-            return results;
-        }
+        //    return results;
+        //}
 
         private IReadOnlyList<ActionSelectorCandidate> EvaluateActionConstraintsCore(
             RouteContext context,

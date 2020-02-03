@@ -1,34 +1,29 @@
-﻿using Autofac;
-using AutoMapper;
-using Deviser.Core.Data.Repositories;
-using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Library.Layouts;
+﻿using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Modules;
+using Deviser.Core.Library.Sites;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using Deviser.Core.Library.Sites;
 
 namespace DeviserWI.Controllers.API
 {
     [Route("api/[controller]")]
     public class PageContentController : Controller
     {
-        private readonly ILogger<PageContentController> _logger;        
+        private readonly ILogger<PageContentController> _logger;
         private readonly IModuleManager _moduleManager;
         private readonly IContentManager _contentManager;
 
-        public PageContentController(ILifetimeScope container)
+        public PageContentController(ILogger<PageContentController> logger,
+            IModuleManager moduleManager,
+            IContentManager contentManager)
         {
-            _logger = container.Resolve<ILogger<PageContentController>>();
-            _moduleManager = container.Resolve<IModuleManager>();
-            _contentManager = container.Resolve<IContentManager>();
+            _logger = logger;
+            _moduleManager = moduleManager;
+            _contentManager = contentManager;
         }
 
         [HttpGet("{contentId}")]

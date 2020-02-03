@@ -5,7 +5,6 @@ using System.Text;
 using AutoMapper;
 using Deviser.Admin;
 using Deviser.Admin.Extensions;
-using Deviser.Core.Common.DomainTypes.Admin;
 using Deviser.Modules.Blog.Models;
 
 namespace Deviser.Modules.Blog

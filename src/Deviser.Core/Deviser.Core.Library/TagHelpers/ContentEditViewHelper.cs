@@ -1,6 +1,5 @@
-﻿using Autofac;
-using Deviser.Core.Data.Repositories;
-using Deviser.Core.Common.DomainTypes;
+﻿using Deviser.Core.Common;
+using Deviser.Core.Library.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
@@ -8,17 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 //using Microsoft.Extensions.PlatformAbstractions;
-using Microsoft.Extensions.WebEncoders;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Deviser.Core.Common;
-using Deviser.Core.Library.Services;
 
 namespace Deviser.Core.Library.TagHelpers
 {
@@ -29,7 +20,7 @@ namespace Deviser.Core.Library.TagHelpers
 
         private readonly INavigation _navigation;
         private readonly IHtmlHelper _htmlHelper;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IScopeService _scopeService;
 
         [HtmlAttributeName(ContentEditsAttribute)]
@@ -39,13 +30,17 @@ namespace Deviser.Core.Library.TagHelpers
         [ViewContext]
         public ViewContext ViewContext { get; set; }
 
-        public ContentEditViewHelper(ILifetimeScope container, IHttpContextAccessor httpContextAccessor, IScopeService scopeService)
+        public ContentEditViewHelper(IHttpContextAccessor httpContextAccessor,
+            INavigation navigation,
+            IHtmlHelper htmlHelper,
+            IScopeService scopeService,
+            IWebHostEnvironment hostEnvironment)
              : base(httpContextAccessor)
         {
-            _htmlHelper = container.Resolve<IHtmlHelper>();
-            _navigation = container.Resolve<INavigation>();
+            _htmlHelper = htmlHelper;
+            _navigation = navigation;
             _scopeService = scopeService;
-            _hostingEnvironment = container.Resolve<IHostingEnvironment>();
+            _hostingEnvironment = hostEnvironment;
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)

@@ -1,5 +1,4 @@
-﻿using Deviser.Admin.Data;
-using Deviser.Admin.Services;
+﻿using Deviser.Admin.Services;
 using Deviser.Core.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

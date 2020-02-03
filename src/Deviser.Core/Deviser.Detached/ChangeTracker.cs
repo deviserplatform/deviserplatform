@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Deviser.Detached
 {
@@ -162,8 +163,8 @@ namespace Deviser.Detached
                 if (!(property.Metadata.FieldInfo == null ||
                       property.Metadata.IsPrimaryKey() ||
                       property.Metadata.IsForeignKey() ||
-                      property.Metadata.IsStoreGeneratedAlways ||
-                      property.Metadata.IsReadOnlyAfterSave /*||
+                      property.Metadata.MayBeStoreGenerated()||
+                      property.Metadata.GetAfterSaveBehavior() == PropertySaveBehavior.Save /*||
                       property.Metadata.IsIgnored()*/))
                 {
                     IClrPropertyGetter getter = property.Metadata.GetGetter();

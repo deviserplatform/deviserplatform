@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Autofac;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using static Deviser.WI.Program;
+using System;
+using System.Threading.Tasks;
 
 namespace Deviser.WI.Controllers.Api
 {
@@ -18,9 +14,9 @@ namespace Deviser.WI.Controllers.Api
     {
         //Logger
         private readonly ILogger<ApplicationController> _logger;
-        public ApplicationController(ILifetimeScope container)
+        public ApplicationController(ILogger<ApplicationController> logger)
         {
-            _logger = container.Resolve<ILogger<ApplicationController>>();
+            _logger = logger;
         }
 
         [HttpGet]

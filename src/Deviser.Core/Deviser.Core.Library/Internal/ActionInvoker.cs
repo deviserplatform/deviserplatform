@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Deviser.Core.Common;
-using Deviser.Core.Common.Internal;
+﻿using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Library.Controllers;
+//using Microsoft.AspNetCore.Mvc.Controllers;
+using Deviser.Core.Library.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using Deviser.Core.Library.Controllers;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Internal;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Deviser.Core.Common.Extensions;
+using System.Threading.Tasks;
 using DefaultAssemblyPartDiscoveryProvider = Deviser.Core.Common.Internal.DefaultAssemblyPartDiscoveryProvider;
 
 namespace Deviser.Core.Library.Internal
@@ -20,19 +17,19 @@ namespace Deviser.Core.Library.Internal
     public class ActionInvoker : IActionInvoker
     {
         private readonly ObjectMethodExecutorCache _cache;
-        private readonly ITypeActivatorCache _typeActivatorCache;
-        private readonly IControllerPropertyActivator[] _propertyActivators;
+        //private readonly ITypeActivatorCache _typeActivatorCache;
+        //private readonly IControllerPropertyActivator[] _propertyActivators;
         private readonly List<TypeInfo> _allControllers;
 
         private const string ControllerTypeNameSuffix = "Controller";
         
         public ActionInvoker(
             ITypeActivatorCache typeActivatorCache,
-            ObjectMethodExecutorCache cache,
-            IEnumerable<IControllerPropertyActivator> propertyActivators)
+            ObjectMethodExecutorCache cache/*,
+           IEnumerable<IControllerPropertyActivator> propertyActivators*/)
         {
-            _typeActivatorCache = typeActivatorCache ?? throw new ArgumentNullException(nameof(typeActivatorCache));
-            _propertyActivators = propertyActivators.ToArray();
+            //_typeActivatorCache = typeActivatorCache ?? throw new ArgumentNullException(nameof(typeActivatorCache));
+            //_propertyActivators = propertyActivators.ToArray();
             _cache = cache;
 
 
@@ -85,12 +82,15 @@ namespace Deviser.Core.Library.Internal
             //var controller1 = _controllerFactory.CreateController(controllerContext);
 
             var serviceProvider = httpContext.RequestServices;
-            var controller = _typeActivatorCache.CreateInstance<object>(serviceProvider, targetController.AsType()); //Returns 
 
-            foreach (var propertyActivator in _propertyActivators)
-            {
-                propertyActivator.Activate(controllerContext, controller);
-            }
+            var controller = httpContext.RequestServices.GetService(targetController.AsType());
+
+            //var controller = _typeActivatorCache.CreateInstance<object>(serviceProvider, targetController.AsType()); //Returns 
+
+            //foreach (var propertyActivator in _propertyActivators)
+            //{
+            //    propertyActivator.Activate(controllerContext, controller);
+            //}
 
             //((Deviser.Core.Library.Controllers.DeviserController)controller).TempData = new TempDataDictionary()
 
@@ -233,7 +233,7 @@ namespace Deviser.Core.Library.Internal
             }
 
             _cache.Dispose();
-            _typeActivatorCache.Dispose();
+            //_typeActivatorCache.Dispose();
 
 
         }

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Deviser.Core.Common.DomainTypes.Admin
+namespace Deviser.Admin.Config
 {
     public class FieldExpression
     {

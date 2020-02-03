@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using Deviser.Core.Common.DomainTypes;
+﻿using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Autofac;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
-using AutoMapper;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace DeviserWI.Controllers.API
 {
@@ -23,15 +16,17 @@ namespace DeviserWI.Controllers.API
     {
         private readonly ILogger<LayoutTypeController> _logger;
         private readonly ILayoutTypeRepository _layoutTypeRepository;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
         //private JToken contentTypes;
         private List<string> _rootAllowedTypes;
-        public LayoutTypeController(ILifetimeScope container)
+        public LayoutTypeController(ILogger<LayoutTypeController> logger,
+            ILayoutTypeRepository layoutTypeRepository,
+            IWebHostEnvironment hostingEnvironment)
         {
-            _logger = container.Resolve<ILogger<LayoutTypeController>>();
-            _layoutTypeRepository = container.Resolve<ILayoutTypeRepository>();
-            _hostingEnvironment = container.Resolve<IHostingEnvironment>();
+            _logger = logger;
+            _layoutTypeRepository = layoutTypeRepository;
+            _hostingEnvironment = hostingEnvironment;
             try
             {
                 var contentTypesfilePath = Path.Combine(_hostingEnvironment.ContentRootPath, "appcontentcofig.json");                

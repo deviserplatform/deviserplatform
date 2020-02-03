@@ -1,16 +1,10 @@
-﻿using Autofac;
+﻿using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
-using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Layouts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 
 namespace DeviserWI.Controllers.API
 {
@@ -21,11 +15,13 @@ namespace DeviserWI.Controllers.API
         private readonly ILayoutRepository _layoutRepository;
         private readonly ILayoutManager _layoutManager;
 
-        public LayoutController(ILifetimeScope container)
+        public LayoutController(ILogger<LayoutController> logger,
+            ILayoutRepository layoutRepository,
+            ILayoutManager layoutManager)
         {
-            _layoutManager = container.Resolve<ILayoutManager>();
-            _layoutRepository = container.Resolve<ILayoutRepository>();
-            _logger = container.Resolve<ILogger<LayoutController>>();
+            _layoutManager = layoutManager;
+            _layoutRepository = layoutRepository;
+            _logger = logger;
         }
 
         [HttpGet]

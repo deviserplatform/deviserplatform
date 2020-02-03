@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Microsoft.AspNetCore.Http;
 
-namespace Deviser.Core.Common.Extensions
+namespace Deviser.Core.Library.Extensions
 {
     public static class HttpContextExtensions
     {

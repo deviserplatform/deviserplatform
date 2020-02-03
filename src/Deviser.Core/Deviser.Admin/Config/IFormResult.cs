@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Deviser.Admin.Config
+﻿namespace Deviser.Admin.Config
 {
     public interface IFormResult
     {

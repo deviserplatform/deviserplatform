@@ -1,13 +1,11 @@
-﻿using Deviser.Core.Common.Lambda2Js;
+﻿using Deviser.Admin.Config;
+using Deviser.Core.Common.Lambda2Js;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
 using System.Linq;
-using Deviser.Core.Common.DomainTypes.Admin;
+using System.Linq.Expressions;
 
-namespace Deviser.Core.Common.Json
+namespace Deviser.Admin.Extensions
 {
     public class ExpressionJsonConverter : JsonConverter
     {

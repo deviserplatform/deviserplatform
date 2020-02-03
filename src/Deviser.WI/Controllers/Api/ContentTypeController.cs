@@ -1,13 +1,9 @@
-﻿using Autofac;
-using AutoMapper;
+﻿using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
-using Deviser.Core.Common.DomainTypes;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 
 
 namespace DeviserWI.Controllers.API
@@ -18,11 +14,11 @@ namespace DeviserWI.Controllers.API
         private readonly ILogger<ContentTypeController> _logger;
         private readonly IContentTypeRepository _contentTypeRepository;
 
-        public ContentTypeController(ILifetimeScope container)
+        public ContentTypeController(ILogger<ContentTypeController> logger,
+        IContentTypeRepository contentTypeRepository)
         {
-            _logger = container.Resolve<ILogger<ContentTypeController>>();
-            _contentTypeRepository = container.Resolve<IContentTypeRepository>();
-            //IHostingEnvironment hostingEnvironment = container.Resolve<IHostingEnvironment>();
+            _logger = logger;
+            _contentTypeRepository = contentTypeRepository;
         }
 
         [HttpGet]

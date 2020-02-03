@@ -1,12 +1,7 @@
 ﻿using AutoMapper;
 using Deviser.Admin.Builders;
 using Deviser.Admin.Config;
-using Deviser.Core.Common.DomainTypes.Admin;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 
 namespace Deviser.Admin
 {

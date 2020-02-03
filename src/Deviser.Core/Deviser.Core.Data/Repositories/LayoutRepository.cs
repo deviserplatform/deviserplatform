@@ -1,11 +1,10 @@
+using AutoMapper;
+using Deviser.Core.Common.DomainTypes;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Deviser.Core.Common.DomainTypes;
-using Microsoft.Extensions.Logging;
-using Autofac;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -19,28 +18,33 @@ namespace Deviser.Core.Data.Repositories
         bool DeleteLayout(Guid layoutId);
     }
 
-    public class LayoutRepository : RepositoryBase, ILayoutRepository
+    public class LayoutRepository : ILayoutRepository
     {
         //Logger
         private readonly ILogger<LayoutRepository> _logger;
+        private readonly DbContextOptions<DeviserDbContext> _dbOptions;
+        private readonly IMapper _mapper;
 
         //Constructor
-        public LayoutRepository(ILifetimeScope container)
-            : base(container)
+        public LayoutRepository(DbContextOptions<DeviserDbContext> dbOptions,
+            ILogger<LayoutRepository> logger,
+            IMapper mapper)
         {
-            _logger = container.Resolve<ILogger<LayoutRepository>>();
+            _logger = logger;
+            _dbOptions = dbOptions;
+            _mapper = mapper;
         }
 
         public Layout CreateLayout(Layout layout)
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
-                    var dbLayout = Mapper.Map<Entities.Layout>(layout);
+                    var dbLayout = _mapper.Map<Entities.Layout>(layout);
                     var result = context.Layout.Add(dbLayout).Entity;
                     context.SaveChanges();
-                    return Mapper.Map<Layout>(result);
+                    return _mapper.Map<Layout>(result);
                 }
             }
             catch (Exception ex)
@@ -54,12 +58,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var result = context.Layout
                                .ToList();
 
-                    return Mapper.Map<List<Layout>>(result);
+                    return _mapper.Map<List<Layout>>(result);
                 }
             }
             catch (Exception ex)
@@ -73,13 +77,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var result = context.Layout
                                .Where(e => e.IsDeleted)
                                .ToList();
 
-                    return Mapper.Map<List<Layout>>(result);
+                    return _mapper.Map<List<Layout>>(result);
                 }
             }
             catch (Exception ex)
@@ -93,12 +97,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var result = context.Layout
                         .FirstOrDefault(e => e.Id == layoutId);
 
-                    return Mapper.Map<Layout>(result);
+                    return _mapper.Map<Layout>(result);
                 }
             }
             catch (Exception ex)
@@ -112,14 +116,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
-                    var dbLayout = Mapper.Map<Entities.Layout>(layout);
+                    var dbLayout = _mapper.Map<Entities.Layout>(layout);
 
                     var result = context.Layout.Update(dbLayout).Entity;
 
                     context.SaveChanges();
-                    return Mapper.Map<Layout>(result);
+                    return _mapper.Map<Layout>(result);
                 }
             }
             catch (Exception ex)
@@ -133,10 +137,10 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var layout = GetLayout(layoutId);
-                    var dbLayout = Mapper.Map<Entities.Layout>(layout);
+                    var dbLayout = _mapper.Map<Entities.Layout>(layout);
 
                     context.Layout.Remove(dbLayout);
                     context.SaveChanges();

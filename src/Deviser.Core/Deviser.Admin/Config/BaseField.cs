@@ -1,10 +1,10 @@
-﻿using Deviser.Core.Common.Extensions;
+﻿using System;
+using System.Linq.Expressions;
+using Deviser.Core.Common.Extensions;
 using Deviser.Core.Common.Json;
 using Newtonsoft.Json;
-using System;
-using System.Linq.Expressions;
 
-namespace Deviser.Core.Common.DomainTypes.Admin
+namespace Deviser.Admin.Config
 {
     public class BaseField
     {
@@ -21,7 +21,7 @@ namespace Deviser.Core.Common.DomainTypes.Admin
                 if (FieldExpression == null)
                     return null;
 
-                if (FieldExpression.Body.Type.IsCollectionType())
+                if (ReflectionExtensions.IsCollectionType(FieldExpression.Body.Type))
                     return FieldExpression.Body.Type.GenericTypeArguments[0];
 
                 return FieldExpression.Body.Type;
@@ -47,7 +47,7 @@ namespace Deviser.Core.Common.DomainTypes.Admin
         {
             get
             {
-                return FieldName.Camelize();
+                return StringExtensions.Camelize(FieldName);
             }
         }
     }

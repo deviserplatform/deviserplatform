@@ -1,13 +1,9 @@
-﻿using Autofac;
-using AutoMapper;
-using Deviser.Core.Data.Repositories;
+﻿using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library;
-using Deviser.Core.Library.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 
 namespace DeviserWI.Controllers.API
 {
@@ -19,11 +15,13 @@ namespace DeviserWI.Controllers.API
         private readonly IPageRepository _pageRepository;
         private readonly INavigation _navigation;
 
-        public PageController(ILifetimeScope container)
+        public PageController(ILogger<PageController> logger,
+            IPageRepository pageRepository,
+            INavigation navigation)
         {
-            _logger = container.Resolve<ILogger<PageController>>();
-            _pageRepository = container.Resolve<IPageRepository>();
-            _navigation = container.Resolve<INavigation>();
+            _logger = logger;
+            _pageRepository = pageRepository;
+            _navigation = navigation;
         }
 
         [HttpGet]

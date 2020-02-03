@@ -1,8 +1,7 @@
 ﻿using Deviser.Core.Common.Extensions;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Deviser.Core.Common.DomainTypes.Admin
+namespace Deviser.Admin.Config
 {
     public class FieldCondition
     {
@@ -23,20 +22,5 @@ namespace Deviser.Core.Common.DomainTypes.Admin
             }
         }
         public LambdaExpression ConditionExpression { get; set; }
-    }
-
-    public class FieldConditions
-    {
-        public List<FieldCondition> ShowOnConditions { get; }
-        public List<FieldCondition> EnableOnConditions { get; }
-        public List<FieldCondition> ValidateOnConditions { get; }
-
-        public FieldConditions()
-        {
-            ShowOnConditions = new List<FieldCondition>();
-            EnableOnConditions = new List<FieldCondition>();
-            ValidateOnConditions = new List<FieldCondition>();
-        }
-
     }
 }

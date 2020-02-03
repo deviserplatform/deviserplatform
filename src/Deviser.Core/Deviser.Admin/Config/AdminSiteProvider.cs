@@ -1,18 +1,15 @@
 ﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using Deviser.Admin.Extensions;
 using Deviser.Core.Common;
 using Deviser.Core.Common.Extensions;
 using Deviser.Core.Common.Internal;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Deviser.Admin.Config
 {

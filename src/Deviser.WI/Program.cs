@@ -1,47 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Serilog;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Deviser.WI
 {
     public class Program
     {
+        public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables()
+            .Build();
+
         public static async Task Main(string[] args)
         {
-            bool isCancelKeyPressed = false;
+            Log.Logger = new LoggerConfiguration()
+                //.Enrich.FromLogContext()
+                .MinimumLevel.Debug()
+                .WriteTo.RollingFile(Path.Combine("./logs", "log-{Date}.txt"))
+                .CreateLogger();
 
-            Console.CancelKeyPress += (sender, eventArgs) =>
-            {
-                isCancelKeyPressed = true;
-                // Don't terminate the process immediately, wait for the Main thread to exit gracefully.
-                eventArgs.Cancel = true;
-            };
 
-            while (true)
+            try
             {
-                Console.WriteLine("Application is starting");
-                await ApplicationManager.Instance.Start(args);
-                Console.WriteLine("Application has been terminated");
-                if (isCancelKeyPressed)
-                    break;
+                Log.Information("Application host being started...");
+
+                bool isCancelKeyPressed = false;
+
+                Console.CancelKeyPress += (sender, eventArgs) =>
+                {
+                    isCancelKeyPressed = true;
+                    // Don't terminate the process immediately, wait for the Main thread to exit gracefully.
+                    eventArgs.Cancel = true;
+                };
+
+                while (true)
+                {
+                    Console.WriteLine("Application is starting");
+                    await ApplicationManager.Instance.Start(args);
+                    Console.WriteLine("Application has been terminated");
+                    if (isCancelKeyPressed)
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
             }
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder
+                        .UseStartup<Startup>();
+                })
+                .UseSerilog();
     }
 
     public class ApplicationManager
     {
         private static ApplicationManager _instance;
-        private static IApplicationLifetime _applicationLifetime;
+        private static IHostApplicationLifetime _applicationLifetime;
         private ApplicationManager()
         {
 
@@ -59,8 +89,8 @@ namespace Deviser.WI
 
         public async Task Start(string[] args)
         {
-            var webHost = Program.CreateWebHostBuilder(args).Build();
-            _applicationLifetime = webHost.Services.GetService<IApplicationLifetime>();
+            var webHost = Program.CreateHostBuilder(args).Build();
+            _applicationLifetime = webHost.Services.GetService<IHostApplicationLifetime>();
             await webHost.RunAsync();
         }
 

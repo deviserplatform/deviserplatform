@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Deviser.Core.Data.Repositories;
+﻿using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.Extensions.Logging;
 using System;
@@ -28,13 +27,17 @@ namespace Deviser.Core.Library
         private List<Page> breadcrumbs = null;
 
         #region Public Methods
-        public Navigation(ILifetimeScope container)
-            : base(container)
+        public Navigation(ILogger<LayoutRepository> logger,
+            ILanguageRepository languageRepository,
+            IScopeService scopeService,
+            IServiceProvider serviceProvider,
+            IHttpContextAccessor httpContextAccessor)
+            : base(serviceProvider)
         {
-            _logger = container.Resolve<ILogger<LayoutRepository>>();
-            _languageRepository = container.Resolve<ILanguageRepository>();
-            _scopeService = container.Resolve<IScopeService>();
-            _httpContextAccessor = container.Resolve<IHttpContextAccessor>();
+            _logger = logger;
+            _languageRepository = languageRepository;
+            _scopeService = scopeService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Page GetPageTree()

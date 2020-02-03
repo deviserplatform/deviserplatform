@@ -1,12 +1,12 @@
+using AutoMapper;
+using Deviser.Core.Common.DomainTypes;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Deviser.Core.Common.DomainTypes;
-using Microsoft.Extensions.Logging;
-using Autofac;
-using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -23,16 +23,25 @@ namespace Deviser.Core.Data.Repositories
 
     }
 
-    public class RoleRepository : RepositoryBase, IRoleRepository
+    public class RoleRepository : IRoleRepository
     {
         ///Logger
         private readonly ILogger<RoleRepository> _logger;
+        private readonly DbContextOptions<DeviserDbContext> _dbOptions;
+        private readonly IMapper _mapper;
+        private readonly IServiceProvider _serviceProvider;
+        
 
         //Constructor
-        public RoleRepository(ILifetimeScope container)
-            : base(container)
+        public RoleRepository(DbContextOptions<DeviserDbContext> dbOptions,
+            ILogger<RoleRepository> logger,
+            IMapper mapper,
+            IServiceProvider serviceProvider)
         {
-            _logger = container.Resolve<ILogger<RoleRepository>>();
+            _logger = logger;
+            _dbOptions = dbOptions;
+            _mapper = mapper;
+            _serviceProvider = serviceProvider;
         }
 
         //Custom Field Declaration
@@ -40,12 +49,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var result = context.Roles
                         .OrderBy(r => r.Name)
                         .ToList();
-                    return Mapper.Map<List<Role>>(result);
+                    return _mapper.Map<List<Role>>(result);
                 }
             }
             catch (Exception ex)
@@ -59,7 +68,7 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var user = context.Users.FirstOrDefault(u => u.UserName.ToLower() == userName);
                     if (user != null)
@@ -69,7 +78,7 @@ namespace Deviser.Core.Data.Repositories
                             .Where(r => r.UserRoles.Any(u => u.UserId == user.Id))
                             .OrderBy(r => r.Name)
                             .ToList();
-                        return Mapper.Map<List<Role>>(result);
+                        return _mapper.Map<List<Role>>(result);
                     }
                 }
             }
@@ -84,12 +93,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var result = context.Roles
                               .FirstOrDefault(e => e.Id == roleId);
 
-                    return Mapper.Map<Role>(result);
+                    return _mapper.Map<Role>(result);
                 }
             }
             catch (Exception ex)
@@ -103,12 +112,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using (var context = new DeviserDbContext(_dbOptions))
                 {
                     var result = context.Roles
                               .FirstOrDefault(e => e.Name == roleName);
 
-                    return Mapper.Map<Role>(result);
+                    return _mapper.Map<Role>(result);
                 }
             }
             catch (Exception ex)
@@ -122,8 +131,8 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                var dbRole = Mapper.Map<Entities.Role>(role);
-                RoleManager<Entities.Role> rm = Container.Resolve<RoleManager<Entities.Role>>();
+                var dbRole = _mapper.Map<Entities.Role>(role);
+                RoleManager<Entities.Role> rm = _serviceProvider.GetService<RoleManager<Entities.Role>>();
                 var result = rm.CreateAsync(dbRole).Result;
 
                 //Role resultRole;
@@ -143,7 +152,7 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                RoleManager<Entities.Role> rm = Container.Resolve<RoleManager<Entities.Role>>();
+                RoleManager<Entities.Role> rm =_serviceProvider.GetService<RoleManager<Entities.Role>>();
                 var dbRole = rm.Roles.FirstOrDefault(r => r.Id == role.Id);
                 dbRole.Name = role.Name;
                 var result = rm.UpdateAsync(dbRole).Result;
@@ -166,7 +175,7 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                RoleManager<Entities.Role> rm = Container.Resolve<RoleManager<Entities.Role>>();
+                RoleManager<Entities.Role> rm =_serviceProvider.GetService<RoleManager<Entities.Role>>();
                 var role = rm.Roles
                     .FirstOrDefault(e => e.Id == roleId);
                 var result = rm.DeleteAsync(role).Result;
@@ -179,7 +188,7 @@ namespace Deviser.Core.Data.Repositories
 
                 //resultRole = context.Roles.Remove(deleteObj).Entity;
                 //context.SaveChanges();
-                return Mapper.Map<Role>(role);
+                return _mapper.Map<Role>(role);
 
             }
             catch (Exception ex)

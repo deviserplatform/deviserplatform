@@ -1,14 +1,11 @@
-﻿using Autofac;
-using Deviser.Core.Common;
-using Deviser.Core.Data.Repositories;
+﻿using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
-using Microsoft.AspNetCore.Http;
+using Deviser.Core.Data.Repositories;
+using Deviser.Core.Library.Services;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Deviser.Core.Library.Services;
 
 namespace Deviser.Core.Library.Sites
 {
@@ -20,12 +17,15 @@ namespace Deviser.Core.Library.Sites
         private readonly IPageContentRepository _pageContentRepository;
         
 
-        public ContentManager(ILifetimeScope container)
-            : base(container)
+        public ContentManager(ILogger<ContentManager> logger,
+            IPageContentRepository pageContentRepository,
+            IScopeService scopeService,
+            IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
-            _logger = container.Resolve<ILogger<ContentManager>>();
-            _pageContentRepository = container.Resolve<IPageContentRepository>();
-            _scopeService = container.Resolve<IScopeService>();
+            _logger = logger;
+            _pageContentRepository = pageContentRepository;
+            _scopeService = scopeService;
             //_httpContextAccessor = container.Resolve<IHttpContextAccessor>();
             //_roleRepository = container.Resolve<IRoleRepository>();
         }

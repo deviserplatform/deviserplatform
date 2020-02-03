@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Deviser.Admin.Config;
 using Deviser.Admin.Data;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using Deviser.Admin.Config;
-using Deviser.Core.Common.Module;
 using Deviser.Admin.Properties;
+using Deviser.Core.Common.Extensions;
+using Deviser.Core.Common.Module;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Deviser.Core.Common.Extensions;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 
 namespace Deviser.Admin.Services
 {

@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
-namespace Deviser.Core.Common.DomainTypes.Admin
+﻿namespace Deviser.Admin.Config
 {
     public class KeyField : BaseField
     {

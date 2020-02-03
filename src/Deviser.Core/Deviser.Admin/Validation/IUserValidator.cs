@@ -1,4 +1,4 @@
-﻿using Deviser.Core.Common.DomainTypes.Admin;
+﻿using Deviser.Admin.Config;
 using Deviser.Core.Data.Entities;
 
 namespace Deviser.Admin.Validation

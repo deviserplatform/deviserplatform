@@ -1,9 +1,7 @@
-﻿using Deviser.Core.Common.DomainTypes.Admin;
+﻿using Deviser.Admin.Config;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Deviser.Admin.Extensions
 {

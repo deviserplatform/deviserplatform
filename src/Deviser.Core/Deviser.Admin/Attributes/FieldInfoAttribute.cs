@@ -1,8 +1,6 @@
-﻿using Deviser.Core.Common.DomainTypes.Admin;
+﻿using Deviser.Admin.Config;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Deviser.Admin.Attributes
 {

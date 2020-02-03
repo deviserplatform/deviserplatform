@@ -1,10 +1,7 @@
 ﻿using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
 using Imageflow.Bindings;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Deviser.Core.Library.Media
 {

@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Deviser.Core.Data.DataMigration;
-using Deviser.Core.Data.Entities;
+﻿using Deviser.Core.Data.DataMigration;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
+using System.IO;
 
 namespace Deviser.Core.Data.Installation
 {
     public class DataSeeder
     {
         private readonly DeviserDbContext _dbContext;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public DataSeeder(DeviserDbContext applicationDbContext, IHostingEnvironment hostingEnvironment)
+        public DataSeeder(DeviserDbContext applicationDbContext, IWebHostEnvironment hostingEnvironment)
         {
             _dbContext = applicationDbContext;
             _hostingEnvironment = hostingEnvironment;

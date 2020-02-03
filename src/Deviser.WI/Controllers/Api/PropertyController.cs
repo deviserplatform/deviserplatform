@@ -1,17 +1,8 @@
-using Autofac;
 using Deviser.Core.Data.Repositories;
-using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Library.Layouts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using AutoMapper;
 using Property = Deviser.Core.Common.DomainTypes.Property;
 
 namespace Deviser.WI.Controllers.Api
@@ -22,10 +13,11 @@ namespace Deviser.WI.Controllers.Api
         private readonly ILogger<PropertyController> _logger;
         private readonly IPropertyRepository _propertyRepository;
 
-        public PropertyController(ILifetimeScope container)
+        public PropertyController(ILogger<PropertyController> logger, 
+            IPropertyRepository propertyRepository)
         {            
-            _logger = container.Resolve<ILogger<PropertyController>>();
-            _propertyRepository = container.Resolve<IPropertyRepository>();
+            _logger = logger;
+            _propertyRepository = propertyRepository;
         }
 
         [HttpGet]

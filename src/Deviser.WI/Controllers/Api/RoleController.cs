@@ -1,12 +1,9 @@
-﻿using Autofac;
-using AutoMapper;
-using Deviser.Core.Data.Repositories;
+﻿using Deviser.Core.Data.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 
 namespace DeviserWI.Controllers.API
 {
@@ -18,10 +15,11 @@ namespace DeviserWI.Controllers.API
         private readonly ILogger<RoleController> _logger;
         private readonly IRoleRepository _roleRepository;
 
-        public RoleController(ILifetimeScope container)
+        public RoleController(ILogger<RoleController> logger, 
+            IRoleRepository roleRepository)
         {
-            _logger = container.Resolve<ILogger<RoleController>>();
-            _roleRepository = container.Resolve<IRoleRepository>();
+            _logger = logger;
+            _roleRepository = roleRepository;
         }
 
         [HttpGet]

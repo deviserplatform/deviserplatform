@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Deviser.Core.Common.Properties;
+using Microsoft.Extensions.DependencyModel;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using Deviser.Core.Common.Properties;
-using Microsoft.Extensions.DependencyModel;
 
 namespace Deviser.Core.Common.Internal
 {

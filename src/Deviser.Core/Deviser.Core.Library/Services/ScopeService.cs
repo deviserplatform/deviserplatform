@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Http;
-using Deviser.Core.Common.DomainTypes;
+using System;
 
 namespace Deviser.Core.Library.Services
 {
