@@ -25,7 +25,7 @@ namespace Deviser.Admin.Web.DependencyInjection
         public static IApplicationBuilder UseDeviserAdmin(this IApplicationBuilder app, IServiceProvider serviceProvider)
         {
             var adminSiteProvider = serviceProvider.GetRequiredService<IAdminSiteProvider>();
-            adminSiteProvider.RegisterAdminSites();
+            adminSiteProvider.RegisterAdminSites(serviceProvider);
             return app;
         }
     }

@@ -6,6 +6,6 @@ namespace Deviser.Admin.Config
     {
         IAdminSite GetAdminConfig(Type adminConfiguratorType);
 
-        void RegisterAdminSites();
+        void RegisterAdminSites(IServiceProvider serviceProvider);
     }
 }

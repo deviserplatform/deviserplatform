@@ -16,13 +16,10 @@ namespace Deviser.Admin.Config
     public class AdminSiteProvider : IAdminSiteProvider
     {
         private readonly IAdminConfigStore _adminConfigStore;
-        private readonly IServiceProvider _serviceProvider;
 
-        public AdminSiteProvider(IAdminConfigStore adminConfigStore, IServiceProvider serviceProvider)
+        public AdminSiteProvider(IAdminConfigStore adminConfigStore)
         {
             _adminConfigStore = adminConfigStore;
-            _serviceProvider = serviceProvider;
-
         }
 
         public IAdminSite GetAdminConfig(Type adminConfiguratorType)
@@ -31,7 +28,7 @@ namespace Deviser.Admin.Config
             return _adminConfigStore.TryGet(adminConfiguratorType, out entityConfiguration) ? (IAdminSite)entityConfiguration : null;
         }
 
-        public void RegisterAdminSites()
+        public void RegisterAdminSites(IServiceProvider serviceProvider)
         {
             //IServiceScopeFactory _serviceScopeFactory = _serviceProvider.GetRequiredService<IServiceScopeFactory>();
             //using (var scope = _serviceScopeFactory.CreateScope())
@@ -58,10 +55,10 @@ namespace Deviser.Admin.Config
 
                 if (hasDbContext)
                 {
-                    using (var contextObj = (DbContext)_serviceProvider.GetRequiredService(dbContextType))
+                    using (var contextObj = (DbContext)serviceProvider.GetRequiredService(dbContextType))
                     {
 
-                        adminSite = new AdminSite(_serviceProvider, contextObj, _serviceProvider.GetRequiredService<IModelMetadataProvider>());
+                        adminSite = new AdminSite(serviceProvider, contextObj, serviceProvider.GetRequiredService<IModelMetadataProvider>());
                         adminBuilder = new AdminBuilder(adminSite);
 
                         if (!contextObj.Database.Exists())
@@ -72,7 +69,7 @@ namespace Deviser.Admin.Config
                 }
                 else
                 {
-                    adminSite = new AdminSite(_serviceProvider, _serviceProvider.GetRequiredService<IModelMetadataProvider>());
+                    adminSite = new AdminSite(serviceProvider, serviceProvider.GetRequiredService<IModelMetadataProvider>());
                     adminBuilder = new AdminBuilder(adminSite);
                     ConfigureAdminSites(adminConfiguratorType, adminSite, adminBuilder);
                 }

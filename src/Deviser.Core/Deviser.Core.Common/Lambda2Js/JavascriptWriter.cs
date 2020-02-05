@@ -37,9 +37,9 @@ namespace Deviser.Core.Common.Lambda2Js
         /// </summary>
         /// <param name="op">The operation that is going to be rendered inside the using block.</param>
         /// <returns>Disposable that renders the ending ')' of the precedence operator.</returns>
-        public PrecedenceController Operation(JavascriptOperationTypes op)
+        public Precedence Operation(JavascriptOperationTypes op)
         {
-            return new PrecedenceController(this.result, this.operandTypes, op);
+            return new Precedence(this.result, this.operandTypes, op);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Deviser.Core.Common.Lambda2Js
             if (op == JavascriptOperationTypes.NoOp)
                 return null;
 
-            return new PrecedenceController(this.result, this.operandTypes, op);
+            return new Precedence(this.result, this.operandTypes, op);
         }
 
         /// <summary>

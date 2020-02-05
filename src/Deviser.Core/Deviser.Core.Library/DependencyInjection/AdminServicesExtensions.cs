@@ -48,7 +48,7 @@ namespace Deviser.Core.Library.DependencyInjection
         {
 
             services.AddSingleton<IInstallationProvider, InstallationProvider>();
-            services.AddSingleton<ISiteSettingRepository, SiteSettingRepository>();
+            services.AddScoped<ISiteSettingRepository, SiteSettingRepository>();
             services.AddSingleton<IModuleRegistry, ModuleRegistry>();
 
             InternalServiceProvider.Instance.BuildServiceProvider(services);
@@ -78,7 +78,7 @@ namespace Deviser.Core.Library.DependencyInjection
             services.AddScoped<ITypeActivatorCache, TypeActivatorCache>();
 
             //builder.RegisterType<ModuleInvokerProvider>().As<IModuleInvokerProvider>();
-            services.AddSingleton<IRouteConstraint, PageUrlConstraint>();
+            services.AddScoped<IRouteConstraint, PageUrlConstraint>();
             services.AddScoped<IDeviserControllerFactory, DeviserControllerFactory>();
             services.AddScoped<DeviserRouteHandler>();
 

@@ -47,11 +47,12 @@ namespace Deviser.Core.Library.Middleware
 
             if (isInstalled)
             {
-                RouteContext routeContext = new RouteContext(httpContext);
+                //RouteContext routeContext = new RouteContext(httpContext);
+                var routeData = httpContext.GetRouteData();
                 //routeContext.RouteData.Routers.Add(_router);
                 //await _router.RouteAsync(routeContext);
 
-                if (!httpContext.Request.Path.Value.Contains("/api") && routeContext.RouteData.Values.Values.Count > 0)
+                if (!httpContext.Request.Path.Value.Contains("/api") && routeData.Values.Values.Count > 0)
                 {
                     try
                     {
@@ -60,7 +61,7 @@ namespace Deviser.Core.Library.Middleware
                         pageContext.IsMultilingual = languageRepository.IsMultilingual();
                         pageContext.SiteSettingInfo = settingManager.GetSiteSetting();
 
-                        var currentCulture = GetCurrentCulture(routeContext, httpContext, pageContext.IsMultilingual);
+                        var currentCulture = GetCurrentCulture(routeData, httpContext, pageContext.IsMultilingual);
 
                         pageContext.CurrentCulture = currentCulture;
 
@@ -74,7 +75,7 @@ namespace Deviser.Core.Library.Middleware
 
                         //This method initilizes the PageContext based on the RouteData or Query "permalink"
                         //permalink in the url has first preference
-                        string permalink = getPermalink(routeContext, httpContext);
+                        string permalink = getPermalink(routeData, httpContext);
                         if (string.IsNullOrEmpty(permalink))
                         {
                             permalink = pageContext.HomePageUrl;
@@ -119,12 +120,12 @@ namespace Deviser.Core.Library.Middleware
                         //scopeService.ModuleContext = moduleContext;
 
 
-                        if (routeContext.RouteData.Values.TryGetValue("area", out moduleName))
+                        if (routeData.Values.TryGetValue("area", out moduleName))
                         {
                             moduleContext.ModuleInfo = moduleRepository.Get((string)moduleName);
                         }
 
-                        if (routeContext.RouteData.Values.TryGetValue("pageModuleId", out pageModuleId))
+                        if (routeData.Values.TryGetValue("pageModuleId", out pageModuleId))
                         {
                             moduleContext.PageModuleId = Guid.Parse((string)pageModuleId);
 
@@ -174,14 +175,14 @@ namespace Deviser.Core.Library.Middleware
             _logger.LogInformation("Finished handling request.");
         }
 
-        private CultureInfo GetCurrentCulture(RouteContext routeContext, HttpContext httpContext, bool isSiteMultilingual)
+        private CultureInfo GetCurrentCulture(RouteData routeData, HttpContext httpContext, bool isSiteMultilingual)
         {
             var requestCultureFeature = httpContext.Features.Get<IRequestCultureFeature>();
             CultureInfo requestCulture = null;
 
             if (isSiteMultilingual)
             {
-                string permalink = getPermalink(routeContext, httpContext);
+                string permalink = getPermalink(routeData, httpContext);
                 var match = Regex.Match(permalink, @"[a-z]{2}-[a-z]{2}", RegexOptions.IgnoreCase);
                 if (match.Success)
                 {
@@ -202,10 +203,10 @@ namespace Deviser.Core.Library.Middleware
             return requestCulture;
         }
 
-        private string getPermalink(RouteContext routeContext, HttpContext httpContext)
+        private string getPermalink(RouteData routeData, HttpContext httpContext)
         {
             //permalink in the url has first preference
-            string permalink = (routeContext.RouteData.Values["permalink"] != null) ? routeContext.RouteData.Values["permalink"].ToString() : "";
+            string permalink = (routeData.Values["permalink"] != null) ? routeData.Values["permalink"].ToString() : "";
             if (string.IsNullOrEmpty(permalink))
             {
                 //if permalink is null, check for querystring

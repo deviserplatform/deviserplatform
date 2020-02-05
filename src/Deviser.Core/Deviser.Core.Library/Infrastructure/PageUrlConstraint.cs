@@ -1,4 +1,6 @@
-﻿using Deviser.Core.Data.Repositories;
+﻿using System;
+using Deviser.Core.Data.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Routing;
@@ -15,16 +17,14 @@ namespace Deviser.Core.Library.Infrastructure
         private readonly IInstallationProvider _installationProvider;
         private readonly  bool _isEverythingInstalled;
         
-        public PageUrlConstraint(IInstallationProvider installationProvider,
-            IPageRepository pageRepository,
-            ILanguageRepository languageRepository)
+        public PageUrlConstraint(IServiceProvider serviceProvider)
         {
-            _installationProvider = installationProvider;
+            _installationProvider = serviceProvider.GetService<IInstallationProvider>(); //installationProvider;
             _isEverythingInstalled = _installationProvider.IsPlatformInstalled && _installationProvider.IsDatabaseExist;
             if (_isEverythingInstalled)
             {
-                _pageRepository = pageRepository;
-                _languageRepository = languageRepository;
+                _pageRepository = serviceProvider.GetService<IPageRepository>();
+                _languageRepository = serviceProvider.GetService<ILanguageRepository>();
             }
             
         }

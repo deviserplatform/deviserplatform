@@ -56,8 +56,7 @@ namespace Deviser.WI
         public void Configure(
             IApplicationBuilder app,
             IWebHostEnvironment env,
-            IServiceProvider serviceProvider,
-            IHostApplicationLifetime appLifetime)
+            IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {

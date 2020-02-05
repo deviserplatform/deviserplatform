@@ -4,13 +4,13 @@ using System.Text;
 
 namespace Deviser.Core.Common.Lambda2Js
 {
-    public class PrecedenceController : IDisposable
+    public class Precedence : IDisposable
     {
         private readonly StringBuilder result;
         private readonly List<JavascriptOperationTypes> operandTypes;
         private readonly JavascriptOperationTypes op;
 
-        public PrecedenceController(StringBuilder result, List<JavascriptOperationTypes> operandTypes, JavascriptOperationTypes op)
+        public Precedence(StringBuilder result, List<JavascriptOperationTypes> operandTypes, JavascriptOperationTypes op)
         {
             this.result = result;
             this.operandTypes = operandTypes;
