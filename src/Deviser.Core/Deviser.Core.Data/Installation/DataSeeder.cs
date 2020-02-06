@@ -17,13 +17,11 @@ namespace Deviser.Core.Data.Installation
 
         public void InsertData()
         {
-            string jsonfile = Path.Combine(_hostingEnvironment.ContentRootPath, "DataSeed.json");            
-            using (StreamReader r = new StreamReader(jsonfile))
-            {
-                string json = r.ReadToEnd();
-                var entityManager = new EntityManager(_dbContext);
-                entityManager.ImportData(json);
-            }
+            string jsonfile = Path.Combine(_hostingEnvironment.ContentRootPath, "DataSeed.json");
+            using StreamReader r = new StreamReader(jsonfile);
+            string json = r.ReadToEnd();
+            var entityManager = new EntityManager(_dbContext);
+            entityManager.ImportData(json);
         }
     }
 }

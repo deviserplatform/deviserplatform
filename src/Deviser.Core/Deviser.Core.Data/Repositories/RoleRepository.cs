@@ -49,13 +49,11 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.Roles
-                        .OrderBy(r => r.Name)
-                        .ToList();
-                    return _mapper.Map<List<Role>>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.Roles
+                    .OrderBy(r => r.Name)
+                    .ToList();
+                return _mapper.Map<List<Role>>(result);
             }
             catch (Exception ex)
             {
@@ -68,18 +66,16 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
+                using var context = new DeviserDbContext(_dbOptions);
+                var user = context.Users.FirstOrDefault(u => u.UserName.ToLower() == userName);
+                if (user != null)
                 {
-                    var user = context.Users.FirstOrDefault(u => u.UserName.ToLower() == userName);
-                    if (user != null)
-                    {
-                        var result = context.Roles
-                            .Include(r=>r.UserRoles)
-                            .Where(r => r.UserRoles.Any(u => u.UserId == user.Id))
-                            .OrderBy(r => r.Name)
-                            .ToList();
-                        return _mapper.Map<List<Role>>(result);
-                    }
+                    var result = context.Roles
+                        .Include(r=>r.UserRoles)
+                        .Where(r => r.UserRoles.Any(u => u.UserId == user.Id))
+                        .OrderBy(r => r.Name)
+                        .ToList();
+                    return _mapper.Map<List<Role>>(result);
                 }
             }
             catch (Exception ex)
@@ -93,13 +89,11 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.Roles
-                              .FirstOrDefault(e => e.Id == roleId);
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.Roles
+                    .FirstOrDefault(e => e.Id == roleId);
 
-                    return _mapper.Map<Role>(result);
-                }
+                return _mapper.Map<Role>(result);
             }
             catch (Exception ex)
             {
@@ -112,13 +106,11 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.Roles
-                              .FirstOrDefault(e => e.Name == roleName);
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.Roles
+                    .FirstOrDefault(e => e.Name == roleName);
 
-                    return _mapper.Map<Role>(result);
-                }
+                return _mapper.Map<Role>(result);
             }
             catch (Exception ex)
             {
@@ -152,8 +144,11 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                RoleManager<Entities.Role> rm =_serviceProvider.GetService<RoleManager<Entities.Role>>();
+                var rm =_serviceProvider.GetService<RoleManager<Entities.Role>>();
                 var dbRole = rm.Roles.FirstOrDefault(r => r.Id == role.Id);
+                
+                if (dbRole == null) return null;
+
                 dbRole.Name = role.Name;
                 var result = rm.UpdateAsync(dbRole).Result;
 
@@ -175,7 +170,7 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                RoleManager<Entities.Role> rm =_serviceProvider.GetService<RoleManager<Entities.Role>>();
+                var rm =_serviceProvider.GetService<RoleManager<Entities.Role>>();
                 var role = rm.Roles
                     .FirstOrDefault(e => e.Id == roleId);
                 var result = rm.DeleteAsync(role).Result;

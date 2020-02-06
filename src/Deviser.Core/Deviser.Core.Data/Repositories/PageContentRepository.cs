@@ -15,8 +15,8 @@ namespace Deviser.Core.Data.Repositories
         List<PageContent> Get(Guid pageId, string cultureCode);
         List<PageContent> Get();
         PageContent RestorePageContent(Guid id);
-        PageContentTranslation GetTranslation(Guid pageConentId);
-        PageContentTranslation GetTranslations(Guid pageConentId, string cultureCode);
+        PageContentTranslation GetTranslation(Guid pageContentId);
+        PageContentTranslation GetTranslations(Guid pageContentId, string cultureCode);
         PageContent Create(PageContent dbPageContent);
         PageContentTranslation CreateTranslation(PageContentTranslation contentTranslation);
         PageContent Update(PageContent content);
@@ -54,19 +54,17 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.PageContent
-                                .AsNoTracking()
-                                .Include(pc => pc.PageContentTranslation)
-                                .Include(pc => pc.ContentType)
-                                .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentTypeProperties).ThenInclude(ctp => ctp.Property)
-                                .Include(pc => pc.ContentPermissions)
-                                .Where(e => e.Id == pageContentId && !e.IsDeleted)
-                                .AsNoTracking()
-                                .FirstOrDefault();
-                    return _mapper.Map<PageContent>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.PageContent
+                    .AsNoTracking()
+                    .Include(pc => pc.PageContentTranslation)
+                    .Include(pc => pc.ContentType)
+                    .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentTypeProperties).ThenInclude(ctp => ctp.Property)
+                    .Include(pc => pc.ContentPermissions)
+                    .Where(e => e.Id == pageContentId && !e.IsDeleted)
+                    .AsNoTracking()
+                    .FirstOrDefault();
+                return _mapper.Map<PageContent>(result);
             }
             catch (Exception ex)
             {
@@ -111,26 +109,21 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.PageContent
+                    .Include(pc => pc.PageContentTranslation)
+                    .Include(pc => pc.ContentType)
+                    .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentTypeProperties).ThenInclude(ctp => ctp.Property)
+                    .Include(pc => pc.ContentPermissions)
+                    .Where(e => e.PageId == pageId && !e.IsDeleted)
+                    .ToList();
+
+                foreach (var pageContent in result.Where(pageContent => pageContent.PageContentTranslation != null))
                 {
-                    var result = context.PageContent
-                               .Include(pc => pc.PageContentTranslation)
-                               .Include(pc => pc.ContentType)
-                               .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentTypeProperties).ThenInclude(ctp => ctp.Property)
-                               .Include(pc => pc.ContentPermissions)
-                               .Where(e => e.PageId == pageId && !e.IsDeleted)
-                               .ToList();
-
-                    foreach (var pageContent in result)
-                    {
-                        if (pageContent.PageContentTranslation != null)
-                        {
-                            pageContent.PageContentTranslation = pageContent.PageContentTranslation.Where(t => t.CultureCode == cultureCode).ToList();
-                        }
-                    }
-
-                    return _mapper.Map<List<PageContent>>(result);
+                    pageContent.PageContentTranslation = pageContent.PageContentTranslation.Where(t => t.CultureCode == cultureCode).ToList();
                 }
+
+                return _mapper.Map<List<PageContent>>(result);
             }
             catch (Exception ex)
             {
@@ -143,17 +136,15 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.PageContent
-                                .Include(p => p.Page).ThenInclude(p => p.PageTranslation)
-                                .Include(pc => pc.ContentPermissions)
-                                .Where(p => p.IsDeleted)
-                                .OrderBy(p => p.Id)
-                                .ToList();
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.PageContent
+                    .Include(p => p.Page).ThenInclude(p => p.PageTranslation)
+                    .Include(pc => pc.ContentPermissions)
+                    .Where(p => p.IsDeleted)
+                    .OrderBy(p => p.Id)
+                    .ToList();
 
-                    return _mapper.Map<List<PageContent>>(result);
-                }
+                return _mapper.Map<List<PageContent>>(result);
             }
             catch (Exception ex)
             {
@@ -172,12 +163,10 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.PageContentTranslation
-                                .FirstOrDefault(t => t.PageContentId == pageContentId && t.CultureCode == cultureCode && !t.IsDeleted);
-                    return _mapper.Map<PageContentTranslation>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.PageContentTranslation
+                    .FirstOrDefault(t => t.PageContentId == pageContentId && t.CultureCode == cultureCode && !t.IsDeleted);
+                return _mapper.Map<PageContentTranslation>(result);
             }
             catch (Exception ex)
             {
@@ -189,19 +178,17 @@ namespace Deviser.Core.Data.Repositories
         /// <summary>
         /// Get page content translations for given translationId
         /// </summary>
-        /// <param name="translationId"></param>
+        /// <param name="pageContentId"></param>
         /// <returns></returns>
-        public PageContentTranslation GetTranslation(Guid translationId)
+        public PageContentTranslation GetTranslation(Guid pageContentId)
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.PageContentTranslation
-                               .FirstOrDefault(t => t.Id == translationId && !t.IsDeleted);
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.PageContentTranslation
+                    .FirstOrDefault(t => t.Id == pageContentId && !t.IsDeleted);
 
-                    return _mapper.Map<PageContentTranslation>(result);
-                }
+                return _mapper.Map<PageContentTranslation>(result);
             }
             catch (Exception ex)
             {
@@ -219,14 +206,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var dbPageContent = _mapper.Map<Entities.PageContent>(pageContent);
-                    dbPageContent.LastModifiedDate = dbPageContent.CreatedDate = DateTime.Now;
-                    var result = context.PageContent.Add(dbPageContent).Entity;
-                    context.SaveChanges();
-                    return _mapper.Map<PageContent>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbPageContent = _mapper.Map<Entities.PageContent>(pageContent);
+                dbPageContent.LastModifiedDate = dbPageContent.CreatedDate = DateTime.Now;
+                var result = context.PageContent.Add(dbPageContent).Entity;
+                context.SaveChanges();
+                return _mapper.Map<PageContent>(result);
             }
             catch (Exception ex)
             {
@@ -244,14 +229,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var dbPageContentTranslation = _mapper.Map<Entities.PageContentTranslation>(contentTranslation);
-                    dbPageContentTranslation.CreatedDate = dbPageContentTranslation.LastModifiedDate = DateTime.Now;
-                    var result = context.PageContentTranslation.Add(dbPageContentTranslation).Entity;
-                    context.SaveChanges();
-                    return _mapper.Map<PageContentTranslation>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbPageContentTranslation = _mapper.Map<Entities.PageContentTranslation>(contentTranslation);
+                dbPageContentTranslation.CreatedDate = dbPageContentTranslation.LastModifiedDate = DateTime.Now;
+                var result = context.PageContentTranslation.Add(dbPageContentTranslation).Entity;
+                context.SaveChanges();
+                return _mapper.Map<PageContentTranslation>(result);
             }
             catch (Exception ex)
             {
@@ -269,15 +252,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var dbPageContent = _mapper.Map<Entities.PageContent>(pageContent);
-                    dbPageContent.LastModifiedDate = DateTime.Now;
-                    dbPageContent.ContentType.ContentTypeProperties = null;
-                    var result = context.PageContent.Update(dbPageContent).Entity;
-                    context.SaveChanges();
-                    return _mapper.Map<PageContent>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbPageContent = _mapper.Map<Entities.PageContent>(pageContent);
+                dbPageContent.LastModifiedDate = DateTime.Now;
+                dbPageContent.ContentType.ContentTypeProperties = null;
+                var result = context.PageContent.Update(dbPageContent).Entity;
+                context.SaveChanges();
+                return _mapper.Map<PageContent>(result);
             }
             catch (Exception ex)
             {
@@ -297,23 +278,21 @@ namespace Deviser.Core.Data.Repositories
             try
             {
                 var dbPageContents = _mapper.Map<List<Entities.PageContent>>(pageContents);
-                using (var context = new DeviserDbContext(_dbOptions))
+                using var context = new DeviserDbContext(_dbOptions);
+                foreach (var content in dbPageContents)
                 {
-                    foreach (var content in dbPageContents)
+                    content.LastModifiedDate = DateTime.Now;
+                    if (context.PageContent.Any(pc => pc.Id == content.Id))
                     {
-                        content.LastModifiedDate = DateTime.Now;
-                        if (context.PageContent.Any(pc => pc.Id == content.Id))
-                        {
-                            //content exist, therefore update the content 
-                            context.PageContent.Update(content);
-                        }
-                        else
-                        {
-                            context.PageContent.Add(content);
-                        }
+                        //content exist, therefore update the content 
+                        context.PageContent.Update(content);
                     }
-                    context.SaveChanges();
+                    else
+                    {
+                        context.PageContent.Add(content);
+                    }
                 }
+                context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -326,16 +305,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbPageContentTranslation = _mapper.Map<Entities.PageContentTranslation>(pageContentTranslation);
+                if (context.PageContentTranslation.Any(t => t.Id == dbPageContentTranslation.Id))
                 {
-                    var dbPageContentTranslation = _mapper.Map<Entities.PageContentTranslation>(pageContentTranslation);
-                    if (context.PageContentTranslation.Any(t => t.Id == dbPageContentTranslation.Id))
-                    {
-                        dbPageContentTranslation.LastModifiedDate = DateTime.Now;
-                        var result = context.PageContentTranslation.Update(dbPageContentTranslation).Entity;
-                        context.SaveChanges();
-                        return _mapper.Map<PageContentTranslation>(result);
-                    }
+                    dbPageContentTranslation.LastModifiedDate = DateTime.Now;
+                    var result = context.PageContentTranslation.Update(dbPageContentTranslation).Entity;
+                    context.SaveChanges();
+                    return _mapper.Map<PageContentTranslation>(result);
                 }
             }
             catch (Exception ex)
@@ -354,30 +331,28 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbContentPermissions = _mapper.Map<List<Entities.ContentPermission>>(contentPermissions);
+                if (dbContentPermissions != null && dbContentPermissions.Count > 0)
                 {
-                    var dbContentPermissions = _mapper.Map<List<Entities.ContentPermission>>(contentPermissions);
-                    if (dbContentPermissions != null && dbContentPermissions.Count > 0)
-                    {
-                        //Filter new permissions which are not in db and add all of them
-                        var toAdd = dbContentPermissions.Where(contentPermission => !context.ContentPermission.Any(dbPermission =>
+                    //Filter new permissions which are not in db and add all of them
+                    var toAdd = dbContentPermissions.Where(contentPermission => !context.ContentPermission.Any(dbPermission =>
                         dbPermission.PermissionId == contentPermission.PermissionId &&
                         dbPermission.PageContentId == contentPermission.PageContentId &&
                         dbPermission.RoleId == contentPermission.RoleId)).ToList();
-                        if (toAdd != null && toAdd.Count > 0)
+                    if (toAdd.Count > 0)
+                    {
+                        foreach (var permission in toAdd)
                         {
-                            foreach (var permission in toAdd)
-                            {
-                                //permission.Page = null;
-                                if (permission.Id == Guid.Empty)
-                                    permission.Id = Guid.NewGuid();
-                                context.ContentPermission.Add(permission);
-                            }
+                            //permission.Page = null;
+                            if (permission.Id == Guid.Empty)
+                                permission.Id = Guid.NewGuid();
+                            context.ContentPermission.Add(permission);
                         }
-
-                        context.SaveChanges();
-                        return _mapper.Map<List<ContentPermission>>(contentPermissions);
                     }
+
+                    context.SaveChanges();
+                    return _mapper.Map<List<ContentPermission>>(contentPermissions);
                 }
             }
             catch (Exception ex)
@@ -394,52 +369,48 @@ namespace Deviser.Core.Data.Repositories
         /// <param name="pageContent"></param>
         public void UpdateContentPermission(PageContent pageContent)
         {
-            if (pageContent.ContentPermissions != null && pageContent.ContentPermissions.Count > 0)
+            if (pageContent.ContentPermissions == null || pageContent.ContentPermissions.Count <= 0) return;
+
+            var dbPageContentSrc = _mapper.Map<Entities.PageContent>(pageContent);
+            //Assuming all permissions have same pageContentId
+            var pageContentId = dbPageContentSrc.Id;
+            var contentPermissions = dbPageContentSrc.ContentPermissions;
+            try
             {
-                var dbPageContentSrc = _mapper.Map<Entities.PageContent>(pageContent);
-                //Assuming all permissions have same pageContentId
-                var pageContentId = dbPageContentSrc.Id;
-                var contentPermissions = dbPageContentSrc.ContentPermissions;
-                try
+                using var context = new DeviserDbContext(_dbOptions);
+                //Update InheritViewPermissions only
+                var dbPageContent = context.PageContent.First(pc => pc.Id == pageContentId);
+                dbPageContent.InheritViewPermissions = dbPageContentSrc.InheritViewPermissions;
+                dbPageContent.InheritEditPermissions = dbPageContentSrc.InheritEditPermissions;
+
+                //Filter deleted permissions in UI and delete all of them
+                var toDelete = context.ContentPermission.Where(dbPermission => dbPermission.PageContentId == pageContentId &&
+                                                                               !contentPermissions.Any(contentPermission => contentPermission.PermissionId == dbPermission.PermissionId && contentPermission.RoleId == dbPermission.RoleId)).ToList();
+                if (toDelete.Count > 0)
+                    context.ContentPermission.RemoveRange(toDelete);
+
+                //Filter new permissions which are not in db and add all of them
+                var toAdd = contentPermissions.Where(contentPermission => !context.ContentPermission.Any(dbPermission =>
+                    dbPermission.PermissionId == contentPermission.PermissionId &&
+                    dbPermission.PageContentId == contentPermission.PageContentId &&
+                    dbPermission.RoleId == contentPermission.RoleId)).ToList();
+                if (toAdd.Count > 0)
                 {
-                    using (var context = new DeviserDbContext(_dbOptions))
+                    foreach (var permission in toAdd)
                     {
-
-                        //Update InheritViewPermissions only
-                        var dbPageContent = context.PageContent.First(pc => pc.Id == pageContentId);
-                        dbPageContent.InheritViewPermissions = dbPageContentSrc.InheritViewPermissions;
-                        dbPageContent.InheritEditPermissions = dbPageContentSrc.InheritEditPermissions;
-
-                        //Filter deleted permissions in UI and delete all of them
-                        var toDelete = context.ContentPermission.Where(dbPermission => dbPermission.PageContentId == pageContentId &&
-                        !contentPermissions.Any(contentPermission => contentPermission.PermissionId == dbPermission.PermissionId && contentPermission.RoleId == dbPermission.RoleId)).ToList();
-                        if (toDelete != null && toDelete.Count > 0)
-                            context.ContentPermission.RemoveRange(toDelete);
-
-                        //Filter new permissions which are not in db and add all of them
-                        var toAdd = contentPermissions.Where(contentPermission => !context.ContentPermission.Any(dbPermission =>
-                        dbPermission.PermissionId == contentPermission.PermissionId &&
-                        dbPermission.PageContentId == contentPermission.PageContentId &&
-                        dbPermission.RoleId == contentPermission.RoleId)).ToList();
-                        if (toAdd != null && toAdd.Count > 0)
-                        {
-                            foreach (var permission in toAdd)
-                            {
-                                //permission.Page = null;
-                                if (permission.Id == Guid.Empty)
-                                    permission.Id = Guid.NewGuid();
-                                context.ContentPermission.Add(permission);
-                            }
-                        }
-
-                        context.SaveChanges();
+                        //permission.Page = null;
+                        if (permission.Id == Guid.Empty)
+                            permission.Id = Guid.NewGuid();
+                        context.ContentPermission.Add(permission);
                     }
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error occured while updating module persmissions", ex);
-                    throw;
-                }
+
+                context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while updating module persmissions", ex);
+                throw;
             }
         }
 
@@ -447,17 +418,15 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var dbpageContent = GetDeletedPageContent(id);
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbPageContent = GetDeletedPageContent(id);
 
-                    if (dbpageContent != null)
-                    {
-                        dbpageContent.IsDeleted = false;
-                        var result = context.PageContent.Update(dbpageContent).Entity;
-                        context.SaveChanges();
-                        return _mapper.Map<PageContent>(result);
-                    }
+                if (dbPageContent != null)
+                {
+                    dbPageContent.IsDeleted = false;
+                    var result = context.PageContent.Update(dbPageContent).Entity;
+                    context.SaveChanges();
+                    return _mapper.Map<PageContent>(result);
                 }
             }
             catch (Exception ex)
@@ -471,29 +440,27 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbPageContent = GetDeletedPageContent(id);
+
+                if (dbPageContent != null)
                 {
-                    var dbpageContent = GetDeletedPageContent(id);
+                    context.PageContent.Remove(dbPageContent);
 
-                    if (dbpageContent != null)
-                    {
-                        context.PageContent.Remove(dbpageContent);
+                    //ContentPermission
+                    var contentPermission = context.ContentPermission
+                        .Where(p => p.PageContentId == id)
+                        .ToList();
+                    context.ContentPermission.RemoveRange(contentPermission);
 
-                        //ContentPermission
-                        var contentPermission = context.ContentPermission
-                                            .Where(p => p.PageContentId == id)
-                                            .ToList();
-                        context.ContentPermission.RemoveRange(contentPermission);
+                    //PageContentTranslation
+                    var contentTranslation = context.PageContentTranslation
+                        .Where(p => p.PageContentId == dbPageContent.Id)
+                        .ToList();
+                    context.PageContentTranslation.RemoveRange(contentTranslation);
 
-                        //PageContentTranslation
-                        var contentTranslation = context.PageContentTranslation
-                                            .Where(p => p.PageContentId == dbpageContent.Id)
-                                            .ToList();
-                        context.PageContentTranslation.RemoveRange(contentTranslation);
-
-                        context.SaveChanges();
-                        return true;
-                    }
+                    context.SaveChanges();
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -507,13 +474,10 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var pageContent = context.PageContent
-                       .Where(p => p.Id == id && p.IsDeleted).First();
+                using var context = new DeviserDbContext(_dbOptions);
+                var pageContent = context.PageContent.First(p => p.Id == id && p.IsDeleted);
 
-                    return pageContent;
-                }
+                return pageContent;
             }
             catch (Exception ex)
             {

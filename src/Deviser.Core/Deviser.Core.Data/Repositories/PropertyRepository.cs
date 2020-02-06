@@ -37,14 +37,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var dbProperty = _mapper.Map<Entities.Property>(property);
-                    dbProperty.CreatedDate = dbProperty.LastModifiedDate = DateTime.Now;
-                    var result = context.Property.Add(dbProperty).Entity;
-                    context.SaveChanges();
-                    return _mapper.Map<Property>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbProperty = _mapper.Map<Entities.Property>(property);
+                dbProperty.CreatedDate = dbProperty.LastModifiedDate = DateTime.Now;
+                var result = context.Property.Add(dbProperty).Entity;
+                context.SaveChanges();
+                return _mapper.Map<Property>(result);
             }
             catch (Exception ex)
             {
@@ -57,13 +55,11 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.Property.Where(e => e.Id == propertyId)
-                        .Include(p => p.OptionList)
-                               .FirstOrDefault();
-                    return _mapper.Map<Property>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.Property.Where(e => e.Id == propertyId)
+                    .Include(p => p.OptionList)
+                    .FirstOrDefault();
+                return _mapper.Map<Property>(result);
             }
             catch (Exception ex)
             {
@@ -76,13 +72,11 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.Property
-                        .Include(p => p.OptionList)
-                        .ToList();
-                    return _mapper.Map<List<Property>>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.Property
+                    .Include(p => p.OptionList)
+                    .ToList();
+                return _mapper.Map<List<Property>>(result);
             }
             catch (Exception ex)
             {
@@ -95,14 +89,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var dbProperty = _mapper.Map<Entities.Property>(property);
-                    //property.LastModifiedDate = DateTime.Now;
-                    var result = context.Property.Update(dbProperty).Entity;
-                    context.SaveChanges();
-                    return _mapper.Map<Property>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbProperty = _mapper.Map<Entities.Property>(property);
+                //property.LastModifiedDate = DateTime.Now;
+                var result = context.Property.Update(dbProperty).Entity;
+                context.SaveChanges();
+                return _mapper.Map<Property>(result);
             }
             catch (Exception ex)
             {

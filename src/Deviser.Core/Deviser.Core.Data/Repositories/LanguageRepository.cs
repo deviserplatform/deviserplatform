@@ -39,16 +39,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var dbLanguage = _mapper.Map<Entities.Language>(language);
-                    dbLanguage.CreatedDate = dbLanguage.LastModifiedDate = DateTime.Now;
-                    dbLanguage.IsActive = true;
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbLanguage = _mapper.Map<Entities.Language>(language);
+                dbLanguage.CreatedDate = dbLanguage.LastModifiedDate = DateTime.Now;
+                dbLanguage.IsActive = true;
 
-                    var result = context.Language.Add(dbLanguage).Entity;
-                    context.SaveChanges();
-                    return _mapper.Map<Language>(result);
-                }
+                var result = context.Language.Add(dbLanguage).Entity;
+                context.SaveChanges();
+                return _mapper.Map<Language>(result);
             }
             catch (Exception ex)
             {
@@ -62,13 +60,11 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.Language
-                                .ToList();
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.Language
+                    .ToList();
 
-                    return _mapper.Map<List<Language>>(result);
-                }
+                return _mapper.Map<List<Language>>(result);
             }
             catch (Exception ex)
             {
@@ -81,14 +77,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.Language
-                        .Where(l => l.IsActive)
-                                .ToList();
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.Language
+                    .Where(l => l.IsActive)
+                    .ToList();
 
-                    return _mapper.Map<List<Language>>(result);
-                }
+                return _mapper.Map<List<Language>>(result);
             }
             catch (Exception ex)
             {
@@ -101,13 +95,11 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.Language
-                        .FirstOrDefault(e => e.Id == languageId);
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.Language
+                    .FirstOrDefault(e => e.Id == languageId);
 
-                    return _mapper.Map<Language>(result);
-                }
+                return _mapper.Map<Language>(result);
             }
             catch (Exception ex)
             {
@@ -118,15 +110,11 @@ namespace Deviser.Core.Data.Repositories
 
         public bool IsMultilingual()
         {
-            using (var context = new DeviserDbContext(_dbOptions))
-            {
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.Language
+                             .Count(l => l.IsActive) > 1;
 
-                var result = context.Language
-                    .Where(l => l.IsActive)
-                    .Count() > 1;
-
-                return result;
-            }
+            return result;
 
             //var result = GetActiveLanguages();
             //return result != null && result.Count > 1;
@@ -136,15 +124,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var dbLanguage = _mapper.Map<Entities.Language>(language);
-                    var result = context.Language.Update(dbLanguage).Entity;
-                    //var result = context.Language.Attach(dbLanguage).Entity;
-                    //context.Entry(dbLanguage).State = EntityState.Modified;
-                    context.SaveChanges();
-                    return _mapper.Map<Language>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbLanguage = _mapper.Map<Entities.Language>(language);
+                var result = context.Language.Update(dbLanguage).Entity;
+                //var result = context.Language.Attach(dbLanguage).Entity;
+                //context.Entry(dbLanguage).State = EntityState.Modified;
+                context.SaveChanges();
+                return _mapper.Map<Language>(result);
             }
             catch (Exception ex)
             {

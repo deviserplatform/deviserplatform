@@ -45,13 +45,11 @@ namespace Deviser.Core.Data.Repositories
                 //    return result;
                 //}
 
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var dbResult = context.SiteSetting.ToList();                    
-                    var result = _mapper.Map<List<SiteSetting>>(dbResult);
-                    //AddResultToCache(cacheName, result);
-                    return result;
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbResult = context.SiteSetting.ToList();                    
+                var result = _mapper.Map<List<SiteSetting>>(dbResult);
+                //AddResultToCache(cacheName, result);
+                return result;
             }
             catch (Exception ex)
             {
@@ -64,12 +62,10 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var setting = context.SiteSetting.FirstOrDefault(s=>s.SettingName==settingName);
-                    if (setting != null)
-                        return setting.SettingValue;
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var setting = context.SiteSetting.FirstOrDefault(s=>s.SettingName==settingName);
+                if (setting != null)
+                    return setting.SettingValue;
             }
             catch (Exception ex)
             {
@@ -82,15 +78,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var dbSettings = _mapper.Map<List<Entities.SiteSetting>>(settings);
-                    context.SiteSetting.UpdateRange(dbSettings);
-                    context.SaveChanges();
-                    var result = context.SiteSetting.ToList();
-                    if (result != null)
-                        return _mapper.Map<List<SiteSetting>>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbSettings = _mapper.Map<List<Entities.SiteSetting>>(settings);
+                context.SiteSetting.UpdateRange(dbSettings);
+                context.SaveChanges();
+                var result = context.SiteSetting.ToList();
+                return _mapper.Map<List<SiteSetting>>(result);
             }
             catch (Exception ex)
             {

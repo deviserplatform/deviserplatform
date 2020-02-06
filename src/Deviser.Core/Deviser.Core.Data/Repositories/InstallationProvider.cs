@@ -96,10 +96,10 @@ namespace Deviser.Core.Data.Repositories
 
         public void InstallPlatform(InstallModel installModel)
         {
-            string connectionString = GetConnectionString(installModel);
-            string settingFile = Path.Combine(_hostingEnvironment.ContentRootPath, $"appsettings.{_hostingEnvironment.EnvironmentName}.json");
-            DbContextOptionsBuilder<DeviserDbContext> dbContextOptionsBuilder = GetDbContextOptionsBuilder<DeviserDbContext>(installModel);
-            DbContextOptions<DeviserDbContext> dbOption = dbContextOptionsBuilder.Options;
+            var connectionString = GetConnectionString(installModel);
+            var settingFile = Path.Combine(_hostingEnvironment.ContentRootPath, $"appsettings.{_hostingEnvironment.EnvironmentName}.json");
+            var dbContextOptionsBuilder = GetDbContextOptionsBuilder<DeviserDbContext>(installModel);
+            var dbOption = dbContextOptionsBuilder.Options;
             _isInstallInProgress = true;
             _installModel = installModel;
             if (!IsDatabaseExistsFor(connectionString))
@@ -129,15 +129,15 @@ namespace Deviser.Core.Data.Repositories
                 }
             }
 
-            //Write intall settings
+            //Write install settings
             WriteInstallSettings(installModel);
 
             //Update connection string 
             //Writing to appsettings.json file
-            string json = File.ReadAllText(settingFile);
-            JObject jsonObj = JObject.Parse(json);
+            var json = File.ReadAllText(settingFile);
+            var jsonObj = JObject.Parse(json);
             jsonObj["ConnectionStrings"]["DefaultConnection"] = connectionString;
-            string output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
+            var output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
             File.WriteAllText(settingFile, output);
 
             //Updating it in cache
@@ -151,11 +151,9 @@ namespace Deviser.Core.Data.Repositories
 
         public void InsertData(DbContextOptions<DeviserDbContext> dbOption)
         {
-            using (var context = new DeviserDbContext(dbOption))
-            {
-                var dataSeeder = new DataSeeder(context, _hostingEnvironment);
-                dataSeeder.InsertData();
-            }
+            using var context = new DeviserDbContext(dbOption);
+            var dataSeeder = new DataSeeder(context, _hostingEnvironment);
+            dataSeeder.InsertData();
         }
 
         public string GetConnectionString(InstallModel model)
@@ -209,7 +207,7 @@ namespace Deviser.Core.Data.Repositories
         {
             //DbContextOptionsBuilder<DeviserDbContext>
 
-            InstallModel installModel = GetInstallationModel();
+            var installModel = GetInstallationModel();
             if (installModel == null)
                 return null;
 
@@ -227,7 +225,7 @@ namespace Deviser.Core.Data.Repositories
         {
             //DbContextOptionsBuilder<DeviserDbContext>
 
-            InstallModel installModel = GetInstallationModel();
+            var installModel = GetInstallationModel();
             if (installModel == null)
                 return null;            
 
@@ -261,7 +259,7 @@ namespace Deviser.Core.Data.Repositories
 
         private DbContextOptionsBuilder GetDbContextOptionsBuilder(InstallModel installModel, DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null)
         {
-            string connectionString = IsPlatformInstalled ? _configuration.GetConnectionString("DefaultConnection") : GetConnectionString(installModel);
+            var connectionString = IsPlatformInstalled ? _configuration.GetConnectionString("DefaultConnection") : GetConnectionString(installModel);
 
 
             if (installModel.DatabaseProvider == DatabaseProvider.SQLServer || installModel.DatabaseProvider == DatabaseProvider.SQLLocalDb)
@@ -434,20 +432,19 @@ namespace Deviser.Core.Data.Repositories
             if (_installModel != null)
                 return _installModel;
 
-            string installationFilePath = Path.Combine(_hostingEnvironment.ContentRootPath, Globals.InstallConfigFile);
-            if (File.Exists(installationFilePath))
-            {
-                string strInstallation = File.ReadAllText(installationFilePath);
-                _installModel = !string.IsNullOrEmpty(strInstallation) ? SDJsonConvert.DeserializeObject<InstallModel>(strInstallation) : null;
-                return _installModel;
-            }
-            return null;
+            var installationFilePath = Path.Combine(_hostingEnvironment.ContentRootPath, Globals.InstallConfigFile);
+            
+            if (!File.Exists(installationFilePath)) return null;
+
+            var strInstallation = File.ReadAllText(installationFilePath);
+            _installModel = !string.IsNullOrEmpty(strInstallation) ? SDJsonConvert.DeserializeObject<InstallModel>(strInstallation) : null;
+            return _installModel;
         }
 
         private void WriteInstallSettings(InstallModel model)
         {
-            string contentRootPath = _hostingEnvironment.ContentRootPath;
-            string filePath = Path.Combine(contentRootPath, Globals.InstallConfigFile);
+            var contentRootPath = _hostingEnvironment.ContentRootPath;
+            var filePath = Path.Combine(contentRootPath, Globals.InstallConfigFile);
             //Save setting
             File.WriteAllText(filePath, JsonConvert.SerializeObject(model));
         }
@@ -455,11 +452,11 @@ namespace Deviser.Core.Data.Repositories
         private void MigrateModuleContexts(InstallModel installModel)
         {
             var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.PlatformAssembly);
-            List<TypeInfo> moduleDbContextTypes = new List<TypeInfo>();
+            var moduleDbContextTypes = new List<TypeInfo>();
 
-            Type moduleDbContextBaseType = typeof(ModuleDbContext);
-            PropertyInfo databaseField = moduleDbContextBaseType.GetProperty("Database");
-            MethodInfo registerServiceMethodInfo = typeof(Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions).GetMethod("Migrate");
+            var moduleDbContextBaseType = typeof(ModuleDbContext);
+            var databaseField = moduleDbContextBaseType.GetProperty("Database");
+            var registerServiceMethodInfo = typeof(Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions).GetMethod("Migrate");
             foreach (var assembly in assemblies)
             {
                 var controllerTypes = assembly.DefinedTypes.Where(t => moduleDbContextBaseType.IsAssignableFrom(t)).ToList();
@@ -468,24 +465,23 @@ namespace Deviser.Core.Data.Repositories
                     moduleDbContextTypes.AddRange(controllerTypes);
             }
 
-            if (moduleDbContextTypes.Count > 0)
+            if (moduleDbContextTypes.Count <= 0) return;
+
+            foreach (var moduleDbContextType in moduleDbContextTypes)
             {
-                foreach (var moduleDbContextType in moduleDbContextTypes)
-                {
-                    var moduleDbOptionBuilderGType = typeof(DbContextOptionsBuilder<>);
-                    Type[] typeArgs = { moduleDbContextType };
-                    var moduleDbOptionBuilderType = moduleDbOptionBuilderGType.MakeGenericType(typeArgs);
-                    var moduleDbOptionBuilder = Activator.CreateInstance(moduleDbOptionBuilderType); //var optionsBuilder = new DbContextOptionsBuilder<DeviserDbContext>();
-                    var dbContextOptionBuilder = GetDbContextOptionsBuilder(installModel, (DbContextOptionsBuilder)moduleDbOptionBuilder);
+                var moduleDbOptionBuilderGType = typeof(DbContextOptionsBuilder<>);
+                Type[] typeArgs = { moduleDbContextType };
+                var moduleDbOptionBuilderType = moduleDbOptionBuilderGType.MakeGenericType(typeArgs);
+                var moduleDbOptionBuilder = Activator.CreateInstance(moduleDbOptionBuilderType); //var optionsBuilder = new DbContextOptionsBuilder<DeviserDbContext>();
+                var dbContextOptionBuilder = GetDbContextOptionsBuilder(installModel, (DbContextOptionsBuilder)moduleDbOptionBuilder);
 
-                    var moduleDbContextObj = Activator.CreateInstance(moduleDbContextType, dbContextOptionBuilder.Options);
+                var moduleDbContextObj = Activator.CreateInstance(moduleDbContextType, dbContextOptionBuilder.Options);
 
-                    var databaseObj = databaseField.GetValue(moduleDbContextObj);
+                var databaseObj = databaseField.GetValue(moduleDbContextObj);
 
-                    registerServiceMethodInfo.Invoke(databaseObj, new object[] { databaseObj });
-                    //registerServiceMethodInfo.Invoke(obj, new object[] { serviceCollection });
+                registerServiceMethodInfo.Invoke(databaseObj, new object[] { databaseObj });
+                //registerServiceMethodInfo.Invoke(obj, new object[] { serviceCollection });
 
-                }
             }
         }
     }

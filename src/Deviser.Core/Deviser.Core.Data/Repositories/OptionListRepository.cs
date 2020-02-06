@@ -38,14 +38,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var dbOptionList = _mapper.Map<Entities.OptionList>(optionList);
-                    dbOptionList.CreatedDate = dbOptionList.LastModifiedDate = DateTime.Now;
-                    var result = context.OptionList.Add(dbOptionList).Entity;
-                    context.SaveChanges();
-                    return _mapper.Map<OptionList>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbOptionList = _mapper.Map<Entities.OptionList>(optionList);
+                dbOptionList.CreatedDate = dbOptionList.LastModifiedDate = DateTime.Now;
+                var result = context.OptionList.Add(dbOptionList).Entity;
+                context.SaveChanges();
+                return _mapper.Map<OptionList>(result);
             }
             catch (Exception ex)
             {
@@ -58,11 +56,9 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.OptionList.ToList();
-                    return _mapper.Map<List<OptionList>>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.OptionList.ToList();
+                return _mapper.Map<List<OptionList>>(result);
             }
             catch (Exception ex)
             {
@@ -75,12 +71,10 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.OptionList
-                               .FirstOrDefault(e => e.Id == optionListId);
-                    return _mapper.Map<OptionList>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.OptionList
+                    .FirstOrDefault(e => e.Id == optionListId);
+                return _mapper.Map<OptionList>(result);
             }
             catch (Exception ex)
             {
@@ -93,12 +87,10 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var result = context.OptionList
-                               .FirstOrDefault(e => e.Name.ToLower() == listName.ToLower());
-                    return _mapper.Map<OptionList>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.OptionList
+                    .FirstOrDefault(e => e.Name.ToLower() == listName.ToLower());
+                return _mapper.Map<OptionList>(result);
             }
 
 
@@ -114,14 +106,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    var dboptionList = _mapper.Map<Entities.OptionList>(optionList);
-                    dboptionList.LastModifiedDate = DateTime.Now;
-                    var result = context.OptionList.Update(dboptionList).Entity;
-                    context.SaveChanges();
-                    return _mapper.Map<OptionList>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbOptionList = _mapper.Map<Entities.OptionList>(optionList);
+                dbOptionList.LastModifiedDate = DateTime.Now;
+                var result = context.OptionList.Update(dbOptionList).Entity;
+                context.SaveChanges();
+                return _mapper.Map<OptionList>(result);
             }
             catch (Exception ex)
             {

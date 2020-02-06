@@ -27,10 +27,8 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(_dbOptions))
-                {
-                    return context.Database.Exists();
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                return context.Database.Exists();
             }
             catch (Exception ex)
             {
