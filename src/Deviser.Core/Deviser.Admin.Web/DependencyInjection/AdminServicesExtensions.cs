@@ -17,16 +17,19 @@ namespace Deviser.Admin.Web.DependencyInjection
             services.AddScoped<IPasswordValidator, PasswordValidator>();
             services.AddScoped<IUserByEmailValidator, UserValidator>();
 
-            services.ConfigureOptions(typeof(UIConfigureOptions));
+            //services.ConfigureOptions(typeof(UIConfigureOptions));
+
+            
+            var serviceProvider = services.BuildServiceProvider();
+            RegisterAdminSites(serviceProvider);
 
             return services;
         }
 
-        public static IApplicationBuilder UseDeviserAdmin(this IApplicationBuilder app, IServiceProvider serviceProvider)
+        public static void RegisterAdminSites(IServiceProvider serviceProvider)
         {
             var adminSiteProvider = serviceProvider.GetRequiredService<IAdminSiteProvider>();
             adminSiteProvider.RegisterAdminSites(serviceProvider);
-            return app;
         }
     }
 }

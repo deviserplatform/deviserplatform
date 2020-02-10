@@ -12,21 +12,12 @@ namespace Deviser.Core.Library.Infrastructure
 {
     public class PageUrlConstraint : IRouteConstraint
     {
-        private readonly IPageRepository _pageRepository;
-        private readonly ILanguageRepository _languageRepository;
-        private readonly IInstallationProvider _installationProvider;
-        private readonly  bool _isEverythingInstalled;
+        private readonly bool _isEverythingInstalled;
         
         public PageUrlConstraint(IServiceProvider serviceProvider)
         {
-            _installationProvider = serviceProvider.GetService<IInstallationProvider>(); //installationProvider;
-            _isEverythingInstalled = _installationProvider.IsPlatformInstalled && _installationProvider.IsDatabaseExist;
-            if (_isEverythingInstalled)
-            {
-                _pageRepository = serviceProvider.GetService<IPageRepository>();
-                _languageRepository = serviceProvider.GetService<ILanguageRepository>();
-            }
-            
+            var installationProvider = serviceProvider.GetService<IInstallationProvider>(); //installationProvider;
+            _isEverythingInstalled = installationProvider.IsPlatformInstalled && installationProvider.IsDatabaseExist;
         }
 
         public bool Match(HttpContext httpContext, IRouter route, string routeKey, RouteValueDictionary values, RouteDirection routeDirection)
@@ -38,7 +29,8 @@ namespace Deviser.Core.Library.Infrastructure
             {
                 var permalink = values[routeKey].ToString();
                 var currentCulture = GetCurrentCulture(httpContext, permalink); // Have  to use this since it will be clled before InitPageContext()
-                var pageTranslations = _pageRepository.GetPageTranslations(currentCulture.ToString());
+                var pageRepository = httpContext.RequestServices.GetService<IPageRepository>();
+                var pageTranslations = pageRepository.GetPageTranslations(currentCulture.ToString());
                 if (pageTranslations != null && pageTranslations.Count > 0)
                 {
                     var result = pageTranslations.Any(p => (p != null && p.URL.ToLower() == permalink.ToLower()));
@@ -51,7 +43,8 @@ namespace Deviser.Core.Library.Infrastructure
         private CultureInfo GetCurrentCulture(HttpContext httpContext, string permalink)
         {
             var requestCultureFeature = httpContext.Features.Get<IRequestCultureFeature>();
-            var isMultilingual = _languageRepository.IsMultilingual();
+            var languageRepository = httpContext.RequestServices.GetService<ILanguageRepository>();
+            var isMultilingual = languageRepository.IsMultilingual();
             CultureInfo requestCulture = null;
 
             if (isMultilingual)

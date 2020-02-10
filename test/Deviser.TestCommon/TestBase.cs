@@ -42,7 +42,7 @@ namespace Deviser.TestCommon
 
             var services = new ServiceCollection();
 
-            var hostingEnvMock = new Mock<IHostingEnvironment>(MockBehavior.Strict);
+            var hostingEnvMock = new Mock<IWebHostEnvironment>(MockBehavior.Strict);
             var currentAssemblyName = this.GetType().GetTypeInfo().Assembly.GetName().Name;
             hostingEnvMock.Setup(he => he.ApplicationName).Returns(currentAssemblyName);
 
@@ -54,7 +54,7 @@ namespace Deviser.TestCommon
                     .AddEntityFrameworkStores<DeviserDbContext>();
 
             services.AddSingleton<DiagnosticSource>(new DiagnosticListener("Microsoft.AspNetCore"));
-            services.AddSingleton<IHostingEnvironment>(hostingEnvMock.Object);
+            services.AddSingleton<IWebHostEnvironment>(hostingEnvMock.Object);
             services.Add(ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, SerializerSettingsSetup>());
             services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
             services.TryAddSingleton<ObjectMethodExecutorCache>();

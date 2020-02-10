@@ -285,7 +285,7 @@ namespace Deviser.Core.Library.Controllers
         }
 
         private ActionContext GetActionContext(RouteContext routeContext, bool isMVCAction = false)
-        {          
+        {
 
             IReadOnlyList<ActionDescriptor> actionDescriptors = null;
             if (isMVCAction)
@@ -300,10 +300,11 @@ namespace Deviser.Core.Library.Controllers
                 //Attributed Actions
                 var attributeRoutedActions = actions.Items.Where(a => a.AttributeRouteInfo?.Template != null && !a.AttributeRouteInfo.SuppressPathMatching).ToList();
 
-                actionDescriptors = attributeRoutedActions.Where(ad =>
-                string.Equals(ad.RouteValues["Area"], routeContext.RouteData.Values["area"] as string, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(ad.RouteValues["Controller"], routeContext.RouteData.Values["controller"] as string, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(ad.RouteValues["Action"], routeContext.RouteData.Values["action"] as string, StringComparison.OrdinalIgnoreCase)).ToList();
+                actionDescriptors = attributeRoutedActions.Where(ad => 
+                    ad.RouteValues.ContainsKey("area") && 
+                    string.Equals(ad.RouteValues["area"], routeContext.RouteData.Values["area"] as string, StringComparison.OrdinalIgnoreCase) && 
+                    string.Equals(ad.RouteValues["controller"], routeContext.RouteData.Values["controller"] as string, StringComparison.OrdinalIgnoreCase) && 
+                    string.Equals(ad.RouteValues["action"], routeContext.RouteData.Values["action"] as string, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
 

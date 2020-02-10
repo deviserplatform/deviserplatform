@@ -2,7 +2,7 @@
     ViewData["Title"] = "Index";
     //Layout = "~/_Layout.cshtml";
 }
-<require type="Script" priority="106" include="Development" path="~/js/src/app/content-management/properties.js"></require>
+<require dependency-type="Script" priority="106" include="Development" file-path="~/js/src/app/content-management/properties.js"></require>
 
 <div ng-app="deviser.properties" ng-controller="PropertiesCtrl as pVM">
     <div class="row" ng-show="pVM.message.content">

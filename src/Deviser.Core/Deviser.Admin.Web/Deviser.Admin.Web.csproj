@@ -2,25 +2,24 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RazorLangVersion>3.0</RazorLangVersion>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+
+    <!--Angular App-->
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-    <IsShippingPackage>true</IsShippingPackage>
-    <RazorCompileOnBuild>false</RazorCompileOnBuild>
-    <RazorCompileOnPublish>false</RazorCompileOnPublish>
-    <EnableDefaultRazorGenerateItems>false</EnableDefaultRazorGenerateItems>
-    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
-    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-    <SpaRoot>wwwroot\Admin</SpaRoot>
+    <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+    <!-- Set this to true if you enable server-side prerendering -->
+    <BuildServerSideRenderer>false</BuildServerSideRenderer>
+    <IsShippingPackage>true</IsShippingPackage>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.1" />
-    <PackageReference Include="Microsoft.NET.Sdk.Razor" Version="3.1.1" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,27 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!--<Folder Include="wwwroot\Admin\" />-->
-    <None Include="$(SpaRoot)\**" />
-    <Content Remove="$(SpaRoot)\node_modules\**" />
-    <None Remove="$(SpaRoot)\node_modules\**" />
-    <Compile Remove="$(SpaRoot)\node_modules\**" />
-      
-    <!--<EmbeddedResource Include="$(SpaRoot)\src\**\*" />-->
-    <EmbeddedResource Remove="$(SpaRoot)\node_modules\**" />
-    <EmbeddedResource Remove="wwwroot\Admin\node_modules\**" />
-    <EmbeddedResource Include="$(SpaRoot)\dist\**\*" />
-    
-    <Content Update="**\*.cshtml" Pack="false" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="Views\_ViewImports.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\Admin\dist\" />
+    <Content Remove="$(SpaRoot)**" />
+    <None Remove="$(SpaRoot)**" />
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 </Project>

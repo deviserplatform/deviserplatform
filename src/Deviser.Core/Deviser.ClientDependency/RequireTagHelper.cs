@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -20,30 +21,22 @@ namespace Deviser.ClientDependency
         /// <summary>
         /// A comma separated list of environment names in which the content should be rendered.
         /// If the current environment is also in the <see cref="Exclude"/> list, the content will not be rendered.
-        /// </summary>
-        /// <remarks>
-        /// The specified environment names are compared case insensitively to the current value of
-        /// <see cref="IHostingEnvironment.EnvironmentName"/>.
-        /// </remarks>        
+        /// </summary>   
         public string Include { get; set; }
 
         /// <summary>
         /// A comma separated list of environment names in which the content will not be rendered.
         /// </summary>
-        /// <remarks>
-        /// The specified environment names are compared case insensitively to the current value of
-        /// <see cref="IHostingEnvironment.EnvironmentName"/>.
-        /// </remarks>
         public string Exclude { get; set; }
 
-        public DependencyType Type { get; set; }
+        public DependencyType DependencyType { get; set; }
                 
         public ScriptLocation Location { get; set; }
                 
         public int Priority { get; set; }
                 
-        public string Path { get; set; }        
-
+        public string FilePath { get; set; }
+        
         public override int Order
         {
             get
@@ -66,7 +59,7 @@ namespace Deviser.ClientDependency
         {
             output.TagName = null;
 
-            if (string.IsNullOrEmpty(Path))
+            if (string.IsNullOrEmpty(FilePath))
             {
                 throw new ArgumentNullException("Path", "Path must be provided");
             }
@@ -75,15 +68,15 @@ namespace Deviser.ClientDependency
             {
                 var dependencyLoader = DependencyManager.GetLoader(_httpContextAccessor.HttpContext);
                 
-                if (!dependencyLoader.DependencyFiles.Any(d => d.FilePath.ToLower() == Path.ToLower()))
+                if (!dependencyLoader.DependencyFiles.Any(d => d.FilePath.ToLower() == FilePath.ToLower()))
                 {
                     if (HasEnvironment())
                     {
                         dependencyLoader.DependencyFiles.Add(new DependencyFile
                         {
-                            DependencyType = Type,
+                            DependencyType = DependencyType,
                             ScriptLocation = Location != null ? Location : ScriptLocation.BodyEnd,
-                            FilePath = Path,
+                            FilePath = FilePath,
                             Priority = Priority > 0 ? Priority : Priority + 100,
                             Attributes = output.Attributes.ToDictionary(k => k.Name, v => v.Value)
                         });

@@ -24,7 +24,7 @@ namespace Deviser.Core.Library.Internal
         private const string ControllerTypeNameSuffix = "Controller";
         
         public ActionInvoker(
-            ITypeActivatorCache typeActivatorCache,
+            //ITypeActivatorCache typeActivatorCache,
             ObjectMethodExecutorCache cache/*,
            IEnumerable<IControllerPropertyActivator> propertyActivators*/)
         {
@@ -39,7 +39,7 @@ namespace Deviser.Core.Library.Internal
             {
                 var controllerTypes = assembly.DefinedTypes.Where(t => IsController(t)).ToList();
 
-                if (controllerTypes != null && controllerTypes.Count > 0)
+                if (controllerTypes.Count > 0)
                     _allControllers.AddRange(controllerTypes);
             }
         }
@@ -81,10 +81,12 @@ namespace Deviser.Core.Library.Internal
             var controllerContext = new ControllerContext(actionContext);
             //var controller1 = _controllerFactory.CreateController(controllerContext);
 
-            var serviceProvider = httpContext.RequestServices;
+            //var serviceProvider = httpContext.RequestServices;
 
-            var controller = httpContext.RequestServices.GetService(targetController.AsType());
+            if (!(httpContext.RequestServices.GetService(targetController.AsType()) is Controller controller))
+                return null;
 
+            controller.ControllerContext = controllerContext;
             //var controller = _typeActivatorCache.CreateInstance<object>(serviceProvider, targetController.AsType()); //Returns 
 
             //foreach (var propertyActivator in _propertyActivators)
@@ -101,12 +103,12 @@ namespace Deviser.Core.Library.Internal
             }
             else if (returnType == typeof(Task))
             {
-                await (Task)executor.Execute(controller, arguments);
+                await (Task) executor.Execute(controller, arguments);
                 result = new EmptyResult();
             }
             else if (executor.TaskGenericType == typeof(IActionResult))
             {
-                result = await (Task<IActionResult>)executor.Execute(controller, arguments);
+                result = await (Task<IActionResult>) executor.Execute(controller, arguments);
                 if (result == null)
                 {
                     throw new InvalidOperationException(
@@ -117,17 +119,18 @@ namespace Deviser.Core.Library.Internal
             {
                 if (executor.IsMethodAsync)
                 {
-                    result = (IActionResult)await executor.ExecuteAsync(controller, arguments);
+                    result = (IActionResult) await executor.ExecuteAsync(controller, arguments);
                 }
                 else
                 {
-                    result = (IActionResult)executor.Execute(controller, arguments);
+                    result = (IActionResult) executor.Execute(controller, arguments);
                 }
 
                 if (result == null)
                 {
                     throw new InvalidOperationException(
-                        Resources.FormatActionResult_ActionReturnValueCannotBeNull(executor.TaskGenericType ?? returnType));
+                        Resources.FormatActionResult_ActionReturnValueCannotBeNull(
+                            executor.TaskGenericType ?? returnType));
                 }
             }
             else if (!executor.IsMethodAsync)
@@ -154,7 +157,7 @@ namespace Deviser.Core.Library.Internal
                     executor.MethodInfo.DeclaringType));
             }
 
-            ((IDisposable)controller).RegisterForDispose(httpContext);
+            ((IDisposable) controller).RegisterForDispose(httpContext);
 
             return result;
         }

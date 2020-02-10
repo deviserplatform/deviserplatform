@@ -19,19 +19,19 @@ namespace Deviser.WI
                 .WriteTo.RollingFile(Path.Combine("./logs", "log-{Date}.txt"))
                 .CreateLogger();
 
-            try
-            {
+            //try
+            //{
                 Log.Information("Application host being started...");
                 CreateHostBuilder(args).Build().Run();
-            }
-            catch (Exception ex)
-            {
-                Log.Fatal(ex, "Host terminated unexpectedly");
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Fatal(ex, "Host terminated unexpectedly");
+            //}
+            //finally
+            //{
+            //    Log.CloseAndFlush();
+            //}
         }
 
         //public static IHostBuilder CreateHostBuilder(string[] args) =>

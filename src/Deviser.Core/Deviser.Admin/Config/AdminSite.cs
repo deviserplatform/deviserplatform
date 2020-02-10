@@ -803,7 +803,7 @@ namespace Deviser.Admin.Config
             return keySelectorExpressions;
         }
 
-        private Dictionary<string, object> GetLookUpKey<TEntity>(TEntity item, List<Expression<Func<TEntity, object>>> primaryKeyExpr)
+        private static Dictionary<string, object> GetLookUpKey<TEntity>(TEntity item, List<Expression<Func<TEntity, object>>> primaryKeyExpr)
             where TEntity : class
         {
             var lookUpKey = new Dictionary<string, object>();

@@ -67,6 +67,9 @@ namespace Deviser.Core.Library.DependencyInjection
                .AddEntityFrameworkStores<DeviserDbContext>()
                .AddDefaultTokenProviders();
 
+            services.AddHttpContextAccessor();
+
+
             services.AddAutoMapper(typeof(AdminServicesExtensions).Assembly);
 
             services.AddScoped<ViewResultExecutor>();
@@ -76,26 +79,24 @@ namespace Deviser.Core.Library.DependencyInjection
 
             services.AddScoped<IActionInvoker, ActionInvoker>();
             services.AddScoped<ITypeActivatorCache, TypeActivatorCache>();
-
             //builder.RegisterType<ModuleInvokerProvider>().As<IModuleInvokerProvider>();
-            services.AddScoped<IRouteConstraint, PageUrlConstraint>();
-            services.AddScoped<IDeviserControllerFactory, DeviserControllerFactory>();
-            services.AddScoped<DeviserRouteHandler>();
+            //services.AddScoped<DeviserRouteHandler>();
 
-            services.AddScoped<ILayoutRepository, LayoutRepository>();
-            services.AddScoped<ILayoutTypeRepository, LayoutTypeRepository>();
-            services.AddScoped<IContentTypeRepository, ContentTypeRepository>();
-            services.AddScoped<IModuleRepository, ModuleRepository>();
-            services.AddScoped<IPageContentRepository, PageContentRepository>();
-            services.AddScoped<IPageRepository, PageRepository>();
-            services.AddScoped<IRoleRepository, RoleRepository>();
-            //builder.RegisterType<SiteSettingRepository>().As<ISiteSettingRepository>().InstancePerDependency(); moved to core lib
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ILanguageRepository, LanguageRepository>();
-            services.AddScoped<IOptionListRepository, OptionListRepository>();
-            services.AddScoped<IPropertyRepository, PropertyRepository>();
+            services.AddTransient<ILayoutRepository, LayoutRepository>();
+            services.AddTransient<ILayoutTypeRepository, LayoutTypeRepository>();
+            services.AddTransient<IContentTypeRepository, ContentTypeRepository>();
+            services.AddTransient<IModuleRepository, ModuleRepository>();
+            services.AddTransient<IPageContentRepository, PageContentRepository>();
+            services.AddTransient<IPageRepository, PageRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<ILanguageRepository, LanguageRepository>();
+            services.AddTransient<IOptionListRepository, OptionListRepository>();
+            services.AddTransient<IPropertyRepository, PropertyRepository>();
 
             //builder.RegisterType<ContactProvider>().As<IContactProvider>();
+            services.AddScoped<IRouteConstraint, PageUrlConstraint>();
+            services.AddScoped<IDeviserControllerFactory, DeviserControllerFactory>();
 
             services.AddScoped<IPageManager, PageManager>();
             services.AddScoped<IModuleManager, ModuleManager>();
@@ -162,6 +163,8 @@ namespace Deviser.Core.Library.DependencyInjection
 
             RegisterModuleDependencies(services);
 
+            
+
             //services
             //    .AddMvc()
             //    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
@@ -185,6 +188,7 @@ namespace Deviser.Core.Library.DependencyInjection
 
                 })
                 .AddControllersAsServices();
+            
 
             services.AddDeviserAdmin();
 
@@ -208,7 +212,7 @@ namespace Deviser.Core.Library.DependencyInjection
                        .AllowAnyHeader();
             }));
 
-            // Add application services.
+            // Add core application services.
             services.AddTransient<IEmailSender, MessageSender>();
             services.AddTransient<ISmsSender, MessageSender>();
             services.TryAddSingleton<ObjectMethodExecutorCache>();
@@ -299,7 +303,7 @@ namespace Deviser.Core.Library.DependencyInjection
 
             //Deviser Specific
             app.UsePageContext();
-            app.UseDeviserAdmin(serviceProvider);
+            //app.UseDeviserAdmin(serviceProvider);
             
             return app.UseEndpoints(endpoints =>
             {

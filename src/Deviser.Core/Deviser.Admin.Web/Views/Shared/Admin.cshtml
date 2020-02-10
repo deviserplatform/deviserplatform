@@ -1,4 +1,4 @@
-﻿<require type="Css" priority="111" path="/admin/dist/styles.css"></require>
+﻿<require dependency-type="Css" priority="111" file-path="/_content/Deviser.Admin.Web/ClientApp/styles.css"></require>
 
 <script>
     (function () {
@@ -15,6 +15,13 @@
 
 <app-root></app-root>
 
-<require type="Script" priority="111" path="/admin/dist/runtime.js"></require>
-<require type="Script" priority="112" path="/admin/dist/polyfills.js"></require>
-<require type="Script" priority="113" path="/admin/dist/main.js"></require>
+<require dependency-type="Script" priority="111" file-path="/_content/Deviser.Admin.Web/ClientApp/runtime-es2015.js" type="module"></require>
+<require dependency-type="Script" priority="112" file-path="/_content/Deviser.Admin.Web/ClientApp/runtime-es5.js" nomodule="true" defer="true"></require>
+<require dependency-type="Script" priority="113" file-path="/_content/Deviser.Admin.Web/ClientApp/polyfills-es5.js" nomodule="true" defer="true"></require>
+<require dependency-type="Script" priority="114" file-path="/_content/Deviser.Admin.Web/ClientApp/polyfills-es2015.js" type="module"></require>
+@*<script src="vendor-es2015.js" type="module"></script>
+    <script src="vendor-es5.js" nomodule defer></script>*@
+@*<require dependency-type="Script" priority="115" file-path="/_content/Deviser.Admin.Web/ClientApp/vendor-es2015.js" type="module"></require>
+<require dependency-type="Script" priority="116" file-path="/_content/Deviser.Admin.Web/ClientApp/vendor-es5.js" nomodule="true" defer="true"></require>*@
+<require dependency-type="Script" priority="117" file-path="/_content/Deviser.Admin.Web/ClientApp/main-es2015.js" type="module"></require>
+<require dependency-type="Script" priority="118" file-path="/_content/Deviser.Admin.Web/ClientApp/main-es5.js" nomodule="true" defer="true"></require>

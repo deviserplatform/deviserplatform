@@ -1,10 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Contact";
 }
-<require type="Script" priority="109" path="~/lib/angular/angular.js"></require>
-<require type="Script" priority="110" path="~/js/src/app/config.js"></require>
-<require type="Script" priority="110" path="~/js/src/app/services.js"></require>
-<require type="Script" priority="111" path="~/js/src/app/contact/contact.js"></require>
+<require dependency-type="Script" priority="109" file-path="~/lib/angular/angular.js"></require>
+<require dependency-type="Script" priority="110" file-path="~/js/src/app/config.js"></require>
+<require dependency-type="Script" priority="110" file-path="~/js/src/app/services.js"></require>
+<require dependency-type="Script" priority="111" file-path="~/js/src/app/contact/contact.js"></require>
 
 <div ng-app="deviser.contact" ng-controller="ContactCtrl as cVM">
     <div class="row" ng-show="cVM.message.content">
