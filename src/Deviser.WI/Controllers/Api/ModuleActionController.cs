@@ -19,7 +19,7 @@ namespace Deviser.WI.Controllers
             IModuleRepository moduleRepository)
         {
             _logger = logger;
-            _moduleRepository = _moduleRepository;
+            _moduleRepository = moduleRepository;
         }
 
         [HttpGet]

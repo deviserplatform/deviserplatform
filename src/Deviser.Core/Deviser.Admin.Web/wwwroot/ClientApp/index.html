@@ -1,15 +1,15 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>ClientApp</title>
-    <base href="/_content/Deviser.Admin.Web/ClientApp/">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="/_content/Deviser.Admin.Web/ClientApp/styles.css">
-</head>
+  <meta charset="utf-8">
+  <title>ClientApp</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="styles.css"></head>
 <body>
-    <script>(function () {
+  <script>
+    (function () {
       var daConfig = {
         isEmbedded: false, //true for embedded in admin module, false for standalone
         debugBaseUrl: "https://localhost:44304",
@@ -18,13 +18,8 @@
         assetPath:"/admin/dist"
       }
       window.daConfig = daConfig;
-    }());</script>
-    <app-root></app-root>
-    <script src="/_content/Deviser.Admin.Web/ClientApp/runtime-es2015.js" type="module"></script>
-    <script src="/_content/Deviser.Admin.Web/ClientApp/runtime-es5.js" nomodule defer></script>
-    <script src="/_content/Deviser.Admin.Web/ClientApp/polyfills-es5.js" nomodule defer></script>
-    <script src="/_content/Deviser.Admin.Web/ClientApp/polyfills-es2015.js" type="module"></script>
-    <script src="/_content/Deviser.Admin.Web/ClientApp/main-es2015.js" type="module"></script>
-    <script src="/_content/Deviser.Admin.Web/ClientApp/main-es5.js" nomodule defer></script>
-</body>
+    }());
+  </script>
+  <app-root></app-root>
+<script src="runtime-es2015.js" type="module"></script><script src="runtime-es5.js" nomodule defer></script><script src="polyfills-es5.js" nomodule defer></script><script src="polyfills-es2015.js" type="module"></script><script src="main-es2015.js" type="module"></script><script src="main-es5.js" nomodule defer></script></body>
 </html>
