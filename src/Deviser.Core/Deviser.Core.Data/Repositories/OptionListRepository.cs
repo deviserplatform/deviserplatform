@@ -1,11 +1,10 @@
-﻿using Autofac;
+﻿using AutoMapper;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoMapper;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -18,30 +17,33 @@ namespace Deviser.Core.Data.Repositories
         OptionList UpdateOptionList(OptionList dbContentType);
     }
 
-    public class OptionListRepository : RepositoryBase, IOptionListRepository
+    public class OptionListRepository : IOptionListRepository
     {
         //Logger
         private readonly ILogger<OptionListRepository> _logger;
+        private readonly DbContextOptions<DeviserDbContext> _dbOptions;
+        private readonly IMapper _mapper;
 
         //Constructor
-        public OptionListRepository(ILifetimeScope container)
-            : base(container)
+        public OptionListRepository(DbContextOptions<DeviserDbContext> dbOptions,
+            ILogger<OptionListRepository> logger,
+            IMapper mapper)
         {
-            _logger = container.Resolve<ILogger<OptionListRepository>>();
+            _logger = logger;
+            _dbOptions = dbOptions;
+            _mapper = mapper;
         }
 
         public OptionList CreateOptionList(OptionList optionList)
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var dbOptionList = Mapper.Map<Entities.OptionList>(optionList);
-                    dbOptionList.CreatedDate = dbOptionList.LastModifiedDate = DateTime.Now;
-                    var result = context.OptionList.Add(dbOptionList).Entity;
-                    context.SaveChanges();
-                    return Mapper.Map<OptionList>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbOptionList = _mapper.Map<Entities.OptionList>(optionList);
+                dbOptionList.CreatedDate = dbOptionList.LastModifiedDate = DateTime.Now;
+                var result = context.OptionList.Add(dbOptionList).Entity;
+                context.SaveChanges();
+                return _mapper.Map<OptionList>(result);
             }
             catch (Exception ex)
             {
@@ -54,11 +56,9 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.OptionList.ToList();
-                    return Mapper.Map<List<OptionList>>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.OptionList.ToList();
+                return _mapper.Map<List<OptionList>>(result);
             }
             catch (Exception ex)
             {
@@ -71,12 +71,10 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.OptionList
-                               .FirstOrDefault(e => e.Id == optionListId);
-                    return Mapper.Map<OptionList>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.OptionList
+                    .FirstOrDefault(e => e.Id == optionListId);
+                return _mapper.Map<OptionList>(result);
             }
             catch (Exception ex)
             {
@@ -89,12 +87,10 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.OptionList
-                               .FirstOrDefault(e => e.Name.ToLower() == listName.ToLower());
-                    return Mapper.Map<OptionList>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.OptionList
+                    .FirstOrDefault(e => e.Name.ToLower() == listName.ToLower());
+                return _mapper.Map<OptionList>(result);
             }
 
 
@@ -110,14 +106,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var dboptionList = Mapper.Map<Entities.OptionList>(optionList);
-                    dboptionList.LastModifiedDate = DateTime.Now;
-                    var result = context.OptionList.Update(dboptionList).Entity;
-                    context.SaveChanges();
-                    return Mapper.Map<OptionList>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbOptionList = _mapper.Map<Entities.OptionList>(optionList);
+                dbOptionList.LastModifiedDate = DateTime.Now;
+                var result = context.OptionList.Update(dbOptionList).Entity;
+                context.SaveChanges();
+                return _mapper.Map<OptionList>(result);
             }
             catch (Exception ex)
             {

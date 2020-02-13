@@ -1,17 +1,15 @@
+using AutoMapper;
+using Deviser.Core.Common.DomainTypes;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Deviser.Core.Common.DomainTypes;
-using Microsoft.Extensions.Logging;
-using Autofac;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-
 using Module = Deviser.Core.Common.DomainTypes.Module;
 
 namespace Deviser.Core.Data.Repositories
 {
-    public interface IModuleRepository : IRepositoryBase
+    public interface IModuleRepository //: IRepositoryBase
     {
         List<Module> Get();
         Module Get(Guid moduleId);
@@ -27,16 +25,21 @@ namespace Deviser.Core.Data.Repositories
         ModuleAction UpdateModuleAction(ModuleAction moduleAction);
     }
 
-    public class ModuleRepository : RepositoryBase, IModuleRepository
+    public class ModuleRepository : IModuleRepository
     {
         //Logger
         private readonly ILogger<ModuleRepository> _logger;
+        private readonly DbContextOptions<DeviserDbContext> _dbOptions;
+        private readonly IMapper _mapper;
 
         //Constructor
-        public ModuleRepository(ILifetimeScope container)
-            : base(container)
+        public ModuleRepository(DbContextOptions<DeviserDbContext> dbOptions,
+            ILogger<ModuleRepository> logger,
+            IMapper mapper)
         {
-            _logger = container.Resolve<ILogger<ModuleRepository>>();
+            _logger = logger;
+            _dbOptions = dbOptions;
+            _mapper = mapper;
         }
 
         //Custom Field Declaration
@@ -44,14 +47,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.Module
-                        .Include(m => m.ModuleAction).ThenInclude(mp => mp.ModuleActionProperties).ThenInclude(p => p.Property).ThenInclude(p => p.OptionList)
-                        .ToList();
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.Module
+                    .Include(m => m.ModuleAction).ThenInclude(mp => mp.ModuleActionProperties).ThenInclude(p => p.Property).ThenInclude(p => p.OptionList)
+                    .ToList();
 
-                    return Mapper.Map<List<Module>>(result);
-                }
+                return _mapper.Map<List<Module>>(result);
             }
             catch (Exception ex)
             {
@@ -64,14 +65,11 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.ModuleAction
-                        .FirstOrDefault(m => m.Id == moduleActionId);
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.ModuleAction
+                    .FirstOrDefault(m => m.Id == moduleActionId);
 
-                    return Mapper.Map<ModuleAction>(result);
-
-                }
+                return _mapper.Map<ModuleAction>(result);
             }
             catch (Exception ex)
             {
@@ -84,16 +82,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.ModuleAction
-                        .Include(mp => mp.ModuleActionProperties).ThenInclude(p => p.Property).ThenInclude(p => p.OptionList)
-                        .Where(m => m.ModuleActionType.ControlType.ToLower() == "view" && m.Module.IsActive) //Selecting View Actions Only
-                        .OrderBy(ma => ma.DisplayName)
-                        .ToList();
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.ModuleAction
+                    .Include(mp => mp.ModuleActionProperties).ThenInclude(p => p.Property).ThenInclude(p => p.OptionList)
+                    .Where(m => m.ModuleActionType.ControlType.ToLower() == "view" && m.Module.IsActive) //Selecting View Actions Only
+                    .OrderBy(ma => ma.DisplayName)
+                    .ToList();
 
-                    return Mapper.Map<List<ModuleAction>>(result);
-                }
+                return _mapper.Map<List<ModuleAction>>(result);
             }
             catch (Exception ex)
             {
@@ -106,14 +102,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.ModuleActionType
-                        .OrderBy(cd => cd.Id)
-                        .ToList();
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.ModuleActionType
+                    .OrderBy(cd => cd.Id)
+                    .ToList();
 
-                    return Mapper.Map<List<ModuleActionType>>(result);
-                }
+                return _mapper.Map<List<ModuleActionType>>(result);
             }
             catch (Exception ex)
             {
@@ -126,15 +120,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.ModuleAction
-                        .Include(mp => mp.ModuleActionProperties).ThenInclude(p => p.Property)
-                        .Where(m => m.ModuleId == moduleId && m.ModuleActionType.ControlType.ToLower() == "edit") //Selecting View Actions Only
-                        .ToList();
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.ModuleAction
+                    .Include(mp => mp.ModuleActionProperties).ThenInclude(p => p.Property)
+                    .Where(m => m.ModuleId == moduleId && m.ModuleActionType.ControlType.ToLower() == "edit") //Selecting View Actions Only
+                    .ToList();
 
-                    return Mapper.Map<List<ModuleAction>>(result);
-                }
+                return _mapper.Map<List<ModuleAction>>(result);
             }
             catch (Exception ex)
             {
@@ -147,15 +139,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.Module
-                              .Where(e => e.Id == moduleId)
-                              .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) // ("ModuleActions.ModuleActionType")                              
-                              .FirstOrDefault();
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.Module
+                    .Where(e => e.Id == moduleId)
+                    .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) // ("ModuleActions.ModuleActionType")                              
+                    .FirstOrDefault();
 
-                    return Mapper.Map<Module>(result);
-                }
+                return _mapper.Map<Module>(result);
             }
             catch (Exception ex)
             {
@@ -168,15 +158,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.Module
-                              .Where(e => e.Name == moduleName)
-                              .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")                              
-                              .FirstOrDefault();
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.Module
+                    .Where(e => e.Name == moduleName)
+                    .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")                              
+                    .FirstOrDefault();
 
-                    return Mapper.Map<Module>(result);
-                }
+                return _mapper.Map<Module>(result);
             }
             catch (Exception ex)
             {
@@ -189,15 +177,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.Module
-                              .Where(e => e.PageModule.Any(pm => pm.Id == pageModuleId))
-                              .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
-                              .FirstOrDefault();
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.Module
+                    .Where(e => e.PageModule.Any(pm => pm.Id == pageModuleId))
+                    .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
+                    .FirstOrDefault();
 
-                    return Mapper.Map<Module>(result);
-                }
+                return _mapper.Map<Module>(result);
             }
             catch (Exception ex)
             {
@@ -210,14 +196,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var dbModule = Mapper.Map<Entities.Module>(module);
-                    dbModule.CreatedDate = dbModule.LastModifiedDate = DateTime.Now;
-                    var result = context.Module.Add(dbModule).Entity;
-                    context.SaveChanges();
-                    return Mapper.Map<Module>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbModule = _mapper.Map<Entities.Module>(module);
+                dbModule.CreatedDate = dbModule.LastModifiedDate = DateTime.Now;
+                var result = context.Module.Add(dbModule).Entity;
+                context.SaveChanges();
+                return _mapper.Map<Module>(result);
             }
             catch (Exception ex)
             {
@@ -229,39 +213,37 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbModule = _mapper.Map<Entities.Module>(module);
+                var moduleActions = dbModule.ModuleAction;
+                dbModule.ModuleAction = null;
+                foreach (var moduleAction in moduleActions)
                 {
-                    var dbModule = Mapper.Map<Entities.Module>(module);
-                    var moduleActions = dbModule.ModuleAction;
-                    dbModule.ModuleAction = null;
-                    foreach (var moduleAction in moduleActions)
-                    {
 
-                        if (context.ModuleAction.Any(pc => pc.Id == moduleAction.Id))
-                        {                           
+                    if (context.ModuleAction.Any(pc => pc.Id == moduleAction.Id))
+                    {                           
 
-                            UpdateModuleActionProperties(context, moduleAction);
+                        UpdateModuleActionProperties(context, moduleAction);
 
-                            //content exist, therefore update the content 
-                            context.ModuleAction.Update(moduleAction);
-                        }
-                        else
-                        {
-                            moduleAction.ModuleId = dbModule.Id;
-                            context.ModuleAction.Add(moduleAction);
-                        }
+                        //content exist, therefore update the content 
+                        context.ModuleAction.Update(moduleAction);
                     }
-                    //No need to delte a row from dbo.ModuleAction since the key s referred in dbo.pagemodule.
-
-                    //var toDelete = context.ModuleAction.Where(dbModuleAction => dbModuleAction.ModuleId == dbModule.Id &&
-                    //!moduleActions.Any(moduleAction => moduleAction.Id != dbModuleAction.Id)).ToList();
-
-                    //context.ModuleAction.RemoveRange(toDelete);
-
-                    var result = context.Module.Update(dbModule).Entity;
-                    context.SaveChanges();
-                    return Mapper.Map<Module>(result);
+                    else
+                    {
+                        moduleAction.ModuleId = dbModule.Id;
+                        context.ModuleAction.Add(moduleAction);
+                    }
                 }
+                //No need to delte a row from dbo.ModuleAction since the key s referred in dbo.pagemodule.
+
+                //var toDelete = context.ModuleAction.Where(dbModuleAction => dbModuleAction.ModuleId == dbModule.Id &&
+                //!moduleActions.Any(moduleAction => moduleAction.Id != dbModuleAction.Id)).ToList();
+
+                //context.ModuleAction.RemoveRange(toDelete);
+
+                var result = context.Module.Update(dbModule).Entity;
+                context.SaveChanges();
+                return _mapper.Map<Module>(result);
             }
             catch (Exception ex)
             {
@@ -274,13 +256,11 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var dbmoduleAction = Mapper.Map<Entities.ModuleAction>(moduleAction);
-                    var result = context.ModuleAction.Add(dbmoduleAction).Entity;
-                    context.SaveChanges();
-                    return Mapper.Map<ModuleAction>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbModuleAction = _mapper.Map<Entities.ModuleAction>(moduleAction);
+                var result = context.ModuleAction.Add(dbModuleAction).Entity;
+                context.SaveChanges();
+                return _mapper.Map<ModuleAction>(result);
             }
             catch (Exception ex)
             {
@@ -293,16 +273,14 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var dbmoduleAction = Mapper.Map<Entities.ModuleAction>(moduleAction);
-                    var result = context.ModuleAction.Update(dbmoduleAction).Entity;
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbModuleAction = _mapper.Map<Entities.ModuleAction>(moduleAction);
+                var result = context.ModuleAction.Update(dbModuleAction).Entity;
 
-                    UpdateModuleActionProperties(context, dbmoduleAction);
+                UpdateModuleActionProperties(context, dbModuleAction);
 
-                    context.SaveChanges();
-                    return Mapper.Map<ModuleAction>(result);
-                }
+                context.SaveChanges();
+                return _mapper.Map<ModuleAction>(result);
             }
             catch (Exception ex)
             {
@@ -323,12 +301,12 @@ namespace Deviser.Core.Data.Repositories
 
                 List<Entities.ModuleActionProperty> toRemoveFromDb = null;
 
-                if (currentTypeProperties != null && currentTypeProperties.Count > 0)
+                if (currentTypeProperties.Count > 0)
                 {
                     toRemoveFromDb = currentTypeProperties.Where(dbProp => !moduleAction.ModuleActionProperties.Any(clientProp => dbProp.PropertyId == clientProp.PropertyId)).ToList();
                 }
 
-                if (toRemoveFromClient != null && toRemoveFromClient.Count > 0)
+                if (toRemoveFromClient.Count > 0)
                 {
                     foreach (var contentTypeProp in toRemoveFromClient)
                     {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Deviser.Modules.ContactForm.Data
+﻿namespace Deviser.Modules.ContactForm.Data
 {
     public class ContactData
     {

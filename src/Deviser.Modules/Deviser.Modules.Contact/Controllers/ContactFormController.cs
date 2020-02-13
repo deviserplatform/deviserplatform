@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Deviser.Core.Common.DomainTypes;
+﻿using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.Extensions;
@@ -7,21 +6,14 @@ using Deviser.Core.Library.Messaging;
 using Deviser.Core.Library.Modules;
 using Deviser.Core.Library.Services;
 using Deviser.Modules.ContactForm.Data;
-using Deviser.Core.Library.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Mvc.Abstractions;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Deviser.Modules.ContactForm.Controllers
 {

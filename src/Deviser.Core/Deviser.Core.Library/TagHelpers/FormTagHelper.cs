@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Deviser.Core.Common;
+﻿using Deviser.Core.Common;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Deviser.Core.Library.TagHelpers
 {
@@ -153,6 +154,8 @@ namespace Deviser.Core.Library.TagHelpers
 
             var antiforgeryDefault = true;
 
+            RouteValues = ViewContext.RouteData.Values.ToDictionary(k => k.Key, v => v.Value.ToString());
+
             // If "action" is already set, it means the user is attempting to use a normal <form>.
             if (output.Attributes.ContainsName(HtmlActionAttributeName))
             {
@@ -174,11 +177,11 @@ namespace Deviser.Core.Library.TagHelpers
             }
             else
             {
-                IDictionary<string, object> routeValues = null;
+                IDictionary<string, string> routeValues = null;
                 if (_routeValues != null && _routeValues.Count > 0)
                 {
                     // Convert from Dictionary<string, string> to Dictionary<string, object>.
-                    routeValues = new Dictionary<string, object>(_routeValues.Count, StringComparer.OrdinalIgnoreCase);
+                    routeValues = new Dictionary<string, string>(_routeValues.Count, StringComparer.OrdinalIgnoreCase);
                     foreach (var routeValue in _routeValues)
                     {
                         routeValues.Add(routeValue.Key, routeValue.Value);
@@ -189,11 +192,11 @@ namespace Deviser.Core.Library.TagHelpers
                 {
                     if (routeValues == null)
                     {
-                        routeValues = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                        routeValues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                     }
 
                     // Unconditionally replace any value from dev-route-area. 
-                    routeValues["area"] = Area;
+                    AddOrUpdate(routeValues, "area", Area);
                 }
 
                 TagBuilder tagBuilder;
@@ -224,13 +227,15 @@ namespace Deviser.Core.Library.TagHelpers
                 //}
                 if (Action != null)
                 {
-                    routeValues.Add("Action", Action);
+                    AddOrUpdate(routeValues, "Action", Action);
                 }
 
                 if (Controller != null)
                 {
-                    routeValues.Add("Controller", Controller);
+                    AddOrUpdate(routeValues, "Controller", Controller);
                 }
+
+
 
                 tagBuilder = Generator.GenerateRouteForm(
                 ViewContext,
@@ -259,6 +264,18 @@ namespace Deviser.Core.Library.TagHelpers
                 {
                     output.PostContent.AppendHtml(antiforgeryTag);
                 }
+            }
+        }
+
+        private void AddOrUpdate(IDictionary<string, string> routeValues, string key, string value)
+        {
+            if (routeValues.ContainsKey(key))
+            {
+                routeValues[key] = value;
+            }
+            else
+            {
+                routeValues.Add(key, value);
             }
         }
     }

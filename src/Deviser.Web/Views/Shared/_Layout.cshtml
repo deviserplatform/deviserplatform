@@ -1,0 +1,54 @@
+﻿@inject IScopeService scopeService
+@inject INavigation navigation
+@{
+    var pageContext = scopeService.PageContext;
+    var currentLang = pageContext.CurrentCulture.TwoLetterISOLanguageName;
+    var currentAbsUrl = navigation.NavigateAbsoluteUrl(pageContext.CurrentPage);
+}
+<!DOCTYPE html>
+<html lang="@currentLang">
+<head>
+    <meta charset="utf-8" />
+    <base href="@Context.Request.Path">
+    <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta property="og:title" content="@ViewData["Title"]" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="@currentAbsUrl" />
+    <meta property="og:description" content="@ViewData["Description"]" />
+
+    <meta name="DESCRIPTION" content="@ViewData["Description"]" />
+    <meta name="KEYWORDS" content="@ViewData["Keywords"]" />
+    <meta name="ROBOTS" content="INDEX, FOLLOW" />
+
+    @Html.Raw(ViewBag.SiteHeaderTags)
+
+    @Html.Raw(ViewBag.PageHeaderTags)
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/_content/Deviser.Web/images/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/_content/Deviser.Web/images/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/_content/Deviser.Web/images/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/_content/Deviser.Web/images/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/_content/Deviser.Web/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#eeeeee">
+    <meta name="theme-color" content="#ffffff">
+
+    <render type="Css"></render>
+
+    <link rel="stylesheet" href="~/_content/Deviser.Web/css/admin/controlbar.css" asp-append-version="true" />
+
+    <render type="Script" location="Head"></render>
+</head>
+<body class="header-fixed">
+    <div>
+        <render type="Script" location="BodyStart"></render>
+
+        @RenderBody()
+
+
+        @RenderSection("scripts", required: false)
+        <render type="Script" location="BodyEnd"></render>
+    </div>
+</body>
+</html>

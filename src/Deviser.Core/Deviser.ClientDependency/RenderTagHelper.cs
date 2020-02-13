@@ -10,7 +10,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Razor.TagHelpers;
 using Microsoft.AspNetCore.Mvc.Routing;
 using System.Text.Encodings.Web;
-using Microsoft.AspNetCore.Mvc.TagHelpers.Internal;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -24,7 +23,7 @@ namespace Deviser.ClientDependency
         private const string ScriptLocationAttributeName = "location";
 
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IMemoryCache _cache;
 
         [HtmlAttributeName(DependencyTypeAttributeName)]
@@ -43,7 +42,7 @@ namespace Deviser.ClientDependency
         }
 
         public RenderTagHelper(IHttpContextAccessor httpContextAccessor,
-            IHostingEnvironment hostingEnvironment,
+            IWebHostEnvironment hostingEnvironment,
             IMemoryCache cache,
             IUrlHelperFactory urlHelperFactory,
             HtmlEncoder htmlEncoder)
@@ -61,10 +60,10 @@ namespace Deviser.ClientDependency
             {
                 output.TagName = null;
                 var dependencyLoader = DependencyManager.GetLoader(_httpContextAccessor.HttpContext);
-                var fileVersionProvider = new FileVersionProvider(
-                    _hostingEnvironment.WebRootFileProvider,
-                    _cache,
-                    ViewContext.HttpContext.Request.PathBase);
+                //var fileVersionProvider = new FileVersionProvider(
+                //    _hostingEnvironment.WebRootFileProvider,
+                //    _cache,
+                //    ViewContext.HttpContext.Request.PathBase);
                 //var sb = new StringBuilder();
                 var dependencyFiles = dependencyLoader.DependencyFiles
                        .Where(df => df.DependencyType == DependencyType)

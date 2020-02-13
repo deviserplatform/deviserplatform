@@ -1,0 +1,41 @@
+﻿@model DynamicContent
+@inject IScopeService scopeService
+@{
+    var pageContext = scopeService.PageContext;
+    var currentCulture = pageContext.CurrentCulture.ToString();
+
+    dynamic rootObj = Model.Content;
+    int totalItems = 0;
+    if (rootObj != null)
+    {
+        totalItems = rootObj.items.Count;
+    }
+
+}
+
+@if (rootObj != null)
+{
+<div class="row features">
+    @foreach (dynamic item in rootObj.items)
+    {
+        <div class="col-lg-4 col-md-6">            
+            <div class="info text-center">
+                <div class="icon icon-circle">
+                    @Html.Raw(item.icon)
+                </div>
+                <h5 class="info-title">@item.title</h5>
+                <div class="description">
+                    <p class="description">@item.description</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+}
+else
+{
+    <div>
+        Please enter the content
+    </div>
+}

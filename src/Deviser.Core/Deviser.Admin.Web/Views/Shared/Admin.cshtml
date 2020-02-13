@@ -1,0 +1,23 @@
+﻿<require dependency-type="Css" priority="111" file-path="/_content/Deviser.Admin.Web/ClientApp/styles.css"></require>
+
+<script>
+    (function () {
+        var daConfig = {
+            isEmbedded: true, //true for embedded in admin module, false for standalone
+            debugBaseUrl: "https://localhost:44304",
+            module: "@ViewContext.RouteData.Values["area"]",
+            model: "@ViewBag.Model",
+            assetPath:"/_content/Deviser.Admin.Web/ClientApp/"
+        }
+        window.daConfig = daConfig;
+    }());
+</script>
+
+<app-root></app-root>
+
+<require dependency-type="Script" priority="111" file-path="/_content/Deviser.Admin.Web/ClientApp/runtime-es2015.js" type="module"></require>
+<require dependency-type="Script" priority="112" file-path="/_content/Deviser.Admin.Web/ClientApp/runtime-es5.js" nomodule="true" defer="true"></require>
+<require dependency-type="Script" priority="113" file-path="/_content/Deviser.Admin.Web/ClientApp/polyfills-es5.js" nomodule="true" defer="true"></require>
+<require dependency-type="Script" priority="114" file-path="/_content/Deviser.Admin.Web/ClientApp/polyfills-es2015.js" type="module"></require>
+<require dependency-type="Script" priority="117" file-path="/_content/Deviser.Admin.Web/ClientApp/main-es2015.js" type="module"></require>
+<require dependency-type="Script" priority="118" file-path="/_content/Deviser.Admin.Web/ClientApp/main-es5.js" nomodule="true" defer="true"></require>

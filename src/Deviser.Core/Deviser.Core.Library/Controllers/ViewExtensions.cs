@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -176,10 +175,16 @@ namespace Deviser.Core.Library.Controllers
                 //    viewOption.Value.HtmlHelperOptions);
 
                 var routeData = new RouteData();
-                //routeData.Values.Add("area", actionContext.RouteData.Values["area"]); //area information has been removed intentionally, because this route date spoils the view context of the parent (Page Controller)
-                routeData.Values.Add("controller", actionContext.RouteData.Values["controller"]);
-                routeData.Values.Add("action", actionContext.RouteData.Values["action"]);
-                routeData.Values.Add("pageModuleId", actionContext.RouteData.Values["pageModuleId"]);
+
+                foreach(var kvp in actionContext.RouteData.Values)
+                {
+                    routeData.Values.Add(kvp.Key, kvp.Value);
+                }
+
+                //routeData.Values.Add("area", actionContext.RouteData.Values["area"]); //area information has been removed intentionally, because this route data spoils the view context of the parent (Page Controller)
+                //routeData.Values.Add("controller", actionContext.RouteData.Values["controller"]);
+                //routeData.Values.Add("action", actionContext.RouteData.Values["action"]);
+                //routeData.Values.Add("pageModuleId", actionContext.RouteData.Values["pageModuleId"]);
                 foreach(var rt in actionContext.RouteData.Routers)
                 {
                     routeData.Routers.Add(rt);

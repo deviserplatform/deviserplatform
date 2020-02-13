@@ -1,9 +1,5 @@
-﻿using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Data.Extension;
+﻿using Deviser.Core.Data.Extension;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Deviser.Modules.ContactForm.Data
 {
@@ -15,10 +11,10 @@ namespace Deviser.Modules.ContactForm.Data
         //    ModuleMetaInfo = Global.ModuleMetaInfo;
         //}
 
-        public ContactDbContext(DbContextOptions options)
+        public ContactDbContext(DbContextOptions<ContactDbContext> options)
             : base(options)
-        {
-            ModuleMetaInfo = Global.ModuleMetaInfo;
+        {            
+            
         }
 
         //public ContactDbContext(IServiceProvider serviceProvider)

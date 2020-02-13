@@ -1,9 +1,8 @@
-﻿using Autofac;
-using Deviser.Core.Common;
-using Deviser.Core.Data.Repositories;
+﻿using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Library;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library.Controllers;
+using Deviser.Core.Library.Modules;
 using Deviser.Core.Library.Services;
 using Deviser.Core.Library.Sites;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Deviser.Core.Library.Modules;
 
 namespace Deviser.WI.Controllers
 {
@@ -22,9 +20,7 @@ namespace Deviser.WI.Controllers
 
         [ActionContext]
         public ActionContext Context { get; set; }
-
-
-        private readonly ILifetimeScope _container;
+        
         private readonly IPageRepository _pageRepository;
         //private readonly IPageManager _pageManager;
         private readonly IDeviserControllerFactory _deviserControllerFactory;
@@ -36,11 +32,15 @@ namespace Deviser.WI.Controllers
         private static bool _isInstalled;
         private static bool _isDbExist;
 
-        public PageController(ILifetimeScope container, IScopeService scopeService)
+        public PageController(ILogger<PageController> logger, IPageRepository pageRepository,
+            IDeviserControllerFactory deviserControllerFactory,
+            IScopeService scopeService,
+            IContentManager contentManager,
+            IModuleManager moduleManager,
+            IInstallationProvider installationManager)
         {
-            _container = container;
-            _installationManager = container.Resolve<IInstallationProvider>();
-            _logger = container.Resolve<ILogger<PageController>>();
+            _logger = logger;
+            _installationManager = installationManager;
             _scopeService = scopeService;
 
             if (!_isInstalled)
@@ -51,11 +51,11 @@ namespace Deviser.WI.Controllers
 
             if (_isInstalled)
             {
-                _pageRepository = container.Resolve<IPageRepository>();
+                _pageRepository = pageRepository;
                 //_pageManager = container.Resolve<IPageManager>();
-                _deviserControllerFactory = container.Resolve<IDeviserControllerFactory>();
-                _contentManager = container.Resolve<IContentManager>();
-                _moduleManager = container.Resolve<IModuleManager>();
+                _deviserControllerFactory = deviserControllerFactory;
+                _contentManager = contentManager;
+                _moduleManager = moduleManager;
             }
 
         }
@@ -85,9 +85,19 @@ namespace Deviser.WI.Controllers
                     {
                         if (_scopeService.PageContext.HasPageViewPermission)
                         {
-                            Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await _deviserControllerFactory.GetPageModuleResults(Context);
-                            ViewBag.ModuleActionResults = moduleActionResults;
-                            return View(currentPage);
+                            if (currentPage.PageTypeId == Globals.PageTypeStandard)
+                            {
+                                Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await _deviserControllerFactory.GetPageModuleResults(Context);
+                                ViewBag.ModuleActionResults = moduleActionResults;
+                                return View(currentPage);
+
+                            }
+                            else if(currentPage.PageTypeId == Globals.PageTypeAdmin)
+                            {
+                                var result = await _deviserControllerFactory.GetAdminPageResult(Context);
+                                ViewBag.AdminResult = result;
+                                return View(currentPage);
+                            }   
                         }
                         else
                         {

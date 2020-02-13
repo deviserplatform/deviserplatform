@@ -1,0 +1,69 @@
+﻿@using System.Security.Claims
+@using Deviser.Core.Library.TagHelpers;
+@using Deviser.Core.Library;
+@using Deviser.Core.Library.Services;
+@using Deviser.Core.Common;
+@inject IScopeService scopeService
+@inject INavigation navigation
+@{
+    var pageContext = scopeService.PageContext;
+    var loggedInClass = pageContext.HasPageEditPermission ? "logged-in" : "";
+    var pageContentLoggedInClass = pageContext.HasPageEditPermission ? "page-content-logged-in" : "";
+}
+
+<require dependency-type="Css" priority="10" file-path="//fonts.googleapis.com/css?family=Rubik"></require>
+<require dependency-type="Css" priority="11" file-path="~/_content/Deviser.Web/lib/font-awesome/css/font-awesome.css"></require>
+<require dependency-type="Css" priority="13" file-path="~/_content/Deviser.Web/lib/magnific-popup/dist/magnific-popup.css"></require>
+<require dependency-type="Css" priority="14" file-path="~/_content/Deviser.Web/lib/swiper/dist/css/swiper.css"></require>
+<require dependency-type="Css" priority="15" file-path="~/_content/Deviser.Web/lib/photoswipe/dist/photoswipe.css"></require>
+<require dependency-type="Css" priority="16" file-path="~/_content/Deviser.Web/lib/photoswipe/dist/default-skin/default-skin.css"></require>
+<require dependency-type="Css" priority="17" file-path="~/_content/Deviser.Web/css/jquery.mmenu.all.css"></require>
+<require dependency-type="Css" priority="17" file-path="~/_content/Deviser.Web/css/site.css"></require>
+
+<require dependency-type="Script" priority="10" location="Head" file-path="~/_content/Deviser.Web/lib/jquery/dist/jquery.js" test="test"></require>
+<require dependency-type="Script" priority="11" location="Head" file-path="~/_content/Deviser.Web/lib/jquery-ui/jquery-ui.js"></require>
+<require dependency-type="Script" priority="12" location="Head" file-path="//maps.googleapis.com/maps/api/js?key=AIzaSyDXVNBX9Jhd_CB2UUcRa897oD6rWzRhupQ"></require>
+<require dependency-type="Script" priority="13" location="Head" file-path="~/_content/Deviser.Web/js/infobox.js"></require>
+<require dependency-type="Script" priority="14" location="Head" file-path="~/_content/Deviser.Web/js/dev-maps.js"></require>
+
+<require dependency-type="Script" location="Head" priority="20" file-path="~/_content/Deviser.Web/lib/bootstrap/dist/js/bootstrap.js"></require>
+<require dependency-type="Script" location="Head" priority="21" file-path="~/_content/Deviser.Web/lib/magnific-popup/dist/jquery.magnific-popup.js"></require>
+<require dependency-type="Script" location="Head" priority="22" file-path="~/_content/Deviser.Web/js/src/app/dev-form-helper.js"></require>
+<require dependency-type="Script" location="Head" priority="23" file-path="~/_content/Deviser.Web/lib/swiper/dist/js/swiper.js"></require>
+<require dependency-type="Script" location="Head" priority="23" file-path="~/_content/Deviser.Web/lib/photoswipe/dist/photoswipe.min.js"></require>
+<require dependency-type="Script" location="Head" priority="23" file-path="~/_content/Deviser.Web/lib/photoswipe/dist/photoswipe-ui-default.min.js"></require>
+<require dependency-type="Script" location="Head" priority="23" file-path="~/_content/Deviser.Web/js/jquery.mmenu.all.js"></require>
+<require dependency-type="Script" location="Head" priority="30" file-path="~/_content/Deviser.Web/js/site.js"></require>
+
+@await Component.InvokeAsync("ControlBar")
+
+<header class="header navbar navbar-expand-lg @loggedInClass">
+    <div class="header-content container">
+        <a class="navbar-brand" href="@pageContext.HomePageFullUrl">
+            <img src="/_content/Deviser.Web/images/DeviserLogoDark.svg" onerror="this.src='/_content/Deviser.Web/images/DeviserLogoDark.png'; this.onerror=null;" alt="DEVISER">
+        </a>
+        @*<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>*@
+
+        <a href="#mainNav" class="hamburger hamburger--collapse">
+            <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+            </span>
+        </a>
+
+        <div class="header-top">
+            @await Html.PartialAsync("_LoginPartial")
+            @await Component.InvokeAsync("LanguageSwitcher")
+        </div>
+
+        <div class="collapse navbar-collapse">
+            <ul dev-nav="SiteMain" dev-nav-page="PublicOnly" class="navbar-nav ml-auto"></ul>
+
+
+            <nav id="mainNav">
+                <ul dev-nav="SiteMain" dev-nav-page="PublicOnly" class="navbar-nav ml-auto"></ul>
+            </nav>
+        </div>
+    </div>
+</header>

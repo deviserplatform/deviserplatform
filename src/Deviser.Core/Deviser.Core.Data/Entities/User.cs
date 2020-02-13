@@ -23,13 +23,13 @@ namespace Deviser.Core.Data.Entities
             UserName = userName;
         }
 
-        public string FirstName { get; set; }       
+        public string FirstName { get; set; }
         public string LastName { get; set; }
 
         /// <summary>
         /// Navigation property for the roles this user belongs to.
         /// </summary>
-        public virtual ICollection<IdentityUserRole<Guid>> UserRoles { get; } = new List<IdentityUserRole<Guid>> ();
+        public virtual ICollection<UserRole> UserRoles { get; } = new List<UserRole>();
 
         /// <summary>
         /// Navigation property for the claims this user possesses.

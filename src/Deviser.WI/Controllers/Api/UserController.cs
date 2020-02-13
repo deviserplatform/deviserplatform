@@ -1,17 +1,13 @@
-﻿using Autofac;
-using AutoMapper;
-using Deviser.Core.Data.Repositories;
+﻿using AutoMapper;
 using Deviser.Core.Common.DomainTypes;
-using DeviserWI.Controllers.API;
+using Deviser.Core.Data.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Deviser.Core.Library;
 
 namespace Deviser.WI.Controllers.Api
 {
@@ -20,16 +16,22 @@ namespace Deviser.WI.Controllers.Api
     {
         //Logger
         private readonly ILogger<UserController> _logger;
+        private readonly IMapper _mapper;
         private readonly UserManager<Core.Data.Entities.User> _userManager;
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
 
-        public UserController(ILifetimeScope container, UserManager<Core.Data.Entities.User> userManager)
+        public UserController(ILogger<UserController> logger, 
+            IMapper mapper,
+            UserManager<Core.Data.Entities.User> userManager,
+            IUserRepository userRepository,
+            IRoleRepository roleRepository)
         {
-            _logger = container.Resolve<ILogger<UserController>>();
-            _userRepository = container.Resolve<IUserRepository>();
-            _roleRepository = container.Resolve<IRoleRepository>();
+            _logger = logger;
+            _mapper = mapper;
             _userManager = userManager;
+            _userRepository = userRepository;
+            _roleRepository = roleRepository;
         }
 
         [HttpGet]
@@ -59,7 +61,7 @@ namespace Deviser.WI.Controllers.Api
             {
                 if(userDTO!=null)
                 {   
-                    var user = Mapper.Map<Core.Data.Entities.User>(userDTO);
+                    var user = _mapper.Map<Core.Data.Entities.User>(userDTO);
                     user.Id = Guid.NewGuid();
                     user.UserName = userDTO.Email;
                     var result = await _userManager.CreateAsync(user, userDTO.Password);
@@ -91,7 +93,7 @@ namespace Deviser.WI.Controllers.Api
         {
             try
             {
-                var user = Mapper.Map<Core.Data.Entities.User>(userDTO);
+                var user = _mapper.Map<Core.Data.Entities.User>(userDTO);
                 var result = _userManager.UpdateAsync(user).Result;
                 if (result != null)
                     return Ok(result);

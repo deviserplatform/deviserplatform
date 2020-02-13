@@ -1,18 +1,9 @@
-﻿using Deviser.Core.Library.Extensions;
+﻿using Deviser.Core.Library.Services;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using Deviser.Core.Common;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Primitives;
-using Deviser.Core.Library.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
+using System.Globalization;
 
 namespace Deviser.Core.Library.Controllers
 {

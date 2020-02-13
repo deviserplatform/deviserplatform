@@ -1,0 +1,220 @@
+﻿/*!
+* metismenu https://github.com/onokumus/metismenu#readme
+* A jQuery menu plugin
+* @version 3.0.4
+* @author Osman Nuri Okumus <onokumus@gmail.com> (https://github.com/onokumus)
+* @license: MIT 
+*/
+.metismenu {
+    .arrow {
+        float: right;
+        line-height: 1.42857;
+    }
+    /*
+     * Require Font-Awesome
+     * http://fortawesome.github.io/Font-Awesome/
+    */
+    .fa.arrow:before {
+        content: "\f104";
+    }
+
+    .plus-times {
+        float: right;
+    }
+
+    .mm-active > a > .fa.arrow:before {
+        content: "\f107";
+    }
+
+    .fa.plus-times:before {
+        content: "\f067";
+    }
+
+    .mm-active > a > .fa.plus-times {
+        -webkit-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+
+    .plus-minus {
+        float: right;
+    }
+
+    .fa.plus-minus:before {
+        content: "\f067";
+    }
+
+    .mm-active > a > .fa.plus-minus:before {
+        content: "\f068";
+    }
+
+    .mm-collapse:not(.mm-show) {
+        display: none;
+    }
+
+    .mm-collapsing {
+        position: relative;
+        height: 0;
+        overflow: hidden;
+        transition-timing-function: ease;
+        transition-duration: .35s;
+        transition-property: height, visibility;
+    }
+
+    .has-arrow {
+        position: relative;
+    }
+
+    .has-arrow::after {
+        position: absolute;
+        content: '';
+        width: .5em;
+        height: .5em;
+        border-width: 1px 0 0 1px;
+        border-style: solid;
+        border-color: currentColor;
+        border-color: initial;
+        right: 1em;
+        -webkit-transform: rotate(-45deg) translate(0, -50%);
+        transform: rotate(-45deg) translate(0, -50%);
+        -webkit-transform-origin: top;
+        transform-origin: top;
+        top: 50%;
+        transition: all .3s ease-out;
+    }
+}
+
+*[dir="rtl"] .metismenu .arrow {
+    float: left;
+}
+
+/*
+ * Require Bootstrap 3.x
+ * https://github.com/twbs/bootstrap
+*/
+
+/*.metismenu .glyphicon.arrow:before {
+    content: "\e079";
+}
+
+.metismenu .mm-active > a > .glyphicon.arrow:before {
+    content: "\e114";
+}*/
+
+
+
+/*
+ * Require Ionicons
+ * http://ionicons.com/
+*/
+
+/*.metismenu .ion.arrow:before {
+    content: "\f3d2"
+}
+
+.metismenu .mm-active > a > .ion.arrow:before {
+    content: "\f3d0";
+}*/
+
+*[dir="rtl"] .metismenu .plus-times {
+    float: left;
+}
+
+*[dir="rtl"] .metismenu .plus-minus {
+    float: left;
+}
+
+
+
+*[dir="rtl"] .metismenu .has-arrow::after {
+    right: auto;
+    left: 1em;
+    -webkit-transform: rotate(135deg) translate(0, -50%);
+    transform: rotate(135deg) translate(0, -50%);
+}
+
+.metismenu .mm-active > .has-arrow::after,
+.metismenu .has-arrow[aria-expanded="true"]::after {
+    -webkit-transform: rotate(-135deg) translate(0, -50%);
+    transform: rotate(-135deg) translate(0, -50%);
+}
+
+*[dir="rtl"] .metismenu .mm-active > .has-arrow::after,
+*[dir="rtl"] .metismenu .has-arrow[aria-expanded="true"]::after {
+    -webkit-transform: rotate(225deg) translate(0, -50%);
+    transform: rotate(225deg) translate(0, -50%);
+}
+
+/*# sourceMappingURL=metisMenu.css.map */
+
+.sidebar-nav {
+    ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .metismenu {
+        background: $dark;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+    /*li + li {
+        margin-top: 5px;
+    }
+
+    li:first-child {
+        margin-top: 5px;
+    }*/
+    li:last-child {
+        margin-bottom: 5px;
+    }
+
+    > li {
+        /*-webkit-box-flex: 1;
+    -ms-flex: 1 1 0%;
+    flex: 1 1 0%;*/
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        position: relative;
+    }
+
+    a {
+        position: relative;
+        display: block;
+        padding: 13px 15px;
+        color: #adb5bd;
+        outline-width: 0;
+        transition: all .3s ease-out;
+    }
+
+    ul a {
+        padding: 10px 15px 10px 30px;
+    }
+
+    ul ul a {
+        padding: 10px 15px 10px 45px;
+    }
+
+    a:hover, a:focus, a:active, .mm-active > a {
+        color: #f8f9fa;
+        text-decoration: none;
+    }
+
+    a:hover, a:focus {
+        background: $gray-900;
+    }
+
+    a:active, .mm-active > a {
+        background: $primary;
+    }
+}

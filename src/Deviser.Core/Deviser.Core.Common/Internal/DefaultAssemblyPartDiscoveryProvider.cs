@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Deviser.Core.Common.Properties;
+using Microsoft.Extensions.DependencyModel;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using Deviser.Core.Common.Properties;
-using Microsoft.Extensions.DependencyModel;
 
 namespace Deviser.Core.Common.Internal
 {
@@ -15,6 +14,7 @@ namespace Deviser.Core.Common.Internal
             "Deviser.Core.Library",
             "Deviser.Core.Common",
             "Deviser.Core.Data",
+            "Deviser.Admin",
             //"Microsoft.AspNetCore.Mvc",
             //"Microsoft.AspNetCore.Mvc.Abstractions",
             //"Microsoft.AspNetCore.Mvc.ApiExplorer",
@@ -31,10 +31,10 @@ namespace Deviser.Core.Common.Internal
             //"Microsoft.AspNetCore.Mvc.ViewFeatures"
         };
 
-        public static IEnumerable<Assembly> DiscoverAssemblyParts(string entryPointAssemblyName)
+        public static IEnumerable<Assembly> DiscoverAssemblyParts(Assembly entryAssembly /*string entryPointAssemblyName*/)
         {
-            var entryAssembly = Assembly.Load(new AssemblyName(entryPointAssemblyName));
-            var context = DependencyContext.Load(Assembly.Load(new AssemblyName(entryPointAssemblyName)));
+            //var entryAssembly = Assembly.Load(new AssemblyName(entryPointAssemblyName));
+            var context = DependencyContext.Load(entryAssembly);
 
             return GetCandidateAssemblies(entryAssembly, context);
         }
@@ -78,7 +78,7 @@ namespace Deviser.Core.Common.Internal
                 {
                     if (dependenciesWithNoDuplicates.ContainsKey(dependency.Name))
                     {
-                        throw new InvalidOperationException(Resources.FormatCandidateResolver_DifferentCasedReference(dependency.Name));
+                        throw new InvalidOperationException(string.Format(Resources.CandidateResolver_DifferentCasedReference, dependency.Name));
                     }
                     dependenciesWithNoDuplicates.Add(dependency.Name, CreateDependency(dependency, referenceAssemblies));
                 }

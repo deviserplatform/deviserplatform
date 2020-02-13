@@ -1,13 +1,10 @@
-﻿using Autofac;
+﻿using AutoMapper;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -24,17 +21,21 @@ namespace Deviser.Core.Data.Repositories
     /// <summary>
     /// Data provider for both ContentTypes and ContentDataType
     /// </summary>
-    public class ContentTypeRepository : RepositoryBase, IContentTypeRepository
+    public class ContentTypeRepository : IContentTypeRepository
     {
         //Logger
         private readonly ILogger<ContentTypeRepository> _logger;
+        private readonly DbContextOptions<DeviserDbContext> _dbOptions;
+        private readonly IMapper _mapper;
 
-        //Constructor
-        public ContentTypeRepository(ILifetimeScope container)
-            : base(container)
+
+        public ContentTypeRepository(DbContextOptions<DeviserDbContext> dbOptions, 
+            ILogger<ContentTypeRepository> logger, 
+            IMapper mapper)
         {
-            _logger = container.Resolve<ILogger<ContentTypeRepository>>();
-
+            _logger = logger;
+            _dbOptions = dbOptions;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -46,23 +47,21 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbContentType = _mapper.Map<Entities.ContentType>(contentType);                    
+                dbContentType.Id = Guid.NewGuid();
+                if (dbContentType.ContentTypeProperties != null && dbContentType.ContentTypeProperties.Count > 0)
                 {
-                    var dbContentType = Mapper.Map<Entities.ContentType>(contentType);                    
-                    dbContentType.Id = Guid.NewGuid();
-                    if (dbContentType.ContentTypeProperties != null && dbContentType.ContentTypeProperties.Count > 0)
+                    foreach (var ctp in dbContentType.ContentTypeProperties)
                     {
-                        foreach (var ctp in dbContentType.ContentTypeProperties)
-                        {
-                            ctp.Property = null;                            
-                            ctp.ContentTypeId = dbContentType.Id;
-                        }
+                        ctp.Property = null;                            
+                        ctp.ContentTypeId = dbContentType.Id;
                     }
-                    dbContentType.CreatedDate = dbContentType.LastModifiedDate = DateTime.Now;
-                    var result = context.ContentType.Add(dbContentType).Entity;
-                    context.SaveChanges();
-                    return Mapper.Map<ContentType>(result);
                 }
+                dbContentType.CreatedDate = dbContentType.LastModifiedDate = DateTime.Now;
+                var result = context.ContentType.Add(dbContentType).Entity;
+                context.SaveChanges();
+                return _mapper.Map<ContentType>(result);
             }
             catch (Exception ex)
             {
@@ -80,13 +79,11 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.ContentType
-                               .FirstOrDefault(e => e.Id == contentTypeId);
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.ContentType
+                    .FirstOrDefault(e => e.Id == contentTypeId);
 
-                    return Mapper.Map<ContentType>(result);
-                }
+                return _mapper.Map<ContentType>(result);
             }
             catch (Exception ex)
             {
@@ -104,15 +101,13 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.ContentType
-                               .Where(e => String.Equals(e.Name, contentTypeName, StringComparison.CurrentCultureIgnoreCase))
-                               .OrderBy(ct => ct.Name)
-                               .FirstOrDefault();
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.ContentType
+                    .Where(e => String.Equals(e.Name, contentTypeName, StringComparison.CurrentCultureIgnoreCase))
+                    .OrderBy(ct => ct.Name)
+                    .FirstOrDefault();
 
-                    return Mapper.Map<ContentType>(result);
-                }
+                return _mapper.Map<ContentType>(result);
             }
             catch (Exception ex)
             {
@@ -129,14 +124,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.ContentType
-                        .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
-                        .OrderBy(c => c.Name)
-                        .ToList();
-                    return Mapper.Map<List<ContentType>>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.ContentType
+                    .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
+                    .OrderBy(c => c.Name)
+                    .ToList();
+                return _mapper.Map<List<ContentType>>(result);
             }
             catch (Exception ex)
             {
@@ -155,58 +148,56 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbContentType = _mapper.Map<Entities.ContentType>(contentType);
+
+                if (dbContentType.ContentTypeProperties != null && dbContentType.ContentTypeProperties.Count > 0)
                 {
-                    var dbContentType = Mapper.Map<Entities.ContentType>(contentType);
 
-                    if (dbContentType.ContentTypeProperties != null && dbContentType.ContentTypeProperties.Count > 0)
+                    var toRemoveFromClient = dbContentType.ContentTypeProperties.Where(clientProp => context.ContentTypeProperty.Any(dbProp =>
+                        clientProp.ContentTypeId == dbProp.ContentTypeId && clientProp.PropertyId == dbProp.PropertyId)).ToList();
+
+                    var currentTypeProperties = context.ContentTypeProperty.Where(ctp => ctp.ContentTypeId == dbContentType.Id).ToList();
+
+                    List<Entities.ContentTypeProperty> toRemoveFromDb = null;
+
+                    if (currentTypeProperties != null && currentTypeProperties.Count > 0)
                     {
+                        toRemoveFromDb = currentTypeProperties.Where(dbProp => !dbContentType.ContentTypeProperties.Any(clientProp => dbProp.PropertyId == clientProp.PropertyId)).ToList();
+                    }
 
-                        var toRemoveFromClient = dbContentType.ContentTypeProperties.Where(clientProp => context.ContentTypeProperty.Any(dbProp =>
-                         clientProp.ContentTypeId == dbProp.ContentTypeId && clientProp.PropertyId == dbProp.PropertyId)).ToList();
-
-                        var currentTypeProperties = context.ContentTypeProperty.Where(ctp => ctp.ContentTypeId == dbContentType.Id).ToList();
-
-                        List<Entities.ContentTypeProperty> toRemoveFromDb = null;
-
-                        if (currentTypeProperties != null && currentTypeProperties.Count > 0)
+                    if (toRemoveFromClient != null && toRemoveFromClient.Count > 0)
+                    {
+                        foreach (var contentTypeProp in toRemoveFromClient)
                         {
-                            toRemoveFromDb = currentTypeProperties.Where(dbProp => !dbContentType.ContentTypeProperties.Any(clientProp => dbProp.PropertyId == clientProp.PropertyId)).ToList();
-                        }
-
-                        if (toRemoveFromClient != null && toRemoveFromClient.Count > 0)
-                        {
-                            foreach (var contentTypeProp in toRemoveFromClient)
-                            {
-                                //ContentTypeProperty exist in db, therefore remove it from contentType (client source)
-                                dbContentType.ContentTypeProperties.Remove(contentTypeProp);
-                            }
-                        }
-
-                        if (toRemoveFromDb != null && toRemoveFromDb.Count > 0)
-                        {
-                            //ContentTypeProperty is not exist in contentType (client source), because client has been removed it. Therefor, remove it from db.
-                            context.ContentTypeProperty.RemoveRange(toRemoveFromDb);
-                        }
-
-                        if(dbContentType.ContentTypeProperties!=null && dbContentType.ContentTypeProperties.Count > 0)
-                        {
-                            foreach(var contentTypeProp in dbContentType.ContentTypeProperties)
-                            {
-                                contentTypeProp.Property = null;
-                                context.ContentTypeProperty.Add(contentTypeProp);
-                            }
-                            
+                            //ContentTypeProperty exist in db, therefore remove it from contentType (client source)
+                            dbContentType.ContentTypeProperties.Remove(contentTypeProp);
                         }
                     }
 
+                    if (toRemoveFromDb != null && toRemoveFromDb.Count > 0)
+                    {
+                        //ContentTypeProperty is not exist in contentType (client source), because client has been removed it. Therefor, remove it from db.
+                        context.ContentTypeProperty.RemoveRange(toRemoveFromDb);
+                    }
 
-                    dbContentType.LastModifiedDate = DateTime.Now;
-                    var result = context.ContentType.Update(dbContentType).Entity;
-                    //context.Entry(dbContentType).State = EntityState.Modified;
-                    context.SaveChanges();
-                    return Mapper.Map<ContentType>(result);
+                    if(dbContentType.ContentTypeProperties!=null && dbContentType.ContentTypeProperties.Count > 0)
+                    {
+                        foreach(var contentTypeProp in dbContentType.ContentTypeProperties)
+                        {
+                            contentTypeProp.Property = null;
+                            context.ContentTypeProperty.Add(contentTypeProp);
+                        }
+                            
+                    }
                 }
+
+
+                dbContentType.LastModifiedDate = DateTime.Now;
+                var result = context.ContentType.Update(dbContentType).Entity;
+                //context.Entry(dbContentType).State = EntityState.Modified;
+                context.SaveChanges();
+                return _mapper.Map<ContentType>(result);
             }
             catch (Exception ex)
             {

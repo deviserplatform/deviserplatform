@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Deviser.Core.Common;
+﻿using Deviser.Core.Common;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
+using System;
+using System.Collections.Generic;
 
 namespace Deviser.Core.Library.TagHelpers
 {

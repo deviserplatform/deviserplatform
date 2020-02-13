@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Deviser.Core.Common
 {
@@ -18,7 +17,7 @@ namespace Deviser.Core.Common
 
         public const string InstallConfigFile = "installconfig.json";
 
-        public const string PlatformAssembly = "Deviser.WI";
+        public const string PlatformAssembly = "Deviser.Web";
 
         public const string ModuleMigrationTableName = "__ModuleMigrationsHistory";
 
@@ -28,6 +27,10 @@ namespace Deviser.Core.Common
         public const int ImageOptimizeMaxWidth = 1024;
         public const int ImageOptimizeMaxHeight = 1204;
         public const int ImageOptimizeQualityPercent = 80;
+
+        public const int AdminDefaultPageCount = 10;
+
+        private static Assembly _entryPointAssembly;
 
         public static Guid PageTypeURL
         {
@@ -42,6 +45,14 @@ namespace Deviser.Core.Common
             get
             {
                 return new Guid("4C06DCFD-214F-45AF-8404-FF84B412AB01");
+            }
+        }
+
+        public static Guid PageTypeAdmin
+        {
+            get
+            {
+                return new Guid("5308B86C-A2FC-4220-8BA2-47E7BEC1938D");
             }
         }
 
@@ -65,7 +76,20 @@ namespace Deviser.Core.Common
             }
         }
 
-        public static string ApplicationEntryPoint => "Deviser.WI";
+        public static Assembly EntryPointAssembly
+        {
+            get
+            {
+                if (_entryPointAssembly == null)
+                {
+                    _entryPointAssembly = System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies.First(a => a.EntryPoint != null);
+                }
+
+                return _entryPointAssembly;
+            }
+        }
+
+        //public static string ApplicationEntryPoint => "Deviser.WI";
 
         public static string DefaultSitePath
         {

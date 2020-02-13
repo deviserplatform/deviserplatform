@@ -1,40 +1,40 @@
-﻿using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using Deviser.Core.Common.DomainTypes;
-using Deviser.WI;
+﻿using AutoMapper;
+using Deviser.Core.Data;
+using Deviser.Core.Library.Internal;
+using Deviser.Core.Library.Modules;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Deviser.Core.Data;
-using Deviser.Core.Data.Entities;
-using Deviser.Core.Library.Modules;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
-using Xunit;
-using User = Deviser.Core.Data.Entities.User;
-using Role = Deviser.Core.Data.Entities.Role;
-using Microsoft.AspNetCore.Routing;
 using Moq;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
+using System;
+using System.Diagnostics;
 using System.Reflection;
-using Deviser.Core.Library.Internal;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Deviser.Core.Library.Infrastructure;
-using AutoMapper;
+using Deviser.Core.Data.Repositories;
+using Deviser.Core.Library;
+using Deviser.Core.Library.Controllers;
+using Deviser.Core.Library.DependencyInjection;
+using Deviser.Core.Library.IO;
+using Deviser.Core.Library.Layouts;
+using Deviser.Core.Library.Media;
+using Deviser.Core.Library.Multilingual;
+using Deviser.Core.Library.Services;
+using Deviser.Core.Library.Sites;
+using Deviser.Web.Infrastructure;
+using Role = Deviser.Core.Data.Entities.Role;
+using User = Deviser.Core.Data.Entities.User;
 
 namespace Deviser.TestCommon
 {
     public class TestBase
     {
-        protected readonly ILifetimeScope _container;
-        protected readonly IServiceProvider _serviceProvider;
+        protected IServiceProvider ServiceProvider { get; }
 
         public TestBase()
         {
@@ -42,70 +42,82 @@ namespace Deviser.TestCommon
 
             var services = new ServiceCollection();
 
-            var hostingEnvMock = new Mock<IHostingEnvironment>(MockBehavior.Strict);
+            var hostingEnvMock = new Mock<IWebHostEnvironment>(MockBehavior.Strict);
             var currentAssemblyName = this.GetType().GetTypeInfo().Assembly.GetName().Name;
             hostingEnvMock.Setup(he => he.ApplicationName).Returns(currentAssemblyName);
 
             services.AddOptions();
-            services
-                .AddDbContext<DeviserDbContext>(b => b.UseInMemoryDatabase("DeviserWI").UseInternalServiceProvider(efServiceProvider));
+            services.AddDbContext<DeviserDbContext>(b => b.UseInMemoryDatabase("DeviserWI").UseInternalServiceProvider(efServiceProvider));
 
             services.AddIdentity<User, Role>()
                     .AddEntityFrameworkStores<DeviserDbContext>();
 
-            services.AddSingleton<DiagnosticSource>(new DiagnosticListener("Microsoft.AspNetCore"));
-            services.AddSingleton<IHostingEnvironment>(hostingEnvMock.Object);
-            services.Add(ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, SerializerSettingsSetup>());
-            services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
-            services.TryAddSingleton<ObjectMethodExecutorCache>();
-            services.TryAddSingleton<ITempDataDictionaryFactory, TempDataDictionaryFactory>();
-            //services.AddSingleton<ILoggerFactory>(NullLoggerFactory.Instance)
+            //services.AddSingleton<DiagnosticSource>(new DiagnosticListener("Microsoft.AspNetCore"));
+            //services.AddSingleton<IWebHostEnvironment>(hostingEnvMock.Object);
+            ////services.Add(ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, SerializerSettingsSetup>());
+            //services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
+            //services.TryAddSingleton<ObjectMethodExecutorCache>();
+            //services.TryAddSingleton<ITempDataDictionaryFactory, TempDataDictionaryFactory>();
+            ////services.AddSingleton<ILoggerFactory>(NullLoggerFactory.Instance)
 
-            services.AddLogging();
-            services.AddOptions();
-
-            
-
-            services.AddMvc(option =>
-            {
-                //var jsonOutputFormatter = new JsonOutputFormatter();
-                //jsonOutputFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                ////jsonOutputFormatter.SerializerSettings.DefaultValueHandling = Newtonsoft.Json.DefaultValueHandling.Ignore;
-                //jsonOutputFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
-                //jsonOutputFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-
-                //var jsonOutputFormatterOld = option.OutputFormatters.FirstOrDefault(formatter => formatter is JsonOutputFormatter);
-                //if (jsonOutputFormatterOld != null)
-                //{
-                //    option.OutputFormatters.Remove(jsonOutputFormatterOld);
-                //}
-                ////options.OutputFormatters.RemoveAll(formatter => formatter.Instance.GetType() == typeof(JsonOutputFormatter));
-                //option.OutputFormatters.Insert(0, jsonOutputFormatter);
-            })
-           .AddRazorOptions(options =>
-           {
-               options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
-           });
-
-            // IHttpContextAccessor is required for SignInManager, and UserManager
-            //var context = new DefaultHttpContext();
-            //context.Features.Set<IHttpAuthenticationFeature>(new HttpAuthenticationFeature() { Handler = new TestAuthHandler() });
-            //services.AddSingleton<IHttpContextAccessor>(
-            //    new HttpContextAccessor()
-            //    {
-            //        HttpContext = context,
-            //    });
+            //services.AddLogging();
+            //services.AddOptions();
 
 
-            //Mapper.Reset();
-            MapperConfig.CreateMaps();
+            services.AddHttpContextAccessor();
 
-            // Add Autofac
-            var containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterModule<DefaultModule>();
-            containerBuilder.Populate(services);
-            _container = containerBuilder.Build();
-            _serviceProvider = new AutofacServiceProvider(_container);
+
+            services.AddAutoMapper(typeof(AdminServicesExtensions).Assembly);
+
+            services.AddScoped<ViewResultExecutor>();
+            services.AddScoped<IScopeService, ScopeService>();
+            services.AddScoped<IImageOptimizer, ImageOptimizer>();
+
+
+            services.AddScoped<IActionInvoker, ActionInvoker>();
+            services.AddScoped<ITypeActivatorCache, TypeActivatorCache>();
+            //builder.RegisterType<ModuleInvokerProvider>().As<IModuleInvokerProvider>();
+            //services.AddScoped<DeviserRouteHandler>();
+
+            services.AddTransient<ILayoutRepository, LayoutRepository>();
+            services.AddTransient<ILayoutTypeRepository, LayoutTypeRepository>();
+            services.AddTransient<IContentTypeRepository, ContentTypeRepository>();
+            services.AddTransient<IModuleRepository, ModuleRepository>();
+            services.AddTransient<IPageContentRepository, PageContentRepository>();
+            services.AddTransient<IPageRepository, PageRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<ILanguageRepository, LanguageRepository>();
+            services.AddTransient<IOptionListRepository, OptionListRepository>();
+            services.AddTransient<IPropertyRepository, PropertyRepository>();
+
+            //builder.RegisterType<ContactProvider>().As<IContactProvider>();
+            services.AddScoped<IRouteConstraint, PageUrlConstraint>();
+            services.AddScoped<IDeviserControllerFactory, DeviserControllerFactory>();
+
+            services.AddScoped<IPageManager, PageManager>();
+            services.AddScoped<IModuleManager, ModuleManager>();
+            services.AddScoped<IContentManager, ContentManager>();
+            services.AddScoped<ILayoutManager, LayoutManager>();
+            services.AddScoped<IThemeManager, ThemeManager>();
+            services.AddScoped<INavigation, Navigation>();
+            services.AddScoped<IFileManagement, FileManagement>();
+            services.AddScoped<ILanguageManager, LanguageManager>();
+            services.AddScoped<ISettingManager, SettingManager>();
+            services.AddScoped<ISitemapService, SitemapService>();
+
+            ServiceProvider = services.BuildServiceProvider();
+
+            // services.AddMvc(option =>
+            // {
+
+            // })
+            //.AddRazorOptions(options =>
+            //{
+            //    options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
+            //});
+
+            //MapperConfig.CreateMaps();
 
         }
 

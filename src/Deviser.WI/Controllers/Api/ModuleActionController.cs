@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Data.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Autofac;
-using Deviser.Core.Data.Repositories;
-using Deviser.Core.Common.DomainTypes;
+using System;
 
 
 namespace Deviser.WI.Controllers
@@ -19,10 +15,11 @@ namespace Deviser.WI.Controllers
         private readonly ILogger<ModuleActionController> _logger;
         private readonly IModuleRepository _moduleRepository;
 
-        public ModuleActionController(ILifetimeScope container)
+        public ModuleActionController(ILogger<ModuleActionController> logger,
+            IModuleRepository moduleRepository)
         {
-            _logger = container.Resolve<ILogger<ModuleActionController>>();
-            _moduleRepository = container.Resolve<IModuleRepository>();
+            _logger = logger;
+            _moduleRepository = moduleRepository;
         }
 
         [HttpGet]

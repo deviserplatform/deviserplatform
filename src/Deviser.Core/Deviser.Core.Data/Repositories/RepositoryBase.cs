@@ -1,28 +1,22 @@
-﻿using Autofac;
-using AutoMapper;
-using Deviser.Core.Data.Entities;
+﻿using Deviser.Core.Data.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
-using Deviser.Core.Data.Extensions;
-using System.Collections.Concurrent;
 
 namespace Deviser.Core.Data.Repositories
 {
     public class RepositoryBase : AbstractRepository, IRepositoryBase
     {
 
-        protected readonly DbContextOptions<DeviserDbContext> DbOptions;
-        protected readonly ILifetimeScope Container;
+        protected readonly DbContextOptions<DeviserDbContext> _dbOptions;
         private readonly ILogger<RepositoryBase> _logger;
         //protected readonly DeviserDbContext context;
 
-        public RepositoryBase(ILifetimeScope container)
+        public RepositoryBase(DbContextOptions<DeviserDbContext> dbOptions,
+            ILogger<PropertyRepository> logger)
         {
-            this.Container = container;
-            DbOptions = container.Resolve<DbContextOptions<DeviserDbContext>>();
-            _logger = container.Resolve<ILogger<RepositoryBase>>();
+            _dbOptions = dbOptions;
+            _logger = _logger;
 
             //context = container.Resolve<DeviserDbContext>();
             //context.ChangeTracker.AutoDetectChangesEnabled = false;
@@ -33,10 +27,8 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    return context.Database.Exists();
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                return context.Database.Exists();
             }
             catch (Exception ex)
             {

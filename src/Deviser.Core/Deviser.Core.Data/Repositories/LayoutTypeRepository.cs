@@ -1,12 +1,10 @@
-﻿using Autofac;
+﻿using AutoMapper;
+using Deviser.Core.Common.DomainTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -19,30 +17,33 @@ namespace Deviser.Core.Data.Repositories
         LayoutType UpdateLayoutType(LayoutType dbLayoutType);
 
     }
-    public class LayoutTypeRepository : RepositoryBase, ILayoutTypeRepository
+    public class LayoutTypeRepository : ILayoutTypeRepository
     {
         //Logger
         private readonly ILogger<LayoutTypeRepository> _logger;
+        private readonly DbContextOptions<DeviserDbContext> _dbOptions;
+        private readonly IMapper _mapper;
 
         //Constructor
-        public LayoutTypeRepository(ILifetimeScope container)
-            : base(container)
+        public LayoutTypeRepository(DbContextOptions<DeviserDbContext> dbOptions,
+            ILogger<LayoutTypeRepository> logger,
+            IMapper mapper)
         {
-            _logger = container.Resolve<ILogger<LayoutTypeRepository>>();
+            _logger = logger;
+            _dbOptions = dbOptions;
+            _mapper = mapper;
         }
 
         public LayoutType CreateLayoutType(LayoutType layoutType)
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var dbLayoutType = Mapper.Map<Entities.LayoutType>(layoutType);
-                    dbLayoutType.CreatedDate = dbLayoutType.LastModifiedDate = DateTime.Now;
-                    var result = context.LayoutType.Add(dbLayoutType).Entity;
-                    context.SaveChanges();
-                    return Mapper.Map<LayoutType>(result);
-                }
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbLayoutType = _mapper.Map<Entities.LayoutType>(layoutType);
+                dbLayoutType.CreatedDate = dbLayoutType.LastModifiedDate = DateTime.Now;
+                var result = context.LayoutType.Add(dbLayoutType).Entity;
+                context.SaveChanges();
+                return _mapper.Map<LayoutType>(result);
             }
             catch (Exception ex)
             {
@@ -55,14 +56,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.LayoutType
-                        .Include(lt => lt.LayoutTypeProperties)
-                        .FirstOrDefault(e => e.Id == layoutTypeId);
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.LayoutType
+                    .Include(lt => lt.LayoutTypeProperties)
+                    .FirstOrDefault(e => e.Id == layoutTypeId);
 
-                    return Mapper.Map<LayoutType>(result);
-                }
+                return _mapper.Map<LayoutType>(result);
             }
             catch (Exception ex)
             {
@@ -75,14 +74,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.LayoutType
-                        .Include(lt => lt.LayoutTypeProperties)
-                        .FirstOrDefault(e => e.Name.ToLower() == layoutTypeName.ToLower());
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.LayoutType
+                    .Include(lt => lt.LayoutTypeProperties)
+                    .FirstOrDefault(e => e.Name.ToLower() == layoutTypeName.ToLower());
 
-                    return Mapper.Map<LayoutType>(result);
-                }
+                return _mapper.Map<LayoutType>(result);
             }
             catch (Exception ex)
             {
@@ -95,14 +92,12 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
-                {
-                    var result = context.LayoutType
-                        .Include(c => c.LayoutTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
-                        .ToList();
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.LayoutType
+                    .Include(c => c.LayoutTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
+                    .ToList();
 
-                    return Mapper.Map<List<LayoutType>>(result);
-                }
+                return _mapper.Map<List<LayoutType>>(result);
             }
             catch (Exception ex)
             {
@@ -115,52 +110,50 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using (var context = new DeviserDbContext(DbOptions))
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbLayoutType = _mapper.Map<Entities.LayoutType>(layoutType);
+
+                if (dbLayoutType.LayoutTypeProperties != null && dbLayoutType.LayoutTypeProperties.Count > 0)
                 {
-                    var dbLayoutType = Mapper.Map<Entities.LayoutType>(layoutType);
 
-                    if (dbLayoutType.LayoutTypeProperties != null && dbLayoutType.LayoutTypeProperties.Count > 0)
+                    var toRemoveFromClient = dbLayoutType.LayoutTypeProperties.Where(clientProp => context.LayoutTypeProperty.Any(dbProp =>
+                        clientProp.LayoutTypeId == dbProp.LayoutTypeId && clientProp.PropertyId == dbProp.PropertyId)).ToList();
+
+                    var layoutTypeProperties = context.LayoutTypeProperty.Where(ctp => ctp.LayoutTypeId == dbLayoutType.Id).ToList();
+
+                    //List<Entities.LayoutTypeProperty> newLayoutTypeProperities = dbLayoutType.LayoutTypeProperties.Where(newProp => context.LayoutTypeProperty.Any(ctp => ctp.LayoutTypeId == newProp.LayoutTypeId && ctp.PropertyId != newProp.PropertyId)).ToList();
+
+                    List<Entities.LayoutTypeProperty> toRemoveFromDb = null;
+
+                    if (layoutTypeProperties.Count > 0)
                     {
+                        toRemoveFromDb = layoutTypeProperties.Where(dbProp => !dbLayoutType.LayoutTypeProperties.Any(clientProp => dbProp.PropertyId == clientProp.PropertyId)).ToList();
+                    }
 
-                        var toRemoveFromClient = dbLayoutType.LayoutTypeProperties.Where(clientProp => context.LayoutTypeProperty.Any(dbProp =>
-                         clientProp.LayoutTypeId == dbProp.LayoutTypeId && clientProp.PropertyId == dbProp.PropertyId)).ToList();
-
-                        var layoutTypeProperties = context.LayoutTypeProperty.Where(ctp => ctp.LayoutTypeId == dbLayoutType.Id).ToList();
-
-                        //List<Entities.LayoutTypeProperty> newLayoutTypeProperities = dbLayoutType.LayoutTypeProperties.Where(newProp => context.LayoutTypeProperty.Any(ctp => ctp.LayoutTypeId == newProp.LayoutTypeId && ctp.PropertyId != newProp.PropertyId)).ToList();
-
-                        List<Entities.LayoutTypeProperty> toRemoveFromDb = null;
-
-                        if (layoutTypeProperties != null && layoutTypeProperties.Count > 0)
+                    if (toRemoveFromClient.Count > 0)
+                    {
+                        foreach (var layoutTypeProp in toRemoveFromClient)
                         {
-                            toRemoveFromDb = layoutTypeProperties.Where(dbProp => !dbLayoutType.LayoutTypeProperties.Any(clientProp => dbProp.PropertyId == clientProp.PropertyId)).ToList();
-                        }
-
-                        if (toRemoveFromClient != null && toRemoveFromClient.Count > 0)
-                        {
-                            foreach (var layoutTypeProp in toRemoveFromClient)
-                            {
-                                //ContentTypeProperty exist in db, therefore remove it from contentType (client source)
-                                dbLayoutType.LayoutTypeProperties.Remove(layoutTypeProp);
-                            }
-                        }
-
-                        if (toRemoveFromDb != null && toRemoveFromDb.Count > 0)
-                        {
-                            //ContentTypeProperty is not exist in contentType (client source), because client has been removed it. Therefor, remove it from db.
-                            context.LayoutTypeProperty.RemoveRange(toRemoveFromDb);
-                        }
-                        if (dbLayoutType.LayoutTypeProperties != null && dbLayoutType.LayoutTypeProperties.Count > 0)
-                        {
-                            context.LayoutTypeProperty.AddRange(dbLayoutType.LayoutTypeProperties);
+                            //ContentTypeProperty exist in db, therefore remove it from contentType (client source)
+                            dbLayoutType.LayoutTypeProperties.Remove(layoutTypeProp);
                         }
                     }
 
-                    dbLayoutType.LastModifiedDate = DateTime.Now;
-                    var result = context.LayoutType.Update(dbLayoutType).Entity;
-                    context.SaveChanges();
-                    return Mapper.Map<LayoutType>(result);
+                    if (toRemoveFromDb != null && toRemoveFromDb.Count > 0)
+                    {
+                        //ContentTypeProperty is not exist in contentType (client source), because client has been removed it. Therefor, remove it from db.
+                        context.LayoutTypeProperty.RemoveRange(toRemoveFromDb);
+                    }
+                    if (dbLayoutType.LayoutTypeProperties != null && dbLayoutType.LayoutTypeProperties.Count > 0)
+                    {
+                        context.LayoutTypeProperty.AddRange(dbLayoutType.LayoutTypeProperties);
+                    }
                 }
+
+                dbLayoutType.LastModifiedDate = DateTime.Now;
+                var result = context.LayoutType.Update(dbLayoutType).Entity;
+                context.SaveChanges();
+                return _mapper.Map<LayoutType>(result);
             }
             catch (Exception ex)
             {

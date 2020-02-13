@@ -1,19 +1,16 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Deviser.Core.Common;
+using Microsoft.AspNetCore.Hosting;
 //using Microsoft.Extensions.PlatformAbstractions;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Deviser.Core.Common;
 
 namespace Deviser.Core.Library.Layouts
 {
     public class ThemeManager : IThemeManager
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public ThemeManager(IHostingEnvironment appEnvironment)
+        public ThemeManager(IWebHostEnvironment appEnvironment)
         {
             _hostingEnvironment = appEnvironment;
         }

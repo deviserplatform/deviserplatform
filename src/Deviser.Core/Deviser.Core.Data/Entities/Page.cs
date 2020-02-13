@@ -36,6 +36,8 @@ namespace Deviser.Core.Data.Entities
         public virtual PageType PageType { get; set; }
         public virtual ICollection<Page> ChildPage { get; set; }
 
+        public virtual AdminPage AdminPage { get; set; }
+
         //Non DB Properties
         public bool IsActive { get; set; }
         public bool IsBreadCrumb { get; set; }

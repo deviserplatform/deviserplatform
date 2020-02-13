@@ -15,9 +15,24 @@ namespace Deviser.WI.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.AdminPage", b =>
+                {
+                    b.Property<Guid>("PageId");
+
+                    b.Property<string>("ModelName");
+
+                    b.Property<Guid>("ModuleId");
+
+                    b.HasKey("PageId");
+
+                    b.HasIndex("ModuleId");
+
+                    b.ToTable("AdminPage");
+                });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentPermission", b =>
                 {
@@ -690,6 +705,19 @@ namespace Deviser.WI.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("Deviser.Core.Data.Entities.UserRole", b =>
+                {
+                    b.Property<Guid>("UserId");
+
+                    b.Property<Guid>("RoleId");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRole");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
@@ -745,19 +773,6 @@ namespace Deviser.WI.Migrations
                     b.ToTable("UserLogin");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
-                {
-                    b.Property<Guid>("UserId");
-
-                    b.Property<Guid>("RoleId");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRole");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
                     b.Property<Guid>("UserId");
@@ -771,6 +786,19 @@ namespace Deviser.WI.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.AdminPage", b =>
+                {
+                    b.HasOne("Deviser.Core.Data.Entities.Module", "Module")
+                        .WithMany("AdminPage")
+                        .HasForeignKey("ModuleId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Deviser.Core.Data.Entities.Page", "Page")
+                        .WithOne("AdminPage")
+                        .HasForeignKey("Deviser.Core.Data.Entities.AdminPage", "PageId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentPermission", b =>
@@ -950,6 +978,19 @@ namespace Deviser.WI.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("Deviser.Core.Data.Entities.UserRole", b =>
+                {
+                    b.HasOne("Deviser.Core.Data.Entities.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Deviser.Core.Data.Entities.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Deviser.Core.Data.Entities.Role")
@@ -970,19 +1011,6 @@ namespace Deviser.WI.Migrations
                 {
                     b.HasOne("Deviser.Core.Data.Entities.User")
                         .WithMany("UserLogins")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
-                {
-                    b.HasOne("Deviser.Core.Data.Entities.Role")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Deviser.Core.Data.Entities.User")
-                        .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

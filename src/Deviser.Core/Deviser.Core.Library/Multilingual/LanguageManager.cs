@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Deviser.Core.Data.Repositories;
+﻿using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
@@ -11,6 +10,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Deviser.Core.Common;
 using System.Globalization;
+using Deviser.Core.Common.FileProviders;
+using Deviser.Core.Data.Installation;
 
 namespace Deviser.Core.Library.Multilingual
 {
@@ -20,22 +21,23 @@ namespace Deviser.Core.Library.Multilingual
         private readonly ILogger<LanguageManager> _logger;
         private readonly ILanguageRepository _languageRepository;
         private readonly INavigation _navigation;
-        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public LanguageManager(ILifetimeScope container)
+        public LanguageManager(ILogger<LanguageManager> logger,
+            ILanguageRepository languageRepository,
+            INavigation navigation)
         {
-            _logger = container.Resolve<ILogger<LanguageManager>>();
-            _languageRepository = container.Resolve<ILanguageRepository>();
-            _hostingEnvironment = container.Resolve<IHostingEnvironment>();
-            _navigation = container.Resolve<INavigation>();
+            _logger = logger;
+            _languageRepository = languageRepository;
+            _navigation = navigation;
         }
 
         public List<Language> GetAllLanguages(bool exceptEnabled = false)
         {
             try
             {
-                string culuresJsonPath = Path.Combine(_hostingEnvironment.ContentRootPath, "cultures.json");
-                List<Language> cultures = SDJsonConvert.DeserializeObject<List<Language>>(System.IO.File.ReadAllText(culuresJsonPath));
+                //string culuresJsonPath = Path.Combine(_hostingEnvironment.ContentRootPath, "cultures.json");
+                var json = EmbeddedProvider.GetFileContentAsString(typeof(DataSeeder).Assembly, "Cultures.json");
+                List<Language> cultures = SDJsonConvert.DeserializeObject<List<Language>>(json);
 
                 cultures.ForEach(c => c.FallbackCulture = Globals.FallbackLanguage);
                 

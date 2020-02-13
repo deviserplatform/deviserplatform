@@ -1,12 +1,10 @@
-﻿using Autofac;
+﻿using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
-using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library;
 using Deviser.Core.Library.Extensions;
 using Deviser.Core.Library.Services;
 using Deviser.WI.ViewModels.Components;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -19,10 +17,11 @@ namespace Deviser.WI.ViewComponents
     {
         private ILanguageRepository _languageRepository;
         private readonly IScopeService _scopeService;
-        public LanguageSwitcher(IScopeService scopeService, ILifetimeScope container)
+        public LanguageSwitcher(IScopeService scopeService, 
+            ILanguageRepository languageRepository)
             :base(scopeService)
         {
-            _languageRepository = container.Resolve<ILanguageRepository>();
+            _languageRepository = languageRepository;
             _scopeService = scopeService;
         }
 

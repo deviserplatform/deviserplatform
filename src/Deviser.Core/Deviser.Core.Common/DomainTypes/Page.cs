@@ -30,6 +30,7 @@ namespace Deviser.Core.Common.DomainTypes
         public virtual Page Parent { get; set; }
         //public virtual PageType PageType { get; set; }
         public virtual ICollection<Page> ChildPage { get; set; }
+        public virtual AdminPage AdminPage { get; set; }
 
         //Non DB Properties
         public bool IsActive { get; set; }

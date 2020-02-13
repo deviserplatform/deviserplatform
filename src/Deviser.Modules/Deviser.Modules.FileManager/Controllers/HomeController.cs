@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Deviser.Core.Library.Controllers;
+﻿using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.Modules;
 using Microsoft.AspNetCore.Mvc;
 

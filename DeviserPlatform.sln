@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{91BD4D35-CFF1-48D1-BAF6-BA0E3FB96B3B}"
 EndProject
@@ -52,6 +52,22 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Core.Data", "src\Deviser.Core\Deviser.Core.Data\Deviser.Core.Data.csproj", "{8BE40D0D-1995-4705-A71D-F4B884CC4ACD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.ContactForm", "src\Deviser.Modules\Deviser.Modules.Contact\Deviser.Modules.ContactForm.csproj", "{A5BF8F5E-738A-4D4F-8635-A8FCCB5D8557}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Admin", "src\Deviser.Core\Deviser.Admin\Deviser.Admin.csproj", "{4D9DBEDF-D8F5-49EF-B98E-D345F1F4D8FB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.Blog", "src\Deviser.Modules\Deviser.Modules.Blog\Deviser.Modules.Blog\Deviser.Modules.Blog.csproj", "{4725F1FF-6BBD-4D8C-AB1F-3C4145EAFA43}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Admin.Web", "src\Deviser.Core\Deviser.Admin.Web\Deviser.Admin.Web.csproj", "{63AE23DB-46F5-4196-B3FF-9750CF169E61}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{3977F3A1-D23E-4CBB-962E-3AEC6BC272D7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Admin.ConfiguratorTest", "samples\Deviser.Admin.ConfiguratorTest\Deviser.Admin.ConfiguratorTest.csproj", "{2C6E715B-E85A-4E0C-902F-F2FAF28B8EC8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Detached", "src\Deviser.Core\Deviser.Detached\Deviser.Detached.csproj", "{55707AAA-C0D8-41F5-919B-760FA99C0CD8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Web", "src\Deviser.Web\Deviser.Web.csproj", "{076ACC63-8E9E-400A-BD54-E2DA3D33CB59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviserApp", "src\DeviserApp\DeviserApp.csproj", "{E808AB4B-8C15-4F09-B092-A96ABF23824F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -139,6 +155,34 @@ Global
 		{A5BF8F5E-738A-4D4F-8635-A8FCCB5D8557}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5BF8F5E-738A-4D4F-8635-A8FCCB5D8557}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5BF8F5E-738A-4D4F-8635-A8FCCB5D8557}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D9DBEDF-D8F5-49EF-B98E-D345F1F4D8FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D9DBEDF-D8F5-49EF-B98E-D345F1F4D8FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D9DBEDF-D8F5-49EF-B98E-D345F1F4D8FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D9DBEDF-D8F5-49EF-B98E-D345F1F4D8FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4725F1FF-6BBD-4D8C-AB1F-3C4145EAFA43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4725F1FF-6BBD-4D8C-AB1F-3C4145EAFA43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4725F1FF-6BBD-4D8C-AB1F-3C4145EAFA43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4725F1FF-6BBD-4D8C-AB1F-3C4145EAFA43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63AE23DB-46F5-4196-B3FF-9750CF169E61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63AE23DB-46F5-4196-B3FF-9750CF169E61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63AE23DB-46F5-4196-B3FF-9750CF169E61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63AE23DB-46F5-4196-B3FF-9750CF169E61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C6E715B-E85A-4E0C-902F-F2FAF28B8EC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C6E715B-E85A-4E0C-902F-F2FAF28B8EC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C6E715B-E85A-4E0C-902F-F2FAF28B8EC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C6E715B-E85A-4E0C-902F-F2FAF28B8EC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55707AAA-C0D8-41F5-919B-760FA99C0CD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55707AAA-C0D8-41F5-919B-760FA99C0CD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55707AAA-C0D8-41F5-919B-760FA99C0CD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55707AAA-C0D8-41F5-919B-760FA99C0CD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{076ACC63-8E9E-400A-BD54-E2DA3D33CB59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{076ACC63-8E9E-400A-BD54-E2DA3D33CB59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{076ACC63-8E9E-400A-BD54-E2DA3D33CB59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{076ACC63-8E9E-400A-BD54-E2DA3D33CB59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E808AB4B-8C15-4F09-B092-A96ABF23824F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E808AB4B-8C15-4F09-B092-A96ABF23824F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E808AB4B-8C15-4F09-B092-A96ABF23824F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E808AB4B-8C15-4F09-B092-A96ABF23824F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -166,6 +210,13 @@ Global
 		{05BBC4B6-ED34-492F-AD39-BA491183EDB1} = {ABAC3B89-50D7-427E-9D89-7202E2A95569}
 		{8BE40D0D-1995-4705-A71D-F4B884CC4ACD} = {F3FFE0B0-32B0-4867-AA80-7FB130E72263}
 		{A5BF8F5E-738A-4D4F-8635-A8FCCB5D8557} = {88901A99-F73F-4CF2-8038-A5E98BAF73FF}
+		{4D9DBEDF-D8F5-49EF-B98E-D345F1F4D8FB} = {F3FFE0B0-32B0-4867-AA80-7FB130E72263}
+		{4725F1FF-6BBD-4D8C-AB1F-3C4145EAFA43} = {88901A99-F73F-4CF2-8038-A5E98BAF73FF}
+		{63AE23DB-46F5-4196-B3FF-9750CF169E61} = {F3FFE0B0-32B0-4867-AA80-7FB130E72263}
+		{2C6E715B-E85A-4E0C-902F-F2FAF28B8EC8} = {3977F3A1-D23E-4CBB-962E-3AEC6BC272D7}
+		{55707AAA-C0D8-41F5-919B-760FA99C0CD8} = {F3FFE0B0-32B0-4867-AA80-7FB130E72263}
+		{076ACC63-8E9E-400A-BD54-E2DA3D33CB59} = {91BD4D35-CFF1-48D1-BAF6-BA0E3FB96B3B}
+		{E808AB4B-8C15-4F09-B092-A96ABF23824F} = {91BD4D35-CFF1-48D1-BAF6-BA0E3FB96B3B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {91F2FF8F-6646-4F1E-A7D9-059D41B096BE}

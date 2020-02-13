@@ -1,0 +1,90 @@
+<div class="admin-container">
+  <div class="admin-grid card"
+    *ngIf="adminConfig && adminConfig.modelConfig && adminConfig.modelConfig.gridConfig && adminConfig.modelConfig.gridConfig.fields && pagination">
+    <div class="card-header">
+      Featured
+    </div>
+    <div class="card-body">
+      <div class="row action-bar">
+        <div class="col">
+          <div class="float-left">
+            <button type="button" class="btn btn-primary" (click)="onNewItem()">
+              <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-add.svg'| envPath"></i> New
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <app-admin-alert class="admin-alerts" [alerts]="alerts"></app-admin-alert>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid"
+            aria-describedby="dataTable_info" style="width: 100%;">
+            <thead>
+              <tr>
+                <th *ngFor="let field of adminConfig.modelConfig.gridConfig.fields">{{field.fieldName}}</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="entityRecords && entityRecords.data && entityRecords.data.length>0">
+              <tr *ngFor="let item of entityRecords.data">
+                <td *ngFor="let field of adminConfig.modelConfig.gridConfig.fields"
+                  [innerHTML]="item[field.fieldNameCamelCase] | formatField:field">
+
+                </td>
+                <td>
+                  <a class="btn btn-dark" title="Edit"
+                    routerLink="/detail/{{ item | recordId:adminConfig.modelConfig.keyField}}">
+                    <i class="my-icon" aria-label="My icon"
+                      [inlineSVG]="'assets/icons/baseline-edit.svg' | envPath"></i>
+                  </a>
+                </td>
+                <td>
+                  <a class="btn btn-danger" title="Delete" (click)="openDeleteConfirmationModal(item)">
+                    <i class="my-icon" aria-label="My icon"
+                      [inlineSVG]="'assets/icons/baseline-delete.svg' | envPath"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+    <div class="card-footer">
+      <div class="row">
+        <div class="col">
+          <div class="form-row">
+            <div class="col-auto dataTables_length">
+              <label class="d-inline"> Items per page </label>
+            </div>
+            <div class="col-auto">
+              <select name="dataTable_length" class="form-control form-control-sm" [(ngModel)]="pagination.pageSize"
+                (change)="onChangePage($event)">
+                <option *ngFor="let pageSize of pagination.pageSizes" [ngValue]="pageSize">{{pageSize}}</option>
+              </select>
+            </div>
+            <div class="col-auto dataTables_info" role="status" aria-live="polite">Showing
+              {{pagination.currentWindowStart}} to {{pagination.currentWindowEnd}} of {{pagination.totalRecordCount}}
+              entries
+            </div>
+          </div>
+
+        </div>
+        <div class="col d-flex flex-row-reverse">
+          <pagination [totalItems]="pagination.totalRecordCount" [ngModel]="pagination.pageNo"
+            [itemsPerPage]="pagination.pageSize" (pageChanged)="onChangePage($event)" [boundaryLinks]="true"
+            [maxSize]="3" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+          </pagination>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-confirm-dialog [title]="'Confirmation'" [content]="'Are you sure to delete this item?'" [btnConfirmText]="'Yes'"
+    [btnCancelText]="'No'" (confirm)="onYesToDelete($event)" (cancel)="onNoToDelete($event)"></app-confirm-dialog>
+</div>

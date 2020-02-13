@@ -1,4 +1,4 @@
-﻿using Autofac;
+﻿using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 //using Microsoft.Extensions.PlatformAbstractions;
@@ -6,20 +6,18 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Core.Library.IO
 {
     public class FileManagement : IFileManagement
     {
         private readonly ILogger<FileManagement> _logger;
-        private readonly IHostingEnvironment _hostingEnvironment;
-        public FileManagement(ILifetimeScope container)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        public FileManagement(ILogger<FileManagement> logger
+            , IWebHostEnvironment hostEnvironment)
         {
-            _logger = container.Resolve<ILogger<FileManagement>>();
-            _hostingEnvironment = container.Resolve<IHostingEnvironment>();
+            _logger = logger;
+            _hostingEnvironment = hostEnvironment;
         }
 
         public List<FileItem> GetFilesAndFolders()

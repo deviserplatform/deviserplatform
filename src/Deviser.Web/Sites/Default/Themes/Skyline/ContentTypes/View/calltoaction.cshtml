@@ -1,0 +1,38 @@
+﻿@model DynamicContent
+@inject IScopeService scopeService
+@inject INavigation navigation
+@{
+    var pageContext = scopeService.PageContext;
+    var currentCulture = pageContext.CurrentCulture.ToString();
+
+    dynamic rootObj = Model.Content;
+    var target = "";
+    var url = "";
+
+    var cssClass =    Model.PageContent.Properties.Get("css_class");
+
+    if (rootObj.link != null && rootObj.link.linkType != null)
+    {
+        string linkType = (string)rootObj.link.linkType;
+        target = ((bool)(rootObj?.link?.isNewWindow ?? false)) ? "target=\"_blank\"" : "";
+        url = linkType == "PAGE" ? navigation.NavigateUrl((string)rootObj.link.pageId) : (string)rootObj.link.url;
+    }
+
+}
+
+@if (rootObj != null)
+{
+<a href="@url" role="button" class="@cssClass" aria-expanded="true" @target>
+    @if (rootObj.iconClass != null)
+    {
+        <i class="fa fa-github"></i>
+    }
+    @rootObj.link.linkText
+</a>
+}
+else
+{
+    <div>
+        Please enter the content
+    </div>
+}

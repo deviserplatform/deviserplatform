@@ -1,32 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System.IO;
-using Deviser.Core.Common.DomainTypes;
-using Deviser.Core.Data;
-using Deviser.Core.Common;
+﻿using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
-using static Deviser.WI.Program;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.IO;
+using Microsoft.Data.SqlClient;
 
 namespace Deviser.WI.Controllers
 {
     public class InstallController : Controller
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IInstallationProvider _installationProvider;
         private readonly IConfiguration _configuration;
 
-        public InstallController(IHostingEnvironment hostingEnvironment, 
+        public InstallController(IWebHostEnvironment hostingEnvironment, 
             IInstallationProvider installationProvider,
             IConfiguration configuration)
         {
@@ -74,7 +64,7 @@ namespace Deviser.WI.Controllers
                 try
                 {
                     _installationProvider.InstallPlatform(installModel);
-                    ApplicationManager.Instance.Restart();
+                    //ApplicationManager.Instance.Restart();
                     return Ok();
                 }
                 catch (SqlException ex)

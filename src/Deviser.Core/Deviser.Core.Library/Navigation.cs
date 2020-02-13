@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Deviser.Core.Data.Repositories;
+﻿using Deviser.Core.Data.Repositories;
 using Deviser.Core.Common.DomainTypes;
 using Microsoft.Extensions.Logging;
 using System;
@@ -28,13 +27,17 @@ namespace Deviser.Core.Library
         private List<Page> breadcrumbs = null;
 
         #region Public Methods
-        public Navigation(ILifetimeScope container)
-            : base(container)
+        public Navigation(ILogger<LayoutRepository> logger,
+            ILanguageRepository languageRepository,
+            IScopeService scopeService,
+            IServiceProvider serviceProvider,
+            IHttpContextAccessor httpContextAccessor)
+            : base(serviceProvider)
         {
-            _logger = container.Resolve<ILogger<LayoutRepository>>();
-            _languageRepository = container.Resolve<ILanguageRepository>();
-            _scopeService = container.Resolve<IScopeService>();
-            _httpContextAccessor = container.Resolve<IHttpContextAccessor>();
+            _logger = logger;
+            _languageRepository = languageRepository;
+            _scopeService = scopeService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public Page GetPageTree()
@@ -155,7 +158,7 @@ namespace Deviser.Core.Library
         private MenuItem GetMenuItemIteratively(Page page, string currentCulture, string siteRoot)
         {
             var menuItem = CreateMenuItem(page, currentCulture, siteRoot);
-            menuItem.Parent = page.Parent != null ? CreateMenuItem(page.Parent, currentCulture, siteRoot) :null;
+            menuItem.Parent = page.Parent != null ? CreateMenuItem(page.Parent, currentCulture, siteRoot) : null;
 
             if (page.ChildPage != null && page.ChildPage.Count > 0)
             {
@@ -172,10 +175,10 @@ namespace Deviser.Core.Library
         private MenuItem CreateMenuItem(Page page, string currentCulture, string siteRoot)
         {
             var menuItem = new MenuItem();
-            var pageTranslation = page.PageTranslation.FirstOrDefault(t => t.Locale == currentCulture);            
+            var pageTranslation = page.PageTranslation.FirstOrDefault(t => t.Locale == currentCulture);
 
             menuItem.Page = page;
-            menuItem.HasChild = page.ChildPage != null && page.ChildPage.Count > 0;            
+            menuItem.HasChild = page.ChildPage != null && page.ChildPage.Count > 0;
             menuItem.PageLevel = page.PageLevel != null ? (int)page.PageLevel : 0;
             menuItem.IsActive = page.IsActive;
             menuItem.IsBreadCrumb = page.IsBreadCrumb;
@@ -184,10 +187,14 @@ namespace Deviser.Core.Library
             {
                 menuItem.PageName = pageTranslation.Name;
                 menuItem.IsLinkNewWindow = pageTranslation.IsLinkNewWindow;
-                if (page.PageTypeId == Globals.PageTypeStandard)
+                if (page.PageTypeId == Globals.PageTypeStandard || page.PageTypeId == Globals.PageTypeAdmin)
                 {
                     menuItem.URL = siteRoot + pageTranslation.URL;
                 }
+                //else if (page.PageTypeId == Globals.PageTypeAdmin)
+                //{
+                //    menuItem.URL = $"{siteRoot}modules/{page?.AdminPage?.ModuleName}/admin/{page?.AdminPage?.EntityName}";
+                //}
                 else
                 {
                     menuItem.URL = pageTranslation.RedirectUrl;

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Deviser.Core.Data.Repositories;
-using Microsoft.Extensions.Logging;
-using Autofac;
-using AutoMapper;
+﻿using Deviser.Core.Data.Repositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,10 +13,11 @@ namespace Deviser.WI.Controllers.Api
     {
         private readonly ILogger<OptionListController> _logger;
         private readonly IOptionListRepository _optionListRepository;
-        public OptionListController(ILifetimeScope container)
-        {
-            _logger = container.Resolve<ILogger<OptionListController>>();
-            _optionListRepository = container.Resolve<IOptionListRepository>();
+        public OptionListController(ILogger<OptionListController> logger,
+            IOptionListRepository optionListRepository)
+        {                           
+            _logger = logger;
+            _optionListRepository = optionListRepository;
         }
 
         [HttpGet]

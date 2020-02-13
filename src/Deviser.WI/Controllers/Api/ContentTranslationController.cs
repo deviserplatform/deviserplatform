@@ -1,12 +1,9 @@
-﻿using Autofac;
-using AutoMapper;
+﻿using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
-using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 
 namespace Deviser.WI.Controllers.Api
 {
@@ -15,10 +12,11 @@ namespace Deviser.WI.Controllers.Api
     {
         private readonly ILogger<ContentTranslationController> _logger;
         private readonly IPageContentRepository _pageContentRepository;
-        public ContentTranslationController(ILifetimeScope container)
+        public ContentTranslationController(ILogger<ContentTranslationController> logger,
+            IPageContentRepository pageContentRepository)
         {
-            _logger = container.Resolve<ILogger<ContentTranslationController>>();
-            _pageContentRepository = container.Resolve<IPageContentRepository>();
+            _logger = logger;
+            _pageContentRepository = pageContentRepository;
         }
 
         [HttpGet("{cultureCode}/{contentId}")]

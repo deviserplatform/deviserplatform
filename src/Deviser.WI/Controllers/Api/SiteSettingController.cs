@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Data.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Deviser.Core.Data.Repositories;
-using Autofac;
-using Microsoft.AspNetCore.Http;
-using Deviser.Core.Common.DomainTypes;
+using System;
+using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,10 +16,11 @@ namespace Deviser.WI.Controllers.Api
         private readonly ILogger<SiteSettingController> _logger;
         private readonly ISiteSettingRepository _siteSettingRepository;
         
-        public SiteSettingController(ILifetimeScope container)
+        public SiteSettingController(ILogger<SiteSettingController> logger,
+            ISiteSettingRepository siteSettingRepository)
         {
-            _siteSettingRepository = container.Resolve<ISiteSettingRepository>();
-            _logger = container.Resolve<ILogger<SiteSettingController>>();
+            _siteSettingRepository = siteSettingRepository;
+            _logger = logger;
         }
 
         [HttpGet]

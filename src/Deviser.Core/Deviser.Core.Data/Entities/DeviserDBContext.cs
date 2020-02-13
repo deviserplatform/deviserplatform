@@ -7,15 +7,20 @@ using Deviser.Core.Data.Entities;
 
 namespace Deviser.Core.Data
 {
-    public partial class DeviserDbContext : IdentityDbContext<User, Role, Guid>
+    public partial class DeviserDbContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>,
+        UserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
     {
 
-
-        public DeviserDbContext(DbContextOptions options)
+        public DeviserDbContext(DbContextOptions<DeviserDbContext> options)
             : base(options)
         {
-            
         }
+
+        //public DeviserDbContext(DbContextOptions options)
+        //    : base(options)
+        //{
+
+        //}
 
         //protected override void OnConfiguring(DbContextOptionsBuilder options)
         //{
@@ -44,7 +49,7 @@ namespace Deviser.Core.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasMany(e => e.UserRoles)
-                .WithOne()
+                .WithOne(u=>u.User)
                 .HasForeignKey(e => e.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
@@ -52,10 +57,27 @@ namespace Deviser.Core.Data
                 entity.ToTable("User");
             });
 
+            modelBuilder.Entity<UserRole>(entity =>
+            {
+                entity.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+                entity.HasOne(ur => ur.Role)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired();
+
+                entity.HasOne(ur => ur.User)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.UserId)
+                    .IsRequired();
+
+                entity.ToTable("UserRole");
+            });
+
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.HasMany(e => e.UserRoles)
-                .WithOne()
+                .WithOne(ur=>ur.Role)
                 .HasForeignKey(e => e.RoleId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
@@ -80,10 +102,10 @@ namespace Deviser.Core.Data
             //    entity.HasOne(d => d.User).WithMany(p => p.UserRoles).HasForeignKey(d => d.UserId).OnDelete(DeleteBehavior.Restrict);
             //});
 
-            modelBuilder.Entity<IdentityUserRole<Guid>>(entity =>
-            {
-                entity.ToTable("UserRole");                
-            });
+            //modelBuilder.Entity<IdentityUserRole<Guid>>(entity =>
+            //{
+                
+            //});
 
             modelBuilder.Entity<IdentityUserLogin<Guid>>(entity =>
             {
@@ -166,7 +188,7 @@ namespace Deviser.Core.Data
 
                 entity.HasOne(d => d.PageType).WithMany(p => p.Page).HasForeignKey(d => d.PageTypeId).OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(d => d.Parent).WithMany((System.Linq.Expressions.Expression<System.Func<Page, System.Collections.Generic.IEnumerable<Page>>>)(p => p.ChildPage)).HasForeignKey(d => d.ParentId);
+                entity.HasOne(d => d.Parent).WithMany(p => p.ChildPage).HasForeignKey(d => d.ParentId);
 
                 entity.Ignore(e => e.IsActive);
                 entity.Ignore(e => e.IsBreadCrumb);
@@ -254,6 +276,15 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Page).WithMany(p => p.PageTranslation).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<AdminPage>(entity =>
+            {
+                entity.HasKey(e => e.PageId);
+
+                entity.HasOne(a => a.Page).WithOne(p => p.AdminPage).HasForeignKey<AdminPage>(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(a => a.Module).WithMany(p => p.AdminPage).HasForeignKey(d => d.ModuleId).OnDelete(DeleteBehavior.Restrict);
+            });
+
             modelBuilder.Entity<SiteSetting>(entity =>
             {
                 entity.Property(e => e.SettingName).HasMaxLength(50);
@@ -302,12 +333,12 @@ namespace Deviser.Core.Data
                 entity.Property(e => e.Name).IsRequired();
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
             });
-            
+
             modelBuilder.Entity<LayoutTypeProperty>(entity =>
             {
                 entity.HasOne(d => d.LayoutType).WithMany(p => p.LayoutTypeProperties).HasForeignKey(d => d.LayoutTypeId).OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(d => d.Property).WithMany(p => p.LayoutTypeProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);               
+                entity.HasOne(d => d.Property).WithMany(p => p.LayoutTypeProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasKey(d => new { d.LayoutTypeId, d.PropertyId });
             });
@@ -358,19 +389,21 @@ namespace Deviser.Core.Data
             });
         }
 
+        public virtual DbSet<AdminPage> AdminPage { get; set; }
         public virtual DbSet<ContentPermission> ContentPermission { get; set; }
         public virtual DbSet<ContentType> ContentType { get; set; }
         public virtual DbSet<ContentTypeProperty> ContentTypeProperty { get; set; }
         public virtual DbSet<Language> Language { get; set; }
         public virtual DbSet<Layout> Layout { get; set; }
         public virtual DbSet<LayoutType> LayoutType { get; set; }
-        public virtual DbSet<LayoutTypeProperty> LayoutTypeProperty { get; set; }        
+        public virtual DbSet<LayoutTypeProperty> LayoutTypeProperty { get; set; }
         public virtual DbSet<Module> Module { get; set; }
         public virtual DbSet<ModuleAction> ModuleAction { get; set; }
         public virtual DbSet<ModuleActionType> ModuleActionType { get; set; }
         public virtual DbSet<ModulePermission> ModulePermission { get; set; }
+        public virtual DbSet<ModuleActionProperty> ModuleActionProperty { get; set; }
         public virtual DbSet<OptionList> OptionList { get; set; }
-        public virtual DbSet<Permission> Permission { get; set; }        
+        public virtual DbSet<Permission> Permission { get; set; }
         public virtual DbSet<Page> Page { get; set; }
         public virtual DbSet<PageContent> PageContent { get; set; }
         public virtual DbSet<PageModule> PageModule { get; set; }
@@ -379,9 +412,8 @@ namespace Deviser.Core.Data
         public virtual DbSet<PageTranslation> PageTranslation { get; set; }
         public virtual DbSet<PageContentTranslation> PageContentTranslation { get; set; }
         public virtual DbSet<SiteSetting> SiteSetting { get; set; }
-        public virtual DbSet<ModuleActionProperty> ModuleActionProperty { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
-        public DbSet<IdentityUserRole<Guid>> UserRole { get; set; }
+        public DbSet<UserRole> UserRole { get; set; }
     }
 }
