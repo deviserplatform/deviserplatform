@@ -1,0 +1,127 @@
+﻿/***
+Page Header
+***/
+.dev-controlbar {
+    font-family: "Open Sans", sans-serif;
+    line-height: 1.5;
+    width: 100%;
+    /*padding: 0 20px 0 20px;*/
+    margin: 0;
+    border: 0;
+    padding: 0;
+    box-shadow: none;
+    height: 50px;
+    min-height: 50px;
+    filter: none;
+    background-image: none;
+    background-color: #2b3643;
+    position: fixed;
+    top: 0;
+    z-index: 100;
+}
+
+    .dev-controlbar .dev-navbar-brand img {
+        margin: 12px;
+        height: 26px;
+    }
+
+.dev-navbar-brand {
+    float: left;
+}
+
+.dev-controlbar .dev-logo {
+    width: 230px;
+}
+
+.dev-controlbar .top-menu {
+    margin: 0;
+    padding: 0;
+    float: right;
+}
+
+    .dev-controlbar .top-menu .dev-navbar-nav {
+        text-transform: uppercase;
+        padding: 0;
+        margin-right: 20px;
+        display: block;
+        float: left;
+        margin: 0;
+    }
+
+        .dev-controlbar .top-menu .dev-navbar-nav > li.dropdown {
+            margin: 0;
+            padding: 0 4px;
+            display: inline-block;
+        }
+
+            .dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > .dropdown-toggle {
+                margin: 0;
+                padding: 15px;
+            }
+
+a.dev-toggle::after {
+    content: none !important;
+}
+
+.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > a {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 300;
+    color: #79869a;
+    text-decoration: none;
+}
+
+    .dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > a span {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 300;
+        color: #c6cfda;
+        padding-left: 8px;
+        vertical-align: top;
+    }
+
+.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > .dropdown-toggle > i {
+    font-size: 17px;
+    color: #79869a;
+}
+
+.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > .dropdown-toggle:focus {
+    background: 0 0;
+}
+
+.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown .dropdown-toggle:hover,
+.dev-dropdown-menu.dropdown-menu li > a:hover,
+.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown.open .dropdown-toggle,
+.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown.active {
+    background-color: #3f4f62;
+}
+
+.dev-dropdown-menu.dropdown-menu {
+    background-color: #2b3643;
+}
+
+    .dev-dropdown-menu.dropdown-menu li > a {
+        color: #c6cfda;
+        padding: 10px;
+    }
+
+
+
+.dev-controlbar .top-menu .dropdown-quick-sidebar-toggler > .dropdown-toggle i {
+    top: 0;
+}
+
+.dev-dropdown-menu {
+    z-index: 10000;
+    width: calc(100% - 4px);
+    border-radius: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+}
+
+
+.logged-in {
+    margin-top: 50px;
+}

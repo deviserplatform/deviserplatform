@@ -1,0 +1,28 @@
+﻿@{
+    Layout = "~/Sites/Default/Themes/Skyline/ModuleDefault.cshtml";
+}
+
+
+
+<div class="security-container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Manage your account</h2>
+            <p>Change your account settings</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            @await Html.PartialAsync("_ManageNav")
+        </div>
+        <div class="col-md-8">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}
+

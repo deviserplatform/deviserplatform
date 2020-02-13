@@ -1,0 +1,39 @@
+﻿@model DynamicContent
+
+@inject IScopeService scopeService
+@{
+    var pageContext = scopeService.PageContext;
+    var currentCulture = pageContext.CurrentCulture.ToString();
+
+    dynamic rootObj = Model.Content;
+    var videoPreview = Model.PageContent.Properties.Get("video_preview");
+}
+
+@if (rootObj != null)
+{
+
+    @if (videoPreview?.SelectedOption?.Name == "preview")
+    {
+        <div class="video-container">
+            <a class="video popup-video" href="@rootObj.videoUrl">
+                <div class="thumb-text">
+                    <i class="fa fa-play" aria-hidden="true"></i>
+                </div>
+                <img src="@rootObj.imageUrl" alt="@rootObj.imageAltText">
+            </a>
+        </div>
+    }
+    else
+    {
+        <a class="video popup-video btn btn-primary btn-lg" href="@rootObj.videoUrl">
+            <i class="fa fa-play" aria-hidden="true"></i> Watch Video
+        </a>
+    }
+
+}
+else
+{
+    <div>
+        Please enter the content
+    </div>
+}

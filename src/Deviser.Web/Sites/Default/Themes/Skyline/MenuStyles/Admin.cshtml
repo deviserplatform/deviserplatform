@@ -1,0 +1,81 @@
+﻿@model Deviser.Core.Common.DomainTypes.MenuItem
+@inject IScopeService scopeService
+@using System.Security.Claims
+@using Deviser.Core.Library
+@using Deviser.Core.Common;
+@{
+    Layout = null;
+    var pageContext = scopeService.PageContext;
+    //var translation = Model.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
+    //var siteRoot = pageContext.SiteSettingInfo.SiteRoot;
+}
+
+@if (Model.PageLevel == 0)
+{
+    <li>
+        <a href="@pageContext.HomePageFullUrl">
+            <i class="fa fa-home"></i>
+            <span class="title">Back to Home</span>
+        </a>
+    </li>
+    @foreach (var menuItem in Model.ChildMenuItems)
+    {
+        if (menuItem != null)
+        {
+            string activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "active open" : "";
+            <li class=" @activeClass ">
+                <a href="#"> @menuItem.PageName<span class="fa arrow"></span></a>
+                @if (menuItem.ChildMenuItems != null && menuItem.ChildMenuItems.Count > 0)
+                {
+                    @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "Admin"), menuItem)
+                }
+            </li>
+        }
+    }
+}
+else if (Model.PageLevel == 1)
+{
+    <ul class="nav nav-second-level collapse">
+        @foreach (var menuItem in Model.ChildMenuItems)
+        {
+            if (menuItem != null)
+            {
+                string activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "active open" : "";
+                <li class="@activeClass">
+                    <a href="@menuItem.URL">
+                        @menuItem.PageName
+                        @if (menuItem.HasChild)
+                        {
+                            <span class="fa arrow"></span>
+                        }
+                    </a>
+                    @if (menuItem.HasChild)
+                    {
+                        @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "Admin"), menuItem)
+                    }
+                </li>
+            }
+        }
+    </ul>
+}
+else if (Model.PageLevel == 2)
+{
+    <ul class="nav nav-third-level">
+        @foreach (var menuItem in Model.ChildMenuItems)
+        {
+            if (menuItem != null)
+            {
+                string activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "active open" : "";                
+                <li class="@activeClass">
+                    <a href="@menuItem.URL">
+                        @menuItem.PageName
+                    </a>
+                    @if (menuItem.ChildMenuItems != null && menuItem.ChildMenuItems.Count > 0)
+                    {
+                        @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "Admin"), menuItem)
+                    }
+                </li>
+            }
+        }
+    </ul>
+}

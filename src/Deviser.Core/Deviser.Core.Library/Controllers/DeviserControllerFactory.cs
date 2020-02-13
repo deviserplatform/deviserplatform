@@ -189,7 +189,7 @@ namespace Deviser.Core.Library.Controllers
             var modelName = currentPage.AdminPage.ModelName;
             var moduleMetaInfo = _moduleRegistry.GetModuleMetaInfoByModuleName(moduleName);
 
-            var assembly = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.ApplicationEntryPoint).FirstOrDefault(a => a.FullName == moduleMetaInfo.ModuleAssemblyFullName);
+            var assembly = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.EntryPointAssembly).FirstOrDefault(a => a.FullName == moduleMetaInfo.ModuleAssemblyFullName);
             var controllerTypeInfo = assembly.GetDerivedTypeInfos(typeof(IAdminController)).FirstOrDefault();
             var controllerName = controllerTypeInfo.Name.Replace("Controller", "");
             var actionName = nameof(AdminController<IAdminConfigurator>.Admin);

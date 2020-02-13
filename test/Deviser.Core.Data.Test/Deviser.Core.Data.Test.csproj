@@ -6,22 +6,41 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Repositories\ContentTypeRepositoryTest.cs" />
+    <Compile Remove="Repositories\LanguageRepositoryTest.cs" />
+    <Compile Remove="Repositories\LayoutRepositoryTest.cs" />
+    <Compile Remove="Repositories\LayoutTypeRepositoryTest.cs" />
+    <Compile Remove="Repositories\ModuleRepositoryTest.cs" />
+    <Compile Remove="Repositories\OptionListRepositoryTest.cs" />
+    <Compile Remove="Repositories\PageContentRepositoryTest.cs" />
+    <Compile Remove="Repositories\PageRepositoryTest.cs" />
+    <Compile Remove="Repositories\PropertyRepositoryTest.cs" />
+    <Compile Remove="Repositories\RoleRepositoryTest.cs" />
+    <Compile Remove="Repositories\UserRepositoryTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Deviser.Core\Deviser.Core.Data\Deviser.Core.Data.csproj" />
     <ProjectReference Include="..\..\src\Deviser.WI\Deviser.WI.csproj" />
     <ProjectReference Include="..\Deviser.TestCommon\Deviser.TestCommon.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="Moq" Version="4.10.1" />
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1"/>
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
     <PackageReference Include="coverlet.collector" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>

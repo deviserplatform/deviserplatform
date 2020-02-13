@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Deviser.WI
@@ -27,29 +28,7 @@ namespace Deviser.WI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging(loggingBuilder =>
-                loggingBuilder.AddSerilog(dispose: true));
-
-            services.AddDeviserPlatform(Configuration);
-
-            //TODO : Call AddDbContext for all base classes of ModuleDbContext
-            //var installationProvider = SharedObjects.ServiceProvider.GetRequiredService<IInstallationProvider>();
-            //services.AddDbContext<BlogDbContext>(
-            //       (dbContextOptionBuilder) =>
-            //       {
-            //           installationProvider.GetDbContextOptionsBuilder(dbContextOptionBuilder, "Deviser.Modules.Blog");
-            //       });
-
-            //services.AddDbContext
-
-            // Add Autofac
-            //var builder = new ContainerBuilder();
-            //builder.RegisterModule<DefaultModule>();
-            //builder.Populate(services);
-            //ApplicationContainer = builder.Build();
-            //// Create the IServiceProvider based on the container.
-            //return new AutofacServiceProvider(ApplicationContainer);
-
+            //services.AddDeviserPlatform(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,29 +37,20 @@ namespace Deviser.WI
             IWebHostEnvironment env,
             IServiceProvider serviceProvider)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
-
+            
             app.UseDeviserPlatform(serviceProvider);
 
             // If you want to dispose of resources that have been resolved in the
             // application container, register for the "ApplicationStopped" event.
             //appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
-            
-            var hubContext = serviceProvider.GetService<IHubContext<ApplicationHub>>();
 
-            //Call "OnStarted" method on all connected clients using SignalR
-            Task.Delay(5000).ContinueWith(t =>
-            {
-                hubContext.Clients.All.SendAsync("OnStarted", "server").GetAwaiter().GetResult();
-            });
+            //var hubContext = serviceProvider.GetService<IHubContext<ApplicationHub>>();
+
+            ////Call "OnStarted" method on all connected clients using SignalR
+            //Task.Delay(5000).ContinueWith(t =>
+            //{
+            //    hubContext.Clients.All.SendAsync("OnStarted", "server").GetAwaiter().GetResult();
+            //});
         }
     }
 }

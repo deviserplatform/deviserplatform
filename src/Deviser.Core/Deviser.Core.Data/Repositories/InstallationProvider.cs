@@ -152,7 +152,7 @@ namespace Deviser.Core.Data.Repositories
         public void InsertData(DbContextOptions<DeviserDbContext> dbOption)
         {
             using var context = new DeviserDbContext(dbOption);
-            var dataSeeder = new DataSeeder(context, _hostingEnvironment);
+            var dataSeeder = new DataSeeder(context);
             dataSeeder.InsertData();
         }
 
@@ -451,7 +451,7 @@ namespace Deviser.Core.Data.Repositories
 
         private void MigrateModuleContexts(InstallModel installModel)
         {
-            var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.PlatformAssembly);
+            var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.EntryPointAssembly);
             var moduleDbContextTypes = new List<TypeInfo>();
 
             var moduleDbContextBaseType = typeof(ModuleDbContext);

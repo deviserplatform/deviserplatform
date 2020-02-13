@@ -1,0 +1,325 @@
+﻿<require dependency-type="Script" priority="107" include="Development" file-path="~/js/src/app/module-management/module.js"></require>
+
+<div ng-app="deviser.module" ng-controller="ModuleManagementCtrl as mmVM">
+    <div class="row" ng-show="mmVM.message.content">
+        <div class="alert alert-dismissable" ng-class="{'alert-danger':mmVM.message.messageType=='error',
+                              'alert-info':mmVM.message.messageType=='info',
+                              'alert-success':mmVM.message.messageType=='success',
+                              'alert-warning':mmVM.message.messageType=='warning'}" role="alert">
+            <button type="button" class="close" ng-click="mmVM.message = {}">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+            {{mmVM.message.content}}
+        </div>
+    </div>
+
+    <div class="row" ng-show="mmVM.currentViewState == mmVM.viewStates.LIST">
+        <div class="col-md-12">
+            <div class="portlet box blue" id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-users"></i> Modules
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <form class="form-horizontal">
+                        <div class="form-body">
+                            <div class="table-toolbar">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="btn-group">
+                                            <a class="btn btn-success" ng-click="mmVM.add()"> New Module <i class="fa fa-plus"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-scrollable">
+                                <table class="table table-striped table-bordered table-advance table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Module Name
+                                            </th>
+                                            <th>
+                                                Edit
+                                            </th>
+                                            <th>
+                                                Is Active
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="module in mmVM.modules">
+                                            <td>
+                                                {{module.name}}
+                                            </td>
+                                            <td>
+                                                <a href="" class="btn btn-default btn-xs" ng-click="mmVM.edit(module)">
+                                                    <i class="fa fa-edit"></i> Edit
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" ng-model="module.isActive" ng-click="mmVM.activate(module)" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="mmVM.currentViewState == mmVM.viewStates.NEW || mmVM.currentViewState == mmVM.viewStates.EDIT
+        || mmVM.currentViewState == mmVM.viewStates.NEWMODULEACTION ||mmVM.currentViewState == mmVM.viewStates.EDITMODULEACTION
+        ||mmVM.currentViewState == mmVM.viewStates.LISTMODULEACTION">
+        <div class="col-md-12">
+            <div class="portlet box blue" id="form_wizard_1">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-th-list" aria-hidden="true"></i> Module Details
+                    </div>
+                </div>
+                <div class="portlet-body form">
+
+                    <form name="newModuleForm" class="form-horizontal" ng-class="{'submitted':newModuleForm.submitted}" novalidate>
+                        <div class="form-body">
+                            <div class="form-group" ng-class="{'has-error' : newModuleForm.label.$invalid && (newModuleForm.label.$dirty || newModuleForm.submitted)}">
+                                <label class="col-md-3 control-label">Label*</label>
+                                <div class="col-md-6">
+                                    <input type="text" name="label" class="form-control" ng-model="mmVM.selectedModule.label" required />
+                                </div>
+                            </div>
+                            <div class="form-group" ng-class="{'has-error' : newModuleForm.name.$invalid && (newModuleForm.name.$dirty || newModuleForm.submitted)}">
+                                <label class="col-md-3 control-label">Name*</label>
+                                <div class="col-md-6">
+                                    <input class="form-control"
+                                           name="name"
+                                           ng-model="mmVM.selectedModule.name"
+                                           ng-disabled="mmVM.currentViewState == mmVM.viewStates.EDIT" required />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Module Desctiption</label>
+                                <div class="col-md-6">
+                                    <textarea class="form-control" rows="5" ng-model="mmVM.selectedModule.description"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Is Active</label>
+                                <div class="col-md-6">
+                                    <input type="checkbox" ng-model="mmVM.selectedModule.isActive" />
+                                </div>
+                            </div>
+                            <div class="form-group" ng-class="{'has-error' : newModuleForm.version.$invalid && (newModuleForm.version.$dirty || newModuleForm.submitted)}">
+                                <label class="col-md-3 control-label">Version*</label>
+                                <div class="col-md-6">
+                                    <input class="form-control" name="version" ng-model="mmVM.selectedModule.version" required />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+
+
+                    <form class="form-horizontal" name="moduleActions" novalidate>
+                        <div class="form-body">
+                            <div class="row" ng-show="mmVM.currentViewState == mmVM.viewStates.NEW || mmVM.currentViewState == mmVM.viewStates.EDIT
+                            || mmVM.currentViewState == mmVM.viewStates.LISTMODULEACTION ">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="btn-group">
+                                                <a class="btn btn-success" ng-click="mmVM.addModuleActions()"> <i class="fa fa-plus"></i> New Module Actions </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table-toolbar">
+                                        <div class="row">
+                                            <div class="table-scrollable">
+                                                <table class="table table-striped table-bordered table-advance table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>
+                                                                Display Name
+                                                            </th>
+                                                            <th>
+                                                            </th>
+                                                            <th>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="moduleAction in mmVM.selectedModule.moduleAction">
+                                                            <td>
+                                                                {{moduleAction.displayName}}
+                                                            </td>
+                                                            <td>
+                                                                <a href="" class="btn btn-default btn-xs" ng-click="mmVM.editModuleActions(moduleAction)">
+                                                                    <i class="fa fa-edit"></i> Edit
+                                                                </a>
+                                                            </td>
+                                                            <td>
+                                                                <a href="" class="btn btn-default btn-xs" ng-click="mmVM.removeModuleActions(moduleAction)">
+                                                                    <i class="fa fa-trash-o"></i> Delete
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <div class="row" ng-show="mmVM.currentViewState == mmVM.viewStates.EDITMODULEACTION || mmVM.currentViewState == mmVM.viewStates.NEWMODULEACTION ">
+                        <div class="col-md-8 col-md-offset-2">
+                            <div class="portlet-body form">
+                                <form class="form-horizontal" name="editModuleForm" ng-class="{submitted:editModuleForm.submitted}" novalidate>
+                                    <div class="form-body">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title">Module Action</h3>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="form-group" ng-class="{'has-error' : editModuleForm.displayName.$invalid && (editModuleForm.displayName.$dirty || editModuleForm.submitted)}">
+                                                    <label class="col-md-3 control-label">Display Name*</label>
+                                                    <div class="col-md-7">
+                                                        <input class="form-control" name="displayName" ng-model="mmVM.selectedModuleAction.displayName" ng-disabled="mmVM.currentViewState == mmVM.viewStates.EDITMODULEACTION" required />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" ng-class="{'has-error' : editModuleForm.actionType.$invalid && (editModuleForm.actionType.$dirty || editModuleForm.submitted)}">
+                                                    <label class="col-md-3 control-label">Action Type* </label>
+                                                    <div class="col-md-7">
+                                                        <ui-select ng-model="mmVM.selectedModuleAction.moduleActionTypeId" theme="bootstrap"
+                                                                   ng-disabled="mmVM.currentViewState == mmVM.viewStates.EDIT" name="actionType" required>
+                                                            <ui-select-match placeholder="Select action type">{{$select.selected.controlType}}</ui-select-match>
+                                                            <ui-select-choices repeat="type.id as type in mmVM.moduleActionTypes | filter: $select.search">
+                                                                <div ng-bind-html="type.controlType | highlight: $select.search"></div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" ng-class="{'has-error' : editModuleForm.actionName.$invalid && (editModuleForm.actionName.$dirty || editModuleForm.submitted)}">
+                                                    <label class="col-md-3 control-label">Action Name*</label>
+                                                    <div class="col-md-7">
+                                                        <input class="form-control" name="actionName" ng-model="mmVM.selectedModuleAction.actionName" required />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" ng-class="{'has-error' : editModuleForm.controllerName.$invalid && (editModuleForm.controllerName.$dirty || editModuleForm.submitted)}">
+                                                    <label class="col-md-3 control-label">Controller Name*</label>
+                                                    <div class="col-md-7">
+                                                        <input class="form-control" name="controllerName" ng-model="mmVM.selectedModuleAction.controllerName" required />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" ng-class="{'has-error' : editModuleForm.controllerNamespace.$invalid && (editModuleForm.controllerNamespace.$dirty || editModuleForm.submitted)}">
+                                                    <label class="col-md-3 control-label">Controller Namespace*</label>
+                                                    <div class="col-md-7">
+                                                        <input class="form-control" name="controllerNamespace" ng-model="mmVM.selectedModuleAction.controllerNamespace" required />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-3 control-label">Icon Image</label>
+                                                    <div class="col-md-7">
+                                                        <input class="form-control" name="iconImage" ng-model="mmVM.selectedModuleAction.iconImage" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-3 control-label">Icon Class</label>
+                                                    <div class="col-md-7">
+                                                        <input class="form-control" name="iconClass" ng-model="mmVM.selectedModuleAction.iconClass" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-3 control-label">IsDefault</label>
+                                                    <div class="col-md-7">
+                                                        <input type="checkbox" name="isDefault" ng-model="mmVM.selectedModuleAction.isDefault" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-3 control-label">Properties</label>
+                                                    <div class="col-md-6">
+                                                        <ui-select tagging="mmVM.propertyTransform" ng-model="mmVM.selectedProperty" theme="bootstrap" ng-disabled="mmVM.properties.length<=0">
+                                                            <ui-select-match placeholder="Select property">{{$select.selected.label}}</ui-select-match>
+                                                            <ui-select-choices repeat="property in mmVM.properties | filter: $select.search">
+                                                                <div ng-if="property.isTag" ng-bind-html="(property.label | highlight: $select.search) +' (New Property)'"></div>
+                                                                <div ng-if="!property.isTag" ng-bind-html="(property.label | highlight: $select.search) + ' (' + property.name +')'"></div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <a class="btn btn-primary" ng-click="mmVM.addProperty()" ng-disabled="(mmVM.properties.length<=0 || !mmVM.selectedProperty || mmVM.isPropExist())">Add Property</a>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-md-6 col-md-offset-3">
+                                                        <div class="table-scrollable">
+                                                            <table class="table table-striped table-bordered table-advance table-hover">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>
+                                                                            Label
+                                                                        </th>
+                                                                        <th>
+                                                                            Name
+                                                                        </th>
+                                                                        <th>
+
+                                                                        </th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr ng-repeat="property in mmVM.selectedModuleAction.properties">
+                                                                        <td>
+                                                                            {{property.label}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{property.name}}
+                                                                        </td>
+                                                                        <td>
+                                                                            <a href="" class="btn btn-default btn-xs" ng-click="mmVM.removeProperty(property)">
+                                                                                <i class="fa fa-trash-o"></i> Delete
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-md-5 col-md-offset-5">
+                                                        <button type="submit" class="btn btn-success" ng-click="mmVM.saveModuleAction()">Save Module Action</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span ng-show="(editModuleForm.$invalid && editModuleForm.submitted) || (newModuleForm.$invalid && newModuleForm.submitted)" style="color:maroon"><i>Please fill the * manadatory fields.</i></span>
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button type="submit" class="btn btn-success" ng-click="mmVM.save()" ng-disabled="!mmVM.selectedModule">Save</button>
+                                <button type="button" class="btn btn-default" ng-click="mmVM.cancel()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

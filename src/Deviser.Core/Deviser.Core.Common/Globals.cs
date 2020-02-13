@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace Deviser.Core.Common
 {
@@ -15,7 +17,7 @@ namespace Deviser.Core.Common
 
         public const string InstallConfigFile = "installconfig.json";
 
-        public const string PlatformAssembly = "Deviser.WI";
+        public const string PlatformAssembly = "Deviser.Web";
 
         public const string ModuleMigrationTableName = "__ModuleMigrationsHistory";
 
@@ -27,6 +29,8 @@ namespace Deviser.Core.Common
         public const int ImageOptimizeQualityPercent = 80;
 
         public const int AdminDefaultPageCount = 10;
+
+        private static Assembly _entryPointAssembly;
 
         public static Guid PageTypeURL
         {
@@ -72,7 +76,20 @@ namespace Deviser.Core.Common
             }
         }
 
-        public static string ApplicationEntryPoint => "Deviser.WI";
+        public static Assembly EntryPointAssembly
+        {
+            get
+            {
+                if (_entryPointAssembly == null)
+                {
+                    _entryPointAssembly = System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies.First(a => a.EntryPoint != null);
+                }
+
+                return _entryPointAssembly;
+            }
+        }
+
+        //public static string ApplicationEntryPoint => "Deviser.WI";
 
         public static string DefaultSitePath
         {

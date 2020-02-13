@@ -10,6 +10,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Deviser.Core.Common;
 using System.Globalization;
+using Deviser.Core.Common.FileProviders;
+using Deviser.Core.Data.Installation;
 
 namespace Deviser.Core.Library.Multilingual
 {
@@ -19,16 +21,13 @@ namespace Deviser.Core.Library.Multilingual
         private readonly ILogger<LanguageManager> _logger;
         private readonly ILanguageRepository _languageRepository;
         private readonly INavigation _navigation;
-        private readonly IWebHostEnvironment _hostingEnvironment;
 
         public LanguageManager(ILogger<LanguageManager> logger,
             ILanguageRepository languageRepository,
-            INavigation navigation,
-            IWebHostEnvironment hostingEnvironment)
+            INavigation navigation)
         {
             _logger = logger;
             _languageRepository = languageRepository;
-            _hostingEnvironment = hostingEnvironment;
             _navigation = navigation;
         }
 
@@ -36,8 +35,9 @@ namespace Deviser.Core.Library.Multilingual
         {
             try
             {
-                string culuresJsonPath = Path.Combine(_hostingEnvironment.ContentRootPath, "cultures.json");
-                List<Language> cultures = SDJsonConvert.DeserializeObject<List<Language>>(System.IO.File.ReadAllText(culuresJsonPath));
+                //string culuresJsonPath = Path.Combine(_hostingEnvironment.ContentRootPath, "cultures.json");
+                var json = EmbeddedProvider.GetFileContentAsString(typeof(DataSeeder).Assembly, "Cultures.json");
+                List<Language> cultures = SDJsonConvert.DeserializeObject<List<Language>>(json);
 
                 cultures.ForEach(c => c.FallbackCulture = Globals.FallbackLanguage);
                 

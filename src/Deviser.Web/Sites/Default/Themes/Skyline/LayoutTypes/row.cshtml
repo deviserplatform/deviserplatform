@@ -1,0 +1,8 @@
+﻿@model LayoutContent
+@{
+    var properties = Model.PlaceHolder.Properties;
+}
+<div class="row @properties.Get("css_class").Value">
+    @*@Html.Raw(Model.ContentResult)*@
+    @Model.ContentResult
+</div> 

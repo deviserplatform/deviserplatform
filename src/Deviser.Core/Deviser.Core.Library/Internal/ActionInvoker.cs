@@ -33,7 +33,7 @@ namespace Deviser.Core.Library.Internal
             _cache = cache;
 
 
-            var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.ApplicationEntryPoint);
+            var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.EntryPointAssembly);
             _allControllers = new List<TypeInfo>();
             foreach (var assembly in assemblies)
             {

@@ -1,0 +1,40 @@
+﻿@model Deviser.Core.Common.DomainTypes.Page
+@inject IScopeService scopeService
+@inject ISettingManager settingManager
+@{
+    if (ViewBag.Theme != null)
+    {
+        Layout = ViewBag.Theme;
+    }
+
+    var pageContext = scopeService.PageContext;
+    var siteHeaderTags = settingManager.GetSettingValue("SiteHeaderTags");
+    var pageHeaderTags = scopeService.PageContext.CurrentTranslation.PageHeaderTags;
+
+    ViewBag.Title = pageContext.CurrentTranslation.Title;
+    ViewBag.Description = pageContext.CurrentTranslation.Description;
+    ViewBag.Keywords = pageContext.CurrentTranslation.Keywords;
+    ViewBag.SiteHeaderTags = siteHeaderTags != null ? siteHeaderTags : "";
+    ViewBag.PageHeaderTags = pageHeaderTags != null ? pageHeaderTags : "";
+
+    Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>> moduleActionResults =
+(Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>>)ViewBag.ModuleActionResults;
+}
+<script type="text/javascript">
+    var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
+    console.log(pageContext);
+    console.log('@scopeService.ScopeId');
+</script>
+
+@if (moduleActionResults != null)
+{
+
+    <div sde-page="@Model" sde-module-results="@moduleActionResults" class="page-content">
+
+    </div>
+}
+else
+{
+    @ViewBag.AdminResult
+}
+

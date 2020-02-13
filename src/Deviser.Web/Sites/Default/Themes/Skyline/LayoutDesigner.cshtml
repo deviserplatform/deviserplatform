@@ -1,0 +1,83 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@*<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />*@
+<require dependency-type="Css" include="Development" priority="10" file-path="~/_content/Deviser.Web/lib/font-awesome/css/font-awesome.css" test="test"></require>
+<require dependency-type="Css" include="Development" priority="11" file-path="~/_content/Deviser.Web/lib/angular-ui-tree/dist/angular-ui-tree.min.css" test="test"></require>
+<require dependency-type="Css" include="Development" priority="12" file-path="~/_content/Deviser.Web/lib/angular-ui-select/dist/select.css" test="test"></require>
+<require dependency-type="Css" include="Development" priority="13" file-path="~/_content/Deviser.Web/lib/metismenu/dist/metismenu.css" test="test"></require>
+<require dependency-type="Css" include="Development" priority="14" file-path="~/_content/Deviser.Web/lib/textAngular/dist/textAngular.css" test="test"></require>
+<require dependency-type="Css" include="Development" priority="15" file-path="~/_content/Deviser.Web/css/admin/main.css" test="test"></require>
+<!-- END GLOBAL MANDATORY STYLES -->
+
+<require dependency-type="Script" include="Development" location="Head" priority="10" file-path="~/_content/Deviser.Web/lib/jquery/dist/jquery.js" test="test"></require>
+<require dependency-type="Script" include="Development" location="Head" priority="11" file-path="~/_content/Deviser.Web/lib/jquery-ui/jquery-ui.js"></require>
+<require dependency-type="Script" include="Development" location="Head" priority="12" file-path="~/_content/Deviser.Web/js/moment.js"></require>
+<require dependency-type="Script" include="Development" location="Head" priority="13" file-path="~/_content/Deviser.Web/js/bootstrap.min.js"></require>
+<require dependency-type="Script" include="Development" location="Head" priority="14" file-path="~/_content/Deviser.Web/lib/lodash/dist/lodash.js"></require>
+<require dependency-type="Script" include="Development" priority="15" file-path="~/_content/Deviser.Web/lib/metisMenu/dist/metisMenu.js"></require>
+
+<require dependency-type="Script" include="Development" priority="16" file-path="~/_content/Deviser.Web/js/src/app/dev-form-helper.js"></require>
+<require dependency-type="Script" include="Development" priority="17" file-path="~/_content/Deviser.Web/js/admin/main.js"></require>
+
+<require dependency-type="Script" include="Development" priority="30" file-path="~/_content/Deviser.Web/lib/angular/angular.js"></require>
+<require dependency-type="Script" include="Development" priority="31" file-path="~/_content/Deviser.Web/lib/angular-sanitize/angular-sanitize.js"></require>
+<require dependency-type="Script" include="Development" priority="32" file-path="~/_content/Deviser.Web/lib/angular-ui-router/release/angular-ui-router.js"></require>
+<require dependency-type="Script" include="Development" priority="33" file-path="~/_content/Deviser.Web/lib/angular-ui-sortable/sortable.js"></require>
+<require dependency-type="Script" include="Development" priority="34" file-path="~/_content/Deviser.Web/lib/angular-bootstrap/ui-bootstrap.js"></require>
+<require dependency-type="Script" include="Development" priority="35" file-path="~/_content/Deviser.Web/lib/angular-bootstrap/ui-bootstrap-tpls.js"></require>
+@*<require type="Script" include="Development" path="~/_content/Deviser.Web/lib/angular-ui-select/dist/select.js"></require>*@
+<require dependency-type="Script" include="Development" priority="36" file-path="~/_content/Deviser.Web/js/src/lib-fixes/select.js"></require>
+<require dependency-type="Script" include="Development" priority="37" file-path="~/_content/Deviser.Web/lib/angular-ui-tree/dist/angular-ui-tree.js"></require>
+<require dependency-type="Script" include="Development" priority="38" file-path="~/_content/Deviser.Web/lib/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js"></require>
+<require dependency-type="Script" include="Development" priority="39" file-path="~/_content/Deviser.Web/lib/ng-file-upload/ng-file-upload-all.js"></require>
+<require dependency-type="Script" include="Development" priority="40" file-path="~/_content/Deviser.Web/lib/angular-img-cropper/dist/angular-img-cropper.min.js"></require>
+<require dependency-type="Script" include="Development" priority="41" file-path="~/_content/Deviser.Web/lib/textAngular/dist/textAngular-rangy.min.js"></require>
+<require dependency-type="Script" include="Development" priority="42" file-path="~/_content/Deviser.Web/lib/textAngular/dist/textAngularSetup.js"></require>
+<require dependency-type="Script" include="Development" priority="43" file-path="~/_content/Deviser.Web/lib/textAngular/dist/textAngular-sanitize.js"></require>
+<require dependency-type="Script" include="Development" priority="44" file-path="~/_content/Deviser.Web/lib/textAngular/dist/textAngular.js"></require>
+
+<require dependency-type="Script" include="Development" priority="50" file-path="~/_content/Deviser.Web/js/src/app/sdlib.js"></require>
+<require dependency-type="Script" include="Development" priority="51" file-path="~/_content/Deviser.Web/js/src/app/layout.js"></require>
+<require dependency-type="Script" include="Development" priority="52" file-path="~/_content/Deviser.Web/js/src/app/edit.js"></require>
+<require dependency-type="Script" include="Development" priority="53" file-path="~/_content/Deviser.Web/js/src/app/services.js"></require>
+<require dependency-type="Script" include="Development" priority="54" file-path="~/_content/Deviser.Web/js/src/app/config.js"></require>
+<require dependency-type="Script" include="Development" priority="55" file-path="~/_content/Deviser.Web/js/src/app/components/image-manager.js"></require>
+<require dependency-type="Script" include="Development" priority="56" file-path="~/_content/Deviser.Web/js/src/app/components/language-selector.js"></require>
+<require dependency-type="Script" include="Development" priority="57" file-path="~/_content/Deviser.Web/js/src/app/components/link-selector.js"></require>
+<require dependency-type="Script" include="Development" priority="58" file-path="~/_content/Deviser.Web/js/src/app/components/dev-modal.js"></require>
+@*<script src="~/_content/Deviser.Web/js/admin/dashboard.js"></script>*@
+
+<require dependency-type="Css" exclude="Development" priority="10" file-path="~/_content/Deviser.Web/lib/font-awesome/css/font-awesome.css" test="test"></require>
+<require dependency-type="Css" exclude="Development" priority="11" file-path="~/_content/Deviser.Web/release/deviser.min.css" test="test"></require>
+
+<require dependency-type="Script" exclude="Development" location="Head" priority="11" file-path="~/_content/Deviser.Web/release/deviserlib.min.js"></require>
+<require dependency-type="Script" exclude="Development" location="Head" priority="12" file-path="~/_content/Deviser.Web/js/bootstrap.min.js"></require>
+<require dependency-type="Script" exclude="Development" location="Head" priority="13" file-path="~/_content/Deviser.Web/release/deviserapp.min.js"></require>
+
+<div id="wrapper">
+    @await Component.InvokeAsync("ControlBar")
+    <div class="clearfix"></div>
+
+    <!-- BEGIN CONTAINER -->
+    <div class="container-fluid layout-designer-container logged-in">
+        @RenderBody()
+    </div>
+
+    <footer class="footer footer-classic bg-dark">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="text-center">
+                        <p>
+                            Copyright &copy; @DateTime.Now.Year Karthick Sundararajan. Released on <a href="https://github.com/deviserplatform/deviserplatform" title="Source" target="_blank"> <i class="fa fa-github"></i></a>
+                            under the <a href="/install/License" title="License" target="_blank">MIT License</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>

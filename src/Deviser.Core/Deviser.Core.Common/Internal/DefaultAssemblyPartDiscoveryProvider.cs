@@ -31,10 +31,10 @@ namespace Deviser.Core.Common.Internal
             //"Microsoft.AspNetCore.Mvc.ViewFeatures"
         };
 
-        public static IEnumerable<Assembly> DiscoverAssemblyParts(string entryPointAssemblyName)
+        public static IEnumerable<Assembly> DiscoverAssemblyParts(Assembly entryAssembly /*string entryPointAssemblyName*/)
         {
-            var entryAssembly = Assembly.Load(new AssemblyName(entryPointAssemblyName));
-            var context = DependencyContext.Load(Assembly.Load(new AssemblyName(entryPointAssemblyName)));
+            //var entryAssembly = Assembly.Load(new AssemblyName(entryPointAssemblyName));
+            var context = DependencyContext.Load(entryAssembly);
 
             return GetCandidateAssemblies(entryAssembly, context);
         }

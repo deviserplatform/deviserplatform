@@ -13,15 +13,11 @@ namespace Deviser.WI
     {
         public static void Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
-                //.Enrich.FromLogContext()
-                .MinimumLevel.Debug()
-                .WriteTo.RollingFile(Path.Combine("./logs", "log-{Date}.txt"))
-                .CreateLogger();
+            
 
             //try
             //{
-                Log.Information("Application host being started...");
+                //Log.Information("Application host being started...");
                 CreateHostBuilder(args).Build().Run();
             //}
             //catch (Exception ex)
