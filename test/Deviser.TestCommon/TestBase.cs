@@ -1,32 +1,27 @@
 ﻿using AutoMapper;
 using Deviser.Core.Data;
+using Deviser.Core.Data.Repositories;
+using Deviser.Core.Library;
+using Deviser.Core.Library.Controllers;
 using Deviser.Core.Library.Internal;
+using Deviser.Core.Library.IO;
+using Deviser.Core.Library.Layouts;
+using Deviser.Core.Library.Media;
 using Deviser.Core.Library.Modules;
+using Deviser.Core.Library.Multilingual;
+using Deviser.Core.Library.Services;
+using Deviser.Core.Library.Sites;
+using Deviser.Web.DependencyInjection;
+using Deviser.Web.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.ObjectPool;
-using Microsoft.Extensions.Options;
 using Moq;
 using System;
-using System.Diagnostics;
 using System.Reflection;
-using Deviser.Core.Data.Repositories;
-using Deviser.Core.Library;
-using Deviser.Core.Library.Controllers;
-using Deviser.Core.Library.DependencyInjection;
-using Deviser.Core.Library.IO;
-using Deviser.Core.Library.Layouts;
-using Deviser.Core.Library.Media;
-using Deviser.Core.Library.Multilingual;
-using Deviser.Core.Library.Services;
-using Deviser.Core.Library.Sites;
-using Deviser.Web.Infrastructure;
 using Role = Deviser.Core.Data.Entities.Role;
 using User = Deviser.Core.Data.Entities.User;
 
@@ -67,7 +62,7 @@ namespace Deviser.TestCommon
             services.AddHttpContextAccessor();
 
 
-            services.AddAutoMapper(typeof(AdminServicesExtensions).Assembly);
+            services.AddAutoMapper(typeof(DeviserPlatformServiceCollectionExtensions).Assembly);
 
             services.AddScoped<ViewResultExecutor>();
             services.AddScoped<IScopeService, ScopeService>();

@@ -38,7 +38,7 @@ namespace Deviser.WI
             IServiceProvider serviceProvider)
         {
             
-            app.UseDeviserPlatform(serviceProvider);
+            //app.UseDeviserPlatform(serviceProvider);
 
             // If you want to dispose of resources that have been resolved in the
             // application container, register for the "ApplicationStopped" event.

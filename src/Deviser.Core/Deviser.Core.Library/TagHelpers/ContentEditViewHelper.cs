@@ -1,4 +1,10 @@
-﻿using Deviser.Core.Common;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.Encodings.Web;
+using Deviser.Core.Common;
 using Deviser.Core.Library.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Html;
@@ -6,10 +12,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.FileProviders;
+
 //using Microsoft.Extensions.PlatformAbstractions;
-using System.IO;
-using System.Text;
-using System.Text.Encodings.Web;
 
 namespace Deviser.Core.Library.TagHelpers
 {
@@ -60,6 +65,20 @@ namespace Deviser.Core.Library.TagHelpers
 
         private string GetAllEditViews()
         {
+            //try
+            //{
+                
+                
+            //    //var deviserWebAssembly = Assembly.Load(new AssemblyName("Deviser.Core.Library"));
+            //    //    //System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies.First(a => a.EntryPoint != null);//Globals.EntryPointAssembly;
+            //    //var manifestEmbeddedProvider = new ManifestEmbeddedFileProvider(deviserWebAssembly);
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw; 
+            //}
+
+            var fp = _hostingEnvironment.ContentRootFileProvider;
             StringBuilder sb = new StringBuilder();
             string editPath = string.Format(Globals.ContentTypesEditPath, _scopeService.PageContext.SelectedTheme);
             string editViewDir = Path.Combine(_hostingEnvironment.ContentRootPath, Path.Combine(editPath.Replace("~/", "").Split('/')));

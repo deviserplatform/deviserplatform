@@ -32,7 +32,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Deviser.Core.Library.Controllers;
-using Deviser.Core.Library.Infrastructure;
 using Deviser.Core.Library.IO;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Media;
@@ -230,106 +229,106 @@ namespace Deviser.Core.Library.DependencyInjection
         //    return services;
         //}
 
-        public static IApplicationBuilder UseDeviserPlatform(this IApplicationBuilder app,
-            IServiceProvider serviceProvider)
-        {
-            //var defaultRequestCulture = new RequestCulture(new CultureInfo(enUSCulture));
+        //public static IApplicationBuilder UseDeviserPlatform(this IApplicationBuilder app,
+        //    IServiceProvider serviceProvider)
+        //{
+        //    //var defaultRequestCulture = new RequestCulture(new CultureInfo(enUSCulture));
             
-            IWebHostEnvironment env = serviceProvider.GetService<IWebHostEnvironment>();
-            var installationProvider = serviceProvider.GetService<IInstallationProvider>();
+        //    IWebHostEnvironment env = serviceProvider.GetService<IWebHostEnvironment>();
+        //    var installationProvider = serviceProvider.GetService<IInstallationProvider>();
             
-            if (installationProvider.IsPlatformInstalled)
-            {
-                var languageRepository = serviceProvider.GetService<ILanguageRepository>();
-                var activeLangauges = languageRepository.GetActiveLanguages();
-                var supportedCultures = activeLangauges.Select(al => new CultureInfo(al.CultureCode)).ToArray();
+        //    if (installationProvider.IsPlatformInstalled)
+        //    {
+        //        var languageRepository = serviceProvider.GetService<ILanguageRepository>();
+        //        var activeLangauges = languageRepository.GetActiveLanguages();
+        //        var supportedCultures = activeLangauges.Select(al => new CultureInfo(al.CultureCode)).ToArray();
 
-                var requestLocalizationOptions = new RequestLocalizationOptions
-                {
-                    //DefaultRequestCulture = defaultRequestCulture,
-                    SupportedCultures = supportedCultures,
-                    SupportedUICultures = supportedCultures
-                };
-                app.UseRequestLocalization(requestLocalizationOptions);
-            }
+        //        var requestLocalizationOptions = new RequestLocalizationOptions
+        //        {
+        //            //DefaultRequestCulture = defaultRequestCulture,
+        //            SupportedCultures = supportedCultures,
+        //            SupportedUICultures = supportedCultures
+        //        };
+        //        app.UseRequestLocalization(requestLocalizationOptions);
+        //    }
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+        //    if (env.IsDevelopment())
+        //    {
+        //        app.UseDeveloperExceptionPage();
+        //        app.UseDatabaseErrorPage();
+        //    }
+        //    else
+        //    {
+        //        app.UseExceptionHandler("/Home/Error");
+        //        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+        //        app.UseHsts();
+        //    }
             
-            app.UseCors("MyPolicy");
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+        //    app.UseCors("MyPolicy");
+        //    app.UseHttpsRedirection();
+        //    app.UseStaticFiles();
 
-            app.UseRouting();
+        //    app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+        //    app.UseAuthentication();
+        //    app.UseAuthorization();
 
-            app.Use(async (context, next) =>
-            {
-                var cultureQuery = context.Request.Query["culture"];
-                if (!string.IsNullOrWhiteSpace(cultureQuery))
-                {
-                    var culture = new CultureInfo(cultureQuery);
+        //    app.Use(async (context, next) =>
+        //    {
+        //        var cultureQuery = context.Request.Query["culture"];
+        //        if (!string.IsNullOrWhiteSpace(cultureQuery))
+        //        {
+        //            var culture = new CultureInfo(cultureQuery);
 
-                    CultureInfo.CurrentCulture = culture;
-                    CultureInfo.CurrentUICulture = culture;
-                }
+        //            CultureInfo.CurrentCulture = culture;
+        //            CultureInfo.CurrentUICulture = culture;
+        //        }
 
-                // Call the next delegate/middleware in the pipeline
-                await next();
-            });
+        //        // Call the next delegate/middleware in the pipeline
+        //        await next();
+        //    });
 
-            // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+        //    // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
-            // IMPORTANT: This session call MUST go before UseMvc()
-            app.UseSession();
+        //    // IMPORTANT: This session call MUST go before UseMvc()
+        //    app.UseSession();
 
-            //Action<IRouteBuilder> routeBuilder = routes =>
-            //{
-            //    routes.MapRoute(name: Globals.moduleRoute,
-            //        template: "modules/{area:exists}/{controller=Home}/{action=Index}");
+        //    //Action<IRouteBuilder> routeBuilder = routes =>
+        //    //{
+        //    //    routes.MapRoute(name: Globals.moduleRoute,
+        //    //        template: "modules/{area:exists}/{controller=Home}/{action=Index}");
 
-            //    routes.MapRoute(
-            //       name: "default",
-            //       template: "{controller=Page}/{action=Index}/{id?}");
+        //    //    routes.MapRoute(
+        //    //       name: "default",
+        //    //       template: "{controller=Page}/{action=Index}/{id?}");
 
-            //    routes.MapRoute(
-            //    name: "CmsRoute",
-            //    template: "{*permalink}",
-            //    defaults: new { controller = "Page", action = "Index" },
-            //    constraints: new { permalink = serviceProvider.GetService<IRouteConstraint>() });
-            //};
+        //    //    routes.MapRoute(
+        //    //    name: "CmsRoute",
+        //    //    template: "{*permalink}",
+        //    //    defaults: new { controller = "Page", action = "Index" },
+        //    //    constraints: new { permalink = serviceProvider.GetService<IRouteConstraint>() });
+        //    //};
 
-            //Deviser Specific
-            app.UsePageContext();
-            //app.UseDeviserAdmin(serviceProvider);
+        //    //Deviser Specific
+        //    app.UsePageContext();
+        //    //app.UseDeviserAdmin(serviceProvider);
             
-            return app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapHub<ApplicationHub>("/appHub");
+        //    return app.UseEndpoints(endpoints =>
+        //    {
+        //        endpoints.MapHub<ApplicationHub>("/appHub");
 
-                endpoints.MapControllerRoute(name: Globals.moduleRoute,
-                    pattern: "modules/{area:exists}/{controller=Home}/{action=Index}");
+        //        endpoints.MapControllerRoute(name: Globals.moduleRoute,
+        //            pattern: "modules/{area:exists}/{controller=Home}/{action=Index}");
 
-                endpoints.MapControllerRoute(name: "default",
-                    pattern: "{controller=Page}/{action=Index}/{id?}");
+        //        endpoints.MapControllerRoute(name: "default",
+        //            pattern: "{controller=Page}/{action=Index}/{id?}");
 
-                endpoints.MapControllerRoute(name: "CmsRoute",
-                    pattern: "{**permalink}",
-                    defaults: new { controller = "Page", action = "Index" },
-                    constraints: new { permalink = serviceProvider.GetService<IRouteConstraint>() });
-            });
-        }
+        //        endpoints.MapControllerRoute(name: "CmsRoute",
+        //            pattern: "{**permalink}",
+        //            defaults: new { controller = "Page", action = "Index" },
+        //            constraints: new { permalink = serviceProvider.GetService<IRouteConstraint>() });
+        //    });
+        //}
 
         //private static void RegisterModuleDependencies(IServiceCollection serviceCollection)
         //{
