@@ -1,19 +1,17 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.Encodings.Web;
-using Deviser.Core.Common;
+﻿using Deviser.Core.Common;
 using Deviser.Core.Library.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.Extensions.FileProviders;
-
+using System.IO;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Linq;
 //using Microsoft.Extensions.PlatformAbstractions;
 
 namespace Deviser.Core.Library.TagHelpers
@@ -28,6 +26,9 @@ namespace Deviser.Core.Library.TagHelpers
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IScopeService _scopeService;
 
+        private readonly IViewCompilerProvider _viewCompilerProvider;
+        private readonly ApplicationPartManager _applicationPartManager;
+
         [HtmlAttributeName(ContentEditsAttribute)]
         public string ContentEditViews { get; set; }
 
@@ -39,13 +40,17 @@ namespace Deviser.Core.Library.TagHelpers
             INavigation navigation,
             IHtmlHelper htmlHelper,
             IScopeService scopeService,
-            IWebHostEnvironment hostEnvironment)
+            IWebHostEnvironment hostEnvironment,
+            IViewCompilerProvider viewCompilerProvider,
+            ApplicationPartManager applicationPartManager)
              : base(httpContextAccessor)
         {
             _htmlHelper = htmlHelper;
             _navigation = navigation;
             _scopeService = scopeService;
             _hostingEnvironment = hostEnvironment;
+            _applicationPartManager = applicationPartManager;
+            _viewCompilerProvider = viewCompilerProvider;
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -65,34 +70,18 @@ namespace Deviser.Core.Library.TagHelpers
 
         private string GetAllEditViews()
         {
-            //try
-            //{
-                
-                
-            //    //var deviserWebAssembly = Assembly.Load(new AssemblyName("Deviser.Core.Library"));
-            //    //    //System.Runtime.Loader.AssemblyLoadContext.Default.Assemblies.First(a => a.EntryPoint != null);//Globals.EntryPointAssembly;
-            //    //var manifestEmbeddedProvider = new ManifestEmbeddedFileProvider(deviserWebAssembly);
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw; 
-            //}
-
+            var feature = new ViewsFeature();
+            _applicationPartManager.PopulateFeature(feature);
+            var views = feature.ViewDescriptors;
             var fp = _hostingEnvironment.ContentRootFileProvider;
-            StringBuilder sb = new StringBuilder();
-            string editPath = string.Format(Globals.ContentTypesEditPath, _scopeService.PageContext.SelectedTheme);
-            string editViewDir = Path.Combine(_hostingEnvironment.ContentRootPath, Path.Combine(editPath.Replace("~/", "").Split('/')));
-            DirectoryInfo dir = new DirectoryInfo(editViewDir);
-            foreach (var file in dir.GetFiles())
+            var sb = new StringBuilder();
+            var editPath = string.Format(Globals.ContentTypesEditPath, _scopeService.PageContext.SelectedTheme).Replace("~","");
+            var editViews = views.Where(v => v.RelativePath.Contains(editPath)).ToList();
+            foreach (var contentResult in editViews.Select(editView => _htmlHelper.Partial(editView.RelativePath)).Select(GetString))
             {
-                if (file != null)
-                {
-                    var htmlContent = _htmlHelper.Partial(Path.Combine(editPath, file.Name));
-                    var contentResult = GetString(htmlContent);
-                    sb.Append(contentResult);
-                }
+                sb.Append(contentResult);
             }
-            return sb.ToString();
+            return  sb.ToString();
         }
 
         private static string GetString(IHtmlContent content)
