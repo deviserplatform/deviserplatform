@@ -1,10 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <IsShippingPackage>true</IsShippingPackage>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Deviser.Core\Deviser.Admin.Web\Deviser.Admin.Web.csproj" />
+    <ProjectReference Include="..\..\Deviser.Core\Deviser.Admin\Deviser.Admin.csproj" />
     <ProjectReference Include="..\..\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj" />
   </ItemGroup>
 

@@ -62,7 +62,7 @@ namespace Deviser.Core.Common
             {
                 if (hostMapPath == null)
                 {
-                    hostMapPath = Path.Combine(ApplicationMapPath, @"Sites\Default\");
+                    hostMapPath = Path.Combine(ApplicationMapPath, @"/Sites/Default/");
                 }
                 return hostMapPath;
             }

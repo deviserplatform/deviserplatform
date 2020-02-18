@@ -3,16 +3,20 @@ using Microsoft.AspNetCore.Hosting;
 //using Microsoft.Extensions.PlatformAbstractions;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Deviser.Core.Library.Layouts
 {
     public class ThemeManager : IThemeManager
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly IViewProvider _viewProvider;
 
-        public ThemeManager(IWebHostEnvironment appEnvironment)
+        public ThemeManager(IWebHostEnvironment appEnvironment,
+            IViewProvider viewProvider)
         {
             _hostingEnvironment = appEnvironment;
+            _viewProvider = viewProvider;
         }
 
         public List<KeyValuePair<string, string>> GetHostThemes()
@@ -20,34 +24,36 @@ namespace Deviser.Core.Library.Layouts
             string themeRoot = "Themes";
             var themes = new List<KeyValuePair<string, string>>();
 
-            string root = _hostingEnvironment.ContentRootPath + "\\" + Globals.HostMapPath + themeRoot;
-            if (Directory.Exists(root))
+            var views = _viewProvider.GetCompiledViewDescriptors(); ;
+            string root = Path.Combine(Globals.HostMapPath, themeRoot);
+
+            var themeViews = views.Where(v => v.RelativePath.Contains(root) && 
+                                              !v.RelativePath.Contains("_")&&
+                                              !v.RelativePath.Contains("BreadCrumbStyles") &&
+                                              !v.RelativePath.Contains("ContentTypes") &&
+                                              !v.RelativePath.Contains("LayoutTypes") &&
+                                              !v.RelativePath.Contains("MenuStyles") &&
+                                              !v.RelativePath.Contains("_")).ToList();
+
+            foreach (var themeView in themeViews)
             {
-                foreach (string themeFolder in Directory.GetDirectories(root))
+                if (!themeView.RelativePath.EndsWith(Globals.glbHostThemeFolder))
                 {
-                    if (!themeFolder.EndsWith(Globals.glbHostThemeFolder))
-                    {
-                        AddThemeFiles(themes, themeRoot, themeFolder, false);
-                    }
+                    AddThemeFiles(themes, themeRoot, themeView.RelativePath, false);
                 }
             }
+
             return themes;
         }
 
-        private void AddThemeFiles(List<KeyValuePair<string, string>> themes, string themeRoot, string themeFolder, bool isPortal)
+        private void AddThemeFiles(List<KeyValuePair<string, string>> themes, string themeRoot, string themePath, bool isPortal)
         {
-            foreach (string themeFile in Directory.GetFiles(themeFolder, "*.cshtml"))
-            {
-                string fileName = Path.GetFileNameWithoutExtension(themeFile);
-                if (!fileName.StartsWith("_"))
-                {
-                    string folder = themeFolder.Substring(themeFolder.LastIndexOf("\\") + 1);
-                    string key = ((isPortal) ? "Site: " : "Host: ") + FormatThemeName(folder, Path.GetFileNameWithoutExtension(themeFile));
-                    string prefix = (isPortal) ? "[S]" : "[G]"; //to be compliant with all versions
-                    string value = prefix + themeRoot + "/" + folder + "/" + Path.GetFileName(themeFile);
-                    themes.Add(new KeyValuePair<string, string>(key, value));
-                }
-            }
+            var pathParts = themePath.Split('/');
+            var folder = pathParts[pathParts.Length - 2];
+            var key = ((isPortal) ? "Site: " : "Host: ") + FormatThemeName(folder, Path.GetFileNameWithoutExtension(themePath));
+            var prefix = (isPortal) ? "[S]" : "[G]"; //to be compliant with all versions
+            var value = prefix + themeRoot + "/" + folder + "/" + Path.GetFileName(themePath);
+            themes.Add(new KeyValuePair<string, string>(key, value));
         }
 
         private string FormatThemeName(string themeFolder, string themeFile)

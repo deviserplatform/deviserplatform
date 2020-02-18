@@ -110,6 +110,7 @@ namespace Deviser.Web.DependencyInjection
             services.AddScoped<ILanguageManager, LanguageManager>();
             services.AddScoped<ISettingManager, SettingManager>();
             services.AddScoped<ISitemapService, SitemapService>();
+            services.AddScoped<IViewProvider, ViewProvider>();
 
             InternalServiceProvider.Instance.BuildServiceProvider(services);
 
