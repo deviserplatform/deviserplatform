@@ -255,7 +255,7 @@ namespace Deviser.Admin.Data
             }
             else
             {
-                //entity does not have any releations and/or child configs
+                //entity does not have any releations and / or child configs
                 dbSet.Update(itemToUpdate);
             }
 

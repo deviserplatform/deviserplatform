@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,12 +21,12 @@ namespace Deviser.Detached
         {
             if (clrType.GetTypeInfo().IsGenericType)
             {
-                IEntityType entityType = GetEntityType(GetCollectionElementType(clrType));
+                var entityType = GetEntityType(GetCollectionElementType(clrType));
                 return entityType.GetNavigations();
             }
             else
             {
-                IEntityType entityType = GetEntityType(clrType);
+                var entityType = GetEntityType(clrType);
                 return entityType.GetNavigations();
             }
 
@@ -40,7 +39,7 @@ namespace Deviser.Detached
 
         public IKey GetPrimaryKey<TEntity>()
         {
-            Type clrType = typeof(TEntity);
+            var clrType = typeof(TEntity);
             if (clrType.GetTypeInfo().IsGenericType)
             {
                 return GetPrimaryKey(GetCollectionElementType(clrType));
@@ -50,7 +49,7 @@ namespace Deviser.Detached
 
         public IKey GetPrimaryKey(object entity)
         {
-            Type clrType = entity.GetType();
+            var clrType = entity.GetType();
             return GetPrimaryKey(clrType);
         }
 
@@ -64,12 +63,12 @@ namespace Deviser.Detached
         public EntityKey GetEntityKey(object instance)
         {
             var key = GetPrimaryKey(instance);
-            EntityKey entityKey = new EntityKey();
-            List<IProperty> properties = key.Properties.Where(p => p.IsPrimaryKey()).ToList();
+            var entityKey = new EntityKey();
+            var properties = key.Properties.Where(p => p.IsPrimaryKey()).ToList();
             //List<object> primaryKeyValues = new List<object>();
             foreach (var property in properties)
             {
-                IClrPropertyGetter getter = property.GetGetter();
+                var getter = property.GetGetter();
                 var value = getter.GetClrValue(instance);
                 entityKey.AddKeyValue(property.Name, value);
             }
@@ -99,7 +98,7 @@ namespace Deviser.Detached
         public IEnumerable<PropertyInfo> GetPrimaryKeyFieldsFor(object entity)
         {
             var key = GetPrimaryKey(entity);
-            List<PropertyInfo> properties = key.Properties
+            var properties = key.Properties
                 .Where(p => p.IsPrimaryKey())
                 .Select(p => p.PropertyInfo)
                 .ToList();
@@ -109,23 +108,23 @@ namespace Deviser.Detached
         public TEntity LoadPersisted<TEntity>(TEntity entity, List<string> includeStringPaths)
             where TEntity : class
         {
-            List<object> keyValues = GetPrimaryKeyValues(entity);
+            var keyValues = GetPrimaryKeyValues(entity);
             return LoadPersisted<TEntity>(keyValues, includeStringPaths).FirstOrDefault();
         }
 
         public List<object> GetPrimaryKeyValues(object entity)
         {
             var entityKey = GetEntityKey(entity);
-            List<object> keyValues = entityKey.GetAllValues();
+            var keyValues = entityKey.GetAllValues();
             return keyValues;
         }
 
         private IList<TEntity> LoadPersisted<TEntity>(List<object> keyValues, List<string> includeStringPaths)
             where TEntity : class
         {
-            Expression<Func<TEntity, bool>> keyFilter = CreateFilter<TEntity>(keyValues);
+            var keyFilter = CreateFilter<TEntity>(keyValues);
 
-            IQueryable<TEntity> query = GetBaseQuery<TEntity>(includeStringPaths).AsTracking().Where(keyFilter);
+            var query = GetBaseQuery<TEntity>(includeStringPaths).AsTracking().Where(keyFilter);
 
             IList<TEntity> persisted = query.ToListAsync().Result;
 
@@ -135,12 +134,12 @@ namespace Deviser.Detached
         private IQueryable<TEntity> GetBaseQuery<TEntity>(List<string> includeStringPaths)
             where TEntity : class
         {
-            IEntityType entityType = _dbContext.Model.FindEntityType(typeof(TEntity));
+            var entityType = _dbContext.Model.FindEntityType(typeof(TEntity));
 
             // get base query.
             IQueryable<TEntity> query = _dbContext.Set<TEntity>();
             //// include all paths.
-            foreach (string path in includeStringPaths)
+            foreach (var path in includeStringPaths)
             {
                 query = query.Include(path);
             }
@@ -152,15 +151,15 @@ namespace Deviser.Detached
         {
             Expression result = null;
             var key = GetPrimaryKey<TEntity>();
-            ParameterExpression param = Expression.Parameter(key.DeclaringEntityType.ClrType);
+            var param = Expression.Parameter(key.DeclaringEntityType.ClrType);
 
 
-            foreach (object keyVal in keyValues)
+            foreach (var keyVal in keyValues)
             {
                 Func<int, Expression> buildCompare = i =>
                 {
-                    object keyValue = keyVal;
-                    IProperty keyProperty = key.Properties[i];
+                    var keyValue = keyVal;
+                    var keyProperty = key.Properties[i];
                     if (keyValue.GetType() != keyProperty.ClrType)
                     {
                         keyValue = Convert.ChangeType(keyValue, keyProperty.ClrType);
@@ -170,8 +169,8 @@ namespace Deviser.Detached
                                             Expression.Constant(keyValue));
                 };
 
-                Expression findExpr = buildCompare(0);
-                for (int i = 1; i < key.Properties.Count; i++)
+                var findExpr = buildCompare(0);
+                for (var i = 1; i < key.Properties.Count; i++)
                 {
                     findExpr = Expression.AndAlso(findExpr, buildCompare(i));
                 }

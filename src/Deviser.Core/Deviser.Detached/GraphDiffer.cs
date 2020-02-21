@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Deviser.Detached
 {
@@ -30,7 +28,7 @@ namespace Deviser.Detached
         public T Merge(T updating)
         {
             // temporally disabled autodetect changes
-            bool autoDetectChanges = _dbContext.ChangeTracker.AutoDetectChangesEnabled;
+            var autoDetectChanges = _dbContext.ChangeTracker.AutoDetectChangesEnabled;
             try
             {
                 // performance improvement for large graphs
@@ -38,7 +36,7 @@ namespace Deviser.Detached
 
                 // Get our entity with all includes needed, or add a new entity
                 var includeStrings = _root.GetIncludeStrings(_entityManager);
-                T persisted = _entityManager.LoadPersisted<T>(updating, includeStrings);
+                var persisted = _entityManager.LoadPersisted<T>(updating, includeStrings);
 
                 if (persisted == null)
                 {

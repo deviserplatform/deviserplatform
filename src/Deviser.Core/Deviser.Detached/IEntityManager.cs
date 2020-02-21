@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Metadata;
 using System.Reflection;
 
 namespace Deviser.Detached

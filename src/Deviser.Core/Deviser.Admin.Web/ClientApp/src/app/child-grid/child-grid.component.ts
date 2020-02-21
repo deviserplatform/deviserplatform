@@ -98,7 +98,7 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
 
   onYesToDelete(item: any): void {
     console.log('confirm');
-    let index = this.childRecords.indexOf(this.selectedItem);
+    let index = this.childRecords.indexOf(item);
     this.childRecords.splice(index, 1);
   }
 

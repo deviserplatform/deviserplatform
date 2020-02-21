@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
+﻿using System.Collections.Concurrent;
 
 
 namespace Deviser.Detached
@@ -21,7 +19,7 @@ namespace Deviser.Detached
 
         public void Insert(string key, T value)
         {
-            _openHandlerCache.AddOrUpdate(key, value, (k, oldvalue) => oldvalue);
+            _openHandlerCache.AddOrUpdate(key, value, (k, oldValue) => oldValue);
         }
 
         public void Clear()

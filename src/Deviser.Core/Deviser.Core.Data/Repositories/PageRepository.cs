@@ -268,7 +268,7 @@ namespace Deviser.Core.Data.Repositories
                 {
                     dbResult = context.Page
                         .Where(e => e.Id == pageId).AsNoTracking()
-                        .Include(p => p.AdminPage).ThenInclude(ap=>ap.Module)
+                        .Include(p => p.AdminPage).ThenInclude(ap => ap.Module)
                         .Include(p => p.PageTranslation)
                         .Include(p => p.PagePermissions)
                         .Include(p => p.Layout)
@@ -394,8 +394,12 @@ namespace Deviser.Core.Data.Repositories
                 if (pagePermissions != null && pagePermissions.Count > 0)
                 {
                     //Filter deleted permissions in UI and delete all of them
-                    var toDelete = context.PagePermission.Where(dbPermission => dbPermission.PageId == dbPage.Id &&
-                                                                                !pagePermissions.Any(pagePermission => pagePermission.PermissionId == dbPermission.PermissionId && pagePermission.RoleId == dbPermission.RoleId)).ToList();
+                    var matchPagePermissions = context.PagePermission.Where(dbPermission => dbPermission.PageId == dbPage.Id)
+                        .ToList();
+
+                    var toDelete = matchPagePermissions.Where(dbPermission =>
+                        !pagePermissions.Any(pagePermission => pagePermission.PermissionId == dbPermission.PermissionId && pagePermission.RoleId == dbPermission.RoleId)).ToList();
+
                     if (toDelete.Count > 0)
                         context.PagePermission.RemoveRange(toDelete);
 
@@ -900,14 +904,14 @@ namespace Deviser.Core.Data.Repositories
                 var dbPageTranslation = context.PageTranslation
                     .Where(p => p.PageId == id)
                     .ToList();
-                
+
                 context.PageTranslation.RemoveRange(dbPageTranslation);
 
                 //PagePermission
                 var dbPagePermission = context.PagePermission
                     .Where(p => p.PageId == id)
                     .ToList();
-                
+
                 context.PagePermission.RemoveRange(dbPagePermission);
 
                 //PageContent
@@ -1009,7 +1013,9 @@ namespace Deviser.Core.Data.Repositories
                 {
                     var addPermission = new Entities.PagePermission
                     {
-                        PageId = id, PermissionId = Globals.PageViewPermissionId, RoleId = Globals.AllUsersRoleId
+                        PageId = id,
+                        PermissionId = Globals.PageViewPermissionId,
+                        RoleId = Globals.AllUsersRoleId
                     };
                     context.PagePermission.Add(addPermission);
                 }

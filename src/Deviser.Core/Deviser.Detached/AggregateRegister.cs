@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Deviser.Detached
 {
@@ -43,8 +42,7 @@ namespace Deviser.Detached
 
         public GraphNode GetEntityGraph<T>(string scheme)
         {
-            GraphNode node;
-            if (_cache.TryGet(GenerateCacheKey<T>(), out node))
+            if (_cache.TryGet(GenerateCacheKey<T>(), out var node))
             {
                 return node;
             }
@@ -67,7 +65,7 @@ namespace Deviser.Detached
         private static string GenerateCacheKey<T>(string scheme = null)
         {
             var key = typeof(T).FullName;
-            if (!String.IsNullOrEmpty(scheme))
+            if (!string.IsNullOrEmpty(scheme))
             {
                 key += scheme;
             }
