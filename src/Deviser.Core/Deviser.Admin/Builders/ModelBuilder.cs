@@ -19,11 +19,6 @@ namespace Deviser.Admin.Builders
             GridBuilder = new GridBuilder<TModel>(_adminConfig.ModelConfig);
         }
 
-        public PropertyBuilder<TModel> Property<TProperty>(Expression<Func<TModel, TProperty>> expression)
-        {
-            return new PropertyBuilder<TModel>(_adminConfig, expression);
-        }
-
         public ModelBuilder<TModel> AddChildConfig<TProperty>(Expression<Func<TModel, ICollection<TProperty>>> expression,
             Action<ModelBuilder<TProperty>> childFormBuilderAction)
             where TProperty : class

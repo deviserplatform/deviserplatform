@@ -12,6 +12,8 @@ import { Field } from '../common/domain-types/field';
 import { ChildConfig } from '../common/domain-types/child-config';
 import { Alert, AlertType } from '../common/domain-types/alert';
 import { FormResult } from '../common/domain-types/form-result';
+import { FormContext } from '../common/domain-types/form-context';
+import { FormType } from '../common/domain-types/form-type';
 
 @Component({
   selector: 'app-admin-form',
@@ -26,9 +28,12 @@ export class AdminFormComponent implements OnInit {
   adminForm: FormGroup;
   formMode: FormMode;
   FormMode = FormMode;
-  selectedConfig: ChildConfig;
-  formTabs: any[];
-  selectedFormTab: any;
+  selectedChildConfig: ChildConfig;
+  formTabs: FormContext[];
+  selectedFormTab: FormContext;
+  childFormContexts:{ [key: string]: FormContext }
+
+  formType = FormType;
 
   constructor(private route: ActivatedRoute,
     private adminService: AdminService,
@@ -66,28 +71,53 @@ export class AdminFormComponent implements OnInit {
   onGetAdminConfig(adminConfig: AdminConfig): void {
     if (adminConfig) {
       this.adminConfig = adminConfig;
-      this.selectedConfig = this.adminConfig.childConfigs[0];
+      
+      
+      if(this.adminConfig.childConfigs.length>0){
+        this.selectedChildConfig = this.adminConfig.childConfigs[0];
+        for(let childConfig of this.adminConfig.childConfigs){
+
+          let childForm = this.formControlService.toFormGroupWithModelConfig(childConfig.modelConfig, this.formMode, {});
+
+          this.childFormContexts[childConfig.field.fieldNameCamelCase] = {
+            formGroup: childForm,
+            formConfig: childConfig.modelConfig.formConfig,
+            formName: childConfig.field.fieldNameCamelCase,
+            formTitle: childConfig.field.fieldNameCamelCase,
+            formType: this.formType.ChildForm,
+            keyField: childConfig.modelConfig.keyField,
+            formMode: this.formMode,
+            lookUps: this.adminConfig.lookUps
+          }
+        }
+      }
+
+
       this.adminForm = this.formControlService.toFormGroup(adminConfig, this.formMode, this.record);
       this.formTabs.push({
-        formName: this.adminConfig.modelType,
-        formTitle: this.adminConfig.modelType,
         formGroup: this.adminForm,
         formConfig: this.adminConfig.modelConfig.formConfig,
-        isMainForm: true,
-        keyField: this.adminConfig.modelConfig.keyField
+        formName: this.adminConfig.modelType,
+        formTitle: this.adminConfig.modelType,
+        formType: this.formType.MainForm,
+        keyField: this.adminConfig.modelConfig.keyField,
+        formMode: this.formMode,
+        lookUps: this.adminConfig.lookUps
       });
       this.selectedFormTab = this.formTabs[0];
       if (this.formMode == FormMode.Update && this.adminConfig.modelConfig.customForms) {
         for (let customFormName in this.adminConfig.modelConfig.customForms) {
           let customForm = this.adminConfig.modelConfig.customForms[customFormName];
-          let customFormGroup = this.formControlService.toFormGroupForCustomForms(customForm.formConfig, this.formMode, customForm.keyField, this.record);
+          let customFormGroup = this.formControlService.toFormGroupWithFormConfig(customForm.formConfig, this.formMode, customForm.keyField, this.record);
           this.formTabs.push({
-            formName: customFormName,
-            formTitle: customForm.formConfig.formOption.formTitle,
             formGroup: customFormGroup,
             formConfig: customForm.formConfig,
-            isMainForm: false,
-            keyField: customForm.keyField
+            formName: customFormName,
+            formTitle: customForm.formConfig.formOption.formTitle,
+            formType: this.formType.CustomForm,
+            keyField: customForm.keyField,
+            formMode: this.formMode,
+            lookUps: this.adminConfig.lookUps
           });
         }
       }
@@ -168,7 +198,7 @@ export class AdminFormComponent implements OnInit {
   }
 
   selectChildFormTab(config) {
-    this.selectedConfig = config;
+    this.selectedChildConfig = config;
   }
 
   goBack(): void {

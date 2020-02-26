@@ -13,6 +13,8 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 import { RelatedField } from '../common/domain-types/related-field';
 import { RelationType } from '../common/domain-types/relation-type';
+import { CustomValidator } from '../common/validators/async-custom.validator';
+import { FormType } from '../common/domain-types/form-type';
 
 @Component({
   selector: 'app-form-control',
@@ -29,6 +31,8 @@ export class FormControlComponent implements OnInit {
   @Input() isValidate: boolean;
   // @Input() keyFields: Field[];
   @Input() lookUps: LookUpDictionary;
+  @Input() formType: FormType;
+  @Input() formName: string;
 
   //To access FieldType enum
   fieldType = FieldType;
@@ -37,7 +41,8 @@ export class FormControlComponent implements OnInit {
 
   constructor(private emailExistValidator: EmailExistValidator,
     private passwordValidator: PasswordValidator,
-    private userExistValidator: UserExistValidator) {
+    private userExistValidator: UserExistValidator,
+    private customValidator: CustomValidator) {
     this._lookUpData = [];
 
 
@@ -206,13 +211,19 @@ export class FormControlComponent implements OnInit {
         case ValidationType.Password:
           asyncValidators.push(this.passwordValidator.validate.bind(this.passwordValidator));
           break;
+        case ValidationType.Custom:
+          this.customValidator.formType = this.formType;
+          this.customValidator.formName = this.formName;
+          this.customValidator.fieldName = this.field.fieldName;
+          asyncValidators.push(this.customValidator.validate.bind(this.customValidator));
+          break;
       }
 
       formControl.setValidators(syncValidators);
 
       if (asyncValidators.length > 0) {
         formControl.setAsyncValidators(asyncValidators);
-      }      
+      }
     }
     else {
       formControl.setValidators(null);

@@ -1,8 +1,10 @@
 ﻿using Deviser.Admin.Config;
 using Deviser.Admin.Properties;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Deviser.Core.Common.Extensions;
 
 namespace Deviser.Admin.Builders
 {
@@ -43,6 +45,24 @@ namespace Deviser.Admin.Builders
 
             _formConfig.FieldSetConfig.FieldSets.Add(fieldSet);
 
+            return this;
+        }
+
+        public PropertyBuilder<TModel> Property<TProperty>(Expression<Func<TModel, TProperty>> expression)
+        {
+            return new PropertyBuilder<TModel>(_formConfig, expression);
+        }
+
+        public FormBuilder<TModel> SetCustomValidationFor<TProperty>(Expression<Func<TModel, TProperty>> fieldExpression, Expression<Func<IServiceProvider, TProperty, Task<ValidationResult>>> validationExpression)
+        {
+            var fieldName = ReflectionExtensions.GetMemberName(fieldExpression);
+            var field = _formConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
+            if (field == null)
+            {
+                throw new InvalidOperationException(Resources.FieldNotFoundInvaidOperation);
+            }
+            field.FieldOption.ValidationType = ValidationType.Custom;
+            field.FieldOption.ValidationExpression = validationExpression;
             return this;
         }
 

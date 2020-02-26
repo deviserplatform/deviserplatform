@@ -1,31 +1,56 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MessageService } from './message.service';
 import { ValidationResult } from '../domain-types/validation-result';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+import { WINDOW } from './window.service';
+import { DAConfig } from '../domain-types/da-config';
+import { FormType } from '../domain-types/form-type';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ValidationService {
 
-  private baseUrl = 'https://localhost:44304/deviser/admin/validator';
-  private httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'my-auth-token'
-    })
-  };
+  // private baseUrl = 'https://localhost:44304/deviser/admin/validator';
+  // private httpOptions = {
+  //   headers: new HttpHeaders({
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'my-auth-token'
+  //   })
+  // };
+
+  private baseUrl;
+  private httpOptions;
+
+  private daConfig: DAConfig;
 
   constructor(private http: HttpClient,
-    private messageService: MessageService) { }
+    private messageService: MessageService,
+    @Inject(WINDOW) private window: any) {
+    this.httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'my-auth-token'
+      })
+    };
+
+    this.daConfig = window.daConfig;
+
+    if (this.daConfig.isEmbedded) {
+      this.baseUrl = `${window.location.origin}/modules`;
+    }
+    else {
+      this.baseUrl = `${this.daConfig.debugBaseUrl}/modules`;
+    }
+  }
 
 
   validatePassword(password: string) {
     const serviceUrl: string = this.baseUrl + `/password/`;
     let userObj = { password: password };
-    return this.http.post<ValidationResult>(serviceUrl, userObj, this.httpOptions)
+    return this.http.put<ValidationResult>(serviceUrl, userObj, this.httpOptions)
       .pipe(
         tap(_ => this.log('created a record')),
         catchError(this.handleError('createRecord', null))
@@ -35,7 +60,7 @@ export class ValidationService {
   validateEmailExist(email: string) {
     const serviceUrl: string = this.baseUrl + `/emailexist/`;
     let userObj = { email: email };
-    return this.http.post<ValidationResult>(serviceUrl, userObj, this.httpOptions)
+    return this.http.put<ValidationResult>(serviceUrl, userObj, this.httpOptions)
       .pipe(
         tap(_ => this.log('created a record')),
         catchError(this.handleError('createRecord', null))
@@ -45,7 +70,24 @@ export class ValidationService {
   validateUserExist(userName: string) {
     const serviceUrl: string = this.baseUrl + `/userexist/`;
     let userObj = { userName: userName };
-    return this.http.post<ValidationResult>(serviceUrl, userObj, this.httpOptions)
+    return this.http.put<ValidationResult>(serviceUrl, userObj, this.httpOptions)
+      .pipe(
+        tap(_ => this.log('created a record')),
+        catchError(this.handleError('createRecord', null))
+      );
+  }
+
+
+  validateCustom(formType: FormType, formName: string, fieldName: string, fieldObject: any) {
+    let serviceUrl: string;
+    if (formType == FormType.MainForm) {
+      serviceUrl = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/validate/${formType}/field/${fieldName}`;
+    }
+    else {
+      serviceUrl = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/validate/${formType}/form/${formName}/field/${fieldName}`;
+    }
+    // let postObj = { fieldObject: fieldObject }
+    return this.http.put<ValidationResult>(serviceUrl, JSON.stringify(fieldObject), this.httpOptions)
       .pipe(
         tap(_ => this.log('created a record')),
         catchError(this.handleError('createRecord', null))

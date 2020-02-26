@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Deviser.Admin.Config;
 
 namespace Deviser.Admin.Services
 {
@@ -17,6 +18,14 @@ namespace Deviser.Admin.Services
         Task<object> ExecuteMainFormAction(Type modelType, string actionName, object entityObject);
         Task<object> ExecuteCustomFormAction(Type modelType, string formName, string actionName, object entityObject);
         Task<object> CustomFormSubmit(string strModel, string formName, object entityObject);
-        
+        Task<ValidationResult> ExecuteMainFormCustomValidation(Type modelType, string fieldName, object fieldObject);
+
+        Task<ValidationResult> ExecuteChildFormCustomValidation(Type modelType, string formName, string fieldName,
+            object fieldObject);
+
+        Task<ValidationResult> ExecuteCustomFormCustomValidation(Type modelType, string formName, string fieldName,
+            object fieldObject);
+
+
     }
 }

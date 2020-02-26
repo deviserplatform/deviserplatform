@@ -9,6 +9,7 @@ import { FormConfig } from '../common/domain-types/form-config';
 import { FormMode } from '../common/domain-types/form-mode';
 import { ValidationType } from '../common/domain-types/validation-type';
 import { KeyField } from '../common/domain-types/key-field';
+import { FormContext } from '../common/domain-types/form-context';
 
 @Component({
   selector: 'app-entity-form',
@@ -28,11 +29,13 @@ import { KeyField } from '../common/domain-types/key-field';
 })
 export class EntityFormComponent implements OnInit, ControlValueAccessor, Validator {
 
-  @Input() form: FormGroup;
-  @Input() formConfig: FormConfig;
-  @Input() formMode: FormMode;
-  @Input() keyField: KeyField
-  @Input() lookUps: LookUpDictionary;
+  // @Input() form: FormGroup;
+  // @Input() formConfig: FormConfig;
+  // @Input() formMode: FormMode;
+  // @Input() keyField: KeyField
+  // @Input() lookUps: LookUpDictionary;
+
+  @Input() formContext: FormContext;
 
   //To access FieldType enum
   fieldType = FieldType;
@@ -52,7 +55,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
       return result;
     }
 
-    return field.fieldOption.showIn == FormMode.Both || field.fieldOption.showIn == this.formMode
+    return field.fieldOption.showIn == FormMode.Both || field.fieldOption.showIn == this.formContext.formMode;
     //return true; //by default field should be visible
   }
 
@@ -61,7 +64,8 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
       let result = this.getFieldPredicateResult(field, 'enableOn');
       return result;
     }
-    return true; //by default field should be enabled
+    return field.fieldOption.enableIn == FormMode.Both || field.fieldOption.enableIn == this.formContext.formMode;
+    //return true; //by default field should be enabled
   }
 
   isFieldValidate(field: Field) {
@@ -83,7 +87,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
     if (field && field.fieldOption && field.fieldOption[action]) {
       let fieldExpression = field.fieldOption[action];
       let predicate = Function(...fieldExpression.parameters, fieldExpression.expression);
-      let result = predicate(this.form.value);
+      let result = predicate(this.formContext.formGroup.value);
       return result;
     }
     return false;

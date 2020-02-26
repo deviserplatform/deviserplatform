@@ -22,6 +22,10 @@ namespace Deviser.Admin.Config
         
         [JsonConverter(typeof(StringEnumConverter))]
         public FormMode ShowIn { get; set; } = FormMode.Both;
+        
+        [JsonConverter(typeof(StringEnumConverter))]
+        public FormMode EnableIn { get; set; } = FormMode.Both;
+
         public List<RelatedField> RelatedFields { get; set; }
         public bool IsHidden { get; set; }
         public bool IsReadOnly { get; set; }
@@ -56,6 +60,9 @@ namespace Deviser.Admin.Config
 
         [JsonConverter(typeof(ExpressionJsonConverter))]
         public LambdaExpression ValidateOn { get; set; }
+
+        [JsonIgnore]
+        public LambdaExpression ValidationExpression { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         public ValidationType ValidationType { get; set; }        

@@ -7130,7 +7130,8 @@ a.text-dark:hover, a.text-dark:focus {
     width: 100%; }
     .admin-wrapper .admin-body .admin-content {
       padding-top: 30px;
-      padding-left: 20px; }
+      padding-left: 20px;
+      padding-bottom: 80px; }
     .admin-wrapper .admin-body .admin-footer {
       background: #2b3643;
       bottom: 0;

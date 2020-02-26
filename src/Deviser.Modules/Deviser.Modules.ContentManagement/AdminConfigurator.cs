@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Deviser.Admin;
+﻿using Deviser.Admin;
+using Deviser.Admin.Config;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Modules.ContentManagement.Services;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Deviser.Modules.ContentManagement
 {
@@ -17,13 +14,22 @@ namespace Deviser.Modules.ContentManagement
             {
                 modelBuilder.GridBuilder
                     .AddField(c => c.Label)
-                    .AddField(c => c.Name);
+                    .AddField(c => c.Name)
+                    .AddField(c => c.IsActive);
 
                 modelBuilder.FormBuilder
-                    .AddKeyField(c=>c.Id)
+                    .AddKeyField(c => c.Id)
                     .AddField(c => c.Label)
-                    .AddField(c => c.Name)
-                    .AddField(c => c.IconClass);
+                    .AddField(c => c.Name, option =>
+                    {
+                        option.EnableIn = FormMode.Create;
+                    })
+                    .AddField(c => c.IconClass)
+                    .AddField(c => c.IsActive);
+
+                modelBuilder.FormBuilder.SetCustomValidationFor(c => c.Name,
+                    (sp, contentTypeName) =>
+                        sp.GetService<ContentTypeAdminService>().ValidateContentTypeName(contentTypeName));
             });
         }
     }

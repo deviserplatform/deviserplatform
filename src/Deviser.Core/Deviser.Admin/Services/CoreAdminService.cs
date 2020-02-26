@@ -11,6 +11,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Deviser.Admin.Services
 {
@@ -134,7 +135,67 @@ namespace Deviser.Admin.Services
         {
             return await CallGenericMethod(nameof(UpdateItem), new Type[] { modelType }, new object[] { item });
         }
+        
+        public async Task<ValidationResult> ExecuteMainFormCustomValidation(Type modelType, string fieldName, object fieldObject)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+            var field = adminConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f =>
+                string.Equals(f.FieldName, fieldName, StringComparison.InvariantCultureIgnoreCase));
+            
+            return await CustomValidation(fieldObject, field);
+        }
 
+        public async Task<ValidationResult> ExecuteChildFormCustomValidation(Type modelType, string formName, string fieldName, object fieldObject)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+
+            var childConfig = adminConfig.ChildConfigs.FirstOrDefault(c =>
+                //Child form name is same as field parent form
+                c.Field.FieldName.Equals(formName, StringComparison.InvariantCultureIgnoreCase));
+
+            if (childConfig == null)
+            {
+                return null;
+            }
+
+
+            var field = childConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f =>
+                string.Equals(f.FieldName, fieldName, StringComparison.InvariantCultureIgnoreCase));
+
+            return await CustomValidation(fieldObject, field);
+        }
+
+        public async Task<ValidationResult> ExecuteCustomFormCustomValidation(Type modelType, string formName, string fieldName, object fieldObject)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+
+
+            if (!adminConfig.ModelConfig.CustomForms.ContainsKey(formName))
+            {
+                return null;
+            }
+            formName = formName.Pascalize();
+            var customForm = adminConfig.ModelConfig.CustomForms[formName];
+
+            var field = customForm.FormConfig.AllFormFields.FirstOrDefault(f =>
+                string.Equals(f.FieldName, fieldName, StringComparison.InvariantCultureIgnoreCase));
+            
+            return await CustomValidation(fieldObject, field);
+        }
+
+        private async Task<ValidationResult> CustomValidation(object fieldObject, Field field)
+        {
+            if (field == null || field.FieldOption.ValidationType != ValidationType.Custom ||
+                field.FieldOption.ValidationExpression == null)
+            {
+                return null;
+            }
+
+            var fieldValue = (fieldObject.GetType() == field.FieldClrType)? Convert.ChangeType(fieldObject, field.FieldClrType) : ((JObject) fieldObject).ToObject(field.FieldClrType);
+            var validationDelegate = field.FieldOption.ValidationExpression.Compile();
+            var result = await (dynamic) validationDelegate.DynamicInvoke(_serviceProvider, fieldValue) as ValidationResult;
+            return result;
+        }
 
         private async Task<TModel> CreateItem<TModel>(object item) where TModel : class
         {

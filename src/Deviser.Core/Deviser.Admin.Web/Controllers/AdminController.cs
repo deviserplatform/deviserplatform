@@ -1,4 +1,6 @@
-﻿using Deviser.Admin.Services;
+﻿using AutoMapper;
+using Deviser.Admin.Services;
+using Deviser.Admin.Validation;
 using Deviser.Core.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Admin.Web.Controllers
 {
@@ -16,6 +19,9 @@ namespace Deviser.Admin.Web.Controllers
         private readonly ILogger<AdminController<TAdminConfigurator>> _logger;
         //private readonly IAdminRepository<TAdminConfigurator> _adminRepository;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IMapper _mapper;
+        private readonly IPasswordValidator _passwordValidator;
+        private readonly IUserByEmailValidator _userByEmailValidator;
 
         private string Area => RouteData.Values["area"] as string;
 
@@ -23,6 +29,9 @@ namespace Deviser.Admin.Web.Controllers
         {
             _serviceProvider = serviceProvider;
             _logger = serviceProvider.GetService<ILogger<AdminController<TAdminConfigurator>>>();
+            _passwordValidator = serviceProvider.GetService<IPasswordValidator>();
+            _mapper = serviceProvider.GetService<IMapper>();
+            _userByEmailValidator = serviceProvider.GetService<IUserByEmailValidator>();
             //_adminRepository = new AdminRepository<TAdminConfigurator>(serviceProvider);
         }
 
@@ -165,7 +174,7 @@ namespace Deviser.Admin.Web.Controllers
                     return BadRequest($"Model {model} is not found");
                 }
 
-                var result = await coreAdminService.CreateItemFor(modelType, modelObject); //_adminRepository.CreateItemFor(model, modelObject);
+                var result = await coreAdminService.CreateItemFor(modelType, modelObject); //_adminRepository.CreateItemFor(model, fieldObject);
                 if (result != null)
                 {
                     return Ok(result);
@@ -192,7 +201,7 @@ namespace Deviser.Admin.Web.Controllers
                     return BadRequest($"Model {model} is not found");
                 }
 
-                var result = await coreAdminService.UpdateItemFor(modelType, modelObject); //_adminRepository.UpdateItemFor(model, modelObject);
+                var result = await coreAdminService.UpdateItemFor(modelType, modelObject); //_adminRepository.UpdateItemFor(model, fieldObject);
                 if (result != null)
                 {
                     return Ok(result);
@@ -219,7 +228,7 @@ namespace Deviser.Admin.Web.Controllers
                     return BadRequest($"Model {model} is not found");
                 }
 
-                var result = await coreAdminService.ExecuteMainFormAction(modelType, actionName, modelObject); //_adminRepository.UpdateItemFor(model, modelObject);
+                var result = await coreAdminService.ExecuteMainFormAction(modelType, actionName, modelObject); //_adminRepository.UpdateItemFor(model, fieldObject);
                 if (result != null)
                 {
                     return Ok(result);
@@ -246,7 +255,7 @@ namespace Deviser.Admin.Web.Controllers
                     return BadRequest($"Model {model} is not found");
                 }
 
-                var result = await coreAdminService.CustomFormSubmit(model, formName, modelObject); //_adminRepository.UpdateItemFor(model, modelObject);
+                var result = await coreAdminService.CustomFormSubmit(model, formName, modelObject); //_adminRepository.UpdateItemFor(model, fieldObject);
                 if (result != null)
                 {
                     return Ok(result);
@@ -273,7 +282,7 @@ namespace Deviser.Admin.Web.Controllers
                     return BadRequest($"Model {model} is not found");
                 }
 
-                var result = await coreAdminService.ExecuteCustomFormAction(modelType, formName, actionName, modelObject); //_adminRepository.UpdateItemFor(model, modelObject);
+                var result = await coreAdminService.ExecuteCustomFormAction(modelType, formName, actionName, modelObject); //_adminRepository.UpdateItemFor(model, fieldObject);
                 if (result != null)
                 {
                     return Ok(result);
@@ -310,6 +319,129 @@ namespace Deviser.Admin.Web.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Error occured while deleting a record for model: {model}, id:{id}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        [Route("deviser/admin/validator/password")]
+        public async Task<IActionResult> ValidatePassword([FromBody] User userDto)
+        {
+            try
+            {
+                var user = _mapper.Map<Core.Data.Entities.User>(userDto);
+                var result = _passwordValidator.Validate(user, userDto.Password);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while validating password, email: {userDto.Email}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        [Route("deviser/admin/validator/emailexist")]
+        public async Task<IActionResult> ValidateEmail([FromBody] User userDto)
+        {
+            try
+            {
+                var user = _mapper.Map<Core.Data.Entities.User>(userDto);
+                var result = _userByEmailValidator.Validate(user);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while validating user, email: {userDto.Email}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        [Route("deviser/admin/validator/userexist")]
+        public async Task<IActionResult> ValidateUser([FromBody] User userDto)
+        {
+            try
+            {
+                var user = _mapper.Map<Core.Data.Entities.User>(userDto);
+                var result = _userByEmailValidator.Validate(user);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while validating user, email: {userDto.Email}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        [Route("modules/[area]/api/{model:required}/validate/{formType:required}/field/{fieldName:required}")]
+        [Route("modules/[area]/api/{model:required}/validate/{formType:required}/form/{formName:required}/field/{fieldName:required}")]
+        public async Task<IActionResult> CustomValidate(string model, string formType, string formName, string fieldName, [FromBody]object fieldObject)
+        {
+            try
+            {
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(model);
+                if (modelType == null)
+                {
+                    return BadRequest($"Model {model} is not found");
+                }
+
+                if (string.IsNullOrEmpty(formType))
+                {
+                    return BadRequest($"formType is required");
+                }
+
+                if (formType == "MainForm")
+                {
+                    var result = await coreAdminService.ExecuteMainFormCustomValidation(modelType, fieldName, fieldObject);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                }
+
+                if (string.IsNullOrEmpty(formName))
+                {
+                    return BadRequest($"formName is required for ChildForm and CustomForm");
+                }
+
+
+                if (formType == "ChildForm")
+                {
+                    var result = await coreAdminService.ExecuteChildFormCustomValidation(modelType, formName, fieldName, fieldObject);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                }
+                else //if (formType == "CustomForm")
+                {
+                    var result = await coreAdminService.ExecuteCustomFormAction(modelType, formName, fieldName, fieldObject);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                }
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while executing custom validation for field: {fieldName} in model: {model}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

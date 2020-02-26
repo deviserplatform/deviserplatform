@@ -4,13 +4,14 @@ import { RelationType } from './relation-type';
 import { RelatedField } from './related-field';
 import { FormMode } from './form-mode';
 
-export interface FieldOption {    
+export interface FieldOption {
     enableOn: FieldExpression;
     description: string;
     displayName: string;
     format: string;
     relatedFields: RelatedField[];
     showIn: FormMode;
+    enableIn: FormMode;
     isHidden: boolean;
     isReadOnly: boolean;
     isRequired: boolean;
@@ -25,4 +26,3 @@ export interface FieldOption {
     validationType: ValidationType;
     validatorRegEx: string;
 }
- 

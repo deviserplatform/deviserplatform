@@ -67,6 +67,7 @@
         .admin-content {
             padding-top: 30px;
             padding-left: 20px;
+            padding-bottom:80px;
         }
 
         .admin-footer {
@@ -76,7 +77,7 @@
             position: fixed;
 
             a, p {
-                color: $white;
+                color: $white; 
                 font-size: 0.9rem;
             }
         }

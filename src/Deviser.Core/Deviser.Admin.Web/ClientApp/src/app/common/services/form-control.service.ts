@@ -34,13 +34,13 @@ export class FormControlService {
     return this.fb.group(formObj);
   }
 
-  toChildFormGroup(modelConfig: ModelConfig, formMode: FormMode, record: any = null): FormGroup {
+  toFormGroupWithModelConfig(modelConfig: ModelConfig, formMode: FormMode, record: any = null): FormGroup {
     let formObj: any = {};
     formObj = this.getFormGroup(modelConfig, formMode, formObj, record);
     return this.fb.group(formObj);
   }
 
-  toFormGroupForCustomForms(formConfig: FormConfig, formMode: FormMode, keyField: KeyField, record: any) {
+  toFormGroupWithFormConfig(formConfig: FormConfig, formMode: FormMode, keyField: KeyField, record: any) {
     let formObj: any = {};
     formObj = this.buildAndGetFormGroup(formConfig, formMode, keyField, formObj, record);
     return this.fb.group(formObj);

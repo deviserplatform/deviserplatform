@@ -8,6 +8,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { FormControlService } from '../common/services/form-control.service';
 import { ConfirmDialogComponent } from '../common/components/confirm-dialog/confirm-dialog.component';
 import { FormMode } from '../common/domain-types/form-mode';
+import { FormContext } from '../common/domain-types/form-context';
 
 @Component({
   selector: 'app-child-grid',
@@ -28,16 +29,17 @@ import { FormMode } from '../common/domain-types/form-mode';
 })
 export class ChildGridComponent implements OnInit, ControlValueAccessor, Validator {
 
-
-  @Input() formMode: FormMode;
   @Input() parentForm: FormGroup;
-  @Input() modelConfig: ModelConfig;
-  @Input() lookUps: LookUpDictionary;
+  @Input() formContext:FormContext;
+  // @Input() formMode: FormMode;  
+  // @Input() modelConfig: ModelConfig;
+  // @Input() lookUps: LookUpDictionary;
   ViewState: typeof ViewState = ViewState;
 
   @ViewChild(ConfirmDialogComponent)
   private confirmDialogComponent: ConfirmDialogComponent;
 
+  childFormContext: FormContext
   childForm: FormGroup;
   childRecords: [any];
   selectedItem: any;
@@ -60,14 +62,16 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
   ngOnInit() {
     // this._childForm = new BehaviorSubject(this._formControlService.toChildFormGroup(this.formConfig, {}));
     // this._childForm.subscribe(childForm => this.childForm = childForm);
-    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, this.formMode, {});
+    this.childForm = this._formControlService.toFormGroupWithFormConfig(this.childFormContext.formConfig, this.childFormContext.formMode, this.childFormContext.keyField, {});
+    this.childFormContext.formGroup = this.childForm;
   }
 
   onNewItem(): void {
     this.viewState = ViewState.ADD;
     this.selectedItem = {};
     // this._childForm.next(this._formControlService.toChildFormGroup(this.formConfig, this.selectedItem));
-    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, this.formMode, this.selectedItem);
+    this.childForm = this._formControlService.toFormGroupWithFormConfig(this.childFormContext.formConfig, this.childFormContext.formMode, this.childFormContext.keyField, this.selectedItem);
+    this.childFormContext.formGroup = this.childForm;
   }
 
   onAddItem(): void {
@@ -82,7 +86,7 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
 
   onEditItem(item): void {
     this.selectedItem = item;
-    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, this.formMode, this.selectedItem);
+    this.childForm = this._formControlService.toFormGroupWithFormConfig(this.childFormContext.formConfig, this.childFormContext.formMode, this.childFormContext.keyField, this.selectedItem);
     this.viewState = ViewState.EDIT;
   }
 

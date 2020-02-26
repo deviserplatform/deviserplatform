@@ -5,25 +5,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Deviser.Admin.Builders
 {
     public class PropertyBuilder<TModel>
         where TModel : class
     {
-
-        private readonly IAdminConfig _adminConfig;
         private readonly FieldConditions _fieldConditions;
         private readonly LambdaExpression _fieldExpression;
         private readonly Field _field;
 
-        public PropertyBuilder(IAdminConfig adminConfig, LambdaExpression fieldExpression)
+        public PropertyBuilder(IFormConfig formConfig, LambdaExpression fieldExpression)
         {
-            _adminConfig = adminConfig;
-            _fieldConditions = adminConfig.ModelConfig.FormConfig.FieldConditions;
+            _fieldConditions = formConfig.FieldConditions;
             _fieldExpression = fieldExpression;
             var fieldName = ReflectionExtensions.GetMemberName(fieldExpression);
-            _field = _adminConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
+            _field = formConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
 
             if (_field == null)
             {
@@ -74,6 +72,8 @@ namespace Deviser.Admin.Builders
             _field.FieldOption.RelatedModelDisplayExpression = lookupDisplayExpression;
             return this;
         }
+
+
 
         //public AdminConfig<TEntity> AdminConfig { get; set; }
         //public LambdaExpression FieldExpression { get; set; }

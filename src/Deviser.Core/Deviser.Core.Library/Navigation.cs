@@ -226,12 +226,15 @@ namespace Deviser.Core.Library
             try
             {
                 var pageTranslation = page.PageTranslation;
+                var adminPage = page.AdminPage;
                 page.PageTranslation = null;
+                page.AdminPage = null;
                 var newPage = _pageRepository.CreatePage(page);
                 if (newPage != null)
                 {
                     page.Id = newPage.Id;
                     page.PageTranslation = pageTranslation;
+                    page.AdminPage = adminPage;
                     var result = UpdateSinglePage(page);
                     return result;
                 }
