@@ -17,12 +17,15 @@ namespace Deviser.Modules.ContentManagement.Services
     {
         private readonly ILogger<ContentTypeAdminService> _logger;
         private readonly IContentTypeRepository _contentTypeRepository;
+        private readonly IPropertyRepository _propertyRepository;
 
         public ContentTypeAdminService(ILogger<ContentTypeAdminService> logger,
-        IContentTypeRepository contentTypeRepository)
+            IContentTypeRepository contentTypeRepository,
+            IPropertyRepository propertyRepository)
         {
             _logger = logger;
             _contentTypeRepository = contentTypeRepository;
+            _propertyRepository = propertyRepository;
         }
 
         public async Task<PagedResult<ContentType>> GetAll(int pageNo, int pageSize, string orderByProperties)
@@ -70,6 +73,12 @@ namespace Deviser.Modules.ContentManagement.Services
         {
             var result = _contentTypeRepository.GetContentType(contentTypeName) != null ? ValidationResult.Failed(new ValidationError(){Code = "ContentType Exist!", Description = "ContentType already exist" }) : ValidationResult.Success;
             return await Task.FromResult(result);
+        }
+
+        public List<Property> GetProperties()
+        {
+            var result = _propertyRepository.GetProperties();
+            return result;
         }
     }
 }

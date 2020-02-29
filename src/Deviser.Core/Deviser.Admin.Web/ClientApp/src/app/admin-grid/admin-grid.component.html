@@ -2,7 +2,7 @@
   <div class="admin-grid card"
     *ngIf="adminConfig && adminConfig.modelConfig && adminConfig.modelConfig.gridConfig && adminConfig.modelConfig.gridConfig.fields && pagination">
     <div class="card-header">
-      Featured
+      {{adminConfig.adminTitle}}
     </div>
     <div class="card-body">
       <div class="row action-bar">
@@ -23,16 +23,32 @@
             aria-describedby="dataTable_info" style="width: 100%;">
             <thead>
               <tr>
-                <th *ngFor="let field of adminConfig.modelConfig.gridConfig.fields">{{field.fieldName}}</th>
+                <th *ngFor="let field of adminConfig.modelConfig.gridConfig.fields">{{field.fieldOption.displayName}}</th>
                 <th>Edit</th>
                 <th>Delete</th>
               </tr>
             </thead>
             <tbody *ngIf="entityRecords && entityRecords.data && entityRecords.data.length>0">
               <tr *ngFor="let item of entityRecords.data">
-                <td *ngFor="let field of adminConfig.modelConfig.gridConfig.fields"
-                  [innerHTML]="item[field.fieldNameCamelCase] | formatField:field">
+                <td *ngFor="let field of adminConfig.modelConfig.gridConfig.fields">
 
+                  <div *ngIf="field && field.fieldOption && field.fieldOption.labelOption && field.fieldOption.labelOption.labelType; then labelOption else fieldText"></div>
+
+                  <ng-template #labelOption>
+                    <ng-container [ngSwitch]="field.fieldOption.labelOption.labelType">
+                      <ng-container *ngSwitchCase="labelType.Icon">
+                        <i [ngClass]="item[field.fieldOption.labelOption.parameters.paramFieldNameCamelCase]"></i>
+                        <span [innerHTML]="item[field.fieldNameCamelCase] | formatField:field"></span>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="labelType.Badge">
+                        <span class="badge" [ngClass]="getBadge(item, field)" [innerHTML]="item[field.fieldNameCamelCase] | formatField:field"></span>
+                      </ng-container>
+                    </ng-container>
+                  </ng-template>
+
+                  <ng-template #fieldText>
+                    <span [innerHTML]="item[field.fieldNameCamelCase] | formatField:field"></span>
+                  </ng-template>
                 </td>
                 <td>
                   <a class="btn btn-dark" title="Edit"

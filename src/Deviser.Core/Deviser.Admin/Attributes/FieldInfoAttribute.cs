@@ -15,7 +15,7 @@ namespace Deviser.Admin.Attributes
         {
             FieldType = fieldType;
 
-            // Set some DisplayFormat for a few specific data types
+            // Set some LabelFormat for a few specific data types
             switch (fieldType)
             {
                 case FieldType.Date:

@@ -46,7 +46,7 @@
 <div class="admin-form" *ngIf="childForm && (viewState == ViewState.EDIT || viewState == ViewState.ADD)">
   <div class="row">
     <div class="col">
-      <app-entity-form [childFormContext]="childFormContext">
+      <app-entity-form [formContext]="childFormContext">
       </app-entity-form>
     </div>
   </div>

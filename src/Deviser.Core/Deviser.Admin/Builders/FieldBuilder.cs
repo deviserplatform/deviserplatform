@@ -115,7 +115,7 @@ namespace Deviser.Admin.Builders
         /// <param name="displayExpression">An expression to specify display property of select items</param>
         /// <param name="fieldOptionAction">Additional options can be specified here</param>
         /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
-        public FieldBuilder<TModel> AddMultiselectField<TRelatedModel>(Expression<Func<TModel, IList<TRelatedModel>>> expression,
+        public FieldBuilder<TModel> AddMultiselectField<TRelatedModel>(Expression<Func<TModel, ICollection<TRelatedModel>>> expression,
             Expression<Func<TRelatedModel, string>> displayExpression = null,
             Action<FieldOption> fieldOptionAction = null)
             where TRelatedModel : class
@@ -133,7 +133,7 @@ namespace Deviser.Admin.Builders
         /// <param name="displayExpression">An expression to specify display property of select items</param>
         /// <param name="fieldOptionAction">Additional options can be specified here</param>
         /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
-        public FieldBuilder<TModel> AddInlineMultiSelectField<TRelatedModel>(Expression<Func<TModel, IList<TRelatedModel>>> expression,
+        public FieldBuilder<TModel> AddInlineMultiSelectField<TRelatedModel>(Expression<Func<TModel, ICollection<TRelatedModel>>> expression,
             Expression<Func<TRelatedModel, string>> displayExpression = null,
             Action<FieldOption> fieldOptionAction = null)
             where TRelatedModel : class

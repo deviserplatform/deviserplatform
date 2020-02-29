@@ -181,7 +181,7 @@ export class FormControlComponent implements OnInit {
 
   onIsValidateChange(isValidate: boolean): void {
     let formControl = this.f[this.field.fieldNameCamelCase];
-    if (isValidate) {
+    if (isValidate && !this.isDisabled) {
       let syncValidators: ValidatorFn[] = [];
       let asyncValidators: AsyncValidatorFn[] = [];
 

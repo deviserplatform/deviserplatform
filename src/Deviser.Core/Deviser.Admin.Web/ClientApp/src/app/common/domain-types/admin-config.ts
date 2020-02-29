@@ -3,8 +3,9 @@ import { ModelConfig } from "./model-config";
 import { ChildConfig } from "./child-config";
 
 export interface AdminConfig {
+    adminTitle: string;
     childConfigs: ChildConfig[];
     modelType: string;
-    modelConfig: ModelConfig ;
+    modelConfig: ModelConfig;
     lookUps: LookUpDictionary;
 }

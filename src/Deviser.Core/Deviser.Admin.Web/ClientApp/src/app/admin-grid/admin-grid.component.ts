@@ -11,6 +11,9 @@ import { RecordIdPipe } from '../common/pipes/record-id.pipe';
 import { Alert, AlertType } from '../common/domain-types/alert';
 import { DOCUMENT } from '@angular/common';
 import { WINDOW } from '../common/services/window.service';
+import { LabelType } from '../common/domain-types/label-type';
+import { Field } from '../common/domain-types/field';
+import { FieldType } from '../common/domain-types/field-type';
 
 
 @Component({
@@ -27,6 +30,8 @@ export class AdminGridComponent implements OnInit {
 
   @ViewChild(ConfirmDialogComponent)
   private confirmDialogComponent: ConfirmDialogComponent;
+
+  labelType = LabelType;
 
   constructor(private adminService: AdminService,
     private recordIdPipe: RecordIdPipe,
@@ -96,6 +101,23 @@ export class AdminGridComponent implements OnInit {
   onNoToDelete(item: any): void {
     console.log('declined');
 
+  }
+
+  getBadge(item: any, field: Field): string {
+    if (!field.fieldOption.labelOption) {
+      return "";
+    }
+
+    if (!field.fieldOption.labelOption.parameters || !field.fieldOption.labelOption.parameters.paramFieldNameCamelCase) {
+      if (field.fieldType == FieldType.CheckBox) {
+        return item[field.fieldNameCamelCase] ? "badge-primary" : "badge-secondary";
+      }
+      else {
+        return "badge-light";
+      }
+    }
+
+    return item[field.fieldOption.labelOption.parameters.paramFieldNameCamelCase];
   }
 }
 

@@ -67,7 +67,7 @@ namespace Deviser.Admin.Config
 
         private readonly DbContext _dbContext;
         private readonly Type _dbContextType;
-        private readonly IModelMetadataProvider _modelMetadataProvider;
+        //private readonly IModelMetadataProvider _modelMetadataProvider;
         private readonly IServiceProvider _serviceProvider;
         private List<TypeMap> _typeMaps;
 
@@ -77,7 +77,7 @@ namespace Deviser.Admin.Config
         public IMapper Mapper { get; set; }
         public string SiteName { get; set; }
 
-        public AdminSite(IServiceProvider serviceProvider, DbContext dbContext, IModelMetadataProvider modelMetadataProvider)
+        public AdminSite(IServiceProvider serviceProvider, DbContext dbContext/*, IModelMetadataProvider modelMetadataProvider*/)
         {
             AdminType = AdminType.Entity;
             if (dbContext == null)
@@ -85,16 +85,16 @@ namespace Deviser.Admin.Config
 
             _serviceProvider = serviceProvider;
             _dbContext = dbContext;
-            _modelMetadataProvider = modelMetadataProvider;
+            //_modelMetadataProvider = modelMetadataProvider;
             _dbContextType = _dbContext.GetType();
             AdminConfigs = new Dictionary<Type, IAdminConfig>();
         }
 
-        public AdminSite(IServiceProvider serviceProvider, IModelMetadataProvider modelMetadataProvider)
+        public AdminSite(IServiceProvider serviceProvider/*, IModelMetadataProvider modelMetadataProvider*/)
         {
             AdminType = AdminType.Custom;
             _serviceProvider = serviceProvider;
-            _modelMetadataProvider = modelMetadataProvider;
+            //_modelMetadataProvider = modelMetadataProvider;
             AdminConfigs = new Dictionary<Type, IAdminConfig>();
         }
 
@@ -357,7 +357,7 @@ namespace Deviser.Admin.Config
                 field.FieldOption = new FieldOption();
 
 
-            field.FieldOption.Metadata = _modelMetadataProvider.GetMetadataForType(field.FieldClrType);
+            //field.FieldOption.Metadata = _modelMetadataProvider.GetMetadataForType(field.FieldClrType);
 
 
 
@@ -578,27 +578,27 @@ namespace Deviser.Admin.Config
 
         private static IEnumerable<string> GetFieldTypeHints(Field field)
         {
-            var metadata = field.FieldOption.Metadata;
+            //var metadata = field.FieldOption.Metadata;
 
-            if (!string.IsNullOrEmpty(metadata.TemplateHint))
-            {
-                yield return metadata.TemplateHint;
-            }
+            //if (!string.IsNullOrEmpty(metadata.TemplateHint))
+            //{
+            //    yield return metadata.TemplateHint;
+            //}
 
-            if (!string.IsNullOrEmpty(metadata.DataTypeName))
-            {
-                yield return metadata.DataTypeName;
-            }
+            //if (!string.IsNullOrEmpty(metadata.DataTypeName))
+            //{
+            //    yield return metadata.DataTypeName;
+            //}
 
-            // In most cases, we don't want to search for Nullable<T>. We want to search for T, which should handle
-            // both T and Nullable<T>. However we special-case bool? to avoid turning an <input/> into a <select/>.
-            var fieldType = metadata.ModelType;
-            if (typeof(bool?) != fieldType)
-            {
-                fieldType = metadata.UnderlyingOrModelType;
-            }
+            //// In most cases, we don't want to search for Nullable<T>. We want to search for T, which should handle
+            //// both T and Nullable<T>. However we special-case bool? to avoid turning an <input/> into a <select/>.
+            //var fieldType = metadata.ModelType;
+            //if (typeof(bool?) != fieldType)
+            //{
+            //    fieldType = metadata.UnderlyingOrModelType;
+            //}
 
-            foreach (string typeName in GetTypeNames(fieldType))
+            foreach (string typeName in GetTypeNames(field.FieldClrType))
             {
                 yield return typeName;
             }
@@ -635,7 +635,7 @@ namespace Deviser.Admin.Config
                     yield return "DateTime";
                 }
 
-                yield return "String";
+                yield return fieldType.Name;
                 yield break;
             }
             else if (!fieldTypeInfo.IsInterface)

@@ -86,7 +86,10 @@
                   *ngFor="let childConfig of adminConfig.childConfigs">
                   <!-- {{childConfig.field.fieldName}} -->
 
-                  <app-child-grid [formControlName]="childConfig.field.fieldNameCamelCase" [parentForm]="adminForm" [formContext]="childFormContexts[childConfig.field.fieldNameCamelCase]">
+                  <app-child-grid [formControlName]="childConfig.field.fieldNameCamelCase" 
+                  [parentForm]="adminForm" 
+                  [formContext]="childFormContexts[childConfig.field.fieldNameCamelCase]"
+                  [modelConfig]="childConfig.modelConfig">
                   </app-child-grid>
 
                 </div>

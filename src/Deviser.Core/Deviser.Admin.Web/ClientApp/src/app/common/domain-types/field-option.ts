@@ -3,11 +3,13 @@ import { FieldExpression } from './FieldExpression';
 import { RelationType } from './relation-type';
 import { RelatedField } from './related-field';
 import { FormMode } from './form-mode';
+import { LabelOption } from './label-option';
 
 export interface FieldOption {
     enableOn: FieldExpression;
     description: string;
     displayName: string;
+    labelOption: LabelOption;
     format: string;
     relatedFields: RelatedField[];
     showIn: FormMode;

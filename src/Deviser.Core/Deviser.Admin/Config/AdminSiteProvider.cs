@@ -42,9 +42,9 @@ namespace Deviser.Admin.Config
 
             foreach (var adminConfiguratorType in adminConfiguratorTypes)
             {
-                var acInterface = adminConfiguratorType.GetInterfaces().Where(i => i.IsGenericType).FirstOrDefault();
-                Type dbContextType = acInterface?.GetGenericArguments().FirstOrDefault();
-                bool hasDbContext = dbContextType != null;
+                var acInterface = adminConfiguratorType.GetInterfaces().FirstOrDefault(i => i.IsGenericType);
+                var dbContextType = acInterface?.GetGenericArguments().FirstOrDefault();
+                var hasDbContext = dbContextType != null;
                 IAdminSite adminSite;
                 AdminBuilder adminBuilder;
                 /** 
@@ -58,7 +58,7 @@ namespace Deviser.Admin.Config
                     using (var contextObj = (DbContext)serviceProvider.GetRequiredService(dbContextType))
                     {
 
-                        adminSite = new AdminSite(serviceProvider, contextObj, serviceProvider.GetRequiredService<IModelMetadataProvider>());
+                        adminSite = new AdminSite(serviceProvider, contextObj/*, serviceProvider.GetRequiredService<IModelMetadataProvider>()*/);
                         adminBuilder = new AdminBuilder(adminSite);
 
                         if (!contextObj.Database.Exists())
@@ -69,7 +69,7 @@ namespace Deviser.Admin.Config
                 }
                 else
                 {
-                    adminSite = new AdminSite(serviceProvider, serviceProvider.GetRequiredService<IModelMetadataProvider>());
+                    adminSite = new AdminSite(serviceProvider/*, serviceProvider.GetRequiredService<IModelMetadataProvider>()*/);
                     adminBuilder = new AdminBuilder(adminSite);
                     ConfigureAdminSites(adminConfiguratorType, adminSite, adminBuilder);
                 }

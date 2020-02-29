@@ -32,7 +32,7 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
   @Input() parentForm: FormGroup;
   @Input() formContext:FormContext;
   // @Input() formMode: FormMode;  
-  // @Input() modelConfig: ModelConfig;
+  @Input() modelConfig: ModelConfig;
   // @Input() lookUps: LookUpDictionary;
   ViewState: typeof ViewState = ViewState;
 

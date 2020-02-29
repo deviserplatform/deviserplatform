@@ -81,6 +81,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.ContentType
+                    .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
                     .FirstOrDefault(e => e.Id == contentTypeId);
 
                 return _mapper.Map<ContentType>(result);

@@ -12,6 +12,12 @@ namespace Deviser.Admin.Builders
         public FormBuilder<TModel> FormBuilder { get; }
         public GridBuilder<TModel> GridBuilder { get; }
 
+        public string AdminTitle
+        {
+            get => _adminConfig.AdminTitle;
+            set => _adminConfig.AdminTitle = value;
+        }
+
         public ModelBuilder(IAdminConfig adminConfig)
         {
             _adminConfig = adminConfig;
