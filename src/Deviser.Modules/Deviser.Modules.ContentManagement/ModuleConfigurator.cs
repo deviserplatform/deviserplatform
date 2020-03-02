@@ -22,6 +22,7 @@ namespace Deviser.Modules.ContentManagement
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ContentTypeAdminService>();
+            services.AddScoped<LayoutTypeAdminService>();
         }
     }
 }

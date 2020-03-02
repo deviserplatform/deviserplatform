@@ -121,10 +121,11 @@
                                         </ui-select>
                                     </div>
                                 </div>
-                                <div class="form-group" ng-if="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.admin.id">
+                                <div class="form-group" ng-if="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.admin.id"
+                                     ng-class="{'has-error': managePage.modelName.$invalid && (managePage.modelName.$dirty || managePage.$submitted)}">
                                     <label class="col-sm-4 control-label">Model Name</label>
                                     <div class="col-sm-8">
-                                        <input type="text" name="name" class="form-control" placeholder="Enter page name" ng-model="pmVM.selectedItem.adminPage.modelName" required>
+                                        <input type="text" name="modelName" class="form-control" placeholder="Enter model name" ng-model="pmVM.selectedItem.adminPage.modelName" required>
                                     </div>
                                 </div>
                             </div>

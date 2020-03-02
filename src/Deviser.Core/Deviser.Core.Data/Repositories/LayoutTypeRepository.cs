@@ -43,7 +43,7 @@ namespace Deviser.Core.Data.Repositories
                 dbLayoutType.CreatedDate = dbLayoutType.LastModifiedDate = DateTime.Now;
                 var result = context.LayoutType.Add(dbLayoutType).Entity;
                 context.SaveChanges();
-                return _mapper.Map<LayoutType>(result);
+                return GetLayoutType(result.Id);
             }
             catch (Exception ex)
             {
@@ -58,7 +58,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.LayoutType
-                    .Include(lt => lt.LayoutTypeProperties)
+                    .Include(lt => lt.LayoutTypeProperties).ThenInclude(lp=>lp.Property)
                     .FirstOrDefault(e => e.Id == layoutTypeId);
 
                 return _mapper.Map<LayoutType>(result);
@@ -153,7 +153,7 @@ namespace Deviser.Core.Data.Repositories
                 dbLayoutType.LastModifiedDate = DateTime.Now;
                 var result = context.LayoutType.Update(dbLayoutType).Entity;
                 context.SaveChanges();
-                return _mapper.Map<LayoutType>(result);
+                return GetLayoutType(result.Id);
             }
             catch (Exception ex)
             {
