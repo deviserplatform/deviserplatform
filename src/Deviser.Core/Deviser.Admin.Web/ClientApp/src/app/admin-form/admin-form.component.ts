@@ -31,7 +31,7 @@ export class AdminFormComponent implements OnInit {
   selectedChildConfig: ChildConfig;
   formTabs: FormContext[];
   selectedFormTab: FormContext;
-  childFormContexts:{ [key: string]: FormContext }
+  // childFormContexts: { [key: string]: FormContext }
 
   formType = FormType;
 
@@ -42,6 +42,7 @@ export class AdminFormComponent implements OnInit {
     private location: Location) {
     this.alerts = [];
     this.formTabs = [];
+    // this.childFormContexts;
   }
 
   ngOnInit() {
@@ -58,8 +59,15 @@ export class AdminFormComponent implements OnInit {
       const adminConfig$ = this.adminService.getAdminConfig();
       const record$ = this.adminService.getRecord(id);
       forkJoin([adminConfig$, record$]).subscribe(results => {
-        this.record = results[1];
+        this.record = results[1];        
         this.onGetAdminConfig(results[0]);
+      }, error=>{
+        let alert: Alert = {
+          alterType: AlertType.Error,
+          message: "Unable to get this item, please contact administrator",
+          timeout: 5000
+        }
+        this.alerts.push(alert);
       });
     } else if (this.formMode === FormMode.Create) {
       this.adminService.getAdminConfig()
@@ -71,25 +79,26 @@ export class AdminFormComponent implements OnInit {
   onGetAdminConfig(adminConfig: AdminConfig): void {
     if (adminConfig) {
       this.adminConfig = adminConfig;
-      
-      
-      if(this.adminConfig.childConfigs.length>0){
+
+
+      if (this.adminConfig.childConfigs.length > 0) {
         this.selectedChildConfig = this.adminConfig.childConfigs[0];
-        for(let childConfig of this.adminConfig.childConfigs){
+        // this.childFormContexts = {};
+        // for (let childConfig of this.adminConfig.childConfigs) {
 
-          let childForm = this.formControlService.toFormGroupWithModelConfig(childConfig.modelConfig, this.formMode, {});
-
-          this.childFormContexts[childConfig.field.fieldNameCamelCase] = {
-            formGroup: childForm,
-            formConfig: childConfig.modelConfig.formConfig,
-            formName: childConfig.field.fieldNameCamelCase,
-            formTitle: childConfig.field.fieldNameCamelCase,
-            formType: this.formType.ChildForm,
-            keyField: childConfig.modelConfig.keyField,
-            formMode: this.formMode,
-            lookUps: this.adminConfig.lookUps
-          }
-        }
+        //   let childForm = this.formControlService.toFormGroupWithModelConfig(childConfig.modelConfig, this.formMode, {});
+        //   let childFormName = childConfig.field.fieldNameCamelCase;
+        //   this.childFormContexts[childFormName] = {
+        //     formGroup: childForm,
+        //     formConfig: childConfig.modelConfig.formConfig,
+        //     formName: childFormName,
+        //     formTitle: childFormName,
+        //     formType: this.formType.ChildForm,
+        //     keyField: childConfig.modelConfig.keyField,
+        //     formMode: this.formMode,
+        //     lookUps: this.adminConfig.lookUps
+        //   };
+        // }
       }
 
 

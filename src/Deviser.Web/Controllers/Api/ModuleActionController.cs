@@ -95,11 +95,11 @@ namespace Deviser.Web.Controllers
         {
             try
             {
-                var moduleActions = _moduleRepository.Get(id); 
+                var moduleActions = _moduleRepository.GetModule(id); 
                 if (moduleActions != null)
                 {
                     moduleActions.IsActive = false; //is it correct?
-                    var result = _moduleRepository.Update(moduleActions);
+                    var result = _moduleRepository.UpdateModule(moduleActions);
                     if (result != null)
                     {
                         return Ok(result);

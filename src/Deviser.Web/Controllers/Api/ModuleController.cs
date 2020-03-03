@@ -26,7 +26,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = _moduleRepository.Get();
+                var result = _moduleRepository.GetModules();
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -43,7 +43,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = _moduleRepository.Get(id);
+                var result = _moduleRepository.GetModule(id);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
@@ -96,7 +96,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = _moduleRepository.Update(module);
+                var result = _moduleRepository.UpdateModule(module);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
@@ -113,11 +113,11 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var module = _moduleRepository.Get(id);
+                var module = _moduleRepository.GetModule(id);
                 if (module != null)
                 {
                     module.IsActive = true; //is it correct?
-                    var result = _moduleRepository.Update(module);
+                    var result = _moduleRepository.UpdateModule(module);
                     if (result != null)
                     {
                         return Ok(result);

@@ -36,7 +36,7 @@
 
               <div class="form-action-container">
                 <div class="form-actions d-flex">
-                  
+
                   <button type="button" class="mr-auto btn btn-dark" (click)="goBack()">
                     <i class="my-icon" aria-label="My icon"
                       [inlineSVG]="'assets/icons/baseline-keyboard_arrow_left.svg' | envPath"></i>
@@ -44,7 +44,8 @@
 
                   <ng-container *ngIf="formTab.formConfig.formActions && formMode === FormMode.Update">
                     <button class="btn btn-secondary" type="button" [disabled]="!adminForm.valid"
-                      *ngFor="let formAction of formTab.formConfig.formActions | keyvalue" (click)="onAction(formTab.formName, formAction.key)">
+                      *ngFor="let formAction of formTab.formConfig.formActions | keyvalue"
+                      (click)="onAction(formTab.formName, formAction.key)">
                       {{formAction.value.buttonText}}
                     </button>
                   </ng-container>
@@ -57,20 +58,21 @@
                     </button>
                   </ng-container>
                   <ng-container *ngIf="formTab.formType == formType.CustomForm">
-                    <button class="btn btn-primary" type="button" [disabled]="!formTab.formGroup.valid" (click)="onCustomFormSubmit(formTab)">
+                    <button class="btn btn-primary" type="button" [disabled]="!formTab.formGroup.valid"
+                      (click)="onCustomFormSubmit(formTab)">
                       {{formTab.formConfig.formOption.saveButtonText}}
                     </button>
                   </ng-container>
                 </div>
               </div>
-
               <app-entity-form [formContext]="formTab">
               </app-entity-form>
             </div>
           </div>
 
 
-          <div class="card" *ngIf="adminConfig.childConfigs && adminConfig.childConfigs.length > 0">
+          <div class="card"
+            *ngIf="adminConfig.childConfigs && adminConfig.childConfigs.length > 0">
             <div class="card-header">
               <ul class="nav nav-tabs card-header-tabs" role="tablist">
                 <li class="nav-item" *ngFor="let childConfig of adminConfig.childConfigs">
@@ -87,9 +89,9 @@
                   <!-- {{childConfig.field.fieldName}} -->
 
                   <app-child-grid [formControlName]="childConfig.field.fieldNameCamelCase" 
-                  [parentForm]="adminForm" 
-                  [formContext]="childFormContexts[childConfig.field.fieldNameCamelCase]"
-                  [modelConfig]="childConfig.modelConfig">
+                  [childConfig]="childConfig" 
+                  [formMode]="formMode"
+                  [lookUps]="adminConfig.lookUps">
                   </app-child-grid>
 
                 </div>

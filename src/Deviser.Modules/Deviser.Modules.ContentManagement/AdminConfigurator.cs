@@ -79,7 +79,7 @@ namespace Deviser.Modules.ContentManagement
 
                 modelBuilder.FormBuilder.SetCustomValidationFor(c => c.Name,
                     (sp, contentTypeName) =>
-                        sp.GetService<LayoutTypeAdminService>().ValidateContentTypeName(contentTypeName));
+                        sp.GetService<LayoutTypeAdminService>().ValidateLayoutTypeName(contentTypeName));
             });
 
 

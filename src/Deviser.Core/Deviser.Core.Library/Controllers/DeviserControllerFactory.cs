@@ -78,7 +78,7 @@ namespace Deviser.Core.Library.Controllers
                 currentPage.PageModule = currentPage.PageModule.Where(pm => !pm.IsDeleted).ToList();
                 foreach (var pageModule in currentPage.PageModule)
                 {
-                    Module module = _moduleRepository.Get(pageModule.ModuleId);
+                    Module module = _moduleRepository.GetModule(pageModule.ModuleId);
                     ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == pageModule.ModuleActionId);
                     ModuleContext moduleContext = new ModuleContext();
                     moduleContext.ModuleInfo = module;
@@ -156,7 +156,7 @@ namespace Deviser.Core.Library.Controllers
             IHtmlContent editResult = new HtmlString(string.Empty);
             try
             {
-                var module = _moduleRepository.Get(pageModule.ModuleId);
+                var module = _moduleRepository.GetModule(pageModule.ModuleId);
                 ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleActionType
                 ModuleContext moduleContext = new ModuleContext();
                 moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleActionType

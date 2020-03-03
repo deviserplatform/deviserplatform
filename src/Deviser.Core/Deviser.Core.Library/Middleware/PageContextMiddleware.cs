@@ -122,7 +122,7 @@ namespace Deviser.Core.Library.Middleware
 
                         if (routeData.Values.TryGetValue("area", out moduleName))
                         {
-                            moduleContext.ModuleInfo = moduleRepository.Get((string)moduleName);
+                            moduleContext.ModuleInfo = moduleRepository.GetModule((string)moduleName);
                         }
 
                         if (routeData.Values.TryGetValue("pageModuleId", out pageModuleId))

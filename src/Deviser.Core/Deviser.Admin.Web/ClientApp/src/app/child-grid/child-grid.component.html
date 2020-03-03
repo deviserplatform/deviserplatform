@@ -15,14 +15,14 @@
         aria-describedby="dataTable_info" style="width: 100%;">
         <thead>
           <tr>
-            <th *ngFor="let field of modelConfig.gridConfig.fields">{{field.fieldName}}</th>
+            <th *ngFor="let field of childConfig.modelConfig.gridConfig.fields">{{field.fieldName}}</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
         </thead>
         <tbody *ngIf="childRecords && childRecords.length>0">
           <tr *ngFor="let item of childRecords">
-            <td *ngFor="let field of modelConfig.gridConfig.fields"
+            <td *ngFor="let field of childConfig.modelConfig.gridConfig.fields"
               [innerHTML]="item[field.fieldNameCamelCase] | formatField:field">
 
             </td>
@@ -46,7 +46,7 @@
 <div class="admin-form" *ngIf="childForm && (viewState == ViewState.EDIT || viewState == ViewState.ADD)">
   <div class="row">
     <div class="col">
-      <app-entity-form [formContext]="childFormContext">
+      <app-entity-form [formContext]="formContext">
       </app-entity-form>
     </div>
   </div>

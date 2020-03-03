@@ -101,9 +101,9 @@ namespace Deviser.Modules.ContentManagement.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<ValidationResult> ValidateContentTypeName(string layoutTypeName)
+        public async Task<ValidationResult> ValidateLayoutTypeName(string layoutTypeName)
         {
-            var result = _layoutTypeRepository.GetLayoutType(layoutTypeName) != null ? ValidationResult.Failed(new ValidationError() { Code = "ContentType Exist!", Description = "ContentType already exist" }) : ValidationResult.Success;
+            var result = _layoutTypeRepository.GetLayoutType(layoutTypeName) != null ? ValidationResult.Failed(new ValidationError() { Code = "LayoutType available!", Description = "LayoutType already exist" }) : ValidationResult.Success;
             return await Task.FromResult(result);
         }
 

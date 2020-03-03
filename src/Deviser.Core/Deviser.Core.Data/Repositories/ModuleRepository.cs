@@ -11,16 +11,16 @@ namespace Deviser.Core.Data.Repositories
 {
     public interface IModuleRepository //: IRepositoryBase
     {
-        List<Module> Get();
-        Module Get(Guid moduleId);
+        List<Module> GetModules();
+        Module GetModule(Guid moduleId);
         ModuleAction GetModuleAction(Guid moduleActionId);
         List<ModuleAction> GetModuleActions();
         List<ModuleActionType> GetModuleActionType();
         List<ModuleAction> GetEditModuleActions(Guid moduleId);
-        Module Get(string moduleName);
+        Module GetModule(string moduleName);
         Module GetModuleByPageModuleId(Guid pageModuleId);
         Module Create(Module dbModule);
-        Module Update(Module dbModule);
+        Module UpdateModule(Module dbModule);
         ModuleAction CreateModuleAction(ModuleAction moduleAction);
         ModuleAction UpdateModuleAction(ModuleAction moduleAction);
     }
@@ -43,7 +43,7 @@ namespace Deviser.Core.Data.Repositories
         }
 
         //Custom Field Declaration
-        public List<Module> Get()
+        public List<Module> GetModules()
         {
             try
             {
@@ -135,7 +135,7 @@ namespace Deviser.Core.Data.Repositories
             return null;
         }
 
-        public Module Get(Guid moduleId)
+        public Module GetModule(Guid moduleId)
         {
             try
             {
@@ -154,7 +154,7 @@ namespace Deviser.Core.Data.Repositories
             return null;
         }
 
-        public Module Get(string moduleName)
+        public Module GetModule(string moduleName)
         {
             try
             {
@@ -209,7 +209,7 @@ namespace Deviser.Core.Data.Repositories
             }
             return null;
         }
-        public Module Update(Module module)
+        public Module UpdateModule(Module module)
         {
             try
             {

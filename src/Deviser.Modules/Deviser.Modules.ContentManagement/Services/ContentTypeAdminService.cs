@@ -71,7 +71,7 @@ namespace Deviser.Modules.ContentManagement.Services
 
         public async Task<ValidationResult> ValidateContentTypeName(string contentTypeName)
         {
-            var result = _contentTypeRepository.GetContentType(contentTypeName) != null ? ValidationResult.Failed(new ValidationError(){Code = "ContentType Exist!", Description = "LayoutType already exist" }) : ValidationResult.Success;
+            var result = _contentTypeRepository.GetContentType(contentTypeName) != null ? ValidationResult.Failed(new ValidationError(){Code = "ContentType available!", Description = "LayoutType already exist" }) : ValidationResult.Success;
             return await Task.FromResult(result);
         }
 
