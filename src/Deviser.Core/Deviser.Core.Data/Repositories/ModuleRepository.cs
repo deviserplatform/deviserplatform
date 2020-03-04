@@ -142,6 +142,7 @@ namespace Deviser.Core.Data.Repositories
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.Module
                     .Where(e => e.Id == moduleId)
+                    .Include(m => m.ModuleAction).ThenInclude(ma=>ma.ModuleActionProperties).ThenInclude(p=>p.Property)
                     .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) // ("ModuleActions.ModuleActionType")                              
                     .FirstOrDefault();
 

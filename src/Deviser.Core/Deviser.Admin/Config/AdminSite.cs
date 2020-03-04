@@ -690,6 +690,19 @@ namespace Deviser.Admin.Config
                 .Where(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne)
                 .ToList();
 
+            if (adminConfig.ChildConfigs != null)
+            {
+                foreach (var childConfig in adminConfig.ChildConfigs)
+                {
+                    var childConfigReleatedFields = childConfig.ModelConfig.FormConfig.AllFormFields
+                        .Where(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne)
+                        .ToList();
+
+                    relatedFileds.AddRange(childConfigReleatedFields);
+                }
+            }
+            
+
             if (AdminType == AdminType.Entity)
             {
                 foreach (var relatedField in relatedFileds)

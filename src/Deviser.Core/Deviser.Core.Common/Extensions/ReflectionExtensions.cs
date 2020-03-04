@@ -51,7 +51,9 @@ namespace Deviser.Core.Common.Extensions
 
         public static bool IsCollectionType(this Type type)
         {
-            return type?.GetInterfaces()?.Any(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>)) ?? false;
+            if (type == null) return false;
+            return type.GetInterfaces().Any(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>)) ||
+                   type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ICollection<>);
         }
     }
 }

@@ -78,5 +78,11 @@ namespace Deviser.Modules.ModuleManagement.Services
             var result = _propertyRepository.GetProperties();
             return result;
         }
+
+        public List<ModuleActionType> GetActionType()
+        {
+            var result = _moduleRepository.GetModuleActionType();
+            return result;
+        }
     }
 }

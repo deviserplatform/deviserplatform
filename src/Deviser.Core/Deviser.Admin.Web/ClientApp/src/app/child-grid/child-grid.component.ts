@@ -11,6 +11,8 @@ import { FormMode } from '../common/domain-types/form-mode';
 import { FormContext } from '../common/domain-types/form-context';
 import { ChildConfig } from '../common/domain-types/child-config';
 import { FormType } from '../common/domain-types/form-type';
+import { LabelType } from '../common/domain-types/label-type';
+import { FieldType } from '../common/domain-types/field-type';
 
 @Component({
   selector: 'app-child-grid',
@@ -42,7 +44,7 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
   @ViewChild(ConfirmDialogComponent)
   private confirmDialogComponent: ConfirmDialogComponent;
 
-
+  labelType = LabelType;
   childForm: FormGroup;
   childRecords: [any];
   formContext: FormContext;
@@ -125,6 +127,23 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
 
   onNoToDelete(item: any): void {
     console.log('declined');
+  }
+
+  getBadge(item: any, field: Field): string {
+    if (!field.fieldOption.labelOption) {
+      return "";
+    }
+
+    if (!field.fieldOption.labelOption.parameters || !field.fieldOption.labelOption.parameters.paramFieldNameCamelCase) {
+      if (field.fieldType == FieldType.CheckBox) {
+        return item[field.fieldNameCamelCase] ? "badge-primary" : "badge-secondary";
+      }
+      else {
+        return "badge-light";
+      }
+    }
+
+    return item[field.fieldOption.labelOption.parameters.paramFieldNameCamelCase];
   }
 
   writeValue(obj: [any]): void {
