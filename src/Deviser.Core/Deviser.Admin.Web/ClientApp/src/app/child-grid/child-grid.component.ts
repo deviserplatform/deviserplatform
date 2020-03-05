@@ -88,7 +88,8 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
     this.viewState = ViewState.ADD;
     this.selectedItem = {};
     // this._childForm.next(this._formControlService.toChildFormGroup(this.formConfig, this.selectedItem));
-    this.childForm = this._formControlService.toFormGroupWithModelConfig(this.childConfig.modelConfig, this.formMode, this.selectedItem);//this._formControlService.toFormGroupWithFormConfig(this.childFormContext.formConfig, this.childFormContext.formMode, this.childFormContext.keyField, this.selectedItem);
+    this.childForm = this._formControlService.toFormGroupWithModelConfig(this.childConfig.modelConfig, FormMode.Create, this.selectedItem);//this._formControlService.toFormGroupWithFormConfig(this.childFormContext.formConfig, this.childFormContext.formMode, this.childFormContext.keyField, this.selectedItem);
+    this.formContext.formMode = FormMode.Create;
     this.formContext.formGroup = this.childForm;
   }
 
@@ -104,7 +105,8 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
 
   onEditItem(item): void {
     this.selectedItem = item;
-    this.childForm = this._formControlService.toFormGroupWithModelConfig(this.childConfig.modelConfig, this.formMode, this.selectedItem);
+    this.childForm = this._formControlService.toFormGroupWithModelConfig(this.childConfig.modelConfig, FormMode.Update, this.selectedItem);
+    this.formContext.formMode = FormMode.Update;
     this.formContext.formGroup = this.childForm;
     this.viewState = ViewState.EDIT;
   }

@@ -220,6 +220,12 @@ namespace Deviser.Core.Data.Repositories
                 dbModule.ModuleAction = null;
                 foreach (var moduleAction in moduleActions)
                 {
+                    if (moduleAction.ModuleActionType != null)
+                    {
+                        moduleAction.ModuleActionTypeId = moduleAction.ModuleActionType.Id;
+                        moduleAction.ModuleActionType = null;
+                    }
+                    
 
                     if (context.ModuleAction.Any(pc => pc.Id == moduleAction.Id))
                     {                           
