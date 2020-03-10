@@ -707,42 +707,41 @@ namespace Deviser.Admin.Config
             {
                 foreach (var relatedField in relatedFileds)
                 {
-                    var relatedModelType = relatedField.FieldOption.RelatedModelType;
+                    var relatedModelType = relatedField.FieldOption.LookupModelType;
                     var entityClrType = GetEntityClrTypeFor(relatedModelType);
 
-                    Func<List<LookUpField>> masterDataDelegate = () => CallGenericMethod<List<LookUpField>>(nameof(GetLookUpDataFromEntity), new Type[] { relatedModelType, entityClrType }, new object[] { relatedField.FieldOption.RelatedModelDisplayExpression });
-                    adminConfig.LookUps.Add(relatedField.FieldOption.RelatedModelType.Name, masterDataDelegate);
+                    Func<List<LookUpField>> masterDataDelegate = () => CallGenericMethod<List<LookUpField>>(nameof(GetLookUpDataFromEntity), new Type[] { relatedModelType, entityClrType }, new object[] { relatedField.FieldOption.LookupDisplayExpression });
+                    adminConfig.LookUps.Add(relatedField.FieldOption.LookupModelType.Name, masterDataDelegate);
                 }
             }
             else if (AdminType == AdminType.Custom)
             {
                 foreach (var relatedFiled in relatedFileds)
                 {
-                    Func<List<LookUpField>> masterDataDelegate = () =>
+                    if(relatedFiled.FieldOption.LookupFilterExpression != null) continue;
+
+                    List<LookUpField> MasterDataDelegate()
                     {
-                        List<LookUpField> lookUpFields = new List<LookUpField>();
+                        var lookUpFields = new List<LookUpField>();
 
-                        var entityLookupExprDelegate = relatedFiled.FieldOption.RelatedModelLookupExpression.Compile();
-                        var entityLookupExprKeyDelegate = relatedFiled.FieldOption.RelatedModelLookupKeyExpression.Compile();
-                        var displayExprDelegate = relatedFiled.FieldOption.RelatedModelDisplayExpression.Compile();
-                        var keyFieldName = ReflectionExtensions.GetMemberName(relatedFiled.FieldOption.RelatedModelLookupKeyExpression);
+                        var entityLookupExprDelegate = relatedFiled.FieldOption.LookupExpression.Compile();
+                        var entityLookupExprKeyDelegate = relatedFiled.FieldOption.LookupKeyExpression.Compile();
+                        var displayExprDelegate = relatedFiled.FieldOption.LookupDisplayExpression.Compile();
+                        var keyFieldName = ReflectionExtensions.GetMemberName(relatedFiled.FieldOption.LookupKeyExpression);
 
-                        var items = entityLookupExprDelegate.DynamicInvoke(new object[] { _serviceProvider }) as IList;
+                        var items = entityLookupExprDelegate.DynamicInvoke(new object[] {_serviceProvider}) as IList;
 
                         foreach (var item in items)
                         {
-                            var keyValue = entityLookupExprKeyDelegate.DynamicInvoke(new object[] { item });
-                            var displayName = displayExprDelegate.DynamicInvoke(new object[] { item }) as string;
-                            lookUpFields.Add(new LookUpField()
-                            {
-                                Key = new Dictionary<string, object>() { { keyFieldName, keyValue } },
-                                DisplayName = displayName
-                            });
+                            var keyValue = entityLookupExprKeyDelegate.DynamicInvoke(new object[] {item});
+                            var displayName = displayExprDelegate.DynamicInvoke(new object[] {item}) as string;
+                            lookUpFields.Add(new LookUpField() {Key = new Dictionary<string, object>() {{keyFieldName, keyValue}}, DisplayName = displayName});
                         }
 
                         return lookUpFields;
-                    };
-                    adminConfig.LookUps.Add(relatedFiled.FieldOption.RelatedModelType.Name, masterDataDelegate);
+                    }
+
+                    adminConfig.LookUps.Add(relatedFiled.FieldOption.LookupModelType.Name, MasterDataDelegate);
                 }
             }
         }

@@ -27,7 +27,7 @@ namespace Deviser.Admin.Config
         [JsonConverter(typeof(StringEnumConverter))]
         public FormMode EnableIn { get; set; } = FormMode.Both;
 
-        public List<RelatedField> RelatedFields { get; set; }
+        //public List<RelatedField> RelatedFields { get; set; }
         public bool IsHidden { get; set; }
         public bool IsReadOnly { get; set; }
         public bool? IsRequired { get; set; }
@@ -42,20 +42,27 @@ namespace Deviser.Admin.Config
         public RelationType RelationType { get; set; }
 
         [JsonConverter(typeof(TypeJsonConverter))]
-        public Type RelatedModelType { get; set; }
+        public Type LookupModelType { get; set; }
 
-        public string RelatedModelTypeCamelCase => RelatedModelType?.Name?.Camelize();
+        public string LookupModelTypeCamelCase => LookupModelType?.Name?.Camelize();
 
         [JsonIgnore]
         //public Expression<Func<object, string>> RelatedEntityDisplayExpression { get; set; }
-        public LambdaExpression RelatedModelDisplayExpression { get; set; }
+        public LambdaExpression LookupDisplayExpression { get; set; }
 
         [JsonIgnore]
-        public LambdaExpression RelatedModelLookupExpression { get; set; }
+        public LambdaExpression LookupExpression { get; set; }
 
         [JsonIgnore]
-        public LambdaExpression RelatedModelLookupKeyExpression { get; set; }
+        public LambdaExpression LookupKeyExpression { get; set; }
+        
+        [JsonIgnore]
+        public LambdaExpression LookupFilterExpression { get; set; }
 
+        public bool HasLookupFilter => LookupFilterExpression != null;
+
+        public Field LookupFilterField { get; set;  }
+        
         [JsonConverter(typeof(ExpressionJsonConverter))]
         public LambdaExpression ShowOn { get; set; }
 

@@ -184,9 +184,9 @@ namespace Deviser.Admin.Builders
 
             FieldOption fieldOption = new FieldOption();
             fieldOptionAction?.Invoke(fieldOption);
-            fieldOption.RelatedModelDisplayExpression = lookupDisplayExpression;
+            fieldOption.LookupDisplayExpression = lookupDisplayExpression;
             fieldOption.RelationType = releationType;
-            fieldOption.RelatedModelType = relatedModelType;
+            fieldOption.LookupModelType = relatedModelType;
 
             return new Field
             {

@@ -430,7 +430,7 @@ namespace Deviser.Admin.Web.Controllers
                 }
                 else //if (formType == "CustomForm")
                 {
-                    var result = await coreAdminService.ExecuteCustomFormAction(modelType, formName, fieldName, fieldObject);
+                    var result = await coreAdminService.ExecuteCustomFormCustomValidation(modelType, formName, fieldName, fieldObject);
                     if (result != null)
                     {
                         return Ok(result);
@@ -444,6 +444,57 @@ namespace Deviser.Admin.Web.Controllers
                 _logger.LogError($"Error occured while executing custom validation for field: {fieldName} in model: {model}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        [HttpPut]
+        [Route("modules/[area]/api/{model:required}/lookup/{formType:required}/field/{fieldName:required}")]
+        public async Task<IActionResult> GetLookupFor(string model, string formType, string formName, string fieldName,
+            [FromBody]object filterParam)
+        {
+            ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+            var modelType = coreAdminService.GetModelType(model);
+            if (modelType == null)
+            {
+                return BadRequest($"Model {model} is not found");
+            }
+
+            if (string.IsNullOrEmpty(formType))
+            {
+                return BadRequest($"formType is required");
+            }
+
+            if (formType == "MainForm")
+            {
+                var result = await coreAdminService.GetLookUpForMainForm(modelType, fieldName, filterParam);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+            }
+
+            if (string.IsNullOrEmpty(formName))
+            {
+                return BadRequest($"formName is required for ChildForm and CustomForm");
+            }
+
+            if (formType == "ChildForm")
+            {
+                var result = await coreAdminService.GetLookUpForChildForm(modelType, formName, fieldName, filterParam);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+            }
+            else //if (formType == "CustomForm")
+            {
+                var result = await coreAdminService.GetLookUpForCustomForm(modelType, formName, fieldName, filterParam);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+            }
+
+            return NotFound();
         }
     }
 }

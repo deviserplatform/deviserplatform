@@ -6,9 +6,9 @@
 
     <div *ngFor="let fieldRow of formContext.formConfig.fieldConfig.fields" class="form-row">
       <ng-container *ngFor="let field of fieldRow">
-        <fieldset class="form-group col" [disabled]="!isFieldEnabled(field)" *ngIf="isFieldShown(field)">
-          <app-form-control [form]="formContext.formGroup" [field]="field" [isShown]="isFieldShown(field)" [formName]="formContext.formName"
-            [isDisabled]="!isFieldEnabled(field)" [isValidate]="isFieldValidate(field)" [lookUps]="formContext.lookUps" [formType]="formContext.formType">
+        <fieldset class="form-group col" [disabled]="!(field.isEnabled | async)" *ngIf="field.isShown | async">
+          <app-form-control [form]="formContext.formGroup" [field]="field" [isShown]="field.isShown | async" [formName]="formContext.formName"
+            [isDisabled]="!(field.isEnabled | async)" [isValidate]="field.isValidate | async" [lookUps]="formContext.lookUps" [formType]="formContext.formType">
           </app-form-control>
           <!-- <pre>{{field|json}}</pre> -->
         </fieldset>

@@ -9,6 +9,7 @@ import { Pagination } from '../domain-types/pagination';
 import { AdminConfig } from '../domain-types/admin-config';
 import { WINDOW } from './window.service';
 import { DAConfig } from '../domain-types/da-config';
+import { FormType } from '../domain-types/form-type';
 
 @Injectable({
   providedIn: 'root'
@@ -76,6 +77,15 @@ export class AdminService {
     return this.http.get<any>(serviceUrl)
       .pipe(
         tap(_ => this.log(`fetched a record for id: ${id}`)),
+        catchError(this.handleError('getAllRecords', null))
+      );
+  }
+
+  getLookUp(formType: FormType, formName: string, fieldName: string, filterParam: any){
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/lookup/${formType}/field/${fieldName}`;
+    return this.http.put<any>(serviceUrl, filterParam, this.httpOptions)
+      .pipe(
+        tap(_ => this.log(`fetched lookup`)),
         catchError(this.handleError('getAllRecords', null))
       );
   }

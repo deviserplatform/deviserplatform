@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -135,13 +137,13 @@ namespace Deviser.Admin.Services
         {
             return await CallGenericMethod(nameof(UpdateItem), new Type[] { modelType }, new object[] { item });
         }
-        
+
         public async Task<ValidationResult> ExecuteMainFormCustomValidation(Type modelType, string fieldName, object fieldObject)
         {
             var adminConfig = GetAdminConfig(modelType);
             var field = adminConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f =>
                 string.Equals(f.FieldName, fieldName, StringComparison.InvariantCultureIgnoreCase));
-            
+
             return await CustomValidation(fieldObject, field);
         }
 
@@ -179,8 +181,67 @@ namespace Deviser.Admin.Services
 
             var field = customForm.FormConfig.AllFormFields.FirstOrDefault(f =>
                 string.Equals(f.FieldName, fieldName, StringComparison.InvariantCultureIgnoreCase));
-            
+
             return await CustomValidation(fieldObject, field);
+        }
+
+        public async Task<ICollection<LookUpField>> GetLookUpForMainForm(Type modelType, string fieldName, object filterParam)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+            var relatedFiled = adminConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
+            return await GetLookUpFields(filterParam, relatedFiled);
+        }
+
+        public async Task<ICollection<LookUpField>> GetLookUpForChildForm(Type modelType, string formName, string fieldName, object filterParam)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+            var childConfig = adminConfig.ChildConfigs.FirstOrDefault(c =>
+                c.ModelConfig.FormConfig.AllFormFields.Any(f => f.FieldName == fieldName));
+
+            if (childConfig == null) return await Task.FromResult<ICollection<LookUpField>>(null);
+
+
+            var relatedField = childConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
+            return await GetLookUpFields(filterParam, relatedField);
+        }
+
+        public async Task<ICollection<LookUpField>> GetLookUpForCustomForm(Type modelType, string formName,
+            string fieldName, object filterParam)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+
+            formName = formName.Pascalize();
+            var customForm = adminConfig.ModelConfig.CustomForms[formName];
+
+            if (customForm == null) return await Task.FromResult<ICollection<LookUpField>>(null);
+
+            var relatedField = customForm.FormConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
+            return await GetLookUpFields(filterParam, relatedField);
+        }
+
+        private async Task<ICollection<LookUpField>> GetLookUpFields(object filterParam, Field relatedField)
+        {
+            var lookUpFields = new List<LookUpField>();
+
+            var entityLookupExprDelegate = relatedField.FieldOption.LookupExpression.Compile();
+            var entityLookupExprKeyDelegate = relatedField.FieldOption.LookupKeyExpression.Compile();
+            var displayExprDelegate = relatedField.FieldOption.LookupDisplayExpression.Compile();
+            var keyFieldName = ReflectionExtensions.GetMemberName(relatedField.FieldOption.LookupKeyExpression);
+
+            var lookupFilterFieldType = relatedField.FieldOption.LookupFilterField.FieldClrType;
+            var filterParamTyped = (filterParam.GetType() == lookupFilterFieldType) ? Convert.ChangeType(filterParam, lookupFilterFieldType) : ((JObject)filterParam).ToObject(lookupFilterFieldType);
+
+            var items = entityLookupExprDelegate.DynamicInvoke(new object[] { _serviceProvider, filterParamTyped }) as IList;
+
+            foreach (var item in items)
+            {
+                var keyValue = entityLookupExprKeyDelegate.DynamicInvoke(new object[] { item });
+                var displayName = displayExprDelegate.DynamicInvoke(new object[] { item }) as string;
+                lookUpFields.Add(new LookUpField()
+                { Key = new Dictionary<string, object>() { { keyFieldName, keyValue } }, DisplayName = displayName });
+            }
+
+            return await Task.FromResult(lookUpFields);
         }
 
         private async Task<ValidationResult> CustomValidation(object fieldObject, Field field)
@@ -191,9 +252,9 @@ namespace Deviser.Admin.Services
                 return null;
             }
 
-            var fieldValue = (fieldObject.GetType() == field.FieldClrType)? Convert.ChangeType(fieldObject, field.FieldClrType) : ((JObject) fieldObject).ToObject(field.FieldClrType);
+            var fieldValue = (fieldObject.GetType() == field.FieldClrType) ? Convert.ChangeType(fieldObject, field.FieldClrType) : ((JObject)fieldObject).ToObject(field.FieldClrType);
             var validationDelegate = field.FieldOption.ValidationExpression.Compile();
-            var result = await (dynamic) validationDelegate.DynamicInvoke(_serviceProvider, fieldValue) as ValidationResult;
+            var result = await (dynamic)validationDelegate.DynamicInvoke(_serviceProvider, fieldValue) as ValidationResult;
             return result;
         }
 

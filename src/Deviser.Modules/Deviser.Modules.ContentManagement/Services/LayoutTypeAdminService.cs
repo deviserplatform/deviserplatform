@@ -55,12 +55,11 @@ namespace Deviser.Modules.ContentManagement.Services
 
         private void ParseLayoutTypeIds(LayoutType result)
         {
-            if (!string.IsNullOrEmpty(result.LayoutTypeIds))
-            {
-                var layoutTypes = _layoutTypeRepository.GetLayoutTypes();
-                var layoutTypeIds = result.LayoutTypeIds.Split(",").Select(li => Guid.Parse(li)).ToList();
-                result.AllowedLayoutTypes = layoutTypes.Where(lt => layoutTypeIds.Contains(lt.Id)).ToList();
-            }
+            if (string.IsNullOrEmpty(result.LayoutTypeIds)) return;
+
+            var layoutTypes = _layoutTypeRepository.GetLayoutTypes();
+            var layoutTypeIds = result.LayoutTypeIds.Split(",").Select(li => Guid.Parse(li)).ToList();
+            result.AllowedLayoutTypes = layoutTypes.Where(lt => layoutTypeIds.Contains(lt.Id)).ToList();
         }
 
         public async Task<LayoutType> CreateItem(LayoutType layoutType)

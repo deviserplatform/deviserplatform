@@ -59,9 +59,9 @@ export class AdminFormComponent implements OnInit {
       const adminConfig$ = this.adminService.getAdminConfig();
       const record$ = this.adminService.getRecord(id);
       forkJoin([adminConfig$, record$]).subscribe(results => {
-        this.record = results[1];        
+        this.record = results[1];
         this.onGetAdminConfig(results[0]);
-      }, error=>{
+      }, error => {
         let alert: Alert = {
           alterType: AlertType.Error,
           message: "Unable to get this item, please contact administrator",
@@ -102,7 +102,7 @@ export class AdminFormComponent implements OnInit {
       }
 
 
-      this.adminForm = this.formControlService.toFormGroup(adminConfig, this.formMode, this.record);
+      this.adminForm = this.formControlService.toFormGroup(adminConfig, this.formMode);
       this.formTabs.push({
         formGroup: this.adminForm,
         formConfig: this.adminConfig.modelConfig.formConfig,
@@ -117,7 +117,7 @@ export class AdminFormComponent implements OnInit {
       if (this.formMode == FormMode.Update && this.adminConfig.modelConfig.customForms) {
         for (let customFormName in this.adminConfig.modelConfig.customForms) {
           let customForm = this.adminConfig.modelConfig.customForms[customFormName];
-          let customFormGroup = this.formControlService.toFormGroupWithFormConfig(customForm.formConfig, this.formMode, customForm.keyField, this.record);
+          let customFormGroup = this.formControlService.toFormGroupWithFormConfig(customForm.formConfig, this.formMode, customForm.keyField);
           this.formTabs.push({
             formGroup: customFormGroup,
             formConfig: customForm.formConfig,
@@ -130,6 +130,12 @@ export class AdminFormComponent implements OnInit {
           });
         }
       }
+
+      setTimeout(() => {
+        if (this.record) {
+          this.patchFormValue(this.record);
+        }
+      });
     }
   }
 
@@ -138,10 +144,10 @@ export class AdminFormComponent implements OnInit {
     console.warn(this.adminForm.value);
     if (this.formMode === FormMode.Create) {
       this.adminService.createRecord(this.adminForm.value)
-        .subscribe(formValue => this.patchFormValue(formValue));
+        .subscribe(formValue => this.onMainCreateOrUpdate(formValue));
     } else if (this.formMode === FormMode.Update) {
       this.adminService.updateRecord(this.adminForm.value)
-        .subscribe(formValue => this.patchFormValue(formValue));
+        .subscribe(formValue => this.onMainCreateOrUpdate(formValue));
     }
   }
 
@@ -180,10 +186,16 @@ export class AdminFormComponent implements OnInit {
     }
   }
 
+  onMainCreateOrUpdate(formValue: any){
+    this.patchFormValue(formValue)
+    if(formValue){
+      this.goBack();
+    }
+  }
+
   patchFormValue(formValue: any): void {
     if (formValue) {
-      this.adminForm.patchValue(formValue);
-      this.goBack();
+      this.adminForm.patchValue(formValue);      
     }
     else {
       let alert: Alert = {

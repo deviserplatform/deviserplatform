@@ -40,7 +40,7 @@ export class FormControlService {
     return this.fb.group(formObj);
   }
 
-  toFormGroupWithFormConfig(formConfig: FormConfig, formMode: FormMode, keyField: KeyField, record: any) {
+  toFormGroupWithFormConfig(formConfig: FormConfig, formMode: FormMode, keyField: KeyField, record: any = null) {
     let formObj: any = {};
     formObj = this.buildAndGetFormGroup(formConfig, formMode, keyField, formObj, record);
     return this.fb.group(formObj);

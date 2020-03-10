@@ -12,12 +12,14 @@ namespace Deviser.Admin.Builders
     public class PropertyBuilder<TModel>
         where TModel : class
     {
+        private readonly IFormConfig _formConfig;
         private readonly FieldConditions _fieldConditions;
         private readonly LambdaExpression _fieldExpression;
         private readonly Field _field;
 
         public PropertyBuilder(IFormConfig formConfig, LambdaExpression fieldExpression)
         {
+            _formConfig = formConfig;
             _fieldConditions = formConfig.FieldConditions;
             _fieldExpression = fieldExpression;
             var fieldName = ReflectionExtensions.GetMemberName(fieldExpression);
@@ -61,15 +63,37 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public PropertyBuilder<TModel> HasLookup<TRelatedEntity, TProperty>(
-            Expression<Func<IServiceProvider, IList<TRelatedEntity>>> lookupExpression,
-            Expression<Func<TRelatedEntity, TProperty>> lookUpKeyExpression,
-            Expression<Func<TRelatedEntity, string>> lookupDisplayExpression)
-            where TRelatedEntity : class
+        public PropertyBuilder<TModel> HasLookup<TRelatedModel, TProperty>(
+            Expression<Func<IServiceProvider, IList<TRelatedModel>>> lookupExpression,
+            Expression<Func<TRelatedModel, TProperty>> lookUpKeyExpression,
+            Expression<Func<TRelatedModel, string>> lookupDisplayExpression)
+            where TRelatedModel : class
         {
-            _field.FieldOption.RelatedModelLookupExpression = lookupExpression;
-            _field.FieldOption.RelatedModelLookupKeyExpression = lookUpKeyExpression;
-            _field.FieldOption.RelatedModelDisplayExpression = lookupDisplayExpression;
+            _field.FieldOption.LookupExpression = lookupExpression;
+            _field.FieldOption.LookupKeyExpression = lookUpKeyExpression;
+            _field.FieldOption.LookupDisplayExpression = lookupDisplayExpression;
+            return this;
+        }
+
+        public PropertyBuilder<TModel> HasLookup<TRelatedModel, TProperty, TFilterProperty>(
+            Expression<Func<IServiceProvider, TFilterProperty, IList<TRelatedModel>>> lookupExpression,
+            Expression<Func<TRelatedModel, TProperty>> lookUpKeyExpression,
+            Expression<Func<TRelatedModel, string>> lookupDisplayExpression,
+            Expression<Func<TModel, TFilterProperty>> lookupFilterExpression)
+            where TRelatedModel : class
+        {
+            var filterFieldName = ReflectionExtensions.GetMemberName(lookupFilterExpression);
+            var filterField = _formConfig.AllFormFields.FirstOrDefault(f => f.FieldName == filterFieldName);
+            if (filterField == null)
+            {
+                throw new InvalidOperationException(Resources.FieldNotFoundInvaidOperation);
+            }
+
+            _field.FieldOption.LookupExpression = lookupExpression;
+            _field.FieldOption.LookupKeyExpression = lookUpKeyExpression;
+            _field.FieldOption.LookupDisplayExpression = lookupDisplayExpression;
+            _field.FieldOption.LookupFilterExpression = lookupFilterExpression;
+            _field.FieldOption.LookupFilterField = filterField;
             return this;
         }
 
