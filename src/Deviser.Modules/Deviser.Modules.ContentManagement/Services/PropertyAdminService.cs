@@ -40,18 +40,23 @@ namespace Deviser.Modules.ContentManagement.Services
         public async Task<Property> GetItem(string itemId)
         {
             var result = _propertyRepository.GetProperty(Guid.Parse(itemId));
+            ParseResult(result);
             return await Task.FromResult(result);
         }
 
         public async Task<Property> CreateItem(Property item)
         {
+            ParseProperty(item);
             var result = _propertyRepository.CreateProperty(item);
+            ParseResult(result);
             return await Task.FromResult(result);
         }
 
         public async Task<Property> UpdateItem(Property item)
         {
+            ParseProperty(item);
             var result = _propertyRepository.UpdateProperty(item);
+            ParseResult(result);
             return await Task.FromResult(result);
         }
 
@@ -84,6 +89,17 @@ namespace Deviser.Modules.ContentManagement.Services
         {
             var result = _propertyRepository.IsPropertyExist(propertyName) ? ValidationResult.Failed(new ValidationError() { Code = "LayoutType available!", Description = "LayoutType already exist" }) : ValidationResult.Success;
             return await Task.FromResult(result);
+        }
+
+        private static void ParseResult(Property result)
+        {
+            result.DefaultValuePropertyOption =
+                result.OptionList?.List?.FirstOrDefault(li => li.Id == Guid.Parse(result.DefaultValue));
+        }
+
+        private static void ParseProperty(Property item)
+        {
+            item.DefaultValue = item.DefaultValuePropertyOption.Id.ToString();
         }
     }
 }

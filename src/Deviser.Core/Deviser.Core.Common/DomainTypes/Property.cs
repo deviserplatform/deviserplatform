@@ -39,7 +39,8 @@ namespace Deviser.Core.Common.DomainTypes
                 return option;
             }
         }
-        [JsonIgnore]
+        
+        
         public bool IsMoreOption
         {
             get

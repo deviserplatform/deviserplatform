@@ -68,7 +68,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   }
 
   ngOnDestroy() {
-    if(this.valChangeSubscription){
+    if (this.valChangeSubscription) {
       this.valChangeSubscription.unsubscribe();
     }
   }
@@ -108,7 +108,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
       let isEnabled = this.isFieldEnabled(field);
       let isShown = this.isFieldShown(field);
       let isValidate = this.isFieldValidate(field);
-      this.onIsValidateChange(field, isEnabled, isShown, isValidate);
+
       setTimeout(() => {
         field.isEnabledSubject.next(isEnabled);
       });
@@ -119,6 +119,10 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
 
       setTimeout(() => {
         field.isValidateSubject.next(isValidate);
+      });
+
+      setTimeout(() => {
+        this.onIsValidateChange(field, isEnabled, isShown, isValidate);
       });
     })
   }
@@ -226,10 +230,12 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
       }
     }
     else {
-      formControl.setValidators(null);
+      // formControl.setValidators(null);
+      formControl.clearValidators();
 
       if (formControl.asyncValidator && formControl.asyncValidator.length > 0) {
-        formControl.setAsyncValidators(null);
+        // formControl.setAsyncValidators(null);
+        formControl.clearAsyncValidators();
       }
 
     }

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/cor
 import { FormGroup, FormControl, Validators, ValidatorFn, AsyncValidatorFn } from '@angular/forms';
 import { Field } from '../common/domain-types/field';
 import { FieldType } from '../common/domain-types/field-type';
-import { repeat } from 'rxjs/operators';
+import { repeat, pairwise, startWith } from 'rxjs/operators';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { ValidationType } from '../common/domain-types/validation-type';
 import { EmailExistValidator } from '../common/validators/async-email-exist.validator';
@@ -44,9 +44,9 @@ export class FormControlComponent implements OnInit {
 
   // _lookUpData: any[];
   Editor = ClassicEditor;
-  
+
   private valChangeSubscription: Subscription;
-  
+
   constructor(private emailExistValidator: EmailExistValidator,
     private adminService: AdminService,
     private passwordValidator: PasswordValidator,
@@ -62,14 +62,17 @@ export class FormControlComponent implements OnInit {
     if (this.field && this.field.fieldOption && this.field.fieldOption.hasLookupFilter) {
       console.log(this.field.fieldOption);
       let filterFormCtrl = this.form.get(this.field.fieldOption.lookupFilterField.fieldNameCamelCase);
-      this.valChangeSubscription = filterFormCtrl.valueChanges.subscribe(val => {
-        // console.log(val);
-        this.adminService.getLookUp(this.formType, this.formName, this.field.fieldName, val)
-          .subscribe(lookupResult => {
-            // console.log(lookupResult);
-            this.parseControlValue(lookupResult);
-          });
-      });
+      this.valChangeSubscription = filterFormCtrl.valueChanges
+        .pipe(startWith(null), pairwise())
+        .subscribe(([prev, next]: [any, any]) => {
+          let val = next ? next : prev;
+          console.log(val);
+          this.adminService.getLookUp(this.formType, this.formName, this.field.fieldName, val)
+            .subscribe(lookupResult => {
+              // console.log(lookupResult);
+              this.parseControlValue(lookupResult);
+            });
+        });
     }
     else {
       this.parseControlValue(null);
@@ -77,7 +80,7 @@ export class FormControlComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    if(this.valChangeSubscription){
+    if (this.valChangeSubscription) {
       this.valChangeSubscription.unsubscribe();
     }
   }
@@ -168,7 +171,12 @@ export class FormControlComponent implements OnInit {
 
         let patchVal: any = {};
         patchVal[this.field.fieldNameCamelCase] = selectedItems;
-        this.form.patchValue(patchVal);
+
+        setTimeout(() => {
+          this.form.patchValue(patchVal);  
+        });
+
+        
       }
 
       this.lookUpDataSubject.next(lookUp);
@@ -210,7 +218,11 @@ export class FormControlComponent implements OnInit {
         //controlVal.displayName = masterItem.displayName; //Not required, since selected item is patched directly
         let patchVal: any = {};
         patchVal[this.field.fieldNameCamelCase] = masterItem;
-        this.form.patchValue(patchVal);
+        
+        setTimeout(() => {
+          this.form.patchValue(patchVal);  
+        });
+
       }
 
       this.lookUpDataSubject.next(lookUp);

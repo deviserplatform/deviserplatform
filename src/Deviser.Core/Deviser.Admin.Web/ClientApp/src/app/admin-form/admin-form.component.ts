@@ -102,7 +102,7 @@ export class AdminFormComponent implements OnInit {
       }
 
 
-      this.adminForm = this.formControlService.toFormGroup(adminConfig, this.formMode);
+      this.adminForm = this.formControlService.toFormGroup(adminConfig, this.formMode, this.record);
       this.formTabs.push({
         formGroup: this.adminForm,
         formConfig: this.adminConfig.modelConfig.formConfig,
@@ -117,7 +117,7 @@ export class AdminFormComponent implements OnInit {
       if (this.formMode == FormMode.Update && this.adminConfig.modelConfig.customForms) {
         for (let customFormName in this.adminConfig.modelConfig.customForms) {
           let customForm = this.adminConfig.modelConfig.customForms[customFormName];
-          let customFormGroup = this.formControlService.toFormGroupWithFormConfig(customForm.formConfig, this.formMode, customForm.keyField);
+          let customFormGroup = this.formControlService.toFormGroupWithFormConfig(customForm.formConfig, this.formMode, customForm.keyField, this.record);
           this.formTabs.push({
             formGroup: customFormGroup,
             formConfig: customForm.formConfig,
@@ -131,11 +131,11 @@ export class AdminFormComponent implements OnInit {
         }
       }
 
-      setTimeout(() => {
-        if (this.record) {
-          this.patchFormValue(this.record);
-        }
-      });
+      // setTimeout(() => {
+      //   if (this.record) {
+      //     this.patchFormValue(this.record);
+      //   }
+      // });
     }
   }
 
