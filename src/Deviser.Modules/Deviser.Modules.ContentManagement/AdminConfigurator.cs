@@ -89,13 +89,18 @@ namespace Deviser.Modules.ContentManagement
 
                 modelBuilder.GridBuilder
                     .AddField(p => p.Label)
-                    .AddField(p => p.Name);
+                    .AddField(p => p.Name)
+                    .AddField(p => p.IsActiveText, option => option.DisplayName = "Is Active");
+
+                modelBuilder.GridBuilder.DisplayFieldAs(c => c.IsActiveText, LabelType.Badge, c => c.IsActiveBadgeClass);
 
                 modelBuilder.FormBuilder
                     .AddKeyField(p => p.Id)
                     .AddField(p => p.Label)
                     .AddField(p => p.Name, option => { option.EnableIn = FormMode.Create; })
                     .AddField(p => p.Description, option => { option.FieldType = FieldType.TextArea; })
+                    .AddField(p => p.IsActive)
+
                     .AddField(p => p.IsMoreOption)
                     .AddField(p => p.DefaultValue, option => { option.IsRequired = false; })
                     .AddSelectField(p => p.OptionList, p => p.Label, option => { option.IsRequired = false; })

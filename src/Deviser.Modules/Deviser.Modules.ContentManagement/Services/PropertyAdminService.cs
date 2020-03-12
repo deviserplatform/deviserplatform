@@ -18,7 +18,6 @@ namespace Deviser.Modules.ContentManagement.Services
         private readonly IPropertyRepository _propertyRepository;
 
         public PropertyAdminService(ILogger<PropertyAdminService> logger,
-            ILayoutTypeRepository layoutTypeRepository,
             IOptionListRepository optionListRepository,
             IPropertyRepository propertyRepository)
         {
@@ -87,19 +86,27 @@ namespace Deviser.Modules.ContentManagement.Services
 
         public async Task<ValidationResult> ValidatePropertyName(string propertyName)
         {
-            var result = _propertyRepository.IsPropertyExist(propertyName) ? ValidationResult.Failed(new ValidationError() { Code = "LayoutType available!", Description = "LayoutType already exist" }) : ValidationResult.Success;
+            var result = _propertyRepository.IsPropertyExist(propertyName) ? ValidationResult.Failed(new ValidationError() { Code = "Property available!", Description = "Property already exist" }) : ValidationResult.Success;
             return await Task.FromResult(result);
         }
 
         private static void ParseResult(Property result)
         {
-            result.DefaultValuePropertyOption =
-                result.OptionList?.List?.FirstOrDefault(li => li.Id == Guid.Parse(result.DefaultValue));
+            if (!string.IsNullOrEmpty(result.DefaultValue))
+            {
+                result.DefaultValuePropertyOption =
+                    result.OptionList?.List?.FirstOrDefault(li => li.Id == Guid.Parse(result.DefaultValue));
+            }
         }
 
         private static void ParseProperty(Property item)
         {
-            item.DefaultValue = item.DefaultValuePropertyOption.Id.ToString();
+            item.OptionListId = item.OptionList?.Id;
+            item.OptionList = null;
+            if (item.DefaultValuePropertyOption != null)
+            {
+                item.DefaultValue = item.DefaultValuePropertyOption.Id.ToString();
+            }
         }
     }
 }

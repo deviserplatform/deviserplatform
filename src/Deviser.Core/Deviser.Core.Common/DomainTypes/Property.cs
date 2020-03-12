@@ -54,6 +54,8 @@ namespace Deviser.Core.Common.DomainTypes
         public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }
+        public string IsActiveText => IsActive ? "Active" : "In Active";
+        public string IsActiveBadgeClass => IsActive ? "badge-primary" : "badge-secondary";
 
         public override string ToString()
         {

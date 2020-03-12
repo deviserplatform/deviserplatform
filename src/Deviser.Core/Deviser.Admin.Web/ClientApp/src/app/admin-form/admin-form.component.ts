@@ -70,6 +70,7 @@ export class AdminFormComponent implements OnInit {
         this.alerts.push(alert);
       });
     } else if (this.formMode === FormMode.Create) {
+      this.record = {};
       this.adminService.getAdminConfig()
         .subscribe(adminConfig => this.onGetAdminConfig(adminConfig));
     }
@@ -131,11 +132,11 @@ export class AdminFormComponent implements OnInit {
         }
       }
 
-      // setTimeout(() => {
-      //   if (this.record) {
-      //     this.patchFormValue(this.record);
-      //   }
-      // });
+      setTimeout(() => {
+        if (this.record) {
+          this.patchFormValue(this.record);
+        }
+      });
     }
   }
 
