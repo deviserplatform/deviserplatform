@@ -24,6 +24,7 @@ namespace Deviser.Modules.ContentManagement
             services.AddScoped<ContentTypeAdminService>();
             services.AddScoped<LayoutTypeAdminService>();
             services.AddScoped<PropertyAdminService>();
+            services.AddScoped<OptionListAdminService>();
         }
     }
 }

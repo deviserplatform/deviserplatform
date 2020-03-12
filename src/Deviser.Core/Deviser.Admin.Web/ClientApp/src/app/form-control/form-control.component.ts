@@ -102,7 +102,7 @@ export class FormControlComponent implements OnInit {
   parseControlValue(lookUpGeneric: any) {
     if (this.field && this.field.fieldOption && this.field.fieldOption.relationType) {
 
-      if (!lookUpGeneric) {
+      if (!lookUpGeneric && (this.field.fieldOption.relationType == RelationType.ManyToMany || this.field.fieldOption.relationType == RelationType.ManyToOne)) {
         lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.lookupModelTypeCamelCase];
       }
 
@@ -173,10 +173,10 @@ export class FormControlComponent implements OnInit {
         patchVal[this.field.fieldNameCamelCase] = selectedItems;
 
         setTimeout(() => {
-          this.form.patchValue(patchVal);  
+          this.form.patchValue(patchVal);
         });
 
-        
+
       }
 
       this.lookUpDataSubject.next(lookUp);
@@ -218,9 +218,9 @@ export class FormControlComponent implements OnInit {
         //controlVal.displayName = masterItem.displayName; //Not required, since selected item is patched directly
         let patchVal: any = {};
         patchVal[this.field.fieldNameCamelCase] = masterItem;
-        
+
         setTimeout(() => {
-          this.form.patchValue(patchVal);  
+          this.form.patchValue(patchVal);
         });
 
       }

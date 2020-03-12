@@ -79,7 +79,7 @@ namespace Deviser.Core.Data.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error occured while checking whether property Property by id", ex);
+                _logger.LogError("Error occured while checking whether property Property by propertyName", ex);
             }
             return false;
         }

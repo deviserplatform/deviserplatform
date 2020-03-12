@@ -132,6 +132,40 @@ namespace Deviser.Modules.ContentManagement
                         sp.GetService<PropertyAdminService>().ValidatePropertyName(propertyName));
             });
 
+            adminBuilder.Register<OptionList, OptionListAdminService>(modelBuilder =>
+            {
+                modelBuilder.AdminTitle = "Option List";
+
+                modelBuilder.GridBuilder
+                    .AddField(p => p.Label)
+                    .AddField(p => p.Name)
+                    .AddField(p => p.IsActiveText, option => option.DisplayName = "Is Active");
+
+                modelBuilder.GridBuilder.DisplayFieldAs(c => c.IsActiveText, LabelType.Badge, c => c.IsActiveBadgeClass);
+
+                modelBuilder.FormBuilder
+                    .AddKeyField(p => p.Id)
+                    .AddField(p => p.Label)
+                    .AddField(p => p.Name, option => { option.EnableIn = FormMode.Create; })
+                    .AddField(p => p.IsActive);
+
+                modelBuilder.AddChildConfig(s => s.List, (childForm) =>
+                {
+                    childForm.GridBuilder
+                        .AddField(c => c.Name)
+                        .AddField(c => c.Label);
+
+                    childForm.FormBuilder
+                        .AddKeyField(c => c.Id)
+                        .AddField(c => c.Name)
+                        .AddField(c => c.Label);
+                });
+
+                modelBuilder.FormBuilder.SetCustomValidationFor(p => p.Name,
+                    (sp, propertyName) =>
+                        sp.GetService<OptionListAdminService>().ValidatePropertyName(propertyName));
+            });
+
 
         }
     }
