@@ -8,9 +8,12 @@ namespace Deviser.Admin
     public interface IAdminBuilder
     {
         MapperConfiguration MapperConfiguration { get; set; }
-        AdminBuilder Register<TEntity>(Action<ModelBuilder<TEntity>> modelBuilderAction = null) where TEntity : class;
-        AdminBuilder Register<TEntity, TAdminService>(Action<ModelBuilder<TEntity>> modelBuilderAction = null)
-           where TEntity : class
-           where TAdminService : IAdminService<TEntity>;
+        AdminBuilder Register<TModel>(Action<ModelBuilder<TModel>> modelBuilderAction = null) where TModel : class;
+        AdminBuilder Register<TModel, TAdminService>(Action<ModelBuilder<TModel>> modelBuilderAction = null)
+           where TModel : class
+           where TAdminService : IAdminService<TModel>;
+        AdminBuilder RegisterForm<TModel, TAdminService>(Action<FormBuilder<TModel>> formBuilderAction = null)
+            where TModel : class
+            where TAdminService : IAdminFormService<TModel>;
     }
 }

@@ -10,6 +10,7 @@ using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Deviser.Core.Library.Services;
 
 namespace Deviser.Core.Library.Middleware
 {
@@ -37,7 +38,8 @@ namespace Deviser.Core.Library.Middleware
             IPageManager pageManager,
             IModuleRepository moduleRepository,
             ISettingManager settingManager,
-            ILanguageRepository languageRepository)
+            ILanguageRepository languageRepository,
+            IScopeService scopeService)
         {
 
 
@@ -113,6 +115,8 @@ namespace Deviser.Core.Library.Middleware
                             httpContext.Items["PageContext"] = pageContext;
                         }
 
+                        scopeService.PageContext = pageContext;
+
                         object moduleName;
                         object pageModuleId;
                         var moduleContext = new ModuleContext();
@@ -145,6 +149,8 @@ namespace Deviser.Core.Library.Middleware
                             {
                                 httpContext.Items["ModuleContext"] = moduleContext;
                             }
+
+                            scopeService.ModuleContext = moduleContext;
                         }
                     }
                     catch (Exception ex)

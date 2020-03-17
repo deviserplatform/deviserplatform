@@ -82,7 +82,7 @@ namespace Deviser.Web.DependencyInjection
             services.AddScoped<IActionInvoker, ActionInvoker>();
             services.AddScoped<ITypeActivatorCache, TypeActivatorCache>();
             //builder.RegisterType<ModuleInvokerProvider>().As<IModuleInvokerProvider>();
-            
+
 
             services.AddTransient<ILayoutRepository, LayoutRepository>();
             services.AddTransient<ILayoutTypeRepository, LayoutTypeRepository>();
@@ -155,6 +155,35 @@ namespace Deviser.Web.DependencyInjection
                         googleOptions.ClientSecret = googleClientSecret;
                     });
                 }
+                //var settingManager = InternalServiceProvider.Instance.ServiceProvider.GetService<ISettingManager>(); //sp.GetService<ISiteSettingRepository>()
+                //var siteSettings = settingManager.GetSiteSetting();
+
+                //if (siteSettings.EnableFacebookAuth)
+                //{
+                //    services.AddAuthentication().AddFacebook(facebookOptions =>
+                //    {
+                //        facebookOptions.AppId = siteSettings.FacebookAppId;
+                //        facebookOptions.AppSecret = siteSettings.FacebookAppSecret;
+                //    });
+                //}
+
+                //if (siteSettings.EnableTwitterAuth)
+                //{
+                //    services.AddAuthentication().AddTwitter(facebookOptions =>
+                //    {
+                //        facebookOptions.ConsumerKey = siteSettings.TwitterConsumerKey;
+                //        facebookOptions.ConsumerSecret = siteSettings.TwitterConsumerSecret;
+                //    });
+                //}
+
+                //if (siteSettings.EnableGoogleAuth)
+                //{
+                //    services.AddAuthentication().AddGoogle(facebookOptions =>
+                //    {
+                //        facebookOptions.ClientId = siteSettings.GoogleClientId;
+                //        facebookOptions.ClientSecret = siteSettings.GoogleClientSecret;
+                //    });
+                //}
             }
 
             RegisterModuleDependencies(services);
@@ -207,9 +236,9 @@ namespace Deviser.Web.DependencyInjection
 
         private static void RegisterModuleDependencies(IServiceCollection serviceCollection)
         {
-            
+
             var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.EntryPointAssembly);
-            
+
             var moduleConfiguratorType = typeof(IModuleConfigurator);
             var moduleConfigurators = assemblies.GetDerivedTypeInfos(moduleConfiguratorType); //new List<TypeInfo>();
             var moduleRegistry = InternalServiceProvider.Instance.ServiceProvider.GetService<IModuleRegistry>();
@@ -240,7 +269,7 @@ namespace Deviser.Web.DependencyInjection
             if (moduleAssembly == null) throw new ArgumentNullException(nameof(moduleAssembly));
             var moduleDbContextDerivedTypes = moduleAssembly.GetDerivedTypeInfos(typeof(ModuleDbContext));
             var installationProvider = InternalServiceProvider.Instance.ServiceProvider.GetRequiredService<IInstallationProvider>();
-                
+
             if (moduleDbContextDerivedTypes.Count <= 0) return;
 
             foreach (var moduleDbContextType in moduleDbContextDerivedTypes)
@@ -278,7 +307,7 @@ namespace Deviser.Web.DependencyInjection
         private static void CallGenericMethod(string methodName, Type genericType, object[] parameters)
         {
             var getItemMethodInfo = typeof(DeviserPlatformServiceCollectionExtensions).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
-            
+
             if (getItemMethodInfo == null) return;
 
             var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericType);

@@ -55,17 +55,14 @@ namespace Deviser.Admin.Config
 
                 if (hasDbContext)
                 {
-                    using (var contextObj = (DbContext)serviceProvider.GetRequiredService(dbContextType))
-                    {
+                    using var contextObj = (DbContext)serviceProvider.GetRequiredService(dbContextType);
+                    adminSite = new AdminSite(serviceProvider, contextObj/*, serviceProvider.GetRequiredService<IModelMetadataProvider>()*/);
+                    adminBuilder = new AdminBuilder(adminSite);
 
-                        adminSite = new AdminSite(serviceProvider, contextObj/*, serviceProvider.GetRequiredService<IModelMetadataProvider>()*/);
-                        adminBuilder = new AdminBuilder(adminSite);
+                    if (!contextObj.Database.Exists())
+                        throw new InvalidOperationException($"Database is not exist for {dbContextType}, create a database and try again");
 
-                        if (!contextObj.Database.Exists())
-                            throw new InvalidOperationException($"Database is not exist for {dbContextType}, create a database and try again");
-
-                        ConfigureAdminSites(adminConfiguratorType, adminSite, adminBuilder);
-                    }
+                    ConfigureAdminSites(adminConfiguratorType, adminSite, adminBuilder);
                 }
                 else
                 {

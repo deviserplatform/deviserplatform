@@ -19,7 +19,10 @@ namespace Deviser.Admin
         public AdminBuilder Register<TEntity>(Action<ModelBuilder<TEntity>> modelBuilderAction = null)
             where TEntity : class
         {
-            var adminConfig = new AdminConfig<TEntity>();
+            var adminConfig = new AdminConfig<TEntity>()
+            {
+                AdminConfigType = AdminConfigType.GridAndForm
+            };
             BuildAdmin(adminConfig, modelBuilderAction);
             return this;
         }
@@ -30,8 +33,23 @@ namespace Deviser.Admin
             where TModel : class
             where TAdminService : IAdminService<TModel>
         {
-            var adminConfig = new AdminConfig<TModel> {AdminServiceType = typeof(TAdminService)};
+            var adminConfig = new AdminConfig<TModel>
+            {
+                AdminConfigType = AdminConfigType.GridAndForm,
+                AdminServiceType = typeof(TAdminService)
+            };
             BuildAdmin(adminConfig, modelBuilderAction);
+            return this;
+        }
+
+        public AdminBuilder RegisterForm<TModel, TAdminService>(Action<FormBuilder<TModel>> formBuilderAction = null)
+            where TModel : class where TAdminService : IAdminFormService<TModel>
+        {
+            var adminConfig = new AdminConfig<TModel>()
+            {
+                AdminConfigType = AdminConfigType.FormOnly,
+                AdminServiceType = typeof(TAdminService)
+            };
             return this;
         }
 

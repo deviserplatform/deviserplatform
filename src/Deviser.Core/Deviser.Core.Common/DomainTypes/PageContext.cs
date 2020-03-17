@@ -79,7 +79,7 @@ namespace Deviser.Core.Common.DomainTypes
         {
             get
             {
-                return SiteSettingInfo.SiteLanguage;
+                return SiteSettingInfo.SiteLanguage.CultureCode;
             }
         }
 

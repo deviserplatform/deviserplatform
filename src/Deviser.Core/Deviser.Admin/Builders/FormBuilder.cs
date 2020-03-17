@@ -25,7 +25,7 @@ namespace Deviser.Admin.Builders
         }
 
         public FormBuilder<TModel> AddFieldSet(string groupName,
-            Func<FieldBuilder<TModel>, FieldBuilder<TModel>> fieldBuilderAction, string cssClass = null, string description = null)
+            Action<FieldBuilder<TModel>> fieldBuilderAction, string cssClass = null, string description = null)
         {
             if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
                 throw new InvalidOperationException(Resources.AddRemoveInvalidOperation);

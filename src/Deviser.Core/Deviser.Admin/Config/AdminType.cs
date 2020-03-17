@@ -3,6 +3,6 @@
     public enum AdminType
     {
         Entity = 0,
-        Custom = 1,
+        Custom = 1
     }
 }

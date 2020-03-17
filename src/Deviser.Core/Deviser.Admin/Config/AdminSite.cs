@@ -80,11 +80,11 @@ namespace Deviser.Admin.Config
         public AdminSite(IServiceProvider serviceProvider, DbContext dbContext/*, IModelMetadataProvider modelMetadataProvider*/)
         {
             AdminType = AdminType.Entity;
-            if (dbContext == null)
-                throw new ArgumentNullException("Constructor paramater dbContent cannot be null");
+            
+             _dbContext = dbContext ?? throw new ArgumentNullException("Constructor paramater dbContent cannot be null");
 
             _serviceProvider = serviceProvider;
-            _dbContext = dbContext;
+            
             //_modelMetadataProvider = modelMetadataProvider;
             _dbContextType = _dbContext.GetType();
             AdminConfigs = new Dictionary<Type, IAdminConfig>();
@@ -741,7 +741,8 @@ namespace Deviser.Admin.Config
                         return lookUpFields;
                     }
 
-                    adminConfig.LookUps.Add(relatedFiled.FieldOption.LookupModelType.Name, MasterDataDelegate);
+                    //adminConfig.LookUps.Add(relatedFiled.FieldOption.LookupModelType.Name, MasterDataDelegate);
+                    adminConfig.LookUps.Add(relatedFiled.FieldName, MasterDataDelegate);
                 }
             }
         }

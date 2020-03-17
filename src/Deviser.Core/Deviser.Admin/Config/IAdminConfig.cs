@@ -8,6 +8,7 @@ namespace Deviser.Admin
 {
     public interface IAdminConfig : IAdminBaseConfig
     {
+        AdminConfigType AdminConfigType { get; set; }
         string AdminTitle { get; set; }
         Type AdminServiceType { get; set; }
 

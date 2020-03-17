@@ -9,7 +9,6 @@ namespace Deviser.Admin
         public IFormConfig FormConfig { get; }
         public IGridConfig GridConfig { get; }
         public KeyField KeyField { get; }
-        
 
         public ModelConfig()
         {
@@ -17,7 +16,6 @@ namespace Deviser.Admin
             FormConfig = new FormConfig();
             GridConfig = new GridConfig();
             KeyField = new KeyField();
-            
         }
     }
 }

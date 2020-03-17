@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 namespace Deviser.Admin.Config
 {
-    public interface IAdminService
-    {
+    //public interface IAdminService
+    //{
 
-    }
+    //}
 
-    public interface IAdminService<TModel> : IAdminService
+    public interface IAdminService<TModel> //: IAdminService
         where TModel : class
     {
         Task<PagedResult<TModel>> GetAll(int pageNo, int pageSize, string orderByProperties);
@@ -16,5 +16,12 @@ namespace Deviser.Admin.Config
         Task<TModel> CreateItem(TModel item);
         Task<TModel> UpdateItem(TModel item);
         Task<TModel> DeleteItem(string itemId);
+    }
+
+    public interface IAdminFormService<TModel>
+        where TModel : class
+    {
+        Task<TModel> GetModel();
+        Task<TModel> SaveModel(TModel item);
     }
 }

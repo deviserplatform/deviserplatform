@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Converters;
 
 namespace Deviser.Admin
 {
@@ -9,6 +10,9 @@ namespace Deviser.Admin
         where TModel : class
     {
         private string _adminTitle;
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public AdminConfigType AdminConfigType { get; set; }
 
         public string AdminTitle
         {

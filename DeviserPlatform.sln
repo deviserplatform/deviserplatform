@@ -67,7 +67,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Detached", "src\Dev
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Web", "src\Deviser.Web\Deviser.Web.csproj", "{076ACC63-8E9E-400A-BD54-E2DA3D33CB59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviserApp", "src\DeviserApp\DeviserApp.csproj", "{E808AB4B-8C15-4F09-B092-A96ABF23824F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviserApp", "src\DeviserApp\DeviserApp.csproj", "{E808AB4B-8C15-4F09-B092-A96ABF23824F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deviser.Core.Resources", "src\Deviser.Core\Deviser.Core.Resources\Deviser.Core.Resources.csproj", "{CD5144F7-E62B-420D-B296-AFA45DF4563A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -183,6 +185,10 @@ Global
 		{E808AB4B-8C15-4F09-B092-A96ABF23824F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E808AB4B-8C15-4F09-B092-A96ABF23824F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E808AB4B-8C15-4F09-B092-A96ABF23824F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD5144F7-E62B-420D-B296-AFA45DF4563A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD5144F7-E62B-420D-B296-AFA45DF4563A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD5144F7-E62B-420D-B296-AFA45DF4563A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD5144F7-E62B-420D-B296-AFA45DF4563A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -217,6 +223,7 @@ Global
 		{55707AAA-C0D8-41F5-919B-760FA99C0CD8} = {F3FFE0B0-32B0-4867-AA80-7FB130E72263}
 		{076ACC63-8E9E-400A-BD54-E2DA3D33CB59} = {91BD4D35-CFF1-48D1-BAF6-BA0E3FB96B3B}
 		{E808AB4B-8C15-4F09-B092-A96ABF23824F} = {91BD4D35-CFF1-48D1-BAF6-BA0E3FB96B3B}
+		{CD5144F7-E62B-420D-B296-AFA45DF4563A} = {F3FFE0B0-32B0-4867-AA80-7FB130E72263}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {91F2FF8F-6646-4F1E-A7D9-059D41B096BE}

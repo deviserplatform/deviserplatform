@@ -103,7 +103,8 @@ export class FormControlComponent implements OnInit {
     if (this.field && this.field.fieldOption && this.field.fieldOption.relationType) {
 
       if (!lookUpGeneric && (this.field.fieldOption.relationType == RelationType.ManyToMany || this.field.fieldOption.relationType == RelationType.ManyToOne)) {
-        lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.lookupModelTypeCamelCase];
+        // lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.lookupModelTypeCamelCase];
+        lookUpGeneric = this.lookUps.lookUpData[this.field.fieldNameCamelCase];
       }
 
 
@@ -120,7 +121,7 @@ export class FormControlComponent implements OnInit {
   parseM2mControlVal(lookUpGeneric: any) {
     if (this.field &&
       this.field.fieldOption &&
-      this.field.fieldOption.lookupModelTypeCamelCase &&
+      // this.field.fieldOption.lookupModelTypeCamelCase &&
       lookUpGeneric) {
       let formVal = this.form.value;
       let keyNames = Object.keys(lookUpGeneric[0].key);
