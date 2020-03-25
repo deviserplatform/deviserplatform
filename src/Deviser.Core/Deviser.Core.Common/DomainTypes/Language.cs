@@ -7,7 +7,7 @@ namespace Deviser.Core.Common.DomainTypes
 {
     public class Language
     {
-        public Guid Id { get; set; }
+        //public Guid Id { get; set; }
         public string CultureCode { get; set; }
         public string EnglishName { get; set; }
         public string NativeName { get; set; }

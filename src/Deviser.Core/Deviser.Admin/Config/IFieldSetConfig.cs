@@ -10,5 +10,7 @@ namespace Deviser.Admin
 
         [JsonIgnore]
         ICollection<Field> AllIncludeFields { get; }
+
+        void AddFieldSet(FieldSet fieldSet);
     }
 }

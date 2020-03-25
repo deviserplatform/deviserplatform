@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using Deviser.Core.Common.Module;
 using Deviser.Core.Library.Modules;
+using Deviser.Modules.SiteManagement.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Deviser.Modules.SiteManagement
@@ -18,7 +19,7 @@ namespace Deviser.Modules.SiteManagement
 
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            services.AddScoped<SiteSettingAdminService>();
         }
     }
 }

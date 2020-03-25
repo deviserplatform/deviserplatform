@@ -13,8 +13,8 @@ namespace Deviser.Admin.Config
     {
         Task<PagedResult<TModel>> GetAll(int pageNo, int pageSize, string orderByProperties);
         Task<TModel> GetItem(string itemId);
-        Task<TModel> CreateItem(TModel item);
-        Task<TModel> UpdateItem(TModel item);
+        Task<FormResult<TModel>> CreateItem(TModel item);
+        Task<FormResult<TModel>> UpdateItem(TModel item);
         Task<TModel> DeleteItem(string itemId);
     }
 
@@ -22,6 +22,6 @@ namespace Deviser.Admin.Config
         where TModel : class
     {
         Task<TModel> GetModel();
-        Task<TModel> SaveModel(TModel item);
+        Task<FormResult<TModel>> SaveModel(TModel item);
     }
 }

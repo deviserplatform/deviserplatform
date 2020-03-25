@@ -31,13 +31,13 @@
           <div class="tab-content">
 
 
-            <div class="tab-pane fade" [ngClass]="{'  show active':formTab==selectedFormTab}"
+            <div class="tab-pane fade" [ngClass]="{'show active':formTab==selectedFormTab}"
               *ngFor="let formTab of formTabs">
 
               <div class="form-action-container">
                 <div class="form-actions d-flex">
 
-                  <button type="button" class="mr-auto btn btn-dark" (click)="goBack()">
+                  <button type="button" class="mr-auto btn btn-dark" (click)="goBack()" [disabled]="daConfig.adminConfigType != adminConfigType.GridAndForm">
                     <i class="my-icon" aria-label="My icon"
                       [inlineSVG]="'assets/icons/baseline-keyboard_arrow_left.svg' | envPath"></i>
                   </button>

@@ -38,8 +38,24 @@ namespace Deviser.Admin.Web.Controllers
         [Route("modules/[area]/admin/{model:required}")]
         public IActionResult Admin(string model)
         {
-            ViewBag.Model = model;
-            return View();
+            try
+            {
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var adminConfig = coreAdminService.GetAdminConfig(model); //_adminRepository.GetAdminConfig(model);
+                if (adminConfig != null)
+                {
+                    ViewBag.AdminConfig = adminConfig;
+                    
+                }
+                ViewBag.Model = model;
+                return View();
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while getting loading admin: {model}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpGet]

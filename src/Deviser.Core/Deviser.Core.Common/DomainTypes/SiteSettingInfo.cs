@@ -15,13 +15,13 @@ namespace Deviser.Core.Common.DomainTypes
         //public Guid RedirectAfterLogin { get; set; }
         //public Guid RedirectAfterLogout { get; set; }
         //public string SiteLanguage { get; set; }
-
+        
 
         public string SiteName { get; set; }
-        public string SiteDescription { get; set; }
+        public string? SiteDescription { get; set; }
         public string SiteAdminEmail { get; set; }
         public string SiteRoot { get; set; }
-        public string SiteHeaderTags { get; set; }
+        public string? SiteHeaderTags { get; set; }
         public Language SiteLanguage { get; set; }
 
 
@@ -34,11 +34,11 @@ namespace Deviser.Core.Common.DomainTypes
         public Page RedirectAfterLogout { get; set; }
         public Page RedirectAfterLogin { get; set; }
 
-        public SMTPAuthentication SMTPAuthentication { get; set; }
-        public bool SMTPEnableSSL { get; set; }
-        public string SMTPPassword { get; set; }
-        public string SMTPServerAndPort { get; set; }
-        public string SMTPUsername { get; set; }
+        public SMTPAuthentication? SmtpAuthentication { get; set; }
+        public bool? SmtpEnableSSL { get; set; }
+        public string? SmtpPassword { get; set; }
+        public string? SmtpServerAndPort { get; set; }
+        public string? SmtpUsername { get; set; }
 
         public Guid DefaultLayoutId => DefaultLayout?.Id ?? Guid.Empty;
         public PageLayout DefaultLayout { get; set; }

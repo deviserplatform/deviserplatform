@@ -44,15 +44,17 @@ namespace Deviser.Modules.ContentManagement.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<ContentType> CreateItem(ContentType contentType)
+        public async Task<FormResult<ContentType>> CreateItem(ContentType contentType)
         {
-            var result = _contentTypeRepository.CreateContentType(contentType);
+            contentType = _contentTypeRepository.CreateContentType(contentType);
+            var result = new FormResult<ContentType>(contentType);
             return await Task.FromResult(result);
         }
 
-        public async Task<ContentType> UpdateItem(ContentType contentType)
+        public async Task<FormResult<ContentType>> UpdateItem(ContentType contentType)
         {
-            var result = _contentTypeRepository.UpdateContentType(contentType);
+            contentType = _contentTypeRepository.UpdateContentType(contentType);
+            var result = new FormResult<ContentType>(contentType);
             return await Task.FromResult(result);
         }
 

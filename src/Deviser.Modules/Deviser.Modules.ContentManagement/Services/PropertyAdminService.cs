@@ -43,19 +43,21 @@ namespace Deviser.Modules.ContentManagement.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<Property> CreateItem(Property item)
+        public async Task<FormResult<Property>> CreateItem(Property item)
         {
             ParseProperty(item);
-            var result = _propertyRepository.CreateProperty(item);
-            ParseResult(result);
+            var resultProperty = _propertyRepository.CreateProperty(item);
+            ParseResult(resultProperty);
+            var result = new FormResult<Property>(resultProperty);
             return await Task.FromResult(result);
         }
 
-        public async Task<Property> UpdateItem(Property item)
+        public async Task<FormResult<Property>> UpdateItem(Property item)
         {
             ParseProperty(item);
-            var result = _propertyRepository.UpdateProperty(item);
-            ParseResult(result);
+            var resultProperty = _propertyRepository.UpdateProperty(item);
+            ParseResult(resultProperty);
+            var result = new FormResult<Property>(resultProperty);
             return await Task.FromResult(result);
         }
 

@@ -27,7 +27,7 @@ namespace Deviser.Modules.SiteManagement
                                 .AddField(f => f.SiteAdminEmail, option => option.FieldType = FieldType.EmailAddress)
                                 .AddField(f => f.SiteRoot)
                                 .AddField(f => f.SiteHeaderTags)
-                                .AddSelectField(f => f.SiteLanguage, de => $"{de.EnglishName} ({de.NativeName})");
+                                .AddSelectField(f => f.SiteLanguage);
 
                         })
                         .AddFieldSet("Page Configuration", fieldBuilder =>
@@ -42,11 +42,11 @@ namespace Deviser.Modules.SiteManagement
                         .AddFieldSet("SMTP", fieldBuilder =>
                         {
                             fieldBuilder
-                                .AddField(f => f.SMTPServerAndPort)
-                                .AddSelectField(f => f.SMTPAuthentication, de => de.Name, option => option.FieldType = FieldType.RadioButton)
-                                .AddField(f => f.SMTPEnableSSL)
-                                .AddField(f => f.SMTPUsername)
-                                .AddField(f => f.SMTPPassword, option => option.FieldType = FieldType.Password);
+                                .AddField(f => f.SmtpServerAndPort)
+                                .AddSelectField(f => f.SmtpAuthentication, de => de.Name, option => option.FieldType = FieldType.RadioButton)
+                                .AddField(f => f.SmtpEnableSSL)
+                                .AddField(f => f.SmtpUsername)
+                                .AddField(f => f.SmtpPassword, option => option.FieldType = FieldType.Password);
                         })
                         .AddFieldSet("Appearance", fieldBuilder =>
                         {
@@ -59,40 +59,86 @@ namespace Deviser.Modules.SiteManagement
                         .AddFieldSet("Security", fieldBuilder =>
                         {
                             fieldBuilder
-                                .AddField(f => f.RegistrationEnabled);
+                                .AddField(f => f.RegistrationEnabled)
+                                .AddField(f => f.EnableGoogleAuth)
+                                .AddField(f => f.GoogleClientId)
+                                .AddField(f => f.GoogleClientSecret)
+                                .AddField(f => f.EnableFacebookAuth)
+                                .AddField(f => f.FacebookAppId)
+                                .AddField(f => f.FacebookAppSecret)
+                                .AddField(f => f.EnableTwitterAuth)
+                                .AddField(f => f.TwitterConsumerKey)
+                                .AddField(f => f.TwitterConsumerSecret);
                         });
+
+                    formBuilder.Property(f => f.EnableGoogleAuth)
+                        .ShowOn(f => f.RegistrationEnabled)
+                        .ValidateOn(f => f.RegistrationEnabled);
+
+                    formBuilder.Property(f => f.EnableFacebookAuth)
+                        .ShowOn(f => f.RegistrationEnabled)
+                        .ValidateOn(f => f.RegistrationEnabled);
+
+                    formBuilder.Property(f => f.EnableTwitterAuth)
+                        .ShowOn(f => f.RegistrationEnabled)
+                        .ValidateOn(f => f.RegistrationEnabled);
+
+                    formBuilder.Property(f => f.GoogleClientId)
+                        .ShowOn(f => f.EnableGoogleAuth)
+                        .ValidateOn(f => f.EnableGoogleAuth);
+
+                    formBuilder.Property(f => f.GoogleClientSecret)
+                        .ShowOn(f => f.EnableGoogleAuth)
+                        .ValidateOn(f => f.EnableGoogleAuth);
+
+                    formBuilder.Property(f => f.FacebookAppId)
+                        .ShowOn(f => f.EnableFacebookAuth)
+                        .ValidateOn(f => f.EnableFacebookAuth);
+
+                    formBuilder.Property(f => f.FacebookAppSecret)
+                        .ShowOn(f => f.EnableFacebookAuth)
+                        .ValidateOn(f => f.EnableFacebookAuth);
+
+                    formBuilder.Property(f => f.TwitterConsumerKey)
+                        .ShowOn(f => f.EnableTwitterAuth)
+                        .ValidateOn(f => f.EnableTwitterAuth);
+
+                    formBuilder.Property(f => f.TwitterConsumerSecret)
+                        .ShowOn(f => f.EnableTwitterAuth)
+                        .ValidateOn(f => f.EnableTwitterAuth);
+
 
                     formBuilder.Property(f => f.SiteLanguage).HasLookup(
                         sp => sp.GetService<ILanguageManager>().GetAllLanguages(false),
-                        ke => ke.Id,
-                        de => $"{de.EnglishName} ({de.NativeName})");
+                        ke => ke.CultureCode,
+                        de => $"{de.EnglishName}");
 
                     formBuilder.Property(f => f.HomePage).HasLookup(
                         sp => sp.GetService<SiteSettingAdminService>().GetPages(),
                         ke => ke.Id,
-                        de => de.PageTranslation.FirstOrDefault().Name);
+                        de => de.PageTranslation.Count > 0 ? de.PageTranslation.FirstOrDefault().Name : string.Empty);
 
                     formBuilder.Property(f => f.LoginPage).HasLookup(
                         sp => sp.GetService<SiteSettingAdminService>().GetPages(),
                         ke => ke.Id,
-                        de => de.PageTranslation.FirstOrDefault().Name);
+                        de => de.PageTranslation.Count > 0 ? de.PageTranslation.FirstOrDefault().Name : string.Empty);
 
                     formBuilder.Property(f => f.RegistrationPage).HasLookup(
                         sp => sp.GetService<SiteSettingAdminService>().GetPages(),
                         ke => ke.Id,
-                        de => de.PageTranslation.FirstOrDefault().Name);
+                        de => de.PageTranslation.Count > 0 ? de.PageTranslation.FirstOrDefault().Name : string.Empty);
 
                     formBuilder.Property(f => f.RedirectAfterLogin).HasLookup(
                         sp => sp.GetService<SiteSettingAdminService>().GetPages(),
                         ke => ke.Id,
-                        de => de.PageTranslation.FirstOrDefault().Name);
+                        de => de.PageTranslation.Count > 0 ? de.PageTranslation.FirstOrDefault().Name : string.Empty);
 
                     formBuilder.Property(f => f.RedirectAfterLogout).HasLookup(
                         sp => sp.GetService<SiteSettingAdminService>().GetPages(),
                         ke => ke.Id,
-                        de => de.PageTranslation.FirstOrDefault().Name);
+                        de => de.PageTranslation.Count > 0 ? de.PageTranslation.FirstOrDefault().Name : string.Empty);
 
-                    formBuilder.Property(f => f.SMTPAuthentication).HasLookup(
+                    formBuilder.Property(f => f.SmtpAuthentication).HasLookup(
                         sp => SMTPAuthentication.GetSmtpAuthentications(),
                         ke => ke.Id,
                         de => de.Name);
@@ -110,12 +156,12 @@ namespace Deviser.Modules.SiteManagement
                     formBuilder.Property(f => f.DefaultTheme).HasLookup(
                         sp => sp.GetService<SiteSettingAdminService>().GetThemes(),
                         ke => ke.Key,
-                        de => de.Key);
+                        de => de.Value);
 
                     formBuilder.Property(f => f.DefaultAdminTheme).HasLookup(
                         sp => sp.GetService<SiteSettingAdminService>().GetThemes(),
                         ke => ke.Key,
-                        de => de.Key);
+                        de => de.Value);
                 });
         }
     }

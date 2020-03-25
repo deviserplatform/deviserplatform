@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
@@ -14,6 +14,10 @@ import { Alert, AlertType } from '../common/domain-types/alert';
 import { FormResult } from '../common/domain-types/form-result';
 import { FormContext } from '../common/domain-types/form-context';
 import { FormType } from '../common/domain-types/form-type';
+import { DAConfig } from '../common/domain-types/da-config';
+import { WINDOW } from '../common/services/window.service';
+import { AdminConfigType } from '../common/domain-types/admin-confit-type';
+import { FormBehaviour } from '../common/domain-types/form-behaviour';
 
 @Component({
   selector: 'app-admin-form',
@@ -35,13 +39,18 @@ export class AdminFormComponent implements OnInit {
 
   formType = FormType;
 
+  daConfig: DAConfig;
+  adminConfigType = AdminConfigType
+
   constructor(private route: ActivatedRoute,
     private adminService: AdminService,
     private formControlService: FormControlService,
     private fb: FormBuilder,
-    private location: Location) {
+    private location: Location,
+    @Inject(WINDOW) private window: any) {
     this.alerts = [];
     this.formTabs = [];
+    this.daConfig = window.daConfig;
     // this.childFormContexts;
   }
 
@@ -52,8 +61,17 @@ export class AdminFormComponent implements OnInit {
   }
 
   getData(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.formMode = id ? FormMode.Update : FormMode.Create;
+    let id = this.route.snapshot.paramMap.get('id');
+
+    if (this.daConfig.adminConfigType == AdminConfigType.GridAndForm) {
+      this.formMode = id ? FormMode.Update : FormMode.Create;
+    }
+    else {
+      id = 'nothing';
+      this.formMode = FormMode.Update;
+    }
+
+
 
     if (this.formMode === FormMode.Update) {
       const adminConfig$ = this.adminService.getAdminConfig();
@@ -145,10 +163,10 @@ export class AdminFormComponent implements OnInit {
     console.warn(this.adminForm.value);
     if (this.formMode === FormMode.Create) {
       this.adminService.createRecord(this.adminForm.value)
-        .subscribe(formValue => this.onMainCreateOrUpdate(formValue));
+        .subscribe(formValue => this.onActionResult(formValue));
     } else if (this.formMode === FormMode.Update) {
       this.adminService.updateRecord(this.adminForm.value)
-        .subscribe(formValue => this.onMainCreateOrUpdate(formValue));
+        .subscribe(formValue => this.onActionResult(formValue));
     }
   }
 
@@ -170,33 +188,31 @@ export class AdminFormComponent implements OnInit {
 
   onActionResult(formValue: FormResult): void {
     if (formValue && formValue.isSucceeded) {
-      let alert: Alert = {
-        alterType: AlertType.Success,
-        message: formValue.successMessage,
-        timeout: 500000
+      if (formValue.formBehaviour == FormBehaviour.RedirectToGrid) {
+        this.goBack();
       }
-      this.alerts.push(alert);
+      else {
+        let alert: Alert = {
+          alterType: AlertType.Success,
+          message: formValue.successMessage,
+          timeout: 5000
+        }
+        this.alerts.push(alert);
+      }
     }
     else {
       let alert: Alert = {
         alterType: AlertType.Error,
         message: formValue.successMessage,
-        timeout: 500000
+        timeout: 5000
       }
       this.alerts.push(alert);
     }
   }
 
-  onMainCreateOrUpdate(formValue: any){
-    this.patchFormValue(formValue)
-    if(formValue){
-      this.goBack();
-    }
-  }
-
   patchFormValue(formValue: any): void {
     if (formValue) {
-      this.adminForm.patchValue(formValue);      
+      this.adminForm.patchValue(formValue);
     }
     else {
       let alert: Alert = {

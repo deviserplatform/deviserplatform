@@ -62,11 +62,12 @@ namespace Deviser.Modules.ContentManagement.Services
             result.AllowedLayoutTypes = layoutTypes.Where(lt => layoutTypeIds.Contains(lt.Id)).ToList();
         }
 
-        public async Task<LayoutType> CreateItem(LayoutType layoutType)
+        public async Task<FormResult<LayoutType>> CreateItem(LayoutType layoutType)
         {
             ParseAllowedLayoutTypes(layoutType);
-            var result = _layoutTypeRepository.CreateLayoutType(layoutType);
-            ParseLayoutTypeIds(result);
+            var resultLayoutType = _layoutTypeRepository.CreateLayoutType(layoutType);
+            ParseLayoutTypeIds(resultLayoutType);
+            var result = new FormResult<LayoutType>(resultLayoutType);
             return await Task.FromResult(result);
         }
 
@@ -79,11 +80,12 @@ namespace Deviser.Modules.ContentManagement.Services
             }
         }
 
-        public async Task<LayoutType> UpdateItem(LayoutType layoutType)
+        public async Task<FormResult<LayoutType>> UpdateItem(LayoutType layoutType)
         {
             ParseAllowedLayoutTypes(layoutType);
-            var result = _layoutTypeRepository.UpdateLayoutType(layoutType);
-            ParseLayoutTypeIds(result);
+            var resultLayoutType = _layoutTypeRepository.UpdateLayoutType(layoutType);
+            ParseLayoutTypeIds(resultLayoutType);
+            var result = new FormResult<LayoutType>(resultLayoutType);
             return await Task.FromResult(result);
         }
 

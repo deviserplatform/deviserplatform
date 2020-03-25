@@ -258,10 +258,10 @@ namespace Deviser.Admin.Services
             return result;
         }
 
-        private async Task<TModel> CreateItem<TModel>(object item) where TModel : class
+        private async Task<FormResult<TModel>> CreateItem<TModel>(object item) where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
-            TModel modelToAdd = ((JObject)item).ToObject<TModel>(_serializer);
+            var modelToAdd = ((JObject)item).ToObject<TModel>(_serializer);
             if (_adminSite.AdminType == AdminType.Custom)
             {
                 if (_serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService)
@@ -272,7 +272,8 @@ namespace Deviser.Admin.Services
             }
             else //if (_adminSite.AdminType == AdminType.Entity)
             {
-                return await _adminRepository.CreateItemFor<TModel>(modelToAdd);
+                var result = await _adminRepository.CreateItemFor<TModel>(modelToAdd);
+                return new FormResult<TModel>(result);
             }
         }
 
@@ -313,35 +314,39 @@ namespace Deviser.Admin.Services
         private async Task<TModel> GetItem<TModel>(string itemId) where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
-            if (_adminSite.AdminType == AdminType.Custom)
+            //_adminSite.AdminType == AdminType.Entity
+            if (_adminSite.AdminType == AdminType.Entity) return await _adminRepository.GetItemFor<TModel>(itemId); 
+
+            switch (adminConfig.AdminConfigType)
             {
-                if (_serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService)
-                {
+                case AdminConfigType.GridAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
                     return await adminService.GetItem(itemId);
-                }
-                throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
-            }
-            else //if (_adminSite.AdminType == AdminType.Entity)
-            {
-                return await _adminRepository.GetItemFor<TModel>(itemId);
+                case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminFormService<TModel> adminService:
+                    return await adminService.GetModel();
+                default:
+                    throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
             }
         }
 
-        private async Task<TModel> UpdateItem<TModel>(object item) where TModel : class
+        private async Task<FormResult<TModel>> UpdateItem<TModel>(object item) where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
-            TModel modelToUpdate = ((JObject)item).ToObject<TModel>(_serializer);
-            if (_adminSite.AdminType == AdminType.Custom)
+            var modelToUpdate = ((JObject)item).ToObject<TModel>(_serializer);
+
+            if (_adminSite.AdminType == AdminType.Entity)
             {
-                if (_serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService)
-                {
-                    return await adminService.UpdateItem(modelToUpdate);
-                }
-                throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
+                var result = await _adminRepository.UpdateItemFor<TModel>(modelToUpdate);
+                return new FormResult<TModel>(result);
             }
-            else //if (_adminSite.AdminType == AdminType.Entity)
+
+            switch (adminConfig.AdminConfigType)
             {
-                return await _adminRepository.UpdateItemFor<TModel>(modelToUpdate);
+                case AdminConfigType.GridAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
+                    return await adminService.UpdateItem(modelToUpdate);
+                case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminFormService<TModel> adminService:
+                    return await adminService.SaveModel(modelToUpdate);
+                default:
+                    throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
             }
         }
 

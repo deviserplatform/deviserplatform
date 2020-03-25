@@ -46,7 +46,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   private valChangeSubscription: Subscription;
   //To access FieldType enum
   fieldType = FieldType;
-  childRecords: any;
+  childRecords: any;  
   private allFields: Field[];
   constructor(private emailExistValidator: EmailExistValidator,
     private passwordValidator: PasswordValidator,
@@ -88,8 +88,9 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
       });
     }
 
-    if (formConfig.fieldSetConfig && formConfig.fieldSetConfig.fieldSets && formConfig.fieldSetConfig.fieldSets.length > 0) {
+    if (formConfig.fieldSetConfig && formConfig.fieldSetConfig.fieldSets && formConfig.fieldSetConfig.fieldSets.length > 0) {      
       formConfig.fieldSetConfig.fieldSets.forEach(fieldSet => {
+        fieldSet.isOpen = false;
         if (fieldSet.fields.length > 0) {
           fieldSet.fields.forEach(fieldRow => {
             if (fieldRow.length > 0) {
@@ -100,6 +101,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
           });
         }
       });
+      formConfig.fieldSetConfig.fieldSets[0].isOpen = true
     }
   }
 

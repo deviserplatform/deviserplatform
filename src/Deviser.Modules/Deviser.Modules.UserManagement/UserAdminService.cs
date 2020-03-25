@@ -31,7 +31,7 @@ namespace Deviser.Modules.UserManagement
             _userManager = userManager;
         }
 
-        public async Task<User> CreateItem(User item)
+        public async Task<FormResult<User>> CreateItem(User item)
         {
             if (item != null)
             {
@@ -41,7 +41,8 @@ namespace Deviser.Modules.UserManagement
                 var identityResult = await _userManager.CreateAsync(user, item.Password);
                 if (identityResult.Succeeded)
                 {
-                    var result = _mapper.Map<User>(user);
+                    var resultUser = _mapper.Map<User>(user);
+                    var result = new FormResult<User>(resultUser);
                     return result;
                 }
             }
@@ -86,7 +87,7 @@ namespace Deviser.Modules.UserManagement
             return null;
         }
 
-        public async Task<User> UpdateItem(User user)
+        public async Task<FormResult<User>> UpdateItem(User user)
         {
             var dbUser = _userManager.Users.FirstOrDefault(u => u.Id == user.Id);
             if (dbUser != null)
@@ -107,10 +108,12 @@ namespace Deviser.Modules.UserManagement
                     await _userManager.AddToRoleAsync(dbUser, role.Name);
                 }
 
-                var result = await _userManager.UpdateAsync(dbUser);
-                if (result != null)
+                var identityResult = await _userManager.UpdateAsync(dbUser);
+                if (identityResult != null)
                 {
-                    return _mapper.Map<User>(user);
+                    var userResult = _mapper.Map<User>(user);
+                    var result = new FormResult<User>(userResult);
+                    return result;
                 }
             }
 
@@ -141,6 +144,7 @@ namespace Deviser.Modules.UserManagement
                 return new FormResult()
                 {
                     IsSucceeded = true,
+                    FormBehaviour = FormBehaviour.StayOnEditMode,
                     SuccessMessage = "Password has been reset successfully"
                 };
             }

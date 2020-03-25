@@ -42,15 +42,17 @@ namespace Deviser.Modules.ModuleManagement.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<Module> CreateItem(Module item)
+        public async Task<FormResult<Module>> CreateItem(Module item)
         {
-            var result = _moduleRepository.Create(item);
+            var resultModule = _moduleRepository.Create(item);
+            var result = new FormResult<Module>(resultModule);
             return await Task.FromResult(result);
         }
 
-        public async Task<Module> UpdateItem(Module item)
+        public async Task<FormResult<Module>> UpdateItem(Module item)
         {
-            var result = _moduleRepository.UpdateModule(item);
+            var resultModule = _moduleRepository.UpdateModule(item);
+            var result = new FormResult<Module>(resultModule);
             return await Task.FromResult(result);
         }
 

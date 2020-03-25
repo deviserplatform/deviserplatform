@@ -13,17 +13,20 @@ namespace Deviser.Admin.Builders
     public class FieldBuilder<TModel>
         where TModel : class
     {
-        //private IFieldConfig _fieldConfig;
+        private IFieldConfig _fieldConfig;
         //private readonly IModelConfig _modelConfig;
-        protected readonly IFormConfig _formConfig;
+        //protected readonly IFormConfig _formConfig;
         protected readonly KeyField _keyField;
+        private readonly ICollection<Field> _allFormFields;
 
-        public FieldBuilder(IFormConfig formConfig, KeyField keyField)
+        public FieldBuilder(IFieldConfig fieldConfig, ICollection<Field> allFormFields, KeyField keyField)
         {
             //_fieldConfig = fieldConfig;
             //_modelConfig = modelConfig;
 
-            _formConfig = formConfig;
+            //_formConfig = formConfig;
+            _allFormFields = allFormFields;
+            _fieldConfig = fieldConfig;
             _keyField = keyField;
         }
 
@@ -53,7 +56,7 @@ namespace Deviser.Admin.Builders
         public FieldBuilder<TModel> AddField<TProperty>(Expression<Func<TModel, TProperty>> expression, Action<FieldOption> fieldOptionAction = null)
         {
             var field = CreateSimpleField(expression, fieldOptionAction);
-            _formConfig.FieldConfig.AddField(field);
+            _fieldConfig.AddField(field);
             return this;
         }
 
@@ -67,7 +70,7 @@ namespace Deviser.Admin.Builders
         public FieldBuilder<TModel> AddInlineField<TProperty>(Expression<Func<TModel, TProperty>> expression, Action<FieldOption> fieldOptionAction = null)
         {
             var field = CreateSimpleField(expression, fieldOptionAction);
-            _formConfig.FieldConfig.AddInLineField(field);
+            _fieldConfig.AddInLineField(field);
             return this;
         }
 
@@ -85,7 +88,7 @@ namespace Deviser.Admin.Builders
             where TRelatedModel : class
         {
             var field = CreateComplexField(expression, RelationType.ManyToOne, typeof(TRelatedModel), displayExpression, fieldOptionAction);
-            _formConfig.FieldConfig.AddField(field);
+            _fieldConfig.AddField(field);
             return this;
         }
 
@@ -103,7 +106,7 @@ namespace Deviser.Admin.Builders
             where TRelatedModel : class
         {
             var field = CreateComplexField(expression, RelationType.ManyToOne, typeof(TRelatedModel), displayExpression, fieldOptionAction);
-            _formConfig.FieldConfig.AddInLineField(field);
+            _fieldConfig.AddInLineField(field);
             return this;
         }
 
@@ -121,7 +124,7 @@ namespace Deviser.Admin.Builders
             where TRelatedModel : class
         {
             var field = CreateComplexField(expression, RelationType.ManyToMany, typeof(TRelatedModel), displayExpression, fieldOptionAction);
-            _formConfig.FieldConfig.AddField(field);
+            _fieldConfig.AddField(field);
             return this;
         }
 
@@ -139,7 +142,7 @@ namespace Deviser.Admin.Builders
             where TRelatedModel : class
         {
             var field = CreateComplexField(expression, RelationType.ManyToMany, typeof(TRelatedModel), displayExpression, fieldOptionAction);
-            _formConfig.FieldConfig.AddInLineField(field);
+            _fieldConfig.AddInLineField(field);
             return this;
         }
 
@@ -151,7 +154,7 @@ namespace Deviser.Admin.Builders
         /// <returns></returns>
         public FieldBuilder<TModel> RemoveField<TProperty>(Expression<Func<TModel, TProperty>> expression)
         {
-            if (_formConfig.AllFormFields.Count > 0)
+            if (_allFormFields.Count > 0)
                 ThrowAddRemoveInvalidOperationException();
 
             var field = new Field()
@@ -159,7 +162,7 @@ namespace Deviser.Admin.Builders
                 FieldExpression = expression
             };
 
-            _formConfig.FieldConfig.RemoveField(field);
+            _fieldConfig.RemoveField(field);
             return this;
         }
 
@@ -179,7 +182,7 @@ namespace Deviser.Admin.Builders
             Action<FieldOption> fieldOptionAction = null)
             where TProperty : class
         {
-            if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
+            if (_fieldConfig.ExcludedFields.Count > 0)
                 ThrowAddRemoveInvalidOperationException();
 
             FieldOption fieldOption = new FieldOption();
@@ -204,7 +207,7 @@ namespace Deviser.Admin.Builders
         /// <returns></returns>
         private Field CreateSimpleField<TProperty>(Expression<Func<TModel, TProperty>> expression, Action<FieldOption> fieldOptionAction = null)
         {
-            if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
+            if (_fieldConfig.ExcludedFields.Count > 0)
                 ThrowAddRemoveInvalidOperationException();
 
             FieldOption fieldOption = new FieldOption();

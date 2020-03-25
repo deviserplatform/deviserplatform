@@ -50,6 +50,7 @@ namespace Deviser.Admin
                 AdminConfigType = AdminConfigType.FormOnly,
                 AdminServiceType = typeof(TAdminService)
             };
+            BuildAdmin(adminConfig, formBuilderAction);
             return this;
         }
 
@@ -59,6 +60,16 @@ namespace Deviser.Admin
             _adminSite.Mapper = MapperConfiguration?.CreateMapper();
 
             modelBuilderAction?.Invoke(new ModelBuilder<TModel>(adminConfig));
+
+            _adminSite.Build(adminConfig, hasConfiguration);
+        }
+
+        private void BuildAdmin<TModel>(AdminConfig<TModel> adminConfig, Action<FormBuilder<TModel>> formBuilderAction) where TModel : class
+        {
+            var hasConfiguration = formBuilderAction != null;
+            _adminSite.Mapper = MapperConfiguration?.CreateMapper();
+
+            formBuilderAction?.Invoke(new FormBuilder<TModel>(adminConfig.ModelConfig.FormConfig, adminConfig.ModelConfig.KeyField));
 
             _adminSite.Build(adminConfig, hasConfiguration);
         }

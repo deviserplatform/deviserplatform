@@ -40,19 +40,21 @@ namespace Deviser.Modules.ContentManagement.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<OptionList> CreateItem(OptionList item)
+        public async Task<FormResult<OptionList>> CreateItem(OptionList item)
         {
             ParseProperty(item);
-            var result = _optionListRepository.CreateOptionList(item);
-            ParseResult(result);
+            var resultOptionList = _optionListRepository.CreateOptionList(item);
+            ParseResult(resultOptionList);
+            var result = new FormResult<OptionList>(resultOptionList);
             return await Task.FromResult(result);
         }
 
-        public async Task<OptionList> UpdateItem(OptionList item)
+        public async Task<FormResult<OptionList>> UpdateItem(OptionList item)
         {
             ParseProperty(item);
-            var result = _optionListRepository.UpdateOptionList(item);
-            ParseResult(result);
+            var resultOptionList = _optionListRepository.UpdateOptionList(item);
+            ParseResult(resultOptionList);
+            var result = new FormResult<OptionList>(resultOptionList);
             return await Task.FromResult(result);
         }
 

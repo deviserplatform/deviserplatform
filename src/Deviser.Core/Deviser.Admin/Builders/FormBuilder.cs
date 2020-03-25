@@ -19,7 +19,7 @@ namespace Deviser.Admin.Builders
 
 
         public FormBuilder(IFormConfig formConfig, KeyField keyField)
-        : base(formConfig, keyField)
+        : base(formConfig.FieldConfig, formConfig.AllFormFields, keyField)
         {
             _formConfig = formConfig;
         }
@@ -31,7 +31,7 @@ namespace Deviser.Admin.Builders
                 throw new InvalidOperationException(Resources.AddRemoveInvalidOperation);
 
             var fieldConfig = new FieldConfig();
-            var fieldBuilder = new FieldBuilder<TModel>(_formConfig, _keyField);
+            var fieldBuilder = new FieldBuilder<TModel>(fieldConfig, _formConfig.AllFormFields, _keyField);
 
             fieldBuilderAction.Invoke(fieldBuilder);
 
@@ -43,7 +43,7 @@ namespace Deviser.Admin.Builders
                 Fields = fieldConfig.Fields
             };
 
-            _formConfig.FieldSetConfig.FieldSets.Add(fieldSet);
+            _formConfig.FieldSetConfig.AddFieldSet(fieldSet);
 
             return this;
         }
@@ -81,7 +81,7 @@ namespace Deviser.Admin.Builders
         {
             var formOption = new FormOption();
             formOptionAction?.Invoke(formOption);
-            _formConfig.FormOption = formOption;            
+            _formConfig.FormOption = formOption;
             return this;
         }
     }

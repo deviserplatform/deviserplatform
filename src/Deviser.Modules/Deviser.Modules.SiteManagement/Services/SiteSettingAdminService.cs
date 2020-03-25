@@ -17,16 +17,18 @@ namespace Deviser.Modules.SiteManagement.Services
     {
         private readonly ILogger<SiteSettingAdminService> _logger;
         private readonly ISettingManager _settingManager;
-        private readonly ILayoutManager _layoutManager;
         private readonly IPageRepository _pageRepository;
-        private readonly ISiteSettingRepository _siteSettingRepository;
         private readonly IThemeManager _themeManager;
 
         public SiteSettingAdminService(ILogger<SiteSettingAdminService> logger,
-            ISettingManager settingManager)
+            IPageRepository pageRepository,
+            ISettingManager settingManager,
+            IThemeManager themeManager)
         {
             _logger = logger;
+            _pageRepository = pageRepository;
             _settingManager = settingManager;
+            _themeManager = themeManager;
         }
 
         public async Task<SiteSettingInfo> GetModel()
@@ -35,10 +37,29 @@ namespace Deviser.Modules.SiteManagement.Services
             return await Task.FromResult(siteSettings);
         }
 
-        public async Task<SiteSettingInfo> SaveModel(SiteSettingInfo item)
+        public async Task<FormResult<SiteSettingInfo>> SaveModel(SiteSettingInfo item)
         {
-            var result = _settingManager.UpdateSettingInfo(item);
-            return await Task.FromResult(result);
+            var settingInfo = _settingManager.UpdateSettingInfo(item);
+            if (settingInfo != null)
+            {
+                var result = new FormResult<SiteSettingInfo>(settingInfo)
+                {
+                    IsSucceeded = true,
+                    FormBehaviour = FormBehaviour.StayOnEditMode,
+                    SuccessMessage = "SiteSettings has been updated successfully"
+                };
+                return await Task.FromResult(result);
+            }
+            else
+            {
+                var result = new FormResult<SiteSettingInfo>(settingInfo)
+                {
+                    IsSucceeded = false,
+                    FormBehaviour = FormBehaviour.StayOnEditMode,
+                    SuccessMessage = "Unable to update SiteSettings"
+                };
+                return await Task.FromResult(result);
+            }
         }
 
         public List<Page> GetPages()
@@ -49,7 +70,7 @@ namespace Deviser.Modules.SiteManagement.Services
 
         public List<Theme> GetThemes()
         {
-            var themes = _themeManager.GetHostThemes().Select(kvp => new Theme() { Key = kvp.Key, Value = kvp.Value })
+            var themes = _themeManager.GetHostThemes().Select(kvp => new Theme() { Key = kvp.Value, Value = kvp.Key })
                 .ToList();
             return themes;
         }

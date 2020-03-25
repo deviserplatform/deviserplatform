@@ -80,11 +80,11 @@ namespace Deviser.Admin.Config
         public AdminSite(IServiceProvider serviceProvider, DbContext dbContext/*, IModelMetadataProvider modelMetadataProvider*/)
         {
             AdminType = AdminType.Entity;
-            
-             _dbContext = dbContext ?? throw new ArgumentNullException("Constructor paramater dbContent cannot be null");
+
+            _dbContext = dbContext ?? throw new ArgumentNullException("Constructor paramater dbContent cannot be null");
 
             _serviceProvider = serviceProvider;
-            
+
             //_modelMetadataProvider = modelMetadataProvider;
             _dbContextType = _dbContext.GetType();
             AdminConfigs = new Dictionary<Type, IAdminConfig>();
@@ -162,7 +162,7 @@ namespace Deviser.Admin.Config
                     }
                 case AdminType.Custom when adminConfig.AdminServiceType == null:
                     throw new InvalidOperationException($"AdminService is required when creating admin site with AdminType: {AdminType}");
-                case AdminType.Custom when adminConfig.ModelConfig.KeyField == null:
+                case AdminType.Custom when (adminConfig.ModelConfig.KeyField.FieldExpression == null && adminConfig.AdminConfigType == AdminConfigType.GridAndForm):
                     throw new InvalidOperationException($"KeyField is required when creating admin site with AdminType: {AdminType}");
                 case AdminType.Custom:
                     {
@@ -635,7 +635,7 @@ namespace Deviser.Admin.Config
                     yield return "DateTime";
                 }
 
-                yield return fieldType.Name;
+                yield return fieldType.IsGenericType ? fieldType.GetGenericArguments()[0].Name : fieldType.Name;
                 yield break;
             }
             else if (!fieldTypeInfo.IsInterface)
@@ -701,7 +701,7 @@ namespace Deviser.Admin.Config
                     relatedFileds.AddRange(childConfigReleatedFields);
                 }
             }
-            
+
 
             if (AdminType == AdminType.Entity)
             {
@@ -718,7 +718,7 @@ namespace Deviser.Admin.Config
             {
                 foreach (var relatedFiled in relatedFileds)
                 {
-                    if(relatedFiled.FieldOption.LookupFilterExpression != null) continue;
+                    if (relatedFiled.FieldOption.LookupFilterExpression != null) continue;
 
                     List<LookUpField> MasterDataDelegate()
                     {
@@ -729,13 +729,13 @@ namespace Deviser.Admin.Config
                         var displayExprDelegate = relatedFiled.FieldOption.LookupDisplayExpression.Compile();
                         var keyFieldName = ReflectionExtensions.GetMemberName(relatedFiled.FieldOption.LookupKeyExpression);
 
-                        var items = entityLookupExprDelegate.DynamicInvoke(new object[] {_serviceProvider}) as IList;
+                        var items = entityLookupExprDelegate.DynamicInvoke(new object[] { _serviceProvider }) as IList;
 
                         foreach (var item in items)
                         {
-                            var keyValue = entityLookupExprKeyDelegate.DynamicInvoke(new object[] {item});
-                            var displayName = displayExprDelegate.DynamicInvoke(new object[] {item}) as string;
-                            lookUpFields.Add(new LookUpField() {Key = new Dictionary<string, object>() {{keyFieldName, keyValue}}, DisplayName = displayName});
+                            var keyValue = entityLookupExprKeyDelegate.DynamicInvoke(new object[] { item });
+                            var displayName = displayExprDelegate.DynamicInvoke(new object[] { item }) as string;
+                            lookUpFields.Add(new LookUpField() { Key = new Dictionary<string, object>() { { keyFieldName, keyValue } }, DisplayName = displayName });
                         }
 
                         return lookUpFields;

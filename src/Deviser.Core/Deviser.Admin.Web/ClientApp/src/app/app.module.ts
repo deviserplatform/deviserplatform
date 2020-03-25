@@ -1,10 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { InlineSVGModule } from 'ng-inline-svg';
@@ -48,9 +50,11 @@ import { EnvPathPipe } from './common/pipes/env-path.pipe';
     AdminAlertComponent,
     EnvPathPipe
   ],
-  imports: [
+  imports: [    
+    AccordionModule.forRoot(),
     AlertModule.forRoot(),
     AppRoutingModule,
+    BrowserAnimationsModule,
     BrowserModule,
     BsDatepickerModule.forRoot(),
     CKEditorModule,

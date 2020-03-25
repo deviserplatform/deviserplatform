@@ -111,8 +111,8 @@ namespace Deviser.Core.Library.Sites
                 var strRedirectAfterLoginPageId = settings[nameof(SiteSettingInfo.RedirectAfterLogin)];
                 var strRedirectAfterLogoutPageId = settings[nameof(SiteSettingInfo.RedirectAfterLogout)];
 
-                var strSMTPAuthentication = settings[nameof(SiteSettingInfo.SMTPAuthentication)];
-                var strSMTPEnableSSL = settings[nameof(SiteSettingInfo.SMTPEnableSSL)];
+                var strSMTPAuthentication = settings[nameof(SiteSettingInfo.SmtpAuthentication)];
+                var strSMTPEnableSSL = settings[nameof(SiteSettingInfo.SmtpEnableSSL)];
 
                 var strDefaultLayoutId = settings[nameof(SiteSettingInfo.DefaultLayoutId)];
                 var strDefaultTheme = settings[nameof(SiteSettingInfo.DefaultTheme)];
@@ -141,16 +141,16 @@ namespace Deviser.Core.Library.Sites
                     RedirectAfterLogin = !string.IsNullOrEmpty(strRedirectAfterLoginPageId) ? allPages.FirstOrDefault(p => p.Id == Guid.Parse(strRedirectAfterLoginPageId)) : null,
                     RedirectAfterLogout = !string.IsNullOrEmpty(strRedirectAfterLogoutPageId) ? allPages.FirstOrDefault(p => p.Id == Guid.Parse(strRedirectAfterLogoutPageId)) : null,
 
-                    SMTPServerAndPort = settings[nameof(SiteSettingInfo.SMTPServerAndPort)],
-                    SMTPAuthentication = allAuthenticationTypes.FirstOrDefault(at => string.Equals(at.Name, strSMTPAuthentication, StringComparison.InvariantCultureIgnoreCase)),
-                    SMTPEnableSSL = !string.IsNullOrEmpty(strSMTPEnableSSL) && bool.Parse(strSMTPEnableSSL),
-                    SMTPUsername = settings[nameof(SiteSettingInfo.SMTPUsername)],
-                    SMTPPassword = settings[nameof(SiteSettingInfo.SMTPPassword)],
+                    SmtpServerAndPort = settings[nameof(SiteSettingInfo.SmtpServerAndPort)],
+                    SmtpAuthentication = allAuthenticationTypes.FirstOrDefault(at => string.Equals(at.Name, strSMTPAuthentication, StringComparison.InvariantCultureIgnoreCase)),
+                    SmtpEnableSSL = !string.IsNullOrEmpty(strSMTPEnableSSL) && bool.Parse(strSMTPEnableSSL),
+                    SmtpUsername = settings[nameof(SiteSettingInfo.SmtpUsername)],
+                    SmtpPassword = settings[nameof(SiteSettingInfo.SmtpPassword)],
 
                     DefaultLayout = !string.IsNullOrEmpty(strDefaultLayoutId) ? allLayouts.FirstOrDefault(l => l.Id == Guid.Parse(strDefaultLayoutId)) : null,
                     DefaultAdminLayout = !string.IsNullOrEmpty(strDefaultAdminLayoutId) ? allLayouts.FirstOrDefault(l => l.Id == Guid.Parse(strDefaultAdminLayoutId)) : null,
-                    DefaultTheme = !string.IsNullOrEmpty(strDefaultTheme) ? allThemes.FirstOrDefault(t => t.Value == strDefaultTheme) : null,
-                    DefaultAdminTheme = !string.IsNullOrEmpty(strDefaultAdminTheme) ? allThemes.FirstOrDefault(t => t.Value == strDefaultAdminTheme) : null,
+                    DefaultTheme = !string.IsNullOrEmpty(strDefaultTheme) ? allThemes.FirstOrDefault(t => t.Key == strDefaultTheme) : null,
+                    DefaultAdminTheme = !string.IsNullOrEmpty(strDefaultAdminTheme) ? allThemes.FirstOrDefault(t => t.Key == strDefaultAdminTheme) : null,
 
                     RegistrationEnabled = !string.IsNullOrEmpty(strRegistrationEnabled) && bool.Parse(strRegistrationEnabled),
                     EnableFacebookAuth = !string.IsNullOrEmpty(strEnableFacebookAuth) && bool.Parse(strEnableFacebookAuth),
@@ -177,6 +177,7 @@ namespace Deviser.Core.Library.Sites
         public SiteSettingInfo UpdateSettingInfo(SiteSettingInfo settingInfo)
         {
             var settings = _siteSettingRepository.GetSettings();
+            var allAuthenticationTypes = SMTPAuthentication.GetSmtpAuthentications();
 
             settings.First(s => s.SettingName == nameof(SiteSettingInfo.SiteName)).SettingValue = settingInfo.SiteName;
             settings.First(s => s.SettingName == nameof(SiteSettingInfo.SiteDescription)).SettingValue = settingInfo.SiteDescription;
@@ -210,14 +211,14 @@ namespace Deviser.Core.Library.Sites
                 settings.First(s => s.SettingName == nameof(SiteSettingInfo.RedirectAfterLogout)).SettingValue = settingInfo.RedirectAfterLogout.Id.ToString();
             }
 
-            settings.First(s => s.SettingName == nameof(SiteSettingInfo.SMTPServerAndPort)).SettingValue = settingInfo.SMTPServerAndPort;
-            if (settingInfo.SMTPAuthentication != null)
+            settings.First(s => s.SettingName == nameof(SiteSettingInfo.SmtpServerAndPort)).SettingValue = settingInfo.SmtpServerAndPort;
+            if (settingInfo.SmtpAuthentication != null)
             {
-                settings.First(s => s.SettingName == nameof(SiteSettingInfo.SMTPAuthentication)).SettingValue = settingInfo.SMTPAuthentication.Name;
+                settings.First(s => s.SettingName == nameof(SiteSettingInfo.SmtpAuthentication)).SettingValue = allAuthenticationTypes.First(at => at.Id == settingInfo.SmtpAuthentication.Id).Name;
             }
-            settings.First(s => s.SettingName == nameof(SiteSettingInfo.SMTPEnableSSL)).SettingValue = settingInfo.SMTPEnableSSL.ToString().ToLower();
-            settings.First(s => s.SettingName == nameof(SiteSettingInfo.SMTPUsername)).SettingValue = settingInfo.SMTPUsername;
-            settings.First(s => s.SettingName == nameof(SiteSettingInfo.SMTPPassword)).SettingValue = settingInfo.SMTPPassword;
+            settings.First(s => s.SettingName == nameof(SiteSettingInfo.SmtpEnableSSL)).SettingValue = settingInfo.SmtpEnableSSL.ToString().ToLower();
+            settings.First(s => s.SettingName == nameof(SiteSettingInfo.SmtpUsername)).SettingValue = settingInfo.SmtpUsername;
+            settings.First(s => s.SettingName == nameof(SiteSettingInfo.SmtpPassword)).SettingValue = settingInfo.SmtpPassword;
 
             if (settingInfo.DefaultLayout != null)
             {
@@ -229,11 +230,11 @@ namespace Deviser.Core.Library.Sites
             }
             if (settingInfo.DefaultTheme != null)
             {
-                settings.First(s => s.SettingName == nameof(SiteSettingInfo.DefaultTheme)).SettingValue = settingInfo.DefaultTheme.Value;
+                settings.First(s => s.SettingName == nameof(SiteSettingInfo.DefaultTheme)).SettingValue = settingInfo.DefaultTheme.Key;
             }
             if (settingInfo.DefaultAdminTheme != null)
             {
-                settings.First(s => s.SettingName == nameof(SiteSettingInfo.DefaultAdminTheme)).SettingValue = settingInfo.DefaultAdminTheme.Value;
+                settings.First(s => s.SettingName == nameof(SiteSettingInfo.DefaultAdminTheme)).SettingValue = settingInfo.DefaultAdminTheme.Key;
             }
 
             settings.First(s => s.SettingName == nameof(SiteSettingInfo.RegistrationEnabled)).SettingValue = settingInfo.RegistrationEnabled.ToString().ToLower();
@@ -274,7 +275,7 @@ namespace Deviser.Core.Library.Sites
 
         private List<Theme> GetThemes()
         {
-            var themes = _themeManager.GetHostThemes().Select(kvp => new Theme() { Key = kvp.Key, Value = kvp.Value })
+            var themes = _themeManager.GetHostThemes().Select(kvp => new Theme() { Key = kvp.Value, Value = kvp.Key })
                 .ToList();
             return themes;
         }
