@@ -108,8 +108,17 @@ export class AdminService {
       );
   }
 
+  executeGridAction(actionName: string, record: any) {
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/grid/${actionName}`;
+    return this.http.put<any>(serviceUrl, record, this.httpOptions)
+      .pipe(
+        tap(_ => this.log('executing grid row action')),
+        catchError(this.handleError('executeGridAction', null))
+      );
+  }
+
   executeMainFormAction(actionName: string, record: any) {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/action/${actionName}`;
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/mainform/${actionName}`;
     return this.http.put<any>(serviceUrl, record, this.httpOptions)
       .pipe(
         tap(_ => this.log('executing main form action')),

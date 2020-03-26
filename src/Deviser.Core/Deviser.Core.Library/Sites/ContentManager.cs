@@ -65,11 +65,11 @@ namespace Deviser.Core.Library.Sites
             return null;
         }
 
-        public List<PageContent> Get()
+        public List<PageContent> GetDeletedPageContents()
         {
             try
             {
-                var result = _pageContentRepository.Get();
+                var result = _pageContentRepository.GetDeletedPageContents();
                 return result;
             }
             catch (Exception ex)

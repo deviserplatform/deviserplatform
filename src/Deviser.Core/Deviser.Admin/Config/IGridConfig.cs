@@ -9,6 +9,8 @@ namespace Deviser.Admin
         [JsonIgnore] ICollection<Field> AllIncludeFields { get; }
         [JsonIgnore] ICollection<Field> ExcludedFields { get; }
         ICollection<Field> Fields { get; }
+        bool IsEditVisible { get; set; }
+        bool IsDeleteVisible { get; set; }
         IDictionary<string, AdminAction> RowActions { get; }
         void AddField(Field field);
         void RemoveField(Field field);

@@ -6,7 +6,8 @@ namespace Deviser.Admin.Config
 {
     public enum AdminConfigType
     {
-        GridAndForm = 1,
-        FormOnly = 2
+        GridOnly = 1,
+        GridAndForm = 2,
+        FormOnly = 3
     }
 }

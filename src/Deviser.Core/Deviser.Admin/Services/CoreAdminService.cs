@@ -75,6 +75,18 @@ namespace Deviser.Admin.Services
             return null;
         }
 
+        public async Task<object> ExecuteGridAction(Type modelType, string actionName, object entityObject)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+            var model = ((JObject)entityObject).ToObject(adminConfig.ModelType);
+            if (adminConfig.ModelConfig.GridConfig.RowActions.TryGetValue(actionName.Pascalize(), out AdminAction adminAction) &&
+                adminConfig.ModelType == model.GetType())
+            {
+                return await CallGenericMethod(nameof(ExecuteAdminAction), new Type[] { model.GetType() }, new object[] { model, adminAction });
+            }
+            return null;
+        }
+
         public async Task<object> ExecuteCustomFormAction(Type modelType, string formName, string actionName, object entityObject)
         {
             var adminConfig = GetAdminConfig(modelType);
@@ -280,34 +292,40 @@ namespace Deviser.Admin.Services
         private async Task<TModel> DeleteItem<TModel>(string itemId) where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
-            if (_adminSite.AdminType == AdminType.Custom)
-            {
-                if (_serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService)
-                {
-                    return await adminService.DeleteItem(itemId);
-                }
-                throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
-            }
-            else //if (_adminSite.AdminType == AdminType.Entity)
+
+            if (_adminSite.AdminType == AdminType.Entity)
             {
                 return await _adminRepository.DeleteItemFor<TModel>(itemId);
+            }
+
+            switch (adminConfig.AdminConfigType)
+            {
+                case AdminConfigType.GridOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminGridService<TModel> adminService:
+                    return await adminService.DeleteItem(itemId);
+                case AdminConfigType.GridAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
+                    return await adminService.DeleteItem(itemId);
+                default:
+                    throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
             }
         }
 
         private async Task<PagedResult<TModel>> GetAll<TModel>(int pageNo, int pageSize, string orderByProperties) where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
-            if (_adminSite.AdminType == AdminType.Custom)
-            {
-                if (_serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService)
-                {
-                    return await adminService.GetAll(pageNo, pageSize, orderByProperties);
-                }
-                throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
-            }
-            else //if (_adminSite.AdminType == AdminType.Entity)
+
+            if (_adminSite.AdminType == AdminType.Entity)
             {
                 return await _adminRepository.GetAllFor<TModel>(pageNo, pageSize, orderByProperties);
+            }
+
+            switch (adminConfig.AdminConfigType)
+            {
+                case AdminConfigType.GridOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminGridService<TModel> adminService:
+                    return await adminService.GetAll(pageNo, pageSize, orderByProperties);
+                case AdminConfigType.GridAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
+                    return await adminService.GetAll(pageNo, pageSize, orderByProperties);
+                default:
+                    throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
             }
         }
 

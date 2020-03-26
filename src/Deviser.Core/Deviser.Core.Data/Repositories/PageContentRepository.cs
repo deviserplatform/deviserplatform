@@ -13,7 +13,7 @@ namespace Deviser.Core.Data.Repositories
     {
         PageContent Get(Guid pageContentId);
         List<PageContent> Get(Guid pageId, string cultureCode);
-        List<PageContent> Get();
+        List<PageContent> GetDeletedPageContents();
         PageContent RestorePageContent(Guid id);
         PageContentTranslation GetTranslation(Guid pageContentId);
         PageContentTranslation GetTranslations(Guid pageContentId, string cultureCode);
@@ -132,7 +132,7 @@ namespace Deviser.Core.Data.Repositories
             return null;
         }
 
-        public List<PageContent> Get()
+        public List<PageContent> GetDeletedPageContents()
         {
             try
             {

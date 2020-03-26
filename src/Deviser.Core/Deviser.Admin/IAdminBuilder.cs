@@ -8,6 +8,9 @@ namespace Deviser.Admin
     public interface IAdminBuilder
     {
         MapperConfiguration MapperConfiguration { get; set; }
+        AdminBuilder RegisterGrid<TModel, TAdminGridService>(Action<GridBuilder<TModel>> gridBuilderAction = null)
+            where TModel : class
+            where TAdminGridService : IAdminGridService<TModel>;
         AdminBuilder Register<TModel>(Action<ModelBuilder<TModel>> modelBuilderAction = null) where TModel : class;
         AdminBuilder Register<TModel, TAdminService>(Action<ModelBuilder<TModel>> modelBuilderAction = null)
            where TModel : class

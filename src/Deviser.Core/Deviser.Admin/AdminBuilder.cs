@@ -16,10 +16,23 @@ namespace Deviser.Admin
 
         public MapperConfiguration MapperConfiguration { get; set; }
 
-        public AdminBuilder Register<TEntity>(Action<ModelBuilder<TEntity>> modelBuilderAction = null)
-            where TEntity : class
+        public AdminBuilder RegisterGrid<TModel, TAdminGridService>(Action<GridBuilder<TModel>> gridBuilderAction = null)
+            where TModel : class
+            where TAdminGridService : IAdminGridService<TModel>
         {
-            var adminConfig = new AdminConfig<TEntity>()
+            var adminConfig = new AdminConfig<TModel>()
+            {
+                AdminConfigType = AdminConfigType.GridOnly,
+                AdminServiceType = typeof(TAdminGridService)
+            };
+            BuildAdmin(adminConfig, gridBuilderAction);
+            return this;
+        }
+
+        public AdminBuilder Register<TModel>(Action<ModelBuilder<TModel>> modelBuilderAction = null)
+            where TModel : class
+        {
+            var adminConfig = new AdminConfig<TModel>()
             {
                 AdminConfigType = AdminConfigType.GridAndForm
             };
@@ -70,6 +83,16 @@ namespace Deviser.Admin
             _adminSite.Mapper = MapperConfiguration?.CreateMapper();
 
             formBuilderAction?.Invoke(new FormBuilder<TModel>(adminConfig.ModelConfig.FormConfig, adminConfig.ModelConfig.KeyField));
+
+            _adminSite.Build(adminConfig, hasConfiguration);
+        }
+
+        private void BuildAdmin<TModel>(AdminConfig<TModel> adminConfig, Action<GridBuilder<TModel>> gridBuilderAction) where TModel : class
+        {
+            var hasConfiguration = gridBuilderAction != null;
+            _adminSite.Mapper = MapperConfiguration?.CreateMapper();
+
+            gridBuilderAction?.Invoke(new GridBuilder<TModel>(adminConfig.ModelConfig));
 
             _adminSite.Build(adminConfig, hasConfiguration);
         }

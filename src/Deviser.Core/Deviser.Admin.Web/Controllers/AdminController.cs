@@ -79,49 +79,49 @@ namespace Deviser.Admin.Web.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("modules/[area]/api/{model:required}/meta/list")]
-        public IActionResult GetListMetaInfo(string model)
-        {
-            try
-            {
-                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                var adminConfig = coreAdminService.GetAdminConfig(model); //_adminRepository.GetAdminConfig(model);
-                if (adminConfig != null)
-                {
-                    var listConfig = adminConfig.ModelConfig.GridConfig;
-                    return Ok(listConfig);
-                }
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error occured while getting meta info for model: {model}", ex);
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-        }
+        //[HttpGet]
+        //[Route("modules/[area]/api/{model:required}/meta/list")]
+        //public IActionResult GetListMetaInfo(string model)
+        //{
+        //    try
+        //    {
+        //        ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+        //        var adminConfig = coreAdminService.GetAdminConfig(model); //_adminRepository.GetAdminConfig(model);
+        //        if (adminConfig != null)
+        //        {
+        //            var listConfig = adminConfig.ModelConfig.GridConfig;
+        //            return Ok(listConfig);
+        //        }
+        //        return NotFound();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Error occured while getting meta info for model: {model}", ex);
+        //        return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        //    }
+        //}
 
-        [HttpGet]
-        [Route("modules/[area]/api/{model:required}/meta/fields")]
-        public IActionResult GetFieldMetaInfo(string model)
-        {
-            try
-            {
-                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                var adminConfig = coreAdminService.GetAdminConfig(model); //_adminRepository.GetAdminConfig(model);
-                if (adminConfig != null)
-                {
-                    var fieldConfig = new { adminConfig.ModelConfig.FormConfig.FieldConfig, adminConfig.ModelConfig.FormConfig.FieldSetConfig };
-                    return Ok(fieldConfig);
-                }
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error occured while getting meta info for model: {model}", ex);
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-        }
+        //[HttpGet]
+        //[Route("modules/[area]/api/{model:required}/meta/fields")]
+        //public IActionResult GetFieldMetaInfo(string model)
+        //{
+        //    try
+        //    {
+        //        ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+        //        var adminConfig = coreAdminService.GetAdminConfig(model); //_adminRepository.GetAdminConfig(model);
+        //        if (adminConfig != null)
+        //        {
+        //            var fieldConfig = new { adminConfig.ModelConfig.FormConfig.FieldConfig, adminConfig.ModelConfig.FormConfig.FieldSetConfig };
+        //            return Ok(fieldConfig);
+        //        }
+        //        return NotFound();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Error occured while getting meta info for model: {model}", ex);
+        //        return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        //    }
+        //}
 
         [HttpGet]
         [Route("modules/[area]/api/{model:required}")]
@@ -232,7 +232,34 @@ namespace Deviser.Admin.Web.Controllers
         }
 
         [HttpPut]
-        [Route("modules/[area]/api/{model:required}/action/{actionName:required}")]
+        [Route("modules/[area]/api/{model:required}/grid/{actionName:required}")]
+        public async Task<IActionResult> ExecuteGridAction(string model, string actionName, [FromBody]object modelObject)
+        {
+            try
+            {
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(model);
+                if (modelType == null)
+                {
+                    return BadRequest($"Model {model} is not found");
+                }
+
+                var result = await coreAdminService.ExecuteGridAction(modelType, actionName, modelObject); //_adminRepository.UpdateItemFor(model, fieldObject);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while executing custom action {actionName} for model: {model}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        [Route("modules/[area]/api/{model:required}/mainform/{actionName:required}")]
         public async Task<IActionResult> ExecuteMainFormAction(string model, string actionName, [FromBody]object modelObject)
         {
             try

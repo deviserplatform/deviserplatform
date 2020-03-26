@@ -14,6 +14,7 @@ import { WINDOW } from '../common/services/window.service';
 import { LabelType } from '../common/domain-types/label-type';
 import { Field } from '../common/domain-types/field';
 import { FieldType } from '../common/domain-types/field-type';
+import { FormResult } from '../common/domain-types/form-result';
 
 
 @Component({
@@ -100,7 +101,32 @@ export class AdminGridComponent implements OnInit {
 
   onNoToDelete(item: any): void {
     console.log('declined');
+  }
 
+  onRowAction(actionName: string, item: any) {
+    if (actionName && item) {
+      this.adminService.executeGridAction(actionName, item)
+        .subscribe(formValue => this.onActionResult(formValue));
+    }
+  }
+
+  onActionResult(formValue: FormResult): void {
+    if (formValue && formValue.isSucceeded) {
+      let alert: Alert = {
+        alterType: AlertType.Success,
+        message: formValue.successMessage,
+        timeout: 5000
+      }
+      this.alerts.push(alert);
+    }
+    else {
+      let alert: Alert = {
+        alterType: AlertType.Error,
+        message: formValue.successMessage,
+        timeout: 5000
+      }
+      this.alerts.push(alert);
+    }
   }
 
   getBadge(item: any, field: Field): string {

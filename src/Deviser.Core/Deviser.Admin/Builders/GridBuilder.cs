@@ -33,6 +33,22 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
+        /// <summary>
+        /// Adds a KeyField to this grid. Use this method only for GridOnly AdminConfigType
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="expression">An expression to specify the key field</param>
+        /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
+        public GridBuilder<TModel> AddKeyField<TProperty>(Expression<Func<TModel, TProperty>> expression)
+        {
+            if (_modelConfig.KeyField.FieldExpression != null)
+            {
+                throw new InvalidOperationException(Resources.MoreKeyFieldsInvalidOperation);
+            }
+            _modelConfig.KeyField.FieldExpression = expression;
+            return this;
+        }
+
         public GridBuilder<TModel> AddRowAction(string actionName, string actionButtonText, Expression<Func<IServiceProvider, TModel, Task<FormResult>>> formActionExpression)
         {
             _modelConfig.GridConfig.RowActions.Add(actionName, new AdminAction
@@ -92,6 +108,18 @@ namespace Deviser.Admin.Builders
             }
 
             field.FieldOption.LabelOption = new LabelOption { LabelType = labelType };
+            return this;
+        }
+
+        public GridBuilder<TModel> HideDeleteButton()
+        {
+            _modelConfig.GridConfig.IsDeleteVisible = false;
+            return this;
+        }
+
+        public GridBuilder<TModel> HideEditButton()
+        {
+            _modelConfig.GridConfig.IsEditVisible = false;
             return this;
         }
 
