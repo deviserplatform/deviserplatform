@@ -12,6 +12,8 @@ namespace Deviser.Admin.Builders
         public FormBuilder<TModel> FormBuilder { get; }
         public GridBuilder<TModel> GridBuilder { get; }
 
+        public TreeBuilder<TModel> TreeBuilder { get; }
+
         public string AdminTitle
         {
             get => _adminConfig.AdminTitle;
@@ -23,6 +25,7 @@ namespace Deviser.Admin.Builders
             _adminConfig = adminConfig;
             FormBuilder = new FormBuilder<TModel>(_adminConfig.ModelConfig.FormConfig, _adminConfig.ModelConfig.KeyField);
             GridBuilder = new GridBuilder<TModel>(_adminConfig.ModelConfig);
+            TreeBuilder = new TreeBuilder<TModel>(_adminConfig.ModelConfig);
         }
 
         public ModelBuilder<TModel> AddChildConfig<TProperty>(Expression<Func<TModel, ICollection<TProperty>>> expression,

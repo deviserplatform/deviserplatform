@@ -66,7 +66,7 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public FormBuilder<TModel> AddFormAction(string actionName, string actionButtonText, Expression<Func<IServiceProvider, TModel, Task<FormResult>>> formActionExpression)
+        public FormBuilder<TModel> AddFormAction(string actionName, string actionButtonText, Expression<Func<IServiceProvider, TModel, Task<IFormResult<TModel>>>> formActionExpression)
         {
             _formConfig.FormActions.Add(actionName, new AdminAction
             {

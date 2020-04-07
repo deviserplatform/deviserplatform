@@ -79,50 +79,6 @@ namespace Deviser.Admin.Web.Controllers
             }
         }
 
-        //[HttpGet]
-        //[Route("modules/[area]/api/{model:required}/meta/list")]
-        //public IActionResult GetListMetaInfo(string model)
-        //{
-        //    try
-        //    {
-        //        ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-        //        var adminConfig = coreAdminService.GetAdminConfig(model); //_adminRepository.GetAdminConfig(model);
-        //        if (adminConfig != null)
-        //        {
-        //            var listConfig = adminConfig.ModelConfig.GridConfig;
-        //            return Ok(listConfig);
-        //        }
-        //        return NotFound();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError($"Error occured while getting meta info for model: {model}", ex);
-        //        return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-        //    }
-        //}
-
-        //[HttpGet]
-        //[Route("modules/[area]/api/{model:required}/meta/fields")]
-        //public IActionResult GetFieldMetaInfo(string model)
-        //{
-        //    try
-        //    {
-        //        ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-        //        var adminConfig = coreAdminService.GetAdminConfig(model); //_adminRepository.GetAdminConfig(model);
-        //        if (adminConfig != null)
-        //        {
-        //            var fieldConfig = new { adminConfig.ModelConfig.FormConfig.FieldConfig, adminConfig.ModelConfig.FormConfig.FieldSetConfig };
-        //            return Ok(fieldConfig);
-        //        }
-        //        return NotFound();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError($"Error occured while getting meta info for model: {model}", ex);
-        //        return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-        //    }
-        //}
-
         [HttpGet]
         [Route("modules/[area]/api/{model:required}")]
         public async Task<IActionResult> GetAllRecords(string model, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null)
@@ -149,7 +105,34 @@ namespace Deviser.Admin.Web.Controllers
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
-                
+
+        [HttpGet]
+        [Route("modules/[area]/api/{model:required}/tree")]
+        public async Task<IActionResult> GetTree(string model)
+        {
+            try
+            {
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(model);
+                if (modelType == null)
+                {
+                    return BadRequest($"Model {model} is not found");
+                }
+
+                var result = await coreAdminService.GetTree(modelType);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while getting tree for model: {model}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpGet]
         [Route("modules/[area]/api/{model:required}/{id:required}")]
         public async Task<IActionResult> GetItem(string model, string id)
@@ -227,6 +210,33 @@ namespace Deviser.Admin.Web.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Error occured while updating a record for model: {model}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        [Route("modules/[area]/api/{model:required}/tree")]
+        public async Task<IActionResult> UpdateTree(string model, [FromBody]object modelObject)
+        {
+            try
+            {
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(model);
+                if (modelType == null)
+                {
+                    return BadRequest($"Model {model} is not found");
+                }
+
+                var result = await coreAdminService.UpdateTree(modelType, modelObject); //_adminRepository.UpdateItemFor(model, fieldObject);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while updating tree for model: {model}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }

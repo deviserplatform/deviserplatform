@@ -1,5 +1,6 @@
 export enum AdminConfigType {
     GridOnly = 'GridOnly',
     GridAndForm = 'GridAndForm',
-    FormOnly = 'FormOnly'
+    FormOnly = 'FormOnly',
+    TreeAndForm = 'TreeAndForm'
 }

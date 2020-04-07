@@ -1,10 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DatePipe } from '@angular/common';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import {MatButtonModule} from '@angular/material/button';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import {CdkTreeModule} from '@angular/cdk/tree';
+import {MatIconModule} from '@angular/material/icon';
 
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { AlertModule } from 'ngx-bootstrap/alert';
@@ -31,13 +35,15 @@ import { CheckboxListComponent } from './common/components/checkbox-list/checkbo
 import { AdminAlertComponent } from './common/components/admin-alert/admin-alert.component';
 import { WINDOW_PROVIDERS } from './common/services/window.service';
 import { EnvPathPipe } from './common/pipes/env-path.pipe';
+import { AdminTreeComponent } from './admin-tree/admin-tree.component';
+import { TreeControlComponent } from './common/components/tree-control/tree-control.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     AdminFormComponent,
-    AdminGridComponent,
+    AdminGridComponent,    
     ConfirmDialogComponent,
     FormControlComponent,
     FormatFieldPipe,
@@ -48,7 +54,9 @@ import { EnvPathPipe } from './common/pipes/env-path.pipe';
     ChildGridComponent,
     CheckboxListComponent,
     AdminAlertComponent,
-    EnvPathPipe
+    EnvPathPipe,
+    AdminTreeComponent,
+    TreeControlComponent
   ],
   imports: [    
     AccordionModule.forRoot(),
@@ -57,10 +65,14 @@ import { EnvPathPipe } from './common/pipes/env-path.pipe';
     BrowserAnimationsModule,
     BrowserModule,
     BsDatepickerModule.forRoot(),
+    CdkTreeModule,
     CKEditorModule,
+    DragDropModule,
     FormsModule,
     HttpClientModule,
     InlineSVGModule.forRoot(),
+    MatButtonModule,
+    MatIconModule,
     ModalModule.forRoot(),
     NgSelectModule,
     PaginationModule.forRoot(),

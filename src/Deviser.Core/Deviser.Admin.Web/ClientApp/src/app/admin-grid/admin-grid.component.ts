@@ -15,6 +15,9 @@ import { LabelType } from '../common/domain-types/label-type';
 import { Field } from '../common/domain-types/field';
 import { FieldType } from '../common/domain-types/field-type';
 import { FormResult } from '../common/domain-types/form-result';
+import { AdminResult } from '../common/domain-types/admin-result';
+import { DAConfig } from '../common/domain-types/da-config';
+import { AdminConfigType } from '../common/domain-types/admin-confit-type';
 
 
 @Component({
@@ -28,16 +31,22 @@ export class AdminGridComponent implements OnInit {
   alerts: Alert[];
   entityRecords: any;
   pagination: Pagination;
+  labelType = LabelType;
+  daConfig: DAConfig;
 
+  adminConfigType = AdminConfigType;
+  
   @ViewChild(ConfirmDialogComponent)
   private confirmDialogComponent: ConfirmDialogComponent;
-
-  labelType = LabelType;
+  
+  
 
   constructor(private adminService: AdminService,
     private recordIdPipe: RecordIdPipe,
-    private router: Router) {
+    private router: Router,
+    @Inject(WINDOW) private window: any) {
     this.alerts = [];
+    this.daConfig = window.daConfig;
   }
 
   ngOnInit() {
@@ -81,22 +90,7 @@ export class AdminGridComponent implements OnInit {
     console.log('confirm');
     const itemId = this.recordIdPipe.transform(item, this.adminConfig.modelConfig.keyField);
     this.adminService.deleteRecord(itemId)
-      .subscribe(response => this.onDeleteResponse(response));
-  }
-
-  onDeleteResponse(response: any): void {
-    if (response) {
-      console.log(response);
-      this.getAllRecords(this.pagination);
-    }
-    else {
-      let alert: Alert = {
-        alterType: AlertType.Error,
-        message: "Unable to delete this item, please contact administrator",
-        timeout: 5000
-      }
-      this.alerts.push(alert);
-    }
+      .subscribe(response => this.onActionResult(response));
   }
 
   onNoToDelete(item: any): void {
@@ -106,23 +100,24 @@ export class AdminGridComponent implements OnInit {
   onRowAction(actionName: string, item: any) {
     if (actionName && item) {
       this.adminService.executeGridAction(actionName, item)
-        .subscribe(formValue => this.onActionResult(formValue));
+        .subscribe(adminResult => this.onActionResult(adminResult));
     }
   }
 
-  onActionResult(formValue: FormResult): void {
-    if (formValue && formValue.isSucceeded) {
+  onActionResult(adminResult: AdminResult): void {
+    if (adminResult && adminResult.isSucceeded) {
       let alert: Alert = {
         alterType: AlertType.Success,
-        message: formValue.successMessage,
+        message: adminResult.successMessage,
         timeout: 5000
       }
       this.alerts.push(alert);
+      this.getAllRecords(this.pagination);
     }
     else {
       let alert: Alert = {
         alterType: AlertType.Error,
-        message: formValue.successMessage,
+        message: adminResult.successMessage,
         timeout: 5000
       }
       this.alerts.push(alert);

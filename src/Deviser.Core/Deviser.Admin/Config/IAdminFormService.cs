@@ -6,6 +6,6 @@ namespace Deviser.Admin.Config
         where TModel : class
     {
         Task<TModel> GetModel();
-        Task<FormResult<TModel>> SaveModel(TModel item);
+        Task<IFormResult<TModel>> SaveModel(TModel item);
     }
 }

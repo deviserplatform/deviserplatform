@@ -43,7 +43,7 @@ namespace Deviser.Modules.ContentManagement.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<FormResult<Property>> CreateItem(Property item)
+        public async Task<IFormResult<Property>> CreateItem(Property item)
         {
             ParseProperty(item);
             var resultProperty = _propertyRepository.CreateProperty(item);
@@ -52,7 +52,7 @@ namespace Deviser.Modules.ContentManagement.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<FormResult<Property>> UpdateItem(Property item)
+        public async Task<IFormResult<Property>> UpdateItem(Property item)
         {
             ParseProperty(item);
             var resultProperty = _propertyRepository.UpdateProperty(item);
@@ -61,16 +61,17 @@ namespace Deviser.Modules.ContentManagement.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<Property> DeleteItem(string itemId)
+        public async Task<IAdminResult<Property>> DeleteItem(string itemId)
         {
             var property = _propertyRepository.GetProperty(Guid.Parse(itemId));
             if (property == null)
             {
-                return await Task.FromResult<Property>(null);
+                return await Task.FromResult<AdminResult<Property>>(null);
             }
 
             property.IsActive = false;
-            var result = _propertyRepository.UpdateProperty(property);
+            property = _propertyRepository.UpdateProperty(property);
+            var result = new FormResult<Property>(property);
             return await Task.FromResult(result);
         }
 

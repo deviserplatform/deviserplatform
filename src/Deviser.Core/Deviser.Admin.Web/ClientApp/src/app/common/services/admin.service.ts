@@ -71,6 +71,16 @@ export class AdminService {
       );
   }
 
+  getTree(): Observable<any> {
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/tree`;
+    
+    return this.http.get<any>(serviceUrl)
+      .pipe(
+        tap(_ => this.log('fetched all records')),
+        catchError(this.handleError('getAllRecords', null))
+      );
+  }
+
   getRecord(id: string): Observable<any> {
     const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/${id}`;
 
@@ -81,7 +91,7 @@ export class AdminService {
       );
   }
 
-  getLookUp(formType: FormType, formName: string, fieldName: string, filterParam: any){
+  getLookUp(formType: FormType, formName: string, fieldName: string, filterParam: any) {
     const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/lookup/${formType}/field/${fieldName}`;
     return this.http.put<any>(serviceUrl, filterParam, this.httpOptions)
       .pipe(
@@ -126,7 +136,7 @@ export class AdminService {
       );
   }
 
-  customFormSubmit(formName: string, record: any){
+  customFormSubmit(formName: string, record: any) {
     const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/form/${formName}`;
     return this.http.put<any>(serviceUrl, record, this.httpOptions)
       .pipe(

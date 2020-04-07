@@ -902,22 +902,19 @@ namespace Deviser.Core.Data.Repositories
 
                 //PageTranslation
                 var dbPageTranslation = context.PageTranslation
-                    .Where(p => p.PageId == id)
-                    .ToList();
+                    .Where(p => p.PageId == id);
 
                 context.PageTranslation.RemoveRange(dbPageTranslation);
 
                 //PagePermission
                 var dbPagePermission = context.PagePermission
-                    .Where(p => p.PageId == id)
-                    .ToList();
+                    .Where(p => p.PageId == id);
 
                 context.PagePermission.RemoveRange(dbPagePermission);
 
                 //PageContent
                 var dbPageContent = context.PageContent
-                    .Where(p => p.PageId == id)
-                    .ToList();
+                    .Where(p => p.PageId == id);
 
                 context.PageContent.RemoveRange(dbPageContent);
 
@@ -925,15 +922,14 @@ namespace Deviser.Core.Data.Repositories
                 foreach (var pageContent in dbPageContent)
                 {
                     var dbContentPermission = context.ContentPermission
-                        .Where(p => p.PageContentId == pageContent.Id)
-                        .ToList();
+                        .Where(p => p.PageContentId == pageContent.Id);
                     if (dbContentPermission != null)
                         context.ContentPermission.RemoveRange(dbContentPermission);
 
                     //PageContentTranslation
                     var dbPageContentTranslation = context.PageContentTranslation
-                        .Where(p => p.PageContentId == pageContent.Id)
-                        .ToList();
+                        .Where(p => p.PageContentId == pageContent.Id);
+
                     context.PageContentTranslation.RemoveRange(dbPageContentTranslation);
 
 
@@ -941,8 +937,7 @@ namespace Deviser.Core.Data.Repositories
 
                 //PageModule
                 var dbPageModule = context.PageModule
-                    .Where(p => p.PageId == id)
-                    .ToList();
+                    .Where(p => p.PageId == id);
 
                 context.PageModule.RemoveRange(dbPageModule);
 
@@ -954,6 +949,9 @@ namespace Deviser.Core.Data.Repositories
                         .ToList();
                     context.ModulePermission.RemoveRange(dbModulePermission);
                 }
+
+                var adminPages = context.AdminPage.Where(ap => ap.PageId == id);
+                context.RemoveRange(adminPages);
 
                 context.SaveChanges();
                 return true;

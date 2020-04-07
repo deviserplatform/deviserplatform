@@ -8,6 +8,7 @@ namespace Deviser.Admin.Config
     {
         GridOnly = 1,
         GridAndForm = 2,
-        FormOnly = 3
+        FormOnly = 3,
+        TreeAndForm = 4
     }
 }

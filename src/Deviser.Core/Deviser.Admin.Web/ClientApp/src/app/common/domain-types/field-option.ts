@@ -1,5 +1,5 @@
 import { ValidationType } from './validation-type';
-import { FieldExpression } from './FieldExpression';
+import { FieldExpression } from './field-expression';
 import { RelationType } from './relation-type';
 import { RelatedField } from './related-field';
 import { FormMode } from './form-mode';

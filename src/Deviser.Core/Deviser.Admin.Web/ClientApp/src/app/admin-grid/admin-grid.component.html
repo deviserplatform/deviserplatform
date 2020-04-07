@@ -6,7 +6,7 @@
     </div>
     <div class="card-body">
       <div class="row action-bar">
-        <div class="col">
+        <div class="col" *ngIf="daConfig.adminConfigType == adminConfigType.GridAndForm">
           <div class="float-left">
             <button type="button" class="btn btn-primary" (click)="onNewItem()">
               <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-add.svg'| envPath"></i> New

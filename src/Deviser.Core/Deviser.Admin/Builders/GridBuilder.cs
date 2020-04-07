@@ -49,7 +49,7 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public GridBuilder<TModel> AddRowAction(string actionName, string actionButtonText, Expression<Func<IServiceProvider, TModel, Task<FormResult>>> formActionExpression)
+        public GridBuilder<TModel> AddRowAction(string actionName, string actionButtonText, Expression<Func<IServiceProvider, TModel, Task<IAdminResult>>> formActionExpression)
         {
             _modelConfig.GridConfig.RowActions.Add(actionName, new AdminAction
             {

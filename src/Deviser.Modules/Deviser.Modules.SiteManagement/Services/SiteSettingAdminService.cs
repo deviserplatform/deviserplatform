@@ -37,7 +37,7 @@ namespace Deviser.Modules.SiteManagement.Services
             return await Task.FromResult(siteSettings);
         }
 
-        public async Task<FormResult<SiteSettingInfo>> SaveModel(SiteSettingInfo item)
+        public async Task<IFormResult<SiteSettingInfo>> SaveModel(SiteSettingInfo item)
         {
             var settingInfo = _settingManager.UpdateSettingInfo(item);
             if (settingInfo != null)

@@ -12,9 +12,11 @@ namespace Deviser.Admin.Services
         IAdminConfig GetAdminConfig(string entity);
 
         Task<object> GetAllFor(Type modelType, int pageNo, int pageSize, string orderByProperties);
+        Task<object> GetTree(Type modelType);
         Task<object> GetItemFor(Type modelType, string itemId);
         Task<object> CreateItemFor(Type modelType, object item);
         Task<object> UpdateItemFor(Type modelType, object item);
+        Task<object> UpdateTree(Type modelType, object item);
         Task<object> DeleteItemFor(Type modelType, string itemId);
 
         Task<object> ExecuteGridAction(Type modelType, string actionName, object entityObject);
@@ -33,5 +35,6 @@ namespace Deviser.Admin.Services
         Task<ICollection<LookUpField>> GetLookUpForMainForm(Type modelType, string fieldName, object filterParam);
         Task<ICollection<LookUpField>> GetLookUpForChildForm(Type modelType, string formName, string fieldName, object filterParam);
         Task<ICollection<LookUpField>> GetLookUpForCustomForm(Type modelType, string formName, string fieldName, object filterParam);
+        
     }
 }

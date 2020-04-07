@@ -55,6 +55,19 @@ namespace Deviser.Admin
             return this;
         }
 
+        public AdminBuilder RegisterTreeAndForm<TModel, TAdminService>(Action<ModelBuilder<TModel>> modelBuilderAction = null)
+            where TModel : class
+            where TAdminService : IAdminTreeService<TModel>
+        {
+            var adminConfig = new AdminConfig<TModel>
+            {
+                AdminConfigType = AdminConfigType.TreeAndForm,
+                AdminServiceType = typeof(TAdminService)
+            };
+            BuildAdmin(adminConfig, modelBuilderAction);
+            return this;
+        }
+
         public AdminBuilder RegisterForm<TModel, TAdminService>(Action<FormBuilder<TModel>> formBuilderAction = null)
             where TModel : class where TAdminService : IAdminFormService<TModel>
         {

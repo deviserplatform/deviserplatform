@@ -10,6 +10,6 @@ namespace Deviser.Admin.Config
         where TModel : class
     {
         Task<PagedResult<TModel>> GetAll(int pageNo, int pageSize, string orderByProperties);
-        Task<TModel> DeleteItem(string itemId);
+        Task<IAdminResult<TModel>> DeleteItem(string itemId);
     }
 }

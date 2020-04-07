@@ -62,7 +62,7 @@ namespace Deviser.Modules.ContentManagement.Services
             result.AllowedLayoutTypes = layoutTypes.Where(lt => layoutTypeIds.Contains(lt.Id)).ToList();
         }
 
-        public async Task<FormResult<LayoutType>> CreateItem(LayoutType layoutType)
+        public async Task<IFormResult<LayoutType>> CreateItem(LayoutType layoutType)
         {
             ParseAllowedLayoutTypes(layoutType);
             var resultLayoutType = _layoutTypeRepository.CreateLayoutType(layoutType);
@@ -80,7 +80,7 @@ namespace Deviser.Modules.ContentManagement.Services
             }
         }
 
-        public async Task<FormResult<LayoutType>> UpdateItem(LayoutType layoutType)
+        public async Task<IFormResult<LayoutType>> UpdateItem(LayoutType layoutType)
         {
             ParseAllowedLayoutTypes(layoutType);
             var resultLayoutType = _layoutTypeRepository.UpdateLayoutType(layoutType);
@@ -89,16 +89,17 @@ namespace Deviser.Modules.ContentManagement.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<LayoutType> DeleteItem(string layoutTypeId)
+        public async Task<IAdminResult<LayoutType>> DeleteItem(string layoutTypeId)
         {
             var layoutType = _layoutTypeRepository.GetLayoutType(Guid.Parse(layoutTypeId));
             if (layoutType == null)
             {
-                return await Task.FromResult<LayoutType>(null);
+                return await Task.FromResult<AdminResult<LayoutType>>(null);
             }
 
             layoutType.IsActive = false;
-            var result = _layoutTypeRepository.UpdateLayoutType(layoutType);
+            layoutType = _layoutTypeRepository.UpdateLayoutType(layoutType);
+            var result = new AdminResult<LayoutType>(layoutType);
             return await Task.FromResult(result);
         }
 

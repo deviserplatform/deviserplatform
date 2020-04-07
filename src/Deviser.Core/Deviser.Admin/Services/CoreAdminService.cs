@@ -124,6 +124,11 @@ namespace Deviser.Admin.Services
             return await CallGenericMethod(nameof(GetAll), new Type[] { modelType }, new object[] { pageNo, pageSize, orderByProperties });
         }
 
+        public async Task<object> GetTree(Type modelType)
+        {
+            return await CallGenericMethod(nameof(GetTree), new Type[] { modelType }, null);
+        }
+
         public async Task<object> GetItemFor(Type modelType, string itemId)
         {
             return await CallGenericMethod(nameof(GetItem), new Type[] { modelType }, new object[] { itemId });
@@ -148,6 +153,11 @@ namespace Deviser.Admin.Services
         public async Task<object> UpdateItemFor(Type modelType, object item)
         {
             return await CallGenericMethod(nameof(UpdateItem), new Type[] { modelType }, new object[] { item });
+        }
+
+        public async Task<object> UpdateTree(Type modelType, object item)
+        {
+            return await CallGenericMethod(nameof(UpdateTree), new Type[] { modelType }, new object[] { item });
         }
 
         public async Task<ValidationResult> ExecuteMainFormCustomValidation(Type modelType, string fieldName, object fieldObject)
@@ -270,32 +280,36 @@ namespace Deviser.Admin.Services
             return result;
         }
 
-        private async Task<FormResult<TModel>> CreateItem<TModel>(object item) where TModel : class
+        private async Task<IFormResult<TModel>> CreateItem<TModel>(object item) where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
             var modelToAdd = ((JObject)item).ToObject<TModel>(_serializer);
-            if (_adminSite.AdminType == AdminType.Custom)
-            {
-                if (_serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService)
-                {
-                    return await adminService.CreateItem(modelToAdd);
-                }
-                throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
-            }
-            else //if (_adminSite.AdminType == AdminType.Entity)
+            
+            if (_adminSite.AdminType == AdminType.Entity)
             {
                 var result = await _adminRepository.CreateItemFor<TModel>(modelToAdd);
                 return new FormResult<TModel>(result);
             }
+
+            switch (adminConfig.AdminConfigType)
+            {
+                case AdminConfigType.GridAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
+                    return await adminService.CreateItem(modelToAdd);
+                case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminTreeService<TModel> adminService:
+                    return await adminService.CreateItem(modelToAdd);
+                default:
+                    throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
+            }
         }
 
-        private async Task<TModel> DeleteItem<TModel>(string itemId) where TModel : class
+        private async Task<IAdminResult<TModel>> DeleteItem<TModel>(string itemId) where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
 
             if (_adminSite.AdminType == AdminType.Entity)
             {
-                return await _adminRepository.DeleteItemFor<TModel>(itemId);
+                var result = await _adminRepository.DeleteItemFor<TModel>(itemId);
+                return new AdminResult<TModel>(result);
             }
 
             switch (adminConfig.AdminConfigType)
@@ -303,6 +317,8 @@ namespace Deviser.Admin.Services
                 case AdminConfigType.GridOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminGridService<TModel> adminService:
                     return await adminService.DeleteItem(itemId);
                 case AdminConfigType.GridAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
+                    return await adminService.DeleteItem(itemId);
+                case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminTreeService<TModel> adminService:
                     return await adminService.DeleteItem(itemId);
                 default:
                     throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
@@ -329,6 +345,18 @@ namespace Deviser.Admin.Services
             }
         }
 
+        private async Task<TModel> GetTree<TModel>() where TModel : class
+        {
+            var adminConfig = GetAdminConfig(typeof(TModel));
+            var adminService = _serviceProvider.GetService(adminConfig.AdminServiceType) as IAdminTreeService<TModel>;
+
+            if (adminService == null)
+            {
+                throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
+            }
+            return await adminService.GetTree();
+        }
+
         private async Task<TModel> GetItem<TModel>(string itemId) where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
@@ -341,12 +369,14 @@ namespace Deviser.Admin.Services
                     return await adminService.GetItem(itemId);
                 case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminFormService<TModel> adminService:
                     return await adminService.GetModel();
+                case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminTreeService<TModel> adminService:
+                    return await adminService.GetItem(itemId);
                 default:
                     throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
             }
         }
 
-        private async Task<FormResult<TModel>> UpdateItem<TModel>(object item) where TModel : class
+        private async Task<IFormResult<TModel>> UpdateItem<TModel>(object item) where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
             var modelToUpdate = ((JObject)item).ToObject<TModel>(_serializer);
@@ -363,9 +393,24 @@ namespace Deviser.Admin.Services
                     return await adminService.UpdateItem(modelToUpdate);
                 case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminFormService<TModel> adminService:
                     return await adminService.SaveModel(modelToUpdate);
+                case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminTreeService<TModel> adminService:
+                    return await adminService.UpdateItem(modelToUpdate);
                 default:
                     throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
             }
+        }
+
+        private async Task<IFormResult<TModel>> UpdateTree<TModel>(object item) where TModel : class
+        {
+            var adminConfig = GetAdminConfig(typeof(TModel));
+            var adminService = _serviceProvider.GetService(adminConfig.AdminServiceType) as IAdminTreeService<TModel>;
+
+            if (adminService == null)
+            {
+                throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
+            }
+            var modelToUpdate = ((JObject)item).ToObject<TModel>(_serializer);
+            return await adminService.UpdateTree(modelToUpdate);
         }
 
         private IAdminConfig GetAdminConfig(Type modelType)
@@ -390,17 +435,17 @@ namespace Deviser.Admin.Services
             return null;
         }
 
-        private async Task<IFormResult> ExecuteAdminAction<TModel>(TModel entityObject, AdminAction adminAction) where TModel : class
+        private async Task<IAdminResult> ExecuteAdminAction<TModel>(TModel entityObject, AdminAction adminAction) where TModel : class
         {
             var formActionDelegate = adminAction.FormActionExpression.Compile();
-            var result = await (dynamic)formActionDelegate.DynamicInvoke(_serviceProvider, entityObject) as IFormResult;
+            var result = await (dynamic)formActionDelegate.DynamicInvoke(_serviceProvider, entityObject) as IAdminResult;
             return result;
         }
 
-        private async Task<IFormResult> ExecuteCustomFormSubmitAction<TModel>(TModel entityObject, CustomForm customForm) where TModel : class
+        private async Task<IAdminResult> ExecuteCustomFormSubmitAction<TModel>(TModel entityObject, CustomForm customForm) where TModel : class
         {
             var formActionDelegate = customForm.SubmitActionExpression.Compile();
-            var result = await (dynamic)formActionDelegate.DynamicInvoke(_serviceProvider, entityObject) as IFormResult;
+            var result = await (dynamic)formActionDelegate.DynamicInvoke(_serviceProvider, entityObject) as IAdminResult;
             return result;
         }
     }

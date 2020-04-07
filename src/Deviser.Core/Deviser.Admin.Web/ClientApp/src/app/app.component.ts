@@ -19,10 +19,13 @@ export class AppComponent implements OnInit {
   }
   ngOnInit(): void {
     if (this.daConfig.adminConfigType === AdminConfigType.GridOnly || this.daConfig.adminConfigType === AdminConfigType.GridAndForm) {
-      this.router.navigateByUrl('list')
+      this.router.navigateByUrl('list');
     }
     else if (this.daConfig.adminConfigType === AdminConfigType.FormOnly) {
       this.router.navigateByUrl('detail/');
+    }
+    else if(this.daConfig.adminConfigType === AdminConfigType.TreeAndForm){
+      this.router.navigateByUrl('tree');
     }
   }
 }

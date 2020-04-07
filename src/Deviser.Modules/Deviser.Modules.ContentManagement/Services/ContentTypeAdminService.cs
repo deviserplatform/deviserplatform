@@ -44,30 +44,31 @@ namespace Deviser.Modules.ContentManagement.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<FormResult<ContentType>> CreateItem(ContentType contentType)
+        public async Task<IFormResult<ContentType>> CreateItem(ContentType contentType)
         {
             contentType = _contentTypeRepository.CreateContentType(contentType);
             var result = new FormResult<ContentType>(contentType);
             return await Task.FromResult(result);
         }
 
-        public async Task<FormResult<ContentType>> UpdateItem(ContentType contentType)
+        public async Task<IFormResult<ContentType>> UpdateItem(ContentType contentType)
         {
             contentType = _contentTypeRepository.UpdateContentType(contentType);
             var result = new FormResult<ContentType>(contentType);
             return await Task.FromResult(result);
         }
 
-        public async Task<ContentType> DeleteItem(string contentTypeId)
+        public async Task<IAdminResult<ContentType>> DeleteItem(string contentTypeId)
         {
             var contentType = _contentTypeRepository.GetContentType(Guid.Parse(contentTypeId));
             if (contentType == null)
             {
-                return await Task.FromResult<ContentType>(null);
+                return await Task.FromResult<AdminResult<ContentType>>(null);
             }
 
             contentType.IsActive = false;
-            var result = _contentTypeRepository.UpdateContentType(contentType);
+            contentType = _contentTypeRepository.UpdateContentType(contentType);
+            var result = new AdminResult<ContentType>(contentType);
             return await Task.FromResult(result);
         }
 

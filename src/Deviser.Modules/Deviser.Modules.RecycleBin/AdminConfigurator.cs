@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Deviser.Admin;
+using Deviser.Admin.Config;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Multilingual;
@@ -20,8 +21,10 @@ namespace Deviser.Modules.RecycleBin
             {
                 builder
                     .AddKeyField(r => r.Id)
-                    .AddField(r => r.Name)
-                    .AddField(r => r.RecycleItemType);
+                    .AddField(r => r.Name, option => option.DisplayName = "Name / Title")
+                    .AddField(r => r.RecycleItemTypeString, option => option.DisplayName = "Item Type");
+
+                builder.DisplayFieldAs(c => c.Name, LabelType.Icon, c => c.RecycleItemTypeIconClass);
 
                 builder.AddRowAction("Restore", "Restore",
                     (provider, item) => provider.GetService<RecycleAdminService>().Restore(item));

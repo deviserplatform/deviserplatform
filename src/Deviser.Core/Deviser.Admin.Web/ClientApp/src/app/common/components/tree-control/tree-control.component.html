@@ -1,0 +1,19 @@
+<p>Drag and drop the tree nodes. Move them within the same level, or across different levels.</p>
+<cdk-tree [dataSource]="dataSource" [treeControl]="treeControl" cdkDropList (cdkDropListDropped)="drop($event)">
+  <!-- This is the tree node template for leaf nodes -->
+  <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodeToggle cdkTreeNodePadding cdkDrag [cdkDragData]="node" (mouseenter)="dragHover(node)" (mouseleave)="dragHoverEnd()" (cdkDragStarted)="dragStart()" (cdkDragReleased)="dragEnd()">
+    <!-- use a disabled button to provide padding for tree leaf -->
+    <button mat-icon-button disabled></button>
+    {{node.name}}
+  </cdk-tree-node>
+  <!-- This is the tree node template for expandable nodes -->
+  <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChild" cdkTreeNodePadding cdkDrag [cdkDragData]="node" (mouseenter)="dragHover(node)" (mouseleave)="dragHoverEnd()" (cdkDragStarted)="dragStart()" (cdkDragReleased)="dragEnd()">
+    <button mat-icon-button cdkTreeNodeToggle
+            [attr.aria-label]="'toggle ' + node.filename">
+     <mat-icon class="mat-icon-rtl-mirror">
+        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    {{node.name}}
+  </cdk-tree-node>
+</cdk-tree>

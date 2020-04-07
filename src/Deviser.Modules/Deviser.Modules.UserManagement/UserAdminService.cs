@@ -31,7 +31,7 @@ namespace Deviser.Modules.UserManagement
             _userManager = userManager;
         }
 
-        public async Task<FormResult<User>> CreateItem(User item)
+        public async Task<IFormResult<User>> CreateItem(User item)
         {
             if (item != null)
             {
@@ -49,7 +49,7 @@ namespace Deviser.Modules.UserManagement
             return null;
         }
 
-        public async Task<User> DeleteItem(string userId)
+        public async Task<IAdminResult<User>> DeleteItem(string userId)
         {
             var user = _userManager.Users.FirstOrDefault(u => u.Id == Guid.Parse(userId));
             if (user != null)
@@ -57,7 +57,8 @@ namespace Deviser.Modules.UserManagement
                 var identityResult = await _userManager.DeleteAsync(user);
                 if (identityResult != null)
                 {
-                    var result = _mapper.Map<User>(user);
+                    var userResult = _mapper.Map<User>(user);
+                    var result = new AdminResult<User>(userResult);
                     return result;
                 }
             }
@@ -87,7 +88,7 @@ namespace Deviser.Modules.UserManagement
             return await Task.FromResult(result);
         }
 
-        public async Task<FormResult<User>> UpdateItem(User user)
+        public async Task<IFormResult<User>> UpdateItem(User user)
         {
             var dbUser = _userManager.Users.FirstOrDefault(u => u.Id == user.Id);
             if (dbUser != null)
@@ -120,7 +121,7 @@ namespace Deviser.Modules.UserManagement
             return await Task.FromResult<FormResult<User>>(null);
         }
 
-        public async Task<FormResult> ResetPassword(PasswordReset passwordReset)
+        public async Task<IFormResult> ResetPassword(PasswordReset passwordReset)
         {
             FormResult result;
             if (passwordReset == null || passwordReset.Id == Guid.Empty ||
@@ -161,11 +162,11 @@ namespace Deviser.Modules.UserManagement
             return await Task.FromResult(result);
         }
 
-        public async Task<FormResult> UnlockUserAccount(User user)
+        public async Task<IFormResult<User>> UnlockUserAccount(User user)
         {
             var dbUser = _userManager.Users.FirstOrDefault(u => u.Id == user.Id);
             var identityResult = await _userManager.SetLockoutEnabledAsync(dbUser, false);
-            FormResult result;
+            IFormResult<User> result;
 
             if (identityResult.Succeeded)
             {
@@ -174,7 +175,7 @@ namespace Deviser.Modules.UserManagement
 
             if (identityResult.Succeeded)
             {
-                result = new FormResult()
+                result = new FormResult<User>()
                 {
                     IsSucceeded = true,
                     SuccessMessage = "User has been unlocked successfully"
@@ -182,7 +183,7 @@ namespace Deviser.Modules.UserManagement
                 return await Task.FromResult(result);
             }
 
-            result = new FormResult(identityResult)
+            result = new FormResult<User>()
             {
                 IsSucceeded = false,
                 SuccessMessage = "Unable to unlock the user",
@@ -190,16 +191,16 @@ namespace Deviser.Modules.UserManagement
             return await Task.FromResult(result);
         }
 
-        public async Task<FormResult> LockUserAccount(User user)
+        public async Task<IFormResult<User>> LockUserAccount(User user)
         {
-            FormResult result;
+            IFormResult<User> result;
             var dbUser = _userManager.Users.FirstOrDefault(u => u.Id == user.Id);
             var identityResult = await _userManager.SetLockoutEnabledAsync(dbUser, true);
             if (identityResult.Succeeded)
             {
                 identityResult = await _userManager.SetLockoutEndDateAsync(dbUser, DateTimeOffset.MaxValue);
 
-                result = new FormResult(identityResult)
+                result = new FormResult<User>()
                 {
                     IsSucceeded = true,
                     SuccessMessage = "User has been locked successfully"
@@ -207,7 +208,7 @@ namespace Deviser.Modules.UserManagement
                 return await Task.FromResult(result);
             }
 
-            result = new FormResult(identityResult)
+            result = new FormResult<User>()
             {
                 IsSucceeded = false,
                 SuccessMessage = "Unable to lock the user",

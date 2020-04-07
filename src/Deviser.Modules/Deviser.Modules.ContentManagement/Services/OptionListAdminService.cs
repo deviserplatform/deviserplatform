@@ -40,7 +40,7 @@ namespace Deviser.Modules.ContentManagement.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<FormResult<OptionList>> CreateItem(OptionList item)
+        public async Task<IFormResult<OptionList>> CreateItem(OptionList item)
         {
             ParseProperty(item);
             var resultOptionList = _optionListRepository.CreateOptionList(item);
@@ -49,7 +49,7 @@ namespace Deviser.Modules.ContentManagement.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<FormResult<OptionList>> UpdateItem(OptionList item)
+        public async Task<IFormResult<OptionList>> UpdateItem(OptionList item)
         {
             ParseProperty(item);
             var resultOptionList = _optionListRepository.UpdateOptionList(item);
@@ -58,16 +58,17 @@ namespace Deviser.Modules.ContentManagement.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<OptionList> DeleteItem(string itemId)
+        public async Task<IAdminResult<OptionList>> DeleteItem(string itemId)
         {
             var optionList = _optionListRepository.GetOptionList(Guid.Parse(itemId));
             if (optionList == null)
             {
-                return await Task.FromResult<OptionList>(null);
+                return await Task.FromResult<AdminResult<OptionList>>(null);
             }
 
             optionList.IsActive = false;
-            var result = _optionListRepository.UpdateOptionList(optionList);
+            optionList = _optionListRepository.UpdateOptionList(optionList);
+            var result = new AdminResult<OptionList>(optionList);
             return await Task.FromResult(result);
         }
 

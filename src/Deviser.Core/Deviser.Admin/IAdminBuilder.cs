@@ -15,6 +15,9 @@ namespace Deviser.Admin
         AdminBuilder Register<TModel, TAdminService>(Action<ModelBuilder<TModel>> modelBuilderAction = null)
            where TModel : class
            where TAdminService : IAdminService<TModel>;
+        AdminBuilder RegisterTreeAndForm<TModel, TAdminService>(Action<ModelBuilder<TModel>> modelBuilderAction = null)
+            where TModel : class
+            where TAdminService : IAdminTreeService<TModel>;
         AdminBuilder RegisterForm<TModel, TAdminService>(Action<FormBuilder<TModel>> formBuilderAction = null)
             where TModel : class
             where TAdminService : IAdminFormService<TModel>;

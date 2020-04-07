@@ -42,30 +42,31 @@ namespace Deviser.Modules.ModuleManagement.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<FormResult<Module>> CreateItem(Module item)
+        public async Task<IFormResult<Module>> CreateItem(Module item)
         {
             var resultModule = _moduleRepository.Create(item);
             var result = new FormResult<Module>(resultModule);
             return await Task.FromResult(result);
         }
 
-        public async Task<FormResult<Module>> UpdateItem(Module item)
+        public async Task<IFormResult<Module>> UpdateItem(Module item)
         {
             var resultModule = _moduleRepository.UpdateModule(item);
             var result = new FormResult<Module>(resultModule);
             return await Task.FromResult(result);
         }
 
-        public async Task<Module> DeleteItem(string itemId)
+        public async Task<IAdminResult<Module>> DeleteItem(string itemId)
         {
             var contentType = _moduleRepository.GetModule(Guid.Parse(itemId));
             if (contentType == null)
             {
-                return await Task.FromResult<Module>(null);
+                return await Task.FromResult<AdminResult<Module>>(null);
             }
 
             contentType.IsActive = false;
-            var result = _moduleRepository.UpdateModule(contentType);
+            contentType = _moduleRepository.UpdateModule(contentType);
+            var result = new FormResult<Module>(contentType);
             return await Task.FromResult(result);
         }
 

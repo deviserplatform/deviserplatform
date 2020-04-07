@@ -1,9 +1,6 @@
 import { FormBehaviour } from './form-behaviour';
+import { AdminResult } from './admin-result';
 
-export interface FormResult {
-    successMessage: string;
-    errorMessage: string;
+export interface FormResult extends AdminResult {    
     formBehaviour: FormBehaviour;
-    result: any;
-    isSucceeded: boolean;
 }

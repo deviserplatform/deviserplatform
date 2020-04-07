@@ -8,6 +8,7 @@ namespace Deviser.Admin
         IDictionary<string, CustomForm> CustomForms { get; }
         IFormConfig FormConfig { get; }
         IGridConfig GridConfig { get; }
-        KeyField KeyField { get; }        
+        KeyField KeyField { get; }
+        ITreeConfig TreeConfig { get; }
     }
 }

@@ -14,12 +14,13 @@ namespace Deviser.Core.Common.DomainTypes
         public bool IsSystem { get; set; }
         public bool IsIncludedInMenu { get; set; }
         public DateTime? LastModifiedDate { get; set; }
+        public string PageName => PageTranslation?.FirstOrDefault()?.Name;
         public Guid? LayoutId { get; set; }
         public int? PageLevel { get; set; }
         public int? PageOrder { get; set; }
         public Guid? ParentId { get; set; }
         public Guid? PageTypeId { get; set; }
-        public string ThemeSrc { get; set; }        
+        public string ThemeSrc { get; set; }
         public DateTime? StartDate { get; set; }
         public float SiteMapPriority { get; set; }
         public virtual ICollection<PageContent> PageContent { get; set; }

@@ -1,0 +1,138 @@
+import { Component, OnInit, TemplateRef, ViewChild, Inject } from '@angular/core';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { Router, DefaultUrlSerializer, UrlTree } from '@angular/router';
+
+import { AdminService } from '../common/services/admin.service';
+import { AdminConfig } from '../common/domain-types/admin-config';
+import { Pagination } from '../common/domain-types/pagination';
+import { ConfirmDialogComponent } from '../common/components/confirm-dialog/confirm-dialog.component';
+import { RecordIdPipe } from '../common/pipes/record-id.pipe';
+import { Alert, AlertType } from '../common/domain-types/alert';
+import { DOCUMENT } from '@angular/common';
+import { WINDOW } from '../common/services/window.service';
+import { LabelType } from '../common/domain-types/label-type';
+import { Field } from '../common/domain-types/field';
+import { FieldType } from '../common/domain-types/field-type';
+import { FormResult } from '../common/domain-types/form-result';
+import { AdminResult } from '../common/domain-types/admin-result';
+import { DAConfig } from '../common/domain-types/da-config';
+import { AdminConfigType } from '../common/domain-types/admin-confit-type';
+
+
+@Component({
+  selector: 'app-admin-tree',
+  templateUrl: './admin-tree.component.html',
+  styleUrls: ['./admin-tree.component.scss']
+})
+export class AdminTreeComponent implements OnInit {
+
+  adminConfig: AdminConfig;
+  alerts: Alert[];
+  tree: any;
+  labelType = LabelType;
+  daConfig: DAConfig;
+
+  adminConfigType = AdminConfigType;
+  
+  @ViewChild(ConfirmDialogComponent)
+  private confirmDialogComponent: ConfirmDialogComponent;
+  
+  
+
+  constructor(private adminService: AdminService,
+    private recordIdPipe: RecordIdPipe,
+    private router: Router,
+    @Inject(WINDOW) private window: any) {
+    this.alerts = [];
+    this.daConfig = window.daConfig;
+  }
+
+  ngOnInit() {
+    this.getAdminConfig();
+    this.getTree();
+  }
+
+
+  getAdminConfig(): void {
+    this.adminService.getAdminConfig()
+      .subscribe(adminConfig => this.adminConfig = adminConfig);
+  }
+
+  getTree(): void {
+    this.adminService.getTree()
+      .subscribe(tree => this.onGetTree(tree));
+  }
+
+  onChangePage(event: any): void {    
+    this.getTree();
+  }
+
+  onGetTree(entityRecords: any): void {
+    this.tree = entityRecords;
+  }
+
+  onNewItem(): void {
+    this.router.navigateByUrl('detail/');
+  }
+
+  openDeleteConfirmationModal(item: any) {
+    this.confirmDialogComponent.openModal(item);
+  }
+
+  onYesToDelete(item: any): void {
+    console.log('confirm');
+    const itemId = this.recordIdPipe.transform(item, this.adminConfig.modelConfig.keyField);
+    this.adminService.deleteRecord(itemId)
+      .subscribe(response => this.onActionResult(response));
+  }
+
+  onNoToDelete(item: any): void {
+    console.log('declined');
+  }
+
+  onRowAction(actionName: string, item: any) {
+    if (actionName && item) {
+      this.adminService.executeGridAction(actionName, item)
+        .subscribe(adminResult => this.onActionResult(adminResult));
+    }
+  }
+
+  onActionResult(adminResult: AdminResult): void {
+    if (adminResult && adminResult.isSucceeded) {
+      let alert: Alert = {
+        alterType: AlertType.Success,
+        message: adminResult.successMessage,
+        timeout: 5000
+      }
+      this.alerts.push(alert);
+      this.getTree();
+    }
+    else {
+      let alert: Alert = {
+        alterType: AlertType.Error,
+        message: adminResult.successMessage,
+        timeout: 5000
+      }
+      this.alerts.push(alert);
+    }
+  }
+
+  getBadge(item: any, field: Field): string {
+    if (!field.fieldOption.labelOption) {
+      return "";
+    }
+
+    if (!field.fieldOption.labelOption.parameters || !field.fieldOption.labelOption.parameters.paramFieldNameCamelCase) {
+      if (field.fieldType == FieldType.CheckBox) {
+        return item[field.fieldNameCamelCase] ? "badge-primary" : "badge-secondary";
+      }
+      else {
+        return "badge-light";
+      }
+    }
+
+    return item[field.fieldOption.labelOption.parameters.paramFieldNameCamelCase];
+  }
+
+}

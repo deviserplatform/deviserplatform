@@ -25,7 +25,7 @@ namespace Deviser.Admin.Config
     {
         public string SuccessMessage { get; set; }
         public string ErrorMessage { get; set; }
-        
+
         [JsonConverter(typeof(StringEnumConverter))]
         public FormBehaviour FormBehaviour { get; set; } = FormBehaviour.RedirectToGrid;
         public TResult Value { get; }
