@@ -284,11 +284,22 @@ namespace Deviser.Admin.Services
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
             var modelToAdd = ((JObject)item).ToObject<TModel>(_serializer);
-            
+
             if (_adminSite.AdminType == AdminType.Entity)
             {
                 var result = await _adminRepository.CreateItemFor<TModel>(modelToAdd);
-                return new FormResult<TModel>(result);
+                if (result == null)
+                {
+                    return new FormResult<TModel>(result)
+                    {
+                        IsSucceeded = false,
+                        ErrorMessage = $"Unable to create {adminConfig.ModelType.Name}"
+                    };
+                }
+                return new FormResult<TModel>(result)
+                {
+                    IsSucceeded = true
+                };
             }
 
             switch (adminConfig.AdminConfigType)
@@ -309,7 +320,18 @@ namespace Deviser.Admin.Services
             if (_adminSite.AdminType == AdminType.Entity)
             {
                 var result = await _adminRepository.DeleteItemFor<TModel>(itemId);
-                return new AdminResult<TModel>(result);
+                if (result == null)
+                {
+                    return new AdminResult<TModel>(result)
+                    {
+                        IsSucceeded = false,
+                        ErrorMessage = $"Unable to create {adminConfig.ModelType.Name}"
+                    };
+                }
+                return new AdminResult<TModel>(result)
+                {
+                    IsSucceeded = true
+                };
             }
 
             switch (adminConfig.AdminConfigType)
@@ -360,8 +382,8 @@ namespace Deviser.Admin.Services
         private async Task<TModel> GetItem<TModel>(string itemId) where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
-            //_adminSite.AdminType == AdminType.Entity
-            if (_adminSite.AdminType == AdminType.Entity) return await _adminRepository.GetItemFor<TModel>(itemId); 
+
+            if (_adminSite.AdminType == AdminType.Entity) return await _adminRepository.GetItemFor<TModel>(itemId);
 
             switch (adminConfig.AdminConfigType)
             {
@@ -384,7 +406,18 @@ namespace Deviser.Admin.Services
             if (_adminSite.AdminType == AdminType.Entity)
             {
                 var result = await _adminRepository.UpdateItemFor<TModel>(modelToUpdate);
-                return new FormResult<TModel>(result);
+                if (result == null)
+                {
+                    return new FormResult<TModel>(result)
+                    {
+                        IsSucceeded = false,
+                        ErrorMessage = $"Unable to create {adminConfig.ModelType.Name}"
+                    };
+                }
+                return new FormResult<TModel>(result)
+                {
+                    IsSucceeded = true
+                };
             }
 
             switch (adminConfig.AdminConfigType)

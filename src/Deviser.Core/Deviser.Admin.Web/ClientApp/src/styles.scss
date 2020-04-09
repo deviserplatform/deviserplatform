@@ -122,25 +122,87 @@ $white: #ffffff;
     }
 
     .cdk-tree-node {
-        background-color: rgb(66, 157, 253);
-        color: white;
+        
         user-select: none;
         cursor: move;
-      
         display: flex;
-        align-items: center;
+        align-items: center;        
         min-height: 48px;
         flex: 1;
         overflow: hidden;
         word-wrap: break-word;
-      
-        &.cdk-drag-preview { // while dragging
-          @include mat-elevation(12);
+        &.selected{
+            background-color: #1565c0;
+            color:$white;
         }
-        &.cdk-drag-placeholder { // potential drop area
-          opacity: 0;
+        .tree-label {
+            margin-right: auto!important;
         }
+        .btn-add{
+            display: none;            
+        }
+        .btn-delete{
+            display: none;            
+        }
+        &:hover{
+            .btn-add{
+                display: block;            
+            }
+            .btn-delete{
+                display: block;            
+            }
+        }
+        // &.cdk-drag-preview { // while dragging
+        //   @include mat-elevation(12);
+        // }
+        // &.cdk-drag-placeholder { // potential drop area
+        //   opacity: 0;
+        // }
       }
+
+    //   .drop-above {
+    //     border-top: 10px solid #ff0000;
+    //     // margin-top: -10px;
+    //   }
+      
+    //   .drop-below {
+    //     border-bottom: 10px solid #ff0000;
+    //     // margin-bottom: -10px;
+    //   }
+      
+    //   .drop-center {
+    //     background-color: darkgray;
+    //     border: 10px solid yellow;
+    //   }
+      
+    //   .drag-start {
+    //       background-color: #1565c0;
+    //       color:honeydew;
+    //   }
+
+    .drop-above {
+        border-top: 1px dashed #2196F3;
+        margin-top: -1px;
+        transition: all 200ms linear;
+    }
+      
+    .drop-below {
+      border-bottom: 1px dashed #2196F3;
+      margin-bottom: -1px;
+      transition: all 200ms linear;
+    }
+    
+    .drop-center {
+      background-color: darkgray;
+      transition: all 200ms linear;
+    }
+    
+    .drag-start {
+        background-color: #1565c0;
+        color:$white;
+        transition: all 200ms linear;
+    }
+    
       
       /* items moving away to make room for drop */
       .cdk-drop-list-dragging .cdk-tree-node:not(.cdk-drag-placeholder) {

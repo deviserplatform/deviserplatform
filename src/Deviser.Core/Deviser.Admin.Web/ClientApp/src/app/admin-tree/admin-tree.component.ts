@@ -34,11 +34,11 @@ export class AdminTreeComponent implements OnInit {
   daConfig: DAConfig;
 
   adminConfigType = AdminConfigType;
-  
+
   @ViewChild(ConfirmDialogComponent)
   private confirmDialogComponent: ConfirmDialogComponent;
-  
-  
+
+
 
   constructor(private adminService: AdminService,
     private recordIdPipe: RecordIdPipe,
@@ -64,7 +64,7 @@ export class AdminTreeComponent implements OnInit {
       .subscribe(tree => this.onGetTree(tree));
   }
 
-  onChangePage(event: any): void {    
+  onChangePage(event: any): void {
     this.getTree();
   }
 
@@ -72,8 +72,20 @@ export class AdminTreeComponent implements OnInit {
     this.tree = entityRecords;
   }
 
-  onNewItem(): void {
-    this.router.navigateByUrl('detail/');
+  onNodeDrop(node: any): void {
+    console.log(node);
+  }
+
+  onNewItem(node: any): void {
+    console.log(node);
+  }
+
+  onNodeDelete(node: any): void {
+    console.log(node);
+  }
+
+  onNodeSelect(node: any): void {
+    console.log(node);
   }
 
   openDeleteConfirmationModal(item: any) {

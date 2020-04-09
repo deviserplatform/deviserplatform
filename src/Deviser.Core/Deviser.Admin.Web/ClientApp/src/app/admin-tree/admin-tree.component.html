@@ -21,7 +21,8 @@
             <app-tree-control [treeData]="tree[adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase]" 
             [keyField]="adminConfig.modelConfig.keyField.fieldNameCamelCase" 
             [childrenField]="adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase" 
-            [displayField]="adminConfig.modelConfig.treeConfig.displayField.fieldNameCamelCase"></app-tree-control>
+            [displayField]="adminConfig.modelConfig.treeConfig.displayField.fieldNameCamelCase"
+            (nodeDrop)="onNodeDrop($event)" (nodeAdd)="onNewItem($event)" (nodeDelete)="onNodeDelete($event)" (nodeSelect)="onNodeSelect($event)"></app-tree-control>
           </div>
         </div>
   

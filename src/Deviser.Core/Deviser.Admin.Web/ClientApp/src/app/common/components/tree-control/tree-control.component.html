@@ -1,19 +1,37 @@
 <p>Drag and drop the tree nodes. Move them within the same level, or across different levels.</p>
-<cdk-tree [dataSource]="dataSource" [treeControl]="treeControl" cdkDropList (cdkDropListDropped)="drop($event)">
+<cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
   <!-- This is the tree node template for leaf nodes -->
-  <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodeToggle cdkTreeNodePadding cdkDrag [cdkDragData]="node" (mouseenter)="dragHover(node)" (mouseleave)="dragHoverEnd()" (cdkDragStarted)="dragStart()" (cdkDragReleased)="dragEnd()">
+  <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodeToggle cdkTreeNodePadding
+    (dragover)="handleDragOver($event, node);" (dragend)="handleDragEnd($event);" (drop)="handleDrop($event, node);" (click)="onNodeClick(node)"
+    [ngClass]="getStyle(node)">
+
     <!-- use a disabled button to provide padding for tree leaf -->
     <button mat-icon-button disabled></button>
-    {{node.name}}
+    <div class="tree-label" draggable="true" (dragstart)="handleDragStart($event, node);">
+      {{node.name}}
+    </div>
+    <button mat-icon-button (click)="addNewItem(node)" class="btn-add">
+      <mat-icon>add_circle_outline</mat-icon>
+    </button>
+    <button mat-icon-button (click)="deleteItem(node)" class="btn-delete">
+      <mat-icon>delete_outline</mat-icon>
+    </button>
+
   </cdk-tree-node>
   <!-- This is the tree node template for expandable nodes -->
-  <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChild" cdkTreeNodePadding cdkDrag [cdkDragData]="node" (mouseenter)="dragHover(node)" (mouseleave)="dragHoverEnd()" (cdkDragStarted)="dragStart()" (cdkDragReleased)="dragEnd()">
-    <button mat-icon-button cdkTreeNodeToggle
-            [attr.aria-label]="'toggle ' + node.filename">
-     <mat-icon class="mat-icon-rtl-mirror">
+  <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChild" cdkTreeNodePadding
+    (dragover)="handleDragOver($event, node);" (dragend)="handleDragEnd($event, node);"
+    (drop)="handleDrop($event, node);" (click)="onNodeClick(node)" [ngClass]="getStyle(node)">
+    <button mat-icon-button cdkTreeNodeToggle [attr.aria-label]="'toggle ' + node.id">
+      <mat-icon class="mat-icon-rtl-mirror">
         {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
       </mat-icon>
     </button>
-    {{node.name}}
+    <div class="tree-label" draggable="true" (dragstart)="handleDragStart($event, node);">
+      {{node.name}}
+    </div>
+    <button mat-icon-button (click)="addNewItem(node)" class="btn-add">
+      <mat-icon>add_circle_outline</mat-icon>
+    </button>
   </cdk-tree-node>
 </cdk-tree>

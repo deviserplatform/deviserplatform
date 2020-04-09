@@ -711,7 +711,7 @@ namespace Deviser.Admin.Config
                     var entityClrType = GetEntityClrTypeFor(relatedModelType);
 
                     Func<List<LookUpField>> masterDataDelegate = () => CallGenericMethod<List<LookUpField>>(nameof(GetLookUpDataFromEntity), new Type[] { relatedModelType, entityClrType }, new object[] { relatedField.FieldOption.LookupDisplayExpression });
-                    adminConfig.LookUps.Add(relatedField.FieldOption.LookupModelType.Name, masterDataDelegate);
+                    adminConfig.LookUps.Add(relatedField.FieldName, masterDataDelegate);
                 }
             }
             else if (AdminType == AdminType.Custom)
