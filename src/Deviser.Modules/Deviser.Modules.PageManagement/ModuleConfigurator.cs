@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
+﻿using AutoMapper;
 using Deviser.Core.Common.Module;
 using Deviser.Core.Library.Modules;
 using Deviser.Modules.PageManagement.Services;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Deviser.Modules.PageManagement
 {

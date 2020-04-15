@@ -18,6 +18,7 @@ import { FormResult } from '../common/domain-types/form-result';
 import { AdminResult } from '../common/domain-types/admin-result';
 import { DAConfig } from '../common/domain-types/da-config';
 import { AdminConfigType } from '../common/domain-types/admin-confit-type';
+import { TreeControlComponent } from '../common/components/tree-control/tree-control.component';
 
 
 @Component({
@@ -38,6 +39,9 @@ export class AdminTreeComponent implements OnInit {
   @ViewChild(ConfirmDialogComponent)
   private confirmDialogComponent: ConfirmDialogComponent;
 
+  @ViewChild(TreeControlComponent)
+  private treeControl: TreeControlComponent;
+
 
 
   constructor(private adminService: AdminService,
@@ -56,12 +60,12 @@ export class AdminTreeComponent implements OnInit {
 
   getAdminConfig(): void {
     this.adminService.getAdminConfig()
-      .subscribe(adminConfig => this.adminConfig = adminConfig);
+      .subscribe(adminConfig => this.adminConfig = adminConfig, error => this.handleError(error));
   }
 
   getTree(): void {
     this.adminService.getTree()
-      .subscribe(tree => this.onGetTree(tree));
+      .subscribe(tree => this.onGetTree(tree), error => this.handleError(error));
   }
 
   onChangePage(event: any): void {
@@ -70,18 +74,37 @@ export class AdminTreeComponent implements OnInit {
 
   onGetTree(entityRecords: any): void {
     this.tree = entityRecords;
+    if (this.treeControl) {
+      this.treeControl.rebuildTreeForData(entityRecords[this.adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase]);
+    } else {
+      this.handleError('Error occured while getting tree data');
+    }
   }
 
   onNodeDrop(node: any): void {
+    // this.tree[this.adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase] = node as any[];
+    const treeToUpdate = JSON.parse(JSON.stringify(this.tree));
+    treeToUpdate[this.adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase] = node as any[];
     console.log(node);
+    this.adminService.updateTree(treeToUpdate)
+    .subscribe(response => this.onActionResult(response), error => this.handleError(error));
   }
+
+  // onUpdateTree(adminResult: AdminResult) {
+  //   if (adminResult.isSucceeded) {
+  //     this.treeControl.rebuildTreeForData(adminResult.result[this.adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase]);
+  //   } else {
+  //     this.handleError('Error occured while updating the tree');
+  //   }
+  // }
 
   onNewItem(node: any): void {
     console.log(node);
   }
 
   onNodeDelete(node: any): void {
-    console.log(node);
+    // console.log(node);
+    this.openDeleteConfirmationModal(node);
   }
 
   onNodeSelect(node: any): void {
@@ -96,11 +119,12 @@ export class AdminTreeComponent implements OnInit {
     console.log('confirm');
     const itemId = this.recordIdPipe.transform(item, this.adminConfig.modelConfig.keyField);
     this.adminService.deleteRecord(itemId)
-      .subscribe(response => this.onActionResult(response));
+      .subscribe(response => this.onActionResult(response), error => this.handleError(error));
   }
 
   onNoToDelete(item: any): void {
     console.log('declined');
+    this.getTree();
   }
 
   onRowAction(actionName: string, item: any) {
@@ -112,35 +136,43 @@ export class AdminTreeComponent implements OnInit {
 
   onActionResult(adminResult: AdminResult): void {
     if (adminResult && adminResult.isSucceeded) {
-      let alert: Alert = {
+      const alert: Alert = {
         alterType: AlertType.Success,
         message: adminResult.successMessage,
         timeout: 5000
-      }
+      };
+      this.alerts.push(alert);
+      this.treeControl.rebuildTreeForData(adminResult.result[this.adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase]);
+    } else {
+      const alert: Alert = {
+        alterType: AlertType.Error,
+        message: adminResult.errorMessage,
+        timeout: 5000
+      };
       this.alerts.push(alert);
       this.getTree();
     }
-    else {
-      let alert: Alert = {
-        alterType: AlertType.Error,
-        message: adminResult.successMessage,
-        timeout: 5000
-      }
-      this.alerts.push(alert);
-    }
+  }
+
+  handleError(message: string) {
+    const alert: Alert = {
+      alterType: AlertType.Error,
+      message,
+      timeout: 5000
+    };
+    this.alerts.push(alert);
   }
 
   getBadge(item: any, field: Field): string {
     if (!field.fieldOption.labelOption) {
-      return "";
+      return '';
     }
 
     if (!field.fieldOption.labelOption.parameters || !field.fieldOption.labelOption.parameters.paramFieldNameCamelCase) {
-      if (field.fieldType == FieldType.CheckBox) {
-        return item[field.fieldNameCamelCase] ? "badge-primary" : "badge-secondary";
-      }
-      else {
-        return "badge-light";
+      if (field.fieldType === FieldType.CheckBox) {
+        return item[field.fieldNameCamelCase] ? 'badge-primary' : 'badge-secondary';
+      } else {
+        return 'badge-light';
       }
     }
 

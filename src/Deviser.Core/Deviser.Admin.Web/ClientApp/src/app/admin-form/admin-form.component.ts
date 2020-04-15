@@ -179,8 +179,7 @@ export class AdminFormComponent implements OnInit {
     if (formName) {
       this.adminService.executeCustomFormAction(formName, actionName, this.adminForm.value)
         .subscribe(formValue => this.onActionResult(formValue));
-    }
-    else {
+    } else {
       this.adminService.executeMainFormAction(actionName, this.adminForm.value)
         .subscribe(formValue => this.onActionResult(formValue));
     }
@@ -188,10 +187,9 @@ export class AdminFormComponent implements OnInit {
 
   onActionResult(formValue: FormResult): void {
     if (formValue && formValue.isSucceeded) {
-      if (formValue.formBehaviour == FormBehaviour.RedirectToGrid) {
+      if (formValue.formBehaviour === FormBehaviour.RedirectToGrid) {
         this.goBack();
-      }
-      else {
+      } else {
         let alert: Alert = {
           alterType: AlertType.Success,
           message: formValue.successMessage,

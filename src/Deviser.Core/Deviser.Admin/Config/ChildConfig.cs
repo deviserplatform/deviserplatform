@@ -7,14 +7,7 @@ namespace Deviser.Admin
     {
         [JsonIgnore]
         public EntityConfig EntityConfig { get; set; }
-
         public Field Field { get; set; }
-
         public IModelConfig ModelConfig { get; set; }
-
-        public ChildConfig()
-        {
-
-        }
     }
 }

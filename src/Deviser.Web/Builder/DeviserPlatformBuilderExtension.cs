@@ -11,6 +11,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using Deviser.Core.Common.Internal;
+using Microsoft.AspNetCore.Localization;
 
 namespace Deviser.Web.Builder
 {
@@ -43,9 +44,12 @@ namespace Deviser.Web.Builder
                 var activeLanguages = languageRepository.GetActiveLanguages();
                 var supportedCultures = activeLanguages.Select(al => new CultureInfo(al.CultureCode)).ToArray();
 
+                var siteSettingRepository = InternalServiceProvider.Instance.ServiceProvider.GetService<ISiteSettingRepository>();
+                var siteSettings = siteSettingRepository.GetSettingsAsDictionary();
+                var defaultRequestCulture = new RequestCulture(new CultureInfo(siteSettings["SiteLanguage"]));
                 var requestLocalizationOptions = new RequestLocalizationOptions
                 {
-                    //DefaultRequestCulture = defaultRequestCulture,
+                    DefaultRequestCulture = defaultRequestCulture,
                     SupportedCultures = supportedCultures,
                     SupportedUICultures = supportedCultures
                 };

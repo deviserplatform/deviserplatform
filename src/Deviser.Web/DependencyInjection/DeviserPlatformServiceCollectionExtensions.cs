@@ -116,7 +116,8 @@ namespace Deviser.Web.DependencyInjection
 
             if (installationProvider.IsPlatformInstalled)
             {
-                var siteSettingRepository = InternalServiceProvider.Instance.ServiceProvider.GetService<ISiteSettingRepository>(); //sp.GetService<ISiteSettingRepository>();
+                //ISettingManager cannot be used here since most of ISettingManager dependencies are not yet initialized at this point.
+                var siteSettingRepository = InternalServiceProvider.Instance.ServiceProvider.GetService<ISiteSettingRepository>();
                 var siteSettings = siteSettingRepository.GetSettings();
 
                 var enableFacebookAuth = siteSettings.FirstOrDefault(s => s.SettingName == "EnableFacebookAuth")?.SettingValue;

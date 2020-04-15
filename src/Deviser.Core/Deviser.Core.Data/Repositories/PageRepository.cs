@@ -12,13 +12,14 @@ namespace Deviser.Core.Data.Repositories
 
     public interface IPageRepository //: IRepositoryBase
     {
-        Page GetPageTree();
+        Page GetPageTree(bool isActiveOnly = false);
         List<Page> GetPages();
         List<Page> GetDeletedPages();
         Page GetPage(Guid pageId);
         Page GetPageAndPagePermissions(Guid pageId);
         Page GetPageAndPageTranslations(Guid pageId);
         Page GetPageAndDependencies(Guid pageId, bool includeChild = true);
+        List<PageType> GetPageTypes();
         Page CreatePage(Page dbPage);
         Page UpdatePage(Page page);
         Page UpdatePageAndPermissions(Page dbPage);
@@ -61,7 +62,7 @@ namespace Deviser.Core.Data.Repositories
         }
 
         //Custom Field Declaration
-        public Page GetPageTree()
+        public Page GetPageTree(bool isActiveOnly = false)
         {
             try
             {
@@ -79,10 +80,14 @@ namespace Deviser.Core.Data.Repositories
 
                 using var context = new DeviserDbContext(_dbOptions);
                 var allPagesInFlat = context.Page
+                    .Include(p => p.PageType)
                     .Include(p => p.AdminPage).ThenInclude(ap => ap.Module)
                     .Include(p => p.PageTranslation)
                     .Include(p => p.PagePermissions)
-                    .AsNoTracking().ToList();
+                    .AsNoTracking()
+                    .ToList()
+                    .Where(p => isActiveOnly && !p.IsDeleted || !isActiveOnly) //This Query cannot be translated to SQL by EF. Therefore, evaluating in client side.
+                    .ToList();
 
                 var rootOnly = allPagesInFlat.First(p => p.ParentId == null);
 
@@ -305,6 +310,31 @@ namespace Deviser.Core.Data.Repositories
             catch (Exception ex)
             {
                 _logger.LogError("Error occured while calling GetPageAndDependencies", ex);
+            }
+            return null;
+        }
+
+        public List<PageType> GetPageTypes()
+        {
+            try
+            {
+                //var cacheName = $"{nameof(GetPage)}_{pageId}";
+                //var result = GetResultFromCache<Page>(cacheName);
+                //if (result != null)
+                //{
+                //    return result;
+                //}
+
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbResult = context.PageType.ToList();
+
+                var result = _mapper.Map<List<PageType>>(dbResult);
+                //AddResultToCache(cacheName, result);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while calling GetPage", ex);
             }
             return null;
         }

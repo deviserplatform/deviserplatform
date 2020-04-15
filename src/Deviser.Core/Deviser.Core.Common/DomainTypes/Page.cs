@@ -14,7 +14,6 @@ namespace Deviser.Core.Common.DomainTypes
         public bool IsSystem { get; set; }
         public bool IsIncludedInMenu { get; set; }
         public DateTime? LastModifiedDate { get; set; }
-        public string PageName => PageTranslation?.FirstOrDefault()?.Name;
         public Guid? LayoutId { get; set; }
         public int? PageLevel { get; set; }
         public int? PageOrder { get; set; }
@@ -29,7 +28,7 @@ namespace Deviser.Core.Common.DomainTypes
         public virtual ICollection<PagePermission> PagePermissions { get; set; }
         public virtual Layout Layout { get; set; }
         public virtual Page Parent { get; set; }
-        //public virtual PageType PageType { get; set; }
+        public virtual PageType PageType { get; set; }
         public virtual ICollection<Page> ChildPage { get; set; }
         public virtual AdminPage AdminPage { get; set; }
 

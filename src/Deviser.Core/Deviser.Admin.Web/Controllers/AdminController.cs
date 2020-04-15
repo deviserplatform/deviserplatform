@@ -227,7 +227,7 @@ namespace Deviser.Admin.Web.Controllers
                     return BadRequest($"Model {model} is not found");
                 }
 
-                var result = await coreAdminService.UpdateTree(modelType, modelObject); //_adminRepository.UpdateItemFor(model, fieldObject);
+                var result = await coreAdminService.UpdateTreeFor(modelType, modelObject); //_adminRepository.UpdateItemFor(model, fieldObject);
                 if (result != null)
                 {
                     return Ok(result);

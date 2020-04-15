@@ -73,31 +73,26 @@ export class TreeControlComponent implements OnInit {
   @Input() keyField: string;
   @Input() childrenField: string;
   @Input() displayField: string;
+  @Input() sortField: string;
 
   @Output() nodeDrop = new EventEmitter<any>();
   @Output() nodeAdd = new EventEmitter<any>();
   @Output() nodeDelete = new EventEmitter<any>();
   @Output() nodeSelect = new EventEmitter<any>();
 
+  dataSource: MatTreeFlatDataSource<Node, FlatNode>;
+  dataChange = new BehaviorSubject<Node[]>([]);
+  expandedNodeSet = new Set<string>();
   /** Map from flat node to nested node. This helps us finding the nested node to be modified */
   flatNodeMap = new Map<FlatNode, Node>();
-
   /** Map from nested node to flattened node. This helps us to keep the same object for selection */
   nestedNodeMap = new Map<Node, FlatNode>();
-
-  /** A selected parent node to be inserted */
-  selectedNode: FlatNode | null = null;
-
   /** The new item's name */
   newItemName = '';
-
+  /** A selected parent node to be inserted */
+  selectedNode: FlatNode | null = null;  
   treeControl: FlatTreeControl<FlatNode>;
-
   treeFlattener: MatTreeFlattener<Node, FlatNode>;
-
-  dataSource: MatTreeFlatDataSource<Node, FlatNode>;
-
-  dataChange = new BehaviorSubject<Node[]>([]);
 
   get data(): Node[] { return this.dataChange.value; }
 
@@ -127,17 +122,24 @@ export class TreeControlComponent implements OnInit {
     this.dataChange.next(this.parseInputTree(this.treeData));
   }
 
+  rebuildTreeForData(treeData: any) {
+    this.rememberExpandedTreeNodes(this.treeControl, this.expandedNodeSet);
+    this.treeData = treeData;
+    this.dataChange.next(this.parseInputTree(this.treeData));
+    this.expandNodesById(this.treeControl.dataNodes, Array.from(this.expandedNodeSet));
+  }
+
   parseInputTree(treeData: any[]): Node[] {
-    let nodes: Node[] = [];
+    const nodes: Node[] = [];
     treeData.forEach(sourceNode => {
-      let children = sourceNode[this.childrenField]
+      const children = sourceNode[this.childrenField];
       sourceNode[this.childrenField] = null;
-      let node = {
+      const node = {
         id: sourceNode[this.keyField],
         name: sourceNode[this.displayField],
         children: [],
-        sourceNode: sourceNode
-      }
+        sourceNode
+      };
 
       if (children &&
         Array.isArray(children) &&
@@ -150,17 +152,18 @@ export class TreeControlComponent implements OnInit {
   }
 
   toOutputTree(nodes: Node[]): any[] {
-    let sourceNodes = [];
-    nodes.forEach(node => {
-      let sourceNode = node.sourceNode
+    const sourceNodes = [];
+    nodes.forEach( (node, index) => {
+      const sourceNode = node.sourceNode;
       let children = []
       if (node.children && node.children.length > 0) {
         children = this.toOutputTree(node.children);
       }
       sourceNode[this.childrenField] = children;
-      sourceNodes.push(sourceNodes);
+      sourceNode[this.sortField] = index + 1;
+      sourceNodes.push(sourceNode);
     });
-    return sourceNodes
+    return sourceNodes;
   }
 
   getLevel = (node: FlatNode) => node.level;
@@ -297,20 +300,20 @@ export class TreeControlComponent implements OnInit {
   }
 
   getStyle(node: FlatNode) {
-    const cssClass: string = this.selectedNode === node ? 'selected' : '';
+    // const cssClass: string = this.selectedNode === node ? 'selected' : '';
     if (this.dragNode === node) {
-      return `${cssClass} drag-start`;
+      return `drag-start`;
     } else if (this.dragNodeExpandOverNode === node) {
       switch (this.dragNodeExpandOverArea) {
         case 1:
-          return `${cssClass} drop-above`;
+          return `drop-above`;
         case -1:
-          return `${cssClass} drop-below`;
+          return `drop-below`;
         default:
-          return `${cssClass} drop-center`;
+          return `drop-center`;
       }
     }
-    return cssClass;
+    return '';
   }
 
   deleteItem(flatNode: FlatNode) {
@@ -445,5 +448,49 @@ export class TreeControlComponent implements OnInit {
       });
     }
     return newItem;
+  }
+
+  private rememberExpandedTreeNodes(
+    treeControl: FlatTreeControl<FlatNode>,
+    expandedNodeSet: Set<string>
+  ) {
+    if (treeControl.dataNodes) {
+      treeControl.dataNodes.forEach((node) => {
+        if (treeControl.isExpandable(node) && treeControl.isExpanded(node)) {
+          // capture latest expanded state
+          expandedNodeSet.add(node.id);
+        }
+      });
+    }
+  }
+
+  private expandNodesById(flatNodes: FlatNode[], ids: string[]) {
+    if (!flatNodes || flatNodes.length === 0) return;
+    const idSet = new Set(ids);
+    return flatNodes.forEach((node) => {
+      if (idSet.has(node.id)) {
+        this.treeControl.expand(node);
+        let parent = this.getParentNode(node);
+        while (parent) {
+          this.treeControl.expand(parent);
+          parent = this.getParentNode(parent);
+        }
+      }
+    });
+  }
+
+  private getParentNode(node: FlatNode): FlatNode | null {
+    const currentLevel = node.level;
+    if (currentLevel < 1) {
+      return null;
+    }
+    const startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
+    for (let i = startIndex; i >= 0; i--) {
+      const currentNode = this.treeControl.dataNodes[i];
+      if (currentNode.level < currentLevel) {
+        return currentNode;
+      }
+    }
+    return null;
   }
 }

@@ -15,10 +15,12 @@ namespace Deviser.Admin.Builders
         {
             _modelConfig = modelConfig;
         }
-        
 
-        public TreeBuilder<TModel> ConfigureTree<TKey, TDisplayField>(Expression<Func<TModel, TKey>> keyExpression,
-            Expression<Func<TModel, TDisplayField>> displayExpression, Expression<Func<TModel, ICollection<TModel>>> childrenExpression)
+
+        public TreeBuilder<TModel> ConfigureTree<TKey, TDisplayField, TSortField>(Expression<Func<TModel, TKey>> keyExpression,
+            Expression<Func<TModel, TDisplayField>> displayExpression,
+            Expression<Func<TModel, ICollection<TModel>>> childrenExpression,
+            Expression<Func<TModel, TSortField>> sortExpression)
         {
             if (_modelConfig.KeyField.FieldExpression != null)
             {
@@ -27,6 +29,7 @@ namespace Deviser.Admin.Builders
             _modelConfig.KeyField.FieldExpression = keyExpression;
             _modelConfig.TreeConfig.ChildrenField.FieldExpression = childrenExpression;
             _modelConfig.TreeConfig.DisplayField.FieldExpression = displayExpression;
+            _modelConfig.TreeConfig.SortField.FieldExpression = sortExpression;
             return this;
         }
     }

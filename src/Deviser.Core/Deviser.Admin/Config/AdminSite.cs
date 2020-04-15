@@ -276,7 +276,7 @@ namespace Deviser.Admin.Config
                 }
                 else
                 {
-                    var properties = modelType.GetProperties().ToList();
+                    var properties = GetProperties(modelType);
                     foreach (var prop in properties)
                     {
                         var field = new Field
@@ -294,7 +294,7 @@ namespace Deviser.Admin.Config
 
         private void PopulateFields(Type modelType, IFormConfig formConfig, ICollection<Field> excludeField = null)
         {
-            List<PropertyInfo> properties = modelType.GetProperties().ToList();
+            List<PropertyInfo> properties = GetProperties(modelType);
 
             foreach (var prop in properties)
             {
@@ -310,15 +310,20 @@ namespace Deviser.Admin.Config
             }
         }
 
-        private List<PropertyInfo> GetProperties(IEntityType entityType)
+        private List<PropertyInfo> GetProperties(Type type)
         {
-            return entityType
-                .GetProperties()
-                .Where(p => !p.IsForeignKey() && !p.IsPrimaryKey()) //Get only non key fields!
-                .OrderBy(p => GetOrder(p))
-                .Select(p => p.PropertyInfo)
-                .ToList();
+            return type.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).ToList();
         }
+
+        //private List<PropertyInfo> GetProperties(IEntityType entityType)
+        //{
+        //    return entityType
+        //        .GetProperties()
+        //        .Where(p => !p.IsForeignKey() && !p.IsPrimaryKey()) //Get only non key fields!
+        //        .OrderBy(p => GetOrder(p))
+        //        .Select(p => p.PropertyInfo)
+        //        .ToList();
+        //}
 
         private int GetOrder(IProperty property)
         {

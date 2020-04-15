@@ -4,5 +4,6 @@
     {
         BaseField ChildrenField { get; }
         BaseField DisplayField { get;}
+        BaseField SortField { get; }
     }
 }

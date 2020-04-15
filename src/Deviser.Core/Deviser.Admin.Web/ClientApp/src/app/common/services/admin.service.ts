@@ -118,6 +118,15 @@ export class AdminService {
       );
   }
 
+  updateTree(record: any) {
+    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/tree/`;
+    return this.http.put<any>(serviceUrl, record, this.httpOptions)
+      .pipe(
+        tap(_ => this.log('tree has been updated ')),
+        catchError(this.handleError('updateTree', null))
+      );
+  }
+
   executeGridAction(actionName: string, record: any) {
     const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/grid/${actionName}`;
     return this.http.put<any>(serviceUrl, record, this.httpOptions)

@@ -166,6 +166,27 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
+        //public ModelBuilder<TModel> AddCollectionForm<TProperty, TParmameter>(Expression<Func<TModel, ICollection<TProperty>>> expression,
+        //    Expression<Func<TModel, TParmameter>> modelParmameterExpression,
+        //    Expression<Func<TModel, TParmameter>> collectionParmameterExpression,
+        //    Action<ModelBuilder<TProperty>> childFormBuilderAction)
+        //    where TProperty : class
+        //{
+        //    AdminConfig<TProperty> childConfig = new AdminConfig<TProperty>();
+        //    var childFormBuilder = new ModelBuilder<TProperty>(childConfig);
+        //    childFormBuilderAction(childFormBuilder);
+        //    _adminConfig.ChildConfigs.Add(new ChildConfig
+        //    {
+        //        IsCollectionForm = true,
+        //        Field = new Field
+        //        {
+        //            FieldExpression = expression
+        //        },
+        //        ModelConfig = childConfig.ModelConfig
+        //    });
+        //    return this;
+        //}
+
         /// <summary>
         /// Creates a complex field from given expression
         /// </summary>

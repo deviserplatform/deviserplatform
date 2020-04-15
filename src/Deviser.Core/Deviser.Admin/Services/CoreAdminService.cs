@@ -155,7 +155,7 @@ namespace Deviser.Admin.Services
             return await CallGenericMethod(nameof(UpdateItem), new Type[] { modelType }, new object[] { item });
         }
 
-        public async Task<object> UpdateTree(Type modelType, object item)
+        public async Task<object> UpdateTreeFor(Type modelType, object item)
         {
             return await CallGenericMethod(nameof(UpdateTree), new Type[] { modelType }, new object[] { item });
         }
@@ -338,9 +338,9 @@ namespace Deviser.Admin.Services
             {
                 case AdminConfigType.GridOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminGridService<TModel> adminService:
                     return await adminService.DeleteItem(itemId);
-                case AdminConfigType.GridAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
+                case AdminConfigType.GridAndForm  when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
                     return await adminService.DeleteItem(itemId);
-                case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminTreeService<TModel> adminService:
+                case AdminConfigType.TreeAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminTreeService<TModel> adminService:
                     return await adminService.DeleteItem(itemId);
                 default:
                     throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));

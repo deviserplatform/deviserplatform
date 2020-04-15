@@ -20,7 +20,7 @@ namespace Deviser.Admin
             }
         }
         public ICollection<Field> ExcludedFields { get; }
-        public ICollection<Field> Fields { get; }
+        public ICollection<Field> Fields { get; }   
         public bool IsEditVisible { get; set; } = true;
         public bool IsDeleteVisible { get; set; } = true;
         public IDictionary<string, AdminAction> RowActions { get; }

@@ -16,7 +16,7 @@ namespace Deviser.Admin.Services
         Task<object> GetItemFor(Type modelType, string itemId);
         Task<object> CreateItemFor(Type modelType, object item);
         Task<object> UpdateItemFor(Type modelType, object item);
-        Task<object> UpdateTree(Type modelType, object item);
+        Task<object> UpdateTreeFor(Type modelType, object item);
         Task<object> DeleteItemFor(Type modelType, string itemId);
 
         Task<object> ExecuteGridAction(Type modelType, string actionName, object entityObject);
