@@ -63,9 +63,9 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public PropertyBuilder<TModel> HasLookup<TRelatedModel, TProperty>(
+        public PropertyBuilder<TModel> HasLookup<TRelatedModel, TKey>(
             Expression<Func<IServiceProvider, IList<TRelatedModel>>> lookupExpression,
-            Expression<Func<TRelatedModel, TProperty>> lookUpKeyExpression,
+            Expression<Func<TRelatedModel, TKey>> lookUpKeyExpression,
             Expression<Func<TRelatedModel, string>> lookupDisplayExpression)
             where TRelatedModel : class
         {
@@ -75,9 +75,27 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public PropertyBuilder<TModel> HasLookup<TRelatedModel, TProperty, TFilterProperty>(
+        public PropertyBuilder<TModel> HasMatrixLookup<TRowType, TColumnType, TKey>(
+            Expression<Func<IServiceProvider, IList<TRowType>>> rowExpression,
+            Expression<Func<TRowType, TKey>> rowKeyExpression,
+            Expression<Func<TRowType, string>> rowDisplayExpression,
+            Expression<Func<IServiceProvider, IList<TColumnType>>> colExpression,
+            Expression<Func<TColumnType, TKey>> colKeyExpression,
+            Expression<Func<TColumnType, string>> colDisplayExpression)
+            where TRowType : class
+        {
+            _field.FieldOption.CheckBoxMatrix.RowLookupExpression = rowExpression;
+            _field.FieldOption.CheckBoxMatrix.RowLookupKeyExpression = rowKeyExpression;
+            _field.FieldOption.CheckBoxMatrix.RowLookupDisplayExpression = rowDisplayExpression;
+            _field.FieldOption.CheckBoxMatrix.ColLookupExpression = colExpression;
+            _field.FieldOption.CheckBoxMatrix.ColLookupKeyExpression = colKeyExpression;
+            _field.FieldOption.CheckBoxMatrix.ColLookupDisplayExpression = colDisplayExpression;
+            return this;
+        }
+
+        public PropertyBuilder<TModel> HasLookup<TRelatedModel, TKey, TFilterProperty>(
             Expression<Func<IServiceProvider, TFilterProperty, IList<TRelatedModel>>> lookupExpression,
-            Expression<Func<TRelatedModel, TProperty>> lookUpKeyExpression,
+            Expression<Func<TRelatedModel, TKey>> lookUpKeyExpression,
             Expression<Func<TRelatedModel, string>> lookupDisplayExpression,
             Expression<Func<TModel, TFilterProperty>> lookupFilterExpression)
             where TRelatedModel : class

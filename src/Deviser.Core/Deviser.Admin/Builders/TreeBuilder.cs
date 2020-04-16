@@ -19,6 +19,7 @@ namespace Deviser.Admin.Builders
 
         public TreeBuilder<TModel> ConfigureTree<TKey, TDisplayField, TSortField>(Expression<Func<TModel, TKey>> keyExpression,
             Expression<Func<TModel, TDisplayField>> displayExpression,
+            Expression<Func<TModel, TModel>> parentExpression,
             Expression<Func<TModel, ICollection<TModel>>> childrenExpression,
             Expression<Func<TModel, TSortField>> sortExpression)
         {
@@ -27,6 +28,7 @@ namespace Deviser.Admin.Builders
                 throw new InvalidOperationException(Resources.MoreKeyFieldsInvalidOperation);
             }
             _modelConfig.KeyField.FieldExpression = keyExpression;
+            _modelConfig.TreeConfig.ParentField.FieldExpression = parentExpression;
             _modelConfig.TreeConfig.ChildrenField.FieldExpression = childrenExpression;
             _modelConfig.TreeConfig.DisplayField.FieldExpression = displayExpression;
             _modelConfig.TreeConfig.SortField.FieldExpression = sortExpression;

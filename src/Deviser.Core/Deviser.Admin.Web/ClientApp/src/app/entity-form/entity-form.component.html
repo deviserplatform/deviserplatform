@@ -15,7 +15,8 @@
         <fieldset class="form-group col" [disabled]="!(field.isEnabled | async)" *ngIf="field.isShown | async">
           <app-form-control [form]="formContext.formGroup" [field]="field" [isShown]="field.isShown | async"
             [formName]="formContext.formName" [isDisabled]="!(field.isEnabled | async)"
-            [isValidate]="field.isValidate | async" [lookUps]="formContext.lookUps" [formType]="formContext.formType">
+            [isValidate]="field.isValidate | async" [lookUps]="formContext.lookUps" [formType]="formContext.formType"
+            [formItemId]="formItemId">
           </app-form-control>
           <!-- <pre>{{field|json}}</pre> -->
         </fieldset>
@@ -48,7 +49,7 @@
             <fieldset class="form-group col" [disabled]="!(field.isEnabled | async)" *ngIf="field.isShown | async">
               <app-form-control [form]="formContext.formGroup" [field]="field" [isShown]="field.isShown | async"
                 [formName]="formContext.formName" [isDisabled]="!(field.isEnabled | async)"
-                [isValidate]="field.isValidate | async" [lookUps]="formContext.lookUps" [formType]="formContext.formType">
+                [isValidate]="field.isValidate | async" [lookUps]="formContext.lookUps" [formType]="formContext.formType" [formItemId]="formItemId">
               </app-form-control>
               <!-- <pre>{{field|json}}</pre> -->
             </fieldset>

@@ -65,7 +65,7 @@ export class CheckboxListComponent implements OnInit, ControlValueAccessor, Vali
         if (item) {
           selectedItems.push(this.items[index]);
         }
-      })
+      });
       console.log(selectedItems);
       fn(selectedItems);
     });

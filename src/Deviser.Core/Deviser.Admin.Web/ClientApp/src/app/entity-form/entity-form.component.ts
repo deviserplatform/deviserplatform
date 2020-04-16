@@ -42,12 +42,15 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   // @Input() lookUps: LookUpDictionary;
 
   @Input() formContext: FormContext;
+  
+  //To access FieldType enum
+  childRecords: any;
+  fieldType = FieldType;
+  formItemId: string;
 
   private valChangeSubscription: Subscription;
-  //To access FieldType enum
-  fieldType = FieldType;
-  childRecords: any;  
   private allFields: Field[];
+
   constructor(private emailExistValidator: EmailExistValidator,
     private passwordValidator: PasswordValidator,
     private userExistValidator: UserExistValidator,
@@ -56,8 +59,8 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   }
 
   ngOnInit() {
-
     this.initUIProperties();
+    this.unsubscribeValueChanges();
     this.valChangeSubscription = this.formContext.formGroup.valueChanges
       .pipe(
         distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
@@ -68,15 +71,22 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   }
 
   ngOnDestroy() {
-    if (this.valChangeSubscription) {
-      this.valChangeSubscription.unsubscribe();
-    }
+    this.unsubscribeValueChanges();
   }
+
+  
 
   public onTouched: () => void = () => { };
   public onChange: () => void = () => { };
 
+  private unsubscribeValueChanges(){
+    if (this.valChangeSubscription) {
+      this.valChangeSubscription.unsubscribe();
+    }
+  }
+  
   private initUIProperties() {
+    
     let formConfig = this.formContext.formConfig;
     if (formConfig.fieldConfig && formConfig.fieldConfig.fields && formConfig.fieldConfig.fields.length > 0) {
       formConfig.fieldConfig.fields.forEach(fieldRow => {
@@ -106,10 +116,11 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   }
 
   private onFormValueChanges(val: any) {
+    this.formItemId = this.formContext.formGroup.value[this.formContext.keyField.fieldNameCamelCase];
     this.allFields.forEach(field => {
       let isEnabled = this.isFieldEnabled(field);
       let isShown = this.isFieldShown(field);
-      let isValidate = this.isFieldValidate(field);
+      let isValidate = field.fieldOption.isRequired && this.isFieldValidate(field);
 
       setTimeout(() => {
         field.isEnabledSubject.next(isEnabled);
@@ -143,7 +154,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
 
   private isFieldShown(field: Field) {
     if (this.hasFieldPredicate(field, 'showOn')) {
-      let result = this.getFieldPredicateResult(field, 'showOn');
+      const result = this.getFieldPredicateResult(field, 'showOn');
       return result;
     }
 
@@ -153,7 +164,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
 
   private isFieldEnabled(field: Field) {
     if (this.hasFieldPredicate(field, 'enableOn')) {
-      let result = this.getFieldPredicateResult(field, 'enableOn');
+      const result = this.getFieldPredicateResult(field, 'enableOn');
       return result;
     }
     return field.fieldOption.enableIn == FormMode.Both || field.fieldOption.enableIn == this.formContext.formMode;
@@ -162,7 +173,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
 
   private isFieldValidate(field: Field) {
     if (this.hasFieldPredicate(field, 'validateOn')) {
-      let result = this.getFieldPredicateResult(field, 'validateOn');
+      const result = this.getFieldPredicateResult(field, 'validateOn');
       return result;
     }
 
@@ -176,13 +187,18 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   }
 
   private getFieldPredicateResult(field: Field, action: string) {
+    var result = false;
     if (field && field.fieldOption && field.fieldOption[action]) {
-      let fieldExpression = field.fieldOption[action];
-      let predicate = Function(...fieldExpression.parameters, fieldExpression.expression);
-      let result = predicate(this.formContext.formGroup.value);
-      return result;
+      try {
+        var fieldExpression = field.fieldOption[action];
+        var predicate = Function(...fieldExpression.parameters, fieldExpression.expression);
+        result = predicate(this.formContext.formGroup.value);
+        return result;
+      } catch (err) {
+        console.log(err);
+      }
     }
-    return false;
+    return result;
   }
 
   private onIsValidateChange(field: Field, isEnabled: boolean, isShown: boolean, isValidate: boolean): void {

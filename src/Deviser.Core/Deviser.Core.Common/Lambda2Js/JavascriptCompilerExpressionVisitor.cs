@@ -206,6 +206,11 @@ namespace Deviser.Core.Common.Lambda2Js
                     this.resultWriter.Write(Convert.ChangeType(node.Value, underlyingType, CultureInfo.InvariantCulture));
                 }
             }
+            else if (node.Type == typeof(Guid))
+            {
+                using (this.resultWriter.Operation(JavascriptOperationTypes.Literal))
+                    this.WriteStringLiteral(node.Value.ToString());
+            }
             else if (node.Type == typeof(Regex))
             {
                 using (this.resultWriter.Operation(JavascriptOperationTypes.Literal))

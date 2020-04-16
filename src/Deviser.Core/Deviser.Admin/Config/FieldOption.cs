@@ -14,6 +14,8 @@ namespace Deviser.Admin.Config
     {
         public FieldType FieldType { get; set; }
 
+        public CheckBoxMatrix CheckBoxMatrix { get; set; }
+
         [JsonConverter(typeof(ExpressionJsonConverter))]
         public LambdaExpression EnableOn { get; set; }
         public string Description { get; set; }

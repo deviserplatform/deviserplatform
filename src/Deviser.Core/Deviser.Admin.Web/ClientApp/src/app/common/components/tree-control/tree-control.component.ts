@@ -73,6 +73,7 @@ export class TreeControlComponent implements OnInit {
   @Input() keyField: string;
   @Input() childrenField: string;
   @Input() displayField: string;
+  @Input() parentField: string;
   @Input() sortField: string;
 
   @Output() nodeDrop = new EventEmitter<any>();
@@ -221,7 +222,9 @@ export class TreeControlComponent implements OnInit {
     const parentNode = this.flatNodeMap.get(flatNode);
     const node: Node = this.flatNodeMap.get(flatNode);
     // this.database.insertItem(parentNode, '');
-    const newItem: Node = { id: '', name: '', children: [], sourceNode: {} };
+    const sourceNode = {};
+    sourceNode[this.parentField] = parentNode.sourceNode;
+    const newItem: Node = { id: '', name: '', children: [], sourceNode };
     this.insertItem(parentNode, newItem);
     this.treeControl.expand(flatNode);
     this.dataChange.next(this.data);

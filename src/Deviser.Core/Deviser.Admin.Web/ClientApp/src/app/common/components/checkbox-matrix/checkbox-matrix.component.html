@@ -1,0 +1,21 @@
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">            
+            #
+        </th>
+        <th scope="col" *ngFor="let col of colLookUp">{{col.displayName}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of rowLookUp">
+        <th scope="row">{{row.displayName}}</th>
+        <td *ngFor="let col of colLookUp">
+            <a (click)="toggle(row, col);">
+                <mat-icon *ngIf="isChecked(row, col)">check_box</mat-icon>
+                <mat-icon *ngIf="!isChecked(row, col)">check_box_outline_blank</mat-icon>
+            </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>

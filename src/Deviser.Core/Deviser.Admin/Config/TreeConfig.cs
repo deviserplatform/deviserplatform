@@ -8,12 +8,14 @@ namespace Deviser.Admin.Config
     {
         public BaseField ChildrenField { get; }
         public BaseField DisplayField { get; }
+        public BaseField ParentField { get; }
         public BaseField SortField { get; }
 
         public TreeConfig()
         {
             ChildrenField = new BaseField();
             DisplayField = new BaseField();
+            ParentField = new BaseField();
             SortField = new BaseField();
         }
     }

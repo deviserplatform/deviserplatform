@@ -695,6 +695,10 @@ namespace Deviser.Admin.Config
                 .Where(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne)
                 .ToList();
 
+            var matrixFields = adminConfig.ModelConfig.FormConfig.AllFormFields
+                .Where(f => f.FieldOption.FieldType == FieldType.CheckBoxMatrix)
+                .ToList();
+
             if (adminConfig.ChildConfigs != null)
             {
                 foreach (var childConfig in adminConfig.ChildConfigs)
@@ -725,31 +729,50 @@ namespace Deviser.Admin.Config
                 {
                     if (relatedFiled.FieldOption.LookupFilterExpression != null) continue;
 
-                    List<LookUpField> MasterDataDelegate()
-                    {
-                        var lookUpFields = new List<LookUpField>();
+                    AddLookUpField(adminConfig, relatedFiled.FieldName, relatedFiled.FieldOption.LookupExpression, relatedFiled.FieldOption.LookupKeyExpression, relatedFiled.FieldOption.LookupDisplayExpression);
+                }
 
-                        var entityLookupExprDelegate = relatedFiled.FieldOption.LookupExpression.Compile();
-                        var entityLookupExprKeyDelegate = relatedFiled.FieldOption.LookupKeyExpression.Compile();
-                        var displayExprDelegate = relatedFiled.FieldOption.LookupDisplayExpression.Compile();
-                        var keyFieldName = ReflectionExtensions.GetMemberName(relatedFiled.FieldOption.LookupKeyExpression);
+                foreach (var matrixField in matrixFields)
+                {
+                    if (matrixField.FieldOption.CheckBoxMatrix == null) continue;
 
-                        var items = entityLookupExprDelegate.DynamicInvoke(new object[] { _serviceProvider }) as IList;
-
-                        foreach (var item in items)
-                        {
-                            var keyValue = entityLookupExprKeyDelegate.DynamicInvoke(new object[] { item });
-                            var displayName = displayExprDelegate.DynamicInvoke(new object[] { item }) as string;
-                            lookUpFields.Add(new LookUpField() { Key = new Dictionary<string, object>() { { keyFieldName, keyValue } }, DisplayName = displayName });
-                        }
-
-                        return lookUpFields;
-                    }
-
-                    //adminConfig.LookUps.Add(relatedFiled.FieldOption.LookupModelType.Name, MasterDataDelegate);
-                    adminConfig.LookUps.Add(relatedFiled.FieldName, MasterDataDelegate);
+                    var checkBoxMatrix = matrixField.FieldOption.CheckBoxMatrix;
+                    AddLookUpField(adminConfig, checkBoxMatrix.RowType.Name, checkBoxMatrix.RowLookupExpression, checkBoxMatrix.RowLookupKeyExpression, checkBoxMatrix.RowLookupDisplayExpression);
+                    AddLookUpField(adminConfig, checkBoxMatrix.ColumnType.Name, checkBoxMatrix.ColLookupExpression, checkBoxMatrix.ColLookupKeyExpression, checkBoxMatrix.ColLookupDisplayExpression);
                 }
             }
+        }
+
+        private void AddLookUpField<TModel>(AdminConfig<TModel> adminConfig, 
+            string lookupKey,  
+            LambdaExpression lookupExpression,
+            LambdaExpression lookupKeyExpression,
+            LambdaExpression lookupDisplayExpression) where TModel : class
+        {
+            List<LookUpField> MasterDataDelegate()
+            {
+                var lookUpFields = new List<LookUpField>();
+
+                var entityLookupExprDelegate = lookupExpression.Compile();
+                var entityLookupExprKeyDelegate = lookupKeyExpression.Compile();
+                var displayExprDelegate = lookupDisplayExpression.Compile();
+                var keyFieldName = ReflectionExtensions.GetMemberName(lookupKeyExpression);
+
+                var items = entityLookupExprDelegate.DynamicInvoke(new object[] {_serviceProvider}) as IList;
+
+                foreach (var item in items)
+                {
+                    var keyValue = entityLookupExprKeyDelegate.DynamicInvoke(new object[] {item});
+                    var displayName = displayExprDelegate.DynamicInvoke(new object[] {item}) as string;
+                    lookUpFields.Add(new LookUpField()
+                        {Key = new Dictionary<string, object>() {{keyFieldName, keyValue}}, DisplayName = displayName});
+                }
+
+                return lookUpFields;
+            }
+
+            //adminConfig.LookUps.Add(relatedFiled.FieldOption.LookupModelType.Name, MasterDataDelegate);
+            adminConfig.LookUps.Add(lookupKey, MasterDataDelegate);
         }
 
         private TReturnType CallGenericMethod<TReturnType>(string methodName, Type[] genericTypes, object[] parmeters)

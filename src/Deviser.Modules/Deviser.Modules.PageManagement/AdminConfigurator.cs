@@ -5,6 +5,7 @@ using System.Text;
 using Deviser.Admin;
 using Deviser.Admin.Config;
 using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library.Layouts;
 using Deviser.Core.Library.Multilingual;
 using Deviser.Modules.PageManagement.Services;
@@ -35,9 +36,16 @@ namespace Deviser.Modules.PageManagement
 
             adminBuilder.RegisterTreeAndForm<PageViewModel, PageManagementAdminService>(builder =>
             {
-                builder.TreeBuilder.ConfigureTree(p => p.Id, p => p.Name, p => p.ChildPage, p => p.PageOrder);
+                builder.TreeBuilder.ConfigureTree(p => p.Id,
+                    p => p.Name,
+                    p => p.Parent,
+                    p => p.ChildPage,
+                    p => p.PageOrder);
 
                 var formBuilder = builder.FormBuilder;
+                var adminId = Guid.Parse("5308b86c-a2fc-4220-8ba2-47e7bec1938d");
+                var urlId = Guid.Parse("bfefa535-7af1-4ddc-82c0-c906c948367a");
+                var standardId = Guid.Parse("4c06dcfd-214f-45af-8404-ff84b412ab01");
 
                 formBuilder
                      .AddFieldSet("General", fieldBuilder =>
@@ -62,31 +70,36 @@ namespace Deviser.Modules.PageManagement
 
                      .AddFieldSet("Permissions", fieldBuilder =>
                      {
-                         //fieldBuilder.add
+                         fieldBuilder.AddCheckBoxMatrix(p => p.PagePermissions,
+                             p => p.RoleId,
+                             p => p.PermissionId,
+                             p => p.Id,
+                             p => p.PageId, typeof(Role), typeof(Permission), 
+                             option => option.IsRequired = false);
                      });
 
                 formBuilder.Property(f => f.Name)
-                    .ShowOn(f => f.PageType.Name == "Standard")
-                    .ValidateOn(f => f.PageType.Name == "Standard");
+                    .ShowOn(f => f.PageType != null && f.PageType.Id == standardId)
+                    .ValidateOn(f => f.PageType != null && f.PageType.Id == standardId);
 
                 formBuilder.Property(f => f.Title)
-                    .ShowOn(f => f.PageType.Name == "Standard")
-                    .ValidateOn(f => f.PageType.Name == "Standard");
+                    .ShowOn(f => f.PageType != null && f.PageType.Id == standardId)
+                    .ValidateOn(f => f.PageType != null && f.PageType.Id == standardId);
 
                 formBuilder.Property(f => f.Description)
-                    .ShowOn(f => f.PageType.Name == "Standard");
+                    .ShowOn(f => f.PageType != null && f.PageType.Id == standardId);
 
                 formBuilder.Property(f => f.Module)
-                    .ShowOn(f => f.PageType.Name == "Admin")
-                    .ValidateOn(f => f.PageType.Name == "Admin");
+                    .ShowOn(f => f.PageType != null && f.PageType.Id == adminId)
+                    .ValidateOn(f => f.PageType != null && f.PageType.Id == adminId);
 
                 formBuilder.Property(f => f.ModelName)
-                    .ShowOn(f => f.PageType.Name == "Admin")
-                    .ValidateOn(f => f.PageType.Name == "Admin");
+                    .ShowOn(f => f.PageType != null && f.PageType.Id == adminId)
+                    .ValidateOn(f => f.PageType != null && f.PageType.Id == adminId);
 
                 formBuilder.Property(f => f.RedirectUrl)
-                    .ShowOn(f => f.PageType.Name == "URL")
-                    .ValidateOn(f => f.PageType.Name == "URL");
+                    .ShowOn(f => f.PageType != null && f.PageType.Id == urlId)
+                    .ValidateOn(f => f.PageType != null && f.PageType.Id == urlId);
 
                 formBuilder.Property(f => f.PageType).HasLookup(
                      sp => sp.GetService<PageManagementAdminService>().GetPageTypes(),
@@ -103,15 +116,13 @@ namespace Deviser.Modules.PageManagement
                      ke => ke.Key,
                      de => de.Value);
 
-
-
-
-
-                //builde.AddSelectField(p => p.Theme, null, option => option.DisplayName = "Theme");r.FormBuilder.AddSelectField(p => p.Locale, null, option => option.DisplayName = "Locale");
-                //builder.FormBuilder.AddSelectField(p => p.PageType, null, option => option.DisplayName = "Page Type");
-                //builder.FormBuilder.AddField(p => p.IsSystem, option => option.DisplayName = "Is System");
-                //builder.FormBuilder.AddField(p => p.IsIncludedInMenu, option => option.DisplayName = "Include in Menu");
-                //builder.FormBuilder.AddSelectField(p => p.Theme, null, option => option.DisplayName = "Theme");
+                formBuilder.Property(f => f.PagePermissions).HasMatrixLookup<Role, Permission, Guid>(
+                    sp => sp.GetService<IRoleRepository>().GetRoles(),
+                    ke => ke.Id,
+                    de => de.Name,
+                    sp => sp.GetService<IPermissionRepository>().GetPagePermissions(),
+                    ke => ke.Id,
+                    de => de.Name);
             });
         }
     }

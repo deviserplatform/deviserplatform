@@ -306,6 +306,8 @@ namespace Deviser.Admin.Services
             {
                 case AdminConfigType.GridAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
                     return await adminService.CreateItem(modelToAdd);
+                case AdminConfigType.TreeAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminTreeService<TModel> adminService:
+                    return await adminService.CreateItem(modelToAdd);
                 case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminTreeService<TModel> adminService:
                     return await adminService.CreateItem(modelToAdd);
                 default:
@@ -389,6 +391,8 @@ namespace Deviser.Admin.Services
             {
                 case AdminConfigType.GridAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
                     return await adminService.GetItem(itemId);
+                case AdminConfigType.TreeAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminTreeService<TModel> adminService:
+                    return await adminService.GetItem(itemId);
                 case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminFormService<TModel> adminService:
                     return await adminService.GetModel();
                 case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminTreeService<TModel> adminService:
@@ -423,6 +427,8 @@ namespace Deviser.Admin.Services
             switch (adminConfig.AdminConfigType)
             {
                 case AdminConfigType.GridAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
+                    return await adminService.UpdateItem(modelToUpdate);
+                case AdminConfigType.TreeAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminTreeService<TModel> adminService:
                     return await adminService.UpdateItem(modelToUpdate);
                 case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminFormService<TModel> adminService:
                     return await adminService.SaveModel(modelToUpdate);

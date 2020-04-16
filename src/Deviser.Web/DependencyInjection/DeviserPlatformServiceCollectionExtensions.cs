@@ -95,6 +95,7 @@ namespace Deviser.Web.DependencyInjection
             services.AddTransient<ILanguageRepository, LanguageRepository>();
             services.AddTransient<IOptionListRepository, OptionListRepository>();
             services.AddTransient<IPropertyRepository, PropertyRepository>();
+            services.AddTransient<IPermissionRepository, PermissionRepository>();
 
             //builder.RegisterType<ContactProvider>().As<IContactProvider>();
             services.AddScoped<IRouteConstraint, PageUrlConstraint>();

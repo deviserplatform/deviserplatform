@@ -147,6 +147,44 @@ namespace Deviser.Admin.Builders
         }
 
         /// <summary>
+        /// This Field is available only for the AdminType.Custom
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="expression"></param>
+        /// <param name="rowKeyExpression"></param>
+        /// <param name="columnKeyExpression"></param>
+        /// <param name="matrixKeyExpression"></param>
+        /// <param name="contextKeyExpression"></param>
+        /// <param name="RowType"></param>
+        /// <param name="ColumnType"></param>
+        /// <param name="fieldOptionAction"></param>
+        /// <returns></returns>
+        public FieldBuilder<TModel> AddCheckBoxMatrix<TProperty, TKey>(Expression<Func<TModel, ICollection<TProperty>>> expression, 
+            Expression<Func<TProperty, TKey>> rowKeyExpression,
+            Expression<Func<TProperty, TKey>> columnKeyExpression,
+            Expression<Func<TProperty, TKey>> matrixKeyExpression,
+            Expression<Func<TProperty, TKey>> contextKeyExpression,
+            Type RowType, 
+            Type ColumnType,
+            Action<FieldOption> fieldOptionAction = null)
+        {
+            var field = CreateSimpleField(expression, fieldOptionAction);
+            field.FieldOption.FieldType = FieldType.CheckBoxMatrix;
+            field.FieldOption.CheckBoxMatrix = new CheckBoxMatrix()
+            {
+                ColumnType = ColumnType,
+                ColumnKeyField = { FieldExpression = columnKeyExpression },
+                ContextKeyField = { FieldExpression = contextKeyExpression },
+                MatrixKeyField = { FieldExpression = matrixKeyExpression },
+                RowType = RowType,
+                RowKeyField = { FieldExpression = rowKeyExpression }
+            };
+            _fieldConfig.AddField(field);
+            return this;
+        }
+
+        /// <summary>
         /// Remove Field cannot be combined with AddField/AddInlineField/AddComplexField/AddInlineComplexField
         /// </summary>
         /// <typeparam name="TProperty"></typeparam>

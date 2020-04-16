@@ -17,6 +17,8 @@ import { CustomValidator } from '../common/validators/async-custom.validator';
 import { FormType } from '../common/domain-types/form-type';
 import { FormControlService } from '../common/services/form-control.service';
 import { AdminService } from '../common/services/admin.service';
+import { FieldOption } from '../common/domain-types/field-option';
+import { CheckBoxMatrix } from '../common/domain-types/checkbox-matrix';
 
 @Component({
   selector: 'app-form-control',
@@ -35,12 +37,19 @@ export class FormControlComponent implements OnInit {
   @Input() lookUps: LookUpDictionary;
   @Input() formType: FormType;
   @Input() formName: string;
+  @Input() formItemId: string;
 
   //To access FieldType enum
   fieldType = FieldType;
 
   private lookUpDataSubject = new BehaviorSubject<any[]>([]);
-  lookUpData$ = this.lookUpDataSubject.asObservable()
+  lookUpData$ = this.lookUpDataSubject.asObservable();
+
+  rowLookUp: any[];
+  colLookUp: any[];
+  rowLookUpKey: string;
+  colLookUpKey: string;
+  checkBoxMatrix: CheckBoxMatrix;
 
   // _lookUpData: any[];
   Editor = ClassicEditor;
@@ -102,17 +111,32 @@ export class FormControlComponent implements OnInit {
   parseControlValue(lookUpGeneric: any) {
     if (this.field && this.field.fieldOption && this.field.fieldOption.relationType) {
 
-      if (!lookUpGeneric && (this.field.fieldOption.relationType == RelationType.ManyToMany || this.field.fieldOption.relationType == RelationType.ManyToOne)) {
-        // lookUpGeneric = this.lookUps.lookUpData[this.field.fieldOption.lookupModelTypeCamelCase];
+      const fieldOption: FieldOption = this.field.fieldOption;
+
+      if (!lookUpGeneric &&
+        (fieldOption.relationType === RelationType.ManyToMany ||
+          fieldOption.relationType === RelationType.ManyToOne)) {
+        // lookUpGeneric = this.lookUps.lookUpData[fieldOption.lookupModelTypeCamelCase];
         lookUpGeneric = this.lookUps.lookUpData[this.field.fieldNameCamelCase];
       }
 
 
-      if (this.field.fieldOption.relationType == RelationType.ManyToMany) {
+      if (fieldOption.relationType === RelationType.ManyToMany) {
         this.parseM2mControlVal(lookUpGeneric);
-      }
-      else if (this.field.fieldOption.relationType == RelationType.ManyToOne) {
+      } else if (fieldOption.relationType === RelationType.ManyToOne) {
         this.parseM2oControlVal(lookUpGeneric);
+      } else if (this.field.fieldType === FieldType.CheckBoxMatrix && fieldOption.checkBoxMatrix) {
+        const rowLookUpGeneric: any = this.lookUps.lookUpData[fieldOption.checkBoxMatrix.rowTypeCamelCase];
+        const colLookUpGeneric: any = this.lookUps.lookUpData[fieldOption.checkBoxMatrix.columnTypeCamelCase];
+        const rowKeyNames = Object.keys(rowLookUpGeneric[0].key);
+        const colKeyNames = Object.keys(colLookUpGeneric[0].key);
+        if (rowLookUpGeneric && colLookUpGeneric) {
+          this.rowLookUp = this.getLookUp(rowLookUpGeneric);
+          this.colLookUp = this.getLookUp(colLookUpGeneric);
+          this.rowLookUpKey = rowKeyNames[0];
+          this.colLookUpKey = colKeyNames[0];
+          this.checkBoxMatrix = fieldOption.checkBoxMatrix;
+        }
       }
     }
 
@@ -126,31 +150,22 @@ export class FormControlComponent implements OnInit {
       let formVal = this.form.value;
       let keyNames = Object.keys(lookUpGeneric[0].key);
       let controlVal = formVal[this.field.fieldNameCamelCase];
-      let lookUp = [];
-      // let pkFields: ReleatedField[] = [];
-      // let fkFields: ReleatedField[] = [];
+      let lookUp = this.getLookUp(lookUpGeneric);
+
       let selectedItems: any[] = [];
 
-      // pkFields = this.field.fieldOption.releatedFields.filter(rf => rf.isParentField);
-      // fkFields = this.field.fieldOption.releatedFields.filter(rf => !rf.isParentField);
+      // lookUpGeneric.forEach(item => {
+      //   let propValue: any = {};
+      //   //copy display name from generic lookup  
+      //   propValue.displayName = item.displayName;
 
-      lookUpGeneric.forEach(item => {
-        let propValue: any = {};
-        //copy display name from generic lookup  
-        propValue.displayName = item.displayName;
+      //   //set primary key value based on primary key properties
+      //   keyNames.forEach(keyName => {
+      //     propValue[keyName] = item.key[keyName]
+      //   });
 
-        //set primary key value based on primary key properties
-        keyNames.forEach(keyName => {
-          propValue[keyName] = item.key[keyName]
-        });
-
-        //set foreign key value based on foreign key properties
-        // fkFields.forEach(fkProp => {
-        //   propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.sourceFieldNameCamelCase]
-        // });
-
-        lookUp.push(propValue);
-      });
+      //   lookUp.push(propValue);
+      // });
 
       //Parse control value and set displayName
       if (controlVal && controlVal.length > 0) {
@@ -189,19 +204,19 @@ export class FormControlComponent implements OnInit {
       let formVal = this.form.value;
       let keyNames = Object.keys(lookUpGeneric[0].key);
       let controlVal = formVal[this.field.fieldNameCamelCase];
-      let lookUp = [];
+      let lookUp: any[] = this.getLookUp(lookUpGeneric);
 
-      lookUpGeneric.forEach(item => {
-        let propValue: any = {};
-        //copy display name from generic lookup  
-        propValue.displayName = item.displayName;
+      // lookUpGeneric.forEach(item => {
+      //   let propValue: any = {};
+      //   //copy display name from generic lookup  
+      //   propValue.displayName = item.displayName;
 
-        keyNames.forEach(keyName => {
-          propValue[keyName] = item.key[keyName]
-        });
+      //   keyNames.forEach(keyName => {
+      //     propValue[keyName] = item.key[keyName]
+      //   });
 
-        lookUp.push(propValue);
-      });
+      //   lookUp.push(propValue);
+      // });
 
 
       if (controlVal) {
@@ -227,6 +242,26 @@ export class FormControlComponent implements OnInit {
       }
 
       this.lookUpDataSubject.next(lookUp);
+    }
+  }
+
+  private getLookUp(lookUpGeneric: any): any[] {
+    if (lookUpGeneric) {
+      const keyNames = Object.keys(lookUpGeneric[0].key);
+      const lookUp = [];
+
+      lookUpGeneric.forEach(item => {
+        const propValue: any = {};
+        //copy display name from generic lookup  
+        propValue.displayName = item.displayName;
+
+        keyNames.forEach(keyName => {
+          propValue[keyName] = item.key[keyName]
+        });
+
+        lookUp.push(propValue);
+      });
+      return lookUp;
     }
   }
 

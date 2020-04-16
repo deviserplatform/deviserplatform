@@ -273,6 +273,7 @@ namespace Deviser.Core.Data.Repositories
                 {
                     dbResult = context.Page
                         .Where(e => e.Id == pageId).AsNoTracking()
+                        .Include(p => p.PageType)
                         .Include(p => p.AdminPage).ThenInclude(ap => ap.Module)
                         .Include(p => p.PageTranslation)
                         .Include(p => p.PagePermissions)

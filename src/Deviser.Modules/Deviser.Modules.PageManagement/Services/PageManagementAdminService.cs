@@ -192,7 +192,7 @@ namespace Deviser.Modules.PageManagement.Services
 
         private PageViewModel ConvertToSinglePageViewModel(Page page)
         {
-            if(page.ParentId==null ||page.ParentId == Guid.Empty)
+            if (page.ParentId == null || page.ParentId == Guid.Empty)
                 return _mapper.Map<PageViewModel>(page);
 
             var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
@@ -213,7 +213,12 @@ namespace Deviser.Modules.PageManagement.Services
             pageViewModel.RedirectUrl = pageTranslation.RedirectUrl;
             pageViewModel.IsLinkNewWindow = pageTranslation.IsLinkNewWindow;
             pageViewModel.Url = pageTranslation.URL;
-            pageViewModel.Module = pageViewModel.AdminPage != null && pageViewModel.AdminPage.ModuleId != Guid.Empty ? _modules.FirstOrDefault(m => m.Id == pageViewModel.AdminPage.ModuleId) : null;
+            if (page.AdminPage != null && page.AdminPage.ModuleId != Guid.Empty)
+            {
+                pageViewModel.Module = _modules.FirstOrDefault(m => m.Id == page.AdminPage.ModuleId);
+                pageViewModel.ModelName = page.AdminPage.ModelName;
+            }
+
             pageViewModel.Theme = !string.IsNullOrEmpty(pageViewModel.ThemeSrc)
                 ? _themes.FirstOrDefault(t => t.Key == pageViewModel.ThemeSrc)
                 : null;
@@ -244,6 +249,12 @@ namespace Deviser.Modules.PageManagement.Services
             PageTranslation pageTranslation;
             var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
 
+            if (pageViewModel.Parent != null)
+            {
+                pageViewModel.ParentId = pageViewModel.Parent.Id;
+                pageViewModel.Parent = null;
+            }
+
             if (pageViewModel.ParentId == null || pageViewModel.ParentId == Guid.Empty)
             {
                 return pageViewModel;
@@ -271,6 +282,7 @@ namespace Deviser.Modules.PageManagement.Services
 
             pageTranslation.Name = pageViewModel.Name;
             pageTranslation.Title = pageViewModel.Title;
+            pageTranslation.Locale = currentCulture;
             pageTranslation.Description = pageViewModel.Description;
             pageTranslation.PageHeaderTags = pageViewModel.PageHeaderTags;
             pageTranslation.RedirectUrl = pageViewModel.RedirectUrl;
@@ -284,13 +296,23 @@ namespace Deviser.Modules.PageManagement.Services
                 page.AdminPage = new AdminPage()
                 {
                     ModuleId = pageViewModel.Module.Id,
-                    PageId = pageViewModel.Id
+                    PageId = pageViewModel.Id,
+                    ModelName = pageViewModel.ModelName
                 };
+            }
+            else
+            {
+                page.AdminPage = null;
             }
 
             page.ThemeSrc = pageViewModel.Theme?.Key;
 
             return page;
+        }
+        
+        public IList<Permission> GetPermissions()
+        {
+            throw new NotImplementedException();
         }
     }
 }

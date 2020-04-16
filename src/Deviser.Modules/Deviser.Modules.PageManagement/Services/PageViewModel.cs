@@ -20,6 +20,7 @@ namespace Deviser.Modules.PageManagement.Services
         public string RedirectLink { get; set; }
         public Theme Theme { get; set; }
 
+        public new PageViewModel Parent { get; set; }
         public new ICollection<PageViewModel> ChildPage { get; set; }
 
         //public string PageName

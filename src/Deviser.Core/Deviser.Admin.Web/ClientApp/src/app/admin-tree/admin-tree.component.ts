@@ -19,6 +19,8 @@ import { AdminResult } from '../common/domain-types/admin-result';
 import { DAConfig } from '../common/domain-types/da-config';
 import { AdminConfigType } from '../common/domain-types/admin-confit-type';
 import { TreeControlComponent } from '../common/components/tree-control/tree-control.component';
+import { AdminFormComponent } from '../admin-form/admin-form.component';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -33,6 +35,7 @@ export class AdminTreeComponent implements OnInit {
   tree: any;
   labelType = LabelType;
   daConfig: DAConfig;
+  selectedNode: any;
 
   adminConfigType = AdminConfigType;
 
@@ -42,7 +45,10 @@ export class AdminTreeComponent implements OnInit {
   @ViewChild(TreeControlComponent)
   private treeControl: TreeControlComponent;
 
+  @ViewChild(AdminFormComponent, { static: false })
+  private adminForm: AdminFormComponent;
 
+  private formSubmitSubscription: Subscription;
 
   constructor(private adminService: AdminService,
     private recordIdPipe: RecordIdPipe,
@@ -55,6 +61,15 @@ export class AdminTreeComponent implements OnInit {
   ngOnInit() {
     this.getAdminConfig();
     this.getTree();
+
+    if(this.formSubmitSubscription){
+      this.formSubmitSubscription.unsubscribe();
+    }
+
+    if(this.adminForm) {
+      this.formSubmitSubscription = this.adminForm.submitSubject.subscribe(formResult => this.onFormSubmit(formResult));
+    }
+    
   }
 
 
@@ -108,7 +123,15 @@ export class AdminTreeComponent implements OnInit {
   }
 
   onNodeSelect(node: any): void {
-    console.log(node);
+    this.selectedNode = node;
+    const nodeKey = node[this.adminConfig.modelConfig.keyField.fieldNameCamelCase];
+    setTimeout(() => {
+      if(!nodeKey){
+        this.adminForm.initForm(nodeKey, this.selectedNode);
+      } else {
+        this.adminForm.initForm(nodeKey);
+      }
+    });
   }
 
   openDeleteConfirmationModal(item: any) {
@@ -118,6 +141,8 @@ export class AdminTreeComponent implements OnInit {
   onYesToDelete(item: any): void {
     console.log('confirm');
     const itemId = this.recordIdPipe.transform(item, this.adminConfig.modelConfig.keyField);
+    this.selectedNode = null;
+    if (!itemId) { return; }
     this.adminService.deleteRecord(itemId)
       .subscribe(response => this.onActionResult(response), error => this.handleError(error));
   }
@@ -150,6 +175,12 @@ export class AdminTreeComponent implements OnInit {
         timeout: 5000
       };
       this.alerts.push(alert);
+      this.getTree();
+    }
+  }
+
+  onFormSubmit(formResult: FormResult) {
+    if(formResult.isSucceeded) {
       this.getTree();
     }
   }

@@ -143,6 +143,23 @@
         <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
       </ng-container>
 
+      <ng-container *ngSwitchCase="fieldType.CheckBoxMatrix">
+        <label [ngClass]="{ 'is-invalid': hasError(field) }"
+          for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+
+        <app-checkbox-matrix [formControlName]="field.fieldNameCamelCase" 
+        [rowLookUp]="rowLookUp"
+        [colLookUp]="colLookUp"
+        [rowLookUpKey]="rowLookUpKey"
+        [colLookUpKey]="colLookUpKey"
+        [checkBoxMatrix]="checkBoxMatrix"
+        [contextId]="formItemId"
+        bindLabel="displayName">
+        </app-checkbox-matrix>
+
+        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      </ng-container>
+
     </ng-container>
   </ng-container>
 </fieldset>

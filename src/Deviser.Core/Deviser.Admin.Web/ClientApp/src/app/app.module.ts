@@ -37,6 +37,7 @@ import { WINDOW_PROVIDERS } from './common/services/window.service';
 import { EnvPathPipe } from './common/pipes/env-path.pipe';
 import { AdminTreeComponent } from './admin-tree/admin-tree.component';
 import { TreeControlComponent } from './common/components/tree-control/tree-control.component';
+import { CheckboxMatrixComponent } from './common/components/checkbox-matrix/checkbox-matrix.component';
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import { TreeControlComponent } from './common/components/tree-control/tree-cont
     AdminAlertComponent,
     EnvPathPipe,
     AdminTreeComponent,
-    TreeControlComponent
+    TreeControlComponent,
+    CheckboxMatrixComponent
   ],
   imports: [    
     AccordionModule.forRoot(),

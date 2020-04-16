@@ -1,8 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable, BehaviorSubject } from 'rxjs';
 
 import { AdminService } from '../common/services/admin.service';
 import { AdminConfig } from '../common/domain-types/admin-config';
@@ -25,7 +25,6 @@ import { FormBehaviour } from '../common/domain-types/form-behaviour';
   styleUrls: ['./admin-form.component.scss']
 })
 export class AdminFormComponent implements OnInit {
-
   adminConfig: AdminConfig;
   alerts: Alert[];
   record: any;
@@ -38,18 +37,17 @@ export class AdminFormComponent implements OnInit {
   // childFormContexts: { [key: string]: FormContext }
 
   formType = FormType;
-
+  submitSubject: BehaviorSubject<FormResult> = new BehaviorSubject<any>({});
   daConfig: DAConfig;
-  adminConfigType = AdminConfigType
+  adminConfigType = AdminConfigType;
 
   constructor(private route: ActivatedRoute,
-    private adminService: AdminService,
-    private formControlService: FormControlService,
-    private fb: FormBuilder,
-    private location: Location,
-    @Inject(WINDOW) private window: any) {
+              private adminService: AdminService,
+              private formControlService: FormControlService,
+              private fb: FormBuilder,
+              private location: Location,
+              @Inject(WINDOW) private window: any) {
     this.alerts = [];
-    this.formTabs = [];
     this.daConfig = window.daConfig;
     // this.childFormContexts;
   }
@@ -57,38 +55,35 @@ export class AdminFormComponent implements OnInit {
   ngOnInit() {
     // this.getAdminConfig();
     // this.getRecord();
-    this.getData();
+    const id = this.route.snapshot.paramMap.get('id');
+    this.initForm(id);
   }
 
-  getData(): void {
-    let id = this.route.snapshot.paramMap.get('id');
-
-    if (this.daConfig.adminConfigType == AdminConfigType.GridAndForm) {
-      this.formMode = id ? FormMode.Update : FormMode.Create;
-    }
-    else {
-      id = 'nothing';
+  initForm(itemId: string, record: any = {}): void {
+    if (this.daConfig.adminConfigType === AdminConfigType.GridAndForm ||
+      this.daConfig.adminConfigType === AdminConfigType.TreeAndForm) {
+      this.formMode = itemId ? FormMode.Update : FormMode.Create;
+    } else {
+      itemId = 'nothing';
       this.formMode = FormMode.Update;
     }
 
-
-
     if (this.formMode === FormMode.Update) {
       const adminConfig$ = this.adminService.getAdminConfig();
-      const record$ = this.adminService.getRecord(id);
+      const record$ = this.adminService.getRecord(itemId);
       forkJoin([adminConfig$, record$]).subscribe(results => {
         this.record = results[1];
         this.onGetAdminConfig(results[0]);
       }, error => {
-        let alert: Alert = {
+        const alert: Alert = {
           alterType: AlertType.Error,
-          message: "Unable to get this item, please contact administrator",
+          message: 'Unable to get this item, please contact administrator',
           timeout: 5000
         }
         this.alerts.push(alert);
       });
     } else if (this.formMode === FormMode.Create) {
-      this.record = {};
+      this.record = record;
       this.adminService.getAdminConfig()
         .subscribe(adminConfig => this.onGetAdminConfig(adminConfig));
     }
@@ -96,6 +91,7 @@ export class AdminFormComponent implements OnInit {
   }
 
   onGetAdminConfig(adminConfig: AdminConfig): void {
+    this.formTabs = [];
     if (adminConfig) {
       this.adminConfig = adminConfig;
 
@@ -186,8 +182,9 @@ export class AdminFormComponent implements OnInit {
   }
 
   onActionResult(formValue: FormResult): void {
+    this.submitSubject.next(formValue);
     if (formValue && formValue.isSucceeded) {
-      if (formValue.formBehaviour === FormBehaviour.RedirectToGrid) {
+      if (formValue.formBehaviour === FormBehaviour.RedirectToGrid && this.adminConfig.adminConfigType === AdminConfigType.GridAndForm ) {
         this.goBack();
       } else {
         let alert: Alert = {
