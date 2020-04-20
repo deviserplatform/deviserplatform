@@ -125,7 +125,13 @@ namespace Deviser.Core.Data.Repositories
             try
             {
                 using var context = new DeviserDbContext(_dbOptions);
-                var dbLanguage = _mapper.Map<Entities.Language>(language);
+                var dbLanguage = context.Language.ToList().FirstOrDefault(l => string.Equals(language.CultureCode, l.CultureCode, StringComparison.InvariantCultureIgnoreCase));
+                if (dbLanguage == null)
+                {
+                    return null;
+                }
+
+                _mapper.Map(language, dbLanguage);
                 var result = context.Language.Update(dbLanguage).Entity;
                 //var result = context.Language.Attach(dbLanguage).Entity;
                 //context.Entry(dbLanguage).State = EntityState.Modified;

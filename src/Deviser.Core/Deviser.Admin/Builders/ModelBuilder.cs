@@ -1,7 +1,10 @@
 ﻿using Deviser.Admin.Config;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using Deviser.Admin.Properties;
+using Deviser.Core.Common.Extensions;
 
 namespace Deviser.Admin.Builders
 {
@@ -43,6 +46,29 @@ namespace Deviser.Admin.Builders
                 },
                 ModelConfig = childConfig.ModelConfig
             });
+            return this;
+        }
+
+        /// <summary>
+        /// This is a static configuration used to show/hide child grid and form based on info from any "Service(s)".
+        /// Note: If dynamic show/hide child grid and form is required, a separate method can be implemented.
+        /// This will be evaluvated when admin config / meta info is requested from client.
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="fieldExpression"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public ModelBuilder<TModel> ShowChildConfigOn<TProperty>(Expression<Func<TModel, ICollection<TProperty>>> fieldExpression, Expression<Func<IServiceProvider, bool>> predicate)
+        {
+            var fieldName = ReflectionExtensions.GetMemberName(fieldExpression);
+            var childConfig = _adminConfig.ChildConfigs.FirstOrDefault(c => c.Field.FieldName == fieldName);
+            if (childConfig == null)
+            {
+                throw new InvalidOperationException(Resources.FieldNotFoundInvaidOperation);
+            }
+
+            childConfig.ShowOnStaticExpression = predicate;
+            
             return this;
         }
 

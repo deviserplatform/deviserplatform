@@ -1,4 +1,6 @@
-﻿using Deviser.Admin.Config;
+﻿using System.Linq.Expressions;
+using Deviser.Admin.Config;
+using Newtonsoft.Json;
 
 namespace Deviser.Admin
 {
@@ -6,5 +8,10 @@ namespace Deviser.Admin
     {
         Field Field { get; }
         IModelConfig ModelConfig { get; set; }
+
+        [JsonIgnore]
+        LambdaExpression ShowOnStaticExpression { get; set; }
+
+        bool IsShown { get; }
     }
 }

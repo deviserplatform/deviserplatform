@@ -74,9 +74,39 @@ namespace Deviser.Modules.PageManagement
                              p => p.RoleId,
                              p => p.PermissionId,
                              p => p.Id,
-                             p => p.PageId, typeof(Role), typeof(Permission), 
+                             p => p.PageId, typeof(Role), typeof(Permission),
                              option => option.IsRequired = false);
                      });
+
+                builder.AddChildConfig(p => p.PageTranslation, modelBuilder =>
+                {
+                    var formBuilder = modelBuilder.FormBuilder;
+
+                    modelBuilder.GridBuilder
+                        .AddField(p => p.Language.EnglishName, option => option.DisplayName="Language")
+                        .AddField(p => p.Name)
+                        .AddField(p => p.Title);
+
+                    formBuilder
+                        .AddSelectField(p => p.Language)
+                        .AddField(p => p.Name)
+                        .AddField(p => p.Title)
+                        .AddField(p => p.Description, option =>
+                        {
+                            option.FieldType = FieldType.TextArea;
+                            option.IsRequired = false;
+                        })
+                        .AddField(p => p.PageHeaderTags)
+                        .AddField(p => p.RedirectUrl);
+
+                    formBuilder.Property(p => p.Language)
+                        .HasLookup(sp => sp.GetService<PageManagementAdminService>().GetTranslateLanguages(),
+                            language => language.CultureCode,
+                            language => language.EnglishName);
+                });
+
+                builder.ShowChildConfigOn(p => p.PageTranslation,
+                    provider => provider.GetService<PageManagementAdminService>().IsSiteMultilingual());
 
                 formBuilder.Property(f => f.Name)
                     .ShowOn(f => f.PageType != null && f.PageType.Id == standardId)

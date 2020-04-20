@@ -10,6 +10,9 @@ namespace Deviser.Admin
         public IGridConfig GridConfig { get; }
         public KeyField KeyField { get; }
         public ITreeConfig TreeConfig { get; }
+
+        public bool IsShown { get; set; }
+
         public ModelConfig()
         {
             CustomForms = new Dictionary<string, CustomForm>();

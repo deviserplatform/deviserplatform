@@ -80,7 +80,7 @@ namespace Deviser.Core.Data.Repositories
 
                 using var context = new DeviserDbContext(_dbOptions);
                 var allPagesInFlat = context.Page
-                    .Include(p => p.PageType)
+                    //.Include(p => p.PageType)
                     .Include(p => p.AdminPage).ThenInclude(ap => ap.Module)
                     .Include(p => p.PageTranslation)
                     .Include(p => p.PagePermissions)
@@ -141,6 +141,7 @@ namespace Deviser.Core.Data.Repositories
                     .Include(p => p.PageTranslation)
                     .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
                     .OrderBy(p => p.PageOrder)
+                    .AsNoTracking()
                     .ToList();
 
                 var result = _mapper.Map<List<Page>>(dbResult);
@@ -186,7 +187,8 @@ namespace Deviser.Core.Data.Repositories
 
                 using var context = new DeviserDbContext(_dbOptions);
                 var dbResult = context.Page
-                    .Where(e => e.Id == pageId).AsNoTracking()
+                    .Where(e => e.Id == pageId)
+                    .AsNoTracking()
                     .FirstOrDefault();
 
                 var result = _mapper.Map<Page>(dbResult);
@@ -213,7 +215,8 @@ namespace Deviser.Core.Data.Repositories
 
                 using var context = new DeviserDbContext(_dbOptions);
                 var dbResult = context.Page
-                    .Where(e => e.Id == pageId).AsNoTracking()
+                    .Where(e => e.Id == pageId)
+                    .AsNoTracking()
                     .Include(p => p.PagePermissions)
                     .FirstOrDefault();
 
@@ -241,8 +244,9 @@ namespace Deviser.Core.Data.Repositories
 
                 using var context = new DeviserDbContext(_dbOptions);
                 var dbResult = context.Page
-                    .Where(e => e.Id == pageId).AsNoTracking()
+                    .Where(e => e.Id == pageId)
                     .Include(p => p.PageTranslation)
+                    .AsNoTracking()
                     .FirstOrDefault();
 
                 var result = _mapper.Map<Page>(dbResult);
@@ -285,6 +289,7 @@ namespace Deviser.Core.Data.Repositories
                         .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
                         .Include(p => p.PageModule).ThenInclude(pm => pm.ModulePermissions)
                         .OrderBy(p => p.Id)
+                        .AsNoTracking()
                         .FirstOrDefault();
                 }
                 else
@@ -327,7 +332,9 @@ namespace Deviser.Core.Data.Repositories
                 //}
 
                 using var context = new DeviserDbContext(_dbOptions);
-                var dbResult = context.PageType.ToList();
+                var dbResult = context.PageType
+                    .AsNoTracking()
+                    .ToList();
 
                 var result = _mapper.Map<List<PageType>>(dbResult);
                 //AddResultToCache(cacheName, result);

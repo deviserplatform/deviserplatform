@@ -40,13 +40,14 @@ export class AdminFormComponent implements OnInit {
   submitSubject: BehaviorSubject<FormResult> = new BehaviorSubject<any>({});
   daConfig: DAConfig;
   adminConfigType = AdminConfigType;
+  activeChildConfigs: ChildConfig[];
 
   constructor(private route: ActivatedRoute,
-              private adminService: AdminService,
-              private formControlService: FormControlService,
-              private fb: FormBuilder,
-              private location: Location,
-              @Inject(WINDOW) private window: any) {
+    private adminService: AdminService,
+    private formControlService: FormControlService,
+    private fb: FormBuilder,
+    private location: Location,
+    @Inject(WINDOW) private window: any) {
     this.alerts = [];
     this.daConfig = window.daConfig;
     // this.childFormContexts;
@@ -95,9 +96,12 @@ export class AdminFormComponent implements OnInit {
     if (adminConfig) {
       this.adminConfig = adminConfig;
 
-
       if (this.adminConfig.childConfigs.length > 0) {
-        this.selectedChildConfig = this.adminConfig.childConfigs[0];
+        this.activeChildConfigs = this.adminConfig.childConfigs.filter(c => c.isShown);
+      }
+
+      if (this.activeChildConfigs && this.activeChildConfigs.length > 0) {
+        this.selectedChildConfig = this.activeChildConfigs[0];
         // this.childFormContexts = {};
         // for (let childConfig of this.adminConfig.childConfigs) {
 
@@ -184,7 +188,7 @@ export class AdminFormComponent implements OnInit {
   onActionResult(formValue: FormResult): void {
     this.submitSubject.next(formValue);
     if (formValue && formValue.isSucceeded) {
-      if (formValue.formBehaviour === FormBehaviour.RedirectToGrid && this.adminConfig.adminConfigType === AdminConfigType.GridAndForm ) {
+      if (formValue.formBehaviour === FormBehaviour.RedirectToGrid && this.adminConfig.adminConfigType === AdminConfigType.GridAndForm) {
         this.goBack();
       } else {
         let alert: Alert = {

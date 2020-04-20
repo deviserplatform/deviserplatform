@@ -22,6 +22,7 @@ namespace Deviser.Modules.PageManagement.Services
     public class PageManagementAdminService : IAdminTreeService<PageViewModel> //: IAdminFormService<RecycleItem>
     {
         private readonly ILogger<PageManagementAdminService> _logger;
+        private readonly ILanguageManager _languageManager;
         private readonly IPageRepository _pageRepository;
         private readonly IMapper _mapper;
         private readonly IModuleRepository _moduleRepository;
@@ -34,6 +35,7 @@ namespace Deviser.Modules.PageManagement.Services
         private readonly IList<Theme> _themes;
 
         public PageManagementAdminService(ILogger<PageManagementAdminService> logger,
+            ILanguageManager languageManager,
             IPageRepository pageRepository,
             IModuleRepository moduleRepository,
             INavigation navigation,
@@ -41,6 +43,7 @@ namespace Deviser.Modules.PageManagement.Services
             IThemeManager themeManager)
         {
             _logger = logger;
+            _languageManager = languageManager;
             _pageRepository = pageRepository;
             _mapper = PageManagementMapper.Mapper;
             _moduleRepository = moduleRepository;
@@ -55,22 +58,30 @@ namespace Deviser.Modules.PageManagement.Services
 
         public async Task<PageViewModel> GetTree()
         {
+            var translateLanguages = GetTranslateLanguages();
+            var isMultilingual = translateLanguages.Count > 0;
             var pageTree = _pageRepository.GetPageTree(true);
-            return await Task.FromResult(ConvertToPageViewModel(pageTree));
+            return await Task.FromResult(ConvertToPageViewModel(pageTree, isMultilingual, translateLanguages));
         }
 
         public async Task<PageViewModel> GetItem(string itemId)
         {
+            var translateLanguages = GetTranslateLanguages();
+            var isMultilingual = translateLanguages.Count > 0;
+
             var result = _navigation.GetPageAndDependencies(Guid.Parse(itemId));
-            return await Task.FromResult(ConvertToPageViewModel(result));
+            return await Task.FromResult(ConvertToPageViewModel(result, isMultilingual, translateLanguages));
         }
 
         public async Task<IFormResult<PageViewModel>> CreateItem(PageViewModel item)
         {
-            var pageResult = _navigation.CreatePage(ConvertToSingePage(item));
+            var translateLanguages = GetTranslateLanguages();
+            var isMultilingual = translateLanguages.Count > 0;
+
+            var pageResult = _navigation.CreatePage(ConvertToSingePage(item, isMultilingual, translateLanguages));
             if (pageResult != null)
             {
-                var result = new FormResult<PageViewModel>(ConvertToPageViewModel(pageResult))
+                var result = new FormResult<PageViewModel>(ConvertToPageViewModel(pageResult, isMultilingual, translateLanguages))
                 {
                     IsSucceeded = true,
                     SuccessMessage = "Page has been created successfully"
@@ -87,10 +98,13 @@ namespace Deviser.Modules.PageManagement.Services
 
         public async Task<IFormResult<PageViewModel>> UpdateItem(PageViewModel item)
         {
-            var pageResult = _navigation.UpdateSinglePage(ConvertToSingePage(item));
+            var translateLanguages = GetTranslateLanguages();
+            var isMultilingual = translateLanguages.Count > 0;
+
+            var pageResult = _navigation.UpdateSinglePage(ConvertToSingePage(item, isMultilingual, translateLanguages));
             if (pageResult != null)
             {
-                var result = new FormResult<PageViewModel>(ConvertToPageViewModel(pageResult))
+                var result = new FormResult<PageViewModel>(ConvertToPageViewModel(pageResult, isMultilingual, translateLanguages))
                 {
                     IsSucceeded = true,
                     SuccessMessage = "Page has been updated successfully"
@@ -107,7 +121,10 @@ namespace Deviser.Modules.PageManagement.Services
 
         public async Task<IFormResult<PageViewModel>> UpdateTree(PageViewModel item)
         {
-            var pageResult = _navigation.UpdatePageTree(ConvertToPage(item));
+            var translateLanguages = GetTranslateLanguages();
+            var isMultilingual = translateLanguages.Count > 0;
+
+            var pageResult = _navigation.UpdatePageTree(ConvertToPage(item, isMultilingual, translateLanguages));
             if (pageResult != null)
             {
                 //UpdateSinglePage returns only the single node. However, the UI expects full tree
@@ -174,23 +191,38 @@ namespace Deviser.Modules.PageManagement.Services
             return themes;
         }
 
-        private PageViewModel ConvertToPageViewModel(Page page)
+        public bool IsSiteMultilingual()
         {
-            var pageViewModel = ConvertToSinglePageViewModel(page);
+            var activeLanguages = GetActiveLanguages();
+            return activeLanguages?.Count > 1;
+        }
+
+        public IList<Language> GetTranslateLanguages()
+        {
+            var currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+            var activeLanguages = GetActiveLanguages();
+            //Excluding current culture since the current culture translation will be embedded in PageViewModel
+            return activeLanguages.Where(l => !string.Equals(l.CultureCode,
+                currentCulture, StringComparison.InvariantCultureIgnoreCase)).ToList();
+        }
+
+        private PageViewModel ConvertToPageViewModel(Page page, bool isMultilingual, IList<Language> translateLanguages)
+        {
+            var pageViewModel = ConvertToSinglePageViewModel(page, isMultilingual, translateLanguages);
 
             if (page.ChildPage != null && page.ChildPage.Count > 0)
             {
                 pageViewModel.ChildPage = new List<PageViewModel>();
                 foreach (var child in page.ChildPage)
                 {
-                    var childPageViewModel = ConvertToPageViewModel(child);
+                    var childPageViewModel = ConvertToPageViewModel(child, isMultilingual, translateLanguages);
                     pageViewModel.ChildPage.Add(childPageViewModel);
                 }
             }
             return pageViewModel;
         }
 
-        private PageViewModel ConvertToSinglePageViewModel(Page page)
+        private PageViewModel ConvertToSinglePageViewModel(Page page, bool isMultilingual, IList<Language> translateLanguages)
         {
             if (page.ParentId == null || page.ParentId == Guid.Empty)
                 return _mapper.Map<PageViewModel>(page);
@@ -205,6 +237,7 @@ namespace Deviser.Modules.PageManagement.Services
                 throw new InvalidOperationException($"Page does not have translation for default locale: {currentCulture}");
             }
             page.PageTranslation.Remove(pageTranslation); // Always remove the default translation from Admin UI, add it back to pageTranslation while updating a page.
+
             var pageViewModel = _mapper.Map<PageViewModel>(page);
             pageViewModel.Name = pageTranslation.Name;
             pageViewModel.Title = pageTranslation.Title;
@@ -223,27 +256,36 @@ namespace Deviser.Modules.PageManagement.Services
                 ? _themes.FirstOrDefault(t => t.Key == pageViewModel.ThemeSrc)
                 : null;
 
+            if (isMultilingual && pageViewModel?.PageTranslation != null && pageViewModel.PageTranslation.Count > 0)
+            {
+                foreach (var translation in pageViewModel.PageTranslation)
+                {
+                    pageTranslation.Language =
+                        translateLanguages.FirstOrDefault(t => string.Equals(t?.CultureCode, translation?.Locale));
+                }
+            }
+
             return pageViewModel;
 
         }
 
-        private Page ConvertToPage(PageViewModel pageViewModel)
+        private Page ConvertToPage(PageViewModel pageViewModel, bool isMultilingual, IList<Language> translateLanguages)
         {
-            var page = ConvertToSingePage(pageViewModel);
+            var page = ConvertToSingePage(pageViewModel, isMultilingual, translateLanguages);
 
             if (pageViewModel.ChildPage != null && pageViewModel.ChildPage.Count > 0)
             {
                 page.ChildPage = new List<Page>();
                 foreach (var child in pageViewModel.ChildPage)
                 {
-                    var childPage = ConvertToPage(child);
+                    var childPage = ConvertToPage(child, isMultilingual, translateLanguages);
                     page.ChildPage.Add(childPage);
                 }
             }
             return page;
         }
 
-        private Page ConvertToSingePage(PageViewModel pageViewModel)
+        private Page ConvertToSingePage(PageViewModel pageViewModel, bool isMultilingual, IList<Language> translateLanguages)
         {
             Page page;
             PageTranslation pageTranslation;
@@ -291,6 +333,20 @@ namespace Deviser.Modules.PageManagement.Services
             //Default page translation will be removed for both new and existing pages. Therefore, add it while updating a pge.
             page.PageTranslation.Add(pageTranslation);
 
+            if (isMultilingual && page.PageTranslation.Count > 1)
+            {
+                foreach (var translation in page.PageTranslation)
+                {
+                    var selectedLanguage = translateLanguages.FirstOrDefault(t => string.Equals(t?.CultureCode, translation?.Language?.CultureCode,
+                            StringComparison.InvariantCultureIgnoreCase));
+                    
+                    if (selectedLanguage != null)
+                    {
+                        translation.Locale = selectedLanguage.CultureCode;
+                    }
+                }
+            }
+
             if (pageViewModel.Module != null)
             {
                 page.AdminPage = new AdminPage()
@@ -309,10 +365,10 @@ namespace Deviser.Modules.PageManagement.Services
 
             return page;
         }
-        
-        public IList<Permission> GetPermissions()
+
+        private IList<Language> GetActiveLanguages()
         {
-            throw new NotImplementedException();
+            return _languageManager.GetActiveLanguages();
         }
     }
 }

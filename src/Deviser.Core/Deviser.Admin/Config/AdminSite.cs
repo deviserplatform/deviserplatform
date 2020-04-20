@@ -233,6 +233,19 @@ namespace Deviser.Admin.Config
         {
             BuildForm(adminBaseConfig.ModelConfig.FormConfig, adminBaseConfig.ModelConfig.GridConfig,
                 adminBaseConfig.EntityConfig, hasConfiguration, modelType);
+
+            if (adminBaseConfig is ChildConfig childConfig && childConfig.ShowOnStaticExpression != null)
+            {
+                bool ShowOnDelegate()
+                {
+                    var lookUpFields = new List<LookUpField>();
+                    var ShowOnStaticExpressionDel = childConfig.ShowOnStaticExpression.Compile();
+                    var result = ShowOnStaticExpressionDel.DynamicInvoke(new object[] { _serviceProvider });
+                    return (bool)result;
+                }
+
+                childConfig.ShowOnDelegateFunc = ShowOnDelegate;
+            }
         }
 
         private void BuildForm(IFormConfig formConfig, IGridConfig gridConfig, EntityConfig entityConfig, bool hasConfiguration, Type modelType)
@@ -743,8 +756,8 @@ namespace Deviser.Admin.Config
             }
         }
 
-        private void AddLookUpField<TModel>(AdminConfig<TModel> adminConfig, 
-            string lookupKey,  
+        private void AddLookUpField<TModel>(AdminConfig<TModel> adminConfig,
+            string lookupKey,
             LambdaExpression lookupExpression,
             LambdaExpression lookupKeyExpression,
             LambdaExpression lookupDisplayExpression) where TModel : class
@@ -758,14 +771,14 @@ namespace Deviser.Admin.Config
                 var displayExprDelegate = lookupDisplayExpression.Compile();
                 var keyFieldName = ReflectionExtensions.GetMemberName(lookupKeyExpression);
 
-                var items = entityLookupExprDelegate.DynamicInvoke(new object[] {_serviceProvider}) as IList;
+                var items = entityLookupExprDelegate.DynamicInvoke(new object[] { _serviceProvider }) as IList;
 
                 foreach (var item in items)
                 {
-                    var keyValue = entityLookupExprKeyDelegate.DynamicInvoke(new object[] {item});
-                    var displayName = displayExprDelegate.DynamicInvoke(new object[] {item}) as string;
+                    var keyValue = entityLookupExprKeyDelegate.DynamicInvoke(new object[] { item });
+                    var displayName = displayExprDelegate.DynamicInvoke(new object[] { item }) as string;
                     lookUpFields.Add(new LookUpField()
-                        {Key = new Dictionary<string, object>() {{keyFieldName, keyValue}}, DisplayName = displayName});
+                    { Key = new Dictionary<string, object>() { { keyFieldName, keyValue } }, DisplayName = displayName });
                 }
 
                 return lookUpFields;
