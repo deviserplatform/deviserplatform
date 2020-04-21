@@ -14,6 +14,7 @@ namespace Deviser.Admin.Config
         public FormBehaviour FormBehaviour { get; set; } = FormBehaviour.RedirectToGrid;
         public object Result { get; }
         public bool IsSucceeded { get; set; }
+        public IClientAction SuccessAction { get; set; }
 
         public FormResult(object result = null)
         {
@@ -31,6 +32,7 @@ namespace Deviser.Admin.Config
         public TResult Value { get; }
         public object Result { get; }
         public bool IsSucceeded { get; set; }
+        public IClientAction SuccessAction { get; set; }
 
         public FormResult(TResult result = default(TResult))
         {

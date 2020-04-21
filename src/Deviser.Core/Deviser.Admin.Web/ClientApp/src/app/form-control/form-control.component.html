@@ -18,7 +18,7 @@
         <label [ngClass]="{ 'is-invalid': hasError(field) }"
           for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
         <input type="text" class="form-control" [id]="field.fieldNameCamelCase"
-          [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }">
+          [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }" [readonly]="field.fieldOption.isReadOnly">
         <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
       </ng-container>
 

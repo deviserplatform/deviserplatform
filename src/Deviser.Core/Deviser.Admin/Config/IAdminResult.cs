@@ -7,6 +7,7 @@
         
         object Result { get; }
         bool IsSucceeded { get; set; }
+        IClientAction SuccessAction { get; set; }
     }
 
     public interface IAdminResult<out TResult> : IAdminResult

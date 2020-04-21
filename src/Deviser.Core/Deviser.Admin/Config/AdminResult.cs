@@ -13,6 +13,8 @@ namespace Deviser.Admin.Config
         public object Result { get; }
         public bool IsSucceeded { get; set; }
 
+        public IClientAction SuccessAction { get; set; }
+
         public AdminResult(object result = null)
         {
             Result = result;
@@ -27,6 +29,7 @@ namespace Deviser.Admin.Config
         public TResult Value { get; }
         public object Result { get; }
         public bool IsSucceeded { get; set; }
+        public IClientAction SuccessAction { get; set; }
 
         public AdminResult(TResult result = default(TResult))
         {

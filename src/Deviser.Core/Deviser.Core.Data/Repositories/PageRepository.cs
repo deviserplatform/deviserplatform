@@ -403,6 +403,11 @@ namespace Deviser.Core.Data.Repositories
                 using var context = new DeviserDbContext(_dbOptions);
                 var dbPage = _mapper.Map<Entities.Page>(page);
 
+                if (dbPage.AdminPage != null)
+                {
+                    dbPage.AdminPage.PageId = Guid.Empty;
+                }
+
                 dbPage.LastModifiedDate = DateTime.Now;
 
                 var pagePermissions = dbPage.PagePermissions;
