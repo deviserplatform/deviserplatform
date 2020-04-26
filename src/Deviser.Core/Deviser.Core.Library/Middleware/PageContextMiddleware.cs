@@ -71,7 +71,7 @@ namespace Deviser.Core.Library.Middleware
 
                         if (homePageId != Guid.Empty)
                         {
-                            pageContext.HomePage = pageManager.GetPageAndDependencies(homePageId);
+                            pageContext.HomePage = pageManager.GetPageAndTranslation(homePageId);
                         }
 
 
@@ -96,7 +96,7 @@ namespace Deviser.Core.Library.Middleware
                             if (permalink.Contains(requestCulture) && !pageContext.IsMultilingual)
                                 permalink = permalink.Replace(requestCulture + "/", "");
 
-                            currentPage = pageManager.GetPageAndDependenciesByUrl(permalink, pageContext.CurrentCulture.ToString());
+                            currentPage = pageManager.GetPageAndTranslationByUrl(permalink, pageContext.CurrentCulture.ToString());
                         }
 
                         pageContext.CurrentPageId = currentPage.Id;

@@ -62,14 +62,14 @@ export class AdminTreeComponent implements OnInit {
     this.getAdminConfig();
     this.getTree();
 
-    if(this.formSubmitSubscription){
+    if (this.formSubmitSubscription) {
       this.formSubmitSubscription.unsubscribe();
     }
 
-    if(this.adminForm) {
+    if (this.adminForm) {
       this.formSubmitSubscription = this.adminForm.submitSubject.subscribe(formResult => this.onFormSubmit(formResult));
     }
-    
+
   }
 
 
@@ -89,11 +89,6 @@ export class AdminTreeComponent implements OnInit {
 
   onGetTree(entityRecords: any): void {
     this.tree = entityRecords;
-    if (this.treeControl) {
-      this.treeControl.rebuildTreeForData(entityRecords[this.adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase]);
-    } else {
-      this.handleError('Error occured while getting tree data');
-    }
   }
 
   onNodeDrop(node: any): void {
@@ -102,7 +97,7 @@ export class AdminTreeComponent implements OnInit {
     treeToUpdate[this.adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase] = node as any[];
     console.log(node);
     this.adminService.updateTree(treeToUpdate)
-    .subscribe(response => this.onActionResult(response), error => this.handleError(error));
+      .subscribe(response => this.onActionResult(response), error => this.handleError(error));
   }
 
   // onUpdateTree(adminResult: AdminResult) {
@@ -125,8 +120,17 @@ export class AdminTreeComponent implements OnInit {
   onNodeSelect(node: any): void {
     this.selectedNode = node;
     const nodeKey = node[this.adminConfig.modelConfig.keyField.fieldNameCamelCase];
+
     setTimeout(() => {
-      if(!nodeKey){
+
+      if (this.formSubmitSubscription) {
+        this.formSubmitSubscription.unsubscribe();
+      }
+      if (this.adminForm) {
+        this.formSubmitSubscription = this.adminForm.submitSubject.subscribe(formResult => this.onFormSubmit(formResult));
+      }
+
+      if (!nodeKey) {
         this.adminForm.initForm(nodeKey, this.selectedNode);
       } else {
         this.adminForm.initForm(nodeKey);
@@ -180,7 +184,7 @@ export class AdminTreeComponent implements OnInit {
   }
 
   onFormSubmit(formResult: FormResult) {
-    if(formResult.isSucceeded) {
+    if (formResult.isSucceeded) {
       this.getTree();
     }
   }

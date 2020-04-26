@@ -48,7 +48,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = _pageRepository.GetPages();
+                var result = _pageRepository.GetPagesFlat();
                 if (result != null)
                     return Ok(result);
 
@@ -182,7 +182,7 @@ namespace DeviserWI.Controllers.API
             {
                 if (page != null)
                 {   
-                    var result = _navigation.UpdateSinglePage(page);
+                    var result = _navigation.UpdatePageAndChildren(page);
                     if (result != null)
                         return Ok(result);
                 }

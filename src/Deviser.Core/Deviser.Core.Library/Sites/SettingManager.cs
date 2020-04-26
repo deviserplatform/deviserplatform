@@ -267,9 +267,9 @@ namespace Deviser.Core.Library.Sites
             return null;
         }
 
-        private List<Page> GetPages()
+        private IList<Page> GetPages()
         {
-            var result = _pageRepository.GetPages();
+            var result = _pageRepository.GetPagesFlat();
             return result;
         }
 

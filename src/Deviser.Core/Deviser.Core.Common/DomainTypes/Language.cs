@@ -7,7 +7,7 @@ namespace Deviser.Core.Common.DomainTypes
 {
     public class Language
     {
-        //public Guid Id { get; set; }
+        public Guid Id { get; set; }
         
         //Only used in Language Admin UI
         public Language SelectedLanguage { get; set; }

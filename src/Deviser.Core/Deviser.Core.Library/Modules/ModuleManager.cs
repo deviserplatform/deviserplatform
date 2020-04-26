@@ -42,7 +42,7 @@ namespace Deviser.Core.Library.Modules
             return null;
         }
 
-        public List<PageModule> GetPageModuleByPage(Guid pageId)
+        public IList<PageModule> GetPageModuleByPage(Guid pageId)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace Deviser.Core.Library.Modules
             return null;
         }
 
-        public List<PageModule> GetDeletedPageModules()
+        public IList<PageModule> GetDeletedPageModules()
         {
             try
             {
@@ -89,7 +89,7 @@ namespace Deviser.Core.Library.Modules
                     if (dbPageModule == null)
                     {
                         dbPageModule = _pageRepository.CreatePageModule(pageModule);
-                        List<ModulePermission> adminPermissions = AddAdminPermissions(dbPageModule);
+                        List<ModulePermission> adminPermissions = AddAdminPermissions(dbPageModule) as List<ModulePermission>;
 
                         if (dbPageModule.ModulePermissions == null)
                         {
@@ -124,7 +124,7 @@ namespace Deviser.Core.Library.Modules
             return null;
         }
 
-        public void UpdatePageModules(List<PageModule> pageModules)
+        public void UpdatePageModules(IList<PageModule> pageModules)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace Deviser.Core.Library.Modules
 
                     foreach (var pageModule in pageModules)
                     {
-                        var adminPermissions = AddAdminPermissions(pageModule);
+                        var adminPermissions = AddAdminPermissions(pageModule) as List<ModulePermission>;
 
                         if (pageModule.ModulePermissions == null)
                         {
@@ -169,7 +169,7 @@ namespace Deviser.Core.Library.Modules
             }
         }
 
-        private List<ModulePermission> AddAdminPermissions(PageModule pageModule)
+        private IList<ModulePermission> AddAdminPermissions(PageModule pageModule)
         {
             //Update admin permissions
             var adminPermissions = new List<ModulePermission>();
@@ -186,7 +186,7 @@ namespace Deviser.Core.Library.Modules
                 RoleId = Globals.AdministratorRoleId,
                 PermissionId = Globals.ModuleEditPermissionId,
             });
-            adminPermissions = _pageRepository.AddModulePermissions(adminPermissions);
+            adminPermissions = _pageRepository.AddModulePermissions(adminPermissions) as List<ModulePermission>;
             return adminPermissions;
         }
 

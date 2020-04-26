@@ -32,8 +32,4 @@
     <EmbeddedResource Include="DataSeed.json" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Cache\" />
-  </ItemGroup>
-
 </Project>

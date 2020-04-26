@@ -149,7 +149,7 @@ namespace Deviser.Core.Library.Layouts
             var page = _pageRepository.GetPage(pageId);
             page.LayoutId = layoutId;
             page.Layout = null;
-            _pageRepository.UpdatePage(page);
+            _pageRepository.UpdatePageActiveAndLayout(page);
         }
 
         private void DeleteModulesAndContent(PageLayout pageLayout)

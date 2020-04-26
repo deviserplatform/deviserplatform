@@ -7,10 +7,10 @@ namespace Deviser.Core.Library.Modules
     public interface IModuleManager
     {
         PageModule GetPageModule(Guid pageModuleId);
-        List<PageModule> GetPageModuleByPage(Guid pageId);
-        List<PageModule> GetDeletedPageModules();
+        IList<PageModule> GetPageModuleByPage(Guid pageId);
+        IList<PageModule> GetDeletedPageModules();
         PageModule CreateUpdatePageModule(PageModule pageModule);
-        void UpdatePageModules(List<PageModule> pageModules);
+        void UpdatePageModules(IList<PageModule> pageModules);
         void UpdateModulePermission(PageModule pageModule);
         bool HasEditPermission(PageModule pageModule, bool isForCurrentRequest = false);
         bool HasViewPermission(PageModule pageModule, bool isForCurrentRequest = false);

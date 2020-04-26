@@ -230,7 +230,7 @@ namespace Deviser.Modules.Language.Services
                 }
                 else if (!isMultilingual && currentUrl.ToLower().StartsWith(currentLocale.ToLower()))
                 {
-                    currentUrl = currentUrl.Replace($"{currentLocale.ToLower()/}","");
+                    currentUrl = currentUrl.Replace($"{currentLocale.ToLower()}/","");
                 }
                 var result = new FormResult<Core.Common.DomainTypes.Language>(languageResult)
                 {

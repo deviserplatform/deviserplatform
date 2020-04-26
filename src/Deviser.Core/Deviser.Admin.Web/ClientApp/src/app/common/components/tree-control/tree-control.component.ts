@@ -91,7 +91,7 @@ export class TreeControlComponent implements OnInit {
   /** The new item's name */
   newItemName = '';
   /** A selected parent node to be inserted */
-  selectedNode: FlatNode | null = null;  
+  selectedNode: FlatNode | null = null;
   treeControl: FlatTreeControl<FlatNode>;
   treeFlattener: MatTreeFlattener<Node, FlatNode>;
 
@@ -106,7 +106,7 @@ export class TreeControlComponent implements OnInit {
   dragNodeExpandOverNode: any;
   dragNodeExpandOverTime: number;
   dragNodeExpandOverArea: number;
-  
+
   @ViewChild('emptyItem') emptyItem: ElementRef;
 
   constructor(/*private database: ChecklistDatabase*/) {
@@ -152,16 +152,21 @@ export class TreeControlComponent implements OnInit {
     return nodes;
   }
 
-  toOutputTree(nodes: Node[]): any[] {
+  toOutputTree(nodes: Node[], parent: Node = null): any[] {
     const sourceNodes = [];
-    nodes.forEach( (node, index) => {
+    nodes.forEach((node, index) => {
       const sourceNode = node.sourceNode;
-      let children = []
+      let children = [];
       if (node.children && node.children.length > 0) {
-        children = this.toOutputTree(node.children);
+        children = this.toOutputTree(node.children, node);
       }
       sourceNode[this.childrenField] = children;
       sourceNode[this.sortField] = index + 1;
+      if (parent) {
+        const parentSourceNode = JSON.parse(JSON.stringify(parent.sourceNode));
+        parentSourceNode[this.childrenField] = null;
+        sourceNode[this.parentField] = (parent) ? parentSourceNode : null;
+      }
       sourceNodes.push(sourceNode);
     });
     return sourceNodes;
@@ -228,12 +233,12 @@ export class TreeControlComponent implements OnInit {
     this.insertItem(parentNode, newItem);
     this.treeControl.expand(flatNode);
     this.dataChange.next(this.data);
-    this.nodeAdd.emit({parent: node.sourceNode, newItem});
+    this.nodeAdd.emit({ parent: node.sourceNode, newItem });
   }
 
   /** Save the node to database */
   saveNode(node: FlatNode, itemValue: string) {
-    const nestedNode = this.flatNodeMap.get(node);  
+    const nestedNode = this.flatNodeMap.get(node);
     // this.database.updateItem(nestedNode, itemValue);
     this.updateItem(nestedNode, itemValue);
   }

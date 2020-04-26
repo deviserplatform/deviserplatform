@@ -62,9 +62,9 @@ namespace Deviser.Modules.SiteManagement.Services
             }
         }
 
-        public List<Page> GetPages()
+        public IList<Page> GetPages()
         {
-            var result = _pageRepository.GetPages();
+            var result = _pageRepository.GetPagesFlat();
             return result;
         }
 

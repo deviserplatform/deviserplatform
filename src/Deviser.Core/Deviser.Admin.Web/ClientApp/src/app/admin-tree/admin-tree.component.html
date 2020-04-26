@@ -1,5 +1,4 @@
 <div class="admin-container">
-  <app-admin-alert class="admin-alerts" [alerts]="alerts"></app-admin-alert>
     <div class="admin-grid card"
       *ngIf="adminConfig && 
       adminConfig.modelConfig && 
@@ -14,6 +13,7 @@
         <div class="row action-bar">
           
         </div>
+        <app-admin-alert class="admin-alerts" [alerts]="alerts"></app-admin-alert>
         <div class="row">
           <div class="col">
             <app-tree-control [treeData]="tree[adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase]" 

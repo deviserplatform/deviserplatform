@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AutoMapper;
 using Deviser.Core.Common;
 using Microsoft.AspNetCore.Http;
 using Deviser.Core.Library.Sites;
@@ -20,15 +22,17 @@ namespace Deviser.Core.Library
         //Logger
         private readonly ILogger<LayoutRepository> _logger;
         private readonly ILanguageRepository _languageRepository;
+        private readonly IMapper _mapper;
         private readonly IScopeService _scopeService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         private Page activePage = null;
-        private List<Page> breadcrumbs = null;
+        private IList<Page> breadcrumbs = null;
 
         #region Public Methods
         public Navigation(ILogger<LayoutRepository> logger,
             ILanguageRepository languageRepository,
+            IMapper mapper,
             IScopeService scopeService,
             IServiceProvider serviceProvider,
             IHttpContextAccessor httpContextAccessor)
@@ -36,6 +40,7 @@ namespace Deviser.Core.Library
         {
             _logger = logger;
             _languageRepository = languageRepository;
+            _mapper = mapper;
             _scopeService = scopeService;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -108,11 +113,11 @@ namespace Deviser.Core.Library
             return null;
         }
 
-        public List<Page> GetPages()
+        public IList<Page> GetPages()
         {
             try
             {
-                var result = _pageRepository.GetPages();
+                var result = _pageRepository.GetPagesFlat();
                 return result;
             }
             catch (Exception ex)
@@ -122,7 +127,7 @@ namespace Deviser.Core.Library
             return null;
         }
 
-        public List<Page> GetPublicPages()
+        public IList<Page> GetPublicPages()
         {
             try
             {
@@ -204,7 +209,7 @@ namespace Deviser.Core.Library
             return menuItem;
         }
 
-        public List<Page> GetBreadCrumbs(Guid currentPageId)
+        public IList<Page> GetBreadCrumbs(Guid currentPageId)
         {
             try
             {
@@ -225,19 +230,35 @@ namespace Deviser.Core.Library
         {
             try
             {
-                var pageTranslation = page.PageTranslation;
-                var adminPage = page.AdminPage;
-                page.PageTranslation = null;
-                page.AdminPage = null;
-                var newPage = _pageRepository.CreatePage(page);
-                if (newPage != null)
+                //var pageTranslation = page.PageTranslation;
+                //var adminPage = page.AdminPage;
+                //page.PageTranslation = null;
+                //page.AdminPage = null;
+                //var newPage = _pageRepository.CreatePage(page);
+                //if (newPage != null)
+                //{
+                //    page.Id = newPage.Id;
+                //    page.PageTranslation = pageTranslation;
+                //    page.AdminPage = adminPage;
+                //    var result = UpdateSinglePage(page);
+                //    return result;
+                //}
+
+                //Set page URL based on the parent page
+                var parentUrls = GetParentUrl(page.ParentId);
+                foreach (var pageTranslation in page.PageTranslation)
                 {
-                    page.Id = newPage.Id;
-                    page.PageTranslation = pageTranslation;
-                    page.AdminPage = adminPage;
-                    var result = UpdateSinglePage(page);
-                    return result;
+                    var parentUrl = parentUrls[pageTranslation.Locale];
+                    var pageName = Regex.Replace(pageTranslation.Name, @"\s+", "");
+                    pageTranslation.URL = !string.IsNullOrEmpty(parentUrl)
+                        ? $"{parentUrl}/{pageName}"
+                        : pageName;
                 }
+
+                SetDefaultPermissions(page);
+
+                var newPage = _pageRepository.CreatePage(page);
+                return newPage;
             }
             catch (Exception ex)
             {
@@ -253,7 +274,7 @@ namespace Deviser.Core.Library
                 if (page != null)
                 {
                     var parentURLs = InitParentUrls();
-                    UpdatePageTreeURL(page, parentURLs);
+                    UpdatePageTreeUrl(page, parentURLs);
                     var resultPage = _pageRepository.UpdatePageTree(page);
                     if (resultPage != null)
                         return resultPage;
@@ -267,48 +288,29 @@ namespace Deviser.Core.Library
             return null;
         }
 
-        public Page UpdateSinglePage(Page page)
+        public Page UpdatePageAndChildren(Page page)
         {
             try
             {
                 if (page != null)
                 {
+                    var parentUrl = GetParentUrl(page.ParentId);
 
-                    var currentURLs = GetParentURL(page);
-                    UpdatePageTreeURL(page, currentURLs);
-                    var resultPage = _pageRepository.UpdatePageAndPermissions(page);
-
-                    //Update admin permissions
-                    var adminPermissions = new List<PagePermission>();
-                    adminPermissions.Add(new PagePermission
+                    //Updating a page have an influence on it's child pages as well. Therefore, getting all child pages and updating its url
+                    Page pageTree;
+                    if (page.ParentId != null)
                     {
-                        PageId = page.Id,
-                        RoleId = Globals.AdministratorRoleId,
-                        PermissionId = Globals.PageViewPermissionId,
-                    });
-
-                    adminPermissions.Add(new PagePermission
-                    {
-                        PageId = page.Id,
-                        RoleId = Globals.AdministratorRoleId,
-                        PermissionId = Globals.PageEditPermissionId,
-                    });
-
-                    adminPermissions = _pageRepository.AddPagePermissions(adminPermissions);
-
-                    if (resultPage.PagePermissions == null)
-                    {
-                        resultPage.PagePermissions = adminPermissions;
+                        pageTree = _pageRepository.GetPageTree(page.Id);
                     }
                     else
                     {
-                        adminPermissions.AddRange(resultPage.PagePermissions);
-                        resultPage.PagePermissions = adminPermissions;
+                        pageTree = _pageRepository.GetPageTree();
                     }
-
-                    UpdateChildPages(resultPage.ChildPage);
-                    if (resultPage != null)
-                        return resultPage;
+                    page.ChildPage = pageTree.ChildPage;
+                    UpdatePageTreeUrl(page, parentUrl);
+                    //SetDefaultPermissions(page);
+                    var resultPage = _pageRepository.UpdatePageAndPermissions(page);
+                    return resultPage;
                 }
             }
             catch (Exception ex)
@@ -327,7 +329,7 @@ namespace Deviser.Core.Library
                 if (page != null)
                 {
                     page.IsDeleted = true;
-                    var resultPage = _pageRepository.UpdatePage(page);
+                    var resultPage = _pageRepository.UpdatePageActiveAndLayout(page);
                     if (resultPage != null)
                         return true;
                 }
@@ -412,23 +414,30 @@ namespace Deviser.Core.Library
 
         private Dictionary<string, string> InitParentUrls()
         {
-            var activeLanguages = _languageRepository.GetActiveLanguages();
-            Dictionary<string, string> parentURLs = new Dictionary<string, string>();
-            if (activeLanguages != null && activeLanguages.Count > 1)
+            //var activeLanguages = _languageRepository.GetActiveLanguages();
+            //Dictionary<string, string> parentURLs = new Dictionary<string, string>();
+            //if (activeLanguages != null && activeLanguages.Count > 1)
+            //{
+            //    foreach (var lang in activeLanguages)
+            //    {
+            //        parentURLs.Add(lang.CultureCode, lang.CultureCode.ToLower());
+            //    }
+            //}
+            //else
+            //{
+            //    parentURLs.Add(Globals.FallbackLanguage, "");
+            //}
+            //return parentURLs;
+            var activeLocales = _languageRepository.GetActiveLocales();
+            var dictionary = activeLocales.ToDictionary(k => k, v => v.ToLower());
+            if (!_languageRepository.IsMultilingual())
             {
-                foreach (var lang in activeLanguages)
-                {
-                    parentURLs.Add(lang.CultureCode, lang.CultureCode.ToLower());
-                }
+                dictionary[dictionary.First().Key] = "";
             }
-            else
-            {
-                parentURLs.Add(Globals.FallbackLanguage, "");
-            }
-            return parentURLs;
+            return dictionary;
         }
 
-        private Dictionary<string, string> CopyParentUrls(Dictionary<string, string> parentUrls)
+        private Dictionary<string, string> CopyParentUrls(IDictionary<string, string> parentUrls)
         {
             var result = InitParentUrls();
             foreach (var kv in parentUrls)
@@ -458,117 +467,162 @@ namespace Deviser.Core.Library
             return resultPage;
         }
 
-        private void UpdateChildPages(ICollection<Page> pages)
+        //private Dictionary<string, string> GetParentURL(Page page)
+        //{
+        //    //string url = "";
+        //    var URLs = InitParentUrls();
+        //    if (page != null && page.ParentId != null && page.ParentId != Guid.Empty)
+        //    {
+        //        Page parentPage = _pageRepository.GetPageAndPageTranslations((Guid)page.ParentId);
+        //        var parentURLs = GetParentURL(parentPage);
+        //        if (parentPage.PageTranslation != null && parentPage.PageTranslation.Count > 0)
+        //        {
+        //            foreach (var pageTranslation in parentPage.PageTranslation)
+        //            {
+        //                if (parentURLs.ContainsKey(pageTranslation.Locale) && !string.IsNullOrEmpty(parentURLs[pageTranslation.Locale]))
+        //                {
+        //                    //parent page has translation for current locale/culturecode
+        //                    URLs[pageTranslation.Locale] = parentURLs[pageTranslation.Locale] + (!string.IsNullOrEmpty(parentURLs[pageTranslation.Locale]) ? "/" : "") + pageTranslation.Name.Replace(" ", "");
+        //                }
+        //                else
+        //                {
+        //                    URLs[pageTranslation.Locale] = parentURLs[Globals.FallbackLanguage] + (!string.IsNullOrEmpty(parentURLs[Globals.FallbackLanguage]) ? "/" : "") + pageTranslation.Name.Replace(" ", "");
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return URLs;
+        //}
+
+        private Dictionary<string, string> GetParentUrl(Guid? parentId)
         {
-            //Update URL of child pages, if any
-            if (pages != null && pages.Count > 0)
+            var activeLocales = _languageRepository.GetActiveLocales();
+            var dictionary = activeLocales.ToDictionary(k => k, v => "");
+            var pages = _pageRepository.GetPagesAndTranslations();
+            var parent = pages.FirstOrDefault(p => p.Id == parentId);
+            while (parent != null)
             {
-                foreach (Page child in pages)
+                foreach (var pageTranslation in parent.PageTranslation)
                 {
-                    _pageRepository.UpdatePageAndPermissions(child);
-                    if (child.ChildPage != null)
-                    {
-                        UpdateChildPages(child.ChildPage);
-                    }
+                    var childUrl = dictionary[pageTranslation.Locale];
+                    var pageName = Regex.Replace(pageTranslation.Name, @"\s+", "");
+
+                    dictionary[pageTranslation.Locale] = !string.IsNullOrEmpty(childUrl) ? $"{pageName}/{childUrl}" : pageName;
                 }
+                parent = pages.FirstOrDefault(p => p.Id == parent.ParentId);
+            }
+
+
+            if (_languageRepository.IsMultilingual())
+            {
+                foreach (var kvp in dictionary)
+                {
+                    dictionary[kvp.Key] = $"{kvp.Key.ToLower()}/{kvp.Value}";
+                }
+            }
+
+            return dictionary;
+        }
+
+        //private void UpdatePageTreeURL(Page page, Dictionary<string, string> parentURLs)
+        //{
+        //    if (page != null)
+        //    {
+
+        //        //For new page
+        //        if (page.Id == Guid.Empty)
+        //        {
+        //            page.LastModifiedDate = page.CreatedDate = DateTime.Now;
+        //        }
+
+        //        if (page.PageTranslation != null && page.PageTranslation.Count > 0)
+        //        {
+        //            string fallbackParentURL = parentURLs[Globals.FallbackLanguage];
+        //            foreach (var pageTranslation in page.PageTranslation)
+        //            {
+        //                if (parentURLs.ContainsKey(pageTranslation.Locale) && !string.IsNullOrEmpty(parentURLs[pageTranslation.Locale]))
+        //                {
+        //                    parentURLs[pageTranslation.Locale] += "/" + pageTranslation.Name.Replace(" ", "");
+        //                    var pageUrl = parentURLs[pageTranslation.Locale];
+        //                    pageTranslation.URL = getUniqueUrl(pageTranslation, pageUrl, page.Id);
+        //                }
+        //                else
+        //                {
+        //                    //Parent page is not yet translated, therefore taking parent url from fallbacklanguage
+
+        //                    parentURLs[pageTranslation.Locale] = (!string.IsNullOrEmpty(fallbackParentURL) ? "/" : "") + pageTranslation.Name.Replace(" ", "");
+        //                    var pageUrl = parentURLs[pageTranslation.Locale];
+        //                    pageTranslation.URL = getUniqueUrl(pageTranslation, pageUrl, page.Id);
+        //                }
+
+        //            }
+        //        }
+
+        //        //var currentPageTranslation = GetPageTranslation(page);
+        //        //if (currentPageTranslation != null)
+        //        //{
+        //        //    parentURL += "/" + currentPageTranslation.Name.Replace(" ", "");
+        //        //    currentPageTranslation.URL = parentURL;
+        //        //    //TODO: This has to be set in client side when multilingual has been implemented
+        //        //    currentPageTranslation.Locale = Globals.FallbackLanguage;
+        //        //}
+
+        //        if (page.ChildPage != null && page.ChildPage.Count > 0)
+        //        {
+        //            //foreach (var child in page.ChildPages)
+        //            //{
+        //            //    ProcessPageTranslation(child, parentURL);
+        //            //}
+
+        //            foreach (var child in page.ChildPage)
+        //            {
+        //                //if (page.PageLevel == 0)
+        //                var pUrl = CopyParentUrls(parentURLs);
+
+        //                UpdatePageTreeURL(child, pUrl);
+        //            }
+        //        }
+        //    }
+        //}
+
+
+
+        private void UpdatePageTreeUrl(Page page, IDictionary<string, string> parentUrls)
+        {
+            if (page == null) return;
+
+            if (page.PageTranslation != null && page.PageTranslation.Count > 0)
+            {
+                var fallbackParentUrl = parentUrls[Globals.FallbackLanguage];
+                foreach (var pageTranslation in page.PageTranslation)
+                {
+                    var pageName = Regex.Replace(pageTranslation.Name, @"\s+", "");
+                    string pageUrl;
+                    if (parentUrls.ContainsKey(pageTranslation.Locale) && !string.IsNullOrEmpty(parentUrls[pageTranslation.Locale]))
+                    {
+                        pageUrl = $"{parentUrls[pageTranslation.Locale]}/{pageName}";
+                    }
+                    else
+                    {
+                        //Parent page is not yet translated, therefore taking parent url from fallback language
+                        pageUrl = !string.IsNullOrEmpty(fallbackParentUrl) ? $"/{pageName}" : pageName;
+                    }
+                    pageUrl = GetUniqueUrl(pageTranslation, pageUrl, page.Id);
+                    parentUrls[pageTranslation.Locale] = pageUrl;
+                    pageTranslation.URL = pageUrl;
+                }
+            }
+
+            if (page.ChildPage == null || page.ChildPage.Count <= 0) return;
+
+            foreach (var child in page.ChildPage)
+            {
+                var pUrl = CopyParentUrls(parentUrls);
+                UpdatePageTreeUrl(child, pUrl);
             }
         }
 
-        private Dictionary<string, string> GetParentURL(Page page)
-        {
-            //string url = "";
-            var URLs = InitParentUrls();
-            if (page != null && page.ParentId != null && page.ParentId != Guid.Empty)
-            {
-                Page parentPage = _pageRepository.GetPageAndPageTranslations((Guid)page.ParentId);
-                var parentURLs = GetParentURL(parentPage);
-                if (parentPage.PageTranslation != null && parentPage.PageTranslation.Count > 0)
-                {
-                    foreach (var pageTranslation in parentPage.PageTranslation)
-                    {
-                        if (parentURLs.ContainsKey(pageTranslation.Locale) && !string.IsNullOrEmpty(parentURLs[pageTranslation.Locale]))
-                        {
-                            //parent page has translation for current locale/culturecode
-                            URLs[pageTranslation.Locale] = parentURLs[pageTranslation.Locale] + (!string.IsNullOrEmpty(parentURLs[pageTranslation.Locale]) ? "/" : "") + pageTranslation.Name.Replace(" ", "");
-                        }
-                        else
-                        {
-                            URLs[pageTranslation.Locale] = parentURLs[Globals.FallbackLanguage] + (!string.IsNullOrEmpty(parentURLs[Globals.FallbackLanguage]) ? "/" : "") + pageTranslation.Name.Replace(" ", "");
-                        }
-                    }
-                }
-
-                //var currentPageTranslation = GetPageTranslation(parentPage);
-                //if (currentPageTranslation != null)
-                //{
-                //    url = GetParentURL(parentPage) + "/" + currentPageTranslation.Name;
-                //}
-            }
-            return URLs;
-        }
-
-        private void UpdatePageTreeURL(Page page, Dictionary<string, string> parentURLs)
-        {
-            if (page != null)
-            {
-
-                //For new page
-                if (page.Id == Guid.Empty)
-                {
-                    page.LastModifiedDate = page.CreatedDate = DateTime.Now;
-                }
-
-                if (page.PageTranslation != null && page.PageTranslation.Count > 0)
-                {
-                    string fallbackParentURL = parentURLs[Globals.FallbackLanguage];
-                    foreach (var pageTranslation in page.PageTranslation)
-                    {
-                        if (parentURLs.ContainsKey(pageTranslation.Locale) && !string.IsNullOrEmpty(parentURLs[pageTranslation.Locale]))
-                        {
-                            parentURLs[pageTranslation.Locale] += "/" + pageTranslation.Name.Replace(" ", "");
-                            var pageUrl = parentURLs[pageTranslation.Locale];
-                            pageTranslation.URL = getUniqueUrl(pageTranslation, pageUrl, page.Id);
-                        }
-                        else
-                        {
-                            //Parent page is not yet translated, therefore taking parent url from fallbacklanguage
-
-                            parentURLs[pageTranslation.Locale] = (!string.IsNullOrEmpty(fallbackParentURL) ? "/" : "") + pageTranslation.Name.Replace(" ", "");
-                            var pageUrl = parentURLs[pageTranslation.Locale];
-                            pageTranslation.URL = getUniqueUrl(pageTranslation, pageUrl, page.Id);
-                        }
-
-                    }
-                }
-
-                //var currentPageTranslation = GetPageTranslation(page);
-                //if (currentPageTranslation != null)
-                //{
-                //    parentURL += "/" + currentPageTranslation.Name.Replace(" ", "");
-                //    currentPageTranslation.URL = parentURL;
-                //    //TODO: This has to be set in client side when multilingual has been implemented
-                //    currentPageTranslation.Locale = Globals.FallbackLanguage;
-                //}
-
-                if (page.ChildPage != null && page.ChildPage.Count > 0)
-                {
-                    //foreach (var child in page.ChildPages)
-                    //{
-                    //    ProcessPageTranslation(child, parentURL);
-                    //}
-
-                    foreach (var child in page.ChildPage)
-                    {
-                        //if (page.PageLevel == 0)
-                        var pUrl = CopyParentUrls(parentURLs);
-
-                        UpdatePageTreeURL(child, pUrl);
-                    }
-                }
-            }
-        }
-
-        private string getUniqueUrl(PageTranslation pageTranslation, string pageUrl, Guid pageId)
+        private string GetUniqueUrl(PageTranslation pageTranslation, string pageUrl, Guid pageId)
         {
             var duplicateTranslation = _pageRepository.GetPageTranslation(pageUrl.ToLower());
 
@@ -613,10 +667,7 @@ namespace Deviser.Core.Library
             }
         }
 
-        private void SetBreadCrumb(Guid currentPageId, Page root)
-        {
-            IsCurrentHasSelected(currentPageId, root);
-        }
+        
 
         private bool IsCurrentHasSelected(Guid currentPageId, Page currentLevel)
         {
@@ -638,6 +689,40 @@ namespace Deviser.Core.Library
                 currentLevel.IsBreadCrumb = isCurrentBreadCrumb;
             }
             return isCurrentBreadCrumb;
+        }
+
+        private void SetBreadCrumb(Guid currentPageId, Page root)
+        {
+            IsCurrentHasSelected(currentPageId, root);
+        }
+        private static void SetDefaultPermissions(Page page)
+        {
+            if (page.PagePermissions != null && page.PagePermissions.Count > 0)
+            {
+                //Remove Admin permissions, if the user set it manually
+                var permissionsToRemove = page.PagePermissions.Where(p => p.RoleId == Globals.AdministratorRoleId).ToList();
+                foreach (var permission in permissionsToRemove)
+                {
+                    page.PagePermissions.Remove(permission);
+                }
+            }
+            else
+            {
+                page.PagePermissions = new List<PagePermission>();
+            }
+
+            //Always add PagePermission for Admin by default
+            page.PagePermissions.Add(new PagePermission
+            {
+                RoleId = Globals.AdministratorRoleId,
+                PermissionId = Globals.PageViewPermissionId,
+            });
+
+            page.PagePermissions.Add(new PagePermission
+            {
+                RoleId = Globals.AdministratorRoleId,
+                PermissionId = Globals.PageEditPermissionId,
+            });
         }
 
         #endregion

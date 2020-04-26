@@ -150,7 +150,7 @@ namespace Deviser.Modules.RecycleBin.Services
                 case "Page":
                     var page = _pageRepository.GetPage(item.Id);
                     page.IsDeleted = false;
-                    resultItem = _pageRepository.UpdatePage(page);
+                    resultItem = _pageRepository.UpdatePageActiveAndLayout(page);
                     break;
                 case "PageContent":
                     var pageContent = _pageContentRepository.Get(item.Id);

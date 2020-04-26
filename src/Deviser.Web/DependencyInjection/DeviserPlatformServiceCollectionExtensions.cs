@@ -34,6 +34,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Deviser.Core.Data.Cache;
 using Deviser.Web.Infrastructure;
 
 namespace Deviser.Web.DependencyInjection
@@ -83,7 +84,7 @@ namespace Deviser.Web.DependencyInjection
             services.AddScoped<ITypeActivatorCache, TypeActivatorCache>();
             //builder.RegisterType<ModuleInvokerProvider>().As<IModuleInvokerProvider>();
 
-
+            services.AddSingleton<IDeviserDataCache, DeviserDataCache>();
             services.AddTransient<ILayoutRepository, LayoutRepository>();
             services.AddTransient<ILayoutTypeRepository, LayoutTypeRepository>();
             services.AddTransient<IContentTypeRepository, ContentTypeRepository>();

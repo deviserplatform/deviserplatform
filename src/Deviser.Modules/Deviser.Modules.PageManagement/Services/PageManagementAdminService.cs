@@ -101,7 +101,7 @@ namespace Deviser.Modules.PageManagement.Services
             var translateLanguages = GetTranslateLanguages();
             var isMultilingual = translateLanguages.Count > 0;
 
-            var pageResult = _navigation.UpdateSinglePage(ConvertToSingePage(item, isMultilingual, translateLanguages));
+            var pageResult = _navigation.UpdatePageAndChildren(ConvertToSingePage(item, isMultilingual, translateLanguages));
             if (pageResult != null)
             {
                 var result = new FormResult<PageViewModel>(ConvertToPageViewModel(pageResult, isMultilingual, translateLanguages))
@@ -123,8 +123,8 @@ namespace Deviser.Modules.PageManagement.Services
         {
             var translateLanguages = GetTranslateLanguages();
             var isMultilingual = translateLanguages.Count > 0;
-
-            var pageResult = _navigation.UpdatePageTree(ConvertToPage(item, isMultilingual, translateLanguages));
+            var pageTreeToBeUpdated = ConvertToPage(item, isMultilingual, translateLanguages);
+            var pageResult = _navigation.UpdatePageTree(pageTreeToBeUpdated);
             if (pageResult != null)
             {
                 //UpdateSinglePage returns only the single node. However, the UI expects full tree
@@ -151,7 +151,7 @@ namespace Deviser.Modules.PageManagement.Services
             if (page != null)
             {
                 page.IsDeleted = true;
-                var pageResult = _pageRepository.UpdatePage(page);
+                var pageResult = _pageRepository.UpdatePageActiveAndLayout(page);
                 if (pageResult != null)
                 {
                     //UpdateSinglePage returns only the single node. However, the UI expects full tree

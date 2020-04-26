@@ -51,7 +51,7 @@ namespace Deviser.Core.Library.TagHelpers
             }
 
             ((HtmlHelper)_htmlHelper).Contextualize(ViewContext);
-            List<Page> pages = _navigation.GetBreadCrumbs(_scopeService.PageContext.CurrentPageId);
+            IList<Page> pages = _navigation.GetBreadCrumbs(_scopeService.PageContext.CurrentPageId);
 
             var htmlContent = _htmlHelper.Partial(string.Format(Globals.BreadCrumbStylePath, BreadCrumbStyle), pages);
             var contentResult = GetString(htmlContent);

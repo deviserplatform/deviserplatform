@@ -5,13 +5,15 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Deviser.Core.Data.Cache;
 
 namespace Deviser.Core.Data.Repositories
 {
     public interface ILanguageRepository
     {
         Language CreateLanguage(Language dbLanguage);
-        List<Language> GetLanguages();
+        List<Language> GetLanguages(bool refreshCache = false);
+        List<string> GetActiveLocales();
         List<Language> GetActiveLanguages();
         Language GetLanguage(Guid languageId);
         bool IsMultilingual();
@@ -22,15 +24,18 @@ namespace Deviser.Core.Data.Repositories
     {
         //Logger
         private readonly ILogger<LanguageRepository> _logger;
+        private readonly IDeviserDataCache _deviserDataCache;
         private readonly DbContextOptions<DeviserDbContext> _dbOptions;
         private readonly IMapper _mapper;
 
         //Constructor
         public LanguageRepository(DbContextOptions<DeviserDbContext> dbOptions,
+            IDeviserDataCache deviserDataCache,
             ILogger<LanguageRepository> logger,
             IMapper mapper)
         {
             _logger = logger;
+            _deviserDataCache = deviserDataCache;
             _dbOptions = dbOptions;
             _mapper = mapper;
         }
@@ -46,6 +51,8 @@ namespace Deviser.Core.Data.Repositories
 
                 var result = context.Language.Add(dbLanguage).Entity;
                 context.SaveChanges();
+                //Refresh Language Cache
+                GetLanguages(true);
                 return _mapper.Map<Language>(result);
             }
             catch (Exception ex)
@@ -56,14 +63,21 @@ namespace Deviser.Core.Data.Repositories
         }
 
         //Custom Field Declaration
-        public List<Language> GetLanguages()
+        public List<Language> GetLanguages(bool refreshCache = false)
         {
             try
             {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.Language
-                    .ToList();
+                if (_deviserDataCache.ContainsKey(nameof(GetLanguages)) && !refreshCache)
+                {
+                    var cacheResult = _deviserDataCache.GetItem<List<Entities.Language>>(nameof(GetLanguages));
+                    return _mapper.Map<List<Language>>(cacheResult);
+                }
 
+                using var context = new DeviserDbContext(_dbOptions);
+                var dbLanguages = context.Language
+                    .ToList();
+                var result = _mapper.Map<List<Language>>(dbLanguages);
+                _deviserDataCache.AddOrUpdate(nameof(GetLanguages), dbLanguages);
                 return _mapper.Map<List<Language>>(result);
             }
             catch (Exception ex)
@@ -73,16 +87,32 @@ namespace Deviser.Core.Data.Repositories
             return null;
         }
 
+        public List<string> GetActiveLocales()
+        {
+            try
+            {
+                var activeLanguages = GetActiveLanguages();
+                var result = activeLanguages
+                    .Select(l => l.CultureCode)
+                    .ToList();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while getting active languages", ex);
+            }
+            return null;
+        }
+
         public List<Language> GetActiveLanguages()
         {
             try
             {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.Language
+                var languages = GetLanguages();
+                var activeLanguages= languages
                     .Where(l => l.IsActive)
                     .ToList();
-
-                return _mapper.Map<List<Language>>(result);
+                return activeLanguages;
             }
             catch (Exception ex)
             {
@@ -95,8 +125,8 @@ namespace Deviser.Core.Data.Repositories
         {
             try
             {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.Language
+                var languages = GetLanguages();
+                var result = languages
                     .FirstOrDefault(e => e.Id == languageId);
 
                 return _mapper.Map<Language>(result);
@@ -110,14 +140,8 @@ namespace Deviser.Core.Data.Repositories
 
         public bool IsMultilingual()
         {
-            using var context = new DeviserDbContext(_dbOptions);
-            var result = context.Language
-                             .Count(l => l.IsActive) > 1;
-
-            return result;
-
-            //var result = GetActiveLanguages();
-            //return result != null && result.Count > 1;
+            var result = GetActiveLanguages();
+            return result != null && result.Count > 1;
         }
 
         public Language UpdateLanguage(Language language)
@@ -133,9 +157,9 @@ namespace Deviser.Core.Data.Repositories
 
                 _mapper.Map(language, dbLanguage);
                 var result = context.Language.Update(dbLanguage).Entity;
-                //var result = context.Language.Attach(dbLanguage).Entity;
-                //context.Entry(dbLanguage).State = EntityState.Modified;
                 context.SaveChanges();
+                //Refresh Language Cache
+                GetLanguages(true);
                 return _mapper.Map<Language>(result);
             }
             catch (Exception ex)
