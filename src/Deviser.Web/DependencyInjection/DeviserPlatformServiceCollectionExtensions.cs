@@ -36,6 +36,9 @@ using System.Linq;
 using System.Reflection;
 using Deviser.Core.Data.Cache;
 using Deviser.Web.Infrastructure;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
+using Microsoft.Extensions.FileProviders;
 
 namespace Deviser.Web.DependencyInjection
 {
@@ -57,6 +60,8 @@ namespace Deviser.Web.DependencyInjection
 
             InternalServiceProvider.Instance.BuildServiceProvider(services);
 
+            IWebHostEnvironment hostEnvironment =
+                InternalServiceProvider.Instance.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
             IInstallationProvider installationProvider = InternalServiceProvider.Instance.ServiceProvider.GetRequiredService<IInstallationProvider>();
 
 
@@ -204,7 +209,19 @@ namespace Deviser.Web.DependencyInjection
                     options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
 
                 })
-                .AddControllersAsServices();
+                .AddControllersAsServices()
+                .AddRazorRuntimeCompilation();
+
+            services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
+            {
+                var libraryPath = Path.GetFullPath(
+                    Path.Combine(hostEnvironment.ContentRootPath, "..", "Deviser.Web"));
+                options.FileProviders.Add(new PhysicalFileProvider(libraryPath));
+
+                libraryPath = Path.GetFullPath(
+                    Path.Combine(hostEnvironment.ContentRootPath, "..", "Deviser.Core", "Deviser.Admin.Web"));
+                options.FileProviders.Add(new PhysicalFileProvider(libraryPath));
+            });
 
             services.AddDeviserAdmin();
 
