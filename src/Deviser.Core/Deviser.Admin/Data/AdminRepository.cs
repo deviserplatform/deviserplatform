@@ -14,6 +14,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using Deviser.Admin.Config.Filters;
 
 namespace Deviser.Admin.Data
 {
@@ -25,6 +26,7 @@ namespace Deviser.Admin.Data
         Task<TModel> CreateItemFor<TModel>(TModel item) where TModel : class;
         Task<TModel> UpdateItemFor<TModel>(TModel item) where TModel : class;
         Task<TModel> DeleteItemFor<TModel>(string itemId) where TModel : class;
+        Task<PagedResult<TModel>> FilterRecordsFor<TModel>(int pageNo, int pageSize, string orderByProperties, IList<Filter> filters) where TModel : class;
     }
 
     public class AdminRepository : IAdminRepository
@@ -62,6 +64,16 @@ namespace Deviser.Admin.Data
             var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
 
             var result = await CallGenericMethod<PagedResult<TModel>>(nameof(GetAll), new Type[] { modelType, entityClrType }, new object[] { pageNo, pageSize, orderByProperties });
+            return result;
+        }
+
+        public async Task<PagedResult<TModel>> FilterRecordsFor<TModel>(int pageNo, int pageSize, string orderByProperties, IList<Filter> filters) where TModel : class
+        {
+            var modelType = typeof(TModel);
+            var adminConfig = GetAdminConfig(modelType);
+            var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
+
+            var result = await CallGenericMethod<PagedResult<TModel>>(nameof(FilterRecords), new Type[] { modelType, entityClrType }, new object[] { pageNo, pageSize, orderByProperties, filters });
             return result;
         }
 
@@ -183,6 +195,14 @@ namespace Deviser.Admin.Data
             var result = _adminSite.Mapper.Map<List<TModel>>(dbResult);
 
             return new PagedResult<TModel>(result, pageNo, pageSize, total);
+        }
+
+        private async Task<PagedResult<TModel>> FilterRecords<TModel, TEntity>(int pageNo, int pageSize,
+            string orderByProperties)
+            where TEntity : class
+            where TModel : class
+        {
+            return null;
         }
 
         private async Task<TModel> GetItem<TModel, TEntity>(string itemId)

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Deviser.Admin.Config.Filters;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Deviser.Admin.Services
@@ -122,6 +123,12 @@ namespace Deviser.Admin.Services
         public async Task<object> GetAllFor(Type modelType, int pageNo, int pageSize, string orderByProperties)
         {
             return await CallGenericMethod(nameof(GetAll), new Type[] { modelType }, new object[] { pageNo, pageSize, orderByProperties });
+        }
+
+        public async Task<object> FilterRecordsFor(Type modelType, int pageNo, int pageSize, IList<Filter> filters,
+            string orderByProperties)
+        {
+            return await CallGenericMethod(nameof(FilterRecords), new Type[] { modelType }, new object[] { pageNo, pageSize, filters, orderByProperties });
         }
 
         public async Task<object> GetTree(Type modelType)
@@ -356,6 +363,26 @@ namespace Deviser.Admin.Services
             if (_adminSite.AdminType == AdminType.Entity)
             {
                 return await _adminRepository.GetAllFor<TModel>(pageNo, pageSize, orderByProperties);
+            }
+
+            switch (adminConfig.AdminConfigType)
+            {
+                case AdminConfigType.GridOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminGridService<TModel> adminService:
+                    return await adminService.GetAll(pageNo, pageSize, orderByProperties);
+                case AdminConfigType.GridAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
+                    return await adminService.GetAll(pageNo, pageSize, orderByProperties);
+                default:
+                    throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
+            }
+        }
+
+        private async Task<PagedResult<TModel>> FilterRecords<TModel>(int pageNo, int pageSize, string orderByProperties, IList<Filter> filters) where TModel : class
+        {
+            var adminConfig = GetAdminConfig(typeof(TModel));
+
+            if (_adminSite.AdminType == AdminType.Entity)
+            {
+                return await _adminRepository.FilterRecordsFor<TModel>(pageNo, pageSize, orderByProperties, filters);
             }
 
             switch (adminConfig.AdminConfigType)

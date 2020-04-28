@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Deviser.Admin.Config;
+using Deviser.Admin.Config.Filters;
 
 namespace Deviser.Admin.Services
 {
@@ -12,6 +13,7 @@ namespace Deviser.Admin.Services
         IAdminConfig GetAdminConfig(string entity);
 
         Task<object> GetAllFor(Type modelType, int pageNo, int pageSize, string orderByProperties);
+        Task<object> FilterRecordsFor(Type modelType, int pageNo, int pageSize, IList<Filter> filters, string orderByProperties);
         Task<object> GetTree(Type modelType);
         Task<object> GetItemFor(Type modelType, string itemId);
         Task<object> CreateItemFor(Type modelType, object item);

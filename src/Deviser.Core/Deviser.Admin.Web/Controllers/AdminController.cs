@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Deviser.Admin.Config.Filters;
 using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Admin.Web.Controllers
@@ -45,7 +47,7 @@ namespace Deviser.Admin.Web.Controllers
                 if (adminConfig != null)
                 {
                     ViewBag.AdminConfig = adminConfig;
-                    
+
                 }
                 ViewBag.Model = model;
                 return View();
@@ -63,7 +65,7 @@ namespace Deviser.Admin.Web.Controllers
         public IActionResult GetMetaInfo(string model)
         {
             try
-            {   
+            {
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
                 var adminConfig = coreAdminService.GetAdminConfig(model); //_adminRepository.GetAdminConfig(model);
                 if (adminConfig != null)
@@ -87,12 +89,39 @@ namespace Deviser.Admin.Web.Controllers
             {
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
                 var modelType = coreAdminService.GetModelType(model);
-                if(modelType == null)
+                if (modelType == null)
                 {
                     return BadRequest($"Model {model} is not found");
                 }
 
                 var result = await coreAdminService.GetAllFor(modelType, pageNo, pageSize, orderBy); //_adminRepository.GetAllFor(model, pageNo, pageSize, orderBy);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while getting all records for model: {model}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("modules/[area]/api/{model:required}/filter")]
+        public async Task<IActionResult> FilterRecords(string model, int pageNo, int pageSize, [FromBody] IList<Filter> filters, string orderBy = null)
+        {
+            try
+            {
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(model);
+                if (modelType == null)
+                {
+                    return BadRequest($"Model {model} is not found");
+                }
+
+                var result = await coreAdminService.FilterRecordsFor(modelType, pageNo, pageSize, filters, orderBy); //_adminRepository.GetAllFor(model, pageNo, pageSize, orderBy);
                 if (result != null)
                 {
                     return Ok(result);
