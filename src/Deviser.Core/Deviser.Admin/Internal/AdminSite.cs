@@ -1,13 +1,4 @@
-﻿using AutoMapper;
-using Deviser.Admin.Attributes;
-using Deviser.Admin.Data;
-using Deviser.Core.Common.Extensions;
-//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,10 +6,20 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
+using AutoMapper;
+using Deviser.Admin.Attributes;
+using Deviser.Admin.Config;
+using Deviser.Admin.Data;
+using Deviser.Core.Common.Extensions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Deviser.Admin.Config
+//using Microsoft.AspNetCore.Http;
+//using Microsoft.AspNetCore.Mvc.ModelBinding;
+
+namespace Deviser.Admin.Internal
 {
     public class AdminSite : IAdminSite
     {

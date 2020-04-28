@@ -110,7 +110,7 @@ namespace Deviser.Admin.Web.Controllers
 
         [HttpPost]
         [Route("modules/[area]/api/{model:required}/filter")]
-        public async Task<IActionResult> FilterRecords(string model, int pageNo, int pageSize, [FromBody] IList<Filter> filters, string orderBy = null)
+        public async Task<IActionResult> FilterRecords(string model, int pageNo, int pageSize, [FromBody] FilterNode filter, string orderBy = null)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace Deviser.Admin.Web.Controllers
                     return BadRequest($"Model {model} is not found");
                 }
 
-                var result = await coreAdminService.FilterRecordsFor(modelType, pageNo, pageSize, filters, orderBy); //_adminRepository.GetAllFor(model, pageNo, pageSize, orderBy);
+                var result = await coreAdminService.GetAllFor(modelType, pageNo, pageSize, orderBy, filter); //_adminRepository.GetAllFor(model, pageNo, pageSize, orderBy);
                 if (result != null)
                 {
                     return Ok(result);

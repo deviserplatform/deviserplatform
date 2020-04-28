@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Deviser.Admin.Config;
+using Deviser.Admin.Config.Filters;
 using Deviser.Admin.Data;
+using Deviser.Admin.Extensions;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -26,14 +28,14 @@ namespace Deviser.Modules.ContentManagement.Services
             _propertyRepository = propertyRepository;
         }
 
-        public async Task<PagedResult<LayoutType>> GetAll(int pageNo, int pageSize, string orderByProperties)
+        public async Task<PagedResult<LayoutType>> GetAll(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null)
         {
             var layoutTypes = GetLayoutTypes();
-
-            var skip = (pageNo - 1) * pageSize;
-            var total = layoutTypes.Count;
-            var paging = layoutTypes.Skip(skip).Take(pageSize);
-            var result = new PagedResult<LayoutType>(paging, pageNo, pageSize, total);
+            if (filter != null)
+            {
+                layoutTypes = layoutTypes.ApplyFilter(filter).ToList();
+            }
+            var result = new PagedResult<LayoutType>(layoutTypes, pageNo, pageSize);
             return await Task.FromResult(result);
         }
 

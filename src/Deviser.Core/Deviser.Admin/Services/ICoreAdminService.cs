@@ -12,8 +12,7 @@ namespace Deviser.Admin.Services
         Type GetCustomFormModelType(string strModelType, string formName);
         IAdminConfig GetAdminConfig(string entity);
 
-        Task<object> GetAllFor(Type modelType, int pageNo, int pageSize, string orderByProperties);
-        Task<object> FilterRecordsFor(Type modelType, int pageNo, int pageSize, IList<Filter> filters, string orderByProperties);
+        Task<object> GetAllFor(Type modelType, int pageNo, int pageSize, string orderByProperties, FilterNode filter = null);
         Task<object> GetTree(Type modelType);
         Task<object> GetItemFor(Type modelType, string itemId);
         Task<object> CreateItemFor(Type modelType, object item);
@@ -37,6 +36,6 @@ namespace Deviser.Admin.Services
         Task<ICollection<LookUpField>> GetLookUpForMainForm(Type modelType, string fieldName, object filterParam);
         Task<ICollection<LookUpField>> GetLookUpForChildForm(Type modelType, string formName, string fieldName, object filterParam);
         Task<ICollection<LookUpField>> GetLookUpForCustomForm(Type modelType, string formName, string fieldName, object filterParam);
-        
+
     }
 }

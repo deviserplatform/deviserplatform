@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Deviser.Admin.Config.Filters;
+using Deviser.Admin.Extensions;
 using Deviser.Core.Data.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -65,14 +67,14 @@ namespace Deviser.Modules.UserManagement
             return null;
         }
 
-        public async Task<PagedResult<User>> GetAll(int pageNo, int pageSize, string orderByProperties)
+        public async Task<PagedResult<User>> GetAll(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null)
         {
             var users = _userRepository.GetUsers();
-            int skip = (pageNo - 1) * pageSize;
-            int total = users.Count;
-            var result = users.Skip(skip).Take(pageSize);
-            var pagedResult = new PagedResult<User>(result, pageNo, pageSize, total);
-
+            if (filter != null)
+            {
+                users = users.ApplyFilter(filter).ToList();
+            }
+            var pagedResult = new PagedResult<User>(users, pageNo, pageSize);
             return await Task.FromResult(pagedResult);
         }
 

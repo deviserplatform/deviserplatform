@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Deviser.Admin.Config;
+using Deviser.Admin.Config.Filters;
 using Deviser.Admin.Data;
+using Deviser.Admin.Extensions;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library.Layouts;
@@ -33,14 +35,15 @@ namespace Deviser.Modules.RecycleBin.Services
             _pageRepository = pageRepository;
         }
 
-        public async Task<PagedResult<RecycleItem>> GetAll(int pageNo, int pageSize, string orderByProperties)
+        public async Task<PagedResult<RecycleItem>> GetAll(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null)
         {
             var recycleItems = GetRecycleItems();
 
-            var skip = (pageNo - 1) * pageSize;
-            var total = recycleItems.Count;
-            var result = recycleItems.Skip(skip).Take(pageSize);
-            var pagedResult = new PagedResult<RecycleItem>(result, pageNo, pageSize, total);
+            if (filter != null)
+            {
+                recycleItems = recycleItems.ApplyFilter(filter).ToList();
+            }
+            var pagedResult = new PagedResult<RecycleItem>(recycleItems, pageNo, pageSize);
 
             return await Task.FromResult(pagedResult);
         }

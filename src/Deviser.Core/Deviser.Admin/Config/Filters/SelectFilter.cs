@@ -4,6 +4,7 @@ namespace Deviser.Admin.Config.Filters
 {
     public class SelectFilter : Filter
     {
-        public IList<string> FilterKeys { get; set; }
+        public string KeyFieldName { get; set; }
+        public IList<string> FilterKeyValues { get; set; }
     }
 }

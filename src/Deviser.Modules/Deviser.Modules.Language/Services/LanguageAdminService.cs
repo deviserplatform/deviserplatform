@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Deviser.Admin.Config;
+using Deviser.Admin.Config.Filters;
 using Deviser.Admin.Data;
+using Deviser.Admin.Extensions;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Multilingual;
 using Deviser.Core.Library.Services;
@@ -174,14 +176,14 @@ namespace Deviser.Modules.Language.Services
         //    });
         //}
 
-        public async Task<PagedResult<Core.Common.DomainTypes.Language>> GetAll(int pageNo, int pageSize, string orderByProperties)
+        public async Task<PagedResult<Core.Common.DomainTypes.Language>> GetAll(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null)
         {
             var languages = _languageManager.GetLanguages();
-
-            var skip = (pageNo - 1) * pageSize;
-            var total = languages.Count;
-            var result = languages.Skip(skip).Take(pageSize);
-            var pagedResult = new PagedResult<Core.Common.DomainTypes.Language>(result, pageNo, pageSize, total);
+            if (filter != null)
+            {
+                languages = languages.ApplyFilter(filter).ToList();
+            }
+            var pagedResult = new PagedResult<Core.Common.DomainTypes.Language>(languages, pageNo, pageSize);
 
             return await Task.FromResult(pagedResult);
         }

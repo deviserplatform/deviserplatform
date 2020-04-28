@@ -6,7 +6,7 @@ using Newtonsoft.Json.Converters;
 
 namespace Deviser.Admin.Config.Filters
 {
-    public class DateTimeFilter : Filter
+    public class DateFilter : Filter
     {
         [JsonConverter(typeof(StringEnumConverter))]
         public DateTimeOperator Operator { get; set; }

@@ -120,15 +120,9 @@ namespace Deviser.Admin.Services
             return GetAdminConfig(modelType);
         }
 
-        public async Task<object> GetAllFor(Type modelType, int pageNo, int pageSize, string orderByProperties)
+        public async Task<object> GetAllFor(Type modelType, int pageNo, int pageSize, string orderByProperties, FilterNode filter = null)
         {
-            return await CallGenericMethod(nameof(GetAll), new Type[] { modelType }, new object[] { pageNo, pageSize, orderByProperties });
-        }
-
-        public async Task<object> FilterRecordsFor(Type modelType, int pageNo, int pageSize, IList<Filter> filters,
-            string orderByProperties)
-        {
-            return await CallGenericMethod(nameof(FilterRecords), new Type[] { modelType }, new object[] { pageNo, pageSize, filters, orderByProperties });
+            return await CallGenericMethod(nameof(GetAll), new Type[] { modelType }, new object[] { pageNo, pageSize, orderByProperties, filter });
         }
 
         public async Task<object> GetTree(Type modelType)
@@ -347,7 +341,7 @@ namespace Deviser.Admin.Services
             {
                 case AdminConfigType.GridOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminGridService<TModel> adminService:
                     return await adminService.DeleteItem(itemId);
-                case AdminConfigType.GridAndForm  when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
+                case AdminConfigType.GridAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
                     return await adminService.DeleteItem(itemId);
                 case AdminConfigType.TreeAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminTreeService<TModel> adminService:
                     return await adminService.DeleteItem(itemId);
@@ -356,7 +350,7 @@ namespace Deviser.Admin.Services
             }
         }
 
-        private async Task<PagedResult<TModel>> GetAll<TModel>(int pageNo, int pageSize, string orderByProperties) where TModel : class
+        private async Task<PagedResult<TModel>> GetAll<TModel>(int pageNo, int pageSize, string orderByProperties, FilterNode filter) where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
 
@@ -368,34 +362,14 @@ namespace Deviser.Admin.Services
             switch (adminConfig.AdminConfigType)
             {
                 case AdminConfigType.GridOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminGridService<TModel> adminService:
-                    return await adminService.GetAll(pageNo, pageSize, orderByProperties);
+                    return await adminService.GetAll(pageNo, pageSize, orderByProperties, filter);
                 case AdminConfigType.GridAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
-                    return await adminService.GetAll(pageNo, pageSize, orderByProperties);
+                    return await adminService.GetAll(pageNo, pageSize, orderByProperties, filter);
                 default:
                     throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
             }
         }
-
-        private async Task<PagedResult<TModel>> FilterRecords<TModel>(int pageNo, int pageSize, string orderByProperties, IList<Filter> filters) where TModel : class
-        {
-            var adminConfig = GetAdminConfig(typeof(TModel));
-
-            if (_adminSite.AdminType == AdminType.Entity)
-            {
-                return await _adminRepository.FilterRecordsFor<TModel>(pageNo, pageSize, orderByProperties, filters);
-            }
-
-            switch (adminConfig.AdminConfigType)
-            {
-                case AdminConfigType.GridOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminGridService<TModel> adminService:
-                    return await adminService.GetAll(pageNo, pageSize, orderByProperties);
-                case AdminConfigType.GridAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminService<TModel> adminService:
-                    return await adminService.GetAll(pageNo, pageSize, orderByProperties);
-                default:
-                    throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
-            }
-        }
-
+        
         private async Task<TModel> GetTree<TModel>() where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));

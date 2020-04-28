@@ -15,18 +15,18 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Deviser.Admin.Config.Filters;
+using Deviser.Admin.Extensions;
 
 namespace Deviser.Admin.Data
 {
     public interface IAdminRepository
 
     {
-        Task<PagedResult<TModel>> GetAllFor<TModel>(int pageNo, int pageSize, string orderByProperties) where TModel : class;
+        Task<PagedResult<TModel>> GetAllFor<TModel>(int pageNo, int pageSize, string orderByProperties, FilterNode filters = null) where TModel : class;
         Task<TModel> GetItemFor<TModel>(string itemId) where TModel : class;
         Task<TModel> CreateItemFor<TModel>(TModel item) where TModel : class;
         Task<TModel> UpdateItemFor<TModel>(TModel item) where TModel : class;
         Task<TModel> DeleteItemFor<TModel>(string itemId) where TModel : class;
-        Task<PagedResult<TModel>> FilterRecordsFor<TModel>(int pageNo, int pageSize, string orderByProperties, IList<Filter> filters) where TModel : class;
     }
 
     public class AdminRepository : IAdminRepository
@@ -56,24 +56,14 @@ namespace Deviser.Admin.Data
             _serializer.Converters.Add(new Core.Common.Json.GuidConverter());
         }
 
-        public async Task<PagedResult<TModel>> GetAllFor<TModel>(int pageNo, int pageSize, string orderByProperties)
+        public async Task<PagedResult<TModel>> GetAllFor<TModel>(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null)
             where TModel : class
         {
             var modelType = typeof(TModel);
             var adminConfig = GetAdminConfig(modelType);
             var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
 
-            var result = await CallGenericMethod<PagedResult<TModel>>(nameof(GetAll), new Type[] { modelType, entityClrType }, new object[] { pageNo, pageSize, orderByProperties });
-            return result;
-        }
-
-        public async Task<PagedResult<TModel>> FilterRecordsFor<TModel>(int pageNo, int pageSize, string orderByProperties, IList<Filter> filters) where TModel : class
-        {
-            var modelType = typeof(TModel);
-            var adminConfig = GetAdminConfig(modelType);
-            var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
-
-            var result = await CallGenericMethod<PagedResult<TModel>>(nameof(FilterRecords), new Type[] { modelType, entityClrType }, new object[] { pageNo, pageSize, orderByProperties, filters });
+            var result = await CallGenericMethod<PagedResult<TModel>>(nameof(GetAll), new Type[] { modelType, entityClrType }, new object[] { pageNo, pageSize, orderByProperties, filter });
             return result;
         }
 
@@ -131,7 +121,7 @@ namespace Deviser.Admin.Data
         }
 
 
-        private async Task<PagedResult<TModel>> GetAll<TModel, TEntity>(int pageNo, int pageSize, string orderByProperties)
+        private async Task<PagedResult<TModel>> GetAll<TModel, TEntity>(int pageNo, int pageSize, string orderByProperties, FilterNode filter)
             where TEntity : class
             where TModel : class
         {
@@ -193,6 +183,10 @@ namespace Deviser.Admin.Data
 
             var dbResult = await query.ToListAsync();
             var result = _adminSite.Mapper.Map<List<TModel>>(dbResult);
+            if (filter != null && filter.ChildNodes.Count > 0)
+            {
+                result = result.ApplyFilter(filter).ToList();
+            }
 
             return new PagedResult<TModel>(result, pageNo, pageSize, total);
         }

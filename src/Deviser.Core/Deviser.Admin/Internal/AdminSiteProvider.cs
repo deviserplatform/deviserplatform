@@ -1,17 +1,16 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Deviser.Admin.Config;
 using Deviser.Admin.Extensions;
 using Deviser.Core.Common;
 using Deviser.Core.Common.Extensions;
 using Deviser.Core.Common.Internal;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
-namespace Deviser.Admin.Config
+namespace Deviser.Admin.Internal
 {
     public class AdminSiteProvider : IAdminSiteProvider
     {

@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Deviser.Admin.Config;
+using Deviser.Admin.Config.Filters;
 using Deviser.Admin.Data;
+using Deviser.Admin.Extensions;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
 using Microsoft.Extensions.Logging;
@@ -26,13 +28,14 @@ namespace Deviser.Modules.ModuleManagement.Services
             _propertyRepository = propertyRepository;
         }
 
-        public async Task<PagedResult<Module>> GetAll(int pageNo, int pageSize, string orderByProperties)
+        public async Task<PagedResult<Module>> GetAll(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null)
         {
             var contentTypes = _moduleRepository.GetModules();
-            var skip = (pageNo - 1) * pageSize;
-            var total = contentTypes.Count;
-            var paging = contentTypes.Skip(skip).Take(pageSize);
-            var result = new PagedResult<Module>(paging, pageNo, pageSize, total);
+            if (filter != null)
+            {
+                contentTypes = contentTypes.ApplyFilter(filter).ToList();
+            }
+            var result = new PagedResult<Module>(contentTypes, pageNo, pageSize);
             return await Task.FromResult(result);
         }
 
