@@ -30,8 +30,14 @@ namespace Deviser.Admin.Extensions
         public static Expression<Func<TSource, bool>> ConvertToPredicate<TSource>(FilterNode rootFilterNode)
         {
             var sourceType = typeof(TSource);
+            var nodeExpression = ConvertToPredicateRecursive<TSource>(rootFilterNode);
             var paramExpr = Expression.Parameter(sourceType, "p");
+            var resultExpression = Expression.Lambda<Func<TSource, bool>>(nodeExpression, paramExpr);
+            return resultExpression;
+        }
 
+        private static Expression ConvertToPredicateRecursive<TSource>(FilterNode rootFilterNode)
+        {
             Expression nodeExpression = null;
             foreach (var childNode in rootFilterNode.ChildNodes)
             {
@@ -39,25 +45,41 @@ namespace Deviser.Admin.Extensions
                 switch (childNode.Filter)
                 {
                     case BooleanFilter booleanFilter:
-                        childPredicate = GetBooleanPredicate<TSource>(booleanFilter);
+                        childPredicate = GetBooleanExpression<TSource>(booleanFilter);
                         break;
                     case DateFilter dateFilter:
-                        childPredicate = GetDatePredicate<TSource>(dateFilter);
+                        childPredicate = GetDateExpression<TSource>(dateFilter);
                         break;
                     case NumberFilter numberFilter:
-                        childPredicate = GetNumberPredicate<TSource>(numberFilter);
+                        childPredicate = GetNumberExpression<TSource>(numberFilter);
                         break;
                     case TextFilter textFilter:
-                        childPredicate = GetTextPredicate<TSource>(textFilter);
+                        childPredicate = GetTextExpression<TSource>(textFilter);
                         break;
                     case SelectFilter selectFilter:
-                        childPredicate = GetSelectPredicate<TSource>(selectFilter);
+                        childPredicate = GetSelectExpression<TSource>(selectFilter);
                         break;
                     default:
                         continue;
                 }
 
-                nodeExpression = nodeExpression == null ? childPredicate : Expression.AndAlso(nodeExpression, childPredicate);
+                if (nodeExpression == null)
+                {
+                    nodeExpression = childPredicate;
+                }
+                else
+                {
+                    nodeExpression = rootFilterNode.ChildOperator == FilterOperator.AND 
+                        ? Expression.AndAlso(nodeExpression, childPredicate)
+                        : Expression.OrElse(nodeExpression, childPredicate);
+                }
+
+                if (childNode.ChildNodes == null || childNode.ChildNodes.Count <= 0) continue;
+
+                var childGroupPredicate = ConvertToPredicateRecursive<TSource>(childNode);
+                nodeExpression = childNode.RootOperator == FilterOperator.AND
+                    ? Expression.AndAlso(nodeExpression, childGroupPredicate)
+                    : Expression.OrElse(nodeExpression, childGroupPredicate);
             }
 
             if (nodeExpression == null)
@@ -66,17 +88,15 @@ namespace Deviser.Admin.Extensions
                     $"Unable to find filter type for field {rootFilterNode.Filter.FieldName}");
             }
 
-            var resultExpression = Expression.Lambda<Func<TSource, bool>>(nodeExpression, paramExpr);
-            return resultExpression;
-            
+            return nodeExpression;
         }
 
-        public static BinaryExpression GetBooleanPredicate<TSource>(BooleanFilter booleanFilter)
+        private static BinaryExpression GetBooleanExpression<TSource>(BooleanFilter booleanFilter)
         {
             var sourceType = typeof(TSource);
             var paramExpr = Expression.Parameter(sourceType, "p");
 
-            var propertyInfo = sourceType.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).FirstOrDefault(p => p.Name == booleanFilter.FieldName);
+            var propertyInfo = sourceType.GetProperty(booleanFilter.FieldName);
 
             if (propertyInfo == null)
                 throw new InvalidOperationException($"Filter property {booleanFilter.FieldName} not found");
@@ -90,12 +110,12 @@ namespace Deviser.Admin.Extensions
             return binaryExpression;
         }
 
-        public static BinaryExpression GetDatePredicate<TSource>(DateFilter dateFilter)
+        private static BinaryExpression GetDateExpression<TSource>(DateFilter dateFilter)
         {
             var sourceType = typeof(TSource);
             var paramExpr = Expression.Parameter(sourceType, "p");
 
-            var propertyInfo = sourceType.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).FirstOrDefault(p => p.Name == dateFilter.FieldName);
+            var propertyInfo = sourceType.GetProperty(dateFilter.FieldName);
 
             if (propertyInfo == null)
                 throw new InvalidOperationException($"Filter property {dateFilter.FieldName} not found");
@@ -137,12 +157,12 @@ namespace Deviser.Admin.Extensions
             return binaryExpression;
         }
 
-        public static BinaryExpression GetNumberPredicate<TSource>(NumberFilter numberFilter)
+        private static BinaryExpression GetNumberExpression<TSource>(NumberFilter numberFilter)
         {
             var sourceType = typeof(TSource);
             var paramExpr = Expression.Parameter(sourceType, "p");
 
-            var propertyInfo = sourceType.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).FirstOrDefault(p => p.Name == numberFilter.FieldName);
+            var propertyInfo = sourceType.GetProperty(numberFilter.FieldName);
 
             if (propertyInfo == null)
                 throw new InvalidOperationException($"Filter property {numberFilter.FieldName} not found");
@@ -184,12 +204,12 @@ namespace Deviser.Admin.Extensions
             return binaryExpression;
         }
 
-        public static Expression GetTextPredicate<TSource>(TextFilter textFilter)
+        private static Expression GetTextExpression<TSource>(TextFilter textFilter)
         {
             var sourceType = typeof(TSource);
             var paramExpr = Expression.Parameter(sourceType, "p");
 
-            var propertyInfo = sourceType.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).FirstOrDefault(p => p.Name == textFilter.FieldName);
+            var propertyInfo = sourceType.GetProperty(textFilter.FieldName);
 
             if (propertyInfo == null)
                 throw new InvalidOperationException($"Filter property {textFilter.FieldName} not found");
@@ -225,7 +245,7 @@ namespace Deviser.Admin.Extensions
             return predicateExpr;
         }
 
-        public static BinaryExpression GetSelectPredicate<TSource>(SelectFilter selectFilter)
+        private static BinaryExpression GetSelectExpression<TSource>(SelectFilter selectFilter)
         {
             var sourceType = typeof(TSource);
             var paramExpr = Expression.Parameter(sourceType, "p");

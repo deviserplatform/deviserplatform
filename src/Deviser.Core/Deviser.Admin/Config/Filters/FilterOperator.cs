@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Deviser.Admin.Config.Filters
 {
-    public enum NodeOperator
+    public enum FilterOperator
     {
         AND = 0,
         OR = 1
