@@ -1,0 +1,18 @@
+<form [formGroup]="filterForm" (ngSubmit)="onSubmit()">
+    <ng-container [ngSwitch]="selectedFilter.filterType">
+        <ng-container *ngSwitchCase="filterType.BooleanFilter">
+            <div class="form-check">
+                <dev-checkbox formControlName="isTrue" [label]="selectedFilter.field.fieldOption.isTrue">
+                </dev-checkbox>
+            </div>
+            <div class="form-check">
+                <dev-checkbox formControlName="isFalse" [label]="selectedFilter.field.fieldOption.isFalse">
+                </dev-checkbox>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-sm btn-light btn-filter" (click)="onClear();">Clear</button>
+                <button type="submit" class="btn btn-sm btn-light btn-filter">Filter</button>
+            </div>
+        </ng-container>
+    </ng-container>
+</form>

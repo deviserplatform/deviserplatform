@@ -18,6 +18,8 @@ export interface FieldOption {
     isHidden: boolean;
     isReadOnly: boolean;
     isRequired: boolean;
+    isTrue: string;
+    isFalse: string;
     labelOption: LabelOption;
     maxLength: number;
     nullDisplayText: string;

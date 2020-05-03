@@ -18,43 +18,15 @@
       <app-admin-alert class="admin-alerts" [alerts]="alerts"></app-admin-alert>
 
       <div class="row">
-        <div class="col-sm-12">
-          <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid"
-            aria-describedby="dataTable_info" style="width: 100%;">
-            <thead>
-              <tr>
-                <th *ngFor="let field of adminConfig.modelConfig.gridConfig.fields">{{field.fieldOption.displayName}}
-                </th>
-                <th *ngFor="let rowAction of adminConfig.modelConfig.gridConfig.rowActions | keyvalue">
-                  {{rowAction.value.buttonText}}</th>
-                <th *ngIf="adminConfig.modelConfig.gridConfig.isEditVisible">Edit</th>
-                <th *ngIf="adminConfig.modelConfig.gridConfig.isDeleteVisible">Delete</th>
-              </tr>
-            </thead>
+        <div class="col-sm-12 data-table">
+          <table class="table table-bordered" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info"
+            style="width: 100%;">
+            <thead gridHeader></thead>
             <tbody *ngIf="entityRecords && entityRecords.data && entityRecords.data.length>0">
               <tr *ngFor="let item of entityRecords.data">
                 <td *ngFor="let field of adminConfig.modelConfig.gridConfig.fields">
-
-                  <div
-                    *ngIf="field && field.fieldOption && field.fieldOption.labelOption && field.fieldOption.labelOption.labelType; then labelOption else fieldText">
-                  </div>
-
-                  <ng-template #labelOption>
-                    <ng-container [ngSwitch]="field.fieldOption.labelOption.labelType">
-                      <ng-container *ngSwitchCase="labelType.Icon">
-                        <i [ngClass]="item[field.fieldOption.labelOption.parameters.paramFieldNameCamelCase]"></i>
-                        <span [innerHTML]="item[field.fieldNameCamelCase] | formatField:field"></span>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="labelType.Badge">
-                        <span class="badge" [ngClass]="getBadge(item, field)"
-                          [innerHTML]="item[field.fieldNameCamelCase] | formatField:field"></span>
-                      </ng-container>
-                    </ng-container>
-                  </ng-template>
-
-                  <ng-template #fieldText>
-                    <span [innerHTML]="item[field.fieldNameCamelCase] | formatField:field"></span>
-                  </ng-template>
+                  <app-grid-control [field]="field" [item]="item" [lookUps]="this.adminConfig.lookUps">
+                  </app-grid-control>
                 </td>
                 <td *ngFor="let rowAction of adminConfig.modelConfig.gridConfig.rowActions | keyvalue">
                   <button class="btn btn-secondary" type="button" (click)="onRowAction(rowAction.key, item)">

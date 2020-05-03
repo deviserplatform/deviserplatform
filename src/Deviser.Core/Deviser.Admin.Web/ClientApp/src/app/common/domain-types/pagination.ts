@@ -11,8 +11,8 @@ export class Pagination {
 
     get currentWindowEnd(): number {
         if (this.pageNo > 1 && this.pageSize > 0) {
-            let windowEnd = this.currentWindowStart + this.pageSize;
-            if(windowEnd>this.totalRecordCount){
+            const windowEnd = this.currentWindowStart + this.pageSize;
+            if (windowEnd > this.totalRecordCount) {
                 return this.totalRecordCount;
             }
             return windowEnd;

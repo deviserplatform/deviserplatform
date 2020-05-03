@@ -69,7 +69,14 @@ namespace Deviser.Modules.Blog
             //});
 
             adminBuilder.Register<DTO.Post>(modelBuilder =>
-            {   
+            {
+
+                modelBuilder.GridBuilder
+                    .AddField(p => p.Title)
+                    .AddField(p => p.Category)
+                    .AddField(p => p.Tags)
+                    .AddField(p => p.CreatedOn)
+                    .AddField(p => p.CreatedBy);
 
                 modelBuilder.FormBuilder
                 .AddKeyField(p => p.Id)

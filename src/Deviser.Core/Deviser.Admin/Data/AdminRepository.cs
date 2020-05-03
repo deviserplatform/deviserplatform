@@ -125,9 +125,11 @@ namespace Deviser.Admin.Data
             where TEntity : class
             where TModel : class
         {
+            var modelType = typeof(TModel);
             var eType = typeof(TEntity);
             var dbSet = _dbContext.Set<TEntity>();
             var queryableData = dbSet.AsQueryable();
+            var adminConfig = GetAdminConfig(modelType);
 
             // Determine the number of records to skip
             int skip = (pageNo - 1) * pageSize;
@@ -136,6 +138,8 @@ namespace Deviser.Admin.Data
             int total = dbSet.Count();
 
             IQueryable<TEntity> query = dbSet;
+
+            query = AddIncludes(adminConfig, query);
 
             //Creates OrderBy/OrderByDescending/ThenBy/ThenByDescending expression based on orderByProperties
             if (!string.IsNullOrEmpty(orderByProperties))
@@ -189,14 +193,6 @@ namespace Deviser.Admin.Data
             }
 
             return new PagedResult<TModel>(result, pageNo, pageSize, total);
-        }
-
-        private async Task<PagedResult<TModel>> FilterRecords<TModel, TEntity>(int pageNo, int pageSize,
-            string orderByProperties)
-            where TEntity : class
-            where TModel : class
-        {
-            return null;
         }
 
         private async Task<TModel> GetItem<TModel, TEntity>(string itemId)

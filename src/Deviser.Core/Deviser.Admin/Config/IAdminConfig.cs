@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Deviser.Admin.Config;
+using Deviser.Admin.Config.Filters;
 using Deviser.Core.Common.Json;
 using Newtonsoft.Json;
 
@@ -13,6 +14,8 @@ namespace Deviser.Admin
         Type AdminServiceType { get; set; }
 
         ICollection<IChildConfig> ChildConfigs { get; }
+
+        FilterOperator FilterOperator { get; }
 
         [JsonConverter(typeof(TypeJsonConverter))]
         Type ModelType { get; }

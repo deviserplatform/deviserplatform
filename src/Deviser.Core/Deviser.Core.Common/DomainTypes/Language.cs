@@ -16,7 +16,7 @@ namespace Deviser.Core.Common.DomainTypes
         public string NativeName { get; set; }
         public string FallbackCulture { get; set; }
         public bool IsActive { get; set; }
-        public string IsActiveText => IsActive ? "Active" : "In Active";
+        //public string IsActiveText => IsActive ? "Active" : "In Active";
         public string IsActiveBadgeClass => IsActive ? "badge-primary" : "badge-secondary";
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }

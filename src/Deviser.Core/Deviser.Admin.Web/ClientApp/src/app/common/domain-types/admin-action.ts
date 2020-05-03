@@ -1,3 +1,3 @@
-export interface AdminAction{
-    buttonText:string;
+export interface AdminAction {
+    buttonText: string;
 }

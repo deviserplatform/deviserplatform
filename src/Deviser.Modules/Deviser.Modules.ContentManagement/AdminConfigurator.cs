@@ -18,10 +18,15 @@ namespace Deviser.Modules.ContentManagement
                 modelBuilder.GridBuilder
                     .AddField(c => c.Label)
                     .AddField(c => c.Name)
-                    .AddField(c => c.IsActiveText, option => option.DisplayName = "Is Active");
+                    .AddField(c => c.IsActive, option =>
+                    {
+                        option.DisplayName = "Is Active";
+                        option.IsTrue = "Active";
+                        option.IsFalse = "In Active";
+                    });
 
                 modelBuilder.GridBuilder.DisplayFieldAs(c => c.Label, LabelType.Icon, c => c.IconClass);
-                modelBuilder.GridBuilder.DisplayFieldAs(c => c.IsActiveText, LabelType.Badge, c => c.IsActiveBadgeClass);
+                modelBuilder.GridBuilder.DisplayFieldAs(c => c.IsActive, LabelType.Badge, c => c.IsActiveBadgeClass);
 
                 modelBuilder.FormBuilder
                     .AddKeyField(c => c.Id)
@@ -52,10 +57,15 @@ namespace Deviser.Modules.ContentManagement
                 modelBuilder.GridBuilder
                     .AddField(l => l.Label)
                     .AddField(l => l.Name)
-                    .AddField(l => l.IsActiveText, option => option.DisplayName = "Is Active");
+                    .AddField(l => l.IsActive, option =>
+                    {
+                        option.DisplayName = "Is Active";
+                        option.IsTrue = "Active";
+                        option.IsFalse = "In Active";
+                    });
 
                 modelBuilder.GridBuilder.DisplayFieldAs(l => l.Label, LabelType.Icon, l => l.IconClass);
-                modelBuilder.GridBuilder.DisplayFieldAs(l => l.IsActiveText, LabelType.Badge, l => l.IsActiveBadgeClass);
+                modelBuilder.GridBuilder.DisplayFieldAs(l => l.IsActive, LabelType.Badge, l => l.IsActiveBadgeClass);
 
                 modelBuilder.FormBuilder
                     .AddKeyField(l => l.Id)
@@ -90,9 +100,14 @@ namespace Deviser.Modules.ContentManagement
                 modelBuilder.GridBuilder
                     .AddField(p => p.Label)
                     .AddField(p => p.Name)
-                    .AddField(p => p.IsActiveText, option => option.DisplayName = "Is Active");
+                    .AddField(p => p.IsActive, option =>
+                    {
+                        option.DisplayName = "Is Active";
+                        option.IsTrue = "Active";
+                        option.IsFalse = "In Active";
+                    });
 
-                modelBuilder.GridBuilder.DisplayFieldAs(c => c.IsActiveText, LabelType.Badge, c => c.IsActiveBadgeClass);
+                modelBuilder.GridBuilder.DisplayFieldAs(c => c.IsActive, LabelType.Badge, c => c.IsActiveBadgeClass);
 
                 modelBuilder.FormBuilder
                     .AddKeyField(p => p.Id)
@@ -139,9 +154,14 @@ namespace Deviser.Modules.ContentManagement
                 modelBuilder.GridBuilder
                     .AddField(p => p.Label)
                     .AddField(p => p.Name)
-                    .AddField(p => p.IsActiveText, option => option.DisplayName = "Is Active");
+                    .AddField(p => p.IsActive, option =>
+                    {
+                        option.DisplayName = "Is Active";
+                        option.IsTrue = "Active";
+                        option.IsFalse = "In Active";
+                    });
 
-                modelBuilder.GridBuilder.DisplayFieldAs(c => c.IsActiveText, LabelType.Badge, c => c.IsActiveBadgeClass);
+                modelBuilder.GridBuilder.DisplayFieldAs(c => c.IsActive, LabelType.Badge, c => c.IsActiveBadgeClass);
 
                 modelBuilder.FormBuilder
                     .AddKeyField(p => p.Id)

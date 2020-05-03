@@ -1,5 +1,8 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors, Validator, ValidatorFn, AsyncValidatorFn } from "@angular/forms";
+import {
+  ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, Validators, AbstractControl,
+  ValidationErrors, Validator, ValidatorFn, AsyncValidatorFn
+} from '@angular/forms';
 
 import { ModelConfig } from '../common/domain-types/model-config';
 import { Field } from '../common/domain-types/field';
@@ -42,7 +45,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   // @Input() lookUps: LookUpDictionary;
 
   @Input() formContext: FormContext;
-  
+
   //To access FieldType enum
   childRecords: any;
   fieldType = FieldType;
@@ -74,19 +77,19 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
     this.unsubscribeValueChanges();
   }
 
-  
+
 
   public onTouched: () => void = () => { };
   public onChange: () => void = () => { };
 
-  private unsubscribeValueChanges(){
+  private unsubscribeValueChanges() {
     if (this.valChangeSubscription) {
       this.valChangeSubscription.unsubscribe();
     }
   }
-  
+
   private initUIProperties() {
-    
+
     let formConfig = this.formContext.formConfig;
     if (formConfig.fieldConfig && formConfig.fieldConfig.fields && formConfig.fieldConfig.fields.length > 0) {
       formConfig.fieldConfig.fields.forEach(fieldRow => {
@@ -98,7 +101,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
       });
     }
 
-    if (formConfig.fieldSetConfig && formConfig.fieldSetConfig.fieldSets && formConfig.fieldSetConfig.fieldSets.length > 0) {      
+    if (formConfig.fieldSetConfig && formConfig.fieldSetConfig.fieldSets && formConfig.fieldSetConfig.fieldSets.length > 0) {
       formConfig.fieldSetConfig.fieldSets.forEach(fieldSet => {
         fieldSet.isOpen = false;
         if (fieldSet.fields.length > 0) {

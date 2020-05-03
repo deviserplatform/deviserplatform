@@ -69,29 +69,32 @@ export class AdminFormComponent implements OnInit {
       this.formMode = FormMode.Update;
     }
 
-    if (this.formMode === FormMode.Update) {
-      const adminConfig$ = this.adminService.getAdminConfig();
-      const record$ = this.adminService.getRecord(itemId);
-      forkJoin([adminConfig$, record$]).subscribe(results => {
-        this.record = results[1];
-        this.onGetAdminConfig(results[0]);
-      }, error => {
-        const alert: Alert = {
-          alterType: AlertType.Error,
-          message: 'Unable to get this item, please contact administrator',
-          timeout: 5000
-        }
-        this.alerts.push(alert);
-      });
-    } else if (this.formMode === FormMode.Create) {
-      this.record = record;
-      this.adminService.getAdminConfig()
-        .subscribe(adminConfig => this.onGetAdminConfig(adminConfig));
-    }
+    // if (this.formMode === FormMode.Update) {
+    //   const adminConfig$ = this.adminService.getAdminConfig();
+    //   const record$ = this.adminService.getRecord(itemId);
+    //   forkJoin([adminConfig$, record$]).subscribe(results => {
+    //     this.record = results[1];
+    //     this.onGetAdminConfig(results[0]);
+    //   }, error => {
+    //     const alert: Alert = {
+    //       alterType: AlertType.Error,
+    //       message: 'Unable to get this item, please contact administrator',
+    //       timeout: 5000
+    //     }
+    //     this.alerts.push(alert);
+    //   });
+    // } else if (this.formMode === FormMode.Create) {
+    //   this.record = record;
+    //   this.adminService.getAdminConfig()
+    //     .subscribe(adminConfig => this.onGetAdminConfig(adminConfig));
+    // }
+
+    this.adminService.getAdminConfig()
+      .subscribe(adminConfig => this.onGetAdminConfig(adminConfig, itemId, record));
 
   }
 
-  onGetAdminConfig(adminConfig: AdminConfig): void {
+  onGetAdminConfig(adminConfig: AdminConfig, itemId: string, record: any = {}): void {
     this.formTabs = [];
     if (adminConfig) {
       this.adminConfig = adminConfig;

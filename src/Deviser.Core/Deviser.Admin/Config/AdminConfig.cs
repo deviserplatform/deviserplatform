@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using Deviser.Admin.Config.Filters;
 using Newtonsoft.Json.Converters;
 
 namespace Deviser.Admin
@@ -30,6 +31,8 @@ namespace Deviser.Admin
         [JsonIgnore]
         public EntityConfig EntityConfig { get; set; }
 
+        public FilterOperator FilterOperator { get; }
+
         public IModelConfig ModelConfig { get; }
 
         public LookUpDictionary LookUps { get; }
@@ -37,6 +40,7 @@ namespace Deviser.Admin
         public AdminConfig()
         {
             ChildConfigs = new HashSet<IChildConfig>();
+            FilterOperator = new FilterOperator();
             ModelType = typeof(TModel);
             ModelConfig = new ModelConfig();
             LookUps = new LookUpDictionary();

@@ -38,6 +38,15 @@ namespace Deviser.Admin.Config
         //[JsonIgnore]
         //public ModelMetadata Metadata { get; set; }
         public string NullDisplayText { get; set; }
+        /// <summary>
+        /// When the FieldType is boolean and true, this text will be displayed.
+        /// </summary>
+        public string IsTrue { get; set; }
+
+        /// <summary>
+        /// When the FieldType is boolean and true, this text will be displayed.
+        /// </summary>
+        public string IsFalse { get; set; }
         public string RegExErrorMessage { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]

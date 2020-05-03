@@ -26,9 +26,14 @@ namespace Deviser.Modules.Language
                     .AddKeyField(r => r.CultureCode)
                     .AddField(r => r.EnglishName, option => option.DisplayName = "English Name")
                     .AddField(r => r.NativeName, option => option.DisplayName = "Native Name")
-                    .AddField(r => r.IsActiveText, option => option.DisplayName = "Active / In Active");
+                    .AddField(r => r.IsActive, option =>
+                    {
+                        option.DisplayName = "Is Active";
+                        option.IsTrue = "Active";
+                        option.IsFalse = "In Active";
+                    });
 
-                gridBuilder.DisplayFieldAs(c => c.IsActiveText, LabelType.Badge, c => c.IsActiveBadgeClass);
+                gridBuilder.DisplayFieldAs(c => c.IsActive, LabelType.Badge, c => c.IsActiveBadgeClass);
 
 
                 formBuilder

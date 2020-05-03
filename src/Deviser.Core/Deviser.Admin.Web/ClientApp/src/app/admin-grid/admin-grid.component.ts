@@ -18,6 +18,16 @@ import { FormResult } from '../common/domain-types/form-result';
 import { AdminResult } from '../common/domain-types/admin-result';
 import { DAConfig } from '../common/domain-types/da-config';
 import { AdminConfigType } from '../common/domain-types/admin-confit-type';
+import { SortField } from '../common/domain-types/sort-field';
+import { SortState } from '../common/domain-types/sort-state';
+import { FilterField } from '../common/domain-types/filter-field';
+import { Filter } from '../common/domain-types/filter';
+import { DateFilter } from '../common/domain-types/date-filter';
+import { NumberFilter } from '../common/domain-types/number-filter';
+import { SelectFilter } from '../common/domain-types/select-filter';
+import { TextFilter } from '../common/domain-types/text-filter';
+import { FilterType } from '../common/domain-types/filter-type';
+import { BooleanFilter } from '../common/domain-types/boolean-filter';
 
 
 @Component({
@@ -28,29 +38,26 @@ import { AdminConfigType } from '../common/domain-types/admin-confit-type';
 export class AdminGridComponent implements OnInit {
 
   adminConfig: AdminConfig;
+  adminConfigType = AdminConfigType;
   alerts: Alert[];
   entityRecords: any;
+  daConfig: DAConfig;
   pagination: Pagination;
   labelType = LabelType;
-  daConfig: DAConfig;
 
-  adminConfigType = AdminConfigType;
-  
   @ViewChild(ConfirmDialogComponent)
   private confirmDialogComponent: ConfirmDialogComponent;
-  
-  
 
   constructor(private adminService: AdminService,
     private recordIdPipe: RecordIdPipe,
     private router: Router,
     @Inject(WINDOW) private window: any) {
     this.alerts = [];
+    this.getAdminConfig();
     this.daConfig = window.daConfig;
   }
 
   ngOnInit() {
-    this.getAdminConfig();
     this.getAllRecords();
   }
 
@@ -119,29 +126,11 @@ export class AdminGridComponent implements OnInit {
         alterType: AlertType.Error,
         message: adminResult.successMessage,
         timeout: 5000
-      }
+      };
       this.alerts.push(alert);
     }
   }
-
-  getBadge(item: any, field: Field): string {
-    if (!field.fieldOption.labelOption) {
-      return "";
-    }
-
-    if (!field.fieldOption.labelOption.parameters || !field.fieldOption.labelOption.parameters.paramFieldNameCamelCase) {
-      if (field.fieldType == FieldType.CheckBox) {
-        return item[field.fieldNameCamelCase] ? "badge-primary" : "badge-secondary";
-      }
-      else {
-        return "badge-light";
-      }
-    }
-
-    return item[field.fieldOption.labelOption.parameters.paramFieldNameCamelCase];
-  }
 }
-
 
 class CustomUrlSerializer extends DefaultUrlSerializer {
   parse(url: string): UrlTree {

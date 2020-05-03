@@ -591,6 +591,19 @@ namespace Deviser.Admin.Internal
                 }
             }
 
+            var fieldClrType = field.FieldExpression.Body.Type;
+
+            if (fieldClrType != typeof(string) && (fieldClrType.GetInterface(nameof(IEnumerable)) != null ||
+                                                  fieldClrType.GetInterface(nameof(ICollection)) != null))
+            {
+                return FieldType.MultiSelect;
+            }
+
+            if (!fieldClrType.IsPrimitive && fieldClrType != typeof(decimal) && fieldClrType != typeof(string))
+            {
+                return FieldType.Select;
+            }
+
             //If nothing found return textbox
             return FieldType.TextBox;
         }

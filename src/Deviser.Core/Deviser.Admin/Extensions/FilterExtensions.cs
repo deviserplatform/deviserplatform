@@ -69,7 +69,7 @@ namespace Deviser.Admin.Extensions
                 }
                 else
                 {
-                    nodeExpression = rootFilterNode.ChildOperator == FilterOperator.AND 
+                    nodeExpression = rootFilterNode.ChildOperator == LogicalOperator.AND 
                         ? Expression.AndAlso(nodeExpression, childPredicate)
                         : Expression.OrElse(nodeExpression, childPredicate);
                 }
@@ -77,7 +77,7 @@ namespace Deviser.Admin.Extensions
                 if (childNode.ChildNodes == null || childNode.ChildNodes.Count <= 0) continue;
 
                 var childGroupPredicate = ConvertToPredicateRecursive<TSource>(childNode);
-                nodeExpression = childNode.RootOperator == FilterOperator.AND
+                nodeExpression = childNode.RootOperator == LogicalOperator.AND
                     ? Expression.AndAlso(nodeExpression, childGroupPredicate)
                     : Expression.OrElse(nodeExpression, childGroupPredicate);
             }
@@ -101,11 +101,40 @@ namespace Deviser.Admin.Extensions
             if (propertyInfo == null)
                 throw new InvalidOperationException($"Filter property {booleanFilter.FieldName} not found");
 
+            //BinaryExpression binaryExpression = null;
+
+            //foreach (var strValue in selectFilter.FilterKeyValues)
+            //{
+            //    var keyValue = TypeDescriptor.GetConverter(keyPropInfo.PropertyType).ConvertFromInvariantString(strValue);
+            //    var valueExpr = Expression.Constant(keyValue);
+            //    var equalsExpression = Expression.Equal(keyPropExpr, valueExpr);
+
+            //    binaryExpression = binaryExpression == null ? equalsExpression : Expression.AndAlso(binaryExpression, equalsExpression);
+            //}
+
+
             var fieldExpr = Expression.Property(paramExpr, propertyInfo);
+            List<BinaryExpression> binaryExpressions = new List<BinaryExpression>();
+            
+            if (booleanFilter.IsTrue)
+            {
+                var valExpr = Expression.Constant(booleanFilter.IsTrue);
+                var be = Expression.Equal(fieldExpr, valExpr);
+                binaryExpressions.Add(be);
+            }
 
-            var valExpr = Expression.Constant(booleanFilter.Value);
+            if (booleanFilter.IsFalse)
+            {
+                var valExpr = Expression.Constant(booleanFilter.IsFalse);
+                var be = Expression.Equal(fieldExpr, valExpr);
+                binaryExpressions.Add(be);
+            }
 
-            var binaryExpression = Expression.Equal(fieldExpr, valExpr);
+            BinaryExpression binaryExpression = null;
+            foreach (var equalsExpression in binaryExpressions)
+            {
+                binaryExpression = binaryExpression == null ? equalsExpression : Expression.AndAlso(binaryExpression, equalsExpression);
+            }
 
             return binaryExpression;
         }

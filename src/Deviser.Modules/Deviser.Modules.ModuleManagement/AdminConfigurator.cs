@@ -21,9 +21,14 @@ namespace Deviser.Modules.ModuleManagement
                     .AddField(c => c.Label)
                     .AddField(c => c.Name)
                     .AddField(c => c.Version)
-                    .AddField(c => c.IsActiveText, option => option.DisplayName = "Is Active");
+                    .AddField(c => c.IsActive, option =>
+                    {
+                        option.DisplayName = "Is Active";
+                        option.IsTrue = "Active";
+                        option.IsFalse = "In Active";
+                    });
                 
-                modelBuilder.GridBuilder.DisplayFieldAs(c => c.IsActiveText, LabelType.Badge, c => c.IsActiveBadgeClass);
+                modelBuilder.GridBuilder.DisplayFieldAs(c => c.IsActive, LabelType.Badge, c => c.IsActiveBadgeClass);
 
                 modelBuilder.FormBuilder
                     .AddKeyField(c => c.Id)

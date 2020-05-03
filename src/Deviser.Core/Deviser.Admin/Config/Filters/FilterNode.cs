@@ -10,13 +10,13 @@ namespace Deviser.Admin.Config.Filters
         /// Operator used to connect root
         /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
-        public  FilterOperator RootOperator { get; set; }
+        public  LogicalOperator RootOperator { get; set; }
 
         /// <summary>
         /// Operator used to connect child nodes those belong to this node
         /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
-        public FilterOperator ChildOperator { get; set; }
+        public LogicalOperator ChildOperator { get; set; }
         
         /// <summary>
         /// Actual filter
