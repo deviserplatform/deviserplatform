@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Deviser.Admin.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -17,16 +18,19 @@ namespace Deviser.Admin.Config.Filters
         /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
         public LogicalOperator ChildOperator { get; set; }
-        
+
         /// <summary>
         /// Actual filter
         /// </summary>
+        /// 
+        [JsonConverter(typeof(FilterJsonConverter))]
+
         public Filter Filter { get; set; }
         
         /// <summary>
         /// Reference of the parent filter
         /// </summary>
-        public FilterNode Parent { get; set; }
+        //public FilterNode Parent { get; set; }
         
         /// <summary>
         /// Child filter

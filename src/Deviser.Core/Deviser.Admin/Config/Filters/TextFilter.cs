@@ -6,6 +6,6 @@ namespace Deviser.Admin.Config.Filters
     {
         [JsonConverter(typeof(StringEnumConverter))]
         public TextOperator Operator { get; set; }
-        public string Value { get; set; }
+        public string Text { get; set; }
     }
 }

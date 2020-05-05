@@ -21,15 +21,19 @@ export class FilterComponent implements OnInit {
   @Output() clear = new EventEmitter<any>();
 
   filterType = FilterType;
-
   filterForm: FormGroup;
+
   constructor() { }
 
   ngOnInit(): void {
-    this.filterForm = new FormGroup({
-      isTrue: new FormControl(false),
-      isFalse: new FormControl(false),
-    });
+    switch (this.selectedFilter.filterType) {
+      case FilterType.BooleanFilter:
+        this.filterForm = new FormGroup({
+          isTrue: new FormControl(false),
+          isFalse: new FormControl(false),
+        });
+        break;
+    }
   }
 
   onSubmit() {
@@ -40,12 +44,21 @@ export class FilterComponent implements OnInit {
         const booleanFilter = this.selectedFilter.filter as BooleanFilter;
         booleanFilter.isFalse = formVal.isFalse;
         booleanFilter.isTrue = formVal.isTrue;
-        this.filter.emit(booleanFilter);
+        this.filter.emit(this.selectedFilter);
         break;
     }
   }
 
   onClear() {
+    switch (this.selectedFilter.filterType) {
+      case FilterType.BooleanFilter:
+        const booleanFilter = this.selectedFilter.filter as BooleanFilter;
+        this.filterForm.patchValue({
+          isTrue: false,
+          isFalse: false
+        });
+        break;
+    }
     this.clear.emit(this.selectedFilter);
   }
 

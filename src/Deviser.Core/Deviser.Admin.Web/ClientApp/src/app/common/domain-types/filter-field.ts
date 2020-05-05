@@ -6,5 +6,6 @@ export interface FilterField {
     field: Field;
     filterType: FilterType;
     filter?: Filter;
+    isActive: boolean;
     operators?: { [key: string]: string };
 }

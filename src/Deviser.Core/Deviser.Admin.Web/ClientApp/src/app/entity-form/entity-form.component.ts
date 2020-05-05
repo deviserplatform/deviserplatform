@@ -140,7 +140,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
       setTimeout(() => {
         this.onIsValidateChange(field, isEnabled, isShown, isValidate);
       });
-    })
+    });
   }
 
 

@@ -30,13 +30,13 @@ namespace Deviser.Admin.Extensions
         public static Expression<Func<TSource, bool>> ConvertToPredicate<TSource>(FilterNode rootFilterNode)
         {
             var sourceType = typeof(TSource);
-            var nodeExpression = ConvertToPredicateRecursive<TSource>(rootFilterNode);
             var paramExpr = Expression.Parameter(sourceType, "p");
+            var nodeExpression = ConvertToPredicateRecursive<TSource>(rootFilterNode, paramExpr);
             var resultExpression = Expression.Lambda<Func<TSource, bool>>(nodeExpression, paramExpr);
             return resultExpression;
         }
 
-        private static Expression ConvertToPredicateRecursive<TSource>(FilterNode rootFilterNode)
+        private static Expression ConvertToPredicateRecursive<TSource>(FilterNode rootFilterNode, ParameterExpression paramExpression)
         {
             Expression nodeExpression = null;
             foreach (var childNode in rootFilterNode.ChildNodes)
@@ -45,19 +45,19 @@ namespace Deviser.Admin.Extensions
                 switch (childNode.Filter)
                 {
                     case BooleanFilter booleanFilter:
-                        childPredicate = GetBooleanExpression<TSource>(booleanFilter);
+                        childPredicate = GetBooleanExpression<TSource>(booleanFilter, paramExpression);
                         break;
                     case DateFilter dateFilter:
-                        childPredicate = GetDateExpression<TSource>(dateFilter);
+                        childPredicate = GetDateExpression<TSource>(dateFilter, paramExpression);
                         break;
                     case NumberFilter numberFilter:
-                        childPredicate = GetNumberExpression<TSource>(numberFilter);
+                        childPredicate = GetNumberExpression<TSource>(numberFilter, paramExpression);
                         break;
                     case TextFilter textFilter:
-                        childPredicate = GetTextExpression<TSource>(textFilter);
+                        childPredicate = GetTextExpression<TSource>(textFilter, paramExpression);
                         break;
                     case SelectFilter selectFilter:
-                        childPredicate = GetSelectExpression<TSource>(selectFilter);
+                        childPredicate = GetSelectExpression<TSource>(selectFilter, paramExpression);
                         break;
                     default:
                         continue;
@@ -76,7 +76,7 @@ namespace Deviser.Admin.Extensions
 
                 if (childNode.ChildNodes == null || childNode.ChildNodes.Count <= 0) continue;
 
-                var childGroupPredicate = ConvertToPredicateRecursive<TSource>(childNode);
+                var childGroupPredicate = ConvertToPredicateRecursive<TSource>(childNode, paramExpression);
                 nodeExpression = childNode.RootOperator == LogicalOperator.AND
                     ? Expression.AndAlso(nodeExpression, childGroupPredicate)
                     : Expression.OrElse(nodeExpression, childGroupPredicate);
@@ -91,10 +91,9 @@ namespace Deviser.Admin.Extensions
             return nodeExpression;
         }
 
-        private static BinaryExpression GetBooleanExpression<TSource>(BooleanFilter booleanFilter)
+        private static BinaryExpression GetBooleanExpression<TSource>(BooleanFilter booleanFilter, ParameterExpression paramExpression)
         {
             var sourceType = typeof(TSource);
-            var paramExpr = Expression.Parameter(sourceType, "p");
 
             var propertyInfo = sourceType.GetProperty(booleanFilter.FieldName);
 
@@ -113,19 +112,19 @@ namespace Deviser.Admin.Extensions
             //}
 
 
-            var fieldExpr = Expression.Property(paramExpr, propertyInfo);
+            var fieldExpr = Expression.Property(paramExpression, propertyInfo);
             List<BinaryExpression> binaryExpressions = new List<BinaryExpression>();
             
             if (booleanFilter.IsTrue)
             {
-                var valExpr = Expression.Constant(booleanFilter.IsTrue);
+                var valExpr = Expression.Constant(true);
                 var be = Expression.Equal(fieldExpr, valExpr);
                 binaryExpressions.Add(be);
             }
 
             if (booleanFilter.IsFalse)
             {
-                var valExpr = Expression.Constant(booleanFilter.IsFalse);
+                var valExpr = Expression.Constant(false);
                 var be = Expression.Equal(fieldExpr, valExpr);
                 binaryExpressions.Add(be);
             }
@@ -139,19 +138,18 @@ namespace Deviser.Admin.Extensions
             return binaryExpression;
         }
 
-        private static BinaryExpression GetDateExpression<TSource>(DateFilter dateFilter)
+        private static BinaryExpression GetDateExpression<TSource>(DateFilter dateFilter, ParameterExpression paramExpression)
         {
             var sourceType = typeof(TSource);
-            var paramExpr = Expression.Parameter(sourceType, "p");
 
             var propertyInfo = sourceType.GetProperty(dateFilter.FieldName);
 
             if (propertyInfo == null)
                 throw new InvalidOperationException($"Filter property {dateFilter.FieldName} not found");
 
-            var fieldExpr = Expression.Property(paramExpr, propertyInfo);
+            var fieldExpr = Expression.Property(paramExpression, propertyInfo);
 
-            var valExpr = Expression.Constant(dateFilter.Value);
+            var valExpr = Expression.Constant(dateFilter.Date);
 
             BinaryExpression binaryExpression = null;
             switch (dateFilter.Operator)
@@ -166,8 +164,8 @@ namespace Deviser.Admin.Extensions
                     binaryExpression = Expression.GreaterThanOrEqual(fieldExpr, valExpr);
                     break;
                 case DateTimeOperator.InRange:
-                    var fromExpr = Expression.GreaterThanOrEqual(fieldExpr, Expression.Constant(dateFilter.From));
-                    var toExpr = Expression.LessThanOrEqual(fieldExpr, Expression.Constant(dateFilter.From));
+                    var fromExpr = Expression.GreaterThanOrEqual(fieldExpr, Expression.Constant(dateFilter.FromDate));
+                    var toExpr = Expression.LessThanOrEqual(fieldExpr, Expression.Constant(dateFilter.FromDate));
                     binaryExpression = Expression.AndAlso(fromExpr, toExpr);
                     break;
                 case DateTimeOperator.Before:
@@ -186,19 +184,18 @@ namespace Deviser.Admin.Extensions
             return binaryExpression;
         }
 
-        private static BinaryExpression GetNumberExpression<TSource>(NumberFilter numberFilter)
+        private static BinaryExpression GetNumberExpression<TSource>(NumberFilter numberFilter, ParameterExpression paramExpression)
         {
             var sourceType = typeof(TSource);
-            var paramExpr = Expression.Parameter(sourceType, "p");
 
             var propertyInfo = sourceType.GetProperty(numberFilter.FieldName);
 
             if (propertyInfo == null)
                 throw new InvalidOperationException($"Filter property {numberFilter.FieldName} not found");
 
-            var fieldExpr = Expression.Property(paramExpr, propertyInfo);
+            var fieldExpr = Expression.Property(paramExpression, propertyInfo);
 
-            var valExpr = Expression.Constant(numberFilter.Value);
+            var valExpr = Expression.Constant(numberFilter.Number);
 
             BinaryExpression binaryExpression = null;
             switch (numberFilter.Operator)
@@ -213,8 +210,8 @@ namespace Deviser.Admin.Extensions
                     binaryExpression = Expression.GreaterThanOrEqual(fieldExpr, valExpr);
                     break;
                 case NumberOperator.InRange:
-                    var fromExpr = Expression.GreaterThanOrEqual(fieldExpr, Expression.Constant(numberFilter.From));
-                    var toExpr = Expression.LessThanOrEqual(fieldExpr, Expression.Constant(numberFilter.From));
+                    var fromExpr = Expression.GreaterThanOrEqual(fieldExpr, Expression.Constant(numberFilter.FromNumber));
+                    var toExpr = Expression.LessThanOrEqual(fieldExpr, Expression.Constant(numberFilter.FromNumber));
                     binaryExpression = Expression.AndAlso(fromExpr, toExpr);
                     break;
                 case NumberOperator.LessThan:
@@ -233,19 +230,18 @@ namespace Deviser.Admin.Extensions
             return binaryExpression;
         }
 
-        private static Expression GetTextExpression<TSource>(TextFilter textFilter)
+        private static Expression GetTextExpression<TSource>(TextFilter textFilter, ParameterExpression paramExpression)
         {
             var sourceType = typeof(TSource);
-            var paramExpr = Expression.Parameter(sourceType, "p");
 
             var propertyInfo = sourceType.GetProperty(textFilter.FieldName);
 
             if (propertyInfo == null)
                 throw new InvalidOperationException($"Filter property {textFilter.FieldName} not found");
 
-            var fieldExpr = Expression.Property(paramExpr, propertyInfo);
+            var fieldExpr = Expression.Property(paramExpression, propertyInfo);
 
-            var valExpr = Expression.Constant(textFilter.Value);
+            var valExpr = Expression.Constant(textFilter.Text);
 
             Expression predicateExpr = null;
             switch (textFilter.Operator)
@@ -274,10 +270,9 @@ namespace Deviser.Admin.Extensions
             return predicateExpr;
         }
 
-        private static BinaryExpression GetSelectExpression<TSource>(SelectFilter selectFilter)
+        private static BinaryExpression GetSelectExpression<TSource>(SelectFilter selectFilter, ParameterExpression paramExpression)
         {
             var sourceType = typeof(TSource);
-            var paramExpr = Expression.Parameter(sourceType, "p");
 
             var propertyInfo = sourceType.GetProperty(selectFilter.FieldName);
             if (propertyInfo == null)
@@ -288,7 +283,7 @@ namespace Deviser.Admin.Extensions
             if (keyPropInfo == null)
                 throw new InvalidOperationException($"Key Field {selectFilter.KeyFieldName} of Filter property {selectFilter.FieldName} not found");
 
-            var fieldExpr = Expression.Property(paramExpr, propertyInfo);
+            var fieldExpr = Expression.Property(paramExpression, propertyInfo);
             var keyPropExpr = Expression.Property(fieldExpr, keyPropInfo);
             BinaryExpression binaryExpression = null;
 

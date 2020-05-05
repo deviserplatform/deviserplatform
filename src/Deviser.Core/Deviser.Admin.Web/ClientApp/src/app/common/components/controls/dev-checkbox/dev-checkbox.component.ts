@@ -26,7 +26,7 @@ export class DevCheckboxComponent implements OnInit, ControlValueAccessor, Valid
   value?: boolean = null;
   indeterminateVal = false;
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
   }
@@ -37,9 +37,9 @@ export class DevCheckboxComponent implements OnInit, ControlValueAccessor, Valid
 
   writeValue(val: boolean): void {
     // val && this.form.setValue(val, { emitEvent: false });
-    if (val) {
-      this.value = val;
-    }
+    // if (val) {
+    this.value = val;
+    // }
   }
 
   registerOnChange(fn: any): void {

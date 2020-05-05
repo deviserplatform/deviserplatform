@@ -110,7 +110,7 @@ namespace Deviser.Admin.Web.Controllers
 
         [HttpPost]
         [Route("modules/[area]/api/{model:required}/filter")]
-        public async Task<IActionResult> FilterRecords(string model, int pageNo, int pageSize, [FromBody] FilterNode filter, string orderBy = null)
+        public async Task<IActionResult> FilterRecords(string model, int pageNo, [FromBody] FilterNode filter, int pageSize = Globals.AdminDefaultPageCount, string orderBy = null)
         {
             try
             {

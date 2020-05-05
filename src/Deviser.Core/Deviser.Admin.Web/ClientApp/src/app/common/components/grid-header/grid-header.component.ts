@@ -26,9 +26,7 @@ export class GridHeaderComponent implements OnInit {
   // @Input() selectedField: Field;
   // @Input() lookUps: LookUpDictionary;
 
-  @Output() filter = new EventEmitter<any>();
-  @Output() clear = new EventEmitter<any>();
-  @Output() sort = new EventEmitter<any>();
+  @Output() filterSortChange = new EventEmitter<any>();
 
   adminConfig: AdminConfig;
   filters: FilterField[];
@@ -94,8 +92,6 @@ export class GridHeaderComponent implements OnInit {
   // }
 
   onSortToggle(field: Field) {
-    // this.selectedField = field;
-    console.log(field);
     if (!this.sortField || this.sortField.field !== field) {
       this.sortField = {
         field,
@@ -112,14 +108,10 @@ export class GridHeaderComponent implements OnInit {
         this.sortField.sortState = SortState.Ascending;
       }
     }
-    this.sort.emit(this.sortField);
+    this.filterSortChange.emit({ sortField: this.sortField, filters: this.filters });
   }
 
   onFilterToggle(mouseEvent: MouseEvent, field: Field) {
-    // this.selectedField = field;
-    // const mouseEvent: MouseEvent = filterEvent.$event;
-    // const field: Field = filterEvent.field;
-    console.log(field);
     if (!this.selectedFilter || this.selectedFilter.field !== field) {
       let filterField = this.filters.find(f => f.field.fieldNameCamelCase === field.fieldNameCamelCase);
       if (!filterField) {
@@ -135,39 +127,47 @@ export class GridHeaderComponent implements OnInit {
     }
   }
 
-  onFilter($event) {
-    this.filter.emit($event);
+  onFilter(filterField: FilterField) {
+    const ff = this.filters.find(f => f.field.fieldNameCamelCase === filterField.field.fieldNameCamelCase);
+    ff.isActive = true;
+    if (!ff) {
+      this.filters.push(ff);
+    }
+    this.filterSortChange.emit({ sortField: this.sortField, filters: this.filters });
   }
 
-  onFilterClear($event) {
-    this.clear.emit($event);
+  onFilterClear(filterField: FilterField) {
+    filterField.isActive = false;
+    const index = this.filters.findIndex(f => f.field.fieldNameCamelCase === filterField.field.fieldNameCamelCase);
+    const activeFilters = this.filters.filter(f => f.isActive);
+    this.filterSortChange.emit({ sortField: this.sortField, filters: activeFilters });
   }
 
   getFilterByFieldType(field: Field): FilterField | null {
     let operators: { [key: string]: string };
     switch (field.fieldType) {
       case FieldType.CheckBox:
-        return { field, filterType: FilterType.BooleanFilter, filter: new BooleanFilter(field.fieldName) };
+        return { field, filterType: FilterType.BooleanFilter, filter: new BooleanFilter(field.fieldName), isActive: true };
       case FieldType.Date:
       case FieldType.DateTime:
         operators = this.adminConfig.filterOperator.DateTimeOperator;
-        return { field, filterType: FilterType.DateFilter, operators, filter: new DateFilter(field.fieldName) };
+        return { field, filterType: FilterType.DateFilter, operators, filter: new DateFilter(field.fieldName), isActive: true };
       case FieldType.Number:
       case FieldType.Currency:
         operators = this.adminConfig.filterOperator.NumberOperator;
-        return { field, filterType: FilterType.NumberFilter, operators, filter: new NumberFilter(field.fieldName) };
+        return { field, filterType: FilterType.NumberFilter, operators, filter: new NumberFilter(field.fieldName), isActive: true };
       case FieldType.TextBox:
       case FieldType.EmailAddress:
       case FieldType.Url:
       case FieldType.RichText:
       case FieldType.Static:
         operators = this.adminConfig.filterOperator.TextOperator;
-        return { field, filterType: FilterType.TextFilter, operators, filter: new TextFilter(field.fieldName) };
+        return { field, filterType: FilterType.TextFilter, operators, filter: new TextFilter(field.fieldName), isActive: true };
       case FieldType.Select:
       case FieldType.MultiSelect:
       case FieldType.MultiSelectCheckBox:
       case FieldType.RadioButton:
-        return { field, filterType: FilterType.SelectFilter, filter: new SelectFilter(field.fieldName) };
+        return { field, filterType: FilterType.SelectFilter, filter: new SelectFilter(field.fieldName), isActive: true };
       default:
         return null;
     }

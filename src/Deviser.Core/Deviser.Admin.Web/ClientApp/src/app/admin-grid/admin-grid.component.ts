@@ -28,6 +28,9 @@ import { SelectFilter } from '../common/domain-types/select-filter';
 import { TextFilter } from '../common/domain-types/text-filter';
 import { FilterType } from '../common/domain-types/filter-type';
 import { BooleanFilter } from '../common/domain-types/boolean-filter';
+import { FilterNode } from '../common/domain-types/filter-node';
+import { LogicalOperator } from '../common/domain-types/logical-operator';
+import { filter } from 'rxjs/operators';
 
 
 @Component({
@@ -129,6 +132,31 @@ export class AdminGridComponent implements OnInit {
       };
       this.alerts.push(alert);
     }
+  }
+
+  onFilterSortChange($event): void {
+    console.log($event);
+    const filterFields: FilterField[] = $event.filters as FilterField[];
+    const sortField: SortField = $event.sortField as SortField;
+    let orderBy = null;
+    if (sortField && sortField.sortState && sortField.field) {
+      orderBy = sortField.sortState === SortState.Descending ? `-${sortField.field.fieldName}` : sortField.field.fieldName;
+    }
+    const filterNode: FilterNode = {
+      rootOperator: LogicalOperator.AND,
+      childOperator: LogicalOperator.AND
+    };
+
+    filterNode.childNodes = filterFields.map(ff => {
+      return {
+        rootOperator: LogicalOperator.AND,
+        childOperator: LogicalOperator.AND,
+        filter: ff.filter
+      };
+    });
+
+    this.adminService.filterRecords(filterNode, orderBy)
+      .subscribe(entityRecords => this.onGetAllRecords(entityRecords));
   }
 }
 

@@ -10,6 +10,7 @@ import { AdminConfig } from '../domain-types/admin-config';
 import { WINDOW } from './window.service';
 import { DAConfig } from '../domain-types/da-config';
 import { FormType } from '../domain-types/form-type';
+import { FilterNode } from '../domain-types/filter-node';
 
 @Injectable({
   providedIn: 'root'
@@ -79,6 +80,25 @@ export class AdminService {
 
 
     return this.http.get<any>(serviceUrl, { params })
+      .pipe(
+        tap(_ => this.log('fetched all records')),
+        catchError(this.handleError('getAllRecords', null))
+      );
+  }
+
+  filterRecords(filterNode: FilterNode, orderBy: string, pagination: Pagination = null): Observable<any> {
+    const serviceUrl: string = this.baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/filter`;
+    let params = new HttpParams();
+
+    if (pagination != null) {
+      params = params.append('pageNo', pagination.pageNo.toString());
+      params = params.append('pageSize', pagination.pageSize.toString());
+      params = params.append('orderBy', orderBy);
+    }
+
+
+
+    return this.http.post<any>(serviceUrl + params.toString(), filterNode, this.httpOptions)
       .pipe(
         tap(_ => this.log('fetched all records')),
         catchError(this.handleError('getAllRecords', null))
