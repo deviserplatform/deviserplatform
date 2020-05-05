@@ -3,7 +3,7 @@
         <div class="header-field-cotnainer">
             <div class="label" (click)="onSortToggle(field);">{{field.fieldOption.displayName}}</div>
 
-            <button mat-icon-button (click)="sort" class="btn-sort" [ngClass]="getSortCssClass(field)">
+            <button mat-icon-button class="btn-sort" [ngClass]="getSortCssClass(field)">
                 <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/trending_flat.svg' | envPath"></i>
             </button>
             <div class="filter-container">

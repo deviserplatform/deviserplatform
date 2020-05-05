@@ -1,4 +1,4 @@
-<a (click)="changeValue();">
+<a (click)="changeValue($event);">
 
     <label *ngIf="label && labelPosition==='before'">{{label}}</label>
     <ng-container *ngIf="!indeterminate">
