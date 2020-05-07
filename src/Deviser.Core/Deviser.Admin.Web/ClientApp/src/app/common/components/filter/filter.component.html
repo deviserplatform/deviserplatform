@@ -16,7 +16,7 @@
         </ng-container>
         <ng-container *ngSwitchCase="filterType.TextFilter">
             <div class="form-group">
-                <select class="form-control" (change)="changeCity($event)" formControlName="operator">
+                <select class="form-control" formControlName="operator">
                     <option *ngFor="let operator of operators" [ngValue]="operator.value">{{operator.label}}</option>
                 </select>
             </div>
