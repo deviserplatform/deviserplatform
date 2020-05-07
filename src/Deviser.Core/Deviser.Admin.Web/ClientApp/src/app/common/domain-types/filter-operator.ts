@@ -1,5 +1,5 @@
 export interface FilterOperator {
-    DateTimeOperator: { [key: string]: string };
-    NumberOperator: { [key: string]: string };
-    TextOperator: { [key: string]: string };
+    dateTimeOperator: { [key: string]: string };
+    numberOperator: { [key: string]: string };
+    textOperator: { [key: string]: string };
 }

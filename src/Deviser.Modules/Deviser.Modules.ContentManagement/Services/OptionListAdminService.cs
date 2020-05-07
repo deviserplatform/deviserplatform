@@ -32,7 +32,7 @@ namespace Deviser.Modules.ContentManagement.Services
             {
                 optionLists = optionLists.ApplyFilter(filter).ToList();
             }
-            var result = new PagedResult<OptionList>(optionLists, pageNo, pageSize);
+            var result = new PagedResult<OptionList>(optionLists, pageNo, pageSize, orderByProperties);
             return await Task.FromResult(result);
         }
 

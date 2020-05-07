@@ -43,7 +43,7 @@ namespace Deviser.Modules.RecycleBin.Services
             {
                 recycleItems = recycleItems.ApplyFilter(filter).ToList();
             }
-            var pagedResult = new PagedResult<RecycleItem>(recycleItems, pageNo, pageSize);
+            var pagedResult = new PagedResult<RecycleItem>(recycleItems, pageNo, pageSize, orderByProperties);
 
             return await Task.FromResult(pagedResult);
         }

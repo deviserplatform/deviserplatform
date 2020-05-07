@@ -114,7 +114,7 @@
 
         <ng-select [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
           [ngClass]="{ 'is-invalid': hasError(field) }" [items]="lookUpData$ | async" [selectOnTab]="true"
-          bindLabel="displayName" [multiple]="false" placeholder="Select age">
+          bindLabel="displayName" [multiple]="false" placeholder="displayName">
         </ng-select>
 
         <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>

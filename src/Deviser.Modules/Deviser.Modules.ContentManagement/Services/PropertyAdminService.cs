@@ -35,7 +35,7 @@ namespace Deviser.Modules.ContentManagement.Services
             {
                 properties = properties.ApplyFilter(filter).ToList();
             }
-            var result = new PagedResult<Property>(properties, pageNo, pageSize);
+            var result = new PagedResult<Property>(properties, pageNo, pageSize, orderByProperties);
             return await Task.FromResult(result);
         }
 

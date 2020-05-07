@@ -150,18 +150,18 @@ export class GridHeaderComponent implements OnInit {
         return { field, filterType: FilterType.BooleanFilter, filter: new BooleanFilter(field.fieldName), isActive: true };
       case FieldType.Date:
       case FieldType.DateTime:
-        operators = this.adminConfig.filterOperator.DateTimeOperator;
+        operators = this.adminConfig.filterOperator.dateTimeOperator;
         return { field, filterType: FilterType.DateFilter, operators, filter: new DateFilter(field.fieldName), isActive: true };
       case FieldType.Number:
       case FieldType.Currency:
-        operators = this.adminConfig.filterOperator.NumberOperator;
+        operators = this.adminConfig.filterOperator.numberOperator;
         return { field, filterType: FilterType.NumberFilter, operators, filter: new NumberFilter(field.fieldName), isActive: true };
       case FieldType.TextBox:
       case FieldType.EmailAddress:
       case FieldType.Url:
       case FieldType.RichText:
       case FieldType.Static:
-        operators = this.adminConfig.filterOperator.TextOperator;
+        operators = this.adminConfig.filterOperator.textOperator;
         return { field, filterType: FilterType.TextFilter, operators, filter: new TextFilter(field.fieldName), isActive: true };
       case FieldType.Select:
       case FieldType.MultiSelect:

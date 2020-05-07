@@ -13,6 +13,11 @@ namespace Deviser.Admin.Extensions
     {
         public static IQueryable<TSource> ApplyFilter<TSource>(this IQueryable<TSource> baseQuery, FilterNode rootFilterNode)
         {
+            if (rootFilterNode?.ChildNodes == null || rootFilterNode.ChildNodes.Count == 0)
+            {
+                return baseQuery;
+            }
+
             var predicate = ConvertToPredicate<TSource>(rootFilterNode);
             baseQuery = baseQuery.Where(predicate);
             return baseQuery;
@@ -20,6 +25,11 @@ namespace Deviser.Admin.Extensions
 
         public static IEnumerable<TSource> ApplyFilter<TSource>(this IEnumerable<TSource> baseQuery, FilterNode rootFilterNode)
         {
+            if (rootFilterNode?.ChildNodes == null || rootFilterNode.ChildNodes.Count == 0)
+            {
+                return baseQuery;
+            }
+            
             var predicate = ConvertToPredicate<TSource>(rootFilterNode);
             var func = predicate.Compile();
             baseQuery = baseQuery.Where(func);

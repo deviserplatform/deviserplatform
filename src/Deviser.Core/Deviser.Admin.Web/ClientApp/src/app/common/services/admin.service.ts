@@ -93,12 +93,14 @@ export class AdminService {
     if (pagination != null) {
       params = params.append('pageNo', pagination.pageNo.toString());
       params = params.append('pageSize', pagination.pageSize.toString());
-      params = params.append('orderBy', orderBy);
+      if (orderBy) {
+        params = params.append('orderBy', orderBy);
+      }
     }
 
 
 
-    return this.http.post<any>(serviceUrl + params.toString(), filterNode, this.httpOptions)
+    return this.http.post<any>(`${serviceUrl}?${params.toString()}`, filterNode, this.httpOptions)
       .pipe(
         tap(_ => this.log('fetched all records')),
         catchError(this.handleError('getAllRecords', null))

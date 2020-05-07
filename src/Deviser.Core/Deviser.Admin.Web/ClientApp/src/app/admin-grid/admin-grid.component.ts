@@ -138,7 +138,7 @@ export class AdminGridComponent implements OnInit {
     console.log($event);
     const filterFields: FilterField[] = $event.filters as FilterField[];
     const sortField: SortField = $event.sortField as SortField;
-    let orderBy = null;
+    let orderBy;
     if (sortField && sortField.sortState && sortField.field) {
       orderBy = sortField.sortState === SortState.Descending ? `-${sortField.field.fieldName}` : sortField.field.fieldName;
     }
@@ -155,7 +155,7 @@ export class AdminGridComponent implements OnInit {
       };
     });
 
-    this.adminService.filterRecords(filterNode, orderBy)
+    this.adminService.filterRecords(filterNode, orderBy, this.pagination)
       .subscribe(entityRecords => this.onGetAllRecords(entityRecords));
   }
 }

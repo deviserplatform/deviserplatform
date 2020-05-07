@@ -183,7 +183,7 @@ namespace Deviser.Modules.Language.Services
             {
                 languages = languages.ApplyFilter(filter).ToList();
             }
-            var pagedResult = new PagedResult<Core.Common.DomainTypes.Language>(languages, pageNo, pageSize);
+            var pagedResult = new PagedResult<Core.Common.DomainTypes.Language>(languages, pageNo, pageSize, orderByProperties);
 
             return await Task.FromResult(pagedResult);
         }

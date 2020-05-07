@@ -35,7 +35,7 @@ namespace Deviser.Modules.ContentManagement.Services
             {
                 layoutTypes = layoutTypes.ApplyFilter(filter).ToList();
             }
-            var result = new PagedResult<LayoutType>(layoutTypes, pageNo, pageSize);
+            var result = new PagedResult<LayoutType>(layoutTypes, pageNo, pageSize, orderByProperties);
             return await Task.FromResult(result);
         }
 

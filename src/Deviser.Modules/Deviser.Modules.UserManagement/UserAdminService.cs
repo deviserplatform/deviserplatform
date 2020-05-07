@@ -74,7 +74,7 @@ namespace Deviser.Modules.UserManagement
             {
                 users = users.ApplyFilter(filter).ToList();
             }
-            var pagedResult = new PagedResult<User>(users, pageNo, pageSize);
+            var pagedResult = new PagedResult<User>(users, pageNo, pageSize, orderByProperties);
             return await Task.FromResult(pagedResult);
         }
 

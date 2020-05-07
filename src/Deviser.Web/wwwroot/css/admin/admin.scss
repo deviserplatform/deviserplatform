@@ -145,11 +145,90 @@ $ClientApp-theme: mat-light-theme($ClientApp-primary, $ClientApp-accent, $Client
                 .action-bar {
                     margin-bottom: 1rem;
                 }
+
+                .data-table {
+                    .header-field-cotnainer {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+
+                        .label {
+                            margin-right: auto;
+                        }
+
+                        .btn-sort {
+                            opacity: 0;
+
+                            &.ascending {
+                                opacity: 1;
+
+                                svg {
+                                    transform: rotate(-90deg);
+                                }
+                            }
+
+                            &.descending {
+                                opacity: 1;
+
+                                svg {
+                                    transform: rotate(90deg);
+                                }
+                            }
+                        }
+
+                        .filter-container {
+                            position: relative;
+
+                            .filter-content {
+                                @extend .shadow;
+                                position: absolute;
+                                background-color: $white;
+                                min-height: 100px;
+                                opacity: 1;
+                                padding: 10px;
+                                width: 200px;
+                                z-index: 10;
+
+                                .form-check {
+                                    padding: 0px;
+
+                                    a {
+                                        display: flex;
+                                        align-items: center;
+                                        margin-bottom: 10px;
+                                    }
+
+                                    label {
+                                        margin-left: 12px;
+                                        margin-bottom: 0;
+                                    }
+                                }
+
+                                .filter-actions {
+                                    display: flex;
+                                    justify-content: flex-end;
+
+                                    .btn-filter {
+                                        margin-right: 10px;
+                                        min-width: 60px;
+                                    }
+
+                                    .btn-filter:last-child {
+                                        margin-right: 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                svg {
+                    width: 24px;
+                    height: 24px;
+                }
             }
 
             .admin-tree-container {
-
-
                 .admin-tree {
                     height: 88vh;
                     overflow-y: auto;
@@ -184,7 +263,7 @@ $ClientApp-theme: mat-light-theme($ClientApp-primary, $ClientApp-accent, $Client
                                     color: $white;
 
                                     svg {
-                                        fill: $white
+                                        color: $white;
                                     }
                                 }
 
@@ -234,7 +313,6 @@ $ClientApp-theme: mat-light-theme($ClientApp-primary, $ClientApp-accent, $Client
                         }
 
                         .drop-below {
-
                             &::after {
                                 // content: "&nbsp;";
                                 // width: 100%;
@@ -276,8 +354,6 @@ $ClientApp-theme: mat-light-theme($ClientApp-primary, $ClientApp-accent, $Client
                 }
             }
 
-
-
             .admin-form {
                 .btn-cancel {
                     margin-right: 1rem;
@@ -307,7 +383,8 @@ $ClientApp-theme: mat-light-theme($ClientApp-primary, $ClientApp-accent, $Client
                     }
                 }
 
-                .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+                .nav-tabs .nav-link.active,
+                .nav-tabs .nav-item.show .nav-link {
                     background-color: $gray-300;
                     border-bottom: 0;
                 }
@@ -316,8 +393,6 @@ $ClientApp-theme: mat-light-theme($ClientApp-primary, $ClientApp-accent, $Client
                     border-bottom: 0;
                 }
             }
-
-
 
             .is-invalid {
                 color: $red;

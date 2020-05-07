@@ -7344,7 +7344,7 @@ button.bg-dark:focus {
 .shadow-sm {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important; }
 
-.shadow {
+.shadow, .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important; }
 
 .shadow-lg {
@@ -9204,6 +9204,52 @@ a.text-dark:hover, a.text-dark:focus {
       z-index: 10; }
     .admin-wrapper .admin-body .admin-container .admin-grid .action-bar {
       margin-bottom: 1rem; }
+    .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center; }
+      .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .label {
+        margin-right: auto; }
+      .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .btn-sort {
+        opacity: 0; }
+        .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .btn-sort.ascending {
+          opacity: 1; }
+          .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .btn-sort.ascending svg {
+            transform: rotate(-90deg); }
+        .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .btn-sort.descending {
+          opacity: 1; }
+          .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .btn-sort.descending svg {
+            transform: rotate(90deg); }
+      .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container {
+        position: relative; }
+        .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content {
+          position: absolute;
+          background-color: #fff;
+          min-height: 100px;
+          opacity: 1;
+          padding: 10px;
+          width: 200px;
+          z-index: 10; }
+          .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content .form-check {
+            padding: 0px; }
+            .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content .form-check a {
+              display: flex;
+              align-items: center;
+              margin-bottom: 10px; }
+            .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content .form-check label {
+              margin-left: 12px;
+              margin-bottom: 0; }
+          .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content .filter-actions {
+            display: flex;
+            justify-content: flex-end; }
+            .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content .filter-actions .btn-filter {
+              margin-right: 10px;
+              min-width: 60px; }
+            .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content .filter-actions .btn-filter:last-child {
+              margin-right: 0; }
+    .admin-wrapper .admin-body .admin-container .admin-grid svg {
+      width: 24px;
+      height: 24px; }
     .admin-wrapper .admin-body .admin-container .admin-tree-container .admin-tree {
       height: 88vh;
       overflow-y: auto;
@@ -9233,7 +9279,7 @@ a.text-dark:hover, a.text-dark:focus {
               background-color: #1565c0;
               color: #fff; }
               .admin-wrapper .admin-body .admin-container .admin-tree-container .admin-tree .cdk-tree-node .node-container .node-content.selected svg {
-                fill: #fff; }
+                color: #fff; }
             .admin-wrapper .admin-body .admin-container .admin-tree-container .admin-tree .cdk-tree-node .node-container .node-content .tree-label {
               margin-right: auto !important; }
             .admin-wrapper .admin-body .admin-container .admin-tree-container .admin-tree .cdk-tree-node .node-container .node-content .btn-add {
@@ -9289,7 +9335,8 @@ a.text-dark:hover, a.text-dark:focus {
         padding-bottom: 1.25rem; }
         .admin-wrapper .admin-body .admin-container .admin-form .card-body .form-action-container .form-actions button {
           margin-left: 1.25rem; }
-    .admin-wrapper .admin-body .admin-container .admin-form .nav-tabs .nav-link.active, .admin-wrapper .admin-body .admin-container .admin-form .nav-tabs .nav-item.show .nav-link {
+    .admin-wrapper .admin-body .admin-container .admin-form .nav-tabs .nav-link.active,
+    .admin-wrapper .admin-body .admin-container .admin-form .nav-tabs .nav-item.show .nav-link {
       background-color: #dee2e6;
       border-bottom: 0; }
     .admin-wrapper .admin-body .admin-container .admin-form a.nav-link {

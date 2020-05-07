@@ -144,43 +144,9 @@ namespace Deviser.Admin.Data
             //Creates OrderBy/OrderByDescending/ThenBy/ThenByDescending expression based on orderByProperties
             if (!string.IsNullOrEmpty(orderByProperties))
             {
-                Expression orderByExpression = queryableData.Expression;
-                var props = orderByProperties.Split(',');
-                var orderByMethod = "";
-                foreach (var prop in props)
-                {
-                    if (ExpressionHelper.PropertyExists<TEntity>(prop.Replace("-", "")))
-                    {
-                        string orderByProp = prop;
-                        if (string.IsNullOrEmpty(orderByMethod))
-                        {
-                            if (orderByProp.StartsWith("-"))
-                            {
-                                orderByProp = orderByProp.Replace("-", "");
-                                orderByMethod = nameof(Queryable.OrderByDescending);
-                            }
-                            else
-                            {
-                                orderByMethod = nameof(Queryable.OrderBy);
-                            }
-                        }
-                        else
-                        {
-                            if (orderByProp.StartsWith("-"))
-                            {
-                                orderByProp = orderByProp.Replace("-", "");
-                                orderByMethod = nameof(Queryable.ThenByDescending);
-                            }
-                            else
-                            {
-                                orderByMethod = nameof(Queryable.ThenBy);
-                            }
-                        }
-
-                        orderByExpression = ExpressionHelper.GetOrderByExpression(orderByProp, eType, orderByExpression, orderByMethod);
-                    }
-                }
-                query = queryableData.Provider.CreateQuery<TEntity>(orderByExpression);
+                //var orderByExpression = GetOrderByExpression<TModel, TEntity>(orderByProperties, queryableData, eType);
+                //query = queryableData.Provider.CreateQuery<TEntity>(orderByExpression);
+                query = query.SortBy(orderByProperties);
             }
 
             query = query.Skip(skip).Take(pageSize);
@@ -193,6 +159,50 @@ namespace Deviser.Admin.Data
             }
 
             return new PagedResult<TModel>(result, pageNo, pageSize, total);
+        }
+
+        private static Expression GetOrderByExpression<TModel, TEntity>(string orderByProperties, IQueryable<TEntity> queryableData,
+            Type eType) where TEntity : class where TModel : class
+        {
+            Expression orderByExpression = queryableData.Expression;
+            var props = orderByProperties.Split(',');
+            var orderByMethod = "";
+            foreach (var prop in props)
+            {
+                if (ExpressionHelper.PropertyExists<TEntity>(prop.Replace("-", "")))
+                {
+                    string orderByProp = prop;
+                    if (string.IsNullOrEmpty(orderByMethod))
+                    {
+                        if (orderByProp.StartsWith("-"))
+                        {
+                            orderByProp = orderByProp.Replace("-", "");
+                            orderByMethod = nameof(Queryable.OrderByDescending);
+                        }
+                        else
+                        {
+                            orderByMethod = nameof(Queryable.OrderBy);
+                        }
+                    }
+                    else
+                    {
+                        if (orderByProp.StartsWith("-"))
+                        {
+                            orderByProp = orderByProp.Replace("-", "");
+                            orderByMethod = nameof(Queryable.ThenByDescending);
+                        }
+                        else
+                        {
+                            orderByMethod = nameof(Queryable.ThenBy);
+                        }
+                    }
+
+                    orderByExpression =
+                        ExpressionHelper.GetOrderByExpression(orderByProp, eType, orderByExpression, orderByMethod);
+                }
+            }
+
+            return orderByExpression;
         }
 
         private async Task<TModel> GetItem<TModel, TEntity>(string itemId)
