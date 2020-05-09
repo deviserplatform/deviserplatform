@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { Field } from '../../domain-types/field';
 import { SortField } from '../../domain-types/sort-field';
 import { SortState } from '../../domain-types/sort-state';
@@ -37,6 +37,7 @@ export class GridHeaderComponent implements OnInit {
   selectedFilter: FilterField;
   sortField: SortField;
   sortState = SortState;
+  private clickedOnButton = false;
 
   getSortCssClass(field: Field): string {
 
@@ -108,10 +109,11 @@ export class GridHeaderComponent implements OnInit {
         this.sortField.sortState = SortState.Ascending;
       }
     }
-    this.filterSortChange.emit({ sortField: this.sortField, filters: this.filters });
+    this.emitSortFilterEvent();
   }
 
   onFilterToggle(mouseEvent: MouseEvent, field: Field) {
+    this.clickedOnButton = true;
     if (!this.selectedFilter || this.selectedFilter.field !== field) {
       let filterField = this.filters.find(f => f.field.fieldNameCamelCase === field.fieldNameCamelCase);
       if (!filterField) {
@@ -127,23 +129,35 @@ export class GridHeaderComponent implements OnInit {
     }
   }
 
+  @HostListener('click')
+  clickInside() {
+    this.clickedOnButton = true;
+  }
+
+  @HostListener('document:click')
+  onDocumentClick() {
+    if (!this.clickedOnButton && this.selectedFilter) {
+      this.selectedFilter = null;
+    }
+    this.clickedOnButton = false;
+  }
+
   onFilter(filterField: FilterField) {
     const ff = this.filters.find(f => f.field.fieldNameCamelCase === filterField.field.fieldNameCamelCase);
     ff.isActive = true;
     if (!ff) {
       this.filters.push(ff);
     }
-    this.filterSortChange.emit({ sortField: this.sortField, filters: this.filters });
+    this.emitSortFilterEvent();
   }
 
   onFilterClear(filterField: FilterField) {
     filterField.isActive = false;
     const index = this.filters.findIndex(f => f.field.fieldNameCamelCase === filterField.field.fieldNameCamelCase);
-    const activeFilters = this.filters.filter(f => f.isActive);
-    this.filterSortChange.emit({ sortField: this.sortField, filters: activeFilters });
+    this.emitSortFilterEvent();
   }
 
-  getFilterByFieldType(field: Field): FilterField | null {
+  private getFilterByFieldType(field: Field): FilterField | null {
     let operators: { [key: string]: string };
     switch (field.fieldType) {
       case FieldType.CheckBox:
@@ -171,5 +185,10 @@ export class GridHeaderComponent implements OnInit {
       default:
         return null;
     }
+  }
+
+  private emitSortFilterEvent() {
+    const activeFilters = this.filters.filter(f => f.isActive);
+    this.filterSortChange.emit({ sortField: this.sortField, filters: activeFilters });
   }
 }

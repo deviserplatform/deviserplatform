@@ -3,9 +3,9 @@
         <div class="header-field-cotnainer">
             <div class="label" (click)="onSortToggle(field);">{{field.fieldOption.displayName}}</div>
 
-            <button mat-icon-button class="btn-sort" [ngClass]="getSortCssClass(field)">
+            <deiv mat-icon-button class="sort-icon" [ngClass]="getSortCssClass(field)">
                 <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/trending_flat.svg' | envPath"></i>
-            </button>
+            </deiv>
             <div class="filter-container">
                 <button mat-icon-button (click)="onFilterToggle($event, field);" class="btn-filter">
                     <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/filter_list.svg' | envPath"></i>
