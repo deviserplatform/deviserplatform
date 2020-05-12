@@ -165,7 +165,7 @@ body {
                         .form-check {
                             padding: 0px;
                             a {
-                                display: flex;                                
+                                display: flex;
                                 align-items: center;
                                 margin-bottom: 10px;
                             }
@@ -176,7 +176,7 @@ body {
                         }
                         .filter-actions {
                             display: flex;
-                            justify-content: flex-end;                            
+                            justify-content: flex-end;
                             .btn-filter {
                                 margin-right: 10px;
                                 min-width: 60px;
@@ -186,6 +186,13 @@ body {
                             }
                         }
                     }
+                }
+
+                .bs-datepicker-body table td,
+                .bs-datepicker-body table th {                    
+                    border: none;
+                    border-top: none;
+                    border-bottom: none;
                 }
             }
         }

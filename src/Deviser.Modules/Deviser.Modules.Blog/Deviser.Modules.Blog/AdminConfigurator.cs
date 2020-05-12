@@ -75,7 +75,7 @@ namespace Deviser.Modules.Blog
                     .AddField(p => p.Title)
                     .AddField(p => p.Category)
                     .AddField(p => p.Tags)
-                    .AddField(p => p.CreatedOn)
+                    .AddField(p => p.CreatedOn, option => option.Format = "dd.MM.yyyy")
                     .AddField(p => p.CreatedBy);
 
                 modelBuilder.FormBuilder
@@ -101,7 +101,7 @@ namespace Deviser.Modules.Blog
                       .AddField(c => c.IsApproved);
                   });
 
-                
+
                 //form.FieldSetBuilder
                 //.AddFieldSet("General", fieldBuilder =>
                 //                        fieldBuilder.AddField(s => s.FirstName).AddInlineField(s => s.LastName)

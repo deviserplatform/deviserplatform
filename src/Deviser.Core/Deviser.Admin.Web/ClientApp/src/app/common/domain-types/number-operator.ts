@@ -1,9 +1,9 @@
-export enum NumberOperators {
-    GreaterThan = 'GreaterThan',
-    GreaterThanOrEqual = 'GreaterThanOrEqual',
-    Equal = 'Equal',
-    NotEqual = 'NotEqual',
-    LessThan = 'LessThan',
-    LessThanOrEqual = 'LessThanOrEqual',
-    InRange = 'InRange'
+export enum NumberOperator {
+    GreaterThan = 'greaterThan',
+    GreaterThanOrEqual = 'greaterThanOrEqual',
+    Equal = 'equal',
+    NotEqual = 'notEqual',
+    LessThan = 'lessThan',
+    LessThanOrEqual = 'lessThanOrEqual',
+    InRange = 'inRange'
 }

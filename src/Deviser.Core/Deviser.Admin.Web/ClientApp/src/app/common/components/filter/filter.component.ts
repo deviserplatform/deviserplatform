@@ -7,6 +7,11 @@ import { BooleanFilter } from '../../domain-types/boolean-filter';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ThrowStmt } from '@angular/compiler';
 import { TextFilter } from '../../domain-types/text-filter';
+import { DateTimeOperator } from '../../domain-types/date-time-operator';
+import { NumberOperator } from '../../domain-types/number-operator';
+import { DateFilter } from '../../domain-types/date-filter';
+import { NumberFilter } from '../../domain-types/number-filter';
+import { SelectFilter } from '../../domain-types/select-filter';
 
 @Component({
   selector: 'app-filter',
@@ -25,7 +30,16 @@ export class FilterComponent implements OnInit {
   filterType = FilterType;
   filterForm: FormGroup;
 
+  dateTimeOperator = DateTimeOperator;
+  numberOperator = NumberOperator;
+
   constructor() { }
+
+  get bsConfig(): any {
+    return {
+      dateInputFormat: this.selectedFilter.field.fieldOption.format.replace('yyyy', 'YYYY')
+    };
+  }
 
   get operators(): any[] {
     const operatorsArray = [];
@@ -36,6 +50,10 @@ export class FilterComponent implements OnInit {
       });
     });
     return operatorsArray;
+  }
+
+  get formValue(): any {
+    return this.filterForm.value;
   }
 
   ngOnInit(): void {
@@ -50,6 +68,27 @@ export class FilterComponent implements OnInit {
         const booleanFilter = this.selectedFilter.filter as BooleanFilter;
         booleanFilter.isFalse = formVal.isFalse;
         booleanFilter.isTrue = formVal.isTrue;
+        this.filter.emit(this.selectedFilter);
+        break;
+      case FilterType.DateFilter:
+        const dateFilter = this.selectedFilter.filter as DateFilter;
+        dateFilter.operator = formVal.operator;
+        dateFilter.date = formVal.date;
+        dateFilter.fromDate = formVal.fromDate;
+        dateFilter.toDate = formVal.toDate;
+        this.filter.emit(this.selectedFilter);
+        break;
+      case FilterType.NumberFilter:
+        const numberFilter = this.selectedFilter.filter as NumberFilter;
+        numberFilter.operator = formVal.operator;
+        numberFilter.number = formVal.number;
+        numberFilter.fromNumber = formVal.fromNumber;
+        numberFilter.toNumber = formVal.toNumber;
+        this.filter.emit(this.selectedFilter);
+        break;
+      case FilterType.SelectFilter:
+        const selectFilter = this.selectedFilter.filter as SelectFilter;
+        selectFilter.filterKeyValues = formVal.filterKeyValues;
         this.filter.emit(this.selectedFilter);
         break;
       case FilterType.TextFilter:
@@ -83,6 +122,27 @@ export class FilterComponent implements OnInit {
           isFalse: new FormControl(false),
         });
         break;
+      case FilterType.DateFilter:
+        this.filterForm = new FormGroup({
+          operator: new FormControl(this.operators[0].value),
+          date: new FormControl(),
+          fromDate: new FormControl(),
+          toDate: new FormControl()
+        });
+        break;
+      case FilterType.NumberFilter:
+        this.filterForm = new FormGroup({
+          operator: new FormControl(this.operators[0].value),
+          number: new FormControl(),
+          fromNumber: new FormControl(),
+          toNumber: new FormControl()
+        });
+        break;
+      case FilterType.SelectFilter:
+        this.filterForm = new FormGroup({
+          filterKeyValues: new FormControl([])
+        });
+        break;
       case FilterType.TextFilter:
         this.filterForm = new FormGroup({
           operator: new FormControl(this.operators[0].value),
@@ -91,5 +151,4 @@ export class FilterComponent implements OnInit {
         break;
     }
   }
-
 }

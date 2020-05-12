@@ -83,8 +83,8 @@
           for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
 
         <div class="input-group date-control">
-          <input type="tel" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
-            class="form-control" [ngClass]="{ 'is-invalid': hasError(field) }" #dp="bsDatepicker" bsDatepicker>
+          <input type="text" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
+            class="form-control" [ngClass]="{ 'is-invalid': hasError(field) }" #dp="bsDatepicker" bsDatepicker [bsConfig]="bsConfig">
           <div class="input-group-append">
             <button class="btn btn-secondary" type="button" (click)="dp.toggle()">
               <i class="my-icon" aria-label="My icon"

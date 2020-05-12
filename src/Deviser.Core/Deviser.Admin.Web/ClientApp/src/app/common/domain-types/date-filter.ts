@@ -3,10 +3,10 @@ import { DateTimeOperator } from './date-time-operator';
 
 export class DateFilter implements Filter {
     fieldName: string;
-    dateTimeOperator: DateTimeOperator;
-    value: Date;
-    from: Date;
-    to: Date;
+    operator: DateTimeOperator;
+    date: Date;
+    fromDate: Date;
+    toDate: Date;
     constructor(fieldName: string) {
         this.fieldName = fieldName;
     }

@@ -1,9 +1,9 @@
 export enum DateTimeOperator {
-    After = 'After',
-    AfterAnd = 'AfterAnd',
-    Equal = 'Equal',
-    NotEqual = 'NotEqual',
-    Before = 'Before',
-    BeforeAnd = 'BeforeAnd',
-    InRange = 'InRange'
+    After = 'after',
+    AfterAnd = 'afterAnd',
+    Equal = 'equal',
+    NotEqual = 'notEqual',
+    Before = 'before',
+    BeforeAnd = 'beforeAnd',
+    InRange = 'inRange'
 }

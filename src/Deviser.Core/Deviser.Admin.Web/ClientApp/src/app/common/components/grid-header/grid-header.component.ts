@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, ElementRef } from '@angular/core';
 import { Field } from '../../domain-types/field';
 import { SortField } from '../../domain-types/sort-field';
 import { SortState } from '../../domain-types/sort-state';
@@ -37,7 +37,7 @@ export class GridHeaderComponent implements OnInit {
   selectedFilter: FilterField;
   sortField: SortField;
   sortState = SortState;
-  private clickedOnButton = false;
+  private clickedOnButton = false; 
 
   getSortCssClass(field: Field): string {
 
@@ -75,6 +75,13 @@ export class GridHeaderComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  // tslint:disable-next-line: use-lifecycle-interface
+  // ngAfterViewInit() {
+  //   window.document.querySelector('body')
+  //     .addEventListener('click', this.onDocumentClick.bind(this));
+  // }
+
 
   // onLabelClick() {
   //   this.sortToggle.emit(this.field);
@@ -134,8 +141,8 @@ export class GridHeaderComponent implements OnInit {
     this.clickedOnButton = true;
   }
 
-  @HostListener('document:click')
-  onDocumentClick() {
+  @HostListener('document:click', ['$event'])
+  onDocumentClick($event) {
     if (!this.clickedOnButton && this.selectedFilter) {
       this.selectedFilter = null;
     }

@@ -1,7 +1,7 @@
 export enum TextOperator {
-    StartsWith = 'StartsWith',
-    EndsWith = 'EndsWith',
-    Contains = 'Contains',
-    Equal = 'Equal',
-    NotEqual = 'NotEqual'
+    StartsWith = 'startsWith',
+    EndsWith = 'endsWith',
+    Contains = 'contains',
+    Equal = 'equal',
+    NotEqual = 'notEqual'
 }

@@ -31,8 +31,10 @@ namespace Deviser.Admin.Extensions
             {
                 var orderByProp = prop.Replace("-", "");
                 var propertyExpression = GetPropertyExpression<TSource>(sourceType, orderByProp);
-                if (baseQuery is IOrderedQueryable<TSource> baseOrderedQuery)
+                //if (baseQuery is IOrderedQueryable<TSource> baseOrderedQuery)
+                if (typeof(IOrderedQueryable<TSource>).IsAssignableFrom(baseQuery.Expression.Type))
                 {
+                    var baseOrderedQuery = baseQuery as IOrderedQueryable<TSource>;
                     baseQuery = prop.StartsWith("-") ? baseOrderedQuery.ThenByDescending(propertyExpression) : baseOrderedQuery.ThenBy(propertyExpression);
                 }
                 else
