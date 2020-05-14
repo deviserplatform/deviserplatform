@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using Deviser.Admin.Data;
 
@@ -25,22 +26,18 @@ namespace Deviser.Admin.Extensions
             }
 
             var sourceType = typeof(TSource);
+            //var queryableSourceType = typeof(IQueryable<TSource>);
             var props = orderByProperties.Split(',');
 
             foreach (var prop in props)
             {
                 var orderByProp = prop.Replace("-", "");
-                var propertyExpression = GetPropertyExpression<TSource>(sourceType, orderByProp);
-                //if (baseQuery is IOrderedQueryable<TSource> baseOrderedQuery)
-                if (typeof(IOrderedQueryable<TSource>).IsAssignableFrom(baseQuery.Expression.Type))
-                {
-                    var baseOrderedQuery = baseQuery as IOrderedQueryable<TSource>;
-                    baseQuery = prop.StartsWith("-") ? baseOrderedQuery.ThenByDescending(propertyExpression) : baseOrderedQuery.ThenBy(propertyExpression);
-                }
-                else
-                {
-                    baseQuery = prop.StartsWith("-") ? baseQuery.OrderByDescending(propertyExpression) : baseQuery.OrderBy(propertyExpression);
-                }
+                var parameterExpression = Expression.Parameter(sourceType);
+                var memberExpression = Expression.Property(parameterExpression, orderByProp);
+
+                var memberType = (memberExpression.Member as PropertyInfo)?.PropertyType;
+
+                baseQuery = CallGenericMethod<IQueryable<TSource>>(nameof(BuildSortExpressionForQueryable), new Type[] { sourceType, memberType }, new object[] { baseQuery, parameterExpression, memberExpression, !prop.StartsWith("-") });
             }
 
             return baseQuery;
@@ -61,33 +58,78 @@ namespace Deviser.Admin.Extensions
             }
 
             var sourceType = typeof(TSource);
+            //var enumerableSourceType = typeof(IEnumerable<TSource>);
             var props = orderByProperties.Split(',');
 
             foreach (var prop in props)
             {
                 var orderByProp = prop.Replace("-", "");
-                var propertyExpression = GetPropertyExpression<TSource>(sourceType, orderByProp);
-                var del = propertyExpression.Compile();
-                if (baseQuery is IOrderedEnumerable<TSource> baseOrderedQuery)
-                {
-                    baseQuery = prop.StartsWith("-") ? baseOrderedQuery.ThenByDescending(del) : baseOrderedQuery.ThenBy(del);
-                }
-                else
-                {
-                    baseQuery = prop.StartsWith("-") ? baseQuery.OrderByDescending(del) : baseQuery.OrderBy(del);
-                }
+                var parameterExpression = Expression.Parameter(sourceType);
+                var memberExpression = Expression.Property(parameterExpression, orderByProp);
+
+                var memberType = (memberExpression.Member as PropertyInfo)?.PropertyType;
+
+                baseQuery = CallGenericMethod<IEnumerable<TSource>>(nameof(BuildSortExpressionForEnumerable), new Type[] { sourceType, memberType }, new object[] { baseQuery, parameterExpression, memberExpression, !prop.StartsWith("-") });
+                //baseQuery = BuildSortExpressionForEnumerable<TSource>(baseQuery, parameterExpression, memberExpression, !prop.StartsWith("-"));
             }
 
             return baseQuery;
         }
 
-        private static Expression<Func<TSource, object>> GetPropertyExpression<TSource>(Type sourceType, string orderByProp)
+        private static IQueryable<TSource> BuildSortExpressionForQueryable<TSource, TKey>(IQueryable<TSource> baseQuery,
+            ParameterExpression parameterExpression,
+            MemberExpression memberExpression,
+            bool isAscendingOrder)
         {
-            var parameterExpression = Expression.Parameter(sourceType);
-            var memberExpression = Expression.Property(parameterExpression, orderByProp);
-            var objectMemberExpr = Expression.Convert(memberExpression, typeof(object)); //Convert Value/Reference type to object using boxing/lifting
-            var propertyExpression = Expression.Lambda<Func<TSource, object>>(objectMemberExpr, parameterExpression);
+            var propertyExpression = GetPropertyExpression<TSource, TKey>(parameterExpression, memberExpression);
+
+            if (baseQuery is IOrderedQueryable<TSource> baseOrderedQuery)
+            {
+                baseQuery = isAscendingOrder ? baseOrderedQuery.ThenByDescending(propertyExpression) : baseOrderedQuery.ThenBy(propertyExpression);
+            }
+            else
+            {
+                baseQuery = isAscendingOrder ? baseQuery.OrderByDescending(propertyExpression) : baseQuery.OrderBy(propertyExpression);
+            }
+
+            return baseQuery;
+        }
+
+        private static IEnumerable<TSource> BuildSortExpressionForEnumerable<TSource, TKey>(IEnumerable<TSource> baseQuery,
+            ParameterExpression parameterExpression,
+            MemberExpression memberExpression,
+            bool isAscendingOrder)
+        {
+            var propertyExpression = GetPropertyExpression<TSource, TKey>(parameterExpression, memberExpression);
+
+            var del = propertyExpression.Compile();
+            if (baseQuery is IOrderedEnumerable<TSource> baseOrderedQuery)
+            {
+                baseQuery = isAscendingOrder ? baseOrderedQuery.ThenByDescending(del) : baseOrderedQuery.ThenBy(del);
+            }
+            else
+            {
+                baseQuery = isAscendingOrder ? baseQuery.OrderByDescending(del) : baseQuery.OrderBy(del);
+            }
+
+            return baseQuery;
+        }
+
+        private static Expression<Func<TSource, TKey>> GetPropertyExpression<TSource, TKey>(ParameterExpression parameterExpression, MemberExpression memberExpression)
+        {
+            //var objectMemberExpr = Expression.Convert(memberExpression, typeof(object)); //Convert Value/Reference type to object using boxing/lifting
+            //var propertyExpression = Expression.Lambda<Func<TSource, object>>(objectMemberExpr, parameterExpression);
+            var propertyExpression = Expression.Lambda<Func<TSource, TKey>>(memberExpression, parameterExpression);
             return propertyExpression;
+        }
+
+        private static TResult CallGenericMethod<TResult>(string methodName, Type[] genericTypes, object[] parmeters)
+            where TResult : class
+        {
+            var getItemMethodInfo = typeof(SortExtensions).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
+            var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericTypes);
+            var result = getItemMethod.Invoke(null, parmeters);
+            return result as TResult;
         }
     }
 }
