@@ -10,8 +10,8 @@ namespace Deviser.Admin.Config.Filters
     {
         [JsonConverter(typeof(StringEnumConverter))]
         public DateTimeOperator Operator { get; set; }
-        public DateTime Date { get; set; }
-        public DateTime FromDate { get; set; }
-        public DateTime ToDate { get; set; }
+        public DateTime? Date { get; set; }
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
     }
 }

@@ -44,6 +44,7 @@ import { FilterComponent } from './common/components/filter/filter.component';
 import { GridHeaderComponent } from './common/components/grid-header/grid-header.component';
 import { GridControlComponent } from './common/components/grid-control/grid-control.component';
 import { DevCheckboxComponent } from './common/components/controls/dev-checkbox/dev-checkbox.component';
+import { CheckBoxListComponent } from './common/components/controls/check-box-list/check-box-list.component';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import { DevCheckboxComponent } from './common/components/controls/dev-checkbox/
     RecordIdPipe,
     TreeControlComponent,
     ValidationErrorComponent,
-    DevCheckboxComponent],
+    DevCheckboxComponent,
+    CheckBoxListComponent],
   imports: [
     AccordionModule.forRoot(),
     AlertModule.forRoot(),

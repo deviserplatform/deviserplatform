@@ -91,7 +91,9 @@
 
         <ng-container *ngSwitchCase="filterType.SelectFilter">
             <div class="form-group">
-                [PLACE MULTIPLE CHECKBOX HERE!]
+                <dev-checkbox [(ngModel)]="selectAll" [label]="'Select All'" (changeValue)="onSelectAll($event);" [ngModelOptions]="{standalone: true}">
+                </dev-checkbox>
+                <dev-check-box-list formControlName="filterKeyValues" [dataSource]="lookUp" [labelField]="'displayName'" [keyField]="lookUpKey" (changeValue)="onSelectFilterChange($event);"></dev-check-box-list>
             </div>
             <div class="filter-actions">
                 <button type="button" class="btn btn-sm btn-light btn-filter" (click)="onClear();">Clear</button>

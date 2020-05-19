@@ -24,7 +24,6 @@ namespace Deviser.Admin.Config.Filters
         /// </summary>
         /// 
         [JsonConverter(typeof(FilterJsonConverter))]
-
         public Filter Filter { get; set; }
         
         /// <summary>

@@ -356,7 +356,7 @@ namespace Deviser.Admin.Services
 
             if (_adminSite.AdminType == AdminType.Entity)
             {
-                return await _adminRepository.GetAllFor<TModel>(pageNo, pageSize, orderByProperties);
+                return await _adminRepository.GetAllFor<TModel>(pageNo, pageSize, orderByProperties, filter);
             }
 
             switch (adminConfig.AdminConfigType)

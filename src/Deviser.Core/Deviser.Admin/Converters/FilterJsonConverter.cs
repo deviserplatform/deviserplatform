@@ -17,26 +17,28 @@ namespace Deviser.Admin.Converters
             {
                 return new BooleanFilter();
             }
-            else if (jObject["date"] != null || (jObject["fromDate"] != null && jObject["toDate"] != null))
+
+            if (jObject["date"] != null || (jObject["fromDate"] != null && jObject["toDate"] != null))
             {
                 return new DateFilter();
             }
-            else if (jObject["number"] != null || (jObject["fromNumber"] != null && jObject["toNumber"] != null))
+
+            if (jObject["number"] != null || (jObject["fromNumber"] != null && jObject["toNumber"] != null))
             {
                 return new NumberFilter();
             }
-            else if (jObject["text"] != null)
+
+            if (jObject["text"] != null)
             {
                 return new TextFilter();
             }
-            else if (jObject["filterKeyValues"] != null)
+
+            if (jObject["filterKeyValues"] != null)
             {
                 return new SelectFilter();
             }
-            else
-            {
-                return new Filter();
-            }
+
+            return new Filter();
         }
     }
 }

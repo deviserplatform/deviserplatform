@@ -23,9 +23,6 @@ import { last } from 'rxjs/operators';
 })
 export class GridHeaderComponent implements OnInit {
 
-  // @Input() selectedField: Field;
-  // @Input() lookUps: LookUpDictionary;
-
   @Output() filterSortChange = new EventEmitter<any>();
 
   adminConfig: AdminConfig;
@@ -33,11 +30,10 @@ export class GridHeaderComponent implements OnInit {
   filterOperator: FilterOperator;
   filterStyle = {};
   filterType = FilterType;
-  lookUps: LookUpDictionary;
   selectedFilter: FilterField;
   sortField: SortField;
   sortState = SortState;
-  private clickedOnButton = false; 
+  private clickedOnButton = false;
 
   getSortCssClass(field: Field): string {
 
@@ -99,7 +95,12 @@ export class GridHeaderComponent implements OnInit {
   //   // }
   // }
 
-  onSortToggle(field: Field) {
+  onSortToggle(field: Field): void {
+    if (field.fieldType === FieldType.MultiSelect || field.fieldType === FieldType.MultiSelectCheckBox) {
+      return;
+    }
+
+
     if (!this.sortField || this.sortField.field !== field) {
       this.sortField = {
         field,
@@ -161,6 +162,7 @@ export class GridHeaderComponent implements OnInit {
   onFilterClear(filterField: FilterField) {
     filterField.isActive = false;
     const index = this.filters.findIndex(f => f.field.fieldNameCamelCase === filterField.field.fieldNameCamelCase);
+    this.selectedFilter = null;
     this.emitSortFilterEvent();
   }
 

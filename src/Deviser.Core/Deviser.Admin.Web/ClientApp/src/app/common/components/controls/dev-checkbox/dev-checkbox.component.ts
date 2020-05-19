@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Input } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, Validator, AbstractControl, ValidationErrors, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 
 @Component({
@@ -22,6 +22,8 @@ export class DevCheckboxComponent implements OnInit, ControlValueAccessor, Valid
   @Input() indeterminate: boolean;
   @Input() label: string;
   @Input() labelPosition: 'before' | 'after' = 'after';
+
+  @Output() changeValue = new EventEmitter<any>();
 
   value?: boolean = null;
   indeterminateVal = false;
@@ -54,7 +56,7 @@ export class DevCheckboxComponent implements OnInit, ControlValueAccessor, Valid
     // isDisabled ? this.form.disable() : this.form.enable();
   }
 
-  changeValue(event) {
+  changeCheckBoxValue(event) {
     if (this.indeterminate) {
       //Three states on each click
       if (this.value) {
@@ -78,6 +80,7 @@ export class DevCheckboxComponent implements OnInit, ControlValueAccessor, Valid
       this.onChangeFn(this.value);
       this.onTouchedFn(this.value);
       this.onValidatorChangeFn(this.value);
+      this.changeValue.emit(this.value);
     }
   }
 

@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using Deviser.Admin.Config.Filters;
+using Deviser.Core.Common.Extensions;
 
 namespace Deviser.Admin.Extensions
 {
@@ -175,7 +176,7 @@ namespace Deviser.Admin.Extensions
                     break;
                 case DateTimeOperator.InRange:
                     var fromExpr = Expression.GreaterThanOrEqual(fieldExpr, Expression.Constant(dateFilter.FromDate));
-                    var toExpr = Expression.LessThanOrEqual(fieldExpr, Expression.Constant(dateFilter.FromDate));
+                    var toExpr = Expression.LessThanOrEqual(fieldExpr, Expression.Constant(dateFilter.ToDate));
                     binaryExpression = Expression.AndAlso(fromExpr, toExpr);
                     break;
                 case DateTimeOperator.Before:
@@ -221,7 +222,7 @@ namespace Deviser.Admin.Extensions
                     break;
                 case NumberOperator.InRange:
                     var fromExpr = Expression.GreaterThanOrEqual(fieldExpr, Expression.Constant(numberFilter.FromNumber));
-                    var toExpr = Expression.LessThanOrEqual(fieldExpr, Expression.Constant(numberFilter.FromNumber));
+                    var toExpr = Expression.LessThanOrEqual(fieldExpr, Expression.Constant(numberFilter.ToNumber));
                     binaryExpression = Expression.AndAlso(fromExpr, toExpr);
                     break;
                 case NumberOperator.LessThan:
@@ -288,7 +289,7 @@ namespace Deviser.Admin.Extensions
             if (propertyInfo == null)
                 throw new InvalidOperationException($"Filter property {selectFilter.FieldName} not found");
 
-            var keyPropInfo = propertyInfo.PropertyType.GetProperty(selectFilter.KeyFieldName);
+            var keyPropInfo = propertyInfo.PropertyType.GetProperty(selectFilter.KeyFieldName.Pascalize());
 
             if (keyPropInfo == null)
                 throw new InvalidOperationException($"Key Field {selectFilter.KeyFieldName} of Filter property {selectFilter.FieldName} not found");
@@ -303,7 +304,7 @@ namespace Deviser.Admin.Extensions
                 var valueExpr = Expression.Constant(keyValue);
                 var equalsExpression = Expression.Equal(keyPropExpr, valueExpr);
 
-                binaryExpression = binaryExpression == null ? equalsExpression : Expression.AndAlso(binaryExpression, equalsExpression);
+                binaryExpression = binaryExpression == null ? equalsExpression : Expression.OrElse(binaryExpression, equalsExpression);
             }
 
             return binaryExpression;

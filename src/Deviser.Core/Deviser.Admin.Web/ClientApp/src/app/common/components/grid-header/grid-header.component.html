@@ -13,7 +13,6 @@
                 <div class="filter-content" *ngIf="selectedFilter && selectedFilter.filterType && isFilterVisible(field)"
                     [ngStyle]="filterStyle">
                     <app-filter [selectedFilter]="selectedFilter" 
-                    [lookUps]="lookUps" 
                     [filterOperator]="filterOperator"
                     (filter)="onFilter($event);"
                     (clear)="onFilterClear($event);">

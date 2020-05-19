@@ -117,7 +117,7 @@ namespace Deviser.Admin.Web.Controllers
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
                 var modelType = coreAdminService.GetModelType(model);
                 if (modelType == null)
-                {
+                {   
                     return BadRequest($"Model {model} is not found");
                 }
 

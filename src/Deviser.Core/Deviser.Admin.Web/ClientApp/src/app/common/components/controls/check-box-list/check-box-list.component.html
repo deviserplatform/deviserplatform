@@ -1,0 +1,6 @@
+<div class="check-box-list">
+    <div class="check-box-list-item" *ngFor="let item of dataSource">       
+        <dev-checkbox [(ngModel)]="item.isChecked" [label]="item[labelField]" (changeValue)="changeCheckListValue($event, item);">
+        </dev-checkbox>
+    </div>
+</div>
