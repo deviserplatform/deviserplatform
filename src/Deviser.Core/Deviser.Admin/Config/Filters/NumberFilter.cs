@@ -10,8 +10,8 @@ namespace Deviser.Admin.Config.Filters
     {
         [JsonConverter(typeof(StringEnumConverter))]
         public NumberOperator Operator { get; set; }
-        public decimal? Number { get; set; }
-        public decimal? FromNumber { get; set; }
-        public decimal? ToNumber { get; set; }
+        public string Number { get; set; }
+        public string FromNumber { get; set; }
+        public string ToNumber { get; set; }
     }
 }

@@ -30,7 +30,7 @@ namespace Deviser.Admin.Extensions
             {
                 return baseQuery;
             }
-            
+
             var predicate = ConvertToPredicate<TSource>(rootFilterNode);
             var func = predicate.Compile();
             baseQuery = baseQuery.Where(func);
@@ -80,7 +80,7 @@ namespace Deviser.Admin.Extensions
                 }
                 else
                 {
-                    nodeExpression = rootFilterNode.ChildOperator == LogicalOperator.AND 
+                    nodeExpression = rootFilterNode.ChildOperator == LogicalOperator.AND
                         ? Expression.AndAlso(nodeExpression, childPredicate)
                         : Expression.OrElse(nodeExpression, childPredicate);
                 }
@@ -125,7 +125,7 @@ namespace Deviser.Admin.Extensions
 
             var fieldExpr = Expression.Property(paramExpression, propertyInfo);
             List<BinaryExpression> binaryExpressions = new List<BinaryExpression>();
-            
+
             if (booleanFilter.IsTrue)
             {
                 var valExpr = Expression.Constant(true);
@@ -206,7 +206,11 @@ namespace Deviser.Admin.Extensions
 
             var fieldExpr = Expression.Property(paramExpression, propertyInfo);
 
-            var valExpr = Expression.Constant(numberFilter.Number);
+
+            var number = ConvertFromInvariantString(propertyInfo.PropertyType, numberFilter.Number);
+            var valExpr = Expression.Constant(number);
+
+            //var valExpr = Expression.Constant(numberFilter.Number);
 
             BinaryExpression binaryExpression = null;
             switch (numberFilter.Operator)
@@ -221,8 +225,10 @@ namespace Deviser.Admin.Extensions
                     binaryExpression = Expression.GreaterThanOrEqual(fieldExpr, valExpr);
                     break;
                 case NumberOperator.InRange:
-                    var fromExpr = Expression.GreaterThanOrEqual(fieldExpr, Expression.Constant(numberFilter.FromNumber));
-                    var toExpr = Expression.LessThanOrEqual(fieldExpr, Expression.Constant(numberFilter.ToNumber));
+                    var fromNumber = ConvertFromInvariantString(propertyInfo.PropertyType, numberFilter.FromNumber);
+                    var toNumber = ConvertFromInvariantString(propertyInfo.PropertyType, numberFilter.ToNumber);
+                    var fromExpr = Expression.GreaterThanOrEqual(fieldExpr, Expression.Constant(fromNumber));
+                    var toExpr = Expression.LessThanOrEqual(fieldExpr, Expression.Constant(toNumber));
                     binaryExpression = Expression.AndAlso(fromExpr, toExpr);
                     break;
                 case NumberOperator.LessThan:
@@ -300,7 +306,7 @@ namespace Deviser.Admin.Extensions
 
             foreach (var strValue in selectFilter.FilterKeyValues)
             {
-                var keyValue = TypeDescriptor.GetConverter(keyPropInfo.PropertyType).ConvertFromInvariantString(strValue);
+                var keyValue = ConvertFromInvariantString(keyPropInfo.PropertyType, strValue);
                 var valueExpr = Expression.Constant(keyValue);
                 var equalsExpression = Expression.Equal(keyPropExpr, valueExpr);
 
@@ -308,6 +314,11 @@ namespace Deviser.Admin.Extensions
             }
 
             return binaryExpression;
+        }
+
+        private static object ConvertFromInvariantString(Type targetType, string value)
+        {
+            return TypeDescriptor.GetConverter(targetType).ConvertFromInvariantString(value);
         }
     }
 }
