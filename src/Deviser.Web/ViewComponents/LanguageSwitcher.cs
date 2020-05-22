@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Deviser.Core.Common;
 using Deviser.Web.ViewModels.Components;
 
 namespace Deviser.Web.ViewComponents

@@ -10,7 +10,10 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Deviser.Core.Common.Internal;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 
 namespace Deviser.Web.Builder
@@ -53,8 +56,42 @@ namespace Deviser.Web.Builder
                     SupportedCultures = supportedCultures,
                     SupportedUICultures = supportedCultures
                 };
+                requestLocalizationOptions.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider(
+                    async context =>
+                    {
+                        var isSiteMultilingual = languageRepository.IsMultilingual();
+                        if (!isSiteMultilingual) return null;
+
+                        var permalink = GetPermalink(context);
+                        var match = Regex.Match(permalink, @"[a-z]{2}-[a-z]{2}", RegexOptions.IgnoreCase);
+                        if (!match.Success) return null;
+
+                        var requestCulture = new CultureInfo(match.Value);
+                        var result = new ProviderCultureResult(requestCulture.Name);
+                        return await Task.FromResult(result);
+
+                    }));
                 app.UseRequestLocalization(requestLocalizationOptions);
             }
+
+            //services.Configure<RequestLocalizationOptions>(options =>
+            //{
+            //    var supportedCultures = new[]
+            //    {
+            //        new CultureInfo(enUSCulture),
+            //        new CultureInfo("fr")
+            //    };
+
+            //    options.DefaultRequestCulture = new RequestCulture(culture: enUSCulture, uiCulture: enUSCulture);
+            //    options.SupportedCultures = supportedCultures;
+            //    options.SupportedUICultures = supportedCultures;
+
+            //    options.AddInitialRequestCultureProvider(new CustomRequestCultureProvider(async context =>
+            //    {
+            //        // My custom request culture logic
+            //        return new ProviderCultureResult("en");
+            //    }));
+            //});
 
             if (env.IsDevelopment())
             {
@@ -76,19 +113,19 @@ namespace Deviser.Web.Builder
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.Use(async (context, next) =>
-            {
-                var cultureQuery = context.Request.Query["culture"];
-                if (!string.IsNullOrWhiteSpace(cultureQuery))
-                {
-                    var culture = new CultureInfo(cultureQuery);
+            //app.Use(async (context, next) =>
+            //{
+            //    var cultureQuery = context.Request.Query["culture"];
+            //    if (!string.IsNullOrWhiteSpace(cultureQuery))
+            //    {
+            //        var culture = new CultureInfo(cultureQuery);
 
-                    CultureInfo.CurrentCulture = culture;
-                    CultureInfo.CurrentUICulture = culture;
-                }
-                // Call the next delegate/middleware in the pipeline
-                await next();
-            });
+            //        CultureInfo.CurrentCulture = culture;
+            //        CultureInfo.CurrentUICulture = culture;
+            //    }
+            //    // Call the next delegate/middleware in the pipeline
+            //    await next();
+            //});
 
             app.UseSession();
 
@@ -112,6 +149,19 @@ namespace Deviser.Web.Builder
 
                 configure?.Invoke(endpoints);
             });
+        }
+
+        private static string GetPermalink(HttpContext httpContext)
+        {
+            var routeData = httpContext.GetRouteData();
+            //permalink in the url has first preference
+            string permalink = (routeData.Values["permalink"] != null) ? routeData.Values["permalink"].ToString() : "";
+            if (string.IsNullOrEmpty(permalink))
+            {
+                //if permalink is null, check for querystring
+                permalink = httpContext.Request.Query["permalink"].ToString();
+            }
+            return permalink;
         }
     }
 }

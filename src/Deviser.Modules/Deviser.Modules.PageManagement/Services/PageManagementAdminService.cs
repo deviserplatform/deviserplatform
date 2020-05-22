@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Deviser.Admin.Config;
 using Deviser.Admin.Data;
+using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library;

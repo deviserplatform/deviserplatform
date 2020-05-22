@@ -6,6 +6,7 @@ using Deviser.Admin.Config;
 using Deviser.Admin.Config.Filters;
 using Deviser.Admin.Data;
 using Deviser.Admin.Extensions;
+using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Library.Multilingual;
 using Deviser.Core.Library.Services;
@@ -191,7 +192,7 @@ namespace Deviser.Modules.Language.Services
 
         public async Task<Core.Common.DomainTypes.Language> GetItem(string itemId)
         {
-            var languages = _languageManager.GetAllLanguages();
+            var languages = _languageManager.GetLanguages();
             var language = languages.FirstOrDefault(l => string.Equals(l.CultureCode, itemId));
             return await Task.FromResult(language);
         }

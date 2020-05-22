@@ -155,8 +155,9 @@ namespace Deviser.Core.Data.Repositories
                     return null;
                 }
 
-                _mapper.Map(language, dbLanguage);
-                var result = context.Language.Update(dbLanguage).Entity;
+                //_mapper.Map(language, dbLanguage);
+                dbLanguage.IsActive = language.IsActive;
+                var result = _mapper.Map<Language>(dbLanguage); //context.Language.Update(dbLanguage).Entity;
                 context.SaveChanges();
                 //Refresh Language Cache
                 GetLanguages(true);

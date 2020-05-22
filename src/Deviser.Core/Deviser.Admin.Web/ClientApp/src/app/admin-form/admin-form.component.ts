@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import { Location, DOCUMENT } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { forkJoin, Observable, BehaviorSubject } from 'rxjs';
 
@@ -18,6 +18,7 @@ import { DAConfig } from '../common/domain-types/da-config';
 import { WINDOW } from '../common/services/window.service';
 import { AdminConfigType } from '../common/domain-types/admin-confit-type';
 import { FormBehaviour } from '../common/domain-types/form-behaviour';
+import { OpenUrlAction } from '../common/domain-types/open-url-action';
 
 @Component({
   selector: 'app-admin-form',
@@ -44,6 +45,7 @@ export class AdminFormComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
     private adminService: AdminService,
+    @Inject(DOCUMENT) private document: Document,
     private formControlService: FormControlService,
     private fb: FormBuilder,
     private location: Location,
@@ -69,32 +71,32 @@ export class AdminFormComponent implements OnInit {
       this.formMode = FormMode.Update;
     }
 
-    // if (this.formMode === FormMode.Update) {
-    //   const adminConfig$ = this.adminService.getAdminConfig();
-    //   const record$ = this.adminService.getRecord(itemId);
-    //   forkJoin([adminConfig$, record$]).subscribe(results => {
-    //     this.record = results[1];
-    //     this.onGetAdminConfig(results[0]);
-    //   }, error => {
-    //     const alert: Alert = {
-    //       alterType: AlertType.Error,
-    //       message: 'Unable to get this item, please contact administrator',
-    //       timeout: 5000
-    //     }
-    //     this.alerts.push(alert);
-    //   });
-    // } else if (this.formMode === FormMode.Create) {
-    //   this.record = record;
-    //   this.adminService.getAdminConfig()
-    //     .subscribe(adminConfig => this.onGetAdminConfig(adminConfig));
-    // }
+    if (this.formMode === FormMode.Update) {
+      const adminConfig$ = this.adminService.getAdminConfig();
+      const record$ = this.adminService.getRecord(itemId);
+      forkJoin([adminConfig$, record$]).subscribe(results => {
+        this.record = results[1];
+        this.onGetAdminConfig(results[0]);
+      }, error => {
+        const alert: Alert = {
+          alterType: AlertType.Error,
+          message: 'Unable to get this item, please contact administrator',
+          timeout: 5000
+        }
+        this.alerts.push(alert);
+      });
+    } else if (this.formMode === FormMode.Create) {
+      this.record = record;
+      this.adminService.getAdminConfig()
+        .subscribe(adminConfig => this.onGetAdminConfig(adminConfig));
+    }
 
-    this.adminService.getAdminConfig()
-      .subscribe(adminConfig => this.onGetAdminConfig(adminConfig, itemId, record));
+    // this.adminService.getAdminConfig()
+    //   .subscribe(adminConfig => this.onGetAdminConfig(adminConfig, itemId, record));
 
   }
 
-  onGetAdminConfig(adminConfig: AdminConfig, itemId: string, record: any = {}): void {
+  onGetAdminConfig(adminConfig: AdminConfig): void {
     this.formTabs = [];
     if (adminConfig) {
       this.adminConfig = adminConfig;
@@ -192,6 +194,13 @@ export class AdminFormComponent implements OnInit {
     this.submitSubject.next(formValue);
     if (formValue && formValue.isSucceeded) {
       if (formValue.formBehaviour === FormBehaviour.RedirectToGrid && this.adminConfig.adminConfigType === AdminConfigType.GridAndForm) {
+        const openUrlAction = formValue.successAction as OpenUrlAction;
+        if (openUrlAction) {
+          console.log(openUrlAction);
+          setTimeout(() => {
+            this.document.location.href = `${this.daConfig.basePath}${openUrlAction.url}`;
+          }, openUrlAction.openAfterSec * 1000);
+        }
         this.goBack();
       } else {
         let alert: Alert = {

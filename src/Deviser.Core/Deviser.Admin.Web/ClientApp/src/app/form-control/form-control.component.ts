@@ -54,6 +54,12 @@ export class FormControlComponent implements OnInit {
   // _lookUpData: any[];
   Editor = ClassicEditor;
 
+  get bsConfig(): any {
+    return {
+      dateInputFormat: this.field.fieldOption.format.replace(/y/g, 'Y').replace(/d/g, 'D')
+    };
+  }
+
   private valChangeSubscription: Subscription;
 
   constructor(private emailExistValidator: EmailExistValidator,

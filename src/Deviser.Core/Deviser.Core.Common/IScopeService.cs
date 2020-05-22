@@ -1,7 +1,7 @@
-﻿using Deviser.Core.Common.DomainTypes;
-using System;
+﻿using System;
+using Deviser.Core.Common.DomainTypes;
 
-namespace Deviser.Core.Library.Services
+namespace Deviser.Core.Common
 {
     public interface IScopeService
     {

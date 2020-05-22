@@ -1,8 +1,8 @@
-﻿using Deviser.Core.Common.DomainTypes;
+﻿using System;
+using Deviser.Core.Common.DomainTypes;
 using Microsoft.AspNetCore.Http;
-using System;
 
-namespace Deviser.Core.Library.Services
+namespace Deviser.Core.Common
 {
     public class ScopeService : IScopeService
     {
