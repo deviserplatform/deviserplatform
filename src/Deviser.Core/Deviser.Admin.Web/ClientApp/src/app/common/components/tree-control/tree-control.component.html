@@ -1,0 +1,46 @@
+<cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
+  <!-- This is the tree node template for leaf nodes -->
+  <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodeToggle cdkTreeNodePadding
+    (dragover)="handleDragOver($event, node);" (dragend)="handleDragEnd($event);" (drop)="handleDrop($event, node);"
+    (click)="onNodeClick(node)">
+
+    <div class="node-container" [ngClass]="getStyle(node)" draggable="true"
+      (dragstart)="handleDragStart($event, node);">
+      <!-- use a disabled button to provide padding for tree leaf -->
+      <div class="node-content" [ngClass]="{'selected':selectedNode === node}">
+        <button mat-icon-button disabled></button>
+        <div class="tree-label">
+          {{node.name}}
+        </div>
+        <button mat-icon-button (click)="addNewItem(node)" class="btn-add">
+          <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/add_circle_outline.svg' | envPath"></i>
+        </button>
+        <button mat-icon-button (click)="deleteItem(node)" class="btn-delete">
+          <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-delete.svg' | envPath"></i>
+        </button>
+      </div>
+    </div>
+
+  </cdk-tree-node>
+  <!-- This is the tree node template for expandable nodes -->
+  <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChild" cdkTreeNodePadding
+    (dragover)="handleDragOver($event, node);" (dragend)="handleDragEnd($event);" (drop)="handleDrop($event, node);"
+    (click)="onNodeClick(node)">
+    <div class="node-container" [ngClass]="getStyle(node)" draggable="true"
+      (dragstart)="handleDragStart($event, node);">
+      <div class="node-content" [ngClass]="{'selected':selectedNode === node}">
+        <button mat-icon-button cdkTreeNodeToggle [attr.aria-label]="'toggle ' + node.id">
+          <i class="my-icon" *ngIf="treeControl.isExpanded(node)" aria-label="My icon" [inlineSVG]="'assets/icons/expand_more.svg' | envPath"></i>
+
+          <i class="my-icon" *ngIf="!treeControl.isExpanded(node)" aria-label="My icon" [inlineSVG]="'assets/icons/chevron_right.svg' | envPath"></i>
+        </button>
+        <div class="tree-label">
+          {{node.name}}
+        </div>
+        <button mat-icon-button (click)="addNewItem(node)" class="btn-add">
+          <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/add_circle_outline.svg' | envPath"></i>
+        </button>
+      </div>
+    </div>
+  </cdk-tree-node>
+</cdk-tree>

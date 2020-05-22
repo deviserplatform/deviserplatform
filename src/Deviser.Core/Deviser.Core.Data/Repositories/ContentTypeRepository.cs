@@ -29,8 +29,8 @@ namespace Deviser.Core.Data.Repositories
         private readonly IMapper _mapper;
 
 
-        public ContentTypeRepository(DbContextOptions<DeviserDbContext> dbOptions, 
-            ILogger<ContentTypeRepository> logger, 
+        public ContentTypeRepository(DbContextOptions<DeviserDbContext> dbOptions,
+            ILogger<ContentTypeRepository> logger,
             IMapper mapper)
         {
             _logger = logger;
@@ -48,13 +48,13 @@ namespace Deviser.Core.Data.Repositories
             try
             {
                 using var context = new DeviserDbContext(_dbOptions);
-                var dbContentType = _mapper.Map<Entities.ContentType>(contentType);                    
+                var dbContentType = _mapper.Map<Entities.ContentType>(contentType);
                 dbContentType.Id = Guid.NewGuid();
                 if (dbContentType.ContentTypeProperties != null && dbContentType.ContentTypeProperties.Count > 0)
                 {
                     foreach (var ctp in dbContentType.ContentTypeProperties)
                     {
-                        ctp.Property = null;                            
+                        ctp.Property = null;
                         ctp.ContentTypeId = dbContentType.Id;
                     }
                 }
@@ -81,6 +81,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.ContentType
+                    .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
                     .FirstOrDefault(e => e.Id == contentTypeId);
 
                 return _mapper.Map<ContentType>(result);
@@ -103,7 +104,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.ContentType
-                    .Where(e => String.Equals(e.Name, contentTypeName, StringComparison.CurrentCultureIgnoreCase))
+                    .Where(e => e.Name.ToLower() == contentTypeName.ToLower())
                     .OrderBy(ct => ct.Name)
                     .FirstOrDefault();
 
@@ -181,14 +182,14 @@ namespace Deviser.Core.Data.Repositories
                         context.ContentTypeProperty.RemoveRange(toRemoveFromDb);
                     }
 
-                    if(dbContentType.ContentTypeProperties!=null && dbContentType.ContentTypeProperties.Count > 0)
+                    if (dbContentType.ContentTypeProperties != null && dbContentType.ContentTypeProperties.Count > 0)
                     {
-                        foreach(var contentTypeProp in dbContentType.ContentTypeProperties)
+                        foreach (var contentTypeProp in dbContentType.ContentTypeProperties)
                         {
                             contentTypeProp.Property = null;
                             context.ContentTypeProperty.Add(contentTypeProp);
                         }
-                            
+
                     }
                 }
 

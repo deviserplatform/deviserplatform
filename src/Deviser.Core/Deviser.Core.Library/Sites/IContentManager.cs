@@ -8,7 +8,7 @@ namespace Deviser.Core.Library.Sites
     {
         PageContent Get(Guid pageContentId);
         List<PageContent> Get(Guid pageId, string cultureCode);
-        List<PageContent> Get();
+        List<PageContent> GetDeletedPageContents();
         PageContent RestorePageContent(Guid id);
         PageContent AddOrUpdatePageContent(PageContent pageContent);
         void AddOrUpdatePageContents(List<PageContent> contents);

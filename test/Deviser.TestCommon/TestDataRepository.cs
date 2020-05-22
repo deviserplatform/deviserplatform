@@ -110,30 +110,30 @@ namespace Deviser.TestCommon
         {
             var languages = new List<Language>();
 
-            languages.Add(new Language
-            {
-                Id = Guid.NewGuid(),
-                CultureCode = "en-US",
-                EnglishName = "English - United States",
-                FallbackCulture = "en-US",
-                NativeName = "English - United States"
-            });
-            languages.Add(new Language
-            {
-                Id = Guid.NewGuid(),
-                CultureCode = "de-CH",
-                EnglishName = "German - Switzerland",
-                FallbackCulture = "en-US",
-                NativeName = "Deutsch - Schweiz"
-            });
-            languages.Add(new Language
-            {
-                Id = Guid.NewGuid(),
-                CultureCode = "fr-CH",
-                EnglishName = "French - Switzerland",
-                FallbackCulture = "en-US",
-                NativeName = "French - Suisse"
-            });
+            //languages.Add(new Language
+            //{
+            //    Id = Guid.NewGuid(),
+            //    CultureCode = "en-US",
+            //    EnglishName = "English - United States",
+            //    FallbackCulture = "en-US",
+            //    NativeName = "English - United States"
+            //});
+            //languages.Add(new Language
+            //{
+            //    Id = Guid.NewGuid(),
+            //    CultureCode = "de-CH",
+            //    EnglishName = "German - Switzerland",
+            //    FallbackCulture = "en-US",
+            //    NativeName = "Deutsch - Schweiz"
+            //});
+            //languages.Add(new Language
+            //{
+            //    Id = Guid.NewGuid(),
+            //    CultureCode = "fr-CH",
+            //    EnglishName = "French - Switzerland",
+            //    FallbackCulture = "en-US",
+            //    NativeName = "French - Suisse"
+            //});
 
             return languages;
         }

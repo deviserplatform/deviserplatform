@@ -48,7 +48,7 @@ namespace Deviser.Detached
             foreach (var property in properties)
             {
                 var propertyType = property.Accessor.PropertyType;
-                bool isCollection = false;
+                var isCollection = false;
 
                 // if collection
                 var genericType = propertyType
@@ -83,15 +83,14 @@ namespace Deviser.Detached
             }
         }
 
-        private static void SetVisited(Dictionary<string, bool> visited, GraphNode node)
+        private static void SetVisited(IDictionary<string, bool> visited, GraphNode node)
         {
             visited.Add(node.GetUniqueKey(), true);
         }
 
-        private static bool IsVisited(Dictionary<string, bool> visited, GraphNode node)
+        private static bool IsVisited(IReadOnlyDictionary<string, bool> visited, GraphNode node)
         {
-            bool val;
-            visited.TryGetValue(node.GetUniqueKey(), out val);
+            visited.TryGetValue(node.GetUniqueKey(), out var val);
             return val;
         }
     }

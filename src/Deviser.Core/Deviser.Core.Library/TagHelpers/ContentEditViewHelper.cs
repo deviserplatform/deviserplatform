@@ -3,13 +3,16 @@ using Deviser.Core.Library.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-//using Microsoft.Extensions.PlatformAbstractions;
 using System.IO;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Linq;
+//using Microsoft.Extensions.PlatformAbstractions;
 
 namespace Deviser.Core.Library.TagHelpers
 {
@@ -18,10 +21,10 @@ namespace Deviser.Core.Library.TagHelpers
     {
         private const string ContentEditsAttribute = "dev-content-edits";
 
-        private readonly INavigation _navigation;
         private readonly IHtmlHelper _htmlHelper;
-        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IScopeService _scopeService;
+
+        private readonly IViewProvider _viewProvider;
 
         [HtmlAttributeName(ContentEditsAttribute)]
         public string ContentEditViews { get; set; }
@@ -31,16 +34,14 @@ namespace Deviser.Core.Library.TagHelpers
         public ViewContext ViewContext { get; set; }
 
         public ContentEditViewHelper(IHttpContextAccessor httpContextAccessor,
-            INavigation navigation,
             IHtmlHelper htmlHelper,
             IScopeService scopeService,
-            IWebHostEnvironment hostEnvironment)
+            IViewProvider viewProvider)
              : base(httpContextAccessor)
         {
             _htmlHelper = htmlHelper;
-            _navigation = navigation;
             _scopeService = scopeService;
-            _hostingEnvironment = hostEnvironment;
+            _viewProvider = viewProvider;
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -60,18 +61,13 @@ namespace Deviser.Core.Library.TagHelpers
 
         private string GetAllEditViews()
         {
-            StringBuilder sb = new StringBuilder();
-            string editPath = string.Format(Globals.ContentTypesEditPath, _scopeService.PageContext.SelectedTheme);
-            string editViewDir = Path.Combine(_hostingEnvironment.ContentRootPath, Path.Combine(editPath.Replace("~/", "").Split('/')));
-            DirectoryInfo dir = new DirectoryInfo(editViewDir);
-            foreach (var file in dir.GetFiles())
+            var views = _viewProvider.GetCompiledViewDescriptors();
+            var sb = new StringBuilder();
+            var editPath = string.Format(Globals.ContentTypesEditPath, _scopeService.PageContext.SelectedTheme).Replace("~", "");
+            var editViews = views.Where(v => v.RelativePath.Contains(editPath)).ToList();
+            foreach (var contentResult in editViews.Select(editView => _htmlHelper.Partial(editView.RelativePath)).Select(GetString))
             {
-                if (file != null)
-                {
-                    var htmlContent = _htmlHelper.Partial(Path.Combine(editPath, file.Name));
-                    var contentResult = GetString(htmlContent);
-                    sb.Append(contentResult);
-                }
+                sb.Append(contentResult);
             }
             return sb.ToString();
         }

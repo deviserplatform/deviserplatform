@@ -1,14 +1,22 @@
-<div class="row" *ngIf="formConfig && formConfig.fieldConfig && formConfig.fieldConfig.fields">
+<div class="row" *ngIf="formContext.formConfig && 
+  formContext.formConfig.fieldConfig && 
+  formContext.formConfig.fieldConfig.fields && 
+  formContext.formConfig.fieldConfig.fields.length > 0">
   <div class="col">
 
-    <app-form-control [form]="form" [field]="keyField"></app-form-control>
-    
+    <ng-container *ngIf="formContext.keyField.fieldName">
+      <app-form-control [form]="formContext.formGroup" [field]="formContext.keyField" [formName]="formContext.formName">
+      </app-form-control>
+    </ng-container>
 
-    <div *ngFor="let fieldRow of formConfig.fieldConfig.fields" class="form-row">
+
+    <div *ngFor="let fieldRow of formContext.formConfig.fieldConfig.fields" class="form-row">
       <ng-container *ngFor="let field of fieldRow">
-        <fieldset class="form-group col" [disabled]="!isFieldEnabled(field)" *ngIf="isFieldShown(field)">
-          <app-form-control [form]="form" [field]="field" [isShown]="isFieldShown(field)"
-            [isDisabled]="!isFieldEnabled(field)" [isValidate]="isFieldValidate(field)" [lookUps]="lookUps">
+        <fieldset class="form-group col" [disabled]="!(field.isEnabled | async)" *ngIf="field.isShown | async">
+          <app-form-control [form]="formContext.formGroup" [field]="field" [isShown]="field.isShown | async"
+            [formName]="formContext.formName" [isDisabled]="!(field.isEnabled | async)"
+            [isValidate]="field.isValidate | async" [lookUps]="formContext.lookUps" [formType]="formContext.formType"
+            [formItemId]="formItemId">
           </app-form-control>
           <!-- <pre>{{field|json}}</pre> -->
         </fieldset>
@@ -16,5 +24,57 @@
 
     </div>
 
+  </div>
+</div>
+
+<div class="row" *ngIf="formContext.formConfig && 
+  formContext.formConfig.fieldSetConfig && 
+  formContext.formConfig.fieldSetConfig.fieldSets &&
+  formContext.formConfig.fieldSetConfig.fieldSets.length > 0">
+  <div class="col">
+
+    <ng-container *ngIf="formContext.keyField.fieldName">
+      <app-form-control [form]="formContext.formGroup" [field]="formContext.keyField" [formName]="formContext.formName">
+      </app-form-control>
+    </ng-container>
+
+    <accordion [isAnimated]="true">
+      <accordion-group *ngFor="let fieldSet of formContext.formConfig.fieldSetConfig.fieldSets" [isOpen]="fieldSet.isOpen">        
+        <div class="btn btn-link btn-block clearfix" accordion-heading type="div">          
+          <div class="pull-left float-left">{{fieldSet.groupName}}</div>          
+        </div>
+
+        <div *ngFor="let fieldRow of fieldSet.fields" class="form-row">
+          <ng-container *ngFor="let field of fieldRow">
+            <fieldset class="form-group col" [disabled]="!(field.isEnabled | async)" *ngIf="field.isShown | async">
+              <app-form-control [form]="formContext.formGroup" [field]="field" [isShown]="field.isShown | async"
+                [formName]="formContext.formName" [isDisabled]="!(field.isEnabled | async)"
+                [isValidate]="field.isValidate | async" [lookUps]="formContext.lookUps" [formType]="formContext.formType" [formItemId]="formItemId">
+              </app-form-control>
+              <!-- <pre>{{field|json}}</pre> -->
+            </fieldset>
+          </ng-container>
+        </div>
+      </accordion-group>
+    </accordion>
+
+    <!-- Fieldset without accordion -->
+    <!-- <ng-container *ngFor="let fieldSet of formContext.formConfig.fieldSetConfig.fieldSets" class="row">
+      <div class="form-row">
+        <div class="from-group col">
+          <h4>{{fieldSet.groupName}}</h4>
+        </div>
+      </div>
+      <div *ngFor="let fieldRow of fieldSet.fields" class="form-row">
+        <ng-container *ngFor="let field of fieldRow">
+          <fieldset class="form-group col" [disabled]="!(field.isEnabled | async)" *ngIf="field.isShown | async">
+            <app-form-control [form]="formContext.formGroup" [field]="field" [isShown]="field.isShown | async"
+              [formName]="formContext.formName" [isDisabled]="!(field.isEnabled | async)"
+              [isValidate]="field.isValidate | async" [lookUps]="formContext.lookUps" [formType]="formContext.formType">
+            </app-form-control>
+          </fieldset>
+        </ng-container>
+      </div>
+    </ng-container> -->
   </div>
 </div>

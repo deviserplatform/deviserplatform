@@ -43,28 +43,29 @@ namespace Deviser.Web.Infrastructure
         private CultureInfo GetCurrentCulture(HttpContext httpContext, string permalink)
         {
             var requestCultureFeature = httpContext.Features.Get<IRequestCultureFeature>();
-            var languageRepository = httpContext.RequestServices.GetService<ILanguageRepository>();
-            var isMultilingual = languageRepository.IsMultilingual();
-            CultureInfo requestCulture = null;
+            //var languageRepository = httpContext.RequestServices.GetService<ILanguageRepository>();
+            //var isMultilingual = languageRepository.IsMultilingual();
+            //CultureInfo requestCulture = null;
 
-            if (isMultilingual)
-            {
-                var match = Regex.Match(permalink, @"[a-z]{2}-[a-z]{2}", RegexOptions.IgnoreCase);
-                if (match.Success)
-                {
-                    requestCulture = new CultureInfo(match.Value);
-                }
-                else
-                {
-                    requestCulture = requestCultureFeature.RequestCulture.UICulture;
-                }
-            }
-            else
-            {
-                //TODO: Assign default language from sitesettings
-                requestCulture = requestCultureFeature.RequestCulture.UICulture; //Remove it
-            }
-            return requestCulture;
+            //if (isMultilingual)
+            //{
+            //    var match = Regex.Match(permalink, @"[a-z]{2}-[a-z]{2}", RegexOptions.IgnoreCase);
+            //    if (match.Success)
+            //    {
+            //        requestCulture = new CultureInfo(match.Value);
+            //    }
+            //    else
+            //    {
+            //        requestCulture = requestCultureFeature.RequestCulture.UICulture;
+            //    }
+            //}
+            //else
+            //{
+            //    //TODO: Assign default language from sitesettings
+            //    requestCulture = requestCultureFeature.RequestCulture.UICulture; //Remove it
+            //}
+            //return requestCulture;
+            return requestCultureFeature.RequestCulture.UICulture;
         }
     }
 }

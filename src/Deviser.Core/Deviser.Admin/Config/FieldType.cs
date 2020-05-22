@@ -27,5 +27,6 @@
         CreditCard = 22,
         Custom = 23,
         KeyField = 24,
+        CheckBoxMatrix = 25
     }
 }

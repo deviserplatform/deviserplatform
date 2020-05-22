@@ -42,7 +42,7 @@ else if (Model.PageLevel == 1)
             {
                 string activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "mm-active open" : "";
                 <li class="@activeClass">
-                    <a href="@menuItem.URL">
+                    <a href="@(!string.IsNullOrEmpty(menuItem.URL)?menuItem.URL:"#")">
                         @menuItem.PageName
                         @if (menuItem.HasChild)
                         {
@@ -67,7 +67,7 @@ else if (Model.PageLevel == 2)
             {
                 string activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "mm-active open" : "";
                 <li class="@activeClass">
-                    <a href="@menuItem.URL">
+                    <a href="@(!string.IsNullOrEmpty(menuItem.URL)?menuItem.URL:"#")">
                         @menuItem.PageName
                     </a>
                     @if (menuItem.ChildMenuItems != null && menuItem.ChildMenuItems.Count > 0)

@@ -3,6 +3,7 @@ using Deviser.Admin.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using Deviser.Admin.Internal;
 
 namespace Deviser.Admin.Web.DependencyInjection
 {

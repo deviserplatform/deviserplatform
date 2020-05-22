@@ -36,7 +36,7 @@ namespace Deviser.Core.Library.Multilingual
             try
             {
                 //string culuresJsonPath = Path.Combine(_hostingEnvironment.ContentRootPath, "cultures.json");
-                var json = EmbeddedProvider.GetFileContentAsString(typeof(DataSeeder).Assembly, "Cultures.json");
+                var json = EmbeddedProvider.GetFileContentAsString(typeof(LanguageManager).Assembly, "Cultures.json");
                 List<Language> cultures = SDJsonConvert.DeserializeObject<List<Language>>(json);
 
                 cultures.ForEach(c => c.FallbackCulture = Globals.FallbackLanguage);

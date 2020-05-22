@@ -14,13 +14,15 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using Deviser.Admin.Config.Filters;
+using Deviser.Admin.Extensions;
 
 namespace Deviser.Admin.Data
 {
     public interface IAdminRepository
 
     {
-        Task<PagedResult<TModel>> GetAllFor<TModel>(int pageNo, int pageSize, string orderByProperties) where TModel : class;
+        Task<PagedResult<TModel>> GetAllFor<TModel>(int pageNo, int pageSize, string orderByProperties, FilterNode filters = null) where TModel : class;
         Task<TModel> GetItemFor<TModel>(string itemId) where TModel : class;
         Task<TModel> CreateItemFor<TModel>(TModel item) where TModel : class;
         Task<TModel> UpdateItemFor<TModel>(TModel item) where TModel : class;
@@ -54,14 +56,14 @@ namespace Deviser.Admin.Data
             _serializer.Converters.Add(new Core.Common.Json.GuidConverter());
         }
 
-        public async Task<PagedResult<TModel>> GetAllFor<TModel>(int pageNo, int pageSize, string orderByProperties)
+        public async Task<PagedResult<TModel>> GetAllFor<TModel>(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null)
             where TModel : class
         {
             var modelType = typeof(TModel);
             var adminConfig = GetAdminConfig(modelType);
             var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
 
-            var result = await CallGenericMethod<PagedResult<TModel>>(nameof(GetAll), new Type[] { modelType, entityClrType }, new object[] { pageNo, pageSize, orderByProperties });
+            var result = await CallGenericMethod<PagedResult<TModel>>(nameof(GetAll), new Type[] { modelType, entityClrType }, new object[] { pageNo, pageSize, orderByProperties, filter });
             return result;
         }
 
@@ -119,13 +121,15 @@ namespace Deviser.Admin.Data
         }
 
 
-        private async Task<PagedResult<TModel>> GetAll<TModel, TEntity>(int pageNo, int pageSize, string orderByProperties)
+        private async Task<PagedResult<TModel>> GetAll<TModel, TEntity>(int pageNo, int pageSize, string orderByProperties, FilterNode filter)
             where TEntity : class
             where TModel : class
         {
+            var modelType = typeof(TModel);
             var eType = typeof(TEntity);
             var dbSet = _dbContext.Set<TEntity>();
             var queryableData = dbSet.AsQueryable();
+            var adminConfig = GetAdminConfig(modelType);
 
             // Determine the number of records to skip
             int skip = (pageNo - 1) * pageSize;
@@ -135,52 +139,23 @@ namespace Deviser.Admin.Data
 
             IQueryable<TEntity> query = dbSet;
 
-            //Creates OrderBy/OrderByDescending/ThenBy/ThenByDescending expression based on orderByProperties
-            if (!string.IsNullOrEmpty(orderByProperties))
-            {
-                Expression orderByExpression = queryableData.Expression;
-                var props = orderByProperties.Split(',');
-                var orderByMethod = "";
-                foreach (var prop in props)
-                {
-                    if (ExpressionHelper.PropertyExists<TEntity>(prop.Replace("-", "")))
-                    {
-                        string orderByProp = prop;
-                        if (string.IsNullOrEmpty(orderByMethod))
-                        {
-                            if (orderByProp.StartsWith("-"))
-                            {
-                                orderByProp = orderByProp.Replace("-", "");
-                                orderByMethod = nameof(Queryable.OrderByDescending);
-                            }
-                            else
-                            {
-                                orderByMethod = nameof(Queryable.OrderBy);
-                            }
-                        }
-                        else
-                        {
-                            if (orderByProp.StartsWith("-"))
-                            {
-                                orderByProp = orderByProp.Replace("-", "");
-                                orderByMethod = nameof(Queryable.ThenByDescending);
-                            }
-                            else
-                            {
-                                orderByMethod = nameof(Queryable.ThenBy);
-                            }
-                        }
-
-                        orderByExpression = ExpressionHelper.GetOrderByExpression(orderByProp, eType, orderByExpression, orderByMethod);
-                    }
-                }
-                query = queryableData.Provider.CreateQuery<TEntity>(orderByExpression);
-            }
+            query = AddIncludes(adminConfig, query);
 
             query = query.Skip(skip).Take(pageSize);
 
             var dbResult = await query.ToListAsync();
             var result = _adminSite.Mapper.Map<List<TModel>>(dbResult);
+
+            //Filter and Sorting are performed in-memory since EF could not translate all expressions to SQL
+            if (!string.IsNullOrEmpty(orderByProperties))
+            {
+                result = result.SortBy(orderByProperties).ToList();
+            }
+
+            if (filter != null && filter.ChildNodes.Count > 0)
+            {
+                result = result.ApplyFilter(filter).ToList();
+            }
 
             return new PagedResult<TModel>(result, pageNo, pageSize, total);
         }
@@ -255,7 +230,7 @@ namespace Deviser.Admin.Data
             }
             else
             {
-                //entity does not have any releations and/or child configs
+                //entity does not have any releations and / or child configs
                 dbSet.Update(itemToUpdate);
             }
 
@@ -335,7 +310,7 @@ namespace Deviser.Admin.Data
             var typeMap = _adminSite.GetTypeMapFor(typeof(TEntity));
             foreach (var m2mField in m2mFields)
             {
-                var includeString = GetIncludeString(typeMap, m2mField.FieldOption.RelatedModelType);
+                var includeString = GetIncludeString(typeMap, m2mField.FieldOption.LookupModelType);
                 query = query.Include(includeString);
             }
 
@@ -343,7 +318,7 @@ namespace Deviser.Admin.Data
             var m2oFields = GetManyToOneFields(adminConfig);
             foreach (var m2oField in m2oFields)
             {
-                var includeString = GetIncludeString(typeMap, m2oField.FieldOption.RelatedModelType);
+                var includeString = GetIncludeString(typeMap, m2oField.FieldOption.LookupModelType);
                 query = query.Include(includeString);
             }
 
@@ -361,14 +336,14 @@ namespace Deviser.Admin.Data
                 //Child ManyToMany Includes
                 foreach (var m2mField in cM2mFields)
                 {
-                    var includeString = $"{childFieldName}.{GetIncludeString(typeMap, m2mField.FieldOption.RelatedModelType)}";
+                    var includeString = $"{childFieldName}.{GetIncludeString(typeMap, m2mField.FieldOption.LookupModelType)}";
                     query = query.Include(includeString);
                 }
 
                 //Child OneToMany Includes                
                 foreach (var m2oField in cM2oFields)
                 {
-                    var includeString = $"{childFieldName}.{GetIncludeString(typeMap, m2oField.FieldOption.RelatedModelType)}";
+                    var includeString = $"{childFieldName}.{GetIncludeString(typeMap, m2oField.FieldOption.LookupModelType)}";
                     query = query.Include(includeString);
                 }
             }
@@ -462,7 +437,7 @@ namespace Deviser.Admin.Data
 
             return entityFieldExpression;
         }
-
+        
         private List<GraphConfig> GetGraphConfigsForChildEntities(Type entityClrType, IEnumerable<Field> fields)
         {
             var graphConfig = new List<GraphConfig>();
@@ -495,39 +470,7 @@ namespace Deviser.Admin.Data
             }
             return graphConfig;
         }
-
-
-
-        //private MethodInfo GetWhereMethod()
-        //{
-        //    //typeof(Queryable).GetMethods()[66].GetParameters()[1].ParameterType.GenericTypeArguments[0].GenericTypeArguments.Count()
-        //    var methods = typeof(Queryable).GetMethods().Where(m => m.Name == "Where");
-        //    foreach (var method in methods)
-        //    {
-        //        var parameters = method?.GetParameters();
-        //        if (parameters.Length > 1 && parameters[1]?.ParameterType.GenericTypeArguments[0]?.GenericTypeArguments.Count() == 2)
-        //        {
-        //            return method;
-        //        }
-        //    }
-        //    return null;
-        //}
-
-        //private MethodInfo GetFirstOrDefaultMethod()
-        //{
-        //    //typeof(Queryable).GetMethods()[66].GetParameters()[1].ParameterType.GenericTypeArguments[0].GenericTypeArguments.Count()
-        //    var methods = typeof(Queryable).GetMethods().Where(m => m.Name == "FirstOrDefault");
-        //    foreach (var method in methods)
-        //    {
-        //        var parameters = method?.GetParameters();
-        //        if (parameters.Length > 1 && parameters[1]?.ParameterType.GenericTypeArguments[0]?.GenericTypeArguments.Count() == 2)
-        //        {
-        //            return method;
-        //        }
-        //    }
-        //    return null;
-        //}
-
+        
         private IAdminConfig GetAdminConfig(Type eType)
         {
             IAdminConfig adminConfig;
@@ -560,11 +503,6 @@ namespace Deviser.Admin.Data
             //ManyToMany Includes
             var m2mFields = adminConfig.ChildConfigs.Select(cc => cc.Field).ToList();
             return m2mFields;
-        }
-
-        private Type GetModelType(string strModelType)
-        {
-            return _adminSite.AdminConfigs.Keys.FirstOrDefault(t => t.Name == strModelType);
         }
 
         private LambdaExpression CreatePrimaryKeyFilter(IAdminConfig adminConfig, List<string> keyValues)
@@ -608,14 +546,6 @@ namespace Deviser.Admin.Data
                 predicate = predicate == null ? equalsExpression : Expression.AndAlso(predicate, equalsExpression);
             }
             return predicate;
-        }
-
-        private static Expression GetOrderByExpression(Type parameterType, string propertyName)
-        {
-            ParameterExpression paramterExpression = Expression.Parameter(parameterType);
-            Expression orderByProperty = Expression.Property(paramterExpression, propertyName);
-            LambdaExpression lambda = Expression.Lambda(orderByProperty, paramterExpression);
-            return lambda;
         }
     }
 }

@@ -1,0 +1,23 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">
+        #
+      </th>
+      <th scope="col" *ngFor="let col of colLookUp">{{col.displayName}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let row of rowLookUp">
+      <th scope="row">{{row.displayName}}</th>
+      <td *ngFor="let col of colLookUp">
+        <a (click)="toggle(row, col);">
+          <i class="my-icon" aria-label="My icon" *ngIf="isChecked(row, col)"
+            [inlineSVG]="'assets/icons/check_box.svg' | envPath"></i>
+          <i class="my-icon" aria-label="My icon" *ngIf="!isChecked(row, col)"
+            [inlineSVG]="'assets/icons/check_box_outline_blank.svg' | envPath"></i>
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>

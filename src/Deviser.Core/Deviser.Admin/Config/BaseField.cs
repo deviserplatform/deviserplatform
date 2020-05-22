@@ -43,12 +43,6 @@ namespace Deviser.Admin.Config
             }
         }
 
-        public string FieldNameCamelCase
-        {
-            get
-            {
-                return StringExtensions.Camelize(FieldName);
-            }
-        }
+        public string FieldNameCamelCase => !string.IsNullOrEmpty(_fieldName) ? FieldName.Camelize() : string.Empty;
     }
 }

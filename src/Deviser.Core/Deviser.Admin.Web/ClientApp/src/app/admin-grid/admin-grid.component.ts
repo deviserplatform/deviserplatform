@@ -11,6 +11,26 @@ import { RecordIdPipe } from '../common/pipes/record-id.pipe';
 import { Alert, AlertType } from '../common/domain-types/alert';
 import { DOCUMENT } from '@angular/common';
 import { WINDOW } from '../common/services/window.service';
+import { LabelType } from '../common/domain-types/label-type';
+import { Field } from '../common/domain-types/field';
+import { FieldType } from '../common/domain-types/field-type';
+import { FormResult } from '../common/domain-types/form-result';
+import { AdminResult } from '../common/domain-types/admin-result';
+import { DAConfig } from '../common/domain-types/da-config';
+import { AdminConfigType } from '../common/domain-types/admin-confit-type';
+import { SortField } from '../common/domain-types/sort-field';
+import { SortState } from '../common/domain-types/sort-state';
+import { FilterField } from '../common/domain-types/filter-field';
+import { Filter } from '../common/domain-types/filter';
+import { DateFilter } from '../common/domain-types/date-filter';
+import { NumberFilter } from '../common/domain-types/number-filter';
+import { SelectFilter } from '../common/domain-types/select-filter';
+import { TextFilter } from '../common/domain-types/text-filter';
+import { FilterType } from '../common/domain-types/filter-type';
+import { BooleanFilter } from '../common/domain-types/boolean-filter';
+import { FilterNode } from '../common/domain-types/filter-node';
+import { LogicalOperator } from '../common/domain-types/logical-operator';
+import { filter } from 'rxjs/operators';
 
 
 @Component({
@@ -21,21 +41,26 @@ import { WINDOW } from '../common/services/window.service';
 export class AdminGridComponent implements OnInit {
 
   adminConfig: AdminConfig;
+  adminConfigType = AdminConfigType;
   alerts: Alert[];
   entityRecords: any;
+  daConfig: DAConfig;
   pagination: Pagination;
+  labelType = LabelType;
 
   @ViewChild(ConfirmDialogComponent)
   private confirmDialogComponent: ConfirmDialogComponent;
 
   constructor(private adminService: AdminService,
     private recordIdPipe: RecordIdPipe,
-    private router: Router) {
+    private router: Router,
+    @Inject(WINDOW) private window: any) {
     this.alerts = [];
+    this.getAdminConfig();
+    this.daConfig = window.daConfig;
   }
 
   ngOnInit() {
-    this.getAdminConfig();
     this.getAllRecords();
   }
 
@@ -75,30 +100,65 @@ export class AdminGridComponent implements OnInit {
     console.log('confirm');
     const itemId = this.recordIdPipe.transform(item, this.adminConfig.modelConfig.keyField);
     this.adminService.deleteRecord(itemId)
-      .subscribe(response => this.onDeleteResponse(response));
+      .subscribe(response => this.onActionResult(response));
   }
 
-  onDeleteResponse(response: any): void {
-    if (response) {
-      console.log(response);
+  onNoToDelete(item: any): void {
+    console.log('declined');
+  }
+
+  onRowAction(actionName: string, item: any) {
+    if (actionName && item) {
+      this.adminService.executeGridAction(actionName, item)
+        .subscribe(adminResult => this.onActionResult(adminResult));
+    }
+  }
+
+  onActionResult(adminResult: AdminResult): void {
+    if (adminResult && adminResult.isSucceeded) {
+      let alert: Alert = {
+        alterType: AlertType.Success,
+        message: adminResult.successMessage,
+        timeout: 5000
+      }
+      this.alerts.push(alert);
       this.getAllRecords(this.pagination);
     }
     else {
       let alert: Alert = {
         alterType: AlertType.Error,
-        message: "Unable to delete this item, please contact administrator",
+        message: adminResult.successMessage,
         timeout: 5000
-      }
+      };
       this.alerts.push(alert);
     }
   }
 
-  onNoToDelete(item: any): void {
-    console.log('declined');
+  onFilterSortChange($event): void {
+    console.log($event);
+    const filterFields: FilterField[] = $event.filters as FilterField[];
+    const sortField: SortField = $event.sortField as SortField;
+    let orderBy;
+    if (sortField && sortField.sortState && sortField.field) {
+      orderBy = sortField.sortState === SortState.Descending ? `-${sortField.field.fieldName}` : sortField.field.fieldName;
+    }
+    const filterNode: FilterNode = {
+      rootOperator: LogicalOperator.AND,
+      childOperator: LogicalOperator.AND
+    };
 
+    filterNode.childNodes = filterFields.map(ff => {
+      return {
+        rootOperator: LogicalOperator.AND,
+        childOperator: LogicalOperator.AND,
+        filter: ff.filter
+      };
+    });
+
+    this.adminService.filterRecords(filterNode, orderBy, this.pagination)
+      .subscribe(entityRecords => this.onGetAllRecords(entityRecords));
   }
 }
-
 
 class CustomUrlSerializer extends DefaultUrlSerializer {
   parse(url: string): UrlTree {

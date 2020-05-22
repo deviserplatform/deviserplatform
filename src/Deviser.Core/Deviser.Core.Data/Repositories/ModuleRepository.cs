@@ -11,16 +11,16 @@ namespace Deviser.Core.Data.Repositories
 {
     public interface IModuleRepository //: IRepositoryBase
     {
-        List<Module> Get();
-        Module Get(Guid moduleId);
+        List<Module> GetModules();
+        Module GetModule(Guid moduleId);
         ModuleAction GetModuleAction(Guid moduleActionId);
         List<ModuleAction> GetModuleActions();
         List<ModuleActionType> GetModuleActionType();
         List<ModuleAction> GetEditModuleActions(Guid moduleId);
-        Module Get(string moduleName);
+        Module GetModule(string moduleName);
         Module GetModuleByPageModuleId(Guid pageModuleId);
         Module Create(Module dbModule);
-        Module Update(Module dbModule);
+        Module UpdateModule(Module dbModule);
         ModuleAction CreateModuleAction(ModuleAction moduleAction);
         ModuleAction UpdateModuleAction(ModuleAction moduleAction);
     }
@@ -43,7 +43,7 @@ namespace Deviser.Core.Data.Repositories
         }
 
         //Custom Field Declaration
-        public List<Module> Get()
+        public List<Module> GetModules()
         {
             try
             {
@@ -135,13 +135,14 @@ namespace Deviser.Core.Data.Repositories
             return null;
         }
 
-        public Module Get(Guid moduleId)
+        public Module GetModule(Guid moduleId)
         {
             try
             {
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.Module
                     .Where(e => e.Id == moduleId)
+                    .Include(m => m.ModuleAction).ThenInclude(ma=>ma.ModuleActionProperties).ThenInclude(p=>p.Property)
                     .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) // ("ModuleActions.ModuleActionType")                              
                     .FirstOrDefault();
 
@@ -154,7 +155,7 @@ namespace Deviser.Core.Data.Repositories
             return null;
         }
 
-        public Module Get(string moduleName)
+        public Module GetModule(string moduleName)
         {
             try
             {
@@ -209,7 +210,7 @@ namespace Deviser.Core.Data.Repositories
             }
             return null;
         }
-        public Module Update(Module module)
+        public Module UpdateModule(Module module)
         {
             try
             {
@@ -219,6 +220,12 @@ namespace Deviser.Core.Data.Repositories
                 dbModule.ModuleAction = null;
                 foreach (var moduleAction in moduleActions)
                 {
+                    if (moduleAction.ModuleActionType != null)
+                    {
+                        moduleAction.ModuleActionTypeId = moduleAction.ModuleActionType.Id;
+                        moduleAction.ModuleActionType = null;
+                    }
+                    
 
                     if (context.ModuleAction.Any(pc => pc.Id == moduleAction.Id))
                     {                           

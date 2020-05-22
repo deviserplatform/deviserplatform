@@ -13,6 +13,7 @@ namespace Deviser.Core.Data.Repositories
         Property CreateProperty(Property dbProperty);
         List<Property> GetProperties();
         Property GetProperty(Guid propertyId);
+        bool IsPropertyExist(string propertyName);
         Property UpdateProperty(Property dbProperty);
     }
 
@@ -66,6 +67,21 @@ namespace Deviser.Core.Data.Repositories
                 _logger.LogError("Error occured while getting Property by id", ex);
             }
             return null;
+        }
+
+        public bool IsPropertyExist(string propertyName)
+        {
+            try
+            {
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.Property.Count(e => e.Name == propertyName);
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while checking whether property Property by propertyName", ex);
+            }
+            return false;
         }
 
         public List<Property> GetProperties()

@@ -1,4 +1,4 @@
-export interface BaseField{
+export interface BaseField {
     fieldName: string;
     fieldNameCamelCase: string;
 }

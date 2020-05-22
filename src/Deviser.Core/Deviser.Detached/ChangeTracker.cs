@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+//using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Reflection;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Deviser.Detached
 {
@@ -115,7 +115,7 @@ namespace Deviser.Detached
 
         public void RemoveItem(object entity)
         {
-            EntityEntry entry = _context.Entry(entity);
+            var entry = _context.Entry(entity);
             entry.State = EntityState.Deleted;
             //visited.Add(entry.Entity);
         }
@@ -127,8 +127,8 @@ namespace Deviser.Detached
             //    EnsureConcurrency(from, to);
             //}
 
-            EntityEntry persistedEntry = _context.Entry(persisted);
-            bool modified = Copy(detached, persistedEntry);
+            var persistedEntry = _context.Entry(persisted);
+            var modified = Copy(detached, persistedEntry);
 
             //_context.Entry(persisted).CurrentValues.SetValues(detached);
         }
@@ -140,7 +140,7 @@ namespace Deviser.Detached
             //EntityEntry persisted = GetEntry(detached);
             //persisted.State = EntityState.Added;
             //return persisted;
-            Type clrType = detached.GetType();
+            var clrType = detached.GetType();
 
             //var contextSet = typeof(DbContext).GetMethod("Set").MakeGenericMethod(clrType).Invoke(_context, null);
             //var localValue = contextSet.GetType().GetMethod("Add").Invoke(contextSet, new object[] { detached });
@@ -150,25 +150,25 @@ namespace Deviser.Detached
 
         EntityEntry GetEntry(object entity)
         {
-            EntityEntry presisted = _context.Entry(entity);
+            var presisted = _context.Entry(entity);
             Copy(entity, presisted);
             return presisted;
         }
 
         private bool Copy(object srcEntity, EntityEntry destEntry)
         {
-            bool modified = false;
-            foreach (PropertyEntry property in destEntry.Properties)
+            var modified = false;
+            foreach (var property in destEntry.Properties)
             {
                 if (!(property.Metadata.FieldInfo == null ||
                       property.Metadata.IsPrimaryKey() ||
-                      property.Metadata.IsForeignKey() ||
-                      property.Metadata.MayBeStoreGenerated()||
-                      property.Metadata.GetAfterSaveBehavior() == PropertySaveBehavior.Save /*||
+                      property.Metadata.IsForeignKey() //||
+                      //property.Metadata.MayBeStoreGenerated()||
+                      /*property.Metadata.GetAfterSaveBehavior() == PropertySaveBehavior.Save||
                       property.Metadata.IsIgnored()*/))
                 {
-                    IClrPropertyGetter getter = property.Metadata.GetGetter();
-                    object srcValue = getter.GetClrValue(srcEntity);
+                    var getter = property.Metadata.GetGetter();
+                    var srcValue = getter.GetClrValue(srcEntity);
                     if (srcValue != property.CurrentValue)
                     {
                         property.CurrentValue = srcValue;

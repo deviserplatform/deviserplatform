@@ -2,7 +2,7 @@
     ViewData["Title"] = "Index";
     //Layout = "~/_Layout.cshtml";
 }
-<require dependency-type="Script" priority="101" include="Development" file-path="~/js/src/app/page-management/app.js"></require>
+<require dependency-type="Script" priority="101" include="Development" file-path="~/_content/Deviser.Web/js/src/app/page-management/app.js"></require>
 
 <div ng-app="deviser.pageMangement" ng-controller="PageManagementCtrl as pmVM">
 
@@ -110,10 +110,10 @@
                                         </ui-select>
                                     </div>
                                 </div>
-                                <div class="form-group" ng-if="pmVM.modules &&  pmVM.modules.length>0" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.admin.id">
+                                <div class="form-group" ng-if="pmVM.modules &&  pmVM.modules.length>0 && pmVM.selectedItem.pageTypeId==pmVM.pageTypes.admin.id">
                                     <label class="col-sm-4 control-label">Module</label>
                                     <div class="col-sm-8">
-                                        <ui-select name="pageType" ng-model="pmVM.selectedItem.adminPage.moduleId" theme="bootstrap">
+                                        <ui-select name="adminModule" ng-model="pmVM.selectedItem.adminPage.moduleId" theme="bootstrap">
                                             <ui-select-match placeholder="Choose a Module">{{$select.selected.value.name}}</ui-select-match>
                                             <ui-select-choices repeat="module.value.id as (key, module) in pmVM.modules | filter: $select.search">
                                                 <div ng-bind-html="module.value.name | highlight: $select.search"></div>
@@ -121,10 +121,11 @@
                                         </ui-select>
                                     </div>
                                 </div>
-                                <div class="form-group" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.admin.id">
+                                <div class="form-group" ng-if="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.admin.id"
+                                     ng-class="{'has-error': managePage.modelName.$invalid && (managePage.modelName.$dirty || managePage.$submitted)}">
                                     <label class="col-sm-4 control-label">Model Name</label>
                                     <div class="col-sm-8">
-                                        <input type="text" name="name" class="form-control" placeholder="Enter page name" ng-model="pmVM.selectedItem.adminPage.modelName" required>
+                                        <input type="text" name="modelName" class="form-control" placeholder="Enter model name" ng-model="pmVM.selectedItem.adminPage.modelName" required>
                                     </div>
                                 </div>
                             </div>
@@ -135,7 +136,7 @@
                                         <input type="text" name="name" class="form-control" placeholder="Enter page name" ng-model="translation.name" required>
                                     </div>
                                 </div>
-                                <div class="form-group" ng-class="{'has-error': managePage.title.$invalid && (managePage.title.$dirty || managePage.$submitted)}" ng-show="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.standard.id">
+                                <div class="form-group" ng-class="{'has-error': managePage.title.$invalid && (managePage.title.$dirty || managePage.$submitted)}" ng-if="pmVM.selectedItem.pageTypeId==pmVM.pageTypes.standard.id">
                                     <label class="col-sm-4 control-label">Title *</label>
                                     <div class="col-sm-8">
                                         <input type="text" name="title" class="form-control" placeholder="Enter page title" ng-model="translation.title" required>

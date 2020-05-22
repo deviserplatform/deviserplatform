@@ -39,7 +39,8 @@ namespace Deviser.Core.Common.DomainTypes
                 return option;
             }
         }
-        [JsonIgnore]
+        
+        
         public bool IsMoreOption
         {
             get
@@ -49,9 +50,12 @@ namespace Deviser.Core.Common.DomainTypes
         }
 
         public OptionList OptionList { get; set; }
+        public PropertyOption DefaultValuePropertyOption { get; set; }
         public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }
+        //public string IsActiveText => IsActive ? "Active" : "In Active";
+        public string IsActiveBadgeClass => IsActive ? "badge-primary" : "badge-secondary";
 
         public override string ToString()
         {

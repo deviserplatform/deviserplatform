@@ -80,16 +80,22 @@ namespace Deviser.Core.Library.Sites
             return null;
         }
 
-        public Page GetPageAndDependenciesByUrl(string url, string locale)
+        public Page GetPageAndTranslation(Guid pageId)
+        {
+            var resultPage = _pageRepository.GetPageAndPageTranslations(pageId);
+            return resultPage;
+        }
+
+        public Page GetPageAndTranslationByUrl(string url, string locale)
         {
             Page resultPage = null;
             if (!string.IsNullOrEmpty(url))
             {
                 var pageTranslation = _pageRepository.GetPageTranslations(locale);
-                var currentPageTranslation = pageTranslation.FirstOrDefault(p => (p != null && p.URL.ToLower() == url.ToLower()));
+                var currentPageTranslation = pageTranslation.FirstOrDefault(p => (p != null && string.Equals(p.URL, url, StringComparison.InvariantCultureIgnoreCase)));
                 if (currentPageTranslation != null)
                 {
-                    resultPage = _pageRepository.GetPageAndDependencies(currentPageTranslation.PageId);
+                    resultPage = _pageRepository.GetPageAndPageTranslations(currentPageTranslation.PageId);
                 }
             }
             return resultPage;

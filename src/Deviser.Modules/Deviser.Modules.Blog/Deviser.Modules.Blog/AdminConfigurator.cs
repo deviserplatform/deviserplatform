@@ -69,7 +69,14 @@ namespace Deviser.Modules.Blog
             //});
 
             adminBuilder.Register<DTO.Post>(modelBuilder =>
-            {   
+            {
+
+                modelBuilder.GridBuilder
+                    .AddField(p => p.Title)
+                    .AddField(p => p.Category)
+                    .AddField(p => p.Tags)
+                    .AddField(p => p.CreatedOn, option => option.Format = "dd.MM.yyyy")
+                    .AddField(p => p.CreatedBy);
 
                 modelBuilder.FormBuilder
                 .AddKeyField(p => p.Id)
@@ -94,7 +101,7 @@ namespace Deviser.Modules.Blog
                       .AddField(c => c.IsApproved);
                   });
 
-                
+
                 //form.FieldSetBuilder
                 //.AddFieldSet("General", fieldBuilder =>
                 //                        fieldBuilder.AddField(s => s.FirstName).AddInlineField(s => s.LastName)

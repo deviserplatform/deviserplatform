@@ -8,6 +8,7 @@ import { KeyFieldType } from '../domain-types/key-field-type';
 import { ModelConfig } from '../domain-types/model-config';
 import { FormConfig } from '../domain-types/form-config';
 import { FormMode } from '../domain-types/form-mode';
+import { AdminConfigType } from '../domain-types/admin-confit-type';
 
 
 @Injectable({
@@ -31,16 +32,29 @@ export class FormControlService {
       });
     }
 
+    if(adminConfig.adminConfigType === AdminConfigType.TreeAndForm) {
+      const recordKeys = Object.keys(record);
+      const formObjKeys = Object.keys(formObj);
+      if(recordKeys.length > 0){
+        const keysToBeAdded = recordKeys.filter(rk => formObjKeys.indexOf(rk) < 0);
+        if(keysToBeAdded && keysToBeAdded.length > 0){
+          keysToBeAdded.forEach(k => {
+            formObj[k] = new FormControl(record[k]);
+          });
+        }
+      }
+    }
+
     return this.fb.group(formObj);
   }
 
-  toChildFormGroup(modelConfig: ModelConfig, formMode: FormMode, record: any = null): FormGroup {
+  toFormGroupWithModelConfig(modelConfig: ModelConfig, formMode: FormMode, record: any = null): FormGroup {
     let formObj: any = {};
     formObj = this.getFormGroup(modelConfig, formMode, formObj, record);
     return this.fb.group(formObj);
   }
 
-  toFormGroupForCustomForms(formConfig: FormConfig, formMode: FormMode, keyField: KeyField, record: any) {
+  toFormGroupWithFormConfig(formConfig: FormConfig, formMode: FormMode, keyField: KeyField, record: any = null) {
     let formObj: any = {};
     formObj = this.buildAndGetFormGroup(formConfig, formMode, keyField, formObj, record);
     return this.fb.group(formObj);
@@ -68,7 +82,7 @@ export class FormControlService {
       fields.forEach(fieldRow => {
         if (fieldRow && fieldRow.length > 0) {
           fieldRow.forEach(field => {
-            if (field.fieldOption.showIn == FormMode.Both || field.fieldOption.showIn == formMode) {
+            if (field.fieldOption.showIn === FormMode.Both || field.fieldOption.showIn === formMode) {
               adminForm[field.fieldNameCamelCase] = this.getFormControl(field, record, forChildRecords);
             }
           });
@@ -112,6 +126,8 @@ export class FormControlService {
 
     if (field.fieldType === FieldType.DateTime) {
       controlValue = controlValue ? new Date(controlValue) : new Date();
+    } else if (field.fieldType === FieldType.CheckBoxMatrix) {
+      controlValue = controlValue && Array.isArray(controlValue) ? controlValue : [];
     }
 
     formControl = field.fieldOption && field.fieldOption.isRequired ? new FormControl(controlValue, Validators.required) : new FormControl(controlValue);

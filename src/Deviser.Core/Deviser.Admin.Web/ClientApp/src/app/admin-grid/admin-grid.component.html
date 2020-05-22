@@ -2,11 +2,11 @@
   <div class="admin-grid card"
     *ngIf="adminConfig && adminConfig.modelConfig && adminConfig.modelConfig.gridConfig && adminConfig.modelConfig.gridConfig.fields && pagination">
     <div class="card-header">
-      Featured
+      {{adminConfig.adminTitle}}
     </div>
     <div class="card-body">
       <div class="row action-bar">
-        <div class="col">
+        <div class="col" *ngIf="daConfig.adminConfigType == adminConfigType.GridAndForm">
           <div class="float-left">
             <button type="button" class="btn btn-primary" (click)="onNewItem()">
               <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-add.svg'| envPath"></i> New
@@ -18,30 +18,29 @@
       <app-admin-alert class="admin-alerts" [alerts]="alerts"></app-admin-alert>
 
       <div class="row">
-        <div class="col-sm-12">
-          <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid"
-            aria-describedby="dataTable_info" style="width: 100%;">
-            <thead>
-              <tr>
-                <th *ngFor="let field of adminConfig.modelConfig.gridConfig.fields">{{field.fieldName}}</th>
-                <th>Edit</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
+        <div class="col-sm-12 data-table">
+          <table class="table table-bordered" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info"
+            style="width: 100%;">
+            <thead gridHeader (filterSortChange)="onFilterSortChange($event);"></thead>
             <tbody *ngIf="entityRecords && entityRecords.data && entityRecords.data.length>0">
               <tr *ngFor="let item of entityRecords.data">
-                <td *ngFor="let field of adminConfig.modelConfig.gridConfig.fields"
-                  [innerHTML]="item[field.fieldNameCamelCase] | formatField:field">
-
+                <td *ngFor="let field of adminConfig.modelConfig.gridConfig.fields">
+                  <app-grid-control [field]="field" [item]="item" [lookUps]="this.adminConfig.lookUps">
+                  </app-grid-control>
                 </td>
-                <td>
+                <td *ngFor="let rowAction of adminConfig.modelConfig.gridConfig.rowActions | keyvalue">
+                  <button class="btn btn-secondary" type="button" (click)="onRowAction(rowAction.key, item)">
+                    {{rowAction.value.buttonText}}
+                  </button>
+                </td>
+                <td *ngIf="adminConfig.modelConfig.gridConfig.isEditVisible">
                   <a class="btn btn-dark" title="Edit"
                     routerLink="/detail/{{ item | recordId:adminConfig.modelConfig.keyField}}">
                     <i class="my-icon" aria-label="My icon"
                       [inlineSVG]="'assets/icons/baseline-edit.svg' | envPath"></i>
                   </a>
                 </td>
-                <td>
+                <td *ngIf="adminConfig.modelConfig.gridConfig.isDeleteVisible">
                   <a class="btn btn-danger" title="Delete" (click)="openDeleteConfirmationModal(item)">
                     <i class="my-icon" aria-label="My icon"
                       [inlineSVG]="'assets/icons/baseline-delete.svg' | envPath"></i>

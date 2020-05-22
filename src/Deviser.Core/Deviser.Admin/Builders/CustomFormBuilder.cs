@@ -15,7 +15,7 @@ namespace Deviser.Admin.Builders
             _customForm = customForm;
         }
 
-        public CustomFormBuilder<TModel> OnSubmit(Expression<Func<IServiceProvider, TModel, Task<FormResult>>> submitActionExpression)
+        public CustomFormBuilder<TModel> OnSubmit(Expression<Func<IServiceProvider, TModel, Task<IFormResult>>> submitActionExpression)
         {
             _customForm.SubmitActionExpression = submitActionExpression;
             return this;

@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 
@@ -9,49 +9,68 @@ import { Pagination } from '../domain-types/pagination';
 import { AdminConfig } from '../domain-types/admin-config';
 import { WINDOW } from './window.service';
 import { DAConfig } from '../domain-types/da-config';
+import { FormType } from '../domain-types/form-type';
+import { FilterNode } from '../domain-types/filter-node';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
+  private _baseUrl;
+  private _httpOptions;
+  private _httpHeaders;
 
-
-  private baseUrl;
-  private httpOptions;
-
-  private daConfig: DAConfig;
+  private _daConfig: DAConfig;
+  private _adminConfigSubject: BehaviorSubject<AdminConfig> = new BehaviorSubject<AdminConfig>(null);
+  private _adminConfig: AdminConfig;
+  private _adminConfig$: Observable<AdminConfig>;
+  // private _adminConfigCache: AdminConfig;
 
   constructor(private http: HttpClient,
     private messageService: MessageService,
     @Inject(WINDOW) private window: any) {
+    this._daConfig = window.daConfig;
 
-    this.httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'my-auth-token'
-      })
+    this._httpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'currentPageId': this._daConfig.currentPageId
+      // 'Authorization': 'my-auth-token'
+    });
+    this._httpOptions = {
+      headers: this._httpHeaders
     };
 
-    this.daConfig = window.daConfig;
 
-    if (this.daConfig.isEmbedded) {
-      this.baseUrl = `${window.location.origin}/modules`;
+    if (this._daConfig.isEmbedded) {
+      this._baseUrl = `${window.location.origin}/modules`;
     }
     else {
-      this.baseUrl = `${this.daConfig.debugBaseUrl}/modules`;
+      this._baseUrl = `${this._daConfig.debugBaseUrl}/modules`;
     }
   }
 
   getAdminConfig(): Observable<AdminConfig> {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/meta`;
-    return this.http.get<AdminConfig>(serviceUrl).pipe(
-      tap(_ => this.log('fetched meta info')),
-      catchError(this.handleError<AdminConfig>('getAdminConfig'))
-    );
+    if (this._adminConfig) {
+      return of(this._adminConfig);
+    }
+    else if (this._adminConfig$) {
+      return this._adminConfig$;
+    }
+    else {
+      const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/meta`;
+      this._adminConfig$ = this.http.get<AdminConfig>(serviceUrl, { headers: this._httpHeaders }).pipe(
+        tap(next => {
+          this._adminConfig = next;
+          this.log('fetched meta info');
+        }),
+        catchError(this.handleError<AdminConfig>('getAdminConfig'))
+      );
+      return this._adminConfig$;
+    }
   }
 
   getAllRecords(pagination: Pagination = null): Observable<any> {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}`;
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}`;
 
 
     let params = new HttpParams();
@@ -63,7 +82,38 @@ export class AdminService {
 
 
 
-    return this.http.get<any>(serviceUrl, { params: params })
+    return this.http.get<any>(serviceUrl, { headers: this._httpHeaders, params })
+      .pipe(
+        tap(_ => this.log('fetched all records')),
+        catchError(this.handleError('getAllRecords', null))
+      );
+  }
+
+  filterRecords(filterNode: FilterNode, orderBy: string, pagination: Pagination = null): Observable<any> {
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/filter`;
+    let params = new HttpParams();
+
+    if (pagination != null) {
+      params = params.append('pageNo', pagination.pageNo.toString());
+      params = params.append('pageSize', pagination.pageSize.toString());
+      if (orderBy) {
+        params = params.append('orderBy', orderBy);
+      }
+    }
+
+
+
+    return this.http.post<any>(`${serviceUrl}?${params.toString()}`, filterNode, this._httpOptions)
+      .pipe(
+        tap(_ => this.log('fetched all records')),
+        catchError(this.handleError('getAllRecords', null))
+      );
+  }
+
+  getTree(): Observable<any> {
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/tree`;
+
+    return this.http.get<any>(serviceUrl, { headers: this._httpHeaders })
       .pipe(
         tap(_ => this.log('fetched all records')),
         catchError(this.handleError('getAllRecords', null))
@@ -71,18 +121,27 @@ export class AdminService {
   }
 
   getRecord(id: string): Observable<any> {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/${id}`;
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/${id}`;
 
-    return this.http.get<any>(serviceUrl)
+    return this.http.get<any>(serviceUrl, { headers: this._httpHeaders })
       .pipe(
         tap(_ => this.log(`fetched a record for id: ${id}`)),
         catchError(this.handleError('getAllRecords', null))
       );
   }
 
+  getLookUp(formType: FormType, formName: string, fieldName: string, filterParam: any) {
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/lookup/${formType}/field/${fieldName}`;
+    return this.http.put<any>(serviceUrl, filterParam, this._httpOptions)
+      .pipe(
+        tap(_ => this.log(`fetched lookup`)),
+        catchError(this.handleError('getAllRecords', null))
+      );
+  }
+
   createRecord(record: any) {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/`;
-    return this.http.post<any>(serviceUrl, record, this.httpOptions)
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/`;
+    return this.http.post<any>(serviceUrl, record, this._httpOptions)
       .pipe(
         tap(_ => this.log('created a record')),
         catchError(this.handleError('createRecord', null))
@@ -90,26 +149,44 @@ export class AdminService {
   }
 
   updateRecord(record: any) {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/`;
-    return this.http.put<any>(serviceUrl, record, this.httpOptions)
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/`;
+    return this.http.put<any>(serviceUrl, record, this._httpOptions)
       .pipe(
         tap(_ => this.log('updated a record')),
         catchError(this.handleError('updateRecord', null))
       );
   }
 
+  updateTree(record: any) {
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/tree/`;
+    return this.http.put<any>(serviceUrl, record, this._httpOptions)
+      .pipe(
+        tap(_ => this.log('tree has been updated ')),
+        catchError(this.handleError('updateTree', null))
+      );
+  }
+
+  executeGridAction(actionName: string, record: any) {
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/grid/${actionName}`;
+    return this.http.put<any>(serviceUrl, record, this._httpOptions)
+      .pipe(
+        tap(_ => this.log('executing grid row action')),
+        catchError(this.handleError('executeGridAction', null))
+      );
+  }
+
   executeMainFormAction(actionName: string, record: any) {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/action/${actionName}`;
-    return this.http.put<any>(serviceUrl, record, this.httpOptions)
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/mainform/${actionName}`;
+    return this.http.put<any>(serviceUrl, record, this._httpOptions)
       .pipe(
         tap(_ => this.log('executing main form action')),
         catchError(this.handleError('executeMainFormAction', null))
       );
   }
 
-  customFormSubmit(formName: string, record: any){
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/form/${formName}`;
-    return this.http.put<any>(serviceUrl, record, this.httpOptions)
+  customFormSubmit(formName: string, record: any) {
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/form/${formName}`;
+    return this.http.put<any>(serviceUrl, record, this._httpOptions)
       .pipe(
         tap(_ => this.log('executing custom form submit')),
         catchError(this.handleError('executeCustomFormAction', null))
@@ -117,8 +194,8 @@ export class AdminService {
   }
 
   executeCustomFormAction(formName: string, actionName: string, record: any) {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/form/${formName}/action/${actionName}`;
-    return this.http.put<any>(serviceUrl, record, this.httpOptions)
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/form/${formName}/action/${actionName}`;
+    return this.http.put<any>(serviceUrl, record, this._httpOptions)
       .pipe(
         tap(_ => this.log('executing custom form action')),
         catchError(this.handleError('executeCustomFormAction', null))
@@ -126,9 +203,9 @@ export class AdminService {
   }
 
   deleteRecord(id: string) {
-    const serviceUrl: string = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/${id}`;
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/${id}`;
 
-    return this.http.delete<any>(serviceUrl)
+    return this.http.delete<any>(serviceUrl, { headers: this._httpHeaders })
       .pipe(
         tap(_ => this.log(`deleted a record id:${id}`)),
         catchError(this.handleError('deleteRecord', null))

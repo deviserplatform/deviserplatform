@@ -1,8 +1,10 @@
 ﻿using Deviser.Admin.Config;
 using Deviser.Admin.Properties;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Deviser.Core.Common.Extensions;
 
 namespace Deviser.Admin.Builders
 {
@@ -31,7 +33,23 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public GridBuilder<TModel> AddRowAction(string actionName, string actionButtonText, Expression<Func<IServiceProvider, TModel, Task<FormResult>>> formActionExpression)
+        /// <summary>
+        /// Adds a KeyField to this grid. Use this method only for GridOnly AdminConfigType
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="expression">An expression to specify the key field</param>
+        /// <returns> The same builder instance so that multiple configuration calls can be chained.</returns>
+        public GridBuilder<TModel> AddKeyField<TProperty>(Expression<Func<TModel, TProperty>> expression)
+        {
+            if (_modelConfig.KeyField.FieldExpression != null)
+            {
+                throw new InvalidOperationException(Resources.MoreKeyFieldsInvalidOperation);
+            }
+            _modelConfig.KeyField.FieldExpression = expression;
+            return this;
+        }
+
+        public GridBuilder<TModel> AddRowAction(string actionName, string actionButtonText, Expression<Func<IServiceProvider, TModel, Task<IAdminResult>>> formActionExpression)
         {
             _modelConfig.GridConfig.RowActions.Add(actionName, new AdminAction
             {
@@ -49,7 +67,7 @@ namespace Deviser.Admin.Builders
         /// <returns></returns>
         public GridBuilder<TModel> RemoveField<TProperty>(Expression<Func<TModel, TProperty>> expression)
         {
-            if (_modelConfig.FormConfig.AllFormFields.Count > 0)
+            if (_modelConfig.GridConfig.AllIncludeFields.Count > 0)
                 ThrowAddRemoveInvalidOperationException();
 
             var field = new Field()
@@ -58,6 +76,50 @@ namespace Deviser.Admin.Builders
             };
 
             _modelConfig.GridConfig.RemoveField(field);
+            return this;
+        }
+
+        public GridBuilder<TModel> DisplayFieldAs<TProperty, TParamFieldProperty>(Expression<Func<TModel, TProperty>> fieldExpression, LabelType labelType, Expression<Func<TModel, TParamFieldProperty>> paramFieldExpression)
+        {
+            var field = _modelConfig.GridConfig.AllIncludeFields.FirstOrDefault(f => f.FieldName == ReflectionExtensions.GetMemberName(fieldExpression));
+            var paramField = CreateSimpleField(paramFieldExpression);
+            
+            if (field == null)
+            {
+                throw new InvalidOperationException(Resources.FieldNotFoundInvaidOperation);
+            }
+
+            field.FieldOption.LabelOption = new LabelOption {LabelType = labelType};
+
+            if (paramField == null) return this;
+            
+            field.FieldOption.LabelOption.Parameters.Add("ParamFieldName", paramField.FieldName);
+            field.FieldOption.LabelOption.Parameters.Add("ParamFieldNameCamelCase", paramField.FieldNameCamelCase);
+            return this;
+        }
+
+        public GridBuilder<TModel> DisplayFieldAs<TProperty>(Expression<Func<TModel, TProperty>> fieldExpression, LabelType labelType)
+        {
+            var field = _modelConfig.GridConfig.AllIncludeFields.FirstOrDefault(f => f.FieldName == ReflectionExtensions.GetMemberName(fieldExpression));
+
+            if (field == null)
+            {
+                throw new InvalidOperationException(Resources.FieldNotFoundInvaidOperation);
+            }
+
+            field.FieldOption.LabelOption = new LabelOption { LabelType = labelType };
+            return this;
+        }
+
+        public GridBuilder<TModel> HideDeleteButton()
+        {
+            _modelConfig.GridConfig.IsDeleteVisible = false;
+            return this;
+        }
+
+        public GridBuilder<TModel> HideEditButton()
+        {
+            _modelConfig.GridConfig.IsEditVisible = false;
             return this;
         }
 

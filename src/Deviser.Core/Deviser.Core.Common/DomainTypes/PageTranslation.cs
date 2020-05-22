@@ -17,5 +17,10 @@ namespace Deviser.Core.Common.DomainTypes
         public string RedirectUrl { get; set; }
         public bool IsLinkNewWindow { get; set; }
         public string PageHeaderTags { get; set; }
+
+        /// <summary>
+        /// Used only by PageManagement Admin UI
+        /// </summary>
+        public Language Language { get; set; }
     }
 }

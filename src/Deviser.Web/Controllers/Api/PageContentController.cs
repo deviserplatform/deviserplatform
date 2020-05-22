@@ -68,7 +68,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var result = _contentManager.Get();
+                var result = _contentManager.GetDeletedPageContents();
                 if (result != null)
                 {
                     return Ok(result);

@@ -33,7 +33,7 @@ namespace Deviser.Detached
             _currentMethod = expression.Method.Name;
 
             // go left to right in the subtree (ignore first argument for now)
-            for (int i = 1; i < expression.Arguments.Count; i++)
+            for (var i = 1; i < expression.Arguments.Count; i++)
             {
                 Visit(expression.Arguments[i]);
             }

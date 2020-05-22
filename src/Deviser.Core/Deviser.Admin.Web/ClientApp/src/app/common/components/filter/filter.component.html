@@ -1,0 +1,119 @@
+<form [formGroup]="filterForm" (ngSubmit)="onSubmit()">
+    <ng-container [ngSwitch]="selectedFilter.filterType">
+        <ng-container *ngSwitchCase="filterType.BooleanFilter">
+            <div class="form-check">
+                <dev-checkbox formControlName="isTrue" [label]="selectedFilter.field.fieldOption.isTrue">
+                </dev-checkbox>
+            </div>
+            <div class="form-check">
+                <dev-checkbox formControlName="isFalse" [label]="selectedFilter.field.fieldOption.isFalse">
+                </dev-checkbox>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-sm btn-light btn-filter" (click)="onClear();">Clear</button>
+                <button type="submit" class="btn btn-sm btn-light btn-filter">Filter</button>
+            </div>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="filterType.DateFilter">
+            <div class="form-group">
+                <select class="form-control" formControlName="operator">
+                    <option *ngFor="let operator of operators" [ngValue]="operator.value">{{operator.label}}</option>
+                </select>
+            </div>
+            <div class="form-group" *ngIf="formValue.operator !== dateTimeOperator.InRange">
+                <div class="input-group date-control">
+                    <input type="text" formControlName="date" class="form-control" #dpDate="bsDatepicker" bsDatepicker
+                    container=".header-field-cotnainer" [bsConfig]="bsConfig">
+                    <div class="input-group-append">
+                        <button class="btn btn-secondary" type="button" (click)="dpDate.toggle()">
+                            <i class="my-icon" aria-label="My icon"
+                                [inlineSVG]="'assets/icons/baseline-calendar_today.svg' | envPath"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" *ngIf="formValue.operator === dateTimeOperator.InRange">
+                <label>From</label>
+                <div class="input-group date-control">
+                    <input type="text" formControlName="fromDate" class="form-control" #dpFromDate="bsDatepicker"
+                        bsDatepicker container=".header-field-cotnainer" [bsConfig]="bsConfig">
+                    <div class="input-group-append">
+                        <button class="btn btn-secondary" type="button" (click)="dpFromDate.toggle()">
+                            <i class="my-icon" aria-label="My icon"
+                                [inlineSVG]="'assets/icons/baseline-calendar_today.svg' | envPath"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-group" *ngIf="formValue.operator === dateTimeOperator.InRange">
+                <label>To</label>
+                <div class="input-group date-control">
+                    <input type="text" formControlName="toDate" class="form-control" #dpToDate="bsDatepicker"
+                        bsDatepicker container=".header-field-cotnainer" [bsConfig]="bsConfig">
+                    <div class="input-group-append">
+                        <button class="btn btn-secondary" type="button" (click)="dpToDate.toggle()">
+                            <i class="my-icon" aria-label="My icon"
+                                [inlineSVG]="'assets/icons/baseline-calendar_today.svg' | envPath"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-sm btn-light btn-filter" (click)="onClear();">Clear</button>
+                <button type="submit" class="btn btn-sm btn-light btn-filter">Filter</button>
+            </div>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="filterType.NumberFilter">
+            <div class="form-group">
+                <select class="form-control" formControlName="operator">
+                    <option *ngFor="let operator of operators" [ngValue]="operator.value">{{operator.label}}</option>
+                </select>
+            </div>
+            <div class="form-group" *ngIf="formValue.operator !== dateTimeOperator.InRange">
+                <input type="number" formControlName="number" class="form-control">
+            </div>
+            <div class="form-group" *ngIf="formValue.operator === dateTimeOperator.InRange">
+                <label>From</label>
+                <input type="number" formControlName="fromNumber" class="form-control">
+            </div>
+            <div class="form-group" *ngIf="formValue.operator === dateTimeOperator.InRange">
+                <label>To</label>
+                <input type="number" formControlName="toNumber" class="form-control">
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-sm btn-light btn-filter" (click)="onClear();">Clear</button>
+                <button type="submit" class="btn btn-sm btn-light btn-filter">Filter</button>
+            </div>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="filterType.SelectFilter">
+            <div class="form-group">
+                <dev-checkbox [(ngModel)]="selectAll" [label]="'Select All'" (changeValue)="onSelectAll($event);" [ngModelOptions]="{standalone: true}">
+                </dev-checkbox>
+                <dev-check-box-list formControlName="filterKeyValues" [dataSource]="lookUp" [labelField]="'displayName'" [keyField]="lookUpKey" (changeValue)="onSelectFilterChange($event);"></dev-check-box-list>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-sm btn-light btn-filter" (click)="onClear();">Clear</button>
+                <button type="submit" class="btn btn-sm btn-light btn-filter">Filter</button>
+            </div>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="filterType.TextFilter">
+            <div class="form-group">
+                <select class="form-control" formControlName="operator">
+                    <option *ngFor="let operator of operators" [ngValue]="operator.value">{{operator.label}}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" formControlName="text">
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-sm btn-light btn-filter" (click)="onClear();">Clear</button>
+                <button type="submit" class="btn btn-sm btn-light btn-filter">Filter</button>
+            </div>
+        </ng-container>
+    </ng-container>
+</form>

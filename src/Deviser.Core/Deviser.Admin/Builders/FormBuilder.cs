@@ -1,8 +1,10 @@
 ﻿using Deviser.Admin.Config;
 using Deviser.Admin.Properties;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Deviser.Core.Common.Extensions;
 
 namespace Deviser.Admin.Builders
 {
@@ -17,19 +19,19 @@ namespace Deviser.Admin.Builders
 
 
         public FormBuilder(IFormConfig formConfig, KeyField keyField)
-        : base(formConfig, keyField)
+        : base(formConfig.FieldConfig, formConfig.AllFormFields, keyField)
         {
             _formConfig = formConfig;
         }
 
         public FormBuilder<TModel> AddFieldSet(string groupName,
-            Func<FieldBuilder<TModel>, FieldBuilder<TModel>> fieldBuilderAction, string cssClass = null, string description = null)
+            Action<FieldBuilder<TModel>> fieldBuilderAction, string cssClass = null, string description = null)
         {
             if (_formConfig.FieldConfig.ExcludedFields.Count > 0)
                 throw new InvalidOperationException(Resources.AddRemoveInvalidOperation);
 
             var fieldConfig = new FieldConfig();
-            var fieldBuilder = new FieldBuilder<TModel>(_formConfig, _keyField);
+            var fieldBuilder = new FieldBuilder<TModel>(fieldConfig, _formConfig.AllFormFields, _keyField);
 
             fieldBuilderAction.Invoke(fieldBuilder);
 
@@ -41,12 +43,30 @@ namespace Deviser.Admin.Builders
                 Fields = fieldConfig.Fields
             };
 
-            _formConfig.FieldSetConfig.FieldSets.Add(fieldSet);
+            _formConfig.FieldSetConfig.AddFieldSet(fieldSet);
 
             return this;
         }
 
-        public FormBuilder<TModel> AddFormAction(string actionName, string actionButtonText, Expression<Func<IServiceProvider, TModel, Task<FormResult>>> formActionExpression)
+        public PropertyBuilder<TModel> Property<TProperty>(Expression<Func<TModel, TProperty>> expression)
+        {
+            return new PropertyBuilder<TModel>(_formConfig, expression);
+        }
+
+        public FormBuilder<TModel> SetCustomValidationFor<TProperty>(Expression<Func<TModel, TProperty>> fieldExpression, Expression<Func<IServiceProvider, TProperty, Task<ValidationResult>>> validationExpression)
+        {
+            var fieldName = ReflectionExtensions.GetMemberName(fieldExpression);
+            var field = _formConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
+            if (field == null)
+            {
+                throw new InvalidOperationException(Resources.FieldNotFoundInvaidOperation);
+            }
+            field.FieldOption.ValidationType = ValidationType.Custom;
+            field.FieldOption.ValidationExpression = validationExpression;
+            return this;
+        }
+
+        public FormBuilder<TModel> AddFormAction(string actionName, string actionButtonText, Expression<Func<IServiceProvider, TModel, Task<IFormResult<TModel>>>> formActionExpression)
         {
             _formConfig.FormActions.Add(actionName, new AdminAction
             {
@@ -61,7 +81,7 @@ namespace Deviser.Admin.Builders
         {
             var formOption = new FormOption();
             formOptionAction?.Invoke(formOption);
-            _formConfig.FormOption = formOption;            
+            _formConfig.FormOption = formOption;
             return this;
         }
     }

@@ -24,4 +24,5 @@ export enum FieldType {
     CreditCard = 'CreditCard',
     Custom = 'Custom',
     KeyField = 'KeyField',
+    CheckBoxMatrix = 'CheckBoxMatrix'
 }

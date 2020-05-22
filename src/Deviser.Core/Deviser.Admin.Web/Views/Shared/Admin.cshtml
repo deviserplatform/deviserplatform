@@ -1,23 +1,44 @@
-﻿<require dependency-type="Css" priority="111" file-path="/_content/Deviser.Admin.Web/ClientApp/styles.css"></require>
+﻿@using Deviser.Core.Common
+@inject IScopeService scopeService
+<require dependency-type="Css" priority="111" file-path="/_content/Deviser.Admin.Web/ClientApp/styles.css"></require>
+@{
+    Deviser.Admin.IAdminConfig adminConfig = ViewBag.AdminConfig as Deviser.Admin.IAdminConfig;
+    var request = ViewContext.HttpContext.Request;
+    var pathBase = request.PathBase.HasValue ? $"{request.PathBase}/" : "";
+    var basePath = $"{request.Scheme}://{request.Host}/{pathBase}";
+}
 
-<script>
-    (function () {
-        var daConfig = {
-            isEmbedded: true, //true for embedded in admin module, false for standalone
-            debugBaseUrl: "https://localhost:44304",
-            module: "@ViewContext.RouteData.Values["area"]",
-            model: "@ViewBag.Model",
-            assetPath:"/_content/Deviser.Admin.Web/ClientApp/"
-        }
-        window.daConfig = daConfig;
-    }());
-</script>
+@if (adminConfig != null)
+{
+    <script>
+        (function () {
+            var daConfig = {
+                basePath:"@basePath",
+                currentPageId: "@scopeService.PageContext.CurrentPageId.ToString()",
+                isEmbedded: true, //true for embedded in admin module, false for standalone
+                debugBaseUrl: "https://localhost:44304",
+                module: "@ViewContext.RouteData.Values["area"]",
+                model: "@ViewBag.Model",
+                adminConfigType: "@adminConfig.AdminConfigType.ToString()",
+                assetPath:"/_content/Deviser.Admin.Web/ClientApp/"
+            }
+            window.daConfig = daConfig;
+        }());
+    </script>
 
-<app-root></app-root>
+    <app-root></app-root>
 
-<require dependency-type="Script" priority="111" file-path="/_content/Deviser.Admin.Web/ClientApp/runtime-es2015.js" type="module"></require>
-<require dependency-type="Script" priority="112" file-path="/_content/Deviser.Admin.Web/ClientApp/runtime-es5.js" nomodule="true" defer="true"></require>
-<require dependency-type="Script" priority="113" file-path="/_content/Deviser.Admin.Web/ClientApp/polyfills-es5.js" nomodule="true" defer="true"></require>
-<require dependency-type="Script" priority="114" file-path="/_content/Deviser.Admin.Web/ClientApp/polyfills-es2015.js" type="module"></require>
-<require dependency-type="Script" priority="117" file-path="/_content/Deviser.Admin.Web/ClientApp/main-es2015.js" type="module"></require>
-<require dependency-type="Script" priority="118" file-path="/_content/Deviser.Admin.Web/ClientApp/main-es5.js" nomodule="true" defer="true"></require>
+    <require dependency-type="Script" priority="111" file-path="/_content/Deviser.Admin.Web/ClientApp/runtime-es2015.js" type="module"></require>
+    <require dependency-type="Script" priority="112" file-path="/_content/Deviser.Admin.Web/ClientApp/runtime-es5.js" nomodule="true" defer="true"></require>
+    <require dependency-type="Script" priority="113" file-path="/_content/Deviser.Admin.Web/ClientApp/polyfills-es5.js" nomodule="true" defer="true"></require>
+    <require dependency-type="Script" priority="114" file-path="/_content/Deviser.Admin.Web/ClientApp/polyfills-es2015.js" type="module"></require>
+    <require dependency-type="Script" priority="117" file-path="/_content/Deviser.Admin.Web/ClientApp/main-es2015.js" type="module"></require>
+    <require dependency-type="Script" priority="118" file-path="/_content/Deviser.Admin.Web/ClientApp/main-es5.js" nomodule="true" defer="true"></require>
+}
+else
+{
+    <div class="alert alert-warning" role="alert">
+        Invalid model! Model: @ViewBag.Model is not found in this module.
+    </div>
+}
+

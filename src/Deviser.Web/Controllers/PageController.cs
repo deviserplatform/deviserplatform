@@ -20,9 +20,9 @@ namespace Deviser.Web.Controllers
 
         [ActionContext]
         public ActionContext Context { get; set; }
-        
+
         private readonly IPageRepository _pageRepository;
-        //private readonly IPageManager _pageManager;
+        private readonly IPageManager _pageManager;
         private readonly IDeviserControllerFactory _deviserControllerFactory;
         private readonly IScopeService _scopeService;
         private readonly IContentManager _contentManager;
@@ -32,7 +32,9 @@ namespace Deviser.Web.Controllers
         private static bool _isInstalled;
         private static bool _isDbExist;
 
-        public PageController(ILogger<PageController> logger, IPageRepository pageRepository,
+        public PageController(ILogger<PageController> logger,
+            IPageRepository pageRepository,
+            IPageManager pageManager,
             IDeviserControllerFactory deviserControllerFactory,
             IScopeService scopeService,
             IContentManager contentManager,
@@ -46,13 +48,13 @@ namespace Deviser.Web.Controllers
             if (!_isInstalled)
                 _isInstalled = _installationManager.IsPlatformInstalled;
 
-            if(!_isDbExist)
+            if (!_isDbExist)
                 _isDbExist = _installationManager.IsDatabaseExist;
 
             if (_isInstalled)
             {
                 _pageRepository = pageRepository;
-                //_pageManager = container.Resolve<IPageManager>();
+                _pageManager = pageManager;
                 _deviserControllerFactory = deviserControllerFactory;
                 _contentManager = contentManager;
                 _moduleManager = moduleManager;
@@ -79,7 +81,8 @@ namespace Deviser.Web.Controllers
                 if (_isInstalled && _isDbExist)
                 {
                     //Platform is properly installed
-                    Page currentPage = _scopeService.PageContext.CurrentPage;
+                    Page currentPage = _pageManager.GetPageAndDependencies(_scopeService.PageContext.CurrentPage.Id);
+                    _scopeService.PageContext.CurrentPage = currentPage;
                     FilterPageElements(currentPage);
                     if (currentPage != null)
                     {
@@ -92,12 +95,12 @@ namespace Deviser.Web.Controllers
                                 return View(currentPage);
 
                             }
-                            else if(currentPage.PageTypeId == Globals.PageTypeAdmin)
+                            else if (currentPage.PageTypeId == Globals.PageTypeAdmin)
                             {
                                 var result = await _deviserControllerFactory.GetAdminPageResult(Context);
                                 ViewBag.AdminResult = result;
                                 return View(currentPage);
-                            }   
+                            }
                         }
                         else
                         {

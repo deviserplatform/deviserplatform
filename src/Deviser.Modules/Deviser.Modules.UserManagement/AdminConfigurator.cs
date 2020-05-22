@@ -44,7 +44,7 @@ namespace Deviser.Modules.UserManagement
                 modelBuilder.FormBuilder.AddFormAction("LockUser", "Lock User",
                     (sp, user) => sp.GetService<UserAdminService>().LockUserAccount(user));
 
-                modelBuilder.Property(u => u.Roles).HasLookup(sp => sp.GetService<IRoleRepository>().GetRoles(),
+                modelBuilder.FormBuilder.Property(u => u.Roles).HasLookup(sp => sp.GetService<IRoleRepository>().GetRoles(),
                     ke => ke.Id,
                     de => de.Name);
 

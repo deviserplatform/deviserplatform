@@ -15,15 +15,31 @@
         aria-describedby="dataTable_info" style="width: 100%;">
         <thead>
           <tr>
-            <th *ngFor="let field of modelConfig.gridConfig.fields">{{field.fieldName}}</th>
+            <th *ngFor="let field of childConfig.modelConfig.gridConfig.fields">{{field.fieldName}}</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
         </thead>
         <tbody *ngIf="childRecords && childRecords.length>0">
           <tr *ngFor="let item of childRecords">
-            <td *ngFor="let field of modelConfig.gridConfig.fields"
-              [innerHTML]="item[field.fieldNameCamelCase] | formatField:field">
+            <td *ngFor="let field of childConfig.modelConfig.gridConfig.fields">
+              <div *ngIf="field && field.fieldOption && field.fieldOption.labelOption && field.fieldOption.labelOption.labelType; then labelOption else fieldText"></div>
+
+              <ng-template #labelOption>
+                <ng-container [ngSwitch]="field.fieldOption.labelOption.labelType">
+                  <ng-container *ngSwitchCase="labelType.Icon">
+                    <i [ngClass]="item[field.fieldOption.labelOption.parameters.paramFieldNameCamelCase]"></i>
+                    <span [innerHTML]="item[field.fieldNameCamelCase] | formatField:field"></span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="labelType.Badge">
+                    <span class="badge" [ngClass]="getBadge(item, field)" [innerHTML]="item[field.fieldNameCamelCase] | formatField:field"></span>
+                  </ng-container>
+                </ng-container>
+              </ng-template>
+
+              <ng-template #fieldText>
+                <span [innerHTML]="item[field.fieldNameCamelCase] | formatField:field"></span>
+              </ng-template>
 
             </td>
             <td>
@@ -46,7 +62,7 @@
 <div class="admin-form" *ngIf="childForm && (viewState == ViewState.EDIT || viewState == ViewState.ADD)">
   <div class="row">
     <div class="col">
-      <app-entity-form [form]="childForm" [formConfig]="modelConfig.formConfig" [formMode]="formMode" [keyField]="modelConfig.keyField" [lookUps]="lookUps">
+      <app-entity-form [formContext]="formContext">
       </app-entity-form>
     </div>
   </div>

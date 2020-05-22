@@ -276,6 +276,11 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Page).WithMany(p => p.PageTranslation).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<PageType>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+            });
+
             modelBuilder.Entity<AdminPage>(entity =>
             {
                 entity.HasKey(e => e.PageId);
@@ -407,6 +412,7 @@ namespace Deviser.Core.Data
         public virtual DbSet<Page> Page { get; set; }
         public virtual DbSet<PageContent> PageContent { get; set; }
         public virtual DbSet<PageModule> PageModule { get; set; }
+        public virtual DbSet<PageType> PageType { get; set; }
         public virtual DbSet<Property> Property { get; set; }
         public virtual DbSet<PagePermission> PagePermission { get; set; }
         public virtual DbSet<PageTranslation> PageTranslation { get; set; }

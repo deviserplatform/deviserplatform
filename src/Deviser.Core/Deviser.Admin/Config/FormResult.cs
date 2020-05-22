@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Deviser.Admin.Config
 {
@@ -8,8 +10,11 @@ namespace Deviser.Admin.Config
     {
         public string SuccessMessage { get; set; }
         public string ErrorMessage { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public FormBehaviour FormBehaviour { get; set; } = FormBehaviour.RedirectToGrid;
         public object Result { get; }
         public bool IsSucceeded { get; set; }
+        public IClientAction SuccessAction { get; set; }
 
         public FormResult(object result = null)
         {
@@ -21,9 +26,13 @@ namespace Deviser.Admin.Config
     {
         public string SuccessMessage { get; set; }
         public string ErrorMessage { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public FormBehaviour FormBehaviour { get; set; } = FormBehaviour.RedirectToGrid;
         public TResult Value { get; }
         public object Result { get; }
         public bool IsSucceeded { get; set; }
+        public IClientAction SuccessAction { get; set; }
 
         public FormResult(TResult result = default(TResult))
         {

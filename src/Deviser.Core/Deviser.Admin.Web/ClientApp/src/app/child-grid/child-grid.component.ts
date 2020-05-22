@@ -8,6 +8,11 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { FormControlService } from '../common/services/form-control.service';
 import { ConfirmDialogComponent } from '../common/components/confirm-dialog/confirm-dialog.component';
 import { FormMode } from '../common/domain-types/form-mode';
+import { FormContext } from '../common/domain-types/form-context';
+import { ChildConfig } from '../common/domain-types/child-config';
+import { FormType } from '../common/domain-types/form-type';
+import { LabelType } from '../common/domain-types/label-type';
+import { FieldType } from '../common/domain-types/field-type';
 
 @Component({
   selector: 'app-child-grid',
@@ -28,18 +33,21 @@ import { FormMode } from '../common/domain-types/form-mode';
 })
 export class ChildGridComponent implements OnInit, ControlValueAccessor, Validator {
 
-
+  // @Input() parentForm: FormGroup;
+  // @Input() childFormContext: FormContext;
   @Input() formMode: FormMode;
-  @Input() parentForm: FormGroup;
-  @Input() modelConfig: ModelConfig;
+  // @Input() modelConfig: ModelConfig;
   @Input() lookUps: LookUpDictionary;
+  @Input() childConfig: ChildConfig;
   ViewState: typeof ViewState = ViewState;
 
   @ViewChild(ConfirmDialogComponent)
   private confirmDialogComponent: ConfirmDialogComponent;
 
+  labelType = LabelType;
   childForm: FormGroup;
   childRecords: [any];
+  formContext: FormContext;
   selectedItem: any;
 
   viewState: ViewState;
@@ -60,14 +68,29 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
   ngOnInit() {
     // this._childForm = new BehaviorSubject(this._formControlService.toChildFormGroup(this.formConfig, {}));
     // this._childForm.subscribe(childForm => this.childForm = childForm);
-    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, this.formMode, {});
+    let childForm = this._formControlService.toFormGroupWithModelConfig(this.childConfig.modelConfig, this.formMode, {});
+    let childFormName = this.childConfig.field.fieldNameCamelCase;
+    this.formContext = {
+      formGroup: childForm,
+      formConfig: this.childConfig.modelConfig.formConfig,
+      formName: childFormName,
+      formTitle: childFormName,
+      formType: FormType.ChildForm,
+      keyField: this.childConfig.modelConfig.keyField,
+      formMode: this.formMode,
+      lookUps: this.lookUps
+    }
+    // this.childForm = this._formControlService.toFormGroupWithFormConfig(this.childFormContext.formConfig, this.childFormContext.formMode, this.childFormContext.keyField, {});
+    // this.formContext.formGroup = this.childForm;
   }
 
   onNewItem(): void {
     this.viewState = ViewState.ADD;
     this.selectedItem = {};
     // this._childForm.next(this._formControlService.toChildFormGroup(this.formConfig, this.selectedItem));
-    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, this.formMode, this.selectedItem);
+    this.childForm = this._formControlService.toFormGroupWithModelConfig(this.childConfig.modelConfig, FormMode.Create, this.selectedItem);//this._formControlService.toFormGroupWithFormConfig(this.childFormContext.formConfig, this.childFormContext.formMode, this.childFormContext.keyField, this.selectedItem);
+    this.formContext.formMode = FormMode.Create;
+    this.formContext.formGroup = this.childForm;
   }
 
   onAddItem(): void {
@@ -82,7 +105,9 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
 
   onEditItem(item): void {
     this.selectedItem = item;
-    this.childForm = this._formControlService.toChildFormGroup(this.modelConfig, this.formMode, this.selectedItem);
+    this.childForm = this._formControlService.toFormGroupWithModelConfig(this.childConfig.modelConfig, FormMode.Update, this.selectedItem);
+    this.formContext.formMode = FormMode.Update;
+    this.formContext.formGroup = this.childForm;
     this.viewState = ViewState.EDIT;
   }
 
@@ -98,7 +123,7 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
 
   onYesToDelete(item: any): void {
     console.log('confirm');
-    let index = this.childRecords.indexOf(this.selectedItem);
+    let index = this.childRecords.indexOf(item);
     this.childRecords.splice(index, 1);
   }
 
@@ -106,17 +131,37 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
     console.log('declined');
   }
 
+  getBadge(item: any, field: Field): string {
+    if (!field.fieldOption.labelOption) {
+      return "";
+    }
+
+    if (!field.fieldOption.labelOption.parameters || !field.fieldOption.labelOption.parameters.paramFieldNameCamelCase) {
+      if (field.fieldType == FieldType.CheckBox) {
+        return item[field.fieldNameCamelCase] ? "badge-primary" : "badge-secondary";
+      }
+      else {
+        return "badge-light";
+      }
+    }
+
+    return item[field.fieldOption.labelOption.parameters.paramFieldNameCamelCase];
+  }
+
   writeValue(obj: [any]): void {
     // throw new Error("Method not implemented.");
     this.childRecords = obj;
   }
+  
   registerOnChange(fn: any): void {
     // throw new Error("Method not implemented.");
-    this.childRecordsObservable.subscribe(fn);
+    // this.childRecordsObservable.subscribe(fn);
   }
+
   registerOnTouched(fn: any): void {
-    this.childRecordsObservable.subscribe(fn);
+    // this.childRecordsObservable.subscribe(fn);
   }
+
   setDisabledState?(isDisabled: boolean): void {
     // isDisabled ? this.addressInfoForm.disable() : this.addressInfoForm.enable();
   }

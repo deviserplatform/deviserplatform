@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Deviser.Detached
 {
@@ -43,8 +41,8 @@ namespace Deviser.Detached
 
         public override int GetHashCode()
         {
-            int hash = 17;
-            foreach (object value in keyValue.Values)
+            var hash = 17;
+            foreach (var value in keyValue.Values)
             {
                 unchecked
                 {

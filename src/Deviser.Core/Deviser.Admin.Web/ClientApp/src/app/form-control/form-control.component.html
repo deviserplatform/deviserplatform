@@ -1,148 +1,165 @@
-<ng-container [formGroup]="form">
+<fieldset [disabled]="isDisabled" *ngIf="isShown">
+  <ng-container [formGroup]="form">
+    <ng-container [ngSwitch]="field.fieldType">
 
-  <ng-container [ngSwitch]="field.fieldType">
-
-    <ng-container *ngSwitchCase="fieldType.KeyField">
-      <input type="hidden" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" readonly>
-    </ng-container>
+      <ng-container *ngSwitchCase="fieldType.KeyField">
+        <input type="hidden" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" readonly>
+      </ng-container>
 
 
 
-    <ng-container *ngSwitchCase="fieldType.Static">
-      <label for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <input type="text" class="form-control" [id]="field.fieldNameCamelCase"
-        [formControlName]="field.fieldNameCamelCase" readonly>
-    </ng-container>
+      <ng-container *ngSwitchCase="fieldType.Static">
+        <label for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+        <input type="text" class="form-control" [id]="field.fieldNameCamelCase"
+          [formControlName]="field.fieldNameCamelCase" readonly>
+      </ng-container>
 
-    <ng-container *ngSwitchCase="fieldType.TextBox">
-      <label [ngClass]="{ 'is-invalid': hasError(field) }"
-        for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <input type="text" class="form-control" [id]="field.fieldNameCamelCase"
-        [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }">
-      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
-    </ng-container>
+      <ng-container *ngSwitchCase="fieldType.TextBox">
+        <label [ngClass]="{ 'is-invalid': hasError(field) }"
+          for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+        <input type="text" class="form-control" [id]="field.fieldNameCamelCase"
+          [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }" [readonly]="field.fieldOption.isReadOnly">
+        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      </ng-container>
 
-    <ng-container *ngSwitchCase="fieldType.Password">
-      <label [ngClass]="{ 'is-invalid': hasError(field) }"
-        for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <input type="password" class="form-control" [id]="field.fieldNameCamelCase"
-        [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }">
-      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
-    </ng-container>
+      <ng-container *ngSwitchCase="fieldType.Password">
+        <label [ngClass]="{ 'is-invalid': hasError(field) }"
+          for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+        <input type="password" class="form-control" [id]="field.fieldNameCamelCase"
+          [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }">
+        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      </ng-container>
 
-    <ng-container *ngSwitchCase="fieldType.CheckBox">
-      <input type="checkbox" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
-        [ngClass]="{ 'is-invalid': hasError(field) }">
-      <label class="form-check-label" [ngClass]="{ 'is-invalid': hasError(field) }"
-        [for]="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
-    </ng-container>
+      <ng-container *ngSwitchCase="fieldType.CheckBox">
+        <input type="checkbox" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
+          [ngClass]="{ 'is-invalid': hasError(field) }">
+        <label class="form-check-label" [ngClass]="{ 'is-invalid': hasError(field) }"
+          [for]="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      </ng-container>
 
-    <ng-container *ngSwitchCase="fieldType.Number">
-      <label [ngClass]="{ 'is-invalid': hasError(field) }"
-        for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <input type="number" class="form-control" [id]="field.fieldNameCamelCase"
-        [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }">
-      <app-validation-error [field]="field" [form]="form"></app-validation-error>
-    </ng-container>
+      <ng-container *ngSwitchCase="fieldType.Number">
+        <label [ngClass]="{ 'is-invalid': hasError(field) }"
+          for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+        <input type="number" class="form-control" [id]="field.fieldNameCamelCase"
+          [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }">
+        <app-validation-error [field]="field" [form]="form"></app-validation-error>
+      </ng-container>
 
-    <ng-container *ngSwitchCase="fieldType.EmailAddress">
-      <label [ngClass]="{ 'is-invalid': hasError(field) }"
-        for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <input type="email" class="form-control" [id]="field.fieldNameCamelCase"
-        [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }">
-      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
-    </ng-container>
+      <ng-container *ngSwitchCase="fieldType.EmailAddress">
+        <label [ngClass]="{ 'is-invalid': hasError(field) }"
+          for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+        <input type="email" class="form-control" [id]="field.fieldNameCamelCase"
+          [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }">
+        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      </ng-container>
 
-    <ng-container *ngSwitchCase="fieldType.Phone">
-      <label [ngClass]="{ 'is-invalid': hasError(field) }"
-        for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <input type="tel" class="form-control" [id]="field.fieldNameCamelCase"
-        [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }">
-      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
-    </ng-container>
+      <ng-container *ngSwitchCase="fieldType.Phone">
+        <label [ngClass]="{ 'is-invalid': hasError(field) }"
+          for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+        <input type="tel" class="form-control" [id]="field.fieldNameCamelCase"
+          [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }">
+        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      </ng-container>
 
-    <ng-container *ngSwitchCase="fieldType.TextArea">
-      <label [ngClass]="{ 'is-invalid': hasError(field) }"
-        for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <textarea [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" class="form-control"
-        [ngClass]="{ 'is-invalid': hasError(field) }"></textarea>
-      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
-    </ng-container>
+      <ng-container *ngSwitchCase="fieldType.TextArea">
+        <label [ngClass]="{ 'is-invalid': hasError(field) }"
+          for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+        <textarea [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" class="form-control"
+          [ngClass]="{ 'is-invalid': hasError(field) }"></textarea>
+        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      </ng-container>
 
-    <ng-container *ngSwitchCase="fieldType.RichText">
-      <label [ngClass]="{ 'is-invalid': hasError(field) }"
-        for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-      <ckeditor [editor]="Editor" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
-        [ngClass]="{ 'is-invalid': hasError(field) }"></ckeditor>
-      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
-    </ng-container>
+      <ng-container *ngSwitchCase="fieldType.RichText">
+        <label [ngClass]="{ 'is-invalid': hasError(field) }"
+          for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+        <ckeditor [editor]="Editor" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
+          [ngClass]="{ 'is-invalid': hasError(field) }"></ckeditor>
+        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      </ng-container>
 
-    <ng-container *ngSwitchCase="fieldType.DateTime">
-      <label [ngClass]="{ 'is-invalid': hasError(field) }"
-        for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+      <ng-container *ngSwitchCase="fieldType.DateTime">
+        <label [ngClass]="{ 'is-invalid': hasError(field) }"
+          for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
 
-      <div class="input-group date-control">
-        <input type="tel" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
-          class="form-control" [ngClass]="{ 'is-invalid': hasError(field) }" #dp="bsDatepicker" bsDatepicker>
-        <div class="input-group-append">
-          <button class="btn btn-secondary" type="button" (click)="dp.toggle()">
-            <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-calendar_today.svg' | envPath"></i>
-          </button>
+        <div class="input-group date-control">
+          <input type="text" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
+            class="form-control" [ngClass]="{ 'is-invalid': hasError(field) }" #dp="bsDatepicker" bsDatepicker [bsConfig]="bsConfig">
+          <div class="input-group-append">
+            <button class="btn btn-secondary" type="button" (click)="dp.toggle()">
+              <i class="my-icon" aria-label="My icon"
+                [inlineSVG]="'assets/icons/baseline-calendar_today.svg' | envPath"></i>
+            </button>
+          </div>
+          <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+        </div>
+
+      </ng-container>
+
+      <ng-container *ngSwitchCase="fieldType.MultiSelect">
+        <label [ngClass]="{ 'is-invalid': hasError(field) }"
+          for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+
+        <ng-select [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
+          [ngClass]="{ 'is-invalid': hasError(field) }" [items]="lookUpData$ | async" [selectOnTab]="true"
+          bindLabel="displayName" [multiple]="true" placeholder="Select age">
+        </ng-select>
+
+        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="fieldType.Select">
+        <label [ngClass]="{ 'is-invalid': hasError(field) }"
+          for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+
+        <ng-select [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
+          [ngClass]="{ 'is-invalid': hasError(field) }" [items]="lookUpData$ | async" [selectOnTab]="true"
+          bindLabel="displayName" [multiple]="false" placeholder="displayName">
+        </ng-select>
+
+        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="fieldType.RadioButton">
+        <label [ngClass]="{ 'is-invalid': hasError(field) }">{{field.fieldOption.displayName}}</label>
+        <div [ngClass]="{ 'is-invalid': hasError(field) }">
+          <div class="custom-control custom-radio" *ngFor="let item of lookUpData$ | async">
+            <input type="radio" [id]="item.id" class="custom-control-input" [formControlName]="field.fieldNameCamelCase"
+              [value]="item">
+            <label class="custom-control-label" [for]="item.id">{{item.displayName}}</label>
+          </div>
         </div>
         <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
-      </div>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="fieldType.MultiSelectCheckBox">
+        <label [ngClass]="{ 'is-invalid': hasError(field) }"
+          for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+
+        <app-checkbox-list [formControlName]="field.fieldNameCamelCase" [items]="lookUpData$ | async"
+          bindLabel="displayName">
+        </app-checkbox-list>
+
+        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="fieldType.CheckBoxMatrix">
+        <label [ngClass]="{ 'is-invalid': hasError(field) }"
+          for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
+
+        <app-checkbox-matrix [formControlName]="field.fieldNameCamelCase" 
+        [rowLookUp]="rowLookUp"
+        [colLookUp]="colLookUp"
+        [rowLookUpKey]="rowLookUpKey"
+        [colLookUpKey]="colLookUpKey"
+        [checkBoxMatrix]="checkBoxMatrix"
+        [contextId]="formItemId"
+        bindLabel="displayName">
+        </app-checkbox-matrix>
+
+        <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
+      </ng-container>
 
     </ng-container>
-
-
-    <ng-container *ngSwitchCase="fieldType.MultiSelect">
-      <label [ngClass]="{ 'is-invalid': hasError(field) }"
-        for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-
-      <ng-select [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
-        [ngClass]="{ 'is-invalid': hasError(field) }" [items]="lookUpData" [selectOnTab]="true" bindLabel="displayName"
-        [multiple]="true" placeholder="Select age">
-      </ng-select>
-
-      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="fieldType.Select">
-      <label [ngClass]="{ 'is-invalid': hasError(field) }"
-        for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-
-      <ng-select [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
-        [ngClass]="{ 'is-invalid': hasError(field) }" [items]="lookUpData" [selectOnTab]="true" bindLabel="displayName"
-        [multiple]="false" placeholder="Select age">
-      </ng-select>
-
-      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="fieldType.RadioButton">
-      <label [ngClass]="{ 'is-invalid': hasError(field) }">{{field.fieldOption.displayName}}</label>
-      <div [ngClass]="{ 'is-invalid': hasError(field) }">
-        <div class="custom-control custom-radio" *ngFor="let item of lookUpData">
-          <input type="radio" [id]="item.id" class="custom-control-input" [formControlName]="field.fieldNameCamelCase"
-            [value]="item">
-          <label class="custom-control-label" [for]="item.id">{{item.displayName}}</label>
-        </div>
-      </div>
-      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="fieldType.MultiSelectCheckBox">
-      <label [ngClass]="{ 'is-invalid': hasError(field) }"
-        for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-
-      <app-checkbox-list [formControlName]="field.fieldNameCamelCase" [items]="lookUpData" bindLabel="displayName">
-      </app-checkbox-list>
-
-      <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
-    </ng-container>
-
   </ng-container>
-
-
-</ng-container>
+</fieldset>

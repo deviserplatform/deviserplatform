@@ -7,7 +7,7 @@ using Deviser.Admin.Config;
 
 namespace Deviser.Modules.Blog.DTO
 {
-    public class Category
+    public class Category : IComparable<Category>
     {
         [Order]
         public Guid Id { get; set; }
@@ -16,6 +16,40 @@ namespace Deviser.Modules.Blog.DTO
         public string Name { get; set; }
 
         public List<Post> Posts { get; set; }
+
+        public int CompareTo(Category other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+            var idComparison = Id.CompareTo(other.Id);
+            if (idComparison != 0) return idComparison;
+            return string.Compare(Name, other.Name, StringComparison.Ordinal);
+        }
+
+        //public override string ToString()
+        //{
+        //    return Name;
+        //}
+
+        //public override string ToString()
+        //{
+        //    return this.Name;
+        //}
+
+        //public override bool Equals(object? obj)
+        //{
+        //    if (obj == null)
+        //    {
+        //        return false;
+        //    }
+
+        //    if (obj is Category category)
+        //    {
+        //        return category.Name?.Equals(this.Name, StringComparison.Ordinal) ?? false;
+        //    }
+
+        //    return obj.Equals(this);
+        //}
     }
 
     public class Post
@@ -35,8 +69,8 @@ namespace Deviser.Modules.Blog.DTO
 
         [Order]
         public Category Category { get; set; }
-                
-        [Order]        
+
+        [Order]
         public List<Tag> Tags { get; set; }
 
         [Order]

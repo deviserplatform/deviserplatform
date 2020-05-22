@@ -1,0 +1,15 @@
+<a (click)="changeCheckBoxValue($event);">
+
+    <label *ngIf="label && labelPosition==='before'">{{label}}</label>
+    <ng-container *ngIf="!indeterminate">
+        <i class="my-icon" aria-label="Checkbox" *ngIf="value" [inlineSVG]="'assets/icons/check_box.svg' | envPath"></i>
+        <i class="my-icon" aria-label="Checkbox" *ngIf="!value" [inlineSVG]="'assets/icons/check_box_outline_blank.svg' | envPath"></i>
+    </ng-container>
+    <ng-container *ngIf="indeterminate">
+        <i class="my-icon" aria-label="Checkbox" *ngIf="value && !indeterminateVal" [inlineSVG]="'assets/icons/check_box.svg' | envPath"></i>
+        <i class="my-icon" aria-label="Checkbox" *ngIf="!value && !indeterminateVal" [inlineSVG]="'assets/icons/check_box_outline_blank.svg' | envPath"></i>
+        <i class="my-icon" aria-label="Checkbox" *ngIf="!value && indeterminateVal" [inlineSVG]="'assets/icons/indeterminate_check_box.svg' | envPath"></i>
+    </ng-container>
+    
+    <label *ngIf="label && labelPosition==='after'">{{label}}</label>
+</a>

@@ -6,15 +6,20 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
   <script>
     (function () {
       var daConfig = {
+        basePath:"https://localhost:44328/",
+        currentPageId: "9b868526-8f09-4b79-7b41-08d7e56e581d",
         isEmbedded: false, //true for embedded in admin module, false for standalone
-        debugBaseUrl: "https://localhost:44304",
-        module: "UserManagement",
-        model: "User",
+        debugBaseUrl: "https://localhost:44328",
+        module: "Language",
+        model: "Language",
+        adminConfigType: "GridAndForm", //GridOnly OR GridAndForm OR FormOnly OR TreeAndForm
         assetPath:"/admin/dist"
       }
       window.daConfig = daConfig;

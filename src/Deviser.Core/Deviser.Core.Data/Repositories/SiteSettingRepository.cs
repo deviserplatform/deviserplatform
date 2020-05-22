@@ -12,6 +12,7 @@ namespace Deviser.Core.Data.Repositories
     public interface ISiteSettingRepository
     {
         List<SiteSetting> GetSettings();
+        IDictionary<string, string> GetSettingsAsDictionary();
         string GetSettingValue(string settingName);
         List<SiteSetting> UpdateSetting(List<SiteSetting> settings);
     }
@@ -49,6 +50,21 @@ namespace Deviser.Core.Data.Repositories
                 var dbResult = context.SiteSetting.ToList();                    
                 var result = _mapper.Map<List<SiteSetting>>(dbResult);
                 //AddResultToCache(cacheName, result);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while getting GetSettings", ex);
+            }
+            return null;
+        }
+
+        public IDictionary<string, string> GetSettingsAsDictionary()
+        {
+            try
+            {
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.SiteSetting.ToDictionary(s=>s.SettingName, v=>v.SettingValue);
                 return result;
             }
             catch (Exception ex)

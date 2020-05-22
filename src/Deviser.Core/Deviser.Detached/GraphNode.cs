@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Collections;
 
 namespace Deviser.Detached
 {
@@ -61,7 +60,7 @@ namespace Deviser.Detached
                 includeStrings.Add(ownIncludeString);
             }
 
-            includeStrings.AddRange(GetRequiredNavigationPropertyIncludes(entityManager));
+            //includeStrings.AddRange(GetRequiredNavigationPropertyIncludes(entityManager));
 
             foreach (var member in Members)
             {
@@ -73,7 +72,7 @@ namespace Deviser.Detached
 
         public string GetUniqueKey()
         {
-            string key = "";
+            var key = "";
             if (Parent != null && Parent.Accessor != null)
             {
                 key += Parent.Accessor.DeclaringType.FullName + "_" + Parent.Accessor.Name;
@@ -142,7 +141,7 @@ namespace Deviser.Detached
                 
                 // Iterate through the elements from the updated graph and try to match them against the db graph
                 var updateList = updateValues.OfType<object>().ToList();
-                for (int i = 0; i < updateList.Count; i++)
+                for (var i = 0; i < updateList.Count; i++)
                 {
                     var updateItem = updateList[i];
                     var key = entityManager.GetEntityKey(updateItem);

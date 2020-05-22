@@ -1,16 +1,24 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DatePipe } from '@angular/common';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { MatButtonModule } from '@angular/material/button';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CdkTreeModule } from '@angular/cdk/tree';
+import { MatIconModule } from '@angular/material/icon';
 
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { PopoverModule } from 'ngx-bootstrap/popover';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,37 +37,59 @@ import { CheckboxListComponent } from './common/components/checkbox-list/checkbo
 import { AdminAlertComponent } from './common/components/admin-alert/admin-alert.component';
 import { WINDOW_PROVIDERS } from './common/services/window.service';
 import { EnvPathPipe } from './common/pipes/env-path.pipe';
+import { AdminTreeComponent } from './admin-tree/admin-tree.component';
+import { TreeControlComponent } from './common/components/tree-control/tree-control.component';
+import { CheckboxMatrixComponent } from './common/components/checkbox-matrix/checkbox-matrix.component';
+import { FilterComponent } from './common/components/filter/filter.component';
+import { GridHeaderComponent } from './common/components/grid-header/grid-header.component';
+import { GridControlComponent } from './common/components/grid-control/grid-control.component';
+import { DevCheckboxComponent } from './common/components/controls/dev-checkbox/dev-checkbox.component';
+import { CheckBoxListComponent } from './common/components/controls/check-box-list/check-box-list.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    AdminAlertComponent,
     AdminFormComponent,
     AdminGridComponent,
+    AdminTreeComponent,
     ConfirmDialogComponent,
+    ChildGridComponent,
+    CheckboxMatrixComponent,
+    CheckboxListComponent,
+    EntityFormComponent,
+    EnvPathPipe,
+    FilterComponent,
     FormControlComponent,
     FormatFieldPipe,
+    GridControlComponent,
+    GridHeaderComponent,
     MessagesComponent,
     RecordIdPipe,
+    TreeControlComponent,
     ValidationErrorComponent,
-    EntityFormComponent,
-    ChildGridComponent,
-    CheckboxListComponent,
-    AdminAlertComponent,
-    EnvPathPipe
-  ],
+    DevCheckboxComponent,
+    CheckBoxListComponent],
   imports: [
+    AccordionModule.forRoot(),
     AlertModule.forRoot(),
     AppRoutingModule,
+    BrowserAnimationsModule,
     BrowserModule,
     BsDatepickerModule.forRoot(),
+    CdkTreeModule,
     CKEditorModule,
+    DragDropModule,
     FormsModule,
     HttpClientModule,
     InlineSVGModule.forRoot(),
+    MatButtonModule,
+    MatIconModule,
     ModalModule.forRoot(),
     NgSelectModule,
     PaginationModule.forRoot(),
+    PopoverModule.forRoot(),
     ReactiveFormsModule
   ],
   providers: [

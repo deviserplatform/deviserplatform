@@ -5,25 +5,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Deviser.Admin.Builders
 {
     public class PropertyBuilder<TModel>
         where TModel : class
     {
-
-        private readonly IAdminConfig _adminConfig;
+        private readonly IFormConfig _formConfig;
         private readonly FieldConditions _fieldConditions;
         private readonly LambdaExpression _fieldExpression;
         private readonly Field _field;
 
-        public PropertyBuilder(IAdminConfig adminConfig, LambdaExpression fieldExpression)
+        public PropertyBuilder(IFormConfig formConfig, LambdaExpression fieldExpression)
         {
-            _adminConfig = adminConfig;
-            _fieldConditions = adminConfig.ModelConfig.FormConfig.FieldConditions;
+            _formConfig = formConfig;
+            _fieldConditions = formConfig.FieldConditions;
             _fieldExpression = fieldExpression;
             var fieldName = ReflectionExtensions.GetMemberName(fieldExpression);
-            _field = _adminConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
+            _field = formConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
 
             if (_field == null)
             {
@@ -63,17 +63,59 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public PropertyBuilder<TModel> HasLookup<TRelatedEntity, TProperty>(
-            Expression<Func<IServiceProvider, IList<TRelatedEntity>>> lookupExpression,
-            Expression<Func<TRelatedEntity, TProperty>> lookUpKeyExpression,
-            Expression<Func<TRelatedEntity, string>> lookupDisplayExpression)
-            where TRelatedEntity : class
+        public PropertyBuilder<TModel> HasLookup<TRelatedModel, TKey>(
+            Expression<Func<IServiceProvider, IList<TRelatedModel>>> lookupExpression,
+            Expression<Func<TRelatedModel, TKey>> lookUpKeyExpression,
+            Expression<Func<TRelatedModel, string>> lookupDisplayExpression)
+            where TRelatedModel : class
         {
-            _field.FieldOption.RelatedModelLookupExpression = lookupExpression;
-            _field.FieldOption.RelatedModelLookupKeyExpression = lookUpKeyExpression;
-            _field.FieldOption.RelatedModelDisplayExpression = lookupDisplayExpression;
+            _field.FieldOption.LookupExpression = lookupExpression;
+            _field.FieldOption.LookupKeyExpression = lookUpKeyExpression;
+            _field.FieldOption.LookupDisplayExpression = lookupDisplayExpression;
             return this;
         }
+
+        public PropertyBuilder<TModel> HasMatrixLookup<TRowType, TColumnType, TKey>(
+            Expression<Func<IServiceProvider, IList<TRowType>>> rowExpression,
+            Expression<Func<TRowType, TKey>> rowKeyExpression,
+            Expression<Func<TRowType, string>> rowDisplayExpression,
+            Expression<Func<IServiceProvider, IList<TColumnType>>> colExpression,
+            Expression<Func<TColumnType, TKey>> colKeyExpression,
+            Expression<Func<TColumnType, string>> colDisplayExpression)
+            where TRowType : class
+        {
+            _field.FieldOption.CheckBoxMatrix.RowLookupExpression = rowExpression;
+            _field.FieldOption.CheckBoxMatrix.RowLookupKeyExpression = rowKeyExpression;
+            _field.FieldOption.CheckBoxMatrix.RowLookupDisplayExpression = rowDisplayExpression;
+            _field.FieldOption.CheckBoxMatrix.ColLookupExpression = colExpression;
+            _field.FieldOption.CheckBoxMatrix.ColLookupKeyExpression = colKeyExpression;
+            _field.FieldOption.CheckBoxMatrix.ColLookupDisplayExpression = colDisplayExpression;
+            return this;
+        }
+
+        public PropertyBuilder<TModel> HasLookup<TRelatedModel, TKey, TFilterProperty>(
+            Expression<Func<IServiceProvider, TFilterProperty, IList<TRelatedModel>>> lookupExpression,
+            Expression<Func<TRelatedModel, TKey>> lookUpKeyExpression,
+            Expression<Func<TRelatedModel, string>> lookupDisplayExpression,
+            Expression<Func<TModel, TFilterProperty>> lookupFilterExpression)
+            where TRelatedModel : class
+        {
+            var filterFieldName = ReflectionExtensions.GetMemberName(lookupFilterExpression);
+            var filterField = _formConfig.AllFormFields.FirstOrDefault(f => f.FieldName == filterFieldName);
+            if (filterField == null)
+            {
+                throw new InvalidOperationException(Resources.FieldNotFoundInvaidOperation);
+            }
+
+            _field.FieldOption.LookupExpression = lookupExpression;
+            _field.FieldOption.LookupKeyExpression = lookUpKeyExpression;
+            _field.FieldOption.LookupDisplayExpression = lookupDisplayExpression;
+            _field.FieldOption.LookupFilterExpression = lookupFilterExpression;
+            _field.FieldOption.LookupFilterField = filterField;
+            return this;
+        }
+
+
 
         //public AdminConfig<TEntity> AdminConfig { get; set; }
         //public LambdaExpression FieldExpression { get; set; }
