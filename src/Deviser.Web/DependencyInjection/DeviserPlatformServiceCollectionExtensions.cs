@@ -39,6 +39,7 @@ using Deviser.Web.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 
 namespace Deviser.Web.DependencyInjection
 {
@@ -163,35 +164,6 @@ namespace Deviser.Web.DependencyInjection
                         googleOptions.ClientSecret = googleClientSecret;
                     });
                 }
-                //var settingManager = InternalServiceProvider.Instance.ServiceProvider.GetService<ISettingManager>(); //sp.GetService<ISiteSettingRepository>()
-                //var siteSettings = settingManager.GetSiteSetting();
-
-                //if (siteSettings.EnableFacebookAuth)
-                //{
-                //    services.AddAuthentication().AddFacebook(facebookOptions =>
-                //    {
-                //        facebookOptions.AppId = siteSettings.FacebookAppId;
-                //        facebookOptions.AppSecret = siteSettings.FacebookAppSecret;
-                //    });
-                //}
-
-                //if (siteSettings.EnableTwitterAuth)
-                //{
-                //    services.AddAuthentication().AddTwitter(facebookOptions =>
-                //    {
-                //        facebookOptions.ConsumerKey = siteSettings.TwitterConsumerKey;
-                //        facebookOptions.ConsumerSecret = siteSettings.TwitterConsumerSecret;
-                //    });
-                //}
-
-                //if (siteSettings.EnableGoogleAuth)
-                //{
-                //    services.AddAuthentication().AddGoogle(facebookOptions =>
-                //    {
-                //        facebookOptions.ClientId = siteSettings.GoogleClientId;
-                //        facebookOptions.ClientSecret = siteSettings.GoogleClientSecret;
-                //    });
-                //}
             }
 
             RegisterModuleDependencies(services);
@@ -212,16 +184,19 @@ namespace Deviser.Web.DependencyInjection
                 .AddControllersAsServices()
                 .AddRazorRuntimeCompilation();
 
-            services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
+            if (hostEnvironment.IsDevelopment())
             {
-                var libraryPath = Path.GetFullPath(
-                    Path.Combine(hostEnvironment.ContentRootPath, "..", "Deviser.Web"));
-                options.FileProviders.Add(new PhysicalFileProvider(libraryPath));
+                services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
+                {
+                    var libraryPath = Path.GetFullPath(
+                        Path.Combine(hostEnvironment.ContentRootPath, "..", "Deviser.Web"));
+                    options.FileProviders.Add(new PhysicalFileProvider(libraryPath));
 
-                libraryPath = Path.GetFullPath(
-                    Path.Combine(hostEnvironment.ContentRootPath, "..", "Deviser.Core", "Deviser.Admin.Web"));
-                options.FileProviders.Add(new PhysicalFileProvider(libraryPath));
-            });
+                    libraryPath = Path.GetFullPath(
+                        Path.Combine(hostEnvironment.ContentRootPath, "..", "Deviser.Core", "Deviser.Admin.Web"));
+                    options.FileProviders.Add(new PhysicalFileProvider(libraryPath));
+                });
+            }
 
             services.AddDeviserAdmin();
 
