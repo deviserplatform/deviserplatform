@@ -93,12 +93,12 @@ namespace Deviser.Core.Library
                 if (systemFilter == SystemPageFilter.PublicOnly)
                 {
                     //page.ChildPage = page.ChildPage.Where(p => !p.IsSystem).ToList();
-                    predicate = p => !p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && HasViewPermission(p);
+                    predicate = p => !p.IsSystem && p.IsActive && p.IsIncludedInMenu && HasViewPermission(p);
                 }
                 else if (systemFilter == SystemPageFilter.SystemOnly)
                 {
                     //page.ChildPage = page.ChildPage.Where(p => p.IsSystem).ToList();
-                    predicate = p => p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && HasViewPermission(p);
+                    predicate = p => p.IsSystem && p.IsActive && p.IsIncludedInMenu && HasViewPermission(p);
                 }
 
 
@@ -185,7 +185,7 @@ namespace Deviser.Core.Library
             menuItem.Page = page;
             menuItem.HasChild = page.ChildPage != null && page.ChildPage.Count > 0;
             menuItem.PageLevel = page.PageLevel != null ? (int)page.PageLevel : 0;
-            menuItem.IsActive = page.IsActive;
+            menuItem.IsActive = page.IsCurrentPage;
             menuItem.IsBreadCrumb = page.IsBreadCrumb;
 
             if (pageTranslation != null)
@@ -328,7 +328,7 @@ namespace Deviser.Core.Library
                 Page page = _pageRepository.GetPage(pageId);
                 if (page != null)
                 {
-                    page.IsDeleted = true;
+                    page.IsActive = false;
                     var resultPage = _pageRepository.UpdatePageActiveAndLayout(page);
                     if (resultPage != null)
                         return true;
@@ -644,7 +644,7 @@ namespace Deviser.Core.Library
             {
                 if (page.Id == currentPageId)
                 {
-                    page.IsActive = true;
+                    page.IsCurrentPage = true;
                     activePage = page;
                 }
 
@@ -675,7 +675,7 @@ namespace Deviser.Core.Library
             if (currentLevel != null)
             {
                 bool? isChildActive = currentLevel?.ChildPage?.Any(child => child.Id == currentLevel.Id);
-                isCurrentBreadCrumb = currentLevel.IsActive || (isChildActive ?? false);
+                isCurrentBreadCrumb = currentLevel.IsCurrentPage || (isChildActive ?? false);
 
                 if (!isCurrentBreadCrumb && currentLevel.ChildPage != null && currentLevel.ChildPage.Count > 0)
                 {

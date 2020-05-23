@@ -75,7 +75,7 @@ namespace Deviser.Core.Library.Controllers
             var currentPage = _scopeService.PageContext.CurrentPage;
             if (currentPage.PageModule != null && currentPage.PageModule.Count > 0)
             {
-                currentPage.PageModule = currentPage.PageModule.Where(pm => !pm.IsDeleted).ToList();
+                currentPage.PageModule = currentPage.PageModule.Where(pm => pm.IsActive).ToList();
                 foreach (var pageModule in currentPage.PageModule)
                 {
                     Module module = _moduleRepository.GetModule(pageModule.ModuleId);

@@ -61,7 +61,7 @@
                         </div>
                     </div>
                     <ol ui-tree-nodes="pmVM.options" ng-model="page.childPage" ng-class="{hidden: collapsed}">
-                        <li ng-repeat="page in page.childPage" ui-tree-node ng-include="'items_renderer.html'" ng-show="!page.isDeleted">
+                        <li ng-repeat="page in page.childPage" ui-tree-node ng-include="'items_renderer.html'" ng-show="page.isActive">
                         </li>
                     </ol>
                 </script>
@@ -69,7 +69,7 @@
                     <a ng-click="pmVM.collapseAll()">Collpse All</a>
                     <div ui-tree="pmVM.options" data-drag-enabled="true" data-drag-delay="200" data-max-depth="8">
                         <ol ui-tree-nodes ng-model="pmVM.pages">
-                            <li ng-repeat="page in pmVM.pages" ui-tree-node ng-include="'items_renderer.html'" ng-show="!page.isDeleted">
+                            <li ng-repeat="page in pmVM.pages" ui-tree-node ng-include="'items_renderer.html'" ng-show="page.isActive">
                             </li>
                         </ol>
                     </div>

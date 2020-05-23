@@ -25,7 +25,7 @@ namespace Deviser.Web
             var builder = new DbContextOptionsBuilder<DeviserDbContext>();
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             //builder.UseNpgsql(connectionString, b => b.MigrationsAssembly("Deviser.WI"));
-            builder.UseSqlServer(connectionString, b => b.MigrationsAssembly("Deviser.WI"));
+            builder.UseSqlServer(connectionString, b => b.MigrationsAssembly("Deviser.Web"));
             return new DeviserDbContext(builder.Options);
         }
     }

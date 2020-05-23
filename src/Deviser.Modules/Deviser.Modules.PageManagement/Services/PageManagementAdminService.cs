@@ -151,7 +151,7 @@ namespace Deviser.Modules.PageManagement.Services
             Page page = _pageRepository.GetPage(Guid.Parse(itemId));
             if (page != null)
             {
-                page.IsDeleted = true;
+                page.IsActive = false;
                 var pageResult = _pageRepository.UpdatePageActiveAndLayout(page);
                 if (pageResult != null)
                 {

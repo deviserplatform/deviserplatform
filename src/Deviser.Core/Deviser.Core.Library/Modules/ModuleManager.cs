@@ -105,7 +105,7 @@ namespace Deviser.Core.Library.Modules
                     else
                     {
                         dbPageModule.Title = pageModule.Title;
-                        dbPageModule.IsDeleted = false;
+                        dbPageModule.IsActive = true;
                         dbPageModule.ContainerId = pageModule.ContainerId;
                         dbPageModule.SortOrder = pageModule.SortOrder;                       
                         dbPageModule.Properties = pageModule.Properties;

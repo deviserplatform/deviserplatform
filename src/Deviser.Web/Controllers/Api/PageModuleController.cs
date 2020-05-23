@@ -213,7 +213,7 @@ namespace DeviserWI.Controllers.API
                     System.Threading.Tasks.Task.Delay(200).Wait();
                     if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
                     {
-                        pageModule.IsDeleted = true;
+                        pageModule.IsActive = false;
                         _pageRepository.UpdatePageModule(pageModule);
                         return Ok();
                     }

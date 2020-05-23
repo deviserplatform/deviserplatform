@@ -117,7 +117,7 @@ namespace Deviser.Core.Library.Sites
                 }
                 else
                 {
-                    pageContent.IsDeleted = false;
+                    pageContent.IsActive = true;
                     result.Title = pageContent.Title;
                     result.ContainerId = pageContent.ContainerId;
                     result.SortOrder = pageContent.SortOrder;
@@ -169,7 +169,7 @@ namespace Deviser.Core.Library.Sites
             var content = _pageContentRepository.Get(id);
             if (content != null)
             {
-                content.IsDeleted = true;
+                content.IsActive = false;
                 _pageContentRepository.Update(content);
                 return true;
             }

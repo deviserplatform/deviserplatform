@@ -17,7 +17,7 @@ namespace Deviser.Admin.ConfiguratorTest.Models
         public DateTime? CreatedDate { get; set; }
         public bool? InheritEditPermissions { get; set; }
         public bool? InheritViewPermissions { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsActive { get; set; }
         public DateTime? LastModifiedDate { get; set; }
         public Guid PageId { get; set; }
         public string Properties { get; set; }

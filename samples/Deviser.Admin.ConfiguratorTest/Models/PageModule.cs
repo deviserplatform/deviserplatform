@@ -14,7 +14,7 @@ namespace Deviser.Admin.ConfiguratorTest.Models
         public Guid ContainerId { get; set; }
         public bool? InheritEditPermissions { get; set; }
         public bool? InheritViewPermissions { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsActive { get; set; }
         public Guid ModuleActionId { get; set; }
         public Guid ModuleId { get; set; }
         public Guid PageId { get; set; }

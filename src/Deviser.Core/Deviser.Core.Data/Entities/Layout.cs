@@ -12,7 +12,7 @@ namespace Deviser.Core.Data.Entities
 
         public Guid Id { get; set; }
         public string Config { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsActive { get; set; }
         public string Name { get; set; }
 
         public virtual ICollection<Page> Page { get; set; }

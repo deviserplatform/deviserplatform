@@ -140,22 +140,22 @@ namespace Deviser.Modules.Language.Services
         //    {
         //        case "Layouts":
         //            var layout = _layoutRepository.GetLayout(item.Id);
-        //            layout.IsDeleted = false;
+        //            layout.IsActive = false;
         //            resultItem = _layoutRepository.UpdateLayout(layout);
         //            break;
         //        case "Page":
         //            var page = _pageRepository.GetPage(item.Id);
-        //            page.IsDeleted = false;
+        //            page.IsCurrentPage = false;
         //            resultItem = _pageRepository.UpdatePage(page);
         //            break;
         //        case "PageContent":
         //            var pageContent = _pageContentRepository.Get(item.Id);
-        //            pageContent.IsDeleted = false;
+        //            pageContent.IsActive = false;
         //            resultItem = _pageContentRepository.Update(pageContent);
         //            break;
         //        case "PageModule":
         //            var pageModule = _pageRepository.GetPageModule(item.Id);
-        //            pageModule.IsDeleted = false;
+        //            pageModule.IsActive = false;
         //            resultItem = _pageRepository.UpdatePageModule(pageModule);
         //            break;
         //    };

@@ -61,7 +61,7 @@ namespace Deviser.Core.Data.Repositories
                     .Include(pc => pc.ContentType)
                     .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentTypeProperties).ThenInclude(ctp => ctp.Property)
                     .Include(pc => pc.ContentPermissions)
-                    .Where(e => e.Id == pageContentId && !e.IsDeleted)
+                    .Where(e => e.Id == pageContentId && e.IsActive)
                     .AsNoTracking()
                     .FirstOrDefault();
                 return _mapper.Map<PageContent>(result);
@@ -86,7 +86,7 @@ namespace Deviser.Core.Data.Repositories
         //        {
         //            IEnumerable<PageContent> returnData = context.PageContent
         //                       .AsNoTracking()
-        //                       .Where(e => e.ContainerId == containerId && !e.IsDeleted)
+        //                       .Where(e => e.ContainerId == containerId && e.IsActive)
         //                       .ToList();
         //            return new List<PageContent>(returnData);
         //        }
@@ -115,7 +115,7 @@ namespace Deviser.Core.Data.Repositories
                     .Include(pc => pc.ContentType)
                     .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentTypeProperties).ThenInclude(ctp => ctp.Property)
                     .Include(pc => pc.ContentPermissions)
-                    .Where(e => e.PageId == pageId && !e.IsDeleted)
+                    .Where(e => e.PageId == pageId && e.IsActive)
                     .ToList();
 
                 foreach (var pageContent in result.Where(pageContent => pageContent.PageContentTranslation != null))
@@ -140,7 +140,7 @@ namespace Deviser.Core.Data.Repositories
                 var result = context.PageContent
                     .Include(p => p.Page).ThenInclude(p => p.PageTranslation)
                     .Include(pc => pc.ContentPermissions)
-                    .Where(p => p.IsDeleted)
+                    .Where(p => !p.IsActive)
                     .OrderBy(p => p.Id)
                     .ToList();
 
@@ -165,7 +165,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.PageContentTranslation
-                    .FirstOrDefault(t => t.PageContentId == pageContentId && t.CultureCode == cultureCode && !t.IsDeleted);
+                    .FirstOrDefault(t => t.PageContentId == pageContentId && t.CultureCode == cultureCode && !t.IsActive);
                 return _mapper.Map<PageContentTranslation>(result);
             }
             catch (Exception ex)
@@ -186,7 +186,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.PageContentTranslation
-                    .FirstOrDefault(t => t.Id == pageContentId && !t.IsDeleted);
+                    .FirstOrDefault(t => t.Id == pageContentId && t.IsActive);
 
                 return _mapper.Map<PageContentTranslation>(result);
             }
@@ -423,7 +423,7 @@ namespace Deviser.Core.Data.Repositories
 
                 if (dbPageContent != null)
                 {
-                    dbPageContent.IsDeleted = false;
+                    dbPageContent.IsActive = true;
                     var result = context.PageContent.Update(dbPageContent).Entity;
                     context.SaveChanges();
                     return _mapper.Map<PageContent>(result);
@@ -475,7 +475,7 @@ namespace Deviser.Core.Data.Repositories
             try
             {
                 using var context = new DeviserDbContext(_dbOptions);
-                var pageContent = context.PageContent.First(p => p.Id == id && p.IsDeleted);
+                var pageContent = context.PageContent.First(p => p.Id == id && !p.IsActive);
 
                 return pageContent;
             }

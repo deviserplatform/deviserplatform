@@ -88,7 +88,7 @@
             .then(function (layouts) {
                 console.log(layouts);
                 //Processing the data
-                layouts = _.filter(layouts, { isDeleted: false });
+                layouts = _.filter(layouts, { isActive: true });
                 _.forEach(layouts, function (item) {
                     if (item && !item.placeHolders) {
                         item.placeHolders = [];

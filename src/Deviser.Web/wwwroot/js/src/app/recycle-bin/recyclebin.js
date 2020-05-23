@@ -79,7 +79,7 @@
 
         function restorePage(id) {           
             pageService.restorePage(id).then(function (page) {
-                if (page.isDeleted === false)
+                if (page.isActive)
                     getDeletedPages();
                 showMessage("success", "The page has been restored");
             },function(error){
@@ -89,7 +89,7 @@
 
         function restoreLayout(layout) {
             layoutService.restoreLayout(layout).then(function (layout) {
-                if (layout.isDeleted === false)
+                if (layout.isActive)
                     getDeletedLayouts();
                 showMessage("success", "The layout has been restored");
             }, function (error) {
@@ -99,7 +99,7 @@
 
         function restorePageContent(id) {
             pageContentService.restorePageContent(id).then(function (pageContent) {
-                if (pageContent.isDeleted === false)
+                if (pageContent.isActive)
                     getDeletedPageContents();
                 showMessage("success", "The page content has been restored");
             }, function (error) {
@@ -109,7 +109,7 @@
 
         function restorePageModule(id) {
             pageModuleService.restorePageModule(id).then(function (pageModule){
-                if (pageModule.isDeleted === false)
+                if (pageModule.isActive)
                     getDeletedPageModules();
                 showMessage("success", "The page module has been restored");
             }, function (error) {

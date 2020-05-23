@@ -4,14 +4,16 @@ using Deviser.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Deviser.Web.Migrations
 {
     [DbContext(typeof(DeviserDbContext))]
-    partial class DeviserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200523223648_PlatformSchema_00.00.05")]
+    partial class PlatformSchema_000005
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -413,11 +415,6 @@ namespace Deviser.Web.Migrations
 
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsIncludedInMenu")
                         .HasColumnType("bit");

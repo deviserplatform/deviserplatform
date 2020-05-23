@@ -75,7 +75,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.Layout
-                    .Where(e => e.IsDeleted)
+                    .Where(e => !e.IsActive)
                     .ToList();
 
                 return _mapper.Map<List<Layout>>(result);

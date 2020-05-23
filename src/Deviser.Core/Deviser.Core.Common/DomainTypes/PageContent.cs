@@ -13,7 +13,7 @@ namespace Deviser.Core.Common.DomainTypes
         public List<Property> Properties { get; set; }
         public int SortOrder { get; set; }
         public DateTime? CreatedDate { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsActive { get; set; }
         public DateTime? LastModifiedDate { get; set; }
         public Guid PageId { get; set; }
         public Guid ContentTypeId { get; set; }

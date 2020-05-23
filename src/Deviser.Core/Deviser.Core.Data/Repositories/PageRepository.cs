@@ -79,7 +79,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 /*IEnumerable<> returnData = context.Pages.Include(x => x.ChildPages
                                                                     .Select(y => y.ChildPages.Select(c => c.ChildPages.Select(gc => gc.ChildPages.Select(ggc => ggc.ChildPages)))))
-                                                                    .Where(.Where(e=>e.ParentId==null&&e.IsDeleted==false));*/
+                                                                    .Where(.Where(e=>e.ParentId==null&&e.IsCurrentPage==false));*/
                 /*IList<> returnData = new IList<>();
                 returnData.Add(context.Pages.ToList().First());*/
                 //var cacheName = nameof(GetPageTree);
@@ -91,7 +91,7 @@ namespace Deviser.Core.Data.Repositories
 
                 //using var context = new DeviserDbContext(_dbOptions);
                 var allPagesInFlat = GetPagesFlat()
-                    .Where(p => isActiveOnly && !p.IsDeleted || !isActiveOnly) //This Query cannot be translated to SQL by EF. Therefore, evaluating in client side.
+                    .Where(p => isActiveOnly && p.IsActive || !isActiveOnly) //This Query cannot be translated to SQL by EF. Therefore, evaluating in client side.
                     .ToList();
 
                 var rootOnly = allPagesInFlat.First(p => p.ParentId == null);
@@ -112,7 +112,7 @@ namespace Deviser.Core.Data.Repositories
             try
             {
                 var allPagesInFlat = GetPagesFlat()
-                    .Where(p => isActiveOnly && !p.IsDeleted || !isActiveOnly) //This Query cannot be translated to SQL by EF. Therefore, evaluating in client side.
+                    .Where(p => isActiveOnly && p.IsActive || !isActiveOnly) //This Query cannot be translated to SQL by EF. Therefore, evaluating in client side.
                     .ToList();
 
                 var rootOnly = allPagesInFlat.First(p => p.Id == pageId);
@@ -243,7 +243,7 @@ namespace Deviser.Core.Data.Repositories
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.Page
                     .Include(p => p.PageTranslation)
-                    .Where(e => e.ParentId != null && e.IsDeleted).AsNoTracking()
+                    .Where(e => e.ParentId != null && !e.IsActive).AsNoTracking()
                     .ToList();
 
                 return _mapper.Map<IList<Page>>(result);
@@ -328,12 +328,12 @@ namespace Deviser.Core.Data.Repositories
 
                 if (dbResult.PageModule != null)
                 {
-                    dbResult.PageModule = dbResult.PageModule.Where(pm => !pm.IsDeleted).ToList();
+                    dbResult.PageModule = dbResult.PageModule.Where(pm => pm.IsActive).ToList();
                 }
 
                 if (dbResult.PageContent != null)
                 {
-                    dbResult.PageContent = dbResult.PageContent.Where(pc => !pc.IsDeleted).ToList();
+                    dbResult.PageContent = dbResult.PageContent.Where(pc => pc.IsActive).ToList();
                 }
 
                 var result = _mapper.Map<Page>(dbResult);
@@ -441,7 +441,7 @@ namespace Deviser.Core.Data.Repositories
 
         /// <summary>
         /// Updates following properties of the Page only:
-        /// 1. Page.IsActive
+        /// 1. Page.IsCurrentPage
         /// 2. Page.LayoutId
         /// </summary>
         /// <param name="page"></param>
@@ -453,7 +453,7 @@ namespace Deviser.Core.Data.Repositories
                 using var context = new DeviserDbContext(_dbOptions);
                 var dbPage = context.Page.First(p => p.Id == page.Id);
                 dbPage.LayoutId = page.LayoutId;
-                dbPage.IsDeleted = page.IsDeleted;
+                dbPage.IsActive = page.IsActive;
                 var result = context.Page.Update(dbPage).Entity;
                 context.SaveChanges();
                 //Refresh cache
@@ -575,7 +575,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.PageModule
-                    .Where(e => e.PageId == pageId && !e.IsDeleted)
+                    .Where(e => e.PageId == pageId && e.IsActive)
                     .Include(e => e.Module)
                     .Include(e => e.ModuleAction).ThenInclude(mp => mp.ModuleActionProperties).ThenInclude(cp => cp.Property)
                     .Include(e => e.ModulePermissions)
@@ -600,7 +600,7 @@ namespace Deviser.Core.Data.Repositories
                     .Include(pm => pm.ModulePermissions)
                     .Include(pm => pm.Module)
                     .Include(e => e.ModuleAction).ThenInclude(ma => ma.ModuleActionProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
-                    .Where(e => e.Id == pageModuleId && !e.IsDeleted)
+                    .Where(e => e.Id == pageModuleId && e.IsActive)
                     .OrderBy(p => p.Id)
                     .FirstOrDefault();
 
@@ -620,7 +620,7 @@ namespace Deviser.Core.Data.Repositories
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.PageModule
                     .Include(P => P.Page).ThenInclude(P => P.PageTranslation)
-                    .Where(e => e.IsDeleted)
+                    .Where(e => !e.IsActive)
                     .OrderBy(p => p.Id)
                     .ToList();
 
@@ -833,7 +833,7 @@ namespace Deviser.Core.Data.Repositories
 
                 if (dbPageModule != null)
                 {
-                    dbPageModule.IsDeleted = false;
+                    dbPageModule.IsActive = true;
                     var result = context.PageModule.Update(dbPageModule).Entity;
                     context.SaveChanges();
                     return _mapper.Map<PageModule>(result);
@@ -877,7 +877,7 @@ namespace Deviser.Core.Data.Repositories
             try
             {
                 using var context = new DeviserDbContext(_dbOptions);
-                var pageModule = context.PageModule.First(p => p.Id == id && p.IsDeleted);
+                var pageModule = context.PageModule.First(p => p.Id == id && !p.IsActive);
 
                 return pageModule;
             }
@@ -897,7 +897,7 @@ namespace Deviser.Core.Data.Repositories
 
                 if (dbPage != null)
                 {
-                    dbPage.IsDeleted = false;
+                    dbPage.IsActive = true;
                     var result = context.Update(dbPage).Entity;
                     context.SaveChanges();
                     return _mapper.Map<Page>(result);
@@ -1067,7 +1067,7 @@ namespace Deviser.Core.Data.Repositories
             try
             {
                 using var context = new DeviserDbContext(_dbOptions);
-                var page = context.Page.First(p => p.Id == id && p.IsDeleted);
+                var page = context.Page.First(p => p.Id == id && !p.IsActive);
 
                 return page;
             }

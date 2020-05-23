@@ -114,7 +114,7 @@ namespace Deviser.Core.Data
 
             modelBuilder.Entity<Layout>(entity =>
             {
-                entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
 
                 entity.Property(e => e.Name).HasMaxLength(50);
             });
@@ -174,7 +174,7 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.EndDate);
 
-                entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
 
                 entity.Property(e => e.IsSystem).HasDefaultValue(false);
 
@@ -190,7 +190,6 @@ namespace Deviser.Core.Data
 
                 entity.HasOne(d => d.Parent).WithMany(p => p.ChildPage).HasForeignKey(d => d.ParentId);
 
-                entity.Ignore(e => e.IsActive);
                 entity.Ignore(e => e.IsBreadCrumb);
             }));
 
@@ -201,7 +200,7 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.CreatedDate);
 
-                entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
 
                 entity.Property(e => e.InheritViewPermissions).HasDefaultValue(true);
 
@@ -227,7 +226,7 @@ namespace Deviser.Core.Data
                     .IsRequired()
                     .HasMaxLength(10);
 
-                entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
 
                 entity.Property(e => e.LastModifiedDate);
 
@@ -242,7 +241,7 @@ namespace Deviser.Core.Data
 
                 entity.HasIndex(e => e.PageId).HasName("IX_FK_PageModule_Module");
 
-                entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
 
                 entity.Property(e => e.InheritViewPermissions).HasDefaultValue(true);
 

@@ -13,7 +13,7 @@ namespace Deviser.Core.Common.DomainTypes
         public List<PlaceHolder> PlaceHolders { get; set; }
         public Guid PageId { get; set; }
         public bool IsChanged { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsActive { get; set; }
 
         public void Dispose()
         {
