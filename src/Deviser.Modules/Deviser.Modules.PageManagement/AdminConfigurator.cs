@@ -83,7 +83,7 @@ namespace Deviser.Modules.PageManagement
                     var formBuilder = modelBuilder.FormBuilder;
 
                     modelBuilder.GridBuilder
-                        .AddField(p => p.Language.EnglishName, option => option.DisplayName="Language")
+                        .AddField(p => p.Language.EnglishName, option => option.DisplayName = "Language")
                         .AddField(p => p.Name)
                         .AddField(p => p.Title);
 
@@ -109,8 +109,8 @@ namespace Deviser.Modules.PageManagement
                     provider => provider.GetService<PageManagementAdminService>().IsSiteMultilingual());
 
                 formBuilder.Property(f => f.Name)
-                    .ShowOn(f => f.PageType != null && f.PageType.Id == standardId)
-                    .ValidateOn(f => f.PageType != null && f.PageType.Id == standardId);
+                    .ShowOn(f => f.PageType != null && (f.PageType.Id == standardId || f.PageTypeId == adminId))
+                    .ValidateOn(f => f.PageType != null && (f.PageType.Id == standardId || f.PageTypeId == adminId));
 
                 formBuilder.Property(f => f.Title)
                     .ShowOn(f => f.PageType != null && f.PageType.Id == standardId)

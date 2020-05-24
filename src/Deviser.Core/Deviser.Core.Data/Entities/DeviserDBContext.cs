@@ -114,7 +114,9 @@ namespace Deviser.Core.Data
 
             modelBuilder.Entity<Layout>(entity =>
             {
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Name).HasMaxLength(50);
             });
@@ -125,7 +127,9 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.Description).HasMaxLength(2000);
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Label)
                     .IsRequired()
@@ -154,7 +158,9 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.DisplayName).HasMaxLength(50);
 
-                entity.Property(e => e.IsDefault).IsRequired().HasDefaultValue(false);
+                entity.Property(e => e.IsDefault).IsRequired()
+                    .HasDefaultValue(false)
+                    .ValueGeneratedNever();
 
                 entity.HasOne(d => d.ModuleViewType).WithMany(p => p.ModuleView).HasForeignKey(d => d.ModuleViewTypeId).OnDelete(DeleteBehavior.Restrict);
 
@@ -174,9 +180,13 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.EndDate);
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.IsSystem).HasDefaultValue(false);
+                entity.Property(e => e.IsSystem)
+                    .HasDefaultValue(false)
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.LastModifiedDate);
 
@@ -200,11 +210,17 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.CreatedDate);
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.InheritViewPermissions).HasDefaultValue(true);
+                entity.Property(e => e.InheritViewPermissions)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.InheritEditPermissions).HasDefaultValue(true);
+                entity.Property(e => e.InheritEditPermissions)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
                 entity.Ignore(e => e.HasEditPermission);
 
@@ -226,7 +242,9 @@ namespace Deviser.Core.Data
                     .IsRequired()
                     .HasMaxLength(10);
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.LastModifiedDate);
 
@@ -241,11 +259,17 @@ namespace Deviser.Core.Data
 
                 entity.HasIndex(e => e.PageId).HasName("IX_FK_PageModule_Module");
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.InheritViewPermissions).HasDefaultValue(true);
+                entity.Property(e => e.InheritViewPermissions)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.InheritEditPermissions).HasDefaultValue(true);
+                entity.Property(e => e.InheritEditPermissions)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
                 entity.Ignore(e => e.HasEditPermission);
 
@@ -300,7 +324,9 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.CreatedDate);
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.LastModifiedDate);
 
@@ -310,14 +336,18 @@ namespace Deviser.Core.Data
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
             });
 
             modelBuilder.Entity<ContentType>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
             });
             modelBuilder.Entity<Property>(entity =>
@@ -326,7 +356,9 @@ namespace Deviser.Core.Data
 
                 entity.Ignore(e => e.Value);
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
                 entity.HasOne(d => d.OptionList).WithMany(p => p.Properties).HasForeignKey(d => d.OptionListId).OnDelete(DeleteBehavior.Restrict);
             });
@@ -335,7 +367,9 @@ namespace Deviser.Core.Data
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired();
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
             });
 
             modelBuilder.Entity<LayoutTypeProperty>(entity =>
