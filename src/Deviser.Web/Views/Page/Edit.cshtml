@@ -108,9 +108,9 @@
 
                         <div class="module-header clearfix">
                             <div class="module-title">
-                                <i class="{{item.moduleAction.iconClass}}" ng-if="item.moduleAction.iconClass"></i>
-                                <img src="{{item.moduleAction.iconImage}}" ng-if="item.moduleAction.iconImage" alt="{{item.moduleAction.name}}" />
-                                {{item.moduleAction.displayName}}
+                                <i class="{{item.moduleView.iconClass}}" ng-if="item.moduleView.iconClass"></i>
+                                <img src="{{item.moduleView.iconImage}}" ng-if="item.moduleView.iconImage" alt="{{item.moduleView.name}}" />
+                                {{item.moduleView.displayName}}
 
 
                                 {{$index+1}}
@@ -124,7 +124,7 @@
                                 </a>
                                 <ul class="module-actions dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
                                     <li ng-repeat="action in editVM.selectedItem.pageModule.editActions" role="menuitem">
-                                        <a ng-click="editVM.openModuleActionEdit(action)">
+                                        <a ng-click="editVM.openModuleViewEdit(action)">
                                             <i class="{{action.iconClass}}" ng-show="action.iconClass"></i>
 
                                             {{action.displayName}}
@@ -207,9 +207,9 @@
 
                 <div class="module-header clearfix">
                     <div class="module-title">
-                        <i class="{{item.moduleAction.iconClass}}" ng-show="item.moduleAction.iconClass"></i>
-                        <img src="{{item.moduleAction.iconImage}}" ng-show="item.moduleAction.iconImage" alt="{{item.moduleAction.name}}" />
-                        {{item.moduleAction.displayName}}
+                        <i class="{{item.moduleView.iconClass}}" ng-show="item.moduleView.iconClass"></i>
+                        <img src="{{item.moduleView.iconImage}}" ng-show="item.moduleView.iconImage" alt="{{item.moduleView.name}}" />
+                        {{item.moduleView.displayName}}
 
 
                         {{$index+1}}
@@ -223,7 +223,7 @@
                         </a>
                         <ul class="module-actions dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
                             <li ng-repeat="action in editVM.selectedItem.pageModule.editActions" role="menuitem">
-                                <a ng-click="editVM.openModuleActionEdit(action)">
+                                <a ng-click="editVM.openModuleViewEdit(action)">
                                     <i class="{{action.iconClass}}" ng-show="action.iconClass"></i>
 
                                     {{action.displayName}}
@@ -283,9 +283,9 @@
                                  dnd-draggable="item"
                                  dnd-effect-allowed="copy">
                                 <button type="button" class="btn btn-sm btn-default">
-                                    <i class="{{item.moduleAction.iconClass}}" ng-if="item.moduleAction.iconClass"></i>
-                                    <img src="{{item.moduleAction.iconImage}}" ng-if="item.moduleAction.iconImage" alt="{{item.moduleAction.name}}" />
-                                    {{item.moduleAction.displayName}}
+                                    <i class="{{item.moduleView.iconClass}}" ng-if="item.moduleView.iconClass"></i>
+                                    <img src="{{item.moduleView.iconImage}}" ng-if="item.moduleView.iconImage" alt="{{item.moduleView.name}}" />
+                                    {{item.moduleView.displayName}}
                                 </button>
                             </div>
                         </div>
@@ -365,7 +365,7 @@
                                     <strong>Module</strong>
                                 </div>
                                 <div class="col-md-12">
-                                    {{editVM.selectedItem.moduleAction.displayName}}
+                                    {{editVM.selectedItem.moduleView.displayName}}
                                 </div>
                             </div>
                             <div class="row">

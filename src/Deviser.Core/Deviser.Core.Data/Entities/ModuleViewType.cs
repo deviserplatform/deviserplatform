@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace Deviser.Core.Data.Entities
 {
-    public partial class ModuleActionType
+    public partial class ModuleViewType
     {
-        public ModuleActionType()
+        public ModuleViewType()
         {
-            ModuleAction = new HashSet<ModuleAction>();
+            ModuleView = new HashSet<ModuleView>();
         }
 
         public Guid Id { get; set; }
         public string ControlType { get; set; }
 
-        public virtual ICollection<ModuleAction> ModuleAction { get; set; }
+        public virtual ICollection<ModuleView> ModuleView { get; set; }
     }
 }

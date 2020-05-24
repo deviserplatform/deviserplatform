@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Common.DomainTypes
 {
-    public class ModuleAction
+    public class ModuleView
     {
         public Guid Id { get; set; }
         public string ActionName { get; set; }
@@ -14,10 +14,10 @@ namespace Deviser.Core.Common.DomainTypes
         public string DisplayName { get; set; }
         public string IconImage { get; set; }
         public string IconClass { get; set; }
-        public Guid ModuleActionTypeId { get; set; }
+        public Guid ModuleViewTypeId { get; set; }
         public Guid ModuleId { get; set; }
         public bool IsDefault { get; set; }
-        public virtual ModuleActionType ModuleActionType { get; set; }
+        public virtual ModuleViewType ModuleViewType { get; set; }
         public ICollection<Property> Properties { get; set; }
     }
 }

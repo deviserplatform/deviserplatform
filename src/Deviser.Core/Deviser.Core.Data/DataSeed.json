@@ -359,7 +359,7 @@
         "LastModifiedDate": "2017-11-13T20:37:15.323",
         "Name": "RecycleBin",
         "Version": "00.01.00",
-        "ModuleAction": null,
+        "ModuleView": null,
         "PageModule": null
       },
       {
@@ -371,7 +371,7 @@
         "LastModifiedDate": "2018-01-31T17:28:27.347",
         "Name": "Contact",
         "Version": "00.01.00",
-        "ModuleAction": null,
+        "ModuleView": null,
         "PageModule": null
       },
       {
@@ -383,7 +383,7 @@
         "LastModifiedDate": null,
         "Name": "SecurityRoles",
         "Version": "00.01.00",
-        "ModuleAction": null,
+        "ModuleView": null,
         "PageModule": null
       },
       {
@@ -395,7 +395,7 @@
         "LastModifiedDate": null,
         "Name": "Security",
         "Version": "00.01.00",
-        "ModuleAction": null,
+        "ModuleView": null,
         "PageModule": null
       },
       {
@@ -407,7 +407,7 @@
         "LastModifiedDate": null,
         "Name": "SiteManagement",
         "Version": "00.01.00",
-        "ModuleAction": null,
+        "ModuleView": null,
         "PageModule": null
       },
       {
@@ -419,7 +419,7 @@
         "LastModifiedDate": null,
         "Name": "FileManager",
         "Version": "00.01.00",
-        "ModuleAction": null,
+        "ModuleView": null,
         "PageModule": null
       },
       {
@@ -431,7 +431,7 @@
         "LastModifiedDate": null,
         "Name": "UserManagement",
         "Version": "00.01.00",
-        "ModuleAction": null,
+        "ModuleView": null,
         "PageModule": null
       },
       {
@@ -443,7 +443,7 @@
         "LastModifiedDate": null,
         "Name": "ContentManagement",
         "Version": "00.01.00",
-        "ModuleAction": null,
+        "ModuleView": null,
         "PageModule": null
       },
       {
@@ -455,7 +455,7 @@
         "LastModifiedDate": null,
         "Name": "ModuleManagement",
         "Version": "00.00.00",
-        "ModuleAction": null,
+        "ModuleView": null,
         "PageModule": null
       },
       {
@@ -467,7 +467,7 @@
         "LastModifiedDate": null,
         "Name": "PageManagement",
         "Version": "00.01.00",
-        "ModuleAction": null,
+        "ModuleView": null,
         "PageModule": null
       },
       {
@@ -479,24 +479,24 @@
         "LastModifiedDate": null,
         "Name": "Language",
         "Version": "00.01.00",
-        "ModuleAction": null,
+        "ModuleView": null,
         "PageModule": null
       }
     ]
   },
   {
-    "EntityTypeName": "ModuleActionType",
+    "EntityTypeName": "ModuleViewType",
     "SortOrder": 0,
     "AllRecords": [
       {
         "Id": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ControlType": "View",
-        "ModuleAction": null
+        "ModuleView": null
       },
       {
         "Id": "192278b6-7bf2-40c2-a776-b9ca5fb04fbb",
         "ControlType": "Edit",
-        "ModuleAction": null
+        "ModuleView": null
       }
     ]
   },
@@ -1652,7 +1652,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "fa1b0856-cea0-4245-e3f1-08d582dfee42",
@@ -1667,7 +1667,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "0d9134a4-4eb6-40a8-0959-08d58bf2fdc6",
@@ -1682,7 +1682,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "278c0cc1-5212-4bfa-095a-08d58bf2fdc6",
@@ -1697,7 +1697,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "89e09c02-9c55-4721-5531-08d58c515929",
@@ -1712,7 +1712,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "238b60e4-bcea-4171-5532-08d58c515929",
@@ -1727,7 +1727,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "c436196b-f19e-4e3b-5535-08d58c515929",
@@ -1742,7 +1742,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "4a81a097-a694-4db2-5538-08d58c515929",
@@ -1757,7 +1757,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "338675b6-6ffa-4f2d-5539-08d58c515929",
@@ -1772,7 +1772,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "7b2d6527-199b-406d-553b-08d58c515929",
@@ -1787,7 +1787,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "2157ff87-35a5-405c-553c-08d58c515929",
@@ -1802,7 +1802,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "4f6bf74f-b4eb-4b66-553d-08d58c515929",
@@ -1817,7 +1817,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "84ac0204-f84e-4e1c-553e-08d58c515929",
@@ -1832,7 +1832,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "55f585c6-708a-4487-553f-08d58c515929",
@@ -1847,7 +1847,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "2c843984-7009-4287-5540-08d58c515929",
@@ -1862,7 +1862,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "017c4f30-da51-4d18-5541-08d58c515929",
@@ -1877,7 +1877,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "3de7dc0a-b6c1-4136-aeaa-08d58c5c2d05",
@@ -1892,7 +1892,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "3379dca0-ada6-4245-aeab-08d58c5c2d05",
@@ -1907,7 +1907,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "14539266-bd68-440f-aeac-08d58c5c2d05",
@@ -1922,7 +1922,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "f0ad85a3-ff8c-40c6-aead-08d58c5c2d05",
@@ -1937,7 +1937,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "789115a9-2b18-474d-0721-08d58e3bfd70",
@@ -1952,7 +1952,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "1acf1470-d421-4b91-0722-08d58e3bfd70",
@@ -1967,7 +1967,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "16485fed-208b-456a-fd02-08d590dbe247",
@@ -1982,7 +1982,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "f645a11f-bc8c-4003-0e83-08d5932d4c52",
@@ -1997,7 +1997,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "cb4b6f18-7267-41c3-0e84-08d5932d4c52",
@@ -2012,7 +2012,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "217fbbe9-bf8e-4c49-c720-08d5a94c6f03",
@@ -2027,7 +2027,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "c1a87a70-1b7a-4fe6-09bc-08d5a94f7b1f",
@@ -2042,7 +2042,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "aa417aea-c1f2-467c-338d-08d5a95294ba",
@@ -2057,7 +2057,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       },
       {
         "Id": "f5031c31-778b-45dd-bd33-eeb2a088d2bc",
@@ -2072,7 +2072,7 @@
         "OptionList": null,
         "ContentTypeProperty": null,
         "LayoutTypeProperty": null,
-        "ModuleActionProperty": null
+        "ModuleViewProperty": null
       }
     ]
   },
@@ -2368,7 +2368,7 @@
     ]
   },
   {
-    "EntityTypeName": "ModuleAction",
+    "EntityTypeName": "ModuleView",
     "SortOrder": 2,
     "AllRecords": [
       {
@@ -2380,11 +2380,11 @@
         "IconClass": "fa fa-recycle",
         "IconImage": null,
         "IsDefault": true,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "d670ac96-2ab6-4036-4664-08d52acdf1a1",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2396,11 +2396,11 @@
         "IconClass": "fa fa-user-circle",
         "IconImage": null,
         "IsDefault": true,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "c75b54cc-8e9d-42cc-f1e8-08d568c7a843",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2412,11 +2412,11 @@
         "IconClass": "fa fa-puzzle-piece",
         "IconImage": null,
         "IsDefault": true,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "f271f063-aa57-4ee0-95a4-d1417fab15c4",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2428,11 +2428,11 @@
         "IconClass": "fa fa-files-o",
         "IconImage": null,
         "IsDefault": true,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "f07dbddf-4937-42b8-9bee-9c0713128013",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2444,11 +2444,11 @@
         "IconClass": "fa fa-columns",
         "IconImage": null,
         "IsDefault": true,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "f32fa4c5-d319-48b0-a68b-cffb9c8743d5",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2460,11 +2460,11 @@
         "IconClass": "fa fa-pencil-square-o",
         "IconImage": null,
         "IsDefault": false,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "e4792855-5df8-4186-ad32-69d6464c748f",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2476,11 +2476,11 @@
         "IconClass": "fa fa-cog",
         "IconImage": null,
         "IsDefault": false,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "e99086da-297e-4fdd-a84c-74c663baf9ae",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2492,11 +2492,11 @@
         "IconClass": "fa fa-shield",
         "IconImage": null,
         "IsDefault": true,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "654f660d-9c71-48f9-8237-593a39a0dbc0",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2508,11 +2508,11 @@
         "IconClass": "fa fa-th",
         "IconImage": null,
         "IsDefault": true,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "f32fa4c5-d319-48b0-a68b-cffb9c8743d5",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2524,11 +2524,11 @@
         "IconClass": "fa fa-users",
         "IconImage": null,
         "IsDefault": true,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "0c30609d-87f3-4d84-9269-cfba91e5c0b6",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2540,11 +2540,11 @@
         "IconClass": null,
         "IconImage": null,
         "IsDefault": false,
-        "ModuleActionTypeId": "192278b6-7bf2-40c2-a776-b9ca5fb04fbb",
+        "ModuleViewTypeId": "192278b6-7bf2-40c2-a776-b9ca5fb04fbb",
         "ModuleId": "e4792855-5df8-4186-ad32-69d6464c748f",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2556,11 +2556,11 @@
         "IconClass": "fa fa-th-list",
         "IconImage": null,
         "IsDefault": true,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "f32fa4c5-d319-48b0-a68b-cffb9c8743d5",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2572,11 +2572,11 @@
         "IconClass": "fa fa-file-o",
         "IconImage": null,
         "IsDefault": true,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "57813091-da9f-47e3-9d63-dd5c4df79f1d",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2588,11 +2588,11 @@
         "IconClass": "fa fa-sign-in",
         "IconImage": null,
         "IsDefault": true,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "e4792855-5df8-4186-ad32-69d6464c748f",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2604,11 +2604,11 @@
         "IconClass": "fa fa-sliders",
         "IconImage": null,
         "IsDefault": true,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "f32fa4c5-d319-48b0-a68b-cffb9c8743d5",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       },
       {
@@ -2620,53 +2620,53 @@
         "IconClass": "fa fa-language",
         "IconImage": null,
         "IsDefault": true,
-        "ModuleActionTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
         "ModuleId": "73829a91-4a4a-4c22-885a-fb1215e37fdc",
         "Module": null,
-        "ModuleActionType": null,
-        "ModuleActionProperty": null,
+        "ModuleViewType": null,
+        "ModuleViewProperty": null,
         "PageModule": null
       }
     ]
   },
   {
-    "EntityTypeName": "ModuleActionProperty",
+    "EntityTypeName": "ModuleViewProperty",
     "SortOrder": 2,
     "AllRecords": [
       {
-        "ModuleActionId": "9994b49e-7012-4a02-e1c7-08d56a4703c5",
+        "ModuleViewId": "9994b49e-7012-4a02-e1c7-08d56a4703c5",
         "PropertyId": "789115a9-2b18-474d-0721-08d58e3bfd70",
-        "ModuleAction": null,
+        "ModuleView": null,
         "Property": null
       },
       {
-        "ModuleActionId": "9994b49e-7012-4a02-e1c7-08d56a4703c5",
+        "ModuleViewId": "9994b49e-7012-4a02-e1c7-08d56a4703c5",
         "PropertyId": "1acf1470-d421-4b91-0722-08d58e3bfd70",
-        "ModuleAction": null,
+        "ModuleView": null,
         "Property": null
       },
       {
-        "ModuleActionId": "9994b49e-7012-4a02-e1c7-08d56a4703c5",
+        "ModuleViewId": "9994b49e-7012-4a02-e1c7-08d56a4703c5",
         "PropertyId": "16485fed-208b-456a-fd02-08d590dbe247",
-        "ModuleAction": null,
+        "ModuleView": null,
         "Property": null
       },
       {
-        "ModuleActionId": "9994b49e-7012-4a02-e1c7-08d56a4703c5",
+        "ModuleViewId": "9994b49e-7012-4a02-e1c7-08d56a4703c5",
         "PropertyId": "217fbbe9-bf8e-4c49-c720-08d5a94c6f03",
-        "ModuleAction": null,
+        "ModuleView": null,
         "Property": null
       },
       {
-        "ModuleActionId": "9994b49e-7012-4a02-e1c7-08d56a4703c5",
+        "ModuleViewId": "9994b49e-7012-4a02-e1c7-08d56a4703c5",
         "PropertyId": "c1a87a70-1b7a-4fe6-09bc-08d5a94f7b1f",
-        "ModuleAction": null,
+        "ModuleView": null,
         "Property": null
       },
       {
-        "ModuleActionId": "9994b49e-7012-4a02-e1c7-08d56a4703c5",
+        "ModuleViewId": "9994b49e-7012-4a02-e1c7-08d56a4703c5",
         "PropertyId": "aa417aea-c1f2-467c-338d-08d5a95294ba",
-        "ModuleAction": null,
+        "ModuleView": null,
         "Property": null
       }
     ]
@@ -2969,14 +2969,14 @@
         "InheritEditPermissions": true,
         "InheritViewPermissions": true,
         "IsActive": true,
-        "ModuleActionId": "22d7f353-68c6-4c80-b261-c4d21b942623",
+        "ModuleViewId": "22d7f353-68c6-4c80-b261-c4d21b942623",
         "ModuleId": "e4792855-5df8-4186-ad32-69d6464c748f",
         "PageId": "62328d72-ad82-4de2-9a98-c954e5b30b28",
         "SortOrder": 1,
         "Title": null,
         "Properties": "[]",
         "Module": null,
-        "ModuleAction": null,
+        "ModuleView": null,
         "Page": null,
         "ModulePermission": null
       },
@@ -2986,14 +2986,14 @@
         "InheritEditPermissions": true,
         "InheritViewPermissions": true,
         "IsActive": true,
-        "ModuleActionId": "54df0a1f-99b0-4847-91f5-7cd187818fe3",
+        "ModuleViewId": "54df0a1f-99b0-4847-91f5-7cd187818fe3",
         "ModuleId": "654f660d-9c71-48f9-8237-593a39a0dbc0",
         "PageId": "56b72d88-5922-4635-0616-08d3a367fbcc",
         "SortOrder": 1,
         "Title": null,
         "Properties": null,
         "Module": null,
-        "ModuleAction": null,
+        "ModuleView": null,
         "Page": null,
         "ModulePermission": null
       },
@@ -3003,14 +3003,14 @@
         "InheritEditPermissions": true,
         "InheritViewPermissions": true,
         "IsActive": true,
-        "ModuleActionId": "5601b5eb-230f-4a43-a906-fed2923aca74",
+        "ModuleViewId": "5601b5eb-230f-4a43-a906-fed2923aca74",
         "ModuleId": "73829a91-4a4a-4c22-885a-fb1215e37fdc",
         "PageId": "8efd99d2-5004-44c6-0617-08d3a367fbcc",
         "SortOrder": 1,
         "Title": null,
         "Properties": null,
         "Module": null,
-        "ModuleAction": null,
+        "ModuleView": null,
         "Page": null,
         "ModulePermission": null
       },
@@ -3020,14 +3020,14 @@
         "InheritEditPermissions": true,
         "InheritViewPermissions": true,
         "IsActive": true,
-        "ModuleActionId": "57415ac9-9141-495a-a25d-4a80f1c5827a",
+        "ModuleViewId": "57415ac9-9141-495a-a25d-4a80f1c5827a",
         "ModuleId": "f32fa4c5-d319-48b0-a68b-cffb9c8743d5",
         "PageId": "20d1b105-5c6d-4961-c4ae-08d3a6adbc78",
         "SortOrder": 1,
         "Title": null,
         "Properties": null,
         "Module": null,
-        "ModuleAction": null,
+        "ModuleView": null,
         "Page": null,
         "ModulePermission": null
       },
@@ -3037,14 +3037,14 @@
         "InheritEditPermissions": true,
         "InheritViewPermissions": true,
         "IsActive": true,
-        "ModuleActionId": "724a7aa2-4916-40dc-9579-7afc31589d12",
+        "ModuleViewId": "724a7aa2-4916-40dc-9579-7afc31589d12",
         "ModuleId": "e99086da-297e-4fdd-a84c-74c663baf9ae",
         "PageId": "bb858c11-6779-406d-e941-08d3b4c8ff40",
         "SortOrder": 1,
         "Title": null,
         "Properties": null,
         "Module": null,
-        "ModuleAction": null,
+        "ModuleView": null,
         "Page": null,
         "ModulePermission": null
       },
@@ -3054,14 +3054,14 @@
         "InheritEditPermissions": true,
         "InheritViewPermissions": true,
         "IsActive": true,
-        "ModuleActionId": "7f2e81f9-90c3-4247-a545-658cc370caf5",
+        "ModuleViewId": "7f2e81f9-90c3-4247-a545-658cc370caf5",
         "ModuleId": "e4792855-5df8-4186-ad32-69d6464c748f",
         "PageId": "51a79e31-9bb1-4fa7-4da6-08d3c2d166ce",
         "SortOrder": 1,
         "Title": null,
         "Properties": null,
         "Module": null,
-        "ModuleAction": null,
+        "ModuleView": null,
         "Page": null,
         "ModulePermission": null
       },
@@ -3071,14 +3071,14 @@
         "InheritEditPermissions": true,
         "InheritViewPermissions": true,
         "IsActive": true,
-        "ModuleActionId": "4d3d7174-fc7a-4103-9f1a-ac6fc2610819",
+        "ModuleViewId": "4d3d7174-fc7a-4103-9f1a-ac6fc2610819",
         "ModuleId": "f32fa4c5-d319-48b0-a68b-cffb9c8743d5",
         "PageId": "9333f6a1-ba81-4b18-a922-08d3adc0bb30",
         "SortOrder": 1,
         "Title": null,
         "Properties": null,
         "Module": null,
-        "ModuleAction": null,
+        "ModuleView": null,
         "Page": null,
         "ModulePermission": null
       },
@@ -3088,14 +3088,14 @@
         "InheritEditPermissions": true,
         "InheritViewPermissions": true,
         "IsActive": true,
-        "ModuleActionId": "3bc79404-700a-47e1-ca1f-08d52ace68d7",
+        "ModuleViewId": "3bc79404-700a-47e1-ca1f-08d52ace68d7",
         "ModuleId": "d670ac96-2ab6-4036-4664-08d52acdf1a1",
         "PageId": "2624f356-ff17-49b4-9d18-08d52ace7d21",
         "SortOrder": 1,
         "Title": "Recycle Bin 04",
         "Properties": null,
         "Module": null,
-        "ModuleAction": null,
+        "ModuleView": null,
         "Page": null,
         "ModulePermission": null
       },
@@ -3105,14 +3105,14 @@
         "InheritEditPermissions": true,
         "InheritViewPermissions": true,
         "IsActive": true,
-        "ModuleActionId": "37ec5283-1fec-4779-bd43-9718c5648ffb",
+        "ModuleViewId": "37ec5283-1fec-4779-bd43-9718c5648ffb",
         "ModuleId": "0c30609d-87f3-4d84-9269-cfba91e5c0b6",
         "PageId": "c597d915-38e0-4c32-0615-08d3a367fbcc",
         "SortOrder": 1,
         "Title": null,
         "Properties": null,
         "Module": null,
-        "ModuleAction": null,
+        "ModuleView": null,
         "Page": null,
         "ModulePermission": null
       },
@@ -3122,14 +3122,14 @@
         "InheritEditPermissions": true,
         "InheritViewPermissions": true,
         "IsActive": true,
-        "ModuleActionId": "83998364-707b-49ef-abed-b01f864bfe4a",
+        "ModuleViewId": "83998364-707b-49ef-abed-b01f864bfe4a",
         "ModuleId": "57813091-da9f-47e3-9d63-dd5c4df79f1d",
         "PageId": "c6dd6902-4a9c-4a38-8a05-febe76694993",
         "SortOrder": 1,
         "Title": null,
         "Properties": null,
         "Module": null,
-        "ModuleAction": null,
+        "ModuleView": null,
         "Page": null,
         "ModulePermission": null
       },
@@ -3139,14 +3139,14 @@
         "InheritEditPermissions": true,
         "InheritViewPermissions": true,
         "IsActive": true,
-        "ModuleActionId": "ae7afca8-56f6-4381-822c-1a04022c779b",
+        "ModuleViewId": "ae7afca8-56f6-4381-822c-1a04022c779b",
         "ModuleId": "f271f063-aa57-4ee0-95a4-d1417fab15c4",
         "PageId": "1322cf31-fae5-40de-d7b7-08d3bfd5ca3d",
         "SortOrder": 1,
         "Title": null,
         "Properties": null,
         "Module": null,
-        "ModuleAction": null,
+        "ModuleView": null,
         "Page": null,
         "ModulePermission": null
       },
@@ -3156,14 +3156,14 @@
         "InheritEditPermissions": true,
         "InheritViewPermissions": true,
         "IsActive": true,
-        "ModuleActionId": "7154eb95-36cc-488e-8d24-83b60f3ffffa",
+        "ModuleViewId": "7154eb95-36cc-488e-8d24-83b60f3ffffa",
         "ModuleId": "f32fa4c5-d319-48b0-a68b-cffb9c8743d5",
         "PageId": "56ff05c4-57f6-429c-c4ad-08d3a6adbc78",
         "SortOrder": 1,
         "Title": null,
         "Properties": null,
         "Module": null,
-        "ModuleAction": null,
+        "ModuleView": null,
         "Page": null,
         "ModulePermission": null
       },
@@ -3173,14 +3173,14 @@
         "InheritEditPermissions": true,
         "InheritViewPermissions": true,
         "IsActive": true,
-        "ModuleActionId": "d4508962-b521-4e52-ac52-e2bcc06dadd5",
+        "ModuleViewId": "d4508962-b521-4e52-ac52-e2bcc06dadd5",
         "ModuleId": "f32fa4c5-d319-48b0-a68b-cffb9c8743d5",
         "PageId": "7dff05ab-1376-4ae6-09f0-08d3ae5877da",
         "SortOrder": 1,
         "Title": null,
         "Properties": null,
         "Module": null,
-        "ModuleAction": null,
+        "ModuleView": null,
         "Page": null,
         "ModulePermission": null
       }

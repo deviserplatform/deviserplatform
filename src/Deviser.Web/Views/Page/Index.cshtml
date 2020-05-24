@@ -17,8 +17,8 @@
     ViewBag.SiteHeaderTags = siteHeaderTags != null ? siteHeaderTags : "";
     ViewBag.PageHeaderTags = pageHeaderTags != null ? pageHeaderTags : "";
 
-    Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>> moduleActionResults =
-(Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>>)ViewBag.ModuleActionResults;
+    Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>> moduleViewResults =
+(Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>>)ViewBag.ModuleViewResults;
 }
 <script type="text/javascript">
     var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
@@ -26,10 +26,10 @@
     console.log('@scopeService.ScopeId');
 </script>
 
-@if (moduleActionResults != null)
+@if (moduleViewResults != null)
 {
 
-    <div sde-page="@Model" sde-module-results="@moduleActionResults" class="page-content">
+    <div sde-page="@Model" sde-module-results="@moduleViewResults" class="page-content">
 
     </div>
 }

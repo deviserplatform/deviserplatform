@@ -23,7 +23,7 @@ namespace Deviser.Admin.ConfiguratorTest.Models
         public string Properties { get; set; }
 
         public virtual Module Module { get; set; }
-        public virtual ModuleAction ModuleAction { get; set; }
+        public virtual ModuleView ModuleView { get; set; }
         public virtual Page Page { get; set; }
         public virtual ICollection<ModulePermission> ModulePermission { get; set; }
     }

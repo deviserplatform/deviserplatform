@@ -44,10 +44,10 @@ namespace Deviser.Web.Infrastructure
 
             CreateMap<Core.Common.DomainTypes.Module, Module>().ReverseMap();
 
-            CreateMap<ModuleAction, Core.Common.DomainTypes.ModuleAction>()
-            .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.ModuleActionProperties != null ? src.ModuleActionProperties.Select(ctp => ctp.Property) : null))
+            CreateMap<ModuleView, Core.Common.DomainTypes.ModuleView>()
+            .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.ModuleViewProperties != null ? src.ModuleViewProperties.Select(ctp => ctp.Property) : null))
             .ReverseMap()
-            .ForMember(dest => dest.ModuleActionProperties, opt => opt.MapFrom(src => src.Properties != null ? src.Properties.Select(macp => new ModuleActionProperty { PropertyId = macp.Id, ModuleActionId = src.Id }) : null));
+            .ForMember(dest => dest.ModuleViewProperties, opt => opt.MapFrom(src => src.Properties != null ? src.Properties.Select(macp => new ModuleViewProperty { PropertyId = macp.Id, ModuleViewId = src.Id }) : null));
 
             //CreateMap<Core.Common.DomainTypes.Module, Module>()
             // .ForMember(dest => dest.ModuleProperties, opt => opt.MapFrom(src =>
@@ -56,7 +56,7 @@ namespace Deviser.Web.Infrastructure
             //.ForMember(dest => dest.Properties, opt => opt.MapFrom(src =>
             //  src.ModuleProperties != null ? src.ModuleProperties.Select(ctp => ctp.Property) : null));
 
-            CreateMap<ModuleActionType, Core.Common.DomainTypes.ModuleActionType>().ReverseMap();
+            CreateMap<ModuleViewType, Core.Common.DomainTypes.ModuleViewType>().ReverseMap();
             CreateMap<ModulePermission, Core.Common.DomainTypes.ModulePermission>().ReverseMap();
 
             CreateMap<PageContent, Core.Common.DomainTypes.PageContent>()

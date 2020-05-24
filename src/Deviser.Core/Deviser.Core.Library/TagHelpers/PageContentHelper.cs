@@ -49,7 +49,7 @@ namespace Deviser.Core.Library.TagHelpers
         public Page CurrentPage { get; set; }
 
         [HtmlAttributeName(ModuleResultAttributeName)]
-        public Dictionary<string, List<ContentResult>> ModuleActionResults { get; set; }
+        public Dictionary<string, List<ContentResult>> ModuleViewResults { get; set; }
 
         [HtmlAttributeNotBound]
         [ViewContext]
@@ -75,7 +75,7 @@ namespace Deviser.Core.Library.TagHelpers
                 return;
             }
 
-            if (ModuleActionResults == null)
+            if (ModuleViewResults == null)
             {
                 output.Content.SetHtmlContent("Module action results  (sde-module-results) cannot be null");
                 return;
@@ -124,14 +124,14 @@ namespace Deviser.Core.Library.TagHelpers
                 if (pageLayout.PlaceHolders != null && pageLayout.PlaceHolders.Count > 0)
                 {
                     HtmlContentBuilder result = RenderContentItems(pageLayout.PlaceHolders);
-                    if (ModuleActionResults.Count > 0)
+                    if (ModuleViewResults.Count > 0)
                     {
                         //One or more modules are not added in containers
-                        foreach (var moduleActionResult in ModuleActionResults)
+                        foreach (var moduleViewResult in ModuleViewResults)
                         {
-                            if (moduleActionResult.Value != null && moduleActionResult.Value.Count > 0)
+                            if (moduleViewResult.Value != null && moduleViewResult.Value.Count > 0)
                             {
-                                foreach (var contentResult in moduleActionResult.Value)
+                                foreach (var contentResult in moduleViewResult.Value)
                                 {
                                     //result += contentResult.HtmlResult;
                                     result.AppendHtml(contentResult.HtmlResult);
@@ -144,7 +144,7 @@ namespace Deviser.Core.Library.TagHelpers
                     //Release all resources
                     pageLayout.RegisterForDispose(ViewContext.HttpContext);
                     PageContents.GetEnumerator().RegisterForDispose(ViewContext.HttpContext);
-                    ModuleActionResults.GetEnumerator().RegisterForDispose(ViewContext.HttpContext);
+                    ModuleViewResults.GetEnumerator().RegisterForDispose(ViewContext.HttpContext);
                     pageLayout.RegisterForDispose(ViewContext.HttpContext);
                 }
             }
@@ -210,13 +210,13 @@ namespace Deviser.Core.Library.TagHelpers
                 ViewContext.ViewData["isEditMode"] = false;
                 
 
-                if (ModuleActionResults.ContainsKey(placeHolder.Id.ToString()))
+                if (ModuleViewResults.ContainsKey(placeHolder.Id.ToString()))
                 {
                     //Modules                            
-                    if (ModuleActionResults.TryGetValue(placeHolder.Id.ToString(), out moduleResult))
+                    if (ModuleViewResults.TryGetValue(placeHolder.Id.ToString(), out moduleResult))
                     {
                         //sb.Append(moduleResult);
-                        ModuleActionResults.Remove(placeHolder.Id.ToString());
+                        ModuleViewResults.Remove(placeHolder.Id.ToString());
                         currentResults.AddRange(moduleResult);
                     }
                 }

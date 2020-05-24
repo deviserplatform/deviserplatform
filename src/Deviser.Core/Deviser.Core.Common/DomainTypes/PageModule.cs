@@ -12,10 +12,10 @@ namespace Deviser.Core.Common.DomainTypes
         public Guid ContainerId { get; set; }
         public bool IsActive { get; set; }
         public Guid ModuleId { get; set; }
-        public Guid ModuleActionId { get; set; }
+        public Guid ModuleViewId { get; set; }
         public int SortOrder { get; set; }
         public Guid PageId { get; set; }
-        public ModuleAction ModuleAction { get; set; }
+        public ModuleView ModuleView { get; set; }
         public  Module Module { get; set; }
         public virtual Page Page { get; set; }
         public bool InheritViewPermissions { get; set; }

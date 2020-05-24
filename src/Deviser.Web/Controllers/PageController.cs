@@ -90,8 +90,8 @@ namespace Deviser.Web.Controllers
                         {
                             if (currentPage.PageTypeId == Globals.PageTypeStandard)
                             {
-                                Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await _deviserControllerFactory.GetPageModuleResults(Context);
-                                ViewBag.ModuleActionResults = moduleActionResults;
+                                Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleViewResult = await _deviserControllerFactory.GetPageModuleResults(Context);
+                                ViewBag.ModuleViewResults = moduleViewResult;
                                 return View(currentPage);
 
                             }
@@ -152,14 +152,14 @@ namespace Deviser.Web.Controllers
         }
 
         [HttpGet]
-        [Route("[controller]/[action]/pageModuleId/{pageModuleId}/moduleActionId/{moduleActionId}")]
-        public IActionResult EditModule(string currentLink, Guid pageModuleId, Guid moduleActionId)
+        [Route("[controller]/[action]/pageModuleId/{pageModuleId}/moduleViewId/{moduleViewId}")]
+        public IActionResult EditModule(string currentLink, Guid pageModuleId, Guid moduleViewId)
         {
             if (pageModuleId != Guid.Empty)
             {
                 try
                 {
-                    var pageModule = _pageRepository.GetPageModule(pageModuleId); //It referes PageModule's View ModuleActionType
+                    var pageModule = _pageRepository.GetPageModule(pageModuleId); //It referes PageModule's View ModuleViewType
 
                     if (pageModule == null)
                         return NotFound();
@@ -167,7 +167,7 @@ namespace Deviser.Web.Controllers
                     //if (moduleManager.HasEditPermission(pageModule))
                     if (_scopeService.PageContext.HasPageEditPermission)
                     {
-                        object result = _deviserControllerFactory.GetModuleEditResult(Context, pageModule, moduleActionId).Result;
+                        object result = _deviserControllerFactory.GetModuleEditResult(Context, pageModule, moduleViewId).Result;
                         ViewBag.result = result;
                         return View(result);
                     }

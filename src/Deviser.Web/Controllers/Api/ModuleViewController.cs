@@ -9,13 +9,13 @@ using System;
 namespace Deviser.Web.Controllers
 {
     [Produces("application/json")]
-    [Route("api/ModuleAction")]
-    public class ModuleActionController : Controller
+    [Route("api/ModuleView")]
+    public class ModuleViewController : Controller
     {
-        private readonly ILogger<ModuleActionController> _logger;
+        private readonly ILogger<ModuleViewController> _logger;
         private readonly IModuleRepository _moduleRepository;
 
-        public ModuleActionController(ILogger<ModuleActionController> logger,
+        public ModuleViewController(ILogger<ModuleViewController> logger,
             IModuleRepository moduleRepository)
         {
             _logger = logger;
@@ -27,41 +27,41 @@ namespace Deviser.Web.Controllers
         {
             try
             {
-                var result = _moduleRepository.GetModuleActions();
+                var result = _moduleRepository.GetModuleViews();
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(string.Format("Error occured while getting modules actions"), ex);
+                _logger.LogError(string.Format("Error occured while getting modules views"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpGet("edit/{moduleId}")]
-        public IActionResult GetEditActions(Guid moduleId)
+        public IActionResult GetEditViews(Guid moduleId)
         {
             try
             {
-                var result = _moduleRepository.GetEditModuleActions(moduleId);
+                var result = _moduleRepository.GetEditModuleViews(moduleId);
                 if (result != null)
                     return Ok(result);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(string.Format("Error occured while getting edit modules actions"), ex);
+                _logger.LogError(string.Format("Error occured while getting edit modules views"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] ModuleAction moduleAction)
+        public IActionResult Post([FromBody] ModuleView moduleView)
         {
             try
             {
-                var result = _moduleRepository.CreateModuleAction(moduleAction); 
+                var result = _moduleRepository.CreateModuleView(moduleView); 
                 if (result != null)
                     return Ok(result);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
@@ -74,11 +74,11 @@ namespace Deviser.Web.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] ModuleAction moduleActions)
+        public IActionResult Put([FromBody] ModuleView moduleViews)
         {
             try
             {
-                var result = _moduleRepository.UpdateModuleAction(moduleActions);
+                var result = _moduleRepository.UpdateModuleView(moduleViews);
                 if (result != null)
                     return Ok(result);
                 return BadRequest();
@@ -95,11 +95,11 @@ namespace Deviser.Web.Controllers
         {
             try
             {
-                var moduleActions = _moduleRepository.GetModule(id); 
-                if (moduleActions != null)
+                var moduleView = _moduleRepository.GetModule(id); 
+                if (moduleView != null)
                 {
-                    moduleActions.IsActive = false; //is it correct?
-                    var result = _moduleRepository.UpdateModule(moduleActions);
+                    moduleView.IsActive = false; //is it correct?
+                    var result = _moduleRepository.UpdateModule(moduleView);
                     if (result != null)
                     {
                         return Ok(result);

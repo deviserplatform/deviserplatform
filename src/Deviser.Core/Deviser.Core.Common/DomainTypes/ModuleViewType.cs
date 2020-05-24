@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Deviser.Core.Common.DomainTypes
 {
-    public class ModuleActionType
+    public class ModuleViewType
     {
         public Guid Id { get; set; }
         public string ControlType { get; set; }

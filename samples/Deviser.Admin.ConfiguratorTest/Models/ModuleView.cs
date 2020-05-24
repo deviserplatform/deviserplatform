@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Deviser.Admin.ConfiguratorTest.Models
 {
-    public partial class ModuleAction
+    public partial class ModuleView
     {
-        public ModuleAction()
+        public ModuleView()
         {
-            ModuleActionProperty = new HashSet<ModuleActionProperty>();
+            ModuleActionProperty = new HashSet<ModuleViewProperty>();
             PageModule = new HashSet<PageModule>();
         }
 
@@ -23,8 +23,8 @@ namespace Deviser.Admin.ConfiguratorTest.Models
         public Guid ModuleId { get; set; }
 
         public virtual Module Module { get; set; }
-        public virtual ModuleActionType ModuleActionType { get; set; }
-        public virtual ICollection<ModuleActionProperty> ModuleActionProperty { get; set; }
+        public virtual ModuleViewType ModuleViewType { get; set; }
+        public virtual ICollection<ModuleViewProperty> ModuleActionProperty { get; set; }
         public virtual ICollection<PageModule> PageModule { get; set; }
     }
 }

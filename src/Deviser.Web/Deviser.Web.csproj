@@ -9,18 +9,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TagHelpers\**" />
     <Compile Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
     <Compile Remove="wwwroot\lib\bootstrap\.github\**" />
     <Compile Remove="wwwroot\lib\lodash\.github\**" />
     <Compile Remove="wwwroot\lib\metisMenu\.github\**" />
+    <Content Remove="TagHelpers\**" />
     <Content Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
     <Content Remove="wwwroot\lib\bootstrap\.github\**" />
     <Content Remove="wwwroot\lib\lodash\.github\**" />
     <Content Remove="wwwroot\lib\metisMenu\.github\**" />
+    <EmbeddedResource Remove="TagHelpers\**" />
     <EmbeddedResource Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
     <EmbeddedResource Remove="wwwroot\lib\bootstrap\.github\**" />
     <EmbeddedResource Remove="wwwroot\lib\lodash\.github\**" />
     <EmbeddedResource Remove="wwwroot\lib\metisMenu\.github\**" />
+    <None Remove="TagHelpers\**" />
     <None Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
     <None Remove="wwwroot\lib\bootstrap\.github\**" />
     <None Remove="wwwroot\lib\lodash\.github\**" />
@@ -60,10 +64,6 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
     <PackageReference Include="Serilog.Sinks.Literate" Version="3.0.0" />
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="TagHelpers\" />
   </ItemGroup>
 
 </Project>

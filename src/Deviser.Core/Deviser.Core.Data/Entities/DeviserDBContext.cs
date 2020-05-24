@@ -142,9 +142,9 @@ namespace Deviser.Core.Data
                     .HasMaxLength(10);
             });
 
-            modelBuilder.Entity<ModuleAction>(entity =>
+            modelBuilder.Entity<ModuleView>(entity =>
             {
-                entity.HasIndex(e => e.ModuleId).HasName("IX_FK_ModuleActions_Modules");
+                entity.HasIndex(e => e.ModuleId).HasName("IX_FK_ModuleViews_Modules");
 
                 entity.Property(e => e.ActionName).HasMaxLength(50);
 
@@ -156,12 +156,12 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.IsDefault).IsRequired().HasDefaultValue(false);
 
-                entity.HasOne(d => d.ModuleActionType).WithMany(p => p.ModuleAction).HasForeignKey(d => d.ModuleActionTypeId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(d => d.ModuleViewType).WithMany(p => p.ModuleView).HasForeignKey(d => d.ModuleViewTypeId).OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(d => d.Module).WithMany(p => p.ModuleAction).HasForeignKey(d => d.ModuleId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(d => d.Module).WithMany(p => p.ModuleView).HasForeignKey(d => d.ModuleId).OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<ModuleActionType>(entity =>
+            modelBuilder.Entity<ModuleViewType>(entity =>
             {
                 entity.Property(e => e.ControlType).HasMaxLength(50);
             });
@@ -253,7 +253,7 @@ namespace Deviser.Core.Data
 
                 entity.HasOne(d => d.Page).WithMany(p => p.PageModule).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(d => d.ModuleAction).WithMany(p => p.PageModules).HasForeignKey(d => d.ModuleActionId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(d => d.ModuleView).WithMany(p => p.PageModules).HasForeignKey(d => d.ModuleViewId).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<PageTranslation>(entity =>
@@ -383,13 +383,13 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Role).WithMany(p => p.ContentPermissions).HasForeignKey(d => d.RoleId).OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<ModuleActionProperty>(entity =>
+            modelBuilder.Entity<ModuleViewProperty>(entity =>
             {
-                entity.HasOne(d => d.ModuleAction).WithMany(p => p.ModuleActionProperties).HasForeignKey(d => d.ModuleActionId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(d => d.ModuleView).WithMany(p => p.ModuleViewProperties).HasForeignKey(d => d.ModuleViewId).OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(d => d.Property).WithMany(p => p.ModuleActionProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(d => d.Property).WithMany(p => p.ModuleViewProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasKey(d => new { d.ModuleActionId, d.PropertyId });
+                entity.HasKey(d => new { ModuleViewId = d.ModuleViewId, d.PropertyId });
             });
         }
 
@@ -402,10 +402,10 @@ namespace Deviser.Core.Data
         public virtual DbSet<LayoutType> LayoutType { get; set; }
         public virtual DbSet<LayoutTypeProperty> LayoutTypeProperty { get; set; }
         public virtual DbSet<Module> Module { get; set; }
-        public virtual DbSet<ModuleAction> ModuleAction { get; set; }
-        public virtual DbSet<ModuleActionType> ModuleActionType { get; set; }
+        public virtual DbSet<ModuleView> ModuleView { get; set; }
+        public virtual DbSet<ModuleViewType> ModuleViewType { get; set; }
         public virtual DbSet<ModulePermission> ModulePermission { get; set; }
-        public virtual DbSet<ModuleActionProperty> ModuleActionProperty { get; set; }
+        public virtual DbSet<ModuleViewProperty> ModuleViewProperty { get; set; }
         public virtual DbSet<OptionList> OptionList { get; set; }
         public virtual DbSet<Permission> Permission { get; set; }
         public virtual DbSet<Page> Page { get; set; }

@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace Deviser.Admin.ConfiguratorTest.Models
 {
-    public partial class ModuleActionType
+    public partial class ModuleViewType
     {
-        public ModuleActionType()
+        public ModuleViewType()
         {
-            ModuleAction = new HashSet<ModuleAction>();
+            ModuleAction = new HashSet<ModuleView>();
         }
 
         public Guid Id { get; set; }
         public string ControlType { get; set; }
 
-        public virtual ICollection<ModuleAction> ModuleAction { get; set; }
+        public virtual ICollection<ModuleView> ModuleAction { get; set; }
     }
 }

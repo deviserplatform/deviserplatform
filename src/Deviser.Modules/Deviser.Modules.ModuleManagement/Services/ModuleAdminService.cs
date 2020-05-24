@@ -85,9 +85,9 @@ namespace Deviser.Modules.ModuleManagement.Services
             return result;
         }
 
-        public List<ModuleActionType> GetActionType()
+        public List<ModuleViewType> GetActionType()
         {
-            var result = _moduleRepository.GetModuleActionType();
+            var result = _moduleRepository.GetModuleViewType();
             return result;
         }
     }

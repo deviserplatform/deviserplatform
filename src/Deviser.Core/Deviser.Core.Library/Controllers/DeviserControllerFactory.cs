@@ -79,11 +79,11 @@ namespace Deviser.Core.Library.Controllers
                 foreach (var pageModule in currentPage.PageModule)
                 {
                     Module module = _moduleRepository.GetModule(pageModule.ModuleId);
-                    ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == pageModule.ModuleActionId);
+                    ModuleView moduleView = module.ModuleView.FirstOrDefault(ma => ma.Id == pageModule.ModuleViewId);
                     ModuleContext moduleContext = new ModuleContext();
                     moduleContext.ModuleInfo = module;
                     moduleContext.PageModuleId = pageModule.Id;
-                    if (module != null && moduleAction != null)
+                    if (module != null && moduleView != null)
                     {
                         List<ContentResult> contentResults;
                         string containerId = pageModule.ContainerId.ToString();
@@ -100,7 +100,7 @@ namespace Deviser.Core.Library.Controllers
 
                         try
                         {
-                            IHtmlContent actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleAction);
+                            IHtmlContent actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleView);
                             IHtmlContent moduleResult = GetModuleResult(actionResult, moduleContext);
                             contentResults.Add(new ContentResult
                             {
@@ -132,13 +132,13 @@ namespace Deviser.Core.Library.Controllers
         //    try
         //    {
         //        var module = _moduleRepository.Get(pageModule.ModuleId);
-        //        ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleActionType
+        //        ModuleView moduleView = module.ModuleView.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleViewType
         //        ModuleContext moduleContext = new ModuleContext();
-        //        moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleActionType
+        //        moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleViewType
         //        moduleContext.PageModuleId = pageModule.Id;
-        //        if (module != null && moduleAction != null)
+        //        if (module != null && moduleView != null)
         //        {
-        //            actionResult = await ExecuteModuleControllerAsString(actionContext, moduleContext, moduleAction);
+        //            actionResult = await ExecuteModuleControllerAsString(actionContext, moduleContext, moduleView);
         //            actionResult = $"<div class=\"dev-module-container\" data-module=\"{moduleContext.ModuleInfo.Name}\" data-page-module-id=\"{moduleContext.PageModuleId}\">{actionResult}</div>";
         //        }
         //    }
@@ -157,14 +157,14 @@ namespace Deviser.Core.Library.Controllers
             try
             {
                 var module = _moduleRepository.GetModule(pageModule.ModuleId);
-                ModuleAction moduleAction = module.ModuleAction.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleActionType
+                ModuleView moduleView = module.ModuleView.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleViewType
                 ModuleContext moduleContext = new ModuleContext();
-                moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleActionType
+                moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleViewType
                 moduleContext.PageModuleId = pageModule.Id;
-                if (module != null && moduleAction != null)
+                if (module != null && moduleView != null)
                 {
 
-                    IHtmlContent actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleAction);
+                    IHtmlContent actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleView);
                     editResult = GetModuleResult(actionResult, moduleContext);
                 }
             }
@@ -237,48 +237,48 @@ namespace Deviser.Core.Library.Controllers
             return moduleContainer;
         }
 
-        //private async Task<string> ExecuteModuleControllerAsString(ActionContext actionContext, ModuleContext moduleContext, ModuleAction moduleAction)
+        //private async Task<string> ExecuteModuleControllerAsString(ActionContext actionContext, ModuleContext moduleContext, ModuleView moduleView)
         //{
         //    if (actionContext == null)
         //    {
         //        return null;
         //    }
 
-        //    ActionContext moduleActionContext = GetModuleActionContext(actionContext, moduleContext, moduleAction);
+        //    ActionContext moduleActionContext = GetModuleActionContext(actionContext, moduleContext, moduleView);
 
         //    //var invoker = _moduleInvokerProvider.CreateInvoker(moduleActionContext);
         //    //var result = await invoker.InvokeAction() as ViewResult;
-        //    var result = await _actionInvoker.InvokeAction(actionContext.HttpContext, moduleAction, moduleActionContext) as ViewResult;
+        //    var result = await _actionInvoker.InvokeAction(actionContext.HttpContext, moduleView, moduleActionContext) as ViewResult;
 
         //    string strResult = result.ExecuteResultToString(moduleActionContext);
         //    return strResult;
         //}
 
-        private async Task<IHtmlContent> ExecuteModuleController(ActionContext actionContext, ModuleContext moduleContext, ModuleAction moduleAction)
+        private async Task<IHtmlContent> ExecuteModuleController(ActionContext actionContext, ModuleContext moduleContext, ModuleView moduleView)
         {
             if (actionContext == null)
             {
                 return null;
             }
 
-            ActionContext moduleActionContext = GetModuleActionContext(actionContext, moduleContext, moduleAction);
+            ActionContext moduleActionContext = GetModuleActionContext(actionContext, moduleContext, moduleView);
 
             //var invoker = _moduleInvokerProvider.CreateInvoker(moduleActionContext);
             //var result = await invoker.InvokeAction() as ViewResult;
-            var result = await _actionInvoker.InvokeAction(actionContext.HttpContext, moduleAction, moduleActionContext) as ViewResult;
+            var result = await _actionInvoker.InvokeAction(actionContext.HttpContext, moduleView, moduleActionContext) as ViewResult;
 
             IHtmlContent htmlResult = result.ExecuteResultToHTML(moduleActionContext);
             return htmlResult;
         }
 
-        private ActionContext GetModuleActionContext(ActionContext actionContext, ModuleContext moduleContext, ModuleAction moduleAction)
+        private ActionContext GetModuleActionContext(ActionContext actionContext, ModuleContext moduleContext, ModuleView moduleView)
         {
             RouteContext routeContext = new RouteContext(actionContext.HttpContext);
             routeContext.RouteData = new RouteData();
             routeContext.RouteData.Values.Add("area", moduleContext.ModuleInfo.Name);
             routeContext.RouteData.Values.Add("pageModuleId", moduleContext.PageModuleId);
-            routeContext.RouteData.Values.Add("controller", moduleAction.ControllerName);
-            routeContext.RouteData.Values.Add("action", moduleAction.ActionName);
+            routeContext.RouteData.Values.Add("controller", moduleView.ControllerName);
+            routeContext.RouteData.Values.Add("action", moduleView.ActionName);
             routeContext.RouteData.PushState(actionContext.RouteData.Routers.FirstOrDefault(), null, null);
 
             return GetActionContext(routeContext, true);

@@ -25,9 +25,9 @@ namespace Deviser.Admin.ConfiguratorTest.Models
         public virtual DbSet<LayoutType> LayoutType { get; set; }
         public virtual DbSet<LayoutTypeProperty> LayoutTypeProperty { get; set; }
         public virtual DbSet<Module> Module { get; set; }
-        public virtual DbSet<ModuleAction> ModuleAction { get; set; }
-        public virtual DbSet<ModuleActionProperty> ModuleActionProperty { get; set; }
-        public virtual DbSet<ModuleActionType> ModuleActionType { get; set; }
+        public virtual DbSet<ModuleView> ModuleAction { get; set; }
+        public virtual DbSet<ModuleViewProperty> ModuleActionProperty { get; set; }
+        public virtual DbSet<ModuleViewType> ModuleActionType { get; set; }
         public virtual DbSet<ModuleMigrationsHistory> ModuleMigrationsHistory { get; set; }
         public virtual DbSet<ModulePermission> ModulePermission { get; set; }
         public virtual DbSet<OptionList> OptionList { get; set; }
@@ -205,7 +205,7 @@ namespace Deviser.Admin.ConfiguratorTest.Models
                     .HasMaxLength(10);
             });
 
-            modelBuilder.Entity<ModuleAction>(entity =>
+            modelBuilder.Entity<ModuleView>(entity =>
             {
                 entity.HasIndex(e => e.ModuleActionTypeId);
 
@@ -222,7 +222,7 @@ namespace Deviser.Admin.ConfiguratorTest.Models
 
                 entity.Property(e => e.DisplayName).HasMaxLength(50);
 
-                entity.HasOne(d => d.ModuleActionType)
+                entity.HasOne(d => d.ModuleViewType)
                     .WithMany(p => p.ModuleAction)
                     .HasForeignKey(d => d.ModuleActionTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
@@ -233,13 +233,13 @@ namespace Deviser.Admin.ConfiguratorTest.Models
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
-            modelBuilder.Entity<ModuleActionProperty>(entity =>
+            modelBuilder.Entity<ModuleViewProperty>(entity =>
             {
                 entity.HasKey(e => new { e.ModuleActionId, e.PropertyId });
 
                 entity.HasIndex(e => e.PropertyId);
 
-                entity.HasOne(d => d.ModuleAction)
+                entity.HasOne(d => d.ModuleView)
                     .WithMany(p => p.ModuleActionProperty)
                     .HasForeignKey(d => d.ModuleActionId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
@@ -250,7 +250,7 @@ namespace Deviser.Admin.ConfiguratorTest.Models
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
-            modelBuilder.Entity<ModuleActionType>(entity =>
+            modelBuilder.Entity<ModuleViewType>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
@@ -406,7 +406,7 @@ namespace Deviser.Admin.ConfiguratorTest.Models
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
 
-                entity.HasOne(d => d.ModuleAction)
+                entity.HasOne(d => d.ModuleView)
                     .WithMany(p => p.PageModule)
                     .HasForeignKey(d => d.ModuleActionId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
