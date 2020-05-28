@@ -496,9 +496,9 @@ namespace Deviser.Core.Data.Repositories
                         .ToList();
 
                     var toDelete = matchPagePermissions.Where(dbPermission =>
+                        dbPermission.RoleId != Globals.AdministratorRoleId && //Skip Administrator role from delete process
                         !pagePermissions.Any(pagePermission => pagePermission.PermissionId == dbPermission.PermissionId
-                                                               && pagePermission.RoleId == dbPermission.RoleId
-                                                               && pagePermission.RoleId == Globals.AdministratorRoleId)).ToList();
+                                                               && pagePermission.RoleId == dbPermission.RoleId)).ToList();
 
                     if (toDelete.Count > 0)
                         context.PagePermission.RemoveRange(toDelete);
