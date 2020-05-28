@@ -19,6 +19,7 @@ import { WINDOW } from '../common/services/window.service';
 import { AdminConfigType } from '../common/domain-types/admin-confit-type';
 import { FormBehaviour } from '../common/domain-types/form-behaviour';
 import { OpenUrlAction } from '../common/domain-types/open-url-action';
+import { AlertService } from '../common/services/alert.service';
 
 @Component({
   selector: 'app-admin-form',
@@ -45,6 +46,7 @@ export class AdminFormComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
     private adminService: AdminService,
+    private alertService: AlertService,
     @Inject(DOCUMENT) private document: Document,
     private formControlService: FormControlService,
     private fb: FormBuilder,
@@ -53,6 +55,7 @@ export class AdminFormComponent implements OnInit {
     this.alerts = [];
     this.daConfig = window.daConfig;
     // this.childFormContexts;
+    this.alertService.alerts.subscribe(alert => this.alerts.push(alert));
   }
 
   ngOnInit() {
@@ -83,7 +86,7 @@ export class AdminFormComponent implements OnInit {
           message: 'Unable to get this item, please contact administrator',
           timeout: 5000
         }
-        this.alerts.push(alert);
+        this.alertService.addAlert(alert);
       });
     } else if (this.formMode === FormMode.Create) {
       this.record = record;
@@ -193,6 +196,12 @@ export class AdminFormComponent implements OnInit {
   onActionResult(formValue: FormResult): void {
     this.submitSubject.next(formValue);
     if (formValue && formValue.isSucceeded) {
+      let alert: Alert = {
+        alterType: AlertType.Success,
+        message: formValue.successMessage,
+        timeout: 5000
+      }
+      this.alertService.addAlert(alert);
       if (formValue.formBehaviour === FormBehaviour.RedirectToGrid && this.adminConfig.adminConfigType === AdminConfigType.GridAndForm) {
         const openUrlAction = formValue.successAction as OpenUrlAction;
         if (openUrlAction) {
@@ -202,13 +211,6 @@ export class AdminFormComponent implements OnInit {
           }, openUrlAction.openAfterSec * 1000);
         }
         this.goBack();
-      } else {
-        let alert: Alert = {
-          alterType: AlertType.Success,
-          message: formValue.successMessage,
-          timeout: 5000
-        }
-        this.alerts.push(alert);
       }
     }
     else {
@@ -217,7 +219,7 @@ export class AdminFormComponent implements OnInit {
         message: formValue.successMessage,
         timeout: 5000
       }
-      this.alerts.push(alert);
+      this.alertService.addAlert(alert);
     }
   }
 
@@ -231,7 +233,7 @@ export class AdminFormComponent implements OnInit {
         message: "Unable to update/save this item, please contact administrator",
         timeout: 5000
       }
-      this.alerts.push(alert);
+      this.alertService.addAlert(alert);
     }
 
   }

@@ -31,6 +31,7 @@ import { BooleanFilter } from '../common/domain-types/boolean-filter';
 import { FilterNode } from '../common/domain-types/filter-node';
 import { LogicalOperator } from '../common/domain-types/logical-operator';
 import { filter } from 'rxjs/operators';
+import { AlertService } from '../common/services/alert.service';
 
 
 @Component({
@@ -52,12 +53,14 @@ export class AdminGridComponent implements OnInit {
   private confirmDialogComponent: ConfirmDialogComponent;
 
   constructor(private adminService: AdminService,
+    private alertService: AlertService,
     private recordIdPipe: RecordIdPipe,
     private router: Router,
     @Inject(WINDOW) private window: any) {
     this.alerts = [];
     this.getAdminConfig();
     this.daConfig = window.daConfig;
+    this.alertService.alerts.subscribe(alert => this.alerts.push(alert));
   }
 
   ngOnInit() {
@@ -121,7 +124,7 @@ export class AdminGridComponent implements OnInit {
         message: adminResult.successMessage,
         timeout: 5000
       }
-      this.alerts.push(alert);
+      this.alertService.addAlert(alert);
       this.getAllRecords(this.pagination);
     }
     else {
@@ -130,7 +133,7 @@ export class AdminGridComponent implements OnInit {
         message: adminResult.successMessage,
         timeout: 5000
       };
-      this.alerts.push(alert);
+      this.alertService.addAlert(alert);
     }
   }
 

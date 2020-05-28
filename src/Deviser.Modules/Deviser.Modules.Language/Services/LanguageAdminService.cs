@@ -238,10 +238,10 @@ namespace Deviser.Modules.Language.Services
                 var result = new FormResult<Core.Common.DomainTypes.Language>(languageResult)
                 {
                     IsSucceeded = true,
-                    SuccessMessage = "Language has been updated successfully",
+                    SuccessMessage = "Language has been updated successfully. Please wait, this page will be reloaded in 3 seconds",
                     SuccessAction = new OpenUrlAction()
                     {
-                        OpenAfterSec = 5,
+                        OpenAfterSec = 3,
                         Url = currentUrl
                     }
 

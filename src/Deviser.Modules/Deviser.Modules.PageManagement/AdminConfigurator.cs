@@ -59,7 +59,11 @@ namespace Deviser.Modules.PageManagement
                                  option.FieldType = FieldType.TextArea;
                                  option.IsRequired = false;
                              })
-                             .AddField(p => p.PageHeaderTags, option => option.FieldType = FieldType.TextArea)
+                             .AddField(p => p.PageHeaderTags, option =>
+                             {   
+                                 option.FieldType = FieldType.TextArea;
+                                 option.IsRequired = false;
+                             })
                              .AddSelectField(p => p.Module)
                              .AddField(p => p.ModelName, option => option.DisplayName = "Model Name")
                              .AddField(p => p.RedirectUrl, option => option.DisplayName = "Redirect Link")
