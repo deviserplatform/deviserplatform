@@ -60,7 +60,11 @@ export class AdminGridComponent implements OnInit {
     this.alerts = [];
     this.getAdminConfig();
     this.daConfig = window.daConfig;
-    this.alertService.alerts.subscribe(alert => this.alerts.push(alert));
+    this.alertService.alerts.subscribe(alert => {
+      if(alert){
+        this.alerts.push(alert)
+      }
+    });
   }
 
   ngOnInit() {
@@ -120,7 +124,7 @@ export class AdminGridComponent implements OnInit {
   onActionResult(adminResult: AdminResult): void {
     if (adminResult && adminResult.isSucceeded) {
       let alert: Alert = {
-        alterType: AlertType.Success,
+        alertType: AlertType.Success,
         message: adminResult.successMessage,
         timeout: 5000
       }
@@ -129,7 +133,7 @@ export class AdminGridComponent implements OnInit {
     }
     else {
       let alert: Alert = {
-        alterType: AlertType.Error,
+        alertType: AlertType.Error,
         message: adminResult.successMessage,
         timeout: 5000
       };

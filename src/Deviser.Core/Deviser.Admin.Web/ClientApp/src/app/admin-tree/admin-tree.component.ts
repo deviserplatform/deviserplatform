@@ -166,7 +166,7 @@ export class AdminTreeComponent implements OnInit {
   onActionResult(adminResult: AdminResult): void {
     if (adminResult && adminResult.isSucceeded) {
       const alert: Alert = {
-        alterType: AlertType.Success,
+        alertType: AlertType.Success,
         message: adminResult.successMessage,
         timeout: 5000
       };
@@ -174,7 +174,7 @@ export class AdminTreeComponent implements OnInit {
       this.treeControl.rebuildTreeForData(adminResult.result[this.adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase]);
     } else {
       const alert: Alert = {
-        alterType: AlertType.Error,
+        alertType: AlertType.Error,
         message: adminResult.errorMessage,
         timeout: 5000
       };
@@ -191,7 +191,7 @@ export class AdminTreeComponent implements OnInit {
 
   handleError(message: string) {
     const alert: Alert = {
-      alterType: AlertType.Error,
+      alertType: AlertType.Error,
       message,
       timeout: 5000
     };

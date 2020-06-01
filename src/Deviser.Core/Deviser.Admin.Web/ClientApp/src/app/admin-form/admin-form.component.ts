@@ -55,7 +55,11 @@ export class AdminFormComponent implements OnInit {
     this.alerts = [];
     this.daConfig = window.daConfig;
     // this.childFormContexts;
-    this.alertService.alerts.subscribe(alert => this.alerts.push(alert));
+    this.alertService.alerts.subscribe(alert => {
+      if(alert){
+        this.alerts.push(alert)
+      }
+    });
   }
 
   ngOnInit() {
@@ -82,7 +86,7 @@ export class AdminFormComponent implements OnInit {
         this.onGetAdminConfig(results[0]);
       }, error => {
         const alert: Alert = {
-          alterType: AlertType.Error,
+          alertType: AlertType.Error,
           message: 'Unable to get this item, please contact administrator',
           timeout: 5000
         }
@@ -197,7 +201,7 @@ export class AdminFormComponent implements OnInit {
     this.submitSubject.next(formValue);
     if (formValue && formValue.isSucceeded) {
       let alert: Alert = {
-        alterType: AlertType.Success,
+        alertType: AlertType.Success,
         message: formValue.successMessage,
         timeout: 5000
       }
@@ -215,7 +219,7 @@ export class AdminFormComponent implements OnInit {
     }
     else {
       let alert: Alert = {
-        alterType: AlertType.Error,
+        alertType: AlertType.Error,
         message: formValue.successMessage,
         timeout: 5000
       }
@@ -229,7 +233,7 @@ export class AdminFormComponent implements OnInit {
     }
     else {
       let alert: Alert = {
-        alterType: AlertType.Error,
+        alertType: AlertType.Error,
         message: "Unable to update/save this item, please contact administrator",
         timeout: 5000
       }
