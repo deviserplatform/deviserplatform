@@ -20,10 +20,11 @@
     Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>> moduleViewResults =
 (Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>>)ViewBag.ModuleViewResults;
 }
-<script type="text/javascript">
-    var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
-    console.log(pageContext);
-    console.log('@scopeService.ScopeId');
+<script>
+    (function () {
+        var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
+        window.pageContext = pageContext;
+    }());
 </script>
 
 @if (moduleViewResults != null)

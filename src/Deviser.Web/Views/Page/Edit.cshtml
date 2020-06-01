@@ -6,15 +6,20 @@
     }
     var currentPage = scopeService.PageContext.CurrentPage;
 }
-<script type="text/javascript">
-    var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
-    console.log(pageContext);
+    <script type="text/javascript">
+    (function () {
+        var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
+        pageContext.isEmbedded = true;
+        pageContext.assetPath = '/_content/Deviser.Web/ClientApp/';
+        window.pageContext = pageContext;
+    }());
+
     (function () {
         $(function () {
             $('body').addClass('page-edit');
         });
     }());
-</script>
+    </script>
 
 <div class="layout-wrapper" ng-app="deviserEdit" ng-controller="EditCtrl as editVM">
     <div class="row" ng-show="editVM.message.content">
@@ -57,7 +62,7 @@
     </div>
 
     <div class="layout-container">
-        <script type="text/ng-template" id="placeHolders.html">            
+        <script type="text/ng-template" id="placeHolders.html">
             <div class="row dnd-list"
                  dnd-list="item.placeHolders"
                  dnd-allowed-types="item.allowedTypes"

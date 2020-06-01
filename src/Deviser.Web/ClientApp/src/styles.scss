@@ -1,0 +1,194 @@
+/* You can add global styles to this file, and also import other style files */
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";
+@import "../node_modules/bootstrap/scss/root";
+@import "../node_modules/bootstrap/scss/reboot";
+@import "../node_modules/bootstrap/scss/type";
+@import "../node_modules/bootstrap/scss/images";
+@import "../node_modules/bootstrap/scss/code";
+@import "../node_modules/bootstrap/scss/grid";
+@import "../node_modules/bootstrap/scss/tables";
+@import "../node_modules/bootstrap/scss/forms";
+@import "../node_modules/bootstrap/scss/buttons";
+@import "../node_modules/bootstrap/scss/transitions";
+@import "../node_modules/bootstrap/scss/dropdown";
+@import "../node_modules/bootstrap/scss/button-group";
+@import "../node_modules/bootstrap/scss/input-group";
+@import "../node_modules/bootstrap/scss/custom-forms";
+@import "../node_modules/bootstrap/scss/nav";
+@import "../node_modules/bootstrap/scss/navbar";
+@import "../node_modules/bootstrap/scss/card";
+@import "../node_modules/bootstrap/scss/breadcrumb";
+@import "../node_modules/bootstrap/scss/pagination";
+@import "../node_modules/bootstrap/scss/badge";
+@import "../node_modules/bootstrap/scss/jumbotron";
+@import "../node_modules/bootstrap/scss/alert";
+@import "../node_modules/bootstrap/scss/progress";
+@import "../node_modules/bootstrap/scss/media";
+@import "../node_modules/bootstrap/scss/list-group";
+@import "../node_modules/bootstrap/scss/close";
+@import "../node_modules/bootstrap/scss/modal";
+@import "../node_modules/bootstrap/scss/tooltip";
+@import "../node_modules/bootstrap/scss/popover";
+@import "../node_modules/bootstrap/scss/carousel";
+@import "../node_modules/bootstrap/scss/utilities";
+@import "../node_modules/bootstrap/scss/print";
+
+@import "../node_modules/@ng-select/ng-select/themes/default.theme.css";
+
+$drag-placeholder-bg-color: theme-color-level("primary", -10);
+$drag-placeholder-border-color: theme-color-level("primary", 6);
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.edit-layout-container {
+  .layout-container {
+    .layout-header {
+      margin: 1rem 0;
+      .action-bar {
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .card-header{
+      padding: 0.4rem 0.6rem;
+    }
+
+    .container-element.root{
+      .container-element-header{
+        @extend .card-header
+      }
+    }
+  }
+}
+
+/*Following styles should be in global level since cdk appends the drag element in body*/
+.drop-list {
+  border: solid 1px #ccc;
+  min-height: 60px;
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  display: block;
+}
+
+.drop-item {
+  border-bottom: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
+  cursor: move;
+  background: white;
+  font-size: 14px;
+}
+
+.new-element-list {
+  @extend .drop-list;
+}
+
+.new-element {
+  @extend .drop-item;  
+  padding: 10px;
+  .icon {
+    margin-left: 0.4rem;
+  }
+  .label {
+    margin-left: 0.75rem;
+  }
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.drop-item:last-child,
+.new-element:last-child {
+  border: none;
+}
+
+.drop-list.cdk-drop-list-dragging .drop-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+// .cdk-drop-list-dragging {
+//   background: lightgreen;
+// }
+
+.item-placeholder,
+.new-element.node-element.cdk-drag-placeholder {
+  background: $drag-placeholder-bg-color;
+  border: dashed 1px $drag-placeholder-border-color;
+  min-height: 60px;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.container-element {
+  width: 100%;
+  margin: 10px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  // border-top: solid 1px #ccc;
+  // border-bottom: solid 1px #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+
+  .container-element-header {
+    padding: 0.4rem 0.6rem;
+    margin-bottom: 0;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  }
+
+  .container-element-body {
+    .drop-list {
+      border: none;
+    }
+  }
+  &.root {
+    margin: 0;
+
+    &>.container-element-header {
+      padding: 0.6rem 0.8rem;
+    }
+  }
+}
+
+.trash-list {
+  min-height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  svg {
+    width: 18rem;
+    height: 18rem;
+  }
+  .item-placeholder {
+    position: absolute;
+    opacity: 0;
+    left: 0;
+    right: 0;
+  }
+}

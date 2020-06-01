@@ -7,8 +7,13 @@
     var currentPage = scopeService.PageContext.CurrentPage;
 }
 <script type="text/javascript">
-    var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
-    console.log(pageContext);
+    (function () {
+        var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
+        pageContext.isEmbedded = true;
+        pageContext.assetPath = '/_content/Deviser.Web/ClientApp/';
+        window.pageContext = pageContext;
+    }());
+
     (function () {
         $(function () {
             $('body').addClass('page-edit');

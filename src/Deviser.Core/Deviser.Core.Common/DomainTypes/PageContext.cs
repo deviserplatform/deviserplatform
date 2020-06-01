@@ -67,6 +67,8 @@ namespace Deviser.Core.Common.DomainTypes
 
         public bool IsMultilingual { get; set; }
 
+        public Guid? LayoutId => CurrentPage?.LayoutId;
+
         public string SiteRoot
         {
             get
