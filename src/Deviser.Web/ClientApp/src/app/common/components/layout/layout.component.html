@@ -7,31 +7,50 @@
         </h3>
       </div>
       <div class="col action-bar">
-        <button type="button" class="layout-control btn btn-success">
-          <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-add.svg'| envPath"></i> New
-        </button>
-  
-        <button type="button" class="layout-control btn btn-default">
-          <i class="fa fa-clone" aria-hidden="true"></i> Copy
-        </button>
-  
-        <button type="button" class="layout-control btn btn-default">
-          <i class="fa fa-pencil" aria-hidden="true"></i> Change Layout Name
-        </button>
-  
-        <div class="layout-name">
-          <input type="text" class="form-control" placeholder="Enter layout name" />
+        <div class="left-group">
+          <button type="button" class="layout-control btn btn-primary">
+            <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/add_circle_outline.svg'| envPath"></i>
+            New
+          </button>
+
+          <button type="button" class="layout-control btn btn-secondary">
+            <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/copy.svg'| envPath"></i> Copy
+          </button>
         </div>
-  
-        <button type="button" class="layout-control btn btn-primary">
-          <i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-        </button>
-  
-        <button type="button" class="layout-control btn btn-danger">
-          <i class="fa fa-trash"></i> Delete
-        </button>
-  
-        <div class="layout-dropdown">
+
+        <div class="layout-control layout-name">
+          <div class="input-group layout-name-edit" *ngIf="isLayoutNameEditable">
+            <input type="text" class="form-control" placeholder="Enter layout name" [(ngModel)]="layoutName">
+            <div class="input-group-append">
+              <button type="button" class="btn btn-outline-secondary" (click)="saveLayoutName()">
+                <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/check.svg'| envPath"></i>
+              </button>
+              <button type="button" class="btn btn-outline-secondary" (click)="cancelEditLayoutName()">
+                <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-clear.svg'| envPath"></i>
+              </button>
+            </div>
+          </div>
+          <div class="layout-name-readonly" *ngIf="!isLayoutNameEditable && selectedLayout && selectedLayout.name">
+            <span>{{selectedLayout.name}}</span>
+            <div class="input-group-append">
+              <button type="button" class="btn btn-default" (click)="editLayoutName()">
+                <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/edit-2.svg'| envPath"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="right-group">
+          <button type="button" class="layout-control btn btn-primary">
+            <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/save.svg'| envPath"></i> Save
+          </button>
+
+          <button type="button" class="layout-control btn btn-danger">
+            <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/trash.svg'| envPath"></i> Delete
+          </button>
+        </div>
+
+        <div class="layout-control layout-dropdown">
           <ng-select id="ngslayouts" [items]="pageLayouts" bindLabel="name" [(ngModel)]="selectedLayout"
             (change)="onPageLayoutChange($event);" autofocus [selectOnTab]="true" [multiple]="false"
             placeholder="Select a Layout">
@@ -42,7 +61,7 @@
         <b> Page:</b> [CURRENT PAGE]
       </div>
     </div>
-  
+
     <div class="row">
       <div class="col-2">
         <div class="card">
@@ -52,7 +71,8 @@
           <div class="card-body" *ngIf="layoutTypes && layoutTypes.length > 0">
             <div #newElementList cdkDropList class="new-element-list"
               [cdkDropListConnectedTo]="nestedContainersDropListIds" [cdkDropListData]="layoutTypes">
-              <div class="new-element node-element" *ngFor="let layoutType of layoutTypes" cdkDrag [cdkDragData]="layoutType" cdkDragBoundary=".layout-container">
+              <div class="new-element node-element" *ngFor="let layoutType of layoutTypes" cdkDrag
+                [cdkDragData]="layoutType" cdkDragBoundary=".layout-container">
                 <div class="icon">
                   <i class="{{layoutType.iconClass}}" *ngIf="layoutType.iconClass"></i>
                   <img src="{{layoutType.iconImage}}" *ngIf="layoutType.iconImage" alt="{{layoutType.name}}" />
@@ -79,6 +99,43 @@
       <div class="col-2">
         <div class="card">
           <div class="card-header">
+            <b>Selected</b>
+          </div>
+          <div class="card-body properties" *ngIf="selectedPlaceHolder && selectedPlaceHolder.properties">
+
+            <div class="row" *ngIf="selectedPlaceHolder && selectedPlaceHolder.label">
+              <div class="col-md-6">
+                <strong>Layout Type</strong>
+              </div>
+              <div class="col-md-6">
+                {{selectedPlaceHolder.label}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <strong>Properties</strong>
+              </div>
+            </div>
+
+            <div class="row" *ngFor="let property of selectedPlaceHolder.properties">
+              <div class="col-md-6">
+                {{property.label}}
+              </div>
+              <div class="col-md-6" *ngIf="!property.optionList">
+                <input type="text" class="form-control input-sm" [(ngModel)]="property.value" />
+              </div>
+              <div class="col-md-6" *ngIf="property.optionList">
+                <select class="form-control input-sm" name="repeatSelect" id="repeatSelect"
+                  [(ngModel)]="property.value">
+                  <option value="">Select</option>
+                  <option *ngFor="let option of property.optionList.list" [value]="option.id">{{option.label}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
             <b>Trash</b>
           </div>
           <div class="card-body">
@@ -92,20 +149,22 @@
       </div>
     </div>
   </div>
-  
+
   <ng-template #list let-node="node">
-    <div cdkDropList [id]="node.id" [cdkDropListConnectedTo]="trashDropListIds" [cdkDropListData]="node" [cdkDropListEnterPredicate]="elementDropPredicate"
-      (cdkDropListDropped)="onDragDrop($event)" class="drop-list">
-      <div *ngFor="let child of node.placeHolders;let i = index" cdkDrag [cdkDragData]="child" class="drop-item" cdkDragBoundary=".layout-container">        
+    <div cdkDropList [id]="node.id" [cdkDropListConnectedTo]="trashDropListIds" [cdkDropListData]="node"
+      [cdkDropListEnterPredicate]="elementDropPredicate" (cdkDropListDropped)="onDragDrop($event)" class="drop-list">
+      <div *ngFor="let child of node.placeHolders;let i = index" cdkDrag [cdkDragData]="child" class="drop-item"
+        cdkDragBoundary=".layout-container">
         <ng-container *ngTemplateOutlet="templateSelector, context:{node:child, index:i}">
         </ng-container>
         <div class="item-placeholder" *cdkDragPlaceholder></div>
       </div>
     </div>
   </ng-template>
-  
+
   <ng-template #templateSelector let-node="node" let-index="index">
-    <div class="container-element">
+    <div class="container-element" [ngClass]="{'selected': selectedPlaceHolder && selectedPlaceHolder.id === node.id}"
+      (click)="onPlaceHolderSelected($event, node)">
       <div class="container-element-header">
         <b>{{getLayoutTypeName(node.layoutTypeId)}} {{index+1}}</b>
       </div>

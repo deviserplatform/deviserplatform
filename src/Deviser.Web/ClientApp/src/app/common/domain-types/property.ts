@@ -7,7 +7,7 @@ export interface Property
         name: string;
         label: string;
         //Value property is not in DB, It is here to maintain JSON strucuture
-        nalue: string;
+        value: string;
         defaultValue: string;
         description: string;
         optionListId: string | null;        

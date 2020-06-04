@@ -12,7 +12,7 @@ import { LayoutType } from '../../domain-types/layout-type';
 import { Alert, AlertType } from '../../domain-types/alert';
 import { AlertService } from '../../services/alert.service';
 import { PlaceHolder } from '../../domain-types/place-holder';
-import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
+import { SharedService } from '../../services/shared.service';
 
 export class Node {
   id?: string;
@@ -90,7 +90,9 @@ export class LayoutComponent {
   layoutTypes: LayoutType[] = [];
   pageLayouts: PageLayout[] = [];
   selectedLayout: PageLayout;
-
+  selectedPlaceHolder: PlaceHolder;
+  isLayoutNameEditable: boolean;
+  layoutName: string;
 
   get nestedContainersDropListIds(): string[] {
     // We reverse ids here to respect items nesting hierarchy
@@ -111,6 +113,7 @@ export class LayoutComponent {
   constructor(private _alertService: AlertService,
     private _layoutService: LayoutService,
     private _layoutTypeService: LayoutTypeService,
+    private _sharedService: SharedService,
     @Inject(WINDOW) private _window: any
   ) {
 
@@ -204,6 +207,35 @@ export class LayoutComponent {
     return false;
   }
 
+  onPlaceHolderSelected($event: Event, node: PlaceHolder) {
+    $event.stopPropagation();
+
+    let propertiesValue = node.properties;
+    this.syncPropertyForElement(node);
+    //columnwidth update - hard coded behaviour only for property 'column_width'
+    let columnWidthProp = this._sharedService.getColumnWidthProperty(propertiesValue);
+    if (columnWidthProp && !columnWidthProp.value) {
+      let columnWidth = columnWidthProp.optionList.list.find(item => item.name === this._sharedService.defaultWidth);
+      columnWidthProp.value = columnWidth.id;
+    }
+
+    this.selectedPlaceHolder = node;
+  }
+
+  editLayoutName() {
+    this.layoutName = this.selectedLayout.name;
+    this.isLayoutNameEditable = true;
+  }
+
+  saveLayoutName() {
+    this.selectedLayout.name = this.layoutName;
+    this.isLayoutNameEditable = false;
+  }
+
+  cancelEditLayoutName() {
+    this.isLayoutNameEditable = false;
+  }
+
   getLayoutTypeName(layoutTypeId: string): string {
     return this.getLayoutType(layoutTypeId).label;
   }
@@ -227,6 +259,30 @@ export class LayoutComponent {
       type: 'container',
       placeHolders: this.selectedLayout.placeHolders
     };
+  }
+
+  private syncPropertyForElement(placeHolder: PlaceHolder) {
+    let propertiesValue = placeHolder.properties;
+    let masterLayout = this.layoutTypes.find(lt => lt.id === placeHolder.layoutTypeId);
+    placeHolder.label = masterLayout.label;
+    let masterProperties = masterLayout.properties;
+    masterProperties.forEach(prop => {
+      if (prop) {
+        let propVal = propertiesValue.find(pv => pv.id === prop.id);
+        if (propVal) {
+          //Property exist, update property label
+          propVal.label = prop.label;
+          propVal.description = prop.description;
+          propVal.defaultValue = prop.defaultValue;
+          propVal.optionList = prop.optionList;
+          propVal.optionListId = prop.optionListId;
+        }
+        else {
+          //Property not exist, add the property                      
+          placeHolder.properties.push(JSON.parse(JSON.stringify(prop)));
+        }
+      }
+    });
   }
 
   private canBeDropped(event: CdkDragDrop<PlaceHolder, PlaceHolder>): boolean {
