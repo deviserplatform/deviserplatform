@@ -1,7 +1,10 @@
+import { PageTranslation } from './page-translation';
+
 export interface PageContext {
     assetPath: string; //Property available only for angular client!
     currentPageId: string;
     currentUrl: string;
+    currentTranslation: PageTranslation;
     currentLocale: string;
     debugBaseUrl: string;
     hasPageViewPermission: boolean;

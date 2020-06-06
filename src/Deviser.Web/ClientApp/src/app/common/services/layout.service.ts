@@ -42,7 +42,7 @@ export class LayoutService extends BaseService {
 
 
   deleteLayout(id: string) {
-    const serviceUrl: string = `${this.baseUrl}/api/layout/`;
+    const serviceUrl: string = `${this.baseUrl}/api/layout/${id}`;
     return this.http.delete<any>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log(`deleted a record id:${id}`)),

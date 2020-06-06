@@ -23,7 +23,7 @@ namespace Deviser.Core.Common.DomainTypes
             get; set;
         }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public PageTranslation CurrentTranslation
         {
             get

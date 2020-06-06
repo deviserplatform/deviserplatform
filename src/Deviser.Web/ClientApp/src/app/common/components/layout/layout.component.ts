@@ -87,19 +87,17 @@ const TREE_DATA: Node[] = [
 })
 export class LayoutComponent {
 
-  root: PlaceHolder;
-  // newElements: Node[];
-
+  alerts: Alert[] = [];
+  isLayoutNameEditable: boolean;
+  isNewMode: boolean;
+  layoutName: string;
   layoutTypes: LayoutType[] = [];
   pageLayouts: PageLayout[] = [];
+  pageContext: PageContext;
+  root: PlaceHolder;
   selectedLayout: PageLayout;
   selectedPlaceHolder: PlaceHolder;
-  isLayoutNameEditable: boolean;
-  layoutName: string;
-
-  @ViewChild(ConfirmDialogComponent)
-  private confirmDialogComponent: ConfirmDialogComponent;
-
+  
   get nestedContainersDropListIds(): string[] {
     // We reverse ids here to respect items nesting hierarchy
     const recursiveIds = this.getIdsRecursive(this.root).reverse();
@@ -114,7 +112,8 @@ export class LayoutComponent {
     return recursiveIds;
   }
 
-  private _pageContext: PageContext;
+  @ViewChild(ConfirmDialogComponent)
+  private _confirmDialogComponent: ConfirmDialogComponent;
 
   constructor(private _alertService: AlertService,
     private _layoutService: LayoutService,
@@ -123,7 +122,12 @@ export class LayoutComponent {
     @Inject(WINDOW) private _window: any
   ) {
 
-    this._pageContext = _window.pageContext;
+    this.pageContext = _window.pageContext;
+    this._alertService.alerts.subscribe(alert => {
+      if(alert){
+        this.alerts.push(alert)
+      }
+    });
 
     // this.root = {
     //   id: 'root',
@@ -135,6 +139,7 @@ export class LayoutComponent {
   }
 
   init() {
+    this.isNewMode = false;
     const layoutTypes$ = this._layoutTypeService.getLayoutTypes();
     const pageLayout$ = this._layoutService.getLayouts();
     forkJoin([layoutTypes$, pageLayout$]).subscribe(results => {
@@ -152,7 +157,7 @@ export class LayoutComponent {
   }
 
   onGetLayouts() {
-    this.selectedLayout = this.pageLayouts.find(pl => pl.id === this._pageContext.layoutId);
+    this.selectedLayout = this.pageLayouts.find(pl => pl.id === this.pageContext.layoutId);
     this.setPageLayout();
     console.log(this.selectedLayout);
   }
@@ -246,13 +251,15 @@ export class LayoutComponent {
     this.selectedLayout = {
       id: undefined,
       name: '',
-      pageId: this._pageContext.currentPageId,
+      pageId: this.pageContext.currentPageId,
       placeHolders: [],
       isChanged: true,
       isActive: true
     };
     this.setPageLayout();
+    this.layoutName = '';
     this.isLayoutNameEditable = true;
+    this.isNewMode = true;
   }
 
   onCopyLayout() {
@@ -263,72 +270,47 @@ export class LayoutComponent {
 
   onSaveLayout() {
     this.parsePlaceHolders(this.selectedLayout.placeHolders, true);
-
-    //vm.pageLayout.config = JSON.stringify(vm.pageLayout.placeHolders);
-    this.selectedLayout.pageId = this._pageContext.currentPageId;
+    this.selectedLayout.pageId = this.pageContext.currentPageId;
     if (this.selectedLayout.id) {
       //Update layout
       this._layoutService.updateLayout(this.selectedLayout)
-        .subscribe(pageLayout => this.onActionResult(pageLayout));
-      // layoutService.put(vm.pageLayout)
-      //   .then(function (data) {
-      //     //console.log(data);
-      //     vm.pageLayout.id = data.id;
-      //     vm.pageLayout.placeHolders = data.placeHolders;
-      //     vm.pageLayout.isChanged = false;
-      //     showMessage("success", "Layout has been saved");
-      //     processplaceHolders(vm.pageLayout.placeHolders);
-      //     vm.isLayoutEdit = false;
-      //   }, function (error) {
-      //     showMessage("error", SYS_ERROR_MSG);
-      //   });
+        .subscribe(pageLayout => this.onLayoutSaved(pageLayout));
     }
     else {
       //Create new layout
       this._layoutService.createLayout(this.selectedLayout)
-        .subscribe(pageLayout => this.onActionResult(pageLayout));
-      // layoutService.post(vm.pageLayout)
-      //   .then(function (data) {
-      //     console.log(data);
-      //     vm.pageLayout.id = data.id;
-      //     vm.pageLayout.placeHolders = data.placeHolders;
-      //     vm.pageLayout.isChanged = false;
-      //     showMessage("success", "Layout has been saved");
-      //     getLayouts().then(function () {
-      //       processplaceHolders(vm.pageLayout.placeHolders);
-      //     });
+        .subscribe(pageLayout => this.onLayoutSaved(pageLayout));
+    }
+  }
+
+  onLayoutSaved(formValue: any): void {
+    this.isNewMode = false;
+    if (formValue) {
+      this.selectedLayout.id = formValue.id;
+      this.selectedLayout.placeHolders = formValue.placeHolders;
+      this.selectedLayout.isChanged = false;
+      this.setPageLayout();
       //     vm.isLayoutEdit = false;
-      //   }, function (error) {
-      //     showMessage("error", SYS_ERROR_MSG);
-      //   });
+
+      const alert: Alert = {
+        alertType: AlertType.Success,
+        message: 'Layout has been saved',
+        timeout: 50000
+      }
+      this._alertService.addAlert(alert);
+    }
+    else {
+      const alert: Alert = {
+        alertType: AlertType.Error,
+        message: 'Layout has been saved',
+        timeout: 50000
+      }
+      this._alertService.addAlert(alert);
     }
   }
 
   onDeleteLayout() {
-    // let labels = {
-    //   title: 'Delete Confirmation',
-    //   body: 'Are you sure to delete the layout',
-    //   okLabel: 'Yes',
-    //   cancelLabel: 'No'
-    // };
-
-    this.confirmDialogComponent.openModal(this.selectedLayout);
-
-    // let modalInstance = modalService.showConfirmation(labels);
-
-    // modalInstance.then(function () {
-    //   layoutService.remove(vm.pageLayout.id).then(function (data) {
-    //     console.log('Layout deletion agreed at:' + new Date());
-    //     showMessage("success", "Layout has been removed");
-    //     getLayouts();
-    //     newLayout();
-    //   }, function (error) {
-    //     showMessage("error", SYS_ERROR_MSG);
-    //   })
-    // },
-    //   function () {
-    //     console.log('Layout deletion disagreed at:' + new Date());
-    //   });
+    this._confirmDialogComponent.openModal(this.selectedLayout);
   }
 
   onYesToDelete(layout: any) {
@@ -340,37 +322,11 @@ export class LayoutComponent {
     console.log('declined');
   }
 
-  onActionResult(formValue: any): void {
-    if (formValue) {
-      this.selectedLayout.id = formValue.id;
-      this.selectedLayout.placeHolders = formValue.placeHolders;
-      this.selectedLayout.isChanged = false;
-      this.parsePlaceHolders(this.selectedLayout.placeHolders);
-      //     vm.isLayoutEdit = false;
-
-      const alert: Alert = {
-        alertType: AlertType.Success,
-        message: 'Layout has been saved',
-        timeout: 5000
-      }
-      this._alertService.addAlert(alert);
-    }
-    else {
-      const alert: Alert = {
-        alertType: AlertType.Error,
-        message: 'Layout has been saved',
-        timeout: 5000
-      }
-      this._alertService.addAlert(alert);
-    }
-  }
-
   onLayoutDeleted(response: any) {
     console.log(response);
     this.init();
     this.onNewLayout();
   }
-
 
   getLayoutTypeName(layoutTypeId: string): string {
     return this.getLayoutType(layoutTypeId).label;
