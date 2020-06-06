@@ -8,12 +8,12 @@
       </div>
       <div class="col action-bar">
         <div class="left-group">
-          <button type="button" class="layout-control btn btn-primary">
+          <button type="button" class="layout-control btn btn-primary" (click)="onNewLayout();">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/add_circle_outline.svg'| envPath"></i>
             New
           </button>
 
-          <button type="button" class="layout-control btn btn-secondary">
+          <button type="button" class="layout-control btn btn-secondary" (click)="onCopyLayout();">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/copy.svg'| envPath"></i> Copy
           </button>
         </div>
@@ -22,10 +22,10 @@
           <div class="input-group layout-name-edit" *ngIf="isLayoutNameEditable">
             <input type="text" class="form-control" placeholder="Enter layout name" [(ngModel)]="layoutName">
             <div class="input-group-append">
-              <button type="button" class="btn btn-outline-secondary" (click)="saveLayoutName()">
+              <button type="button" class="btn btn-outline-secondary" (click)="onSaveLayoutName()">
                 <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/check.svg'| envPath"></i>
               </button>
-              <button type="button" class="btn btn-outline-secondary" (click)="cancelEditLayoutName()">
+              <button type="button" class="btn btn-outline-secondary" (click)="onCancelEditLayoutName()">
                 <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-clear.svg'| envPath"></i>
               </button>
             </div>
@@ -33,7 +33,7 @@
           <div class="layout-name-readonly" *ngIf="!isLayoutNameEditable && selectedLayout && selectedLayout.name">
             <span>{{selectedLayout.name}}</span>
             <div class="input-group-append">
-              <button type="button" class="btn btn-default" (click)="editLayoutName()">
+              <button type="button" class="btn btn-default" (click)="onEditLayoutName()">
                 <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/edit-2.svg'| envPath"></i>
               </button>
             </div>
@@ -41,7 +41,7 @@
         </div>
 
         <div class="right-group">
-          <button type="button" class="layout-control btn btn-primary">
+          <button type="button" class="layout-control btn btn-primary" (click)="onSaveLayout();">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/save.svg'| envPath"></i> Save
           </button>
 
@@ -149,22 +149,25 @@
       </div>
     </div>
   </div>
-
+ 
   <ng-template #list let-node="node">
-    <div cdkDropList [id]="node.id" [cdkDropListConnectedTo]="trashDropListIds" [cdkDropListData]="node"
+    <div cdkDropList [id]="node.id" [cdkDropListConnectedTo]="trashDropListIds" [cdkDropListData]="node" [ngClass]="{'horizontal': node.type==='row', 'vertical': node.type!=='row'}"
       [cdkDropListEnterPredicate]="elementDropPredicate" (cdkDropListDropped)="onDragDrop($event)" class="drop-list">
-      <div *ngFor="let child of node.placeHolders;let i = index" cdkDrag [cdkDragData]="child" class="drop-item"
+      <div *ngFor="let child of node.placeHolders;let i = index" cdkDrag [cdkDragData]="child" class="drop-item" [ngClass]="getColumnClass(child)"
         cdkDragBoundary=".layout-container">
-        <ng-container *ngTemplateOutlet="templateSelector, context:{node:child, index:i}">
-        </ng-container>
+        <!-- <div [ngClass]="{'row': node.type==='row'}">
+          <div [ngClass]="{'col': child.type==='column'}"> -->
+            <ng-container *ngTemplateOutlet="templateSelector, context:{node:child, index:i}">
+            </ng-container>
+          <!-- </div>
+        </div> -->
         <div class="item-placeholder" *cdkDragPlaceholder></div>
       </div>
     </div>
   </ng-template>
 
   <ng-template #templateSelector let-node="node" let-index="index">
-    <div class="container-element" [ngClass]="{'selected': selectedPlaceHolder && selectedPlaceHolder.id === node.id}"
-      (click)="onPlaceHolderSelected($event, node)">
+    <div class="container-element" [ngClass]="getPlaceHolderClass(node)" (click)="onPlaceHolderSelected($event, node)">
       <div class="container-element-header">
         <b>{{getLayoutTypeName(node.layoutTypeId)}} {{index+1}}</b>
       </div>
@@ -174,4 +177,7 @@
       </div>
     </div>
   </ng-template>
+
+  <app-confirm-dialog [title]="'Confirmation'" [content]="'Are you sure to delete the layout?'" [btnConfirmText]="'Yes'"
+    [btnCancelText]="'No'" (confirm)="onYesToDelete($event)" (cancel)="onNoToDelete($event)"></app-confirm-dialog>
 </div>

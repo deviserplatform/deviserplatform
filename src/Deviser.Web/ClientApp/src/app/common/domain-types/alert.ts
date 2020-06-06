@@ -1,5 +1,5 @@
 export interface Alert {
-    alterType: AlertType,
+    alertType: AlertType,
     message: string,
     timeout: number
 }

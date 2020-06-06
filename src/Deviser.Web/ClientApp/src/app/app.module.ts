@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { InlineSVGModule } from 'ng-inline-svg';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -13,6 +14,7 @@ import { EditComponent } from './common/components/edit/edit.component';
 import { LayoutComponent } from './common/components/layout/layout.component';
 import { WINDOW_PROVIDERS } from './common/services/window.service';
 import { EnvPathPipe } from './common/pipes/env-path.pipe';
+import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
 
 
 @NgModule({
@@ -20,7 +22,8 @@ import { EnvPathPipe } from './common/pipes/env-path.pipe';
     AppComponent,
     EditComponent,
     LayoutComponent,
-    EnvPathPipe
+    EnvPathPipe,
+    ConfirmDialogComponent
   ],
   imports: [
     AppRoutingModule,
@@ -31,6 +34,7 @@ import { EnvPathPipe } from './common/pipes/env-path.pipe';
     NgSelectModule,
     FormsModule,
     ReactiveFormsModule,
+    ModalModule.forRoot(),
   ],
   providers: [WINDOW_PROVIDERS],
   bootstrap: [AppComponent]

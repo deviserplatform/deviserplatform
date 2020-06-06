@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { CdkDragDrop, CdkDragEnter, CdkDragExit, moveItemInArray, transferArrayItem, DragRef, DropListRef } from '@angular/cdk/drag-drop';
 import { Guid } from '../../services/guid';
 import { LayoutTypeService } from '../../services/layout-type.service';
@@ -13,6 +13,9 @@ import { Alert, AlertType } from '../../domain-types/alert';
 import { AlertService } from '../../services/alert.service';
 import { PlaceHolder } from '../../domain-types/place-holder';
 import { SharedService } from '../../services/shared.service';
+import { Property } from '../../domain-types/property';
+import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 export class Node {
   id?: string;
@@ -94,6 +97,9 @@ export class LayoutComponent {
   isLayoutNameEditable: boolean;
   layoutName: string;
 
+  @ViewChild(ConfirmDialogComponent)
+  private confirmDialogComponent: ConfirmDialogComponent;
+
   get nestedContainersDropListIds(): string[] {
     // We reverse ids here to respect items nesting hierarchy
     const recursiveIds = this.getIdsRecursive(this.root).reverse();
@@ -137,7 +143,7 @@ export class LayoutComponent {
       this.onGetLayouts();
     }, error => {
       const alert: Alert = {
-        alterType: AlertType.Error,
+        alertType: AlertType.Error,
         message: 'Unable to get this item, please contact administrator',
         timeout: 5000
       }
@@ -165,7 +171,7 @@ export class LayoutComponent {
       const item = previousContainerDataAsLayoutTypes[event.previousIndex];
       const itemToCopy: PlaceHolder = {
         id: Guid.newGuid(),
-        layoutTemplate: this.getLayoutTemplate(item.name),
+        // layoutTemplate: this.getLayoutTemplate(item.name),
         layoutTypeId: item.id,
         type: item.name,
         placeHolders: []
@@ -222,19 +228,149 @@ export class LayoutComponent {
     this.selectedPlaceHolder = node;
   }
 
-  editLayoutName() {
+  onEditLayoutName() {
     this.layoutName = this.selectedLayout.name;
     this.isLayoutNameEditable = true;
   }
 
-  saveLayoutName() {
+  onSaveLayoutName() {
     this.selectedLayout.name = this.layoutName;
     this.isLayoutNameEditable = false;
   }
 
-  cancelEditLayoutName() {
+  onCancelEditLayoutName() {
     this.isLayoutNameEditable = false;
   }
+
+  onNewLayout() {
+    this.selectedLayout = {
+      id: undefined,
+      name: '',
+      pageId: this._pageContext.currentPageId,
+      placeHolders: [],
+      isChanged: true,
+      isActive: true
+    };
+    this.setPageLayout();
+    this.isLayoutNameEditable = true;
+  }
+
+  onCopyLayout() {
+    this.selectedLayout.id = undefined;
+    this.selectedLayout.name = "";
+    this.selectedLayout.isChanged = true;
+  }
+
+  onSaveLayout() {
+    this.parsePlaceHolders(this.selectedLayout.placeHolders, true);
+
+    //vm.pageLayout.config = JSON.stringify(vm.pageLayout.placeHolders);
+    this.selectedLayout.pageId = this._pageContext.currentPageId;
+    if (this.selectedLayout.id) {
+      //Update layout
+      this._layoutService.updateLayout(this.selectedLayout)
+        .subscribe(pageLayout => this.onActionResult(pageLayout));
+      // layoutService.put(vm.pageLayout)
+      //   .then(function (data) {
+      //     //console.log(data);
+      //     vm.pageLayout.id = data.id;
+      //     vm.pageLayout.placeHolders = data.placeHolders;
+      //     vm.pageLayout.isChanged = false;
+      //     showMessage("success", "Layout has been saved");
+      //     processplaceHolders(vm.pageLayout.placeHolders);
+      //     vm.isLayoutEdit = false;
+      //   }, function (error) {
+      //     showMessage("error", SYS_ERROR_MSG);
+      //   });
+    }
+    else {
+      //Create new layout
+      this._layoutService.createLayout(this.selectedLayout)
+        .subscribe(pageLayout => this.onActionResult(pageLayout));
+      // layoutService.post(vm.pageLayout)
+      //   .then(function (data) {
+      //     console.log(data);
+      //     vm.pageLayout.id = data.id;
+      //     vm.pageLayout.placeHolders = data.placeHolders;
+      //     vm.pageLayout.isChanged = false;
+      //     showMessage("success", "Layout has been saved");
+      //     getLayouts().then(function () {
+      //       processplaceHolders(vm.pageLayout.placeHolders);
+      //     });
+      //     vm.isLayoutEdit = false;
+      //   }, function (error) {
+      //     showMessage("error", SYS_ERROR_MSG);
+      //   });
+    }
+  }
+
+  onDeleteLayout() {
+    // let labels = {
+    //   title: 'Delete Confirmation',
+    //   body: 'Are you sure to delete the layout',
+    //   okLabel: 'Yes',
+    //   cancelLabel: 'No'
+    // };
+
+    this.confirmDialogComponent.openModal(this.selectedLayout);
+
+    // let modalInstance = modalService.showConfirmation(labels);
+
+    // modalInstance.then(function () {
+    //   layoutService.remove(vm.pageLayout.id).then(function (data) {
+    //     console.log('Layout deletion agreed at:' + new Date());
+    //     showMessage("success", "Layout has been removed");
+    //     getLayouts();
+    //     newLayout();
+    //   }, function (error) {
+    //     showMessage("error", SYS_ERROR_MSG);
+    //   })
+    // },
+    //   function () {
+    //     console.log('Layout deletion disagreed at:' + new Date());
+    //   });
+  }
+
+  onYesToDelete(layout: any) {
+    this._layoutService.deleteLayout(this.selectedLayout.id)
+      .subscribe(response => this.onLayoutDeleted(response))
+  }
+
+  onNoToDelete(layout: any) {
+    console.log('declined');
+  }
+
+  onActionResult(formValue: any): void {
+    if (formValue) {
+      this.selectedLayout.id = formValue.id;
+      this.selectedLayout.placeHolders = formValue.placeHolders;
+      this.selectedLayout.isChanged = false;
+      this.parsePlaceHolders(this.selectedLayout.placeHolders);
+      //     vm.isLayoutEdit = false;
+
+      const alert: Alert = {
+        alertType: AlertType.Success,
+        message: 'Layout has been saved',
+        timeout: 5000
+      }
+      this._alertService.addAlert(alert);
+    }
+    else {
+      const alert: Alert = {
+        alertType: AlertType.Error,
+        message: 'Layout has been saved',
+        timeout: 5000
+      }
+      this._alertService.addAlert(alert);
+    }
+  }
+
+  onLayoutDeleted(response: any) {
+    console.log(response);
+    this.init();
+    this.onNewLayout();
+  }
+
 
   getLayoutTypeName(layoutTypeId: string): string {
     return this.getLayoutType(layoutTypeId).label;
@@ -244,27 +380,76 @@ export class LayoutComponent {
     return this.layoutTypes.find(lt => lt.id === layoutTypeId)
   }
 
-  getLayoutTemplate(layoutType: string) {
-    if (layoutType === 'row' || layoutType === 'column' || layoutType === 'wrapper' || layoutType === 'container') {
-      return layoutType;
+  // getLayoutTemplate(layoutType: string) {
+  //   if (layoutType === 'row' || layoutType === 'column' || layoutType === 'wrapper' || layoutType === 'container') {
+  //     return layoutType;
+  //   }
+  //   return 'repeater';
+  // }
+
+  getPlaceHolderClass(node: PlaceHolder) {
+    let className = this.selectedPlaceHolder && node && this.selectedPlaceHolder.id === node.id ? 'selected' : '';
+    return className;
+  }
+
+  getColumnClass(node: PlaceHolder) {
+    if (node.type === 'column') {
+      let columnClass: string = this._sharedService.getColumnWidth(node.properties);
+      return columnClass.replace('col-md-', 'col-');
     }
-    return 'repeater';
+    return '';
   }
 
   private setPageLayout(): void {
+    if (this.selectedLayout.placeHolders &&
+      this.selectedLayout.placeHolders.length > 0) {
+      this.parsePlaceHolders(this.selectedLayout.placeHolders);
+    }
     this.root = {
       id: 'root',
-      layoutTemplate: 'repeater',
+      // layoutTemplate: 'repeater',
       layoutTypeId: '9341f92e-83d8-4afe-ad4a-a95deeda9ae3',
       type: 'container',
       placeHolders: this.selectedLayout.placeHolders
     };
   }
 
+  private parsePlaceHolders(placeHolders: PlaceHolder[], toSave: boolean = false) {
+    if (placeHolders) {
+      placeHolders.forEach((item, index) => {
+        let masterLayout = this.layoutTypes.find(lt => lt.id === item.layoutTypeId);
+        if (masterLayout) {
+          item.label = masterLayout.label;
+        }
+
+        if (toSave && item.properties) {
+          item.properties.forEach(prop => {
+            prop.optionList = null;
+          });
+        }
+        else {
+          this.syncPropertyForElement(item);
+          //Refresh selected item
+          if (this.selectedPlaceHolder && item.id === this.selectedPlaceHolder.id) {
+            this.selectedPlaceHolder = item;
+          }
+        }
+        item.sortOrder = index + 1;
+
+        if (item.placeHolders) {
+          this.parsePlaceHolders(item.placeHolders, toSave);
+        }
+      });
+    }
+  }
+
   private syncPropertyForElement(placeHolder: PlaceHolder) {
+    if(!placeHolder.properties){
+      placeHolder.properties = [];
+    }
     let propertiesValue = placeHolder.properties;
     let masterLayout = this.layoutTypes.find(lt => lt.id === placeHolder.layoutTypeId);
-    placeHolder.label = masterLayout.label;
+    // placeHolder.label = masterLayout.label;
     let masterProperties = masterLayout.properties;
     masterProperties.forEach(prop => {
       if (prop) {
