@@ -119,10 +119,10 @@ export class LayoutComponent {
     private _layoutService: LayoutService,
     private _layoutTypeService: LayoutTypeService,
     private _sharedService: SharedService,
-    @Inject(WINDOW) private _window: any
+    @Inject(WINDOW) window: any
   ) {
 
-    this.pageContext = _window.pageContext;
+    this.pageContext = window.pageContext;
     this._alertService.alerts.subscribe(alert => {
       if(alert){
         this.alerts.push(alert)

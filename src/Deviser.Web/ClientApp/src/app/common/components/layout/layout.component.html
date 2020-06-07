@@ -1,6 +1,6 @@
 <div class="layout-container">
   <div class="container-fluid">
-    <div class="row layout-header">
+    <div class="row header">
       <div class="col-2">
         <h3 class="layout-title">
           Layout Designer
@@ -8,23 +8,23 @@
       </div>
       <div class="col action-bar">
         <div class="left-group">
-          <button type="button" class="layout-control btn btn-primary" (click)="onNewLayout();">
+          <button type="button" class="action-control btn btn-sm btn-primary" (click)="onNewLayout();">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/add_circle_outline.svg'| envPath"></i>
             New
           </button>
 
-          <button type="button" class="layout-control btn btn-secondary" (click)="onCopyLayout();" *ngIf="!isNewMode">
+          <button type="button" class="action-control btn btn-sm btn-secondary" (click)="onCopyLayout();" *ngIf="!isNewMode">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/copy.svg'| envPath"></i> Copy
           </button>
 
-          <div class="layout-control layout-name">
+          <div class="action-control layout-name">
             <div class="input-group layout-name-edit" *ngIf="isLayoutNameEditable">
               <input type="text" class="form-control" placeholder="Enter layout name" [(ngModel)]="layoutName">
               <div class="input-group-append">
-                <button type="button" class="btn btn-outline-secondary" (click)="onSaveLayoutName()">
+                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="onSaveLayoutName()">
                   <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/check.svg'| envPath"></i>
                 </button>
-                <button type="button" class="btn btn-outline-secondary" (click)="onCancelEditLayoutName()">
+                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="onCancelEditLayoutName()">
                   <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-clear.svg'| envPath"></i>
                 </button>
               </div>
@@ -39,16 +39,16 @@
             </div>
           </div>
 
-          <button type="button" class="layout-control btn btn-primary" (click)="onSaveLayout();">
+          <button type="button" class="action-control btn btn-sm btn-primary" (click)="onSaveLayout();">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/save.svg'| envPath"></i> Save
           </button>
 
-          <button type="button" class="layout-control btn btn-danger" (click)="onDeleteLayout();" *ngIf="!isNewMode">
+          <button type="button" class="action-control btn btn-sm btn-danger" (click)="onDeleteLayout();" *ngIf="!isNewMode">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/trash.svg'| envPath"></i> Delete
           </button>
         </div>
         <div class="right-group">
-          <div class="layout-control layout-dropdown" *ngIf="!isNewMode">
+          <div class="action-control layout-dropdown" *ngIf="!isNewMode">
             <ng-select id="ngslayouts" [items]="pageLayouts" bindLabel="name" [(ngModel)]="selectedLayout"
               (change)="onPageLayoutChange($event);" autofocus [selectOnTab]="true" [multiple]="false"
               placeholder="Select a Layout">
@@ -57,13 +57,10 @@
         </div>
         <dev-alert class="dev-alerts" [alerts]="alerts"></dev-alert>
       </div>
-      <div class="col-2 page-name">
-        <b> Page: </b> <span *ngIf="pageContext && pageContext.currentTranslation">{{pageContext.currentTranslation.name}}</span>
+      <div class="col-2 page-name" ngPreserveWhitespaces>
+        <b>Page: </b><span *ngIf="pageContext && pageContext.currentTranslation">{{pageContext.currentTranslation.name}}</span>
       </div>
     </div>
-
-
-
     <div class="row">
       <div class="col-2">
         <div class="card">
@@ -90,7 +87,7 @@
       <div class="col">
         <div class="container-element root">
           <div class="container-element-header">
-            <b>Nested Containers</b>
+            <b>Page Containers</b>
           </div>
           <div class="container-element-body" *ngIf="root">
             <ng-container *ngTemplateOutlet="list, context:{node:root}">

@@ -22,6 +22,15 @@ export class LayoutService extends BaseService {
       );
   }
 
+  getLayout(id: string): Observable<PageLayout> {
+    const serviceUrl: string = `${this.baseUrl}/api/layout/${id}`;
+    return this.http.get<PageLayout>(serviceUrl, { headers: this.httpHeaders })
+      .pipe(
+        tap(_ => this.log('fetched layouts')),
+        catchError(this.handleError('getLayout', null))
+      );
+  }
+
   createLayout(pageLayout: PageLayout) {
     const serviceUrl: string = `${this.baseUrl}/api/layout/`;
     return this.http.post<PageLayout>(serviceUrl, pageLayout, this.httpOptions)

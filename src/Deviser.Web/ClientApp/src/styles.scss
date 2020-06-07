@@ -41,6 +41,7 @@
 
 $drag-placeholder-bg-color: theme-color-level("primary", -10);
 $drag-placeholder-border-color: theme-color-level("primary", 6);
+$action-bar-font-size: 0.84rem;
 
 @mixin unify-parent($child) {
   @at-root #{selector.unify(&, $child)} {
@@ -68,37 +69,168 @@ body {
     top: 1rem;
     z-index: 10;
   }
-  .layout-container {
-    .layout-header {
-      margin: 1rem 0;
-      .action-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        .left-group {
+  
+  svg {
+    width: 18px;
+    stroke-width: 2px;
+  }
+
+  .card-header {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .container-element {
+    &.root {
+      .container-element-header {
+        @extend .card-header;
+      }
+    }
+
+    &.selected {
+      border-color: $primary;
+      .container-element {
+        border-color: $primary;
+      }
+      .container-element-header {
+        background-color: $primary;
+        color: $white;
+      }
+    }
+  }
+
+  .card {
+    .card-body {
+      &.properties {
+        font-size: 0.8rem;
+        padding: 0.3rem;
+        .row {
+          margin-left: -5px;
+          margin-right: -5px;
+          padding: 0.3rem 0;
+          border-bottom: 1px solid #ddd;
           display: flex;
-          width: 75%;
           align-items: center;
+
+          &:first-child {
+            padding-top: 0px;
+          }
+        }
+
+        .box-content {
+          margin: 20px -10px 0 -10px;
+        }
+
+        .form-control,
+        select.input-sm {
+          height: 1.8rem;
+          padding: 0.1rem;
+          font-size: 0.8rem;
+          border-top: none;
+          border-right: none;
+          border-left: none;
+        }
+
+        .col-md-12,
+        .col-md-6 {
+          padding-left: 5px;
+          padding-right: 2px;
+        }
+
+        // .btn-xs {
+        //   width: 100%;
+        // }
+      }
+    }
+    &.properties-container {
+      margin-bottom: 1rem;
+      height: 56vh;
+    }
+  }
+
+  .header {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    .action-bar {
+      font-size: $action-bar-font-size;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .left-group {
+        display: flex;
+        width: 75%;
+        align-items: center;
+      }
+      .right-group {
+        display: flex;
+        width: 25%;
+        align-items: center;
+      }
+      .action-control {
+        margin-left: 1rem;
+        &:first-child {
+          margin-left: 0;
+        }
+        input {
+          width: 10%;
+        }
+        @include unify-parent("button") {
+          font-size: $action-bar-font-size;
+        }
+        &.layout-name {
+          width: 34%;
+          .layout-name-readonly {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            // font-size: 0.84rem;
+          }
+          .layout-name-edit {
+            display: flex;
+            // align-items: center;
+            // .btn {
+            //   padding: 0.2rem 0.5rem;
+            // }
+          }
+        }
+        &.layout-dropdown {
+          width: 100%;
+        }
+      }
+    }
+    .page-name {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .edit-container {
+    .header {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      .edit-info{
+        display: flex;
+      }
+      .action-bar {
+        .left-group {
+          width: 75%;
         }
         .right-group {
-          display: flex;
           width: 25%;
-          align-items: center;
         }
-        .layout-control {
-          padding: 0.3rem 0.5rem;
-          font-size: 0.8rem;
-          margin-left: 1rem;
-          &:first-child {
-            margin-left: 0;
-          }
-          input {
-            font-size: 0.8rem;
-            width: 10%;
-          }
-          @include unify-parent("button") {
-            width: 5rem;
-          }
+      }
+    }
+  }
+  
+  .layout-container {
+    .header {
+      .action-bar {
+        .left-group {
+          width: 75%;
+        }
+        .right-group {
+          width: 25%;
+        }
+        .action-control {
           &.layout-name {
             width: 34%;
             .layout-name-readonly {
@@ -108,98 +240,16 @@ body {
             }
             .layout-name-edit {
               display: flex;
-              align-items: center;
-              .btn {
-                padding: 0.2rem 0.5rem;
-              }
             }
           }
           &.layout-dropdown {
             width: 100%;
           }
         }
-        svg {
-          width: 18px;
-          stroke-width: 2px;
-        }
       }
       .page-name {
         display: flex;
         align-items: center;
-      }
-    }
-
-    .card-header {
-      padding: 0.4rem 0.6rem;
-    }
-
-    .container-element {
-      &.root {
-        .container-element-header {
-          @extend .card-header;
-        }
-      }
-
-      &.selected {
-        border-color: $primary;
-        .container-element {
-          border-color: $primary;
-        }
-        .container-element-header {
-          background-color: $primary;
-          color: $white;
-        }
-      }
-    }
-
-    .card {
-      .card-body {
-        &.properties {
-          font-size: 0.8rem;
-          padding: 0.3rem;
-          .row {
-            margin-left: -5px;
-            margin-right: -5px;
-            padding: 0.3rem 0;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-
-            &:first-child {
-              padding-top: 0px;
-            }
-
-
-          }
-
-          .box-content {
-            margin: 20px -10px 0 -10px;
-          }
-
-          .form-control,
-          select.input-sm {
-            height: 1.8rem;
-            padding: 0.1rem;
-            font-size: 0.8rem;
-            border-top: none;
-            border-right: none;
-            border-left: none;
-          }
-
-          .col-md-12,
-          .col-md-6 {
-            padding-left: 5px;
-            padding-right: 2px;
-          }
-
-          .btn-xs {
-            width: 100%;
-          }
-        }
-      }
-      &.properties-container {
-        margin-bottom: 1rem;
-        height: 56vh;
       }
     }
   }
