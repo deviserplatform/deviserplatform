@@ -69,7 +69,7 @@ body {
     top: 1rem;
     z-index: 10;
   }
-  
+
   svg {
     width: 18px;
     stroke-width: 2px;
@@ -207,7 +207,7 @@ body {
     .header {
       margin-top: 1rem;
       margin-bottom: 1rem;
-      .edit-info{
+      .edit-info {
         display: flex;
       }
       .action-bar {
@@ -219,8 +219,23 @@ body {
         }
       }
     }
+
+    .content-type {
+      height: 44.3vh;
+      margin-bottom: 1rem;
+      .card-body{
+        overflow-y: auto;
+      }
+    }
+
+    .module-view {
+      height: 44.3vh;
+      .card-body{
+        overflow-y: auto;
+      }
+    }
   }
-  
+
   .layout-container {
     .header {
       .action-bar {

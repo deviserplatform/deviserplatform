@@ -21,6 +21,13 @@ import { ModuleView } from '../../domain-types/module-view';
 import { PageContent } from '../../domain-types/page-content';
 import { PageModule } from '../../domain-types/page-module';
 import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
+import { PlaceHolder } from '../../domain-types/place-holder';
+import { element } from 'protractor';
+import { sortBy, includes, reject, iteratee } from 'lodash-es';
+import { SharedService } from '../../services/shared.service';
+import { CdkDragDrop, moveItemInArray, transferArrayItem, DragRef, DropListRef, CdkDragEnter, CdkDragExit } from '@angular/cdk/drag-drop';
+import { Guid } from '../../services/guid';
+import { ItemsList } from '@ng-select/ng-select/lib/items-list';
 
 @Component({
   selector: 'app-edit',
@@ -32,13 +39,31 @@ export class EditComponent implements OnInit {
   alerts: Alert[] = [];
   currentPage: Page;
   currentPageState: string;
-  contentTypes: PageElement[];
+  containerIds: string[] = [];
+  contentTypes: PlaceHolder[];
   layoutTypes: LayoutType[];
-  moduleViews: PageElement[];
+  moduleViews: PlaceHolder[];
   pageContents: PageContent[];
   pageContext: PageContext;
   pageLayout: PageLayout;
   pageModules: PageModule[];
+  root: PlaceHolder;
+  selectedPlaceHolder: PlaceHolder;
+  uaLayout: any = {}
+
+  get nestedContainersDropListIds(): string[] {
+    // We reverse ids here to respect items nesting hierarchy
+    const recursiveIds = this.getIdsRecursive(this.root).reverse();
+    // recursiveIds.splice(0, 0, 'newElementList');
+    return recursiveIds;
+  }
+
+  get trashDropListIds(): string[] {
+    // We reverse ids here to respect items nesting hierarchy
+    const recursiveIds = this.getIdsRecursive(this.root).reverse();
+    recursiveIds.push('trashList');
+    return recursiveIds;
+  }
 
   constructor(private _alertService: AlertService,
     private _contentTypeService: ContentTypeService,
@@ -48,6 +73,7 @@ export class EditComponent implements OnInit {
     private _pageService: PageService,
     private _pageContentService: PageContentService,
     private _pageModuleService: PageModuleService,
+    private _sharedService: SharedService,
     @Inject(WINDOW) window: any) {
     this.pageContext = window.pageContext;
     this._alertService.alerts.subscribe(alert => {
@@ -55,12 +81,116 @@ export class EditComponent implements OnInit {
         this.alerts.push(alert)
       }
     });
+
+    this.init();
   }
 
   ngOnInit(): void {
   }
 
-  init() {
+  onDragDrop(event: CdkDragDrop<any, any | LayoutType[]>) {
+    const containerData: PlaceHolder[] = event.container.data.placeHolders;
+    const previousContainerData: PlaceHolder[] = event.previousContainer.data.placeHolders as PlaceHolder[];
+    if (previousContainerData === containerData) {
+      moveItemInArray(containerData, event.previousIndex, event.currentIndex);
+    } else if (this.contentTypes === previousContainerData) {
+      //New content types
+      const item = previousContainerData[event.previousIndex];
+      const itemToCopy: PlaceHolder = {
+        //id: Guid.newGuid(),
+        type: item.type,
+        contentType: item.contentType,
+        layoutTemplate: this.getLayoutTemplate(item),
+        placeHolders: []
+      };
+      // copyArrayItem(previousContainerData, containerData, event.previousIndex, event.currentIndex);
+      containerData.splice(event.currentIndex, 0, itemToCopy);
+    } else if (this.moduleViews === previousContainerData) {
+      //New Modules
+      const item = previousContainerData[event.previousIndex];
+      const itemToCopy: PlaceHolder = {
+        //id: Guid.newGuid(),
+        type: item.type,
+        moduleView: item.moduleView,
+        layoutTemplate: this.getLayoutTemplate(item),
+        placeHolders: []
+      };
+      // copyArrayItem(previousContainerData, containerData, event.previousIndex, event.currentIndex);
+      containerData.splice(event.currentIndex, 0, itemToCopy);
+    }
+    else {
+      transferArrayItem(previousContainerData,
+        containerData,
+        event.previousIndex,
+        event.currentIndex);
+    }
+  }
+
+  onDropToTrash(event: CdkDragDrop<any>) {
+    // const containerData: PlaceHolder[] = event.container.data;
+    if (!event.previousContainer.data.placeHolders) {
+      return;
+    }
+    const previousContainerData: PlaceHolder[] = event.previousContainer.data.placeHolders;
+    previousContainerData.splice(event.previousIndex, 1);
+  }
+
+  elementDropPredicate = (drag: DragRef, drop: DropListRef): boolean => {
+    // const dragPlaceHolder = drag.data as PlaceHolder;
+    // const dragLayoutType = drag.data as LayoutType;
+    // const dropListPlaceHolder = drop.data as PlaceHolder
+    // if ((dragPlaceHolder || dragLayoutType) && dropListPlaceHolder) {
+    //   let dragItemType: LayoutType;
+    //   const dropItemType = this.getLayoutType(dropListPlaceHolder.layoutTypeId);
+    //   if (dragLayoutType && dragLayoutType.name && dragLayoutType.layoutTypeIds) {
+    //     dragItemType = dragLayoutType;
+    //   }
+    //   else {
+    //     dragItemType = this.getLayoutType(dragPlaceHolder.layoutTypeId);
+    //   }
+    //   return dropItemType.layoutTypeIds.replace(/\s/g, '').split(',').indexOf(dragItemType.id) >= 0;
+    // }
+    return false;
+  }
+
+  onPlaceHolderSelected($event: Event, node: PlaceHolder) {
+    $event.stopPropagation();
+
+    let propertiesValue = node.properties;
+    this.syncPropertyForElement(node);
+    //columnwidth update - hard coded behaviour only for property 'column_width'
+    let columnWidthProp = this._sharedService.getColumnWidthProperty(propertiesValue);
+    if (columnWidthProp && !columnWidthProp.value) {
+      let columnWidth = columnWidthProp.optionList.list.find(item => item.name === this._sharedService.defaultWidth);
+      columnWidthProp.value = columnWidth.id;
+    }
+
+    this.selectedPlaceHolder = node;
+  }
+
+  getLayoutTypeName(layoutTypeId: string): string {
+    return this.getLayoutType(layoutTypeId).label;
+  }
+
+  getLayoutType(layoutTypeId: string): LayoutType {
+    return this.layoutTypes.find(lt => lt.id === layoutTypeId)
+  }
+
+  getPlaceHolderClass(node: PlaceHolder) {
+    let className = this.selectedPlaceHolder && node && this.selectedPlaceHolder.id === node.id ? 'selected' : '';
+    return className;
+  }
+
+  getColumnClass(node: PlaceHolder) {
+    if (node.type === 'column') {
+      let columnClass: string = this._sharedService.getColumnWidth(node.properties);
+      return columnClass.replace('col-md-', 'col-');
+    }
+    return '';
+  }
+
+
+  private init() {
     const page$ = this._pageService.getPage(this.pageContext.currentPageId);
     const pageLayout$ = this._layoutService.getLayout(this.pageContext.layoutId);
     const contentTypes$ = this._contentTypeService.getContentTypes();
@@ -113,6 +243,8 @@ export class EditComponent implements OnInit {
 
       this.pageModules = results[6];
 
+      this.loadPageElements();
+
     }, error => {
       const alert: Alert = {
         alertType: AlertType.Error,
@@ -129,51 +261,59 @@ export class EditComponent implements OnInit {
       unAssignedModules = [];
 
     //First, position elements in correct order and then assign the pageLayout to VM.
-    positionPageElements(pageLayout.placeHolders);
-    vm.pageLayout = pageLayout;
-    vm.pageLayout.pageId = vm.currentPage.id;
+    this.positionPageElements(this.pageLayout.placeHolders);
+    // vm.pageLayout = pageLayout;
+    this.pageLayout.pageId = this.pageContext.currentPageId;
 
-    var unAssignedSrcConents = _.reject(vm.pageContents, function (content) {
-      return _.includes(containerIds, content.containerId);
+    let unAssignedSrcConents = reject(this.pageContents, function (content) {
+      return includes(this.containerIds, content.containerId);
     });
 
-    var unAssignedSrcModules = _.reject(vm.pageModules, function (module) {
-      return _.includes(containerIds, module.containerId);
+    let unAssignedSrcModules = reject(this.pageModules, function (module) {
+      return includes(this.containerIds, module.containerId);
     });
 
-    _.forEach(unAssignedSrcConents, function (pageContent) {
-      var content = getPageContentWithProperties(pageContent);
+    unAssignedSrcConents.forEach(pageContent => {
+      let content = this.getPageContentWithProperties(pageContent);
       content.isUnassigned = true;
       unAssignedContents.push(content);
     });
 
-    _.forEach(unAssignedSrcModules, function (pageModule) {
-      var index = pageModule.sortOrder - 1;
-      var module = getPageModulesWithProperties(pageModule);
+    unAssignedSrcModules.forEach(pageModule => {
+      let index = pageModule.sortOrder - 1;
+      let module = this.getPageModulesWithProperties(pageModule);
       module.isUnassigned = true;
       unAssignedModules.push(module);
-    })
+    });
 
-    vm.uaLayout.placeHolders = [];
+    this.uaLayout.placeHolders = [];
+    this.uaLayout.placeHolders = this.uaLayout.placeHolders.concat(unAssignedContents);
+    this.uaLayout.placeHolders = this.uaLayout.placeHolders.concat(unAssignedModules);
 
-    vm.uaLayout.placeHolders = vm.uaLayout.placeHolders.concat(unAssignedContents);
-    vm.uaLayout.placeHolders = vm.uaLayout.placeHolders.concat(unAssignedModules);
+    this.root = {
+      id: 'root',
+      // layoutTemplate: 'repeater',
+      layoutTypeId: '9341f92e-83d8-4afe-ad4a-a95deeda9ae3',
+      type: 'container',
+      layoutTemplate: 'container',
+      placeHolders: this.pageLayout.placeHolders
+    };
 
   }
 
-  private positionPageElements(placeHolders: Placeholder[]) {
+  private positionPageElements(placeHolders: PlaceHolder[]) {
     if (placeHolders) {
       placeHolders.forEach(item => {
         //console.log(item)
 
         //adding containerId to filter unallocated items in a separate dndlist
-        containerIds.push(item.id);
+        this.containerIds.push(item.id);
 
         //Load content items if found
-        var pageContents = _.filter(vm.pageContents, { containerId: item.id });
+        let pageContents = this.pageContents.filter(pageContent => pageContent.containerId === item.id);
         if (pageContents) {
-          _.forEach(pageContents, function (pageContent) {
-            var content = getPageContentWithProperties(pageContent);
+          pageContents.forEach(pageContent => {
+            let content = this.getPageContentWithProperties(pageContent);
             //item.placeHolders.splice(index, 0, contentTypeInfo); //Insert placeHolder into specified index
             if (!content.title) {
               content.title = content.contentType.label + ' ' + (item.placeHolders.length + 1);
@@ -182,17 +322,18 @@ export class EditComponent implements OnInit {
           });
         }
 
+        item.layoutTemplate = this.getLayoutTemplate(item);
         //To sync and fetch the layout properties
-        if (item.layoutTemplate !== 'content' && item.layoutTemplate !== 'module') {
-          syncPropertyForElement(item)
+        if (this.isLayoutType(item)) {
+          this.syncPropertyForElement(item)
         }
 
         //Load modules if found
-        var pageModules = _.filter(vm.pageModules, { containerId: item.id });
+        let pageModules = this.pageModules.filter(pageModule => pageModule.containerId === item.id);
         if (pageModules) {
-          _.forEach(pageModules, function (pageModule) {
-            var index = pageModule.sortOrder - 1;
-            var module = getPageModulesWithProperties(pageModule);
+          pageModules.forEach(pageModule => {
+            let index = pageModule.sortOrder - 1;
+            let module = this.getPageModulesWithProperties(pageModule);
             if (!module.title) {
               module.title = module.moduleView.displayName + ' ' + (item.placeHolders.length + 1);
             }
@@ -200,13 +341,238 @@ export class EditComponent implements OnInit {
           });
         }
 
-        item.placeHolders = _.sortBy(item.placeHolders, ['sortOrder']);
+        item.placeHolders = sortBy(item.placeHolders, ['sortOrder']);
 
         if (item.placeHolders) {
-          positionPageElements(item.placeHolders);
+          this.positionPageElements(item.placeHolders);
         }
       });
     }
+  }
+
+  private getPageContentWithProperties(pageContent: PageContent): PlaceHolder {
+    let propertiesValue = pageContent.properties;
+    let masterContentType = this.contentTypes.find(element => element.contentType.id === pageContent.contentType.id);
+    let properties = JSON.parse(JSON.stringify(masterContentType.properties));
+
+    //Loading values to the properties
+    properties.forEach(prop => {
+      let propVal = propertiesValue.find(propVal => propVal.id === prop.id);
+      if (propVal) {
+        prop.value = propVal.value;
+      }
+      if (prop.optionList && prop.optionList.list) {
+        prop.optionList = JSON.parse(prop.optionList.list);
+      }
+    });
+
+    let content: PlaceHolder = {
+      id: pageContent.id,
+      // layoutTemplate: 'content',
+      type: 'content',
+      title: pageContent.title,
+      properties: properties,
+      pageContent: pageContent,
+      contentType: pageContent.contentType,
+      sortOrder: pageContent.sortOrder
+    }
+    return content;
+  }
+
+  private getPageModulesWithProperties(pageModule: PageModule): PlaceHolder {
+    let propertiesValue = pageModule.properties;
+    let masterModule = this.moduleViews.find(item => item.moduleView && item.moduleView.id === pageModule.moduleView.id);
+    let properties = JSON.parse(JSON.stringify(masterModule.moduleView.properties));
+
+    //Loading values to the properties
+    properties.forEach(prop => {
+      let propVal = propertiesValue.find(propVal => propVal.id === prop.id);
+      if (propVal) {
+        prop.value = propVal.value;
+      }
+      if (prop.optionList && prop.optionList.list) {
+        prop.optionList = JSON.parse(prop.optionList.list);
+      }
+    });
+
+    let module: PlaceHolder = {
+      id: pageModule.id,
+      // layoutTemplate: "module",
+      type: "module",
+      title: pageModule.title,
+      moduleView: pageModule.moduleView,
+      pageModule: pageModule,
+      sortOrder: pageModule.sortOrder,
+      properties: properties
+    };
+
+    return module;
+  }
+
+  //To sync and fetch the layout properties
+  private syncPropertyForElement(element: PlaceHolder) {
+    let propertiesValue = element.properties;
+    let masterLayout = this.layoutTypes.find(layoutType => layoutType.id === element.layoutTypeId);
+    let masterProperties = masterLayout.properties;
+    masterProperties.forEach(prop => {
+      if (prop) {
+        let propVal = propertiesValue.find(propVal => propVal.id === prop.id);
+        if (propVal) {
+          //Property exist, update property label
+          propVal.label = prop.label;
+          propVal.description = prop.description;
+          propVal.defaultValue = prop.defaultValue;
+          propVal.optionList = prop.optionList;
+          propVal.optionListId = prop.optionListId;
+        }
+        else {
+          //Property not exist, add the property                      
+          element.properties.push(JSON.parse(JSON.stringify(prop)));
+        }
+      }
+    });
+  }
+
+  private getLayoutTemplate(placeHolder: PlaceHolder) {
+    if (this.isLayoutType(placeHolder)) {
+      return 'container';
+    }
+    return placeHolder.type;
+  }
+
+  private isLayoutType(placeHolder: PlaceHolder): boolean {
+    return placeHolder.type !== 'module' && placeHolder.type !== 'content';
+  }
+
+  private updateElements(placeHolder: PlaceHolder) {
+
+    // let elementsToSort = {
+    //   contents: [],
+    //   modules: []
+    // };
+    let contents: PlaceHolder[];
+    let modules: PlaceHolder[];
+
+    placeHolder.placeHolders.forEach((item, index) => {
+      item.sortOrder = index + 1;
+      if (item.layoutTemplate === "content") {
+        contents.push(item);
+      }
+      else if (item.layoutTemplate === "module") {
+        modules.push(item);
+      }
+    });
+
+    //updatePageContents(elementsToSort);
+
+    //Clone current layout and get layout only (without contents and modules)
+    let layoutOnly = JSON.parse(JSON.stringify(this.pageLayout));
+    this.filterLayout(layoutOnly);
+    console.log("--------------------------");
+    console.log("Layout only");
+    console.log(layoutOnly)
+
+    let pageContents = this.parseAndSortPageContents(placeHolder);
+    let pageModules = this.parseAndSortPageModules(placeHolder);
+
+    let pageContents$ = this._pageContentService.updatePageContents(pageContents);
+    let pageModules$ = this._pageModuleService.updatePageModules(pageModules);
+    let pageLayout$ = this._layoutService.updateLayout(layoutOnly)
+
+    forkJoin([pageContents$, pageModules$, pageLayout$]).subscribe(result =>{
+
+      const alert: Alert = {
+        alertType: AlertType.Success,
+        message: 'Page Content and Module View in selected layout has been saved',
+        timeout: 5000
+      }
+      this._alertService.addAlert(alert);
+
+    });
+  }
+
+  private filterLayout(placeHolder: PlaceHolder) {
+
+    placeHolder.placeHolders = reject(placeHolder.placeHolders, function (item) {
+      return (item.layoutTemplate === "content" || item.layoutTemplate === "module");
+    });
+
+    placeHolder.placeHolders.forEach(item => {
+      item.properties.forEach((prop, index) => {
+        prop.optionList = null;
+      });
+      if (item.placeHolders) {
+        this.filterLayout(item);
+      }
+    });
+  }
+
+  private parseAndSortPageContents(placeHolder: PlaceHolder): PageContent[] {
+    let pageContents: PageContent[] = [];
+    placeHolder.placeHolders.forEach((item, index) => {
+      let pageContent: PageContent;
+      if (item.id) {
+        pageContent = item.pageContent;
+        pageContent.sortOrder = index + 1;
+        pageContent.containerId = placeHolder.id;
+        pageContent.properties = item.properties;
+      }
+      else {
+        pageContent = {
+          id: Guid.newGuid(),
+          pageId: this.pageContext.currentPageId,
+          contentTypeId: item.contentType.id,
+          containerId: placeHolder.id,
+          sortOrder: index + 1,
+          hasEditPermission: true, //New content always has edit permission
+          properties: item.properties
+        }
+      }
+      pageContents.push(pageContent);
+    });
+    return pageContents;
+  }
+
+  private parseAndSortPageModules(placeHolder: PlaceHolder): PageModule[] {
+    let pageModules: PageModule[] = [];
+    placeHolder.placeHolders.forEach((item, index) => {
+      let pageModule: PageModule;
+      if (item.id) {
+        pageModule = item.pageModule;
+        pageModule.sortOrder = index + 1;
+        pageModule.containerId = placeHolder.id;
+        pageModule.properties = item.properties;
+      }
+      else {
+        pageModule = {
+          id: Guid.newGuid(),
+          pageId: this.pageContext.currentPageId,
+          moduleId: item.moduleView.moduleId,
+          moduleViewId: item.moduleView.id,
+          containerId: placeHolder.id,
+          sortOrder: index + 1,
+          hasEditPermission: true, //New content always has edit permission
+          properties: item.properties
+        }
+      }
+      pageModules.push(pageModule);
+    });
+    return pageModules;
+  }
+
+  private isNotSelfDrop(event: CdkDragDrop<PlaceHolder> | CdkDragEnter<PlaceHolder> | CdkDragExit<PlaceHolder>): boolean {
+    return event.container.data.id !== event.item.data.id;
+  }
+
+  private hasChild(parent: PlaceHolder, child: PlaceHolder): boolean {
+    const hasChild = parent.placeHolders.some((item) => item.id === child.id);
+    return hasChild ? true : parent.placeHolders.some((item) => this.hasChild(item, child));
+  }
+
+  private getIdsRecursive(item: PlaceHolder): string[] {
+    let ids = [item.id];
+    item.placeHolders.forEach((childItem) => { ids = ids.concat(this.getIdsRecursive(childItem)); });
+    return ids;
   }
 
 }

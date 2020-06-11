@@ -5,20 +5,20 @@ import { ContentPermission } from './content-permission';
 
 export interface PageContent {
     id: string;
-    title: string;
+    title?: string;
     containerId: string;
     properties: Property[];
     sortOrder: number;
-    createdDate: Date | string | null;
-    isActive: boolean;
-    lastModifiedDate: Date | string | null;
+    createdDate?: Date | string | null;
+    isActive?: boolean;
+    lastModifiedDate?: Date | string | null;
     pageId: string;
     contentTypeId: string;
     // export virtual Page Page { get; set; }
-    contentType: ContentType
-    inheritViewPermissions: boolean;
-    inheritEditPermissions: boolean;
+    contentType?: ContentType
+    inheritViewPermissions?: boolean;
+    inheritEditPermissions?: boolean;
     hasEditPermission: boolean;
-    pageContentTranslation: PageContentTranslation;
-    contentPermissions: ContentPermission;
+    pageContentTranslation?: PageContentTranslation;
+    contentPermissions?: ContentPermission;
 }
