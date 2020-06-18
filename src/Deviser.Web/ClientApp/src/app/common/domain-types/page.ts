@@ -5,6 +5,7 @@ import { PagePermission } from './page-permission';
 import { Layout } from './layout';
 import { PageType } from './page-type';
 import { AdminPage } from './admin-page';
+import { PageState } from './page-state';
 
 export interface Page
     {

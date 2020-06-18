@@ -17,12 +17,14 @@
                 <dev-alert class="dev-alerts" [alerts]="alerts"></dev-alert>
             </div>
             <div class="col-2 action-bar">
-                <button type="button" class="action-control btn btn-sm btn-secondary">
+                <button type="button" class="action-control btn btn-sm btn-secondary"
+                    *ngIf="currentPageState === pageState.Published" (click)="onDraft();">
                     <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
                     Draft
                 </button>
 
-                <button type="button" class="action-control btn btn-sm btn-primary">
+                <button type="button" class="action-control btn btn-sm btn-primary"
+                    *ngIf="currentPageState === pageState.Draft" (click)="onPublish();">
                     <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/globe.svg'| envPath"></i>
                     Publish
                 </button>
@@ -40,8 +42,10 @@
                             <div class="new-element node-element" *ngFor="let contentElement of contentTypes" cdkDrag
                                 [cdkDragData]="contentElement" cdkDragBoundary=".layout-container">
                                 <div class="icon">
-                                    <i class="{{contentElement.contentType.iconClass}}" *ngIf="contentElement.contentType.iconClass"></i>
-                                    <img src="{{contentElement.contentType.iconImage}}" *ngIf="contentElement.contentType.iconImage"
+                                    <i class="{{contentElement.contentType.iconClass}}"
+                                        *ngIf="contentElement.contentType.iconClass"></i>
+                                    <img src="{{contentElement.contentType.iconImage}}"
+                                        *ngIf="contentElement.contentType.iconImage"
                                         alt="{{contentElement.contentType.name}}" />
                                 </div>
                                 <div class="label">
@@ -62,8 +66,10 @@
                             <div class="new-element node-element" *ngFor="let moduleElement of moduleViews" cdkDrag
                                 [cdkDragData]="moduleElement" cdkDragBoundary=".layout-container">
                                 <div class="icon">
-                                    <i class="{{moduleElement.moduleView.iconClass}}" *ngIf="moduleElement.moduleView.iconClass"></i>
-                                    <img src="{{moduleElement.moduleView.iconImage}}" *ngIf="moduleElement.moduleView.iconImage"
+                                    <i class="{{moduleElement.moduleView.iconClass}}"
+                                        *ngIf="moduleElement.moduleView.iconClass"></i>
+                                    <img src="{{moduleElement.moduleView.iconImage}}"
+                                        *ngIf="moduleElement.moduleView.iconImage"
                                         alt="{{moduleElement.moduleView.name}}" />
                                 </div>
                                 <div class="label">
@@ -122,6 +128,16 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" class="property-control btn btn-sm btn-primary"
+                                    (click)="onSaveProperties();"> Save
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card trash-container">
@@ -144,10 +160,11 @@
     <ng-template #list let-node="node">
         <div cdkDropList [id]="node.id" [cdkDropListConnectedTo]="trashDropListIds" [cdkDropListData]="node"
             [ngClass]="{'horizontal': node.type==='row', 'vertical': node.type!=='row'}"
-            [cdkDropListEnterPredicate]="elementDropPredicate" (cdkDropListDropped)="onDragDrop($event)"
+            (cdkDropListDropped)="onDragDrop($event)"
             class="drop-list">
             <div *ngFor="let child of node.placeHolders;let i = index" cdkDrag [cdkDragData]="child" class="drop-item"
-                [ngClass]="getColumnClass(child)" cdkDragBoundary=".layout-container" [cdkDragDisabled]="child.layoutTemplate === 'container'">
+                [ngClass]="getColumnClass(child)" cdkDragBoundary=".layout-container"
+                [cdkDragDisabled]="child.layoutTemplate === 'container'">
                 <!-- <div [ngClass]="{'row': node.type==='row'}">
             <div [ngClass]="{'col': child.type==='column'}"> -->
                 <ng-container *ngTemplateOutlet="templateSelector, context:{node:child, index:i}">
@@ -162,10 +179,9 @@
     <ng-template #templateSelector let-node="node" let-index="index">
         <ng-container [ngSwitch]="node.layoutTemplate">
             <ng-container *ngSwitchCase="'container'">
-                <div class="container-element" [ngClass]="getPlaceHolderClass(node)"
-                    (click)="onPlaceHolderSelected($event, node)">
+                <div class="container-element placeholder">
                     <div class="container-element-header">
-                        <b>{{getLayoutTypeName(node.layoutTypeId)}} {{index+1}}</b>
+                        <span>{{getLayoutTypeName(node.layoutTypeId)}} {{index+1}}</span>
                     </div>
                     <div class="container-element-body">
                         <ng-container *ngTemplateOutlet="list, context:{node:node}">
@@ -174,19 +190,18 @@
                 </div>
             </ng-container>
             <ng-container *ngSwitchCase="'content'">
-                <div class="container-element" [ngClass]="getPlaceHolderClass(node)"
+                <div class="container-element content" [ngClass]="getPlaceHolderClass(node)"
                     (click)="onPlaceHolderSelected($event, node)">
                     <div class="container-element-header">
-                        <b>{{getLayoutTypeName(node.layoutTypeId)}} {{index+1}}</b>
-                    </div>
-                    <div class="container-element-body">
-                        <ng-container *ngTemplateOutlet="list, context:{node:node}">
-                        </ng-container>
+                        <i [ngClass]="node.contentType.iconClass" *ngIf="node.contentType.iconClass"></i>
+                        <img [src]="node.contentType.iconImage" *ngIf="node.contentType.iconImage"
+                            [alt]="node.contentType.name" />
+                        <b>{{node.title}}</b>
                     </div>
                 </div>
             </ng-container>
             <ng-container *ngSwitchCase="'module'">
-                <div class="container-element" [ngClass]="getPlaceHolderClass(node)"
+                <div class="container-element module" [ngClass]="getPlaceHolderClass(node)"
                     (click)="onPlaceHolderSelected($event, node)">
                     <div class="container-element-header">
                         <b>{{getLayoutTypeName(node.layoutTypeId)}} {{index+1}}</b>
@@ -199,5 +214,5 @@
 
     </ng-template>
 
-   
+
 </div>

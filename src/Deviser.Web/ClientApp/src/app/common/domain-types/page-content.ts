@@ -18,7 +18,7 @@ export interface PageContent {
     contentType?: ContentType
     inheritViewPermissions?: boolean;
     inheritEditPermissions?: boolean;
-    hasEditPermission: boolean;
+    hasEditPermission?: boolean;
     pageContentTranslation?: PageContentTranslation;
     contentPermissions?: ContentPermission;
 }

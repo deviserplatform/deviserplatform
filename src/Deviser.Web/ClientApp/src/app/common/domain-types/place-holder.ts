@@ -19,6 +19,7 @@ export interface PlaceHolder {
     pageContent?: PageContent;
     pageModule?: PageModule;
     isUnassigned?: boolean;
+    isPropertyChanged?: boolean;
     
     layoutTypeId?: string;
     properties?: Property[];

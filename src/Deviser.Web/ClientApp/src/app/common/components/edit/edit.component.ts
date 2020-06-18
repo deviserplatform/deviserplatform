@@ -28,6 +28,7 @@ import { SharedService } from '../../services/shared.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, DragRef, DropListRef, CdkDragEnter, CdkDragExit } from '@angular/cdk/drag-drop';
 import { Guid } from '../../services/guid';
 import { ItemsList } from '@ng-select/ng-select/lib/items-list';
+import { PageState } from '../../domain-types/page-state';
 
 @Component({
   selector: 'app-edit',
@@ -38,7 +39,7 @@ export class EditComponent implements OnInit {
 
   alerts: Alert[] = [];
   currentPage: Page;
-  currentPageState: string;
+  currentPageState: PageState;
   containerIds: string[] = [];
   contentTypes: PlaceHolder[];
   layoutTypes: LayoutType[];
@@ -50,6 +51,8 @@ export class EditComponent implements OnInit {
   root: PlaceHolder;
   selectedPlaceHolder: PlaceHolder;
   uaLayout: any = {}
+
+  pageState = PageState;
 
   get nestedContainersDropListIds(): string[] {
     // We reverse ids here to respect items nesting hierarchy
@@ -89,10 +92,11 @@ export class EditComponent implements OnInit {
   }
 
   onDragDrop(event: CdkDragDrop<any, any | LayoutType[]>) {
-    const containerData: PlaceHolder[] = event.container.data.placeHolders;
-    const previousContainerData: PlaceHolder[] = event.previousContainer.data.placeHolders as PlaceHolder[];
-    if (previousContainerData === containerData) {
-      moveItemInArray(containerData, event.previousIndex, event.currentIndex);
+    const containerData: PlaceHolder = event.container.data;
+    const containerPlaceHolders: PlaceHolder[] = containerData.placeHolders;
+    const previousContainerData: PlaceHolder[] = event.previousContainer.data as PlaceHolder[];
+    if (previousContainerData === containerPlaceHolders) {
+      moveItemInArray(containerPlaceHolders, event.previousIndex, event.currentIndex);
     } else if (this.contentTypes === previousContainerData) {
       //New content types
       const item = previousContainerData[event.previousIndex];
@@ -104,7 +108,7 @@ export class EditComponent implements OnInit {
         placeHolders: []
       };
       // copyArrayItem(previousContainerData, containerData, event.previousIndex, event.currentIndex);
-      containerData.splice(event.currentIndex, 0, itemToCopy);
+      containerPlaceHolders.splice(event.currentIndex, 0, itemToCopy);
     } else if (this.moduleViews === previousContainerData) {
       //New Modules
       const item = previousContainerData[event.previousIndex];
@@ -116,14 +120,16 @@ export class EditComponent implements OnInit {
         placeHolders: []
       };
       // copyArrayItem(previousContainerData, containerData, event.previousIndex, event.currentIndex);
-      containerData.splice(event.currentIndex, 0, itemToCopy);
+      containerPlaceHolders.splice(event.currentIndex, 0, itemToCopy);
     }
     else {
       transferArrayItem(previousContainerData,
-        containerData,
+        containerPlaceHolders,
         event.previousIndex,
         event.currentIndex);
     }
+
+    this.updateElements(containerData);
   }
 
   onDropToTrash(event: CdkDragDrop<any>) {
@@ -155,17 +161,14 @@ export class EditComponent implements OnInit {
 
   onPlaceHolderSelected($event: Event, node: PlaceHolder) {
     $event.stopPropagation();
-
-    let propertiesValue = node.properties;
-    this.syncPropertyForElement(node);
-    //columnwidth update - hard coded behaviour only for property 'column_width'
-    let columnWidthProp = this._sharedService.getColumnWidthProperty(propertiesValue);
-    if (columnWidthProp && !columnWidthProp.value) {
-      let columnWidth = columnWidthProp.optionList.list.find(item => item.name === this._sharedService.defaultWidth);
-      columnWidthProp.value = columnWidth.id;
+    if (node.layoutTemplate === "content" || node.layoutTemplate === "module") {
+      this.selectedPlaceHolder = node;
+      node.properties.forEach(prop => {
+        if (prop.optionList && prop.optionList.list) {
+          prop.optionList = prop.optionList;
+        }
+      });
     }
-
-    this.selectedPlaceHolder = node;
   }
 
   getLayoutTypeName(layoutTypeId: string): string {
@@ -189,6 +192,120 @@ export class EditComponent implements OnInit {
     return '';
   }
 
+  onSaveProperties() {
+
+    let properties = [];
+    this.selectedPlaceHolder.properties.forEach(srcProp => {
+      if (srcProp) {
+        let prop = {
+          id: srcProp.id,
+          name: srcProp.name,
+          label: srcProp.label,
+          value: srcProp.value,
+          description: srcProp.description,
+          defaultValue: srcProp.defaultValue
+        }
+        properties.push(prop);
+      }
+    });
+    //It Saves content with properties
+    if (this.selectedPlaceHolder.layoutTemplate === "content") {
+
+      //Prepare content to update
+      let pageContent: PageContent = {
+        id: this.selectedPlaceHolder.pageContent.id,
+        pageId: this.selectedPlaceHolder.pageContent.pageId,
+        title: this.selectedPlaceHolder.title,
+        contentTypeId: this.selectedPlaceHolder.pageContent.contentTypeId,
+        properties: properties,
+        containerId: this.selectedPlaceHolder.pageContent.containerId,
+        sortOrder: this.selectedPlaceHolder.sortOrder,
+      };
+      this._pageContentService.updatePageContent(pageContent).subscribe(response => {
+        console.log(response);
+        this.selectedPlaceHolder.isPropertyChanged = false;
+        const alert: Alert = {
+          alertType: AlertType.Success,
+          message: 'Content properities have been saved successfully.',
+          timeout: 5000
+        }
+        this._alertService.addAlert(alert);
+      }, error => {
+        console.log(error);
+        const alert: Alert = {
+          alertType: AlertType.Error,
+          message: 'Cannot save the content properities,please contact administrator',
+          timeout: 5000
+        }
+        this._alertService.addAlert(alert);
+      });
+    }
+    else if (this.selectedPlaceHolder.layoutTemplate === "module") {
+      let pageModule = this.selectedPlaceHolder.pageModule;
+
+      pageModule.title = this.selectedPlaceHolder.title;
+      pageModule.containerId = this.selectedPlaceHolder.pageModule.containerId;
+      pageModule.sortOrder = this.selectedPlaceHolder.sortOrder;
+      pageModule.properties = properties;
+
+      this._pageModuleService.updatePageModule(pageModule).subscribe(response => {
+        console.log(response);
+        const alert: Alert = {
+          alertType: AlertType.Success,
+          message: 'Module properities have been saved successfully.',
+          timeout: 5000
+        }
+        this._alertService.addAlert(alert);
+      }, error => {
+        console.log(error);
+        const alert: Alert = {
+          alertType: AlertType.Error,
+          message: 'Cannot save the module properities,please contact administrator',
+          timeout: 5000
+        }
+        this._alertService.addAlert(alert);
+      });
+    }
+  }
+
+  onDraft() {
+    this._pageService.draftPage(this.currentPage.id).subscribe(response => {
+      ;
+      this.currentPageState = PageState.Draft;
+      const alert: Alert = {
+        alertType: AlertType.Success,
+        message: 'The Page has been drafted.',
+        timeout: 5000
+      }
+    }, error => {
+      const alert: Alert = {
+        alertType: AlertType.Error,
+        message: 'Cannot draft the page, please contact the administrator.',
+        timeout: 5000
+      }
+      this._alertService.addAlert(alert);
+    });
+  }
+
+  onPublish() {
+    if (this.currentPageState === PageState.Draft) {
+      this._pageService.publishPage(this.currentPage.id).subscribe(response => {
+        this.currentPageState = PageState.Published;
+        const alert: Alert = {
+          alertType: AlertType.Success,
+          message: 'The Page has been published.',
+          timeout: 5000
+        }
+      }, function (error) {
+        const alert: Alert = {
+          alertType: AlertType.Error,
+          message: 'Cannot publish the page, please contact the administrator.',
+          timeout: 5000
+        }
+        this._alertService.addAlert(alert);
+      });
+    }
+  }
 
   private init() {
     const page$ = this._pageService.getPage(this.pageContext.currentPageId);
@@ -206,10 +323,12 @@ export class EditComponent implements OnInit {
       //Assemble page
       this.currentPage = results[0];
       let permission = this.currentPage.pagePermissions.find(pp => pp.roleId === Globals.appSettings.roles.allUsers);
-      if (permission)
-        this.currentPageState = "Published";
-      else
-        this.currentPageState = "Publish";
+      if (permission) {
+        this.currentPageState = PageState.Published;
+      }
+      else {
+        this.currentPageState = PageState.Draft;
+      }
 
       //Assemble pageLayout
       this.pageLayout = results[1];
@@ -265,12 +384,12 @@ export class EditComponent implements OnInit {
     // vm.pageLayout = pageLayout;
     this.pageLayout.pageId = this.pageContext.currentPageId;
 
-    let unAssignedSrcConents = reject(this.pageContents, function (content) {
-      return includes(this.containerIds, content.containerId);
+    let unAssignedSrcConents = this.pageContents.filter(pageContent => {
+      this.containerIds.indexOf(pageContent.containerId) === -1;
     });
 
-    let unAssignedSrcModules = reject(this.pageModules, function (module) {
-      return includes(this.containerIds, module.containerId);
+    let unAssignedSrcModules = this.pageModules.filter(pageModule => {
+      this.containerIds.indexOf(pageModule.containerId) === -1
     });
 
     unAssignedSrcConents.forEach(pageContent => {
@@ -311,7 +430,7 @@ export class EditComponent implements OnInit {
 
         //Load content items if found
         let pageContents = this.pageContents.filter(pageContent => pageContent.containerId === item.id);
-        if (pageContents) {
+        if (pageContents && pageContents.length > 0) {
           pageContents.forEach(pageContent => {
             let content = this.getPageContentWithProperties(pageContent);
             //item.placeHolders.splice(index, 0, contentTypeInfo); //Insert placeHolder into specified index
@@ -330,7 +449,7 @@ export class EditComponent implements OnInit {
 
         //Load modules if found
         let pageModules = this.pageModules.filter(pageModule => pageModule.containerId === item.id);
-        if (pageModules) {
+        if (pageModules && pageModules.length > 0) {
           pageModules.forEach(pageModule => {
             let index = pageModule.sortOrder - 1;
             let module = this.getPageModulesWithProperties(pageModule);
@@ -362,7 +481,7 @@ export class EditComponent implements OnInit {
         prop.value = propVal.value;
       }
       if (prop.optionList && prop.optionList.list) {
-        prop.optionList = JSON.parse(prop.optionList.list);
+        prop.optionList = JSON.parse(JSON.stringify(prop.optionList.list));
       }
     });
 
@@ -450,16 +569,18 @@ export class EditComponent implements OnInit {
     //   contents: [],
     //   modules: []
     // };
-    let contents: PlaceHolder[];
-    let modules: PlaceHolder[];
+    let contentContainer: PlaceHolder = JSON.parse(JSON.stringify(placeHolder));
+    let moduleContainer: PlaceHolder = JSON.parse(JSON.stringify(placeHolder));
+    contentContainer.placeHolders = [];
+    moduleContainer.placeHolders = [];
 
     placeHolder.placeHolders.forEach((item, index) => {
       item.sortOrder = index + 1;
       if (item.layoutTemplate === "content") {
-        contents.push(item);
+        contentContainer.placeHolders.push(item);
       }
       else if (item.layoutTemplate === "module") {
-        modules.push(item);
+        moduleContainer.placeHolders.push(item);
       }
     });
 
@@ -472,14 +593,14 @@ export class EditComponent implements OnInit {
     console.log("Layout only");
     console.log(layoutOnly)
 
-    let pageContents = this.parseAndSortPageContents(placeHolder);
-    let pageModules = this.parseAndSortPageModules(placeHolder);
+    let pageContents = this.parseAndSortPageContents(contentContainer);
+    let pageModules = this.parseAndSortPageModules(moduleContainer);
 
     let pageContents$ = this._pageContentService.updatePageContents(pageContents);
     let pageModules$ = this._pageModuleService.updatePageModules(pageModules);
     let pageLayout$ = this._layoutService.updateLayout(layoutOnly)
 
-    forkJoin([pageContents$, pageModules$, pageLayout$]).subscribe(result =>{
+    forkJoin([pageContents$, pageModules$, pageLayout$]).subscribe(result => {
 
       const alert: Alert = {
         alertType: AlertType.Success,
@@ -570,6 +691,10 @@ export class EditComponent implements OnInit {
   }
 
   private getIdsRecursive(item: PlaceHolder): string[] {
+    if (!item) {
+      return [''];
+    }
+
     let ids = [item.id];
     item.placeHolders.forEach((childItem) => { ids = ids.concat(this.getIdsRecursive(childItem)); });
     return ids;
