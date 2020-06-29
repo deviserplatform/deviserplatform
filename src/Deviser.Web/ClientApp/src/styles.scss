@@ -148,7 +148,6 @@ body {
 
 .container-element {
   width: 100%;
-  height: calc(100% - 20px);
   margin: 10px;
   position: relative;
   display: flex;
@@ -177,14 +176,22 @@ body {
       border: none;
     }
   }
-  &.root {
+  &.root {    
     margin: 0;
-    overflow: auto;
-    height: 90vh;
     & > .container-element-header {
       padding: 0.6rem 0.8rem;
     }
   }
+  &.unassigned {
+    margin-top: 10px;
+    min-height: 100px;
+  }
+}
+
+.container-element-wrapper{
+  height: 90vh;
+  margin: 0;
+  overflow: auto;
 }
 
 .edit-layout-container {

@@ -141,14 +141,14 @@ namespace DeviserWI.Controllers.API
                 if (pageModules == null || pageModules.Count == 0)
                     return BadRequest();
 
-                var page = _pageRepository.GetPageAndDependencies(pageModules.First().PageId);
-                if (_pageManager.HasEditPermission(page))//Check edit permission for the page
-                {
+                //var page = _pageRepository.GetPageAndDependencies(pageModules.First().PageId);
+                //if (_pageManager.HasEditPermission(page))//Check edit permission for the page
+                //{
                     _moduleManager.UpdatePageModules(pageModules);
                     return Ok();
-                }
+                //}
 
-                return Unauthorized();
+                //return Unauthorized();
             }
             catch (Exception ex)
             {

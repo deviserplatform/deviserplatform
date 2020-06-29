@@ -130,22 +130,22 @@ namespace Deviser.Core.Library.Modules
             {
                 if (pageModules != null)
                 {
-                    _pageRepository.UpdatePageModules(pageModules);
+                    _pageRepository.AddOrUpdatePageModules(pageModules);
 
-                    foreach (var pageModule in pageModules)
-                    {
-                        var adminPermissions = AddAdminPermissions(pageModule) as List<ModulePermission>;
+                    //foreach (var pageModule in pageModules)
+                    //{
+                    //    var adminPermissions = AddAdminPermissions(pageModule) as List<ModulePermission>;
 
-                        if (pageModule.ModulePermissions == null)
-                        {
-                            pageModule.ModulePermissions = adminPermissions;
-                        }
-                        else
-                        {
-                            adminPermissions.AddRange(pageModule.ModulePermissions);
-                            pageModule.ModulePermissions = adminPermissions;
-                        }
-                    }
+                    //    if (pageModule.ModulePermissions == null)
+                    //    {
+                    //        pageModule.ModulePermissions = adminPermissions;
+                    //    }
+                    //    else
+                    //    {
+                    //        adminPermissions.AddRange(pageModule.ModulePermissions);
+                    //        pageModule.ModulePermissions = adminPermissions;
+                    //    }
+                    //}
                 }
             }
             catch (Exception ex)

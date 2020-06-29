@@ -80,13 +80,22 @@
                     </div>
                 </div>
             </div>
-            <div class="col">
+            <div class="col container-element-wrapper">
                 <div class="container-element root">
                     <div class="container-element-header">
                         <b>Page Containers</b>
                     </div>
                     <div class="container-element-body" *ngIf="root">
                         <ng-container *ngTemplateOutlet="list, context:{node:root}">
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="container-element root unassigned">
+                    <div class="container-element-header">
+                        <b>Unassigned Elements</b>
+                    </div>
+                    <div class="container-element-body" *ngIf="root">
+                        <ng-container *ngTemplateOutlet="list, context:{node:uaLayout}">
                         </ng-container>
                     </div>
                 </div>
@@ -98,15 +107,31 @@
                     </div>
                     <div class="card-body properties" *ngIf="selectedPlaceHolder && selectedPlaceHolder.properties">
 
-                        <div class="row" *ngIf="selectedPlaceHolder && selectedPlaceHolder.label">
+                        <div class="row" *ngIf="selectedPlaceHolder && selectedPlaceHolder.contentType">
                             <div class="col-md-6">
-                                <strong>Layout Type</strong>
+                                <strong>Content Type</strong>
                             </div>
                             <div class="col-md-6">
-                                {{selectedPlaceHolder.label}}
+                                {{selectedPlaceHolder.contentType.label}}
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" *ngIf="selectedPlaceHolder && selectedPlaceHolder.moduleView">
+                            <div class="col-md-6">
+                                <strong>Module View</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{selectedPlaceHolder.moduleView.displayName}}
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="selectedPlaceHolder">
+                            <div class="col-md-6">
+                                <strong>Title</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-sm" [(ngModel)]="selectedPlaceHolder.title"/>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="selectedPlaceHolder.properties && selectedPlaceHolder.properties.length > 0">
                             <div class="col-md-6">
                                 <strong>Properties</strong>
                             </div>
@@ -198,16 +223,21 @@
                             [alt]="node.contentType.name" />
                         <b>{{node.title}}</b>
                     </div>
+                    <!-- <div class="container-element-body">
+                    </div> -->
                 </div>
             </ng-container>
             <ng-container *ngSwitchCase="'module'">
                 <div class="container-element module" [ngClass]="getPlaceHolderClass(node)"
                     (click)="onPlaceHolderSelected($event, node)">
                     <div class="container-element-header">
-                        <b>{{getLayoutTypeName(node.layoutTypeId)}} {{index+1}}</b>
+                        <i [ngClass]="node.moduleView.iconClass" *ngIf="node.moduleView.iconClass"></i>
+                        <img [src]="node.moduleView.iconImage" *ngIf="node.moduleView.iconImage"
+                            [alt]="node.moduleView.displayName" />
+                        <b>{{node.title}}</b>
                     </div>
-                    <div class="container-element-body">
-                    </div>
+                    <!-- <div class="container-element-body">
+                    </div> -->
                 </div>
             </ng-container>
         </ng-container>

@@ -118,11 +118,11 @@ namespace DeviserWI.Controllers.API
 
         [HttpPut]
         [Route("list/")]
-        public IActionResult Put([FromBody] IEnumerable<PageContent> pageContents)
+        public IActionResult Put([FromBody] PageContent[] pageContents)
         {
             try
             {
-                if (pageContents == null || pageContents.Count() == 0)
+                if (pageContents == null || pageContents.Length == 0)
                     return BadRequest();
 
                 _contentManager.AddOrUpdatePageContents(new List<PageContent>(pageContents));

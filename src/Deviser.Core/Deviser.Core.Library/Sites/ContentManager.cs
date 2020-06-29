@@ -141,21 +141,20 @@ namespace Deviser.Core.Library.Sites
                 if (contents != null)
                 {
                     _pageContentRepository.AddOrUpdate(contents);
+                    //foreach (var pageContent in contents)
+                    //{
+                    //    var adminPermissions = AddAdminPermissions(pageContent);
 
-                    foreach (var pageContent in contents)
-                    {
-                        var adminPermissions = AddAdminPermissions(pageContent);
-
-                        if (pageContent.ContentPermissions == null)
-                        {
-                            pageContent.ContentPermissions = adminPermissions;
-                        }
-                        else
-                        {
-                            adminPermissions.AddRange(pageContent.ContentPermissions);
-                            pageContent.ContentPermissions = adminPermissions;
-                        }
-                    }
+                    //    if (pageContent.ContentPermissions == null)
+                    //    {
+                    //        pageContent.ContentPermissions = adminPermissions;
+                    //    }
+                    //    else
+                    //    {
+                    //        adminPermissions.AddRange(pageContent.ContentPermissions);
+                    //        pageContent.ContentPermissions = adminPermissions;
+                    //    }
+                    //}
                 }
             }
             catch (Exception ex)

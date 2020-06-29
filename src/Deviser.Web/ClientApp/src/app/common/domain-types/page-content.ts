@@ -7,7 +7,7 @@ export interface PageContent {
     id: string;
     title?: string;
     containerId: string;
-    properties: Property[];
+    properties?: Property[];
     sortOrder: number;
     createdDate?: Date | string | null;
     isActive?: boolean;

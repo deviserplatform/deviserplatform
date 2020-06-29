@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Deviser.Core.Common;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -279,17 +280,47 @@ namespace Deviser.Core.Data.Repositories
             {
                 var dbPageContents = _mapper.Map<List<Entities.PageContent>>(pageContents);
                 using var context = new DeviserDbContext(_dbOptions);
+                var pageContentIds = context.PageContent.AsNoTracking().Select(pc => pc.Id).ToHashSet();
                 foreach (var content in dbPageContents)
                 {
                     content.LastModifiedDate = DateTime.Now;
-                    if (context.PageContent.Any(pc => pc.Id == content.Id))
+                    //if (context.PageContent.AsNoTracking().Any(pc => pc.Id == content.Id))
+                    if (pageContentIds.Contains(content.Id))
                     {
                         //content exist, therefore update the content 
-                        context.PageContent.Update(content);
+                        var pageContent = context.PageContent.First(pc => pc.Id == content.Id);
+                        pageContent.ContainerId = content.ContainerId;
+                        pageContent.SortOrder = content.SortOrder;
                     }
                     else
                     {
-                        context.PageContent.Add(content);
+                        context.PageContent.Add(new Entities.PageContent()
+                        {
+                            Id = content.Id,
+                            PageId = content.PageId,
+                            ContainerId = content.ContainerId,
+                            ContentTypeId = content.ContentTypeId,
+                            SortOrder = content.SortOrder,
+                            IsActive = true
+                        });
+
+                        var adminPermissions = new List<Entities.ContentPermission>()
+                        {
+                            new Entities.ContentPermission()
+                            {
+                                PageContentId = content.Id,
+                                RoleId = Globals.AdministratorRoleId,
+                                PermissionId = Globals.ContentViewPermissionId,
+                            },
+                            new Entities.ContentPermission()
+                            {
+                                PageContentId = content.Id,
+                                RoleId = Globals.AdministratorRoleId,
+                                PermissionId = Globals.ContentEditPermissionId,
+                            }
+                        };
+
+                        AddContentPermissions(context, adminPermissions);
                     }
                 }
                 context.SaveChanges();
@@ -336,20 +367,7 @@ namespace Deviser.Core.Data.Repositories
                 if (dbContentPermissions != null && dbContentPermissions.Count > 0)
                 {
                     //Filter new permissions which are not in db and add all of them
-                    var toAdd = dbContentPermissions.Where(contentPermission => !context.ContentPermission.Any(dbPermission =>
-                        dbPermission.PermissionId == contentPermission.PermissionId &&
-                        dbPermission.PageContentId == contentPermission.PageContentId &&
-                        dbPermission.RoleId == contentPermission.RoleId)).ToList();
-                    if (toAdd.Count > 0)
-                    {
-                        foreach (var permission in toAdd)
-                        {
-                            //permission.Page = null;
-                            if (permission.Id == Guid.Empty)
-                                permission.Id = Guid.NewGuid();
-                            context.ContentPermission.Add(permission);
-                        }
-                    }
+                    AddContentPermissions(context, dbContentPermissions);
 
                     context.SaveChanges();
                     return _mapper.Map<List<ContentPermission>>(contentPermissions);
@@ -360,6 +378,23 @@ namespace Deviser.Core.Data.Repositories
                 _logger.LogError("Error occured while addming module persmissions", ex);
             }
             return null;
+        }
+
+        private static void AddContentPermissions(DeviserDbContext context, List<Entities.ContentPermission> dbContentPermissions)
+        {
+            var toAdd = dbContentPermissions.Where(contentPermission => !context.ContentPermission.Any(dbPermission =>
+                dbPermission.PermissionId == contentPermission.PermissionId &&
+                dbPermission.PageContentId == contentPermission.PageContentId &&
+                dbPermission.RoleId == contentPermission.RoleId)).ToList();
+            if (toAdd.Count <= 0) return;
+
+            foreach (var permission in toAdd)
+            {
+                //permission.Page = null;
+                if (permission.Id == Guid.Empty)
+                    permission.Id = Guid.NewGuid();
+                context.ContentPermission.Add(permission);
+            }
         }
 
         /// <summary>

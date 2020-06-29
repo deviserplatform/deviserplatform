@@ -116,7 +116,7 @@ namespace DeviserWI.Controllers.API
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("draft/{id}")]
         public IActionResult DraftPage(Guid id)
         {
@@ -135,7 +135,7 @@ namespace DeviserWI.Controllers.API
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("publish/{id}")]
         public IActionResult PublishPage(Guid id)
         {

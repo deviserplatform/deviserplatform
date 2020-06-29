@@ -40,7 +40,7 @@ namespace Deviser.Core.Data.Repositories
         //PageModule GetPageModuleByContainer(Guid containerId);
         PageModule CreatePageModule(PageModule dbPageModule);
         PageModule UpdatePageModule(PageModule dbPageModule);
-        void UpdatePageModules(IList<PageModule> dbPageModules);
+        void AddOrUpdatePageModules(IList<PageModule> dbPageModules);
         void UpdateModulePermission(PageModule dbPageModule);
         IList<PagePermission> AddPagePermissions(IList<PagePermission> dbPagePermissions);
         IList<ModulePermission> AddModulePermissions(IList<ModulePermission> dbModulePermissions);
@@ -667,30 +667,58 @@ namespace Deviser.Core.Data.Repositories
             return null;
         }
 
-        public void UpdatePageModules(IList<PageModule> pageModules)
+        public void AddOrUpdatePageModules(IList<PageModule> pageModules)
         {
             try
             {
                 using var context = new DeviserDbContext(_dbOptions);
                 var dbPageModules = _mapper.Map<IList<Entities.PageModule>>(pageModules);
+                var pageModuleIds = context.PageModule.AsNoTracking().Select(pc => pc.Id).ToHashSet();
                 foreach (var pageModule in dbPageModules)
                 {
-                    if (context.PageModule.Any(pm => pm.Id == pageModule.Id))
+                    //if (context.PageModule.Any(pm => pm.Id == pageModule.Id))
+                    if(pageModuleIds.Contains(pageModule.Id))
                     {
-                        //page module exist, therefore update it
-                        context.PageModule.Update(pageModule);
-                        //UpdateModulePermission(pageModule, context); //Here, intensions is mostly to update the container. Moreover, permissions might not be included in each page module object.
+                        var dbPageModule = context.PageModule.First(pc => pc.Id == pageModule.Id);
+                        dbPageModule.ContainerId = pageModule.ContainerId;
+                        dbPageModule.SortOrder = pageModule.SortOrder;
                     }
                     else
                     {
-                        context.PageModule.Add(pageModule);
+                        context.PageModule.Add(new Entities.PageModule()
+                        {
+                            Id = pageModule.Id,
+                            PageId = pageModule.PageId,
+                            ContainerId = pageModule.ContainerId,
+                            ModuleId = pageModule.ModuleId,
+                            ModuleViewId = pageModule.ModuleViewId,
+                            SortOrder = pageModule.SortOrder,
+                            IsActive = true
+                        });
+
+                        var adminPermissions = new List<Entities.ModulePermission>()
+                        {
+                            new Entities.ModulePermission()
+                            {
+                                PageModuleId = pageModule.Id,
+                                RoleId = Globals.AdministratorRoleId,
+                                PermissionId = Globals.ContentViewPermissionId,
+                            },
+                            new Entities.ModulePermission()
+                            {
+                                PageModuleId  = pageModule.Id,
+                                RoleId = Globals.AdministratorRoleId,
+                                PermissionId = Globals.ContentEditPermissionId,
+                            }
+                        };
+                        context.ModulePermission.AddRange(adminPermissions);
                     }
                 }
                 context.SaveChanges();
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error occured while calling UpdatePageModules", ex);
+                _logger.LogError("Error occured while calling AddOrUpdatePageModules", ex);
                 throw;
             }
         }
