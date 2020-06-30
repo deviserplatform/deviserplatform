@@ -21,19 +21,23 @@ namespace Deviser.Web.Infrastructure
 
             CreateMap<Property, Core.Common.DomainTypes.Property>().ReverseMap();
 
-            CreateMap<Core.Common.DomainTypes.ContentType, ContentType>()
+            CreateMap<ContentFieldType, Core.Common.DomainTypes.ContentFieldType>().ReverseMap();
 
-            .ForMember(dest => dest.ContentTypeProperties, opt => opt.MapFrom(src => src.Properties.Select(ctp => new ContentTypeProperty
-            {
-                PropertyId = ctp.Id,
-                ContentTypeId = src.Id,
-                //Property =  
-            }
-            )))
-            .ForMember(dest => dest.ContentTypeProperties, opt => opt.Condition(src => src.Properties != null))
-            .ReverseMap()
-            .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.ContentTypeProperties.Select(ctp => ctp.Property)))
-            .ForMember(dest => dest.Properties, opt => opt.Condition(src => src.ContentTypeProperties != null && src.ContentTypeProperties.All(cp => cp.Property != null)));
+            CreateMap<Core.Common.DomainTypes.ContentType, ContentType>()
+                .ForMember(dest => dest.ContentTypeProperties, opt =>
+                    opt.MapFrom(src => src.Properties.Select(ctp =>
+                        new ContentTypeProperty
+                        {
+                            PropertyId = ctp.Id,
+                            ContentTypeId = src.Id
+                        })))
+                .ForMember(dest => dest.ContentTypeProperties, opt => opt.Condition(src => src.Properties != null))
+                
+                .ReverseMap()
+                .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.ContentTypeProperties.Select(ctp => ctp.Property)))
+                .ForMember(dest => dest.Properties, opt => opt.Condition(src => src.ContentTypeProperties != null && src.ContentTypeProperties.All(cp => cp.Property != null)));
+
+            CreateMap<ContentTypeField, Core.Common.DomainTypes.ContentTypeField>().ReverseMap();
 
             CreateMap<Core.Common.DomainTypes.LayoutType, LayoutType>()
             .ForMember(dest => dest.LayoutTypeProperties, opt => opt.MapFrom(src =>
@@ -94,7 +98,7 @@ namespace Deviser.Web.Infrastructure
 
 
             CreateMap<Permission, Core.Common.DomainTypes.Permission>().ReverseMap();
-            
+
 
             CreateMap<OptionList, Core.Common.DomainTypes.OptionList>()
             .ForMember(dest => dest.List, opt =>
@@ -117,30 +121,4 @@ namespace Deviser.Web.Infrastructure
             CreateMap<SiteSetting, Core.Common.DomainTypes.SiteSetting>().ReverseMap();
         }
     }
-
-    //public class MapperConfig
-    //{
-    //    public static void CreateMaps()
-    //    {
-    //        if (!IsConfigured())
-    //        {
-
-    //        }
-    //    }
-
-    //    private static bool IsConfigured()
-    //    {
-    //        try
-    //        {
-    //            var mapper = Mapper.Instance;
-    //            var typeMaps = mapper.ConfigurationProvider.GetAllTypeMaps();
-    //            return mapper != null ? true : false;
-    //        }
-    //        catch
-    //        {
-
-    //        }
-    //        return false;
-    //    }
-    //}
 }

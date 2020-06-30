@@ -4,14 +4,16 @@ using Deviser.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Deviser.Web.Migrations
 {
     [DbContext(typeof(DeviserDbContext))]
-    partial class DeviserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200629203155_PlatformSchema_00.00.08")]
+    partial class PlatformSchema_000008
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,12 +135,6 @@ namespace Deviser.Web.Migrations
 
                     b.Property<Guid>("ContentTypeId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("FieldDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FieldName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsShownOnList")
                         .HasColumnType("bit");

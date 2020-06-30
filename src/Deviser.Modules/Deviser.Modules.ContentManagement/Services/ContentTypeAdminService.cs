@@ -50,6 +50,7 @@ namespace Deviser.Modules.ContentManagement.Services
 
         public async Task<IFormResult<ContentType>> CreateItem(ContentType contentType)
         {
+            ParseContentTypeField(contentType);
             contentType = _contentTypeRepository.CreateContentType(contentType);
             var result = new FormResult<ContentType>(contentType);
             return await Task.FromResult(result);
@@ -57,6 +58,7 @@ namespace Deviser.Modules.ContentManagement.Services
 
         public async Task<IFormResult<ContentType>> UpdateItem(ContentType contentType)
         {
+            ParseContentTypeField(contentType);
             contentType = _contentTypeRepository.UpdateContentType(contentType);
             var result = new FormResult<ContentType>(contentType);
             return await Task.FromResult(result);
@@ -78,7 +80,7 @@ namespace Deviser.Modules.ContentManagement.Services
 
         public async Task<ValidationResult> ValidateContentTypeName(string contentTypeName)
         {
-            var result = _contentTypeRepository.GetContentType(contentTypeName) != null ? ValidationResult.Failed(new ValidationError(){Code = "ContentType available!", Description = "LayoutType already exist" }) : ValidationResult.Success;
+            var result = _contentTypeRepository.GetContentType(contentTypeName) != null ? ValidationResult.Failed(new ValidationError() { Code = "ContentType available!", Description = "ContentType already exist" }) : ValidationResult.Success;
             return await Task.FromResult(result);
         }
 
@@ -86,6 +88,18 @@ namespace Deviser.Modules.ContentManagement.Services
         {
             var result = _propertyRepository.GetProperties();
             return result;
+        }
+
+        private static void ParseContentTypeField(ContentType contentType)
+        {
+            if (contentType.ContentTypeFields != null)
+            {
+                foreach (var ctf in contentType.ContentTypeFields)
+                {
+                    ctf.ContentFieldTypeId = ctf.ContentFieldType.Id;
+                    ctf.ContentFieldType = null;
+                }
+            }
         }
     }
 }

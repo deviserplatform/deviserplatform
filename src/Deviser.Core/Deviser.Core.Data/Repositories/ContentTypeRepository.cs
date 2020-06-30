@@ -11,6 +11,7 @@ namespace Deviser.Core.Data.Repositories
     public interface IContentTypeRepository
     {
         List<ContentType> GetContentTypes();
+        List<ContentFieldType> GetContentFieldTypes();
         ContentType GetContentType(Guid contentTypeId);
         ContentType CreateContentType(ContentType dbContentType);
         ContentType GetContentType(string contentTypeName);
@@ -66,6 +67,24 @@ namespace Deviser.Core.Data.Repositories
             catch (Exception ex)
             {
                 _logger.LogError("Error occured while creating ContentType", ex);
+            }
+            return null;
+        }
+
+        public List<ContentFieldType> GetContentFieldTypes()
+        {
+            try
+            {
+                using var context = new DeviserDbContext(_dbOptions);
+                var result = context.ContentFieldType
+                    .AsNoTracking()
+                    .OrderBy(c => c.Name)
+                    .ToList();
+                return _mapper.Map<List<ContentFieldType>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while getting all ContentTypes", ex);
             }
             return null;
         }
@@ -127,6 +146,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.ContentType
+                    .Include(c => c.ContentTypeFields).ThenInclude(ctf=>ctf.ContentFieldType)
                     .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
                     .OrderBy(c => c.Name)
                     .ToList();
@@ -162,12 +182,12 @@ namespace Deviser.Core.Data.Repositories
 
                     List<Entities.ContentTypeProperty> toRemoveFromDb = null;
 
-                    if (currentTypeProperties != null && currentTypeProperties.Count > 0)
+                    if (currentTypeProperties.Count > 0)
                     {
                         toRemoveFromDb = currentTypeProperties.Where(dbProp => !dbContentType.ContentTypeProperties.Any(clientProp => dbProp.PropertyId == clientProp.PropertyId)).ToList();
                     }
 
-                    if (toRemoveFromClient != null && toRemoveFromClient.Count > 0)
+                    if (toRemoveFromClient.Count > 0)
                     {
                         foreach (var contentTypeProp in toRemoveFromClient)
                         {
@@ -193,7 +213,14 @@ namespace Deviser.Core.Data.Repositories
                     }
                 }
 
-
+                var dbContentTypeFields = context.ContentTypeField
+                    .Where(ctf => ctf.ContentTypeId == dbContentType.Id)
+                    .ToDictionary(keySelector => keySelector.Id , valueSelector => valueSelector);
+                var uiContentTypeFieldIds = dbContentType.ContentTypeFields.Select(ctf => ctf.Id).ToHashSet();
+                var toDeleteContentTypeFields =
+                    dbContentTypeFields.Where(ctf => !uiContentTypeFieldIds.Contains(ctf.Key)).Select(ctf => ctf.Value).ToList();
+                context.ContentTypeField.RemoveRange(toDeleteContentTypeFields); 
+                
                 dbContentType.LastModifiedDate = DateTime.Now;
                 var result = context.ContentType.Update(dbContentType).Entity;
                 //context.Entry(dbContentType).State = EntityState.Modified;

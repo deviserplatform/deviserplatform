@@ -1,6 +1,7 @@
 ﻿using Deviser.Admin;
 using Deviser.Admin.Config;
 using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Data.Repositories;
 using Deviser.Modules.ContentManagement.Services;
 using Microsoft.Extensions.DependencyInjection;
 using FieldType = Deviser.Admin.Config.FieldType;
@@ -39,6 +40,25 @@ namespace Deviser.Modules.ContentManagement
                     .AddField(c => c.IsActive)
                     .AddMultiselectField(c => c.Properties, c => $"{c.Label} ({c.Name})");
 
+                modelBuilder.AddChildConfig(c => c.ContentTypeFields, (childForm) =>
+                {
+                    childForm.GridBuilder
+                        .AddField(c => c.ContentFieldType)
+                        .AddField(c => c.IsShownOnList)
+                        .AddField(c => c.IsShownOnPreview);
+
+                    childForm.FormBuilder
+                        .AddKeyField(c => c.Id)
+                        .AddSelectField(c => c.ContentFieldType, c => c.Label)
+                        .AddField(c => c.FieldName, option => option.DisplayName = "Field Name")
+                        .AddField(c => c.FieldDescription, option => option.DisplayName = "Field Description")
+                        .AddField(c => c.IsShownOnList, option => option.DisplayName = "Is Shown On List")
+                        .AddField(c => c.IsShownOnPreview, option => option.DisplayName = "Is Shown On Preview");
+
+                    childForm.FormBuilder.Property(u => u.ContentFieldType).HasLookup(sp => sp.GetService<IContentTypeRepository>().GetContentFieldTypes(),
+                        ke => ke.Id,
+                        de => de.Label);
+                });
 
 
                 modelBuilder.FormBuilder.Property(c => c.Properties).HasLookup(sp => sp.GetService<ContentTypeAdminService>().GetProperties(),

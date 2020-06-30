@@ -19,7 +19,8 @@ namespace Deviser.Core.Common.DomainTypes
         public string IconImage { get; set; }
         public string IconClass { get; set; }
         public int SortOrder { get; set; }
-        public ICollection<Property> Properties { get; set; }       
+        public ICollection<Property> Properties { get; set; }
+        public ICollection<ContentTypeField> ContentTypeFields { get; set; }
         public bool IsActive { get; set; }
         //public string IsActiveText => IsActive ? "Active" : "In Active";
         public string IsActiveBadgeClass => IsActive ? "badge-primary" : "badge-secondary";

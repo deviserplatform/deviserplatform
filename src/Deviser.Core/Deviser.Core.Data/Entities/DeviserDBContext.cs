@@ -49,7 +49,7 @@ namespace Deviser.Core.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasMany(e => e.UserRoles)
-                .WithOne(u=>u.User)
+                .WithOne(u => u.User)
                 .HasForeignKey(e => e.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
@@ -77,7 +77,7 @@ namespace Deviser.Core.Data
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.HasMany(e => e.UserRoles)
-                .WithOne(ur=>ur.Role)
+                .WithOne(ur => ur.Role)
                 .HasForeignKey(e => e.RoleId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
@@ -104,7 +104,7 @@ namespace Deviser.Core.Data
 
             //modelBuilder.Entity<IdentityUserRole<Guid>>(entity =>
             //{
-                
+
             //});
 
             modelBuilder.Entity<IdentityUserLogin<Guid>>(entity =>
@@ -172,7 +172,7 @@ namespace Deviser.Core.Data
                 entity.Property(e => e.ControlType).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<Page>((System.Action<Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Page>>)((Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Page> entity) =>
+            modelBuilder.Entity<Page>(entity =>
             {
                 entity.HasIndex(e => e.ParentId).HasName("IX_FK_Pages_Pages");
 
@@ -201,7 +201,7 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Parent).WithMany(p => p.ChildPage).HasForeignKey(d => d.ParentId);
 
                 entity.Ignore(e => e.IsBreadCrumb);
-            }));
+            });
 
 
             modelBuilder.Entity<PageContent>(entity =>
@@ -341,6 +341,17 @@ namespace Deviser.Core.Data
                     .ValueGeneratedNever();
             });
 
+            modelBuilder.Entity<ContentFieldType>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasAlternateKey(e => e.Name);
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Name)
+                    .ValueGeneratedNever();
+            });
+
             modelBuilder.Entity<ContentType>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
@@ -350,6 +361,24 @@ namespace Deviser.Core.Data
                     .ValueGeneratedNever();
 
             });
+
+            modelBuilder.Entity<ContentTypeField>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                
+                entity.HasOne(d => d.ContentFieldType)
+                    .WithMany(p => p.ContentTypeFields)
+                    .HasForeignKey(d => d.ContentFieldTypeId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.ContentType)
+                    .WithMany(p => p.ContentTypeFields)
+                    .HasForeignKey(d => d.ContentTypeId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
             modelBuilder.Entity<Property>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
@@ -429,7 +458,9 @@ namespace Deviser.Core.Data
 
         public virtual DbSet<AdminPage> AdminPage { get; set; }
         public virtual DbSet<ContentPermission> ContentPermission { get; set; }
+        public virtual DbSet<ContentFieldType> ContentFieldType { get; set; }
         public virtual DbSet<ContentType> ContentType { get; set; }
+        public virtual DbSet<ContentTypeField> ContentTypeField { get; set; }
         public virtual DbSet<ContentTypeProperty> ContentTypeProperty { get; set; }
         public virtual DbSet<Language> Language { get; set; }
         public virtual DbSet<Layout> Layout { get; set; }
