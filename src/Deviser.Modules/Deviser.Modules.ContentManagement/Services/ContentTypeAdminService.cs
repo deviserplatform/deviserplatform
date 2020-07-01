@@ -52,7 +52,18 @@ namespace Deviser.Modules.ContentManagement.Services
         {
             ParseContentTypeField(contentType);
             contentType = _contentTypeRepository.CreateContentType(contentType);
-            var result = new FormResult<ContentType>(contentType);
+            if (contentType == null)
+                return new FormResult<ContentType>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to save the ContentType"
+                };
+
+            var result = new FormResult<ContentType>(contentType)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "ContentType has been saved successfully"
+            };
             return await Task.FromResult(result);
         }
 
@@ -60,7 +71,18 @@ namespace Deviser.Modules.ContentManagement.Services
         {
             ParseContentTypeField(contentType);
             contentType = _contentTypeRepository.UpdateContentType(contentType);
-            var result = new FormResult<ContentType>(contentType);
+            if (contentType == null)
+                return new FormResult<ContentType>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to save the ContentType"
+                };
+
+            var result = new FormResult<ContentType>(contentType)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "ContentType has been update successfully"
+            };
             return await Task.FromResult(result);
         }
 
@@ -74,7 +96,18 @@ namespace Deviser.Modules.ContentManagement.Services
 
             contentType.IsActive = false;
             contentType = _contentTypeRepository.UpdateContentType(contentType);
-            var result = new AdminResult<ContentType>(contentType);
+            if (contentType == null)
+                return new FormResult<ContentType>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to delete the ContentType"
+                };
+
+            var result = new AdminResult<ContentType>(contentType)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "ContentType has been deleted successfully"
+            };
             return await Task.FromResult(result);
         }
 

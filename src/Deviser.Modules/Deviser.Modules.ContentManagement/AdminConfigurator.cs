@@ -43,9 +43,10 @@ namespace Deviser.Modules.ContentManagement
                 modelBuilder.AddChildConfig(c => c.ContentTypeFields, (childForm) =>
                 {
                     childForm.GridBuilder
-                        .AddField(c => c.ContentFieldType)
-                        .AddField(c => c.IsShownOnList)
-                        .AddField(c => c.IsShownOnPreview);
+                        .AddField(c => c.FieldName, option => option.DisplayName="Field Name")
+                        .AddField(c => c.ContentFieldTypeName, option => option.DisplayName = "Field Type")
+                        .AddField(c => c.IsShownOnList, option => option.DisplayName = "Is Shown On List")
+                        .AddField(c => c.IsShownOnPreview, option => option.DisplayName = "Is Shown On Preview");
 
                     childForm.FormBuilder
                         .AddKeyField(c => c.Id)

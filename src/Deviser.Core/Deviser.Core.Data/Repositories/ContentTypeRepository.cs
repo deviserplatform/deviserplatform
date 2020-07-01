@@ -100,6 +100,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.ContentType
+                    .Include(c => c.ContentTypeFields).ThenInclude(ctf => ctf.ContentFieldType)
                     .Include(c => c.ContentTypeProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
                     .FirstOrDefault(e => e.Id == contentTypeId);
 
@@ -214,11 +215,14 @@ namespace Deviser.Core.Data.Repositories
                 }
 
                 var dbContentTypeFields = context.ContentTypeField
+                    .AsNoTracking()
                     .Where(ctf => ctf.ContentTypeId == dbContentType.Id)
                     .ToDictionary(keySelector => keySelector.Id , valueSelector => valueSelector);
                 var uiContentTypeFieldIds = dbContentType.ContentTypeFields.Select(ctf => ctf.Id).ToHashSet();
-                var toDeleteContentTypeFields =
-                    dbContentTypeFields.Where(ctf => !uiContentTypeFieldIds.Contains(ctf.Key)).Select(ctf => ctf.Value).ToList();
+                var toDeleteContentTypeFields = dbContentTypeFields
+                    .Where(ctf => !uiContentTypeFieldIds.Contains(ctf.Key))
+                    .Select(ctf => ctf.Value)
+                    .ToList();
                 context.ContentTypeField.RemoveRange(toDeleteContentTypeFields); 
                 
                 dbContentType.LastModifiedDate = DateTime.Now;

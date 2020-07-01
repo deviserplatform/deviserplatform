@@ -69,7 +69,18 @@ namespace Deviser.Modules.ContentManagement.Services
             ParseAllowedLayoutTypes(layoutType);
             var resultLayoutType = _layoutTypeRepository.CreateLayoutType(layoutType);
             ParseLayoutTypeIds(resultLayoutType);
-            var result = new FormResult<LayoutType>(resultLayoutType);
+            if (resultLayoutType == null)
+                return new FormResult<LayoutType>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to create the LayoutType"
+                };
+
+            var result = new FormResult<LayoutType>(resultLayoutType)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "LayoutType has been created successfully"
+            };
             return await Task.FromResult(result);
         }
 
@@ -87,7 +98,19 @@ namespace Deviser.Modules.ContentManagement.Services
             ParseAllowedLayoutTypes(layoutType);
             var resultLayoutType = _layoutTypeRepository.UpdateLayoutType(layoutType);
             ParseLayoutTypeIds(resultLayoutType);
-            var result = new FormResult<LayoutType>(resultLayoutType);
+
+            if (resultLayoutType == null)
+                return new FormResult<LayoutType>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to save the LayoutType"
+                };
+
+            var result = new FormResult<LayoutType>(resultLayoutType)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "LayoutType has been saved successfully"
+            };
             return await Task.FromResult(result);
         }
 
@@ -101,7 +124,18 @@ namespace Deviser.Modules.ContentManagement.Services
 
             layoutType.IsActive = false;
             layoutType = _layoutTypeRepository.UpdateLayoutType(layoutType);
-            var result = new AdminResult<LayoutType>(layoutType);
+            if (layoutType == null)
+                return new FormResult<LayoutType>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to delete the LayoutType"
+                };
+
+            var result = new AdminResult<LayoutType>(layoutType)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "LayoutType has been deleted successfully"
+            };
             return await Task.FromResult(result);
         }
 

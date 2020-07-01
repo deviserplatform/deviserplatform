@@ -15,5 +15,6 @@ namespace Deviser.Core.Common.DomainTypes
         public bool IsShownOnList { get; set; }
         public bool IsShownOnPreview { get; set; }
         public ContentFieldType ContentFieldType { get; set; }
+        public string ContentFieldTypeName => ContentFieldType?.Name;
     }
 }
