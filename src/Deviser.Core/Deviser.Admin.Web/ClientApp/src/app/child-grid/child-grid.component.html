@@ -20,8 +20,8 @@
             <th>Delete</th>
           </tr>
         </thead>
-        <tbody *ngIf="childRecords && childRecords.length>0">
-          <tr *ngFor="let item of childRecords">
+        <tbody *ngIf="childRecords && childRecords.length>0" cdkDropList [cdkDropListData]="childRecords" (cdkDropListDropped)="drop($event)">
+          <tr *ngFor="let item of childRecords" cdkDrag [cdkDragDisabled]="!isSortable">
             <td *ngFor="let field of childConfig.modelConfig.gridConfig.fields">
               <div *ngIf="field && field.fieldOption && field.fieldOption.labelOption && field.fieldOption.labelOption.labelType; then labelOption else fieldText"></div>
 

@@ -1,9 +1,11 @@
 ﻿using Deviser.Admin.Config;
 using Deviser.Admin.Properties;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Deviser.Admin.Data;
 using Deviser.Core.Common.Extensions;
 
 namespace Deviser.Admin.Builders
@@ -108,6 +110,19 @@ namespace Deviser.Admin.Builders
             }
 
             field.FieldOption.LabelOption = new LabelOption { LabelType = labelType };
+            return this;
+        }
+
+        public GridBuilder<TModel> EnableSortingBy(Expression<Func<TModel, int>> sortFieldExpression, 
+            Expression<Func<IServiceProvider, int, int, IList<TModel>, Task<PagedResult<TModel>>>> sortingExpression)
+        {
+            if (sortFieldExpression == null || sortingExpression == null)
+            {
+                throw new InvalidOperationException(Resources.SortExpressionCannotBeNull);
+            }
+
+            _modelConfig.GridConfig.SortField = CreateSimpleField(sortFieldExpression);
+            _modelConfig.GridConfig.OnSortExpression = sortingExpression;
             return this;
         }
 

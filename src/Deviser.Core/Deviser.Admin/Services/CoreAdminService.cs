@@ -151,6 +151,20 @@ namespace Deviser.Admin.Services
             return null;
         }
 
+        public async Task<object> SortItemsFor(Type modelType, int pageNo, int pageSize, object modelObject, string childModel)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+            var modelConfig = adminConfig.ModelConfig;
+            if (!string.IsNullOrEmpty(childModel))
+            {
+                var childConfig = adminConfig.ChildConfigs.First(c => c.Field.FieldClrType.Name == childModel);
+                modelConfig = childConfig.ModelConfig;
+                modelType = childConfig.Field.FieldClrType;
+            }
+
+            return await CallGenericMethod(nameof(SortItems), new Type[] { modelType }, new object[] { modelConfig, pageNo, pageSize, modelObject, childModel });
+        }
+
         public async Task<object> UpdateItemFor(Type modelType, object item)
         {
             return await CallGenericMethod(nameof(UpdateItem), new Type[] { modelType }, new object[] { item });
@@ -403,6 +417,20 @@ namespace Deviser.Admin.Services
             }
         }
 
+        private async Task<PagedResult<TModel>> SortItems<TModel>(IModelConfig modelConfig, int pageNo, int pageSize, object itemObj, string childModel) where TModel : class
+        {
+            var items = ((JArray)itemObj).ToObject<IList<TModel>>(_serializer);
+
+            if (_adminSite.AdminType == AdminType.Entity)
+            {
+                return await _adminRepository.SortItemsFor(pageNo, pageSize, items);
+            }
+
+            var onSortDel = modelConfig.GridConfig.OnSortExpression.Compile();
+            var result = await (dynamic)onSortDel.DynamicInvoke(_serviceProvider, pageNo, pageSize, items) as PagedResult<TModel>;
+            return result;
+        }
+
         private async Task<IFormResult<TModel>> UpdateItem<TModel>(object item) where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
@@ -465,14 +493,12 @@ namespace Deviser.Admin.Services
         private async Task<object> CallGenericMethod(string methodName, Type[] genericTypes, object[] parmeters)
         {
             var getItemMethodInfo = typeof(CoreAdminService).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
-            if (getItemMethodInfo != null)
-            {
-                var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericTypes);
-                var result = (object)await (dynamic)getItemMethod.Invoke(this, parmeters);
-                return result;
-            }
+            if (getItemMethodInfo == null) return null;
 
-            return null;
+            var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericTypes);
+            var result = (object)await (dynamic)getItemMethod.Invoke(this, parmeters);
+            return result;
+
         }
 
         private async Task<IAdminResult> ExecuteAdminAction<TModel>(TModel entityObject, AdminAction adminAction) where TModel : class

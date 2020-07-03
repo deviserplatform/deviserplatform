@@ -27,6 +27,7 @@ namespace Deviser.Admin.Data
         Task<TModel> CreateItemFor<TModel>(TModel item) where TModel : class;
         Task<TModel> UpdateItemFor<TModel>(TModel item) where TModel : class;
         Task<TModel> DeleteItemFor<TModel>(string itemId) where TModel : class;
+        Task<PagedResult<TModel>> SortItemsFor<TModel>(int pageNo, int pageSize, IList<TModel> items) where TModel : class;
     }
 
     public class AdminRepository : IAdminRepository
@@ -108,6 +109,16 @@ namespace Deviser.Admin.Data
             var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
 
             var result = await CallGenericMethod<TModel>(nameof(DeleteItem), new Type[] { modelType, entityClrType }, new object[] { itemId });
+            return result;
+        }
+
+        public async Task<PagedResult<TModel>> SortItemsFor<TModel>(int pageNo, int pageSize, IList<TModel> items) where TModel : class
+        {
+            var modelType = typeof(TModel);
+            var adminConfig = GetAdminConfig(modelType);
+            var entityClrType = adminConfig.EntityConfig.EntityType.ClrType;
+
+            var result = await CallGenericMethod<PagedResult<TModel>>(nameof(SortItems), new Type[] { modelType, entityClrType }, new object[] { pageNo, pageSize, items });
             return result;
         }
 
@@ -303,6 +314,45 @@ namespace Deviser.Admin.Data
             }
         }
 
+        private async Task<PagedResult<TModel>> SortItems<TModel, TEntity>(int pageNo, int pageSize, IList<TModel> items)
+            where TEntity : class
+            where TModel : class
+        {
+            var modelType = typeof(TModel);
+            var eType = typeof(TEntity);
+            var dbSet = _dbContext.Set<TEntity>();
+            var queryableData = dbSet.AsQueryable();
+            var adminConfig = GetAdminConfig(modelType);
+
+            // Determine the number of records to skip
+            int skip = (pageNo - 1) * pageSize;
+
+            // Get total number of records
+            int total = dbSet.Count();
+
+            IQueryable<TEntity> query = dbSet;
+
+            query = AddIncludes(adminConfig, query);
+
+            query = query.Skip(skip).Take(pageSize);
+
+
+            var uiSorting = items.ToDictionary(k => modelType.GetProperty(adminConfig.ModelConfig.KeyField.FieldName).GetValue(k).ToString(),
+                v => (int)modelType.GetProperty(adminConfig.ModelConfig.GridConfig.SortField.FieldName).GetValue(v));
+            var dbResult = await query.ToListAsync();
+
+            foreach (var item in dbResult)
+            {
+                var sortOrder = uiSorting[modelType.GetProperty(adminConfig.ModelConfig.KeyField.FieldName).GetValue(item).ToString()];
+                modelType.GetProperty(adminConfig.ModelConfig.GridConfig.SortField.FieldName).SetValue(item, sortOrder);
+            }
+
+            _dbContext.SaveChanges();
+
+            var result = _adminSite.Mapper.Map<List<TModel>>(dbResult);
+            return new PagedResult<TModel>(result, pageNo, pageSize, total);
+        }
+
         private IQueryable<TEntity> AddIncludes<TEntity>(IAdminConfig adminConfig, IQueryable<TEntity> query) where TEntity : class
         {
             //ManyToMany Includes
@@ -437,7 +487,7 @@ namespace Deviser.Admin.Data
 
             return entityFieldExpression;
         }
-        
+
         private List<GraphConfig> GetGraphConfigsForChildEntities(Type entityClrType, IEnumerable<Field> fields)
         {
             var graphConfig = new List<GraphConfig>();
@@ -470,7 +520,7 @@ namespace Deviser.Admin.Data
             }
             return graphConfig;
         }
-        
+
         private IAdminConfig GetAdminConfig(Type eType)
         {
             IAdminConfig adminConfig;

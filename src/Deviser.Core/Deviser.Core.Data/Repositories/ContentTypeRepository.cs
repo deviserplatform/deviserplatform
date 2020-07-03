@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Deviser.Core.Data.Repositories
 {
@@ -16,7 +17,7 @@ namespace Deviser.Core.Data.Repositories
         ContentType CreateContentType(ContentType dbContentType);
         ContentType GetContentType(string contentTypeName);
         ContentType UpdateContentType(ContentType dbContentType);
-
+        Task<IList<ContentTypeField>> SortContentTypeFields(IList<ContentTypeField> contentTypeFields);
     }
 
     /// <summary>
@@ -236,6 +237,26 @@ namespace Deviser.Core.Data.Repositories
                 _logger.LogError("Error occured while updating ContentType", ex);
             }
             return null;
+        }
+
+        public async Task<IList<ContentTypeField>> SortContentTypeFields(IList<ContentTypeField> contentTypeFields)
+        {
+            await using var context = new DeviserDbContext(_dbOptions);
+            var contentTypeId = contentTypeFields.First().ContentTypeId;
+            var uiSorting = contentTypeFields.ToDictionary(keySelector => keySelector.Id,
+                valueSelector => valueSelector.SortOrder);
+            var dbContentTypeFields = await context.ContentTypeField
+                .Where(ctf => ctf.ContentTypeId == contentTypeId)
+                .ToListAsync();
+
+            foreach (var contentTypeField in dbContentTypeFields)
+            {
+                contentTypeField.SortOrder = uiSorting[contentTypeField.Id];
+            }
+
+            await context.SaveChangesAsync();
+
+            return _mapper.Map<IList<ContentTypeField>>(dbContentTypeFields);
         }
     }
 }

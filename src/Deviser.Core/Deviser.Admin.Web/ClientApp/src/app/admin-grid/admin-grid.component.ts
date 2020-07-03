@@ -32,6 +32,7 @@ import { FilterNode } from '../common/domain-types/filter-node';
 import { LogicalOperator } from '../common/domain-types/logical-operator';
 import { filter } from 'rxjs/operators';
 import { AlertService } from '../common/services/alert.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 
 @Component({
@@ -52,15 +53,19 @@ export class AdminGridComponent implements OnInit {
   @ViewChild(ConfirmDialogComponent)
   private confirmDialogComponent: ConfirmDialogComponent;
 
-  constructor(private adminService: AdminService,
-    private alertService: AlertService,
-    private recordIdPipe: RecordIdPipe,
-    private router: Router,
-    @Inject(WINDOW) private window: any) {
+  get isSortable(): boolean {
+    return this.adminConfig.modelConfig.gridConfig.isSortable;
+  }
+
+  constructor(private _adminService: AdminService,
+    private _alertService: AlertService,
+    private _recordIdPipe: RecordIdPipe,
+    private _router: Router,
+    @Inject(WINDOW) private _window: any) {
     this.alerts = [];
     this.getAdminConfig();
-    this.daConfig = window.daConfig;
-    this.alertService.alerts.subscribe(alert => {
+    this.daConfig = _window.daConfig;
+    this._alertService.alerts.subscribe(alert => {
       if(alert){
         this.alerts.push(alert)
       }
@@ -73,13 +78,23 @@ export class AdminGridComponent implements OnInit {
 
 
   getAdminConfig(): void {
-    this.adminService.getAdminConfig()
+    this._adminService.getAdminConfig()
       .subscribe(adminConfig => this.adminConfig = adminConfig);
   }
 
   getAllRecords(pagination: Pagination = null): void {
-    this.adminService.getAllRecords(pagination)
+    this._adminService.getAllRecords(pagination)
       .subscribe(entityRecords => this.onGetAllRecords(entityRecords));
+  }
+
+  drop(event: CdkDragDrop<any[]>) {
+    let gridItems = event.container.data;
+    moveItemInArray(gridItems, event.previousIndex, event.currentIndex);
+    //update sorting
+    this.adminConfig.modelConfig
+    gridItems.forEach((item, index) => item[this.adminConfig.modelConfig.gridConfig.sortField.fieldNameCamelCase] = index + 1);
+
+    this._adminService.sortGridItems(gridItems).subscribe(result => console.log(result), error => console.log(error));
   }
 
   onChangePage(event: any): void {
@@ -91,12 +106,18 @@ export class AdminGridComponent implements OnInit {
 
   onGetAllRecords(entityRecords: any): void {
     this.entityRecords = entityRecords;
+    let gridConfig = this.adminConfig.modelConfig.gridConfig;
+    if (this.isSortable) {
+      let sortField = gridConfig.sortField.fieldNameCamelCase;
+      this.entityRecords.data = this.entityRecords.data.sort((a, b) => a[sortField] > b[sortField] ? 1 : -1);
+    }
+
     const paging = this.entityRecords.paging;
     this.pagination = new Pagination(paging.pageNo, paging.pageSize, paging.pageCount, paging.totalRecordCount);
   }
 
   onNewItem(): void {
-    this.router.navigateByUrl('detail/');
+    this._router.navigateByUrl('detail/');
   }
 
   openDeleteConfirmationModal(item: any) {
@@ -105,8 +126,8 @@ export class AdminGridComponent implements OnInit {
 
   onYesToDelete(item: any): void {
     console.log('confirm');
-    const itemId = this.recordIdPipe.transform(item, this.adminConfig.modelConfig.keyField);
-    this.adminService.deleteRecord(itemId)
+    const itemId = this._recordIdPipe.transform(item, this.adminConfig.modelConfig.keyField);
+    this._adminService.deleteRecord(itemId)
       .subscribe(response => this.onActionResult(response));
   }
 
@@ -116,7 +137,7 @@ export class AdminGridComponent implements OnInit {
 
   onRowAction(actionName: string, item: any) {
     if (actionName && item) {
-      this.adminService.executeGridAction(actionName, item)
+      this._adminService.executeGridAction(actionName, item)
         .subscribe(adminResult => this.onActionResult(adminResult));
     }
   }
@@ -128,7 +149,7 @@ export class AdminGridComponent implements OnInit {
         message: adminResult.successMessage,
         timeout: 5000
       }
-      this.alertService.addAlert(alert);
+      this._alertService.addAlert(alert);
       this.getAllRecords(this.pagination);
     }
     else {
@@ -137,7 +158,7 @@ export class AdminGridComponent implements OnInit {
         message: adminResult.successMessage,
         timeout: 5000
       };
-      this.alertService.addAlert(alert);
+      this._alertService.addAlert(alert);
     }
   }
 
@@ -162,7 +183,7 @@ export class AdminGridComponent implements OnInit {
       };
     });
 
-    this.adminService.filterRecords(filterNode, orderBy, this.pagination)
+    this._adminService.filterRecords(filterNode, orderBy, this.pagination)
       .subscribe(entityRecords => this.onGetAllRecords(entityRecords));
   }
 }

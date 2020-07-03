@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 using Deviser.Admin.Config;
 
 namespace Deviser.Admin
@@ -10,8 +11,9 @@ namespace Deviser.Admin
         public ICollection<Field> AllIncludeFields
         {
             get
-            {   var returnList = new List<Field>();
-                
+            {
+                var returnList = new List<Field>();
+
                 if (_allFields != null && _allFields.Count > 0)
                 {
                     returnList.AddRange(_allFields.Values);
@@ -20,10 +22,13 @@ namespace Deviser.Admin
             }
         }
         public ICollection<Field> ExcludedFields { get; }
-        public ICollection<Field> Fields { get; }   
+        public ICollection<Field> Fields { get; }
         public bool IsEditVisible { get; set; } = true;
         public bool IsDeleteVisible { get; set; } = true;
+        public bool IsSortable => SortField != null && OnSortExpression != null;
         public IDictionary<string, AdminAction> RowActions { get; }
+        public Field SortField { get; set; }
+        public LambdaExpression OnSortExpression { get; set; }
 
         public GridConfig()
         {

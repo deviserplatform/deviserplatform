@@ -111,6 +111,13 @@ namespace Deviser.Modules.ContentManagement.Services
             return await Task.FromResult(result);
         }
 
+        public async Task<PagedResult<ContentTypeField>> SortContentType(int pageNo, int pageSize, IList<ContentTypeField> contentTypeFields)
+        {
+            var sortedContentTypeFields = await _contentTypeRepository.SortContentTypeFields(contentTypeFields);
+            var result = new PagedResult<ContentTypeField>(sortedContentTypeFields, pageNo, pageSize);
+            return result;
+        }
+
         public async Task<ValidationResult> ValidateContentTypeName(string contentTypeName)
         {
             var result = _contentTypeRepository.GetContentType(contentTypeName) != null ? ValidationResult.Failed(new ValidationError() { Code = "ContentType available!", Description = "ContentType already exist" }) : ValidationResult.Success;

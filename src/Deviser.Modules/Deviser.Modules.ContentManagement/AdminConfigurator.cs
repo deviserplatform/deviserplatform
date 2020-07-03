@@ -46,7 +46,9 @@ namespace Deviser.Modules.ContentManagement
                         .AddField(c => c.FieldName, option => option.DisplayName="Field Name")
                         .AddField(c => c.ContentFieldTypeName, option => option.DisplayName = "Field Type")
                         .AddField(c => c.IsShownOnList, option => option.DisplayName = "Is Shown On List")
-                        .AddField(c => c.IsShownOnPreview, option => option.DisplayName = "Is Shown On Preview");
+                        .AddField(c => c.IsShownOnPreview, option => option.DisplayName = "Is Shown On Preview")
+                        .EnableSortingBy(c=>c.SortOrder, 
+                            (provider, pageNo, pageSize, contentTypes) => provider.GetService<ContentTypeAdminService>().SortContentType(pageNo, pageSize, contentTypes));
 
                     childForm.FormBuilder
                         .AddKeyField(c => c.Id)
@@ -56,9 +58,11 @@ namespace Deviser.Modules.ContentManagement
                         .AddField(c => c.IsShownOnList, option => option.DisplayName = "Is Shown On List")
                         .AddField(c => c.IsShownOnPreview, option => option.DisplayName = "Is Shown On Preview");
 
-                    childForm.FormBuilder.Property(u => u.ContentFieldType).HasLookup(sp => sp.GetService<IContentTypeRepository>().GetContentFieldTypes(),
-                        ke => ke.Id,
-                        de => de.Label);
+                    childForm.FormBuilder
+                        .Property(u => u.ContentFieldType)
+                        .HasLookup(sp => sp.GetService<IContentTypeRepository>().GetContentFieldTypes(),
+                            ke => ke.Id,
+                            de => de.Label);
                 });
 
 

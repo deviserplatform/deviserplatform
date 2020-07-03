@@ -113,5 +113,14 @@ namespace Deviser.Admin.Properties {
                 return ResourceManager.GetString("MoreKeyFieldsInvalidOperation", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort and sorting function expression cannot be null..
+        /// </summary>
+        internal static string SortExpressionCannotBeNull {
+            get {
+                return ResourceManager.GetString("SortExpressionCannotBeNull", resourceCulture);
+            }
+        }
     }
 }
