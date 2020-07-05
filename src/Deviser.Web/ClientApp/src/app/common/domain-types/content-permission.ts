@@ -1,5 +1,5 @@
 export interface ContentPermission {
-    id: string;
+    id?: string;
     pageContentId: string;
     permissionId: string;
     roleId: string;

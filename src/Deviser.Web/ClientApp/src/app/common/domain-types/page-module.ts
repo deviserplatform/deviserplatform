@@ -6,11 +6,11 @@ import { Module } from './module';
 export interface PageModule {
     id: string;
     title?: string;
-    containerId: string;
+    containerId?: string;
     isActive?: boolean;
     moduleId: string;
     moduleViewId: string;
-    sortOrder: number;
+    sortOrder?: number;
     pageId: string;
     moduleView?: ModuleView;
     module?: Module;
@@ -18,6 +18,6 @@ export interface PageModule {
     inheritViewPermissions?: boolean;
     inheritEditPermissions?: boolean;
     hasEditPermission?: boolean;
-    properties: Property[];
+    properties?: Property[];
     modulePermissions?: ModulePermission[];
 }

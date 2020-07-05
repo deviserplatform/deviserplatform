@@ -128,10 +128,12 @@
                                 <strong>Title</strong>
                             </div>
                             <div class="col-md-6">
-                                <input type="text" class="form-control input-sm" [(ngModel)]="selectedPlaceHolder.title"/>
+                                <input type="text" class="form-control input-sm"
+                                    [(ngModel)]="selectedPlaceHolder.title" />
                             </div>
                         </div>
-                        <div class="row" *ngIf="selectedPlaceHolder.properties && selectedPlaceHolder.properties.length > 0">
+                        <div class="row"
+                            *ngIf="selectedPlaceHolder.properties && selectedPlaceHolder.properties.length > 0">
                             <div class="col-md-6">
                                 <strong>Properties</strong>
                             </div>
@@ -185,8 +187,7 @@
     <ng-template #list let-node="node">
         <div cdkDropList [id]="node.id" [cdkDropListConnectedTo]="trashDropListIds" [cdkDropListData]="node"
             [ngClass]="{'horizontal': node.type==='row', 'vertical': node.type!=='row'}"
-            (cdkDropListDropped)="onDragDrop($event)"
-            class="drop-list">
+            (cdkDropListDropped)="onDragDrop($event)" class="drop-list">
             <div *ngFor="let child of node.placeHolders;let i = index" cdkDrag [cdkDragData]="child" class="drop-item"
                 [ngClass]="getColumnClass(child)" cdkDragBoundary=".layout-container"
                 [cdkDragDisabled]="child.layoutTemplate === 'container'">
@@ -207,6 +208,7 @@
                 <div class="container-element placeholder">
                     <div class="container-element-header">
                         <span>{{getLayoutTypeName(node.layoutTypeId)}} {{index+1}}</span>
+
                     </div>
                     <div class="container-element-body">
                         <ng-container *ngTemplateOutlet="list, context:{node:node}">
@@ -218,10 +220,26 @@
                 <div class="container-element content" [ngClass]="getPlaceHolderClass(node)"
                     (click)="onPlaceHolderSelected($event, node)">
                     <div class="container-element-header">
-                        <i [ngClass]="node.contentType.iconClass" *ngIf="node.contentType.iconClass"></i>
-                        <img [src]="node.contentType.iconImage" *ngIf="node.contentType.iconImage"
-                            [alt]="node.contentType.name" />
-                        <b>{{node.title}}</b>
+                        <div class="title">
+                            <i [ngClass]="node.contentType.iconClass" *ngIf="node.contentType.iconClass"></i>
+                            <img [src]="node.contentType.iconImage" *ngIf="node.contentType.iconImage"
+                                [alt]="node.contentType.name" />
+                            <b>{{node.title}}</b>
+                        </div>
+                        <div class="permission-action">
+                            <button type="button" class="action-control btn btn-sm btn-light"
+                                *ngIf="currentPageState === pageState.Published" (click)="onOpenPermission(node);">
+                                <i class="my-icon" aria-label="My icon"
+                                    [inlineSVG]="'assets/icons/shield.svg'| envPath"></i>
+                            </button>
+                        </div>
+                        <div class="edit-action">
+                            <button type="button" class="action-control btn btn-sm btn-light"
+                                *ngIf="currentPageState === pageState.Published" (click)="onEditContent();">
+                                <i class="my-icon" aria-label="My icon"
+                                    [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
+                            </button>
+                        </div>
                     </div>
                     <!-- <div class="container-element-body">
                     </div> -->
@@ -231,10 +249,26 @@
                 <div class="container-element module" [ngClass]="getPlaceHolderClass(node)"
                     (click)="onPlaceHolderSelected($event, node)">
                     <div class="container-element-header">
-                        <i [ngClass]="node.moduleView.iconClass" *ngIf="node.moduleView.iconClass"></i>
-                        <img [src]="node.moduleView.iconImage" *ngIf="node.moduleView.iconImage"
-                            [alt]="node.moduleView.displayName" />
-                        <b>{{node.title}}</b>
+                        <div class="title">
+                            <i [ngClass]="node.moduleView.iconClass" *ngIf="node.moduleView.iconClass"></i>
+                            <img [src]="node.moduleView.iconImage" *ngIf="node.moduleView.iconImage"
+                                [alt]="node.moduleView.displayName" />
+                            <b>{{node.title}}</b>
+                        </div>
+                        <div class="permission-action">
+                            <button type="button" class="action-control btn btn-sm btn-light"
+                                *ngIf="currentPageState === pageState.Published" (click)="onOpenPermission(node);">
+                                <i class="my-icon" aria-label="My icon"
+                                    [inlineSVG]="'assets/icons/shield.svg'| envPath"></i>
+                            </button>
+                        </div>
+                        <div class="edit-action">
+                            <button type="button" class="action-control btn btn-sm btn-light"
+                                *ngIf="currentPageState === pageState.Published" (click)="onEditContent();">
+                                <i class="my-icon" aria-label="My icon"
+                                    [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
+                            </button>
+                        </div>
                     </div>
                     <!-- <div class="container-element-body">
                     </div> -->

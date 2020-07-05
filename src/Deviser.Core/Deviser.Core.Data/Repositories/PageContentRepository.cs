@@ -24,7 +24,7 @@ namespace Deviser.Core.Data.Repositories
         void AddOrUpdate(List<PageContent> dbPageContents);
         PageContentTranslation UpdateTranslation(PageContentTranslation dbPageContentTranslation);
         List<ContentPermission> AddContentPermissions(List<ContentPermission> dbContentPermissions);
-        void UpdateContentPermission(PageContent dbPageContentSrc);
+        PageContent UpdateContentPermission(PageContent dbPageContentSrc);
         bool DeletePageContent(Guid id);
 
     }
@@ -301,7 +301,9 @@ namespace Deviser.Core.Data.Repositories
                             ContainerId = content.ContainerId,
                             ContentTypeId = content.ContentTypeId,
                             SortOrder = content.SortOrder,
-                            IsActive = true
+                            IsActive = true,
+                            InheritEditPermissions = true,
+                            InheritViewPermissions = true
                         });
 
                         var adminPermissions = new List<Entities.ContentPermission>()
@@ -402,9 +404,10 @@ namespace Deviser.Core.Data.Repositories
         /// and it adds permissions which are not in db
         /// </summary>
         /// <param name="pageContent"></param>
-        public void UpdateContentPermission(PageContent pageContent)
+        public PageContent UpdateContentPermission(PageContent pageContent)
         {
-            if (pageContent.ContentPermissions == null || pageContent.ContentPermissions.Count <= 0) return;
+            if (pageContent.ContentPermissions == null || pageContent.ContentPermissions.Count <= 0)
+                throw new InvalidOperationException("PageContent ContentPermissions cannot be null or empty");
 
             var dbPageContentSrc = _mapper.Map<Entities.PageContent>(pageContent);
             //Assuming all permissions have same pageContentId
@@ -419,8 +422,12 @@ namespace Deviser.Core.Data.Repositories
                 dbPageContent.InheritEditPermissions = dbPageContentSrc.InheritEditPermissions;
 
                 //Filter deleted permissions in UI and delete all of them
-                var toDelete = context.ContentPermission.Where(dbPermission => dbPermission.PageContentId == pageContentId &&
-                                                                               !contentPermissions.Any(contentPermission => contentPermission.PermissionId == dbPermission.PermissionId && contentPermission.RoleId == dbPermission.RoleId)).ToList();
+                var toDelete = context.ContentPermission
+                                   .Where(dbPermission => dbPermission.PageContentId == pageContentId)
+                                   .ToList()
+                                   .Where(dbPermission => !contentPermissions.Any(contentPermission => contentPermission.PermissionId == dbPermission.PermissionId && contentPermission.RoleId == dbPermission.RoleId))
+                                   .ToList();
+
                 if (toDelete.Count > 0)
                     context.ContentPermission.RemoveRange(toDelete);
 
@@ -441,6 +448,7 @@ namespace Deviser.Core.Data.Repositories
                 }
 
                 context.SaveChanges();
+                return Get(pageContent.Id);
             }
             catch (Exception ex)
             {

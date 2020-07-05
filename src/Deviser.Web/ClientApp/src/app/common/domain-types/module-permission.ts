@@ -1,5 +1,5 @@
 export interface ModulePermission {
-    id: string;
+    id?: string;
     pageModuleId: string;
     permissionId: string;
     roleId: string;

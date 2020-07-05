@@ -6,9 +6,9 @@ import { ContentPermission } from './content-permission';
 export interface PageContent {
     id: string;
     title?: string;
-    containerId: string;
+    containerId?: string;
     properties?: Property[];
-    sortOrder: number;
+    sortOrder?: number;
     createdDate?: Date | string | null;
     isActive?: boolean;
     lastModifiedDate?: Date | string | null;
@@ -20,5 +20,5 @@ export interface PageContent {
     inheritEditPermissions?: boolean;
     hasEditPermission?: boolean;
     pageContentTranslation?: PageContentTranslation;
-    contentPermissions?: ContentPermission;
+    contentPermissions?: ContentPermission[];
 }

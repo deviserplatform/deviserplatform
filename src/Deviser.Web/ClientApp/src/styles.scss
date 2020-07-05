@@ -58,143 +58,143 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-/*Following styles should be in global level since cdk appends the drag element in body*/
-.drop-list {
-  border: solid 1px #ccc;
-  min-height: 60px;
-  background: white;
-  border-radius: 4px;
-  overflow: hidden;
-  display: block;
-  &.horizontal {
+.edit-layout-container {
+  /*Following styles should be in global level since cdk appends the drag element in body*/
+  .drop-list {
+    border: solid 1px #ccc;
+    min-height: 60px;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+    display: block;
+    &.horizontal {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  }
+
+  .drop-item {
+    color: rgba(0, 0, 0, 0.87);
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
-  }
-}
+    align-items: center;
+    box-sizing: border-box;
+    cursor: move;
+    background: white;
+    font-size: 14px;
 
-.drop-item {
-  color: rgba(0, 0, 0, 0.87);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  box-sizing: border-box;
-  cursor: move;
-  background: white;
-  font-size: 14px;
-
-  &.col-12,
-  &.col-11,
-  &.col-10,
-  &.col-9,
-  &.col-8,
-  &.col-7,
-  &.col-6,
-  &.col-5,
-  &.col-4,
-  &.col-3,
-  &.col-2,
-  &.col-1 {
-    padding: 0;
-  }
-}
-
-.new-element-list {
-  @extend .drop-list;
-}
-
-.new-element {
-  @extend .drop-item;
-  border-bottom: solid 1px #ccc;
-  padding: 10px;
-  .icon {
-    margin-left: 0.4rem;
-  }
-  .label {
-    margin-left: 0.75rem;
-  }
-}
-
-.cdk-drag-preview {
-  box-sizing: border-box;
-  border-radius: 4px;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.drop-item:last-child,
-.new-element:last-child {
-  border: none;
-}
-
-.drop-list.cdk-drop-list-dragging .drop-item:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-// .cdk-drop-list-dragging {
-//   background: lightgreen;
-// }
-
-.item-placeholder,
-.new-element.node-element.cdk-drag-placeholder {
-  background: $drag-placeholder-bg-color;
-  border: dashed 1px $drag-placeholder-border-color;
-  min-height: 60px;
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.container-element {
-  width: 100%;
-  margin: 10px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  word-wrap: break-word;
-  background-color: #fff;
-  background-clip: border-box;
-  // border-top: solid 1px #ccc;
-  // border-bottom: solid 1px #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.125);
-  border-radius: 0.25rem;
-
-  .container-element-header {
-    padding: 0.4rem 0.6rem;
-    margin-bottom: 0;
-    background-color: rgba(0, 0, 0, 0.03);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-    i{
-      margin-right: 0.3rem;
+    &.col-12,
+    &.col-11,
+    &.col-10,
+    &.col-9,
+    &.col-8,
+    &.col-7,
+    &.col-6,
+    &.col-5,
+    &.col-4,
+    &.col-3,
+    &.col-2,
+    &.col-1 {
+      padding: 0;
     }
   }
 
-  .container-element-body {
-    .drop-list {
-      border: none;
+  .new-element-list {
+    @extend .drop-list;
+  }
+
+  .new-element {
+    @extend .drop-item;
+    border-bottom: solid 1px #ccc;
+    padding: 10px;
+    .icon {
+      margin-left: 0.4rem;
+    }
+    .label {
+      margin-left: 0.75rem;
     }
   }
-  &.root {    
+
+  .cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+      0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  }
+
+  .cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  .drop-item:last-child,
+  .new-element:last-child {
+    border: none;
+  }
+
+  .drop-list.cdk-drop-list-dragging .drop-item:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  // .cdk-drop-list-dragging {
+  //   background: lightgreen;
+  // }
+
+  .item-placeholder,
+  .new-element.node-element.cdk-drag-placeholder {
+    background: $drag-placeholder-bg-color;
+    border: dashed 1px $drag-placeholder-border-color;
+    min-height: 60px;
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  .container-element {
+    width: 100%;
+    margin: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    // border-top: solid 1px #ccc;
+    // border-bottom: solid 1px #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+
+    .container-element-header {
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.03);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+      display: flex;
+      padding: 0.4rem 0.6rem;
+      margin-bottom: 0;
+    }
+
+    .container-element-body {
+      .drop-list {
+        border: none;
+      }
+    }
+    &.root {
+      margin: 0;
+      & > .container-element-header {
+        padding: 0.6rem 0.8rem;
+      }
+    }
+    &.unassigned {
+      margin-top: 10px;
+      min-height: 100px;
+    }
+  }
+
+  .container-element-wrapper {
+    height: 90vh;
     margin: 0;
-    & > .container-element-header {
-      padding: 0.6rem 0.8rem;
-    }
+    overflow: auto;
   }
-  &.unassigned {
-    margin-top: 10px;
-    min-height: 100px;
-  }
-}
 
-.container-element-wrapper{
-  height: 90vh;
-  margin: 0;
-  overflow: auto;
-}
-
-.edit-layout-container {
   overflow: hidden;
   .dev-alerts {
     position: absolute;
@@ -222,6 +222,21 @@ body {
       }
     }
 
+    .container-element-header {
+      .title {
+        flex-grow: 1;
+        i {
+          margin-right: 0.3rem;
+        }
+      }
+
+      .permission-action {
+        .action-control {
+          border-radius: unset;
+        }
+      }
+    }
+
     &.selected {
       border-color: $primary;
       .container-element {
@@ -239,18 +254,23 @@ body {
       }
     }
 
-    &.content{
+    &.content {
       .container-element-header {
         border-bottom: none;
+        padding-right: 0;
+        padding-top: 0;
+        padding-bottom: 0;
       }
     }
 
-    &.module{
+    &.module {
       .container-element-header {
         border-bottom: none;
+        padding-right: 0;
+        padding-top: 0;
+        padding-bottom: 0;
       }
     }
-    
   }
 
   .card {
@@ -391,9 +411,9 @@ body {
       }
     }
 
-    .property-control{
+    .property-control {
       width: 100%;
-      font-size: 0.85rem;      
+      font-size: 0.85rem;
       padding: 1px 5px;
     }
   }
@@ -445,6 +465,23 @@ body {
       opacity: 0;
       left: 0;
       right: 0;
+    }
+  }
+
+  .modal-dialog {
+    min-height: calc(100vh - 60px);
+    width: 90%;
+    max-width: unset;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: auto;
+    @media (max-width: 768px) {
+      min-height: calc(100vh - 20px);
+    }
+    svg {
+      width: 24px;
+      stroke-width: 2px;
     }
   }
 }

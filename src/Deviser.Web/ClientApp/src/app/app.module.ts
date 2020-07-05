@@ -17,6 +17,9 @@ import { WINDOW_PROVIDERS } from './common/services/window.service';
 import { EnvPathPipe } from './common/pipes/env-path.pipe';
 import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
 import { DevAlertComponent } from './common/components/alert/dev-alert.component';
+import { EditPermissionComponent } from './common/components/edit-permission/edit-permission.component';
+import { EditContentComponent } from './common/components/edit-content/edit-content.component';
+import { PreviewContentComponent } from './common/components/preview-content/preview-content.component';
 
 
 @NgModule({
@@ -26,7 +29,10 @@ import { DevAlertComponent } from './common/components/alert/dev-alert.component
     LayoutComponent,
     EnvPathPipe,
     ConfirmDialogComponent,
-    DevAlertComponent
+    DevAlertComponent,
+    EditPermissionComponent,
+    EditContentComponent,
+    PreviewContentComponent
   ],
   imports: [
     AlertModule.forRoot(),

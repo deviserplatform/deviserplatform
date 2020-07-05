@@ -15,7 +15,7 @@ namespace Deviser.Core.Library.Sites
         private readonly ILogger<ContentManager> _logger;
         private readonly IScopeService _scopeService;
         private readonly IPageContentRepository _pageContentRepository;
-        
+
 
         public ContentManager(ILogger<ContentManager> logger,
             IPageContentRepository pageContentRepository,
@@ -88,7 +88,7 @@ namespace Deviser.Core.Library.Sites
                 var result = _pageContentRepository.RestorePageContent(id);
                 return result;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError("Error occured while restoring page content", ex);
             }
@@ -184,18 +184,16 @@ namespace Deviser.Core.Library.Sites
             return false;
         }
 
-        public void UpdateContentPermission(PageContent pageContent)
+        public PageContent UpdateContentPermission(PageContent pageContent)
         {
             try
             {
-                if (pageContent != null)
-                {
-                    _pageContentRepository.UpdateContentPermission(pageContent);
-                }
+                return _pageContentRepository.UpdateContentPermission(pageContent);
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format("Error occured while updating page content permissions"), ex);
+                throw;
             }
         }
 
@@ -227,7 +225,7 @@ namespace Deviser.Core.Library.Sites
 
             var result = (pageContent.ContentPermissions.Any(contentPermission => contentPermission.PermissionId == Globals.ContentViewPermissionId &&
           (contentPermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == contentPermission.RoleId)))));
-                        
+
             var page = isForCurrentRequest ? _scopeService.PageContext.CurrentPage : _pageRepository.GetPageAndPagePermissions(pageContent.PageId);
             return result || (pageContent.InheritViewPermissions && HasViewPermission(page));
         }

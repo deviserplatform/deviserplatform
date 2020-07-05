@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, EventEmitter } from '@angular/core';
 import { PageContext } from '../../domain-types/page-context';
 import { WINDOW } from '../../services/window.service';
 import { AlertService } from '../../services/alert.service';
@@ -28,6 +28,9 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem, DragRef, DropListRef, 
 import { Guid } from '../../services/guid';
 import { ItemsList } from '@ng-select/ng-select/lib/items-list';
 import { PageState } from '../../domain-types/page-state';
+import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { EditContentComponent } from '../edit-content/edit-content.component';
+import { EditPermissionComponent } from '../edit-permission/edit-permission.component';
 
 @Component({
   selector: 'app-edit',
@@ -37,6 +40,7 @@ import { PageState } from '../../domain-types/page-state';
 export class EditComponent implements OnInit {
 
   alerts: Alert[] = [];
+  bsModalRef: BsModalRef;
   currentPage: Page;
   currentPageState: PageState;
   containerIds: string[] = [];
@@ -52,6 +56,9 @@ export class EditComponent implements OnInit {
   uaLayout: PlaceHolder;
 
   pageState = PageState;
+  private _modalConfig: any = {
+    ignoreBackdropClick: true
+  }
 
   get nestedContainersDropListIds(): string[] {
     // We reverse ids here to respect items nesting hierarchy
@@ -75,6 +82,7 @@ export class EditComponent implements OnInit {
     private _contentTypeService: ContentTypeService,
     private _layoutService: LayoutService,
     private _layoutTypeService: LayoutTypeService,
+    private _modalService: BsModalService,
     private _moduleViewService: ModuleViewService,
     private _pageService: PageService,
     private _pageContentService: PageContentService,
@@ -92,6 +100,27 @@ export class EditComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  getLayoutTypeName(layoutTypeId: string): string {
+    return this.getLayoutType(layoutTypeId).label;
+  }
+
+  getLayoutType(layoutTypeId: string): LayoutType {
+    return this.layoutTypes.find(lt => lt.id === layoutTypeId)
+  }
+
+  getPlaceHolderClass(node: PlaceHolder) {
+    let className = this.selectedPlaceHolder && node && this.selectedPlaceHolder.id === node.id ? 'selected' : '';
+    return className;
+  }
+
+  getColumnClass(node: PlaceHolder) {
+    if (node.type === 'column') {
+      let columnClass: string = this._sharedService.getColumnWidth(node.properties);
+      return columnClass.replace('col-md-', 'col-');
+    }
+    return '';
   }
 
   onDragDrop(event: CdkDragDrop<any, any | LayoutType[]>) {
@@ -151,25 +180,30 @@ export class EditComponent implements OnInit {
       return;
     }
     const previousContainerData: PlaceHolder[] = event.previousContainer.data.placeHolders;
+    const elementToBeDeleted = previousContainerData[event.previousIndex];
+    if (elementToBeDeleted.pageContent) {
+      this._pageContentService.deletePageContent(elementToBeDeleted.pageContent.id).subscribe(
+        success => {
+          if (success) {
+            this._alertService.showMessage(AlertType.Success, 'PageContent has been deleted');
+            return;
+          }
+          this._alertService.showMessage(AlertType.Error, 'Unable to delete PageContent');
+        },
+        error => this._alertService.showMessage(AlertType.Error, 'Unable to delete PageContent'));
+    }
+    else {
+      this._pageModuleService.deletePageModule(elementToBeDeleted.pageModule.id).subscribe(
+        success => {
+          if (success) {
+            this._alertService.showMessage(AlertType.Success, 'ModuleView has been deleted');
+            return;
+          }
+          this._alertService.showMessage(AlertType.Error, 'Unable to delete ModuleView')
+        },
+        error => this._alertService.showMessage(AlertType.Error, 'Unable to delete ModuleView'));
+    }
     previousContainerData.splice(event.previousIndex, 1);
-  }
-
-  elementDropPredicate = (drag: DragRef, drop: DropListRef): boolean => {
-    // const dragPlaceHolder = drag.data as PlaceHolder;
-    // const dragLayoutType = drag.data as LayoutType;
-    // const dropListPlaceHolder = drop.data as PlaceHolder
-    // if ((dragPlaceHolder || dragLayoutType) && dropListPlaceHolder) {
-    //   let dragItemType: LayoutType;
-    //   const dropItemType = this.getLayoutType(dropListPlaceHolder.layoutTypeId);
-    //   if (dragLayoutType && dragLayoutType.name && dragLayoutType.layoutTypeIds) {
-    //     dragItemType = dragLayoutType;
-    //   }
-    //   else {
-    //     dragItemType = this.getLayoutType(dragPlaceHolder.layoutTypeId);
-    //   }
-    //   return dropItemType.layoutTypeIds.replace(/\s/g, '').split(',').indexOf(dragItemType.id) >= 0;
-    // }
-    return false;
   }
 
   onPlaceHolderSelected($event: Event, node: PlaceHolder) {
@@ -184,41 +218,43 @@ export class EditComponent implements OnInit {
     }
   }
 
-  getLayoutTypeName(layoutTypeId: string): string {
-    return this.getLayoutType(layoutTypeId).label;
-  }
-
-  // getModuleViewName(layoutTypeId: string): string {
-  //   return this.getModuleView(layoutTypeId).moduleView.displayName;
-  // }
-
-  // getContentTypeName(contentTypeId: string): string {
-  //   return this.getContentType(contentTypeId).contentType.label;
-  // }
-
-  getLayoutType(layoutTypeId: string): LayoutType {
-    return this.layoutTypes.find(lt => lt.id === layoutTypeId)
-  }
-
-  // getContentType(contentTypeId: string): PlaceHolder {
-  //   return this.contentTypes.find(lt => lt.id === contentTypeId)
-  // }
-
-  // getModuleView(moduleViewId: string): PlaceHolder {
-  //   return this.moduleViews.find(lt => lt.id === moduleViewId)
-  // }
-
-  getPlaceHolderClass(node: PlaceHolder) {
-    let className = this.selectedPlaceHolder && node && this.selectedPlaceHolder.id === node.id ? 'selected' : '';
-    return className;
-  }
-
-  getColumnClass(node: PlaceHolder) {
-    if (node.type === 'column') {
-      let columnClass: string = this._sharedService.getColumnWidth(node.properties);
-      return columnClass.replace('col-md-', 'col-');
+  onOpenPermission(node: PlaceHolder) {
+    this.selectedPlaceHolder = node;
+    let param: ModalOptions = JSON.parse(JSON.stringify(this._modalConfig));
+    let permissionSaved: EventEmitter<any>;
+    param.initialState = {
+      selectedNode: node
     }
-    return '';
+    if (this.bsModalRef && this.bsModalRef.content) {
+      permissionSaved = this.bsModalRef.content.permissionSaved as EventEmitter<any>;
+      permissionSaved.unsubscribe();
+    }
+    this.bsModalRef = this._modalService.show(EditPermissionComponent, param);
+    permissionSaved = this.bsModalRef.content.permissionSaved as EventEmitter<any>;
+    permissionSaved.subscribe(node => this.onPermissionSaved(node));
+    this.bsModalRef.content.closeBtnName = 'Close';
+  }
+
+  onPermissionSaved(node: PlaceHolder) {
+    if (node.pageContent) {
+      let pageContent = this.selectedPlaceHolder.pageContent;
+      let nodePageContent = node.pageContent;
+      pageContent.contentPermissions = nodePageContent.contentPermissions;
+      pageContent.inheritEditPermissions = nodePageContent.inheritEditPermissions;
+      pageContent.inheritViewPermissions = nodePageContent.inheritViewPermissions;
+    }
+    else {
+      let pageModule = this.selectedPlaceHolder.pageModule;
+      let nodePageModule = node.pageModule;
+      pageModule.modulePermissions = nodePageModule.modulePermissions;
+      pageModule.inheritEditPermissions = nodePageModule.inheritEditPermissions;
+      pageModule.inheritViewPermissions = nodePageModule.inheritViewPermissions;
+    }
+  }
+
+  onEditContent() {
+    this.bsModalRef = this._modalService.show(EditContentComponent), this._modalConfig;
+    this.bsModalRef.content.closeBtnName = 'Close';
   }
 
   onSaveProperties() {
@@ -624,7 +660,7 @@ export class EditComponent implements OnInit {
 
     let pageContents = this.parseAndSortPageContents(contentContainer);
     let pageModules = this.parseAndSortPageModules(moduleContainer);
-    
+
     let pageContents$ = this._pageContentService.updatePageContents(pageContents);
     let pageModules$ = this._pageModuleService.updatePageModules(pageModules);
     let pageLayout$ = this._layoutService.updateLayout(layoutOnly)
