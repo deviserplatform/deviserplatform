@@ -59,7 +59,7 @@ namespace Deviser.Core.Data.Repositories
                 var result = context.PageContent
                     .AsNoTracking()
                     .Include(pc => pc.PageContentTranslation)
-                    .Include(pc => pc.ContentType)
+                    .Include(pc => pc.ContentType).ThenInclude(ct=>ct.ContentTypeFields).ThenInclude(ctf=>ctf.ContentFieldType)
                     .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentTypeProperties).ThenInclude(ctp => ctp.Property)
                     .Include(pc => pc.ContentPermissions)
                     .Where(e => e.Id == pageContentId && e.IsActive)

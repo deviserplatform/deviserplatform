@@ -240,9 +240,24 @@ export class EditComponent implements OnInit {
     }
   }
 
-  onEditContent() {
-    this.bsModalRef = this._modalService.show(EditContentComponent), this._modalConfig;
+  onEditContent(node: PlaceHolder) {
+    let param: ModalOptions = JSON.parse(JSON.stringify(this._modalConfig));
+    let contentSaved: EventEmitter<any>;
+    param.initialState = {
+      pageContentId: node.pageContent.id
+    }
+    if (this.bsModalRef && this.bsModalRef.content) {
+      contentSaved = this.bsModalRef.content.contentSaved as EventEmitter<any>;
+      contentSaved.unsubscribe();
+    }
+
+    this.bsModalRef = this._modalService.show(EditContentComponent, param), this._modalConfig;
+    contentSaved = this.bsModalRef.content.contentSaved as EventEmitter<any>;
+    contentSaved.subscribe(node => this.oncontentSaved(node));
     this.bsModalRef.content.closeBtnName = 'Close';
+  }
+
+  oncontentSaved(node: PlaceHolder) {
   }
 
   onSaveProperties() {
@@ -609,21 +624,21 @@ export class EditComponent implements OnInit {
     let pageLayout$ = this._layoutService.updateLayout(layoutOnly)
 
     //Refresh pageContents and pageModules    
-    
-    
+
+
 
     forkJoin([pageContents$, pageModules$, pageLayout$]).subscribe(results => {
-      this.pageLayout = results[2];      
+      this.pageLayout = results[2];
       const pageContentsFull$ = this._pageContentService.getPageContents(this.pageContext.currentPageId, this.pageContext.currentLocale);
       const pageModulesFull$ = this._pageModuleService.getPageModules(this.pageContext.currentPageId);
 
-      forkJoin([pageContentsFull$, pageModulesFull$]).subscribe(subResults =>{
+      forkJoin([pageContentsFull$, pageModulesFull$]).subscribe(subResults => {
         this.pageContents = subResults[0];
         this.pageModules = subResults[1];
         this.loadPageElements();
         this._alertService.showMessage(AlertType.Success, 'Page Content and Module View in selected layout has been saved');
       });
-      
+
     }, error => this._alertService.showMessage(AlertType.Error, 'Unable to init, please contact administrator'));
   }
 

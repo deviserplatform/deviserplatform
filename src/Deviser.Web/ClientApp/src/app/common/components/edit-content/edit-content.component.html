@@ -1,1 +1,13 @@
-<p>edit-content works!</p>
+<div class="modal-header">
+    <h4 class="modal-title pull-left"></h4>
+    <button type="button" class="btn btn-light pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+        <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/x.svg'| envPath"></i>
+    </button>
+</div>
+<div class="modal-body">
+    
+</div>
+<div class="modal-footer">
+    <button class="btn btn-default" type="button" (click)="cancel()">Cancel</button>
+    <button class="btn btn-primary" type="button" (click)="save()">Save</button>
+</div>
