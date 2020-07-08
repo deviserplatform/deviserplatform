@@ -183,24 +183,12 @@ export class EditComponent implements OnInit {
     const elementToBeDeleted = previousContainerData[event.previousIndex];
     if (elementToBeDeleted.pageContent) {
       this._pageContentService.deletePageContent(elementToBeDeleted.pageContent.id).subscribe(
-        success => {
-          if (success) {
-            this._alertService.showMessage(AlertType.Success, 'PageContent has been deleted');
-            return;
-          }
-          this._alertService.showMessage(AlertType.Error, 'Unable to delete PageContent');
-        },
+        success => this._alertService.showMessage(AlertType.Success, 'PageContent has been deleted'),
         error => this._alertService.showMessage(AlertType.Error, 'Unable to delete PageContent'));
     }
     else {
       this._pageModuleService.deletePageModule(elementToBeDeleted.pageModule.id).subscribe(
-        success => {
-          if (success) {
-            this._alertService.showMessage(AlertType.Success, 'ModuleView has been deleted');
-            return;
-          }
-          this._alertService.showMessage(AlertType.Error, 'Unable to delete ModuleView')
-        },
+        success => this._alertService.showMessage(AlertType.Success, 'ModuleView has been deleted'),
         error => this._alertService.showMessage(AlertType.Error, 'Unable to delete ModuleView'));
     }
     previousContainerData.splice(event.previousIndex, 1);
@@ -289,20 +277,10 @@ export class EditComponent implements OnInit {
       this._pageContentService.updatePageContent(pageContent).subscribe(response => {
         console.log(response);
         this.selectedPlaceHolder.isPropertyChanged = false;
-        const alert: Alert = {
-          alertType: AlertType.Success,
-          message: 'Content properities have been saved successfully.',
-          timeout: 5000
-        }
-        this._alertService.addAlert(alert);
+        this._alertService.showMessage(AlertType.Success, 'Content properities have been saved successfully');
       }, error => {
         console.log(error);
-        const alert: Alert = {
-          alertType: AlertType.Error,
-          message: 'Cannot save the content properities,please contact administrator',
-          timeout: 5000
-        }
-        this._alertService.addAlert(alert);
+        this._alertService.showMessage(AlertType.Error, 'Cannot save the content properities, please contact administrator');
       });
     }
     else if (this.selectedPlaceHolder.layoutTemplate === "module") {
@@ -315,60 +293,32 @@ export class EditComponent implements OnInit {
 
       this._pageModuleService.updatePageModule(pageModule).subscribe(response => {
         console.log(response);
-        const alert: Alert = {
-          alertType: AlertType.Success,
-          message: 'Module properities have been saved successfully.',
-          timeout: 5000
-        }
-        this._alertService.addAlert(alert);
+        this._alertService.showMessage(AlertType.Success, 'Module properities have been saved successfully');
       }, error => {
         console.log(error);
-        const alert: Alert = {
-          alertType: AlertType.Error,
-          message: 'Cannot save the module properities,please contact administrator',
-          timeout: 5000
-        }
-        this._alertService.addAlert(alert);
+        this._alertService.showMessage(AlertType.Error, 'Cannot save the module properities, please contact administrator');
       });
     }
   }
 
   onDraft() {
     this._pageService.draftPage(this.currentPage.id).subscribe(response => {
-      ;
       this.currentPageState = PageState.Draft;
-      const alert: Alert = {
-        alertType: AlertType.Success,
-        message: 'The Page has been drafted.',
-        timeout: 5000
-      }
-    }, error => {
-      const alert: Alert = {
-        alertType: AlertType.Error,
-        message: 'Cannot draft the page, please contact the administrator.',
-        timeout: 5000
-      }
-      this._alertService.addAlert(alert);
-    });
+      this._alertService.showMessage(AlertType.Success, 'The Page has been drafted.');
+    }, error => this._alertService.showMessage(AlertType.Error, 'Cannot draft the page, please contact the administrator.'));
   }
 
   onPublish() {
     if (this.currentPageState === PageState.Draft) {
       this._pageService.publishPage(this.currentPage.id).subscribe(response => {
         this.currentPageState = PageState.Published;
+        this._alertService.showMessage(AlertType.Success, 'The Page has been published.');
         const alert: Alert = {
           alertType: AlertType.Success,
           message: 'The Page has been published.',
           timeout: 5000
         }
-      }, function (error) {
-        const alert: Alert = {
-          alertType: AlertType.Error,
-          message: 'Cannot publish the page, please contact the administrator.',
-          timeout: 5000
-        }
-        this._alertService.addAlert(alert);
-      });
+      }, error => this._alertService.showMessage(AlertType.Error, 'Cannot publish the page, please contact the administrator.'));
     }
   }
 
@@ -429,14 +379,7 @@ export class EditComponent implements OnInit {
 
       this.loadPageElements();
 
-    }, error => {
-      const alert: Alert = {
-        alertType: AlertType.Error,
-        message: 'Unable to get this item, please contact administrator',
-        timeout: 5000
-      }
-      this._alertService.addAlert(alert);
-    });
+    }, error => this._alertService.showMessage(AlertType.Error, 'Unable to init, please contact administrator'));
   }
 
   private loadPageElements() {
@@ -665,16 +608,23 @@ export class EditComponent implements OnInit {
     let pageModules$ = this._pageModuleService.updatePageModules(pageModules);
     let pageLayout$ = this._layoutService.updateLayout(layoutOnly)
 
-    forkJoin([pageContents$, pageModules$, pageLayout$]).subscribe(result => {
+    //Refresh pageContents and pageModules    
+    
+    
 
-      const alert: Alert = {
-        alertType: AlertType.Success,
-        message: 'Page Content and Module View in selected layout has been saved',
-        timeout: 5000
-      }
-      this._alertService.addAlert(alert);
+    forkJoin([pageContents$, pageModules$, pageLayout$]).subscribe(results => {
+      this.pageLayout = results[2];      
+      const pageContentsFull$ = this._pageContentService.getPageContents(this.pageContext.currentPageId, this.pageContext.currentLocale);
+      const pageModulesFull$ = this._pageModuleService.getPageModules(this.pageContext.currentPageId);
 
-    });
+      forkJoin([pageContentsFull$, pageModulesFull$]).subscribe(subResults =>{
+        this.pageContents = subResults[0];
+        this.pageModules = subResults[1];
+        this.loadPageElements();
+        this._alertService.showMessage(AlertType.Success, 'Page Content and Module View in selected layout has been saved');
+      });
+      
+    }, error => this._alertService.showMessage(AlertType.Error, 'Unable to init, please contact administrator'));
   }
 
   private filterLayout(placeHolder: PlaceHolder) {
