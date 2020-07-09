@@ -43,6 +43,7 @@ import { GridHeaderComponent } from './common/components/grid-header/grid-header
 import { GridControlComponent } from './common/components/grid-control/grid-control.component';
 import { DevCheckboxComponent } from './common/components/controls/dev-checkbox/dev-checkbox.component';
 import { CheckBoxListComponent } from './common/components/controls/check-box-list/check-box-list.component';
+import { AlertService } from './common/services/alert.service';
 
 
 @NgModule({
@@ -89,6 +90,7 @@ import { CheckBoxListComponent } from './common/components/controls/check-box-li
     ReactiveFormsModule
   ],
   providers: [
+    AlertService,
     DatePipe,
     RecordIdPipe,
     WINDOW_PROVIDERS

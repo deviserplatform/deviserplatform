@@ -16,6 +16,7 @@ namespace Deviser.Core.Common.DomainTypes
 
         [BindRequired]
         public string Label { get; set; }
+        public bool IsList { get; set; }
         public string IconImage { get; set; }
         public string IconClass { get; set; }
         public int SortOrder { get; set; }

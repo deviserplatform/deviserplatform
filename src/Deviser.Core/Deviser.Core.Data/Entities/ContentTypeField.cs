@@ -8,6 +8,7 @@ namespace Deviser.Core.Data.Entities
     {
         public Guid Id { get; set; }
         public string FieldName { get; set; }
+        public string FieldLabel { get; set; }
         public string FieldDescription { get; set; }
         public Guid ContentTypeId { get; set; }
         public Guid ContentFieldTypeId { get; set; }

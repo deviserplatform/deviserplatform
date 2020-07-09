@@ -126,6 +126,11 @@ body {
                 }
                 .filter-container {
                     position: relative;
+                    .btn-filter {
+                        svg {
+                            fill: $body-color;
+                        }
+                    }
                     .filter-content {
                         @extend .shadow;
                         position: absolute;
@@ -162,7 +167,7 @@ body {
                 }
 
                 .bs-datepicker-body table td,
-                .bs-datepicker-body table th {                    
+                .bs-datepicker-body table th {
                     border: none;
                     border-top: none;
                     border-bottom: none;

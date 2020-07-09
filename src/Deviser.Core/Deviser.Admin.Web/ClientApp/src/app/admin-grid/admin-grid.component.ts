@@ -44,7 +44,6 @@ export class AdminGridComponent implements OnInit {
 
   adminConfig: AdminConfig;
   adminConfigType = AdminConfigType;
-  alerts: Alert[];
   entityRecords: any;
   daConfig: DAConfig;
   pagination: Pagination;
@@ -62,14 +61,8 @@ export class AdminGridComponent implements OnInit {
     private _recordIdPipe: RecordIdPipe,
     private _router: Router,
     @Inject(WINDOW) private _window: any) {
-    this.alerts = [];
     this.getAdminConfig();
-    this.daConfig = _window.daConfig;
-    this._alertService.alerts.subscribe(alert => {
-      if(alert){
-        this.alerts.push(alert)
-      }
-    });
+    this.daConfig = _window.daConfig;    
   }
 
   ngOnInit() {
@@ -144,21 +137,11 @@ export class AdminGridComponent implements OnInit {
 
   onActionResult(adminResult: AdminResult): void {
     if (adminResult && adminResult.isSucceeded) {
-      let alert: Alert = {
-        alertType: AlertType.Success,
-        message: adminResult.successMessage,
-        timeout: 5000
-      }
-      this._alertService.addAlert(alert);
+      this._alertService.showMessage(AlertType.Success, adminResult.successMessage);
       this.getAllRecords(this.pagination);
     }
     else {
-      let alert: Alert = {
-        alertType: AlertType.Error,
-        message: adminResult.successMessage,
-        timeout: 5000
-      };
-      this._alertService.addAlert(alert);
+      this._alertService.showMessage(AlertType.Error, adminResult.errorMessage);
     }
   }
 

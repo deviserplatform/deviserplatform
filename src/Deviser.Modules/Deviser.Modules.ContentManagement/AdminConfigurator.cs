@@ -36,8 +36,9 @@ namespace Deviser.Modules.ContentManagement
                     {
                         option.EnableIn = FormMode.Create;
                     })
-                    .AddField(c => c.IconClass)
-                    .AddField(c => c.IsActive)
+                    .AddField(c => c.IconClass, option => option.DisplayName = "Icon")
+                    .AddField(c => c.IsActive, option => option.DisplayName = "Is Active")
+                    .AddField(c => c.IsList, option => option.DisplayName = "Is List")
                     .AddMultiselectField(c => c.Properties, c => $"{c.Label} ({c.Name})");
 
                 modelBuilder.AddChildConfig(c => c.ContentTypeFields, (childForm) =>
