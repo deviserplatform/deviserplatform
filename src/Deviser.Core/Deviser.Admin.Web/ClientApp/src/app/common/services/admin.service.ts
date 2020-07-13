@@ -22,7 +22,7 @@ export class AdminService {
   private _httpHeaders;
 
   private _daConfig: DAConfig;
-  private _adminConfigSubject: BehaviorSubject<AdminConfig> = new BehaviorSubject<AdminConfig>(null);
+  // private _adminConfigSubject: BehaviorSubject<AdminConfig> = new BehaviorSubject<AdminConfig>(null);
   private _adminConfig: AdminConfig;
   private _adminConfig$: Observable<AdminConfig>;
   // private _adminConfigCache: AdminConfig;

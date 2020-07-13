@@ -113,7 +113,7 @@ namespace Deviser.Core.Data.Repositories
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.PageContent
                     .Include(pc => pc.PageContentTranslation)
-                    .Include(pc => pc.ContentType)
+                    .Include(pc => pc.ContentType).ThenInclude(ct => ct.ContentTypeFields).ThenInclude(ctf => ctf.ContentFieldType)
                     .Include(pc => pc.ContentType).ThenInclude(pc => pc.ContentTypeProperties).ThenInclude(ctp => ctp.Property)
                     .Include(pc => pc.ContentPermissions)
                     .Where(e => e.PageId == pageId && e.IsActive)

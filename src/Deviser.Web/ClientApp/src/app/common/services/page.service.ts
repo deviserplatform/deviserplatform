@@ -1,15 +1,40 @@
 import { Injectable, Inject } from '@angular/core';
 import { BaseService } from './base.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { MessageService } from './message.service';
 import { WINDOW } from './window.service';
+import { Page } from '../domain-types/page';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PageService extends BaseService {
+
+
+  private _pages: Page[];
+  private _pages$: Observable<Page[]>;
+
+  getPages(): Observable<Page[]> {
+    if (this._pages) {
+      return of(this._pages);
+    }
+    else if (this._pages$) {
+      return this._pages$;
+    }
+    else {
+      const serviceUrl: string = this.baseUrl + `/api/page/list`;
+      this._pages$ = this.http.get<Page[]>(serviceUrl, { headers: this.httpHeaders }).pipe(
+        tap(next => {
+          this._pages = next;
+          this.log('fetched pages');
+        }),
+        catchError(this.handleError<Page[]>('getPages'))
+      );
+      return this._pages$;
+    }
+  }
 
   getPage(id: string): Observable<any> {
     const serviceUrl: string = `${this.baseUrl}/api/page/${id}`;

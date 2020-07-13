@@ -88,8 +88,8 @@ export class EditComponent implements OnInit {
     private _pageContentService: PageContentService,
     private _pageModuleService: PageModuleService,
     private _sharedService: SharedService,
-    @Inject(WINDOW) window: any) {
-    this.pageContext = window.pageContext;
+    @Inject(WINDOW) private _window: any) {
+    this.pageContext = _window.pageContext;
     this._alertService.alerts.subscribe(alert => {
       if (alert) {
         this.alerts.push(alert)

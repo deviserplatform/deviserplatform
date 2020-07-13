@@ -241,8 +241,9 @@
                             </button>
                         </div>
                     </div>
-                    <!-- <div class="container-element-body">
-                    </div> -->
+                    <div class="container-element-body">
+                        <app-preview-content [pageContent]="node.pageContent"></app-preview-content>
+                    </div>
                 </div>
             </ng-container>
             <ng-container *ngSwitchCase="'module'">

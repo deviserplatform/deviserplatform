@@ -20,6 +20,7 @@ import { DevAlertComponent } from './common/components/alert/dev-alert.component
 import { EditPermissionComponent } from './common/components/edit-permission/edit-permission.component';
 import { EditContentComponent } from './common/components/edit-content/edit-content.component';
 import { PreviewContentComponent } from './common/components/preview-content/preview-content.component';
+import { SanitizeHtmlPipe } from './common/pipes/sanitize-html.pipe';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { PreviewContentComponent } from './common/components/preview-content/pre
     DevAlertComponent,
     EditPermissionComponent,
     EditContentComponent,
-    PreviewContentComponent
+    PreviewContentComponent,
+    SanitizeHtmlPipe
   ],
   imports: [
     AlertModule.forRoot(),

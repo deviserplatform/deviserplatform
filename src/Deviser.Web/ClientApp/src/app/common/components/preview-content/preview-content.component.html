@@ -1,1 +1,62 @@
-<p>preview-content works!</p>
+<div class="preview-container">
+    <div class="non-list" *ngIf="!isList">
+        <div *ngFor="let field of fields">
+            <ng-container *ngTemplateOutlet="previewFieldSelector, context:{content:content, field:field}">
+            </ng-container>
+        </div>
+    </div>
+    <div class="list" *ngIf="isList">
+        <table class="table table-hover" style="max-height:500px;overflow:auto">
+            <thead>
+                <tr>
+                    <th *ngFor="let field of fields">{{(field.fieldLabel || field.fieldName)}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of content.items" class="item">
+                    <td *ngFor="let field of fields">                    
+                        <ng-container *ngTemplateOutlet="previewFieldSelector, context:{content:item, field:field}">
+                        </ng-container>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+    </div>
+</div>
+
+<ng-template #previewFieldSelector let-content="content" let-field="field">
+    <ng-container [ngSwitch]="field.contentFieldType.name" *ngIf="content[field.fieldName]">
+        <ng-container *ngSwitchCase="'Textarea'">
+            <div [innerHtml]="content[field.fieldName] | sanitizeHtml"></div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'RichText'">
+            <div [innerHtml]="content[field.fieldName] | sanitizeHtml"></div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Date'">
+            {{content[field.fieldName]}}
+        </ng-container>
+        <ng-container *ngSwitchCase="'Link'">
+            <a [href]="getLinkUrl(content[field.fieldName])" target="_blank">
+                {{content[field.fieldName].linkText}}
+            </a>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Attachment'">
+            <a [href]="content[field.fieldName].filePath" target="_blank">
+                {{content[field.fieldName].fileName}}
+            </a>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Text'">
+            <div [innerHtml]="content[field.fieldName] | sanitizeHtml"></div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Image'">
+            <img *ngIf="content[field.fieldName].imageUrl" [src]="content[field.fieldName].imageUrl"
+                alt="content[field.fieldName].imageAltText">
+        </ng-container>
+    </ng-container>
+</ng-template>
+
+
+<!-- <pre>
+    {{content | json}}
+</pre> -->
