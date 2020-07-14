@@ -14,6 +14,8 @@ import { ContentTranslationService } from '../../services/content-translation.se
 import { AlertService } from '../../services/alert.service';
 import { AlertType } from '../../domain-types/alert';
 import { Guid } from '../../services/guid';
+import { ContentTypeField } from '../../domain-types/content-type-field';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-edit-content',
@@ -23,6 +25,7 @@ import { Guid } from '../../services/guid';
 export class EditContentComponent implements OnInit {
 
   private _pageContentId: string;
+  private _fields: ContentTypeField[];
 
   get pageContentId(): string {
     return this._pageContentId;
@@ -32,7 +35,7 @@ export class EditContentComponent implements OnInit {
     this._pageContentId = value;
     this.init();
   }
-  
+
   viewState: ViewState
   pageContext: PageContext;
   languages: Language[];
@@ -45,6 +48,26 @@ export class EditContentComponent implements OnInit {
   tempItem: any;
   isChanged: boolean;
   contentSaved: EventEmitter<any> = new EventEmitter();
+  viewStates = ViewState;
+
+  Editor = ClassicEditor;
+
+
+
+  get isList(): boolean {
+    return this.pageContent && this.pageContent.contentType && this.pageContent.contentType.isList;
+  }
+
+  get content(): any {
+    // const contentTranslation = this.pageContent.pageContentTranslation.find(pct => pct.cultureCode === this.pageContext.currentLocale);
+    // let content = (contentTranslation && contentTranslation.contentData) ? JSON.parse(contentTranslation.contentData) : {};
+    // return content;
+    return this.contentTranslation.contentData;
+  }
+
+  get fields(): ContentTypeField[] {
+    return this._fields;
+  }
 
   constructor(private _alertService: AlertService,
     public bsModalRef: BsModalRef,
@@ -91,6 +114,12 @@ export class EditContentComponent implements OnInit {
     this.bsModalRef.hide();
   }
 
+  get bsConfig(): any {
+    return {
+      dateInputFormat: 'DD.MM.YYYY'
+    };
+  }
+
   updateItem() {
     if (!this.selectedItem.id) {
       this.selectedItem.id = Guid.newGuid();
@@ -133,6 +162,7 @@ export class EditContentComponent implements OnInit {
       this.contentTranslations = this.pageContent.pageContentTranslation;
       this.contentType = this.pageContent.contentType;
       this.languages = results[1];
+      this._fields = this.pageContent.contentType.contentTypeFields.sort((a, b) => a.sortOrder > b.sortOrder ? 1 : -1);
 
       const currentCultureCode = this.pageContext.currentLocale;
       this.selectedLocale = this.languages.find(langauge => langauge.cultureCode === currentCultureCode);

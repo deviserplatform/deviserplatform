@@ -20,6 +20,8 @@
     "@angular/platform-browser": "~9.1.6",
     "@angular/platform-browser-dynamic": "~9.1.6",
     "@angular/router": "~9.1.6",
+    "@ckeditor/ckeditor5-angular": "^1.2.3",
+    "@ckeditor/ckeditor5-build-classic": "^20.0.0",
     "@types/lodash-es": "^4.17.3",
     "lodash-es": "^4.17.15",
     "moment": "^2.27.0",

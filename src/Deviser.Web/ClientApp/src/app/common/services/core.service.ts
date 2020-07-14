@@ -8,6 +8,8 @@ export class CoreService {
   constructor() { }
 
   parseResponse(response) {
+    if (!response) return;
+
     this.parseRecursive(response);
     return response;
   }
@@ -20,33 +22,37 @@ export class CoreService {
   }
 
   private parseRecursive(response) {
-    response.forEach((value, prop) => {
 
-      if (response.hasOwnProperty(prop)) {
+    Object.keys(response).forEach(key => {
+      let value = response[key];
 
-        if (moment(response[prop], moment.ISO_8601, true).isValid()) {
-          response[prop] = moment(response[prop]).toDate();//new Date(response[prop]);
+      if (response.hasOwnProperty(key)) {
+
+        if (moment(response[key], moment.ISO_8601, true).isValid()) {
+          response[key] = moment(response[key]).toDate();//new Date(response[prop]);
         }
 
-        if (Array.isArray(response[prop]) && response[prop].length > 0) {
-          response[prop].forEach(item => {
+        if (Array.isArray(response[key]) && response[key].length > 0) {
+          response[key].forEach(item => {
             this.parseRecursive(item);
           });
         }
       }
+
     });
   }
 
   private prepareRequestRecursive(parent) {
-    parent.forEach((value, prop) => {
-      if (parent.hasOwnProperty(prop)) {
+    Object.keys(parent).forEach(key => {
+      let value = parent[key];
+      if (parent.hasOwnProperty(key)) {
 
-        if (moment.isDate(parent[prop])) {
-          parent[prop] = moment(parent[prop]).format()
+        if (moment.isDate(parent[key])) {
+          parent[key] = moment(parent[key]).format()
         }
-        
-        if (Array.isArray(parent[prop]) && parent[prop].length > 0) {
-          parent[prop].forEach(item => {
+
+        if (Array.isArray(parent[key]) && parent[key].length > 0) {
+          parent[key].forEach(item => {
             this.prepareRequestRecursive(item);
           });
         }

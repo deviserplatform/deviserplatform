@@ -4,10 +4,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { InlineSVGModule } from 'ng-inline-svg';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { AlertModule } from 'ngx-bootstrap/alert';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { InlineSVGModule } from 'ng-inline-svg';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,6 +23,7 @@ import { EditPermissionComponent } from './common/components/edit-permission/edi
 import { EditContentComponent } from './common/components/edit-content/edit-content.component';
 import { PreviewContentComponent } from './common/components/preview-content/preview-content.component';
 import { SanitizeHtmlPipe } from './common/pipes/sanitize-html.pipe';
+
 
 
 @NgModule({
@@ -39,7 +42,9 @@ import { SanitizeHtmlPipe } from './common/pipes/sanitize-html.pipe';
   imports: [
     AlertModule.forRoot(),
     AppRoutingModule,
-    BrowserModule,    
+    BrowserModule,
+    BsDatepickerModule.forRoot(),
+    CKEditorModule,
     DragDropModule,
     HttpClientModule,
     InlineSVGModule.forRoot(),
