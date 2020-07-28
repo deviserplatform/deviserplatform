@@ -160,13 +160,13 @@ body {
     background-clip: border-box;
     // border-top: solid 1px #ccc;
     // border-bottom: solid 1px #ccc;
-    border: 1px solid rgba(0, 0, 0, 0.125);
+    border: 1px solid rgba($black, 0.125);
     border-radius: 0.25rem;
 
     .container-element-header {
       align-items: center;
-      background-color: rgba(0, 0, 0, 0.03);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+      background-color: rgba($black, 0.03);
+      border-bottom: 1px solid rgba($black, 0.125);
       display: flex;
       padding: 0.4rem 0.6rem;
       margin-bottom: 0;
@@ -176,7 +176,7 @@ body {
       .drop-list {
         border: none;
       }
-      .preview-container{
+      .preview-container {
         padding: 10px;
       }
     }
@@ -259,7 +259,7 @@ body {
 
     &.content {
       .container-element-header {
-        border-bottom: none;
+        // border-bottom: none;
         padding-right: 0;
         padding-top: 0;
         padding-bottom: 0;
@@ -268,7 +268,7 @@ body {
 
     &.module {
       .container-element-header {
-        border-bottom: none;
+        // border-bottom: none;
         padding-right: 0;
         padding-top: 0;
         padding-bottom: 0;
@@ -473,7 +473,6 @@ body {
 
   .modal-dialog {
     min-height: calc(100vh - 60px);
-    width: 90%;
     max-width: unset;
     display: flex;
     flex-direction: column;
@@ -482,9 +481,87 @@ body {
     @media (max-width: 768px) {
       min-height: calc(100vh - 20px);
     }
-    svg {
+    /*svg {
       width: 24px;
       stroke-width: 2px;
+    }*/
+  }
+
+  .edit-content-modal {
+    width: 90%;
+    .modal-content {
+      flex: 1;
+      app-edit-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        .modal-body {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          .no-image-message {
+            background: rgba($black, 0.03);
+            border: 1px solid rgba($black, 0.125);
+            text-align: center;
+            padding: 20px 10px;
+          }
+        }
+      }
+    }
+  }
+
+  .image-selector-modal {
+    width: 80%;
+    .modal-content {
+      flex: 0.6;
+      app-image-selector {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        .modal-body {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          padding: 0 1rem;
+
+          .image-selector-row {
+            flex: 1;
+            .file-list {
+              padding: 1rem;
+              border-right: 1px solid rgba($black, 0.125);
+              .list-group {
+                .list-group-item {
+                  font-size: 0.875rem;
+                  padding: 0.25rem 0.75rem;
+                  overflow: hidden;
+                }
+              }
+            }
+            .detail-col {
+              display: flex;
+              flex-direction: column;
+              padding: 1rem;
+              .tab-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                .tab-pane {
+                  flex: 1;
+                  display: flex;
+                  flex-direction: column;
+                }
+              }
+
+              .image-drop-zone {
+                background: rgba($black, 0.03);
+                border: 1px solid rgba($black, 0.125);
+                text-align: center;
+                padding: 20px 10px;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

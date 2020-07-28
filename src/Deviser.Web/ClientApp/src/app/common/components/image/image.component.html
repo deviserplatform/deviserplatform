@@ -1,0 +1,22 @@
+<div class="image-manager">
+    <div *ngIf="field.fieldLabel || field.fieldName">
+        <label>{{ field.fieldLabel || field.fieldName}}</label>
+    </div>
+    <div class="form-group">
+        <div class="image-preview-container">
+            <div class="image-preview-header clearfix" *ngIf="image.imageUrl">
+                <a (click)="showPopup()" title="Upload/Change Image">
+
+                </a>
+                <a (click)="removeImage()" title="Remove Image">
+
+                </a>
+            </div>
+            <div class="image-preview">
+                <img [src]="image.imageUrl" [alt]="image.imageAltText" *ngIf="image.imageUrl" />
+            </div>
+            <p *ngIf="!image.imageUrl" class="no-image-message" (click)="showPopup()">Select a image, click here to the open image
+                selector</p>
+        </div>
+    </div>
+</div>

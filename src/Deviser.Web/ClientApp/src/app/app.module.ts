@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { ImageCropperModule } from 'ngx-image-cropper';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -23,6 +24,12 @@ import { EditPermissionComponent } from './common/components/edit-permission/edi
 import { EditContentComponent } from './common/components/edit-content/edit-content.component';
 import { PreviewContentComponent } from './common/components/preview-content/preview-content.component';
 import { SanitizeHtmlPipe } from './common/pipes/sanitize-html.pipe';
+import { AttachmentComponent } from './common/components/attachment/attachment.component';
+import { LinkComponent } from './common/components/link/link.component';
+import { ImageComponent } from './common/components/image/image.component';
+import { ImageSelectorComponent } from './common/components/image-selector/image-selector.component';
+import { FileSelectorComponent } from './common/components/file-selector/file-selector.component';
+import { DndUploadDirective } from './common/directives/dnd-upload.directive';
 
 
 
@@ -37,7 +44,13 @@ import { SanitizeHtmlPipe } from './common/pipes/sanitize-html.pipe';
     EditPermissionComponent,
     EditContentComponent,
     PreviewContentComponent,
-    SanitizeHtmlPipe
+    SanitizeHtmlPipe,
+    AttachmentComponent,
+    LinkComponent,
+    ImageComponent,
+    ImageSelectorComponent,
+    FileSelectorComponent,
+    DndUploadDirective
   ],
   imports: [
     AlertModule.forRoot(),
@@ -47,6 +60,7 @@ import { SanitizeHtmlPipe } from './common/pipes/sanitize-html.pipe';
     CKEditorModule,
     DragDropModule,
     HttpClientModule,
+    ImageCropperModule, 
     InlineSVGModule.forRoot(),
     NgSelectModule,
     FormsModule,

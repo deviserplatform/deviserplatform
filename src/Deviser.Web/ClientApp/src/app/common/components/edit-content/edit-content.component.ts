@@ -26,6 +26,7 @@ export class EditContentComponent implements OnInit {
 
   private _pageContentId: string;
   private _fields: ContentTypeField[];
+  private _fieldValues: { [fieldName: string]: any };
 
   get pageContentId(): string {
     return this._pageContentId;
@@ -78,6 +79,25 @@ export class EditContentComponent implements OnInit {
     @Inject(WINDOW) window: any) {
     this.pageContext = window.pageContext;
     this.viewState = ViewState.List;
+    this._fieldValues = {
+      Link: {
+        linkType: '',
+        linkText: '',
+        isNewWindow: false,
+        url: '',
+        pageId: ''
+      },
+      Attachment: {
+        fieldName: '',
+        fileType: '',
+        filePath: ''
+      },
+      Image: {
+        imageUrl: '',
+        imageAltText: '',
+        focusPoint: {}
+      }
+    }
   }
 
   ngOnInit(): void {
@@ -107,6 +127,10 @@ export class EditContentComponent implements OnInit {
 
   newItem() {
     this.selectedItem = {};
+    this.fields.forEach(field => {
+      const filedVal = this._fieldValues[field.contentFieldType.name] ? this._fieldValues[field.contentFieldType.name] : '';
+      this.selectedItem[field.fieldName] = JSON.parse(JSON.stringify(filedVal));
+    });
     this.viewState = ViewState.New;
   }
 

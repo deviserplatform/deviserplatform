@@ -244,8 +244,10 @@ export class EditComponent implements OnInit {
     let param: ModalOptions = JSON.parse(JSON.stringify(this._modalConfig));
     let contentSaved: EventEmitter<any>;
     param.initialState = {
-      pageContentId: node.pageContent.id
+      pageContentId: node.pageContent.id,      
     }
+    param.class = 'edit-content-modal';
+
     if (this.bsModalRef && this.bsModalRef.content) {
       contentSaved = this.bsModalRef.content.contentSaved as EventEmitter<any>;
       contentSaved.unsubscribe();
@@ -253,11 +255,11 @@ export class EditComponent implements OnInit {
 
     this.bsModalRef = this._modalService.show(EditContentComponent, param), this._modalConfig;
     contentSaved = this.bsModalRef.content.contentSaved as EventEmitter<any>;
-    contentSaved.subscribe(node => this.oncontentSaved(node));
+    contentSaved.subscribe(node => this.onContentSaved(node));
     this.bsModalRef.content.closeBtnName = 'Close';
   }
 
-  oncontentSaved(node: PlaceHolder) {
+  onContentSaved(node: PlaceHolder) {
   }
 
   onSaveProperties() {

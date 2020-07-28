@@ -2,11 +2,12 @@
 @{
     if (ViewBag.Theme != null)
     {
-        Layout = "~/Sites/Default/Themes/Skyline/LayoutDesigner.cshtml";
+        Layout = "~/Sites/Default/Themes/Skyline/LayoutDesignerBS4.cshtml";
     }
     var currentPage = scopeService.PageContext.CurrentPage;
 }
-    <script type="text/javascript">
+<require dependency-type="Css" priority="111" file-path="/_content/Deviser.Web/ClientApp/styles.css"></require>
+<script type="text/javascript">
     (function () {
         var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
         pageContext.isEmbedded = true;
@@ -16,12 +17,21 @@
 
     (function () {
         $(function () {
-            $('body').addClass('page-edit');
+            $('body').addClass('edit-layout-container');
         });
     }());
-    </script>
+</script>
 
-<div class="layout-wrapper" ng-app="deviserEdit" ng-controller="EditCtrl as editVM">
+<app-root></app-root>
+
+<require dependency-type="Script" priority="111" file-path="/_content/Deviser.Web/ClientApp/runtime-es2015.js" type="module"></require>
+<require dependency-type="Script" priority="112" file-path="/_content/Deviser.Web/ClientApp/runtime-es5.js" nomodule="true" defer="true"></require>
+<require dependency-type="Script" priority="113" file-path="/_content/Deviser.Web/ClientApp/polyfills-es5.js" nomodule="true" defer="true"></require>
+<require dependency-type="Script" priority="114" file-path="/_content/Deviser.Web/ClientApp/polyfills-es2015.js" type="module"></require>
+<require dependency-type="Script" priority="117" file-path="/_content/Deviser.Web/ClientApp/main-es2015.js" type="module"></require>
+<require dependency-type="Script" priority="118" file-path="/_content/Deviser.Web/ClientApp/main-es5.js" nomodule="true" defer="true"></require>
+
+@*<div class="layout-wrapper" ng-app="deviserEdit" ng-controller="EditCtrl as editVM">
     <div class="row" ng-show="editVM.message.content">
         <div ng-class="{'alert alert-danger':editVM.message.messageType=='error',
                      'alert alert-info':editVM.message.messageType=='info',
@@ -149,43 +159,8 @@
             </div>
 
         </script>
-        @*<script type="text/ng-template" id="container.html">
-                <div class="container-element box-layout box-grey" dnd-nodrag>
-                    <h3>{{item.type}} {{$index+1}}</h3>
-                    <div class="container-content" ng-include="'placeHolders.html'">
-
-                    </div>
-                </div>
-            </script>
-            <script type="text/ng-template" id="row.html">
-                <div class="container-element box-layout box-grey" dnd-nodrag>
-                    <h3>{{item.type}} {{$index+1}}</h3>
-                    <div class="container-content" ng-include="'placeHolders.html'">
-
-                    </div>
-                </div>
-            </script>
-            <script type="text/ng-template" id="column.html">
-                <div ng-class="editVM.setColumnWidth(item.properties)">
-                    <div class="container-element box-layout box-grey" dnd-nodrag>
-                        <h3>{{item.type}} {{$index+1}}</h3>
-                        <div class="container-content" ng-include="'placeHolders.html'">
-
-                        </div>
-                    </div>
-                </div>
-            </script>
-            <script type="text/ng-template" id="repeater.html">
-                <div class="container-element box-layout box-grey" dnd-nodrag>
-                    <h3>{{item.type}} {{$index+1}}</h3>
-                    <div class="container-content" ng-include="'placeHolders.html'">
-
-                    </div>
-                </div>
-            </script>*@
         <script type="text/ng-template" id="content.html">
             <div class="container-element box box-blue">
-                @*<div ng-bind="item.index = $index+1" style="display:none"></div>*@
                 <div class="content-header clearfix">
                     <div class="content-title">
                         <i class="{{item.contentType.iconClass}}" ng-if="item.contentType.iconClass"></i>
@@ -347,90 +322,77 @@
                             </div>
                         </div>
                     </div>
-
-                    @*<div view-source="nested" highlight-lines="{markup: '1-18, 20-28, 40-42, 57-68, 78-82'}"></div>*@
                 </div>
             </div>
-            <!-- Sidebar -->
-            <div class="col-md-2">
-                <div class="edit-wrapper">
-                    <div class="box box-grey box-padding properties">
-                        <h3>Selected</h3>
-                        <div class="box-content" ng-show="editVM.selectedItem.id">
-                            <div class="row" ng-show="editVM.selectedItem.pageContent">
-                                <div class="col-md-12">
-                                    <strong>Content Type</strong>
-                                </div>
-                                <div class="col-md-12">
-                                    {{editVM.selectedItem.contentType.label}}
-                                </div>
-                            </div>
-                            <div class="row" ng-show="editVM.selectedItem.pageModule">
-                                <div class="col-md-12">
-                                    <strong>Module</strong>
-                                </div>
-                                <div class="col-md-12">
-                                    {{editVM.selectedItem.moduleView.displayName}}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    Title
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control input-sm" ng-model="editVM.selectedItem.title" />
-                                </div>
-                            </div>
-                            <div class="properties-content">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <strong>Properties</strong>
-                                    </div>
-                                </div>
-                                <div class="row" title="{{property.description}}" ng-repeat="property in editVM.selectedItem.properties track by $index">
-                                    <div class="col-md-6">
-                                        {{property.label}}
-                                    </div>
-                                    <div class="col-md-6" ng-show="!property.optionList">
-                                        <input type="text" class="form-control input-sm" ng-model="property.value" />
-                                    </div>
-                                    <div class="col-md-6" ng-show="property.optionList">
-                                        <select class="form-control input-sm" name="repeatSelect" id="repeatSelect" ng-model="property.value">
-                                            <option value="">Select</option>
-                                            <option ng-repeat="option in property.optionList" value="{{option.id}}">{{option.label}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 col-md-offset-6">
-                                    <a class="btn btn-xs btn-primary" ng-click="editVM.saveProperties()">Save</a>
-                                </div>
-                            </div>
-                        </div>
-
+<!-- Sidebar -->
+<div class="col-md-2">
+    <div class="edit-wrapper">
+        <div class="box box-grey box-padding properties">
+            <h3>Selected</h3>
+            <div class="box-content" ng-show="editVM.selectedItem.id">
+                <div class="row" ng-show="editVM.selectedItem.pageContent">
+                    <div class="col-md-12">
+                        <strong>Content Type</strong>
                     </div>
-                    <div class="trashcan box box-grey box-padding">
-                        <!-- If you use [] as referenced list, the dropped elements will be lost -->
-                        <h3>Trashcan</h3>
-                        <ul dnd-list="[]" dnd-drop="editVM.deleteElement(event, index, item)">
-                            <li><i class="fa fa-trash"></i></li>
-                        </ul>
+                    <div class="col-md-12">
+                        {{editVM.selectedItem.contentType.label}}
+                    </div>
+                </div>
+                <div class="row" ng-show="editVM.selectedItem.pageModule">
+                    <div class="col-md-12">
+                        <strong>Module</strong>
+                    </div>
+                    <div class="col-md-12">
+                        {{editVM.selectedItem.moduleView.displayName}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        Title
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control input-sm" ng-model="editVM.selectedItem.title" />
+                    </div>
+                </div>
+                <div class="properties-content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Properties</strong>
+                        </div>
+                    </div>
+                    <div class="row" title="{{property.description}}" ng-repeat="property in editVM.selectedItem.properties track by $index">
+                        <div class="col-md-6">
+                            {{property.label}}
+                        </div>
+                        <div class="col-md-6" ng-show="!property.optionList">
+                            <input type="text" class="form-control input-sm" ng-model="property.value" />
+                        </div>
+                        <div class="col-md-6" ng-show="property.optionList">
+                            <select class="form-control input-sm" name="repeatSelect" id="repeatSelect" ng-model="property.value">
+                                <option value="">Select</option>
+                                <option ng-repeat="option in property.optionList" value="{{option.id}}">{{option.label}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-6">
+                        <a class="btn btn-xs btn-primary" ng-click="editVM.saveProperties()">Save</a>
                     </div>
                 </div>
             </div>
 
         </div>
-
-
-        @*<div class="row">
-                <div class="col-lg-6">
-                    <pre>{{editVM.pageLayout | json}}</pre>
-                </div>
-
-            </div>*@
-
+        <div class="trashcan box box-grey box-padding">
+            <!-- If you use [] as referenced list, the dropped elements will be lost -->
+            <h3>Trashcan</h3>
+            <ul dnd-list="[]" dnd-drop="editVM.deleteElement(event, index, item)">
+                <li><i class="fa fa-trash"></i></li>
+            </ul>
+        </div>
     </div>
-
-
 </div>
+
+        </div>
+    </div>
+</div>*@

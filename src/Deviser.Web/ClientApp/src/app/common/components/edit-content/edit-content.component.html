@@ -60,9 +60,9 @@
         <button class="btn btn-default" type="button" (click)="cancel()">Cancel</button>
         <button class="btn btn-primary" type="button" (click)="save()">Save</button>
     </div>
-    <div *ngIf="viewState===viewStates.New || viewState===viewStates.Edit">
-        <button class="btn btn-primary" (click)="updateItem()">Save Item</button>
+    <div *ngIf="viewState===viewStates.New || viewState===viewStates.Edit">        
         <button class="btn btn-default" (click)="cancelDetailView()">Back to List</button>
+        <button class="btn btn-primary" (click)="updateItem()">Save Item</button>
     </div>
 </div>
 
@@ -112,8 +112,9 @@
             </div>
         </ng-container>
         <ng-container *ngSwitchCase="'Image'">
-            <img *ngIf="content[field.fieldName].imageUrl" [src]="content[field.fieldName].imageUrl"
-                alt="content[field.fieldName].imageAltText">
+            <!-- <img *ngIf="content[field.fieldName].imageUrl" [src]="content[field.fieldName].imageUrl"
+                alt="content[field.fieldName].imageAltText"> -->
+            <app-image [image]="content[field.fieldName]" [field]="field" [properties]="pageContent.properties"></app-image>
         </ng-container>
     </ng-container>
 </ng-template>

@@ -1,0 +1,45 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@*<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />*@
+<require dependency-type="Css" include="Development" priority="10" file-path="~/_content/Deviser.Web/lib/font-awesome/css/font-awesome.css" test="test"></require>
+<!-- END GLOBAL MANDATORY STYLES -->
+
+<require dependency-type="Script" include="Development" location="Head" priority="10" file-path="~/_content/Deviser.Web/lib/jquery/dist/jquery.js" test="test"></require>
+
+<require dependency-type="Script" include="Development" priority="16" file-path="~/_content/Deviser.Web/lib/aspnet/signalr/dist/browser/signalr.min.js"></require>
+<require dependency-type="Script" include="Development" priority="17" file-path="//cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.7.0/js/jquery.overlayScrollbars.min.js"></require>
+
+<require dependency-type="Script" include="Development" priority="31" file-path="~/_content/Deviser.Web/js/src/app/dev-form-helper.js"></require>
+<require dependency-type="Script" include="Development" priority="32" file-path="~/_content/Deviser.Web/js/admin/main.js"></require>
+
+<require dependency-type="Script" exclude="Development" location="Head" priority="11" file-path="~/_content/Deviser.Web/release/deviserlib.min.js"></require>
+@*<require dependency-type="Script" exclude="Development" location="Head" priority="12" file-path="~/_content/Deviser.Web/js/bootstrap.min.js"></require>*@
+<require dependency-type="Script" exclude="Development" location="Head" priority="13" file-path="~/_content/Deviser.Web/release/deviserapp.min.js"></require>
+
+<div id="wrapper">
+    @await Component.InvokeAsync("ControlBar")
+    <div class="clearfix"></div>
+
+    <!-- BEGIN CONTAINER -->
+
+    @RenderBody()
+
+
+    <footer class="footer footer-classic bg-dark">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="text-center">
+                        <p>
+                            Copyright &copy; @DateTime.Now.Year Karthick Sundararajan. Released on <a href="https://github.com/deviserplatform/deviserplatform" title="Source" target="_blank"> <i class="fa fa-github"></i></a>
+                            under the <a href="/install/License" title="License" target="_blank">MIT License</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
