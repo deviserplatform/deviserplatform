@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
 import { Image } from '../../domain-types/image';
 import { Property } from '../../domain-types/property';
@@ -28,6 +28,8 @@ export class ImageComponent implements OnInit {
   @Input() field: ContentTypeField;
   @Input() properties: Property[]
 
+  @Output() imageSelected: EventEmitter<Image> = new EventEmitter();
+
   imageCropSize: any
 
   private _image: Image;
@@ -43,7 +45,7 @@ export class ImageComponent implements OnInit {
   }
 
   init() {
-    if (this.properties) {
+    if (this.properties && this.properties.length > 0) {
       let propWidth = this.properties.find(prop => prop.name === 'image_width'),
         propHeight = this.properties.find(prop => prop.name === 'image_height');
       this.imageCropSize.width = propWidth && propWidth.value ? propWidth.value : propWidth.defaultValue;
@@ -59,6 +61,9 @@ export class ImageComponent implements OnInit {
     let param: ModalOptions = JSON.parse(JSON.stringify(this._modalConfig));
     let imageSelected: EventEmitter<Image>;
     param.class = 'image-selector-modal';
+    param.initialState = {
+      image : this.image
+    }
     if (this.bsModalRef && this.bsModalRef.content) {
       imageSelected = this.bsModalRef.content.imageSelected as EventEmitter<any>;
       imageSelected.unsubscribe();
@@ -81,6 +86,7 @@ export class ImageComponent implements OnInit {
   }
   onImageSelected(image: Image) {
     this.image = image
+    this.imageSelected.emit(this.image);
   }
 
   removeImage() {

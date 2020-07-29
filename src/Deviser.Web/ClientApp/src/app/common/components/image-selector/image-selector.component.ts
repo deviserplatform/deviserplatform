@@ -35,10 +35,17 @@ export class ImageSelectorComponent implements OnInit {
   selectedImage: FileItem;
   selectedTab: string;
 
+
+  set image(value: Image) {
+    this._image = value
+    this.init();
+  }
+
   @ViewChild("fileUpload", { static: false }) fileUpload: ElementRef;
 
   private _searchTerms = new Subject<string>();
   private _pageContext: PageContext;
+  private _image: Image;
   private readonly _baseUrl;
 
   constructor(public bsModalRef: BsModalRef,
@@ -52,8 +59,6 @@ export class ImageSelectorComponent implements OnInit {
     else {
       this._baseUrl = this._pageContext.debugBaseUrl;
     }
-
-    this.init();
   }
 
   ngOnInit(): void {
@@ -182,6 +187,10 @@ export class ImageSelectorComponent implements OnInit {
         image.path += '?' + Math.random() * 100;
       });
       this.images$ = of(images);
+      if (this._image) {
+        let selectedImage = images.find(image => this._image.imageUrl.indexOf(image.path));
+        this.selectImage(selectedImage);
+      }
     });
   }
 
@@ -216,7 +225,7 @@ export class ImageSelectorComponent implements OnInit {
     //   //}
 
     //   let uploadObj = this._assetService.upload({
-    //     url: '/api/upload/images', //upload.php script, node.js route, or servlet url
+    //     url: 'api/upload/images', //upload.php script, node.js route, or servlet url
     //     method: 'POST',// or 'PUT',
     //     data: {
     //       files: $files

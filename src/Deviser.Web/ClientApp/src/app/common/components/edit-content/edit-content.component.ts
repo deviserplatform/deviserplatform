@@ -1,4 +1,6 @@
 import { Component, OnInit, Inject, EventEmitter } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { PageContentService } from '../../services/page-content.service';
 import { LanguageService } from '../../services/language.service';
@@ -16,6 +18,11 @@ import { AlertType } from '../../domain-types/alert';
 import { Guid } from '../../services/guid';
 import { ContentTypeField } from '../../domain-types/content-type-field';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { Image } from '../../domain-types/image';
+import { Link } from '../../domain-types/link';
+import { PageService } from '../../services/page.service';
+import { Page } from '../../domain-types/page';
+import { Globals } from '../../config/globals';
 
 @Component({
   selector: 'app-edit-content',
@@ -27,7 +34,6 @@ export class EditContentComponent implements OnInit {
   private _pageContentId: string;
   private _fields: ContentTypeField[];
   private _fieldValues: { [fieldName: string]: any };
-
   get pageContentId(): string {
     return this._pageContentId;
   }
@@ -43,6 +49,7 @@ export class EditContentComponent implements OnInit {
   selectedLocale: Language;
   contentTranslations: PageContentTranslation[];
   contentType: ContentType;
+  pages: Page[];
   pageContent: PageContent;
   contentTranslation: PageContentTranslation;
   selectedItem: any = {};
@@ -76,9 +83,11 @@ export class EditContentComponent implements OnInit {
     private _contentTranslationService: ContentTranslationService,
     private _pageContentService: PageContentService,
     private _langaugeService: LanguageService,
+    private _pageService: PageService,
     @Inject(WINDOW) window: any) {
     this.pageContext = window.pageContext;
     this.viewState = ViewState.List;
+    _pageService.getPages().subscribe(pages => this.pages = pages)
     this._fieldValues = {
       Link: {
         linkType: '',
@@ -170,12 +179,32 @@ export class EditContentComponent implements OnInit {
       this.selectedItem = {};
     }
     else if (this.viewState === ViewState.Edit) {
-      var index = this.contentTranslation.contentData.items.findIndex(this.selectedItem);
+      var index = this.contentTranslation.contentData.items.findIndex(item => item.id === this.selectedItem.id);
       this.selectedItem = this.tempItem;
       // Replace item at index using native splice
       this.contentTranslation.contentData.items.splice(index, 1, this.tempItem);
     }
     this.viewState = ViewState.List;
+  }
+
+  onImageSelected($event: Image, content: any, field: ContentTypeField) {
+    content[field.fieldName] = $event;
+  }
+
+  getLinkUrl(content: any) {
+    let link: Link = content;
+
+    if (!link || !link.linkType) return '';
+
+    if (link.linkType === 'URL') {
+      return link.url;
+    } else if (link.linkType === 'PAGE') {
+      let page = this.pages.find(p => p.id === link.pageId);
+      let translation = page.pageTranslation.find(pt => pt.locale === this.pageContext.currentLocale);
+      translation = translation ? translation : page.pageTranslation[0];
+      let url = page.pageTypeId === Globals.appSettings.pageTypes.url ? translation.uRL : `${this.pageContext.siteRoot}${translation.uRL}`;
+      return url;
+    }
   }
 
   private init() {

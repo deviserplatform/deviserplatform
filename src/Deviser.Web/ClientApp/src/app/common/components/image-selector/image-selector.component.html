@@ -29,7 +29,7 @@
         </div>
         <div class="col-8 detail-col">
 
-            <ul class="nav nav-pills mb-3" role="tablist">
+            <!-- <ul class="nav nav-pills mb-3" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link" [ngClass]="{'active':selectedTab==='PREVIEW'}" role="tab"
                         (click)="selectedTab='PREVIEW'">Preview</a>
@@ -42,7 +42,18 @@
                     <a class="nav-link" [ngClass]="{'active':selectedTab==='UPLOAD'}" role="tab"
                         (click)="selectedTab='UPLOAD'">Upload</a>
                 </li>
-            </ul>
+            </ul> -->
+
+            <div class="btn-group mb-3" role="group">
+                <button type="button" class="btn btn-light" [ngClass]="{'active':selectedTab==='PREVIEW'}"
+                    (click)="selectedTab='PREVIEW'">Preview</button>
+                <button type="button" class="btn btn-light" [ngClass]="{'active':selectedTab==='CROP'}"
+                    (click)="selectedTab='CROP'">Crop</button>
+                <button type="button" class="btn btn-light" [ngClass]="{'active':selectedTab==='UPLOAD'}"
+                    (click)="selectedTab='UPLOAD'">Upload</button>
+            </div>
+
+
 
             <div class="tab-content">
                 <div class="tab-pane fade active show" *ngIf="selectedTab==='PREVIEW'">
@@ -64,9 +75,10 @@
                         <div class="col">
                             <div class="form-group">
                                 <image-cropper [imageURL]="imageSource" [maintainAspectRatio]="true"
-                                    [aspectRatio]="cropWidth / cropHeight" format="png" (imageCropped)="imageCropped($event)"
-                                    (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
-                                    (loadImageFailed)="loadImageFailed()"></image-cropper>
+                                    [aspectRatio]="cropWidth / cropHeight" format="png"
+                                    (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
+                                    (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
+                                </image-cropper>
 
                                 <!-- <img [src]="croppedImage" /> -->
                             </div>

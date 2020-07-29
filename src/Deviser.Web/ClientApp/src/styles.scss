@@ -178,6 +178,9 @@ body {
       }
       .preview-container {
         padding: 10px;
+        img{
+          width: 150px;
+        }
       }
     }
     &.root {
@@ -505,6 +508,25 @@ body {
             text-align: center;
             padding: 20px 10px;
           }
+          .edit-content-container{
+            img{
+              width: 150px;
+            }
+          }
+          .image-preview {
+            position: relative;
+            img{
+              width: 100%;
+            }
+            .image-action-bar{
+              @extend .btn-group;
+              position: absolute;
+              right: 10px;
+              top: 10px;
+              display: flex;
+              flex-direction: row;
+            }
+          }
         }
       }
     }
@@ -523,7 +545,9 @@ body {
           display: flex;
           flex-direction: column;
           padding: 0 1rem;
-
+          img{
+            width: 100%;
+          }
           .image-selector-row {
             flex: 1;
             .file-list {

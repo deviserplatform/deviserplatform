@@ -24,7 +24,7 @@ export class PageService extends BaseService {
       return this._pages$;
     }
     else {
-      const serviceUrl: string = this.baseUrl + `/api/page/list`;
+      const serviceUrl: string = `${this.baseUrl}/api/page/list`;
       this._pages$ = this.http.get<Page[]>(serviceUrl, { headers: this.httpHeaders }).pipe(
         tap(next => {
           this._pages = next;

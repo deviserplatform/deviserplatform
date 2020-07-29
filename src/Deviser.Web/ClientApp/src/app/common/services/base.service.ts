@@ -31,7 +31,7 @@ export class BaseService {
 
 
     if (this.pageContext.isEmbedded) {
-      this.baseUrl = this._window.location.origin;
+      this.baseUrl = this.pageContext.siteRoot;
     }
     else {
       this.baseUrl = this.pageContext.debugBaseUrl;
