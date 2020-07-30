@@ -11,7 +11,7 @@ import { Language } from '../domain-types/language';
 export class LanguageService extends BaseService {
 
   getSiteLanguages(): Observable<Language[]> {
-    const serviceUrl: string = `${this.baseUrl}/api/language/site/`;
+    const serviceUrl: string = `${this.baseUrl}api/language/site/`;
     return this.http.get<Language[]>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched Site Languages')),

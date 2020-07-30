@@ -9,6 +9,7 @@ import { Link } from '../../domain-types/link';
 import { PageService } from '../../services/page.service';
 import { Page } from '../../domain-types/page';
 import { Globals } from '../../config/globals';
+import { Image } from '../../domain-types/image';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
@@ -18,10 +19,13 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class PreviewContentComponent implements OnInit {
 
-  private _pageContent: PageContent
-  pageContext: PageContext;
+  
+  _pageContext: PageContext;
   pages: Page[];
+  
+  private _baseUrl: string;
   private _fields: ContentTypeField[];
+  private _pageContent: PageContent
 
   get pageContent(): PageContent {
     return this._pageContent;
@@ -37,7 +41,7 @@ export class PreviewContentComponent implements OnInit {
   }
 
   get content(): any {
-    const contentTranslation = this.pageContent.pageContentTranslation.find(pct => pct.cultureCode === this.pageContext.currentLocale);
+    const contentTranslation = this.pageContent.pageContentTranslation.find(pct => pct.cultureCode === this._pageContext.currentLocale);
     let content = (contentTranslation && contentTranslation.contentData) ? JSON.parse(contentTranslation.contentData) : {};
     return content;
   }
@@ -49,8 +53,14 @@ export class PreviewContentComponent implements OnInit {
 
   constructor(private _sanitizer: DomSanitizer,
     private _pageService: PageService,
-    @Inject(WINDOW) private _window: any) {
-    this.pageContext = _window.pageContext;
+    @Inject(WINDOW) private _window: any) {    
+    this._pageContext = _window.pageContext;
+    if (this._pageContext.isEmbedded) {
+      this._baseUrl = this._pageContext.siteRoot;
+    }
+    else {
+      this._baseUrl = this._pageContext.debugBaseUrl;
+    }
 
     _pageService.getPages().subscribe(pages => this.pages = pages)
   }
@@ -67,11 +77,15 @@ export class PreviewContentComponent implements OnInit {
       return link.url;
     } else if (link.linkType === 'PAGE') {
       let page = this.pages.find(p => p.id === link.pageId);
-      let translation = page.pageTranslation.find(pt => pt.locale === this.pageContext.currentLocale);
+      let translation = page.pageTranslation.find(pt => pt.locale === this._pageContext.currentLocale);
       translation = translation ? translation : page.pageTranslation[0];
-      let url = page.pageTypeId === Globals.appSettings.pageTypes.url ? translation.uRL : `${this.pageContext.siteRoot}${translation.uRL}`;
+      let url = page.pageTypeId === Globals.appSettings.pageTypes.url ? translation.uRL : `${this._pageContext.siteRoot}${translation.uRL}`;
       return url;
     }
+  }
+
+  getImageUrl(image: Image){
+    return image && image.imageUrl ? `${this._baseUrl}${image.imageUrl}` : null;
   }
 
 }

@@ -57,7 +57,7 @@
             <div [innerHtml]="content[field.fieldName] | sanitizeHtml"></div>
         </ng-container>
         <ng-container *ngSwitchCase="'Image'">
-            <img *ngIf="content[field.fieldName].imageUrl" [src]="content[field.fieldName].imageUrl"
+            <img *ngIf="content[field.fieldName].imageUrl" [src]="getImageUrl(content[field.fieldName])"
                 alt="content[field.fieldName].imageAltText">
         </ng-container>
     </ng-container>

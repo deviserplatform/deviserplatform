@@ -4,19 +4,19 @@
     </div>
     <div class="form-group">
         <div class="image-preview-container">            
-            <div class="image-preview" *ngIf="image.imageUrl">
+            <div class="image-preview" *ngIf="imageSource">
                 <div class="image-action-bar">
-                    <button type="button" class="action-control btn btn-sm btn-light" (click)="showPopup();">
+                    <button type="button" class="action-control btn btn-sm btn-light" (click)="showPopup();" title="Edit Image">
                         <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
                     </button>
     
-                    <button type="button" class="action-control btn btn-sm btn-light" (click)="removeImage();">
+                    <button type="button" class="action-control btn btn-sm btn-light" (click)="removeImage();" title="Remove Image">
                         <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/x.svg'| envPath"></i>
                     </button>
                 </div>
-                <img [src]="image.imageUrl" [alt]="image.imageAltText"/>
+                <img [src]="imageSource" [alt]="image.imageAltText"/>
             </div>
-            <p *ngIf="!image.imageUrl" class="no-image-message" (click)="showPopup()">Select a image, click here to the open image
+            <p *ngIf="!imageSource" class="no-image-message" (click)="showPopup()">Select a image, click here to the open image
                 selector</p>
         </div>
     </div>

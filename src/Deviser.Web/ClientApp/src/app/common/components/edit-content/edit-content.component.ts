@@ -34,6 +34,8 @@ export class EditContentComponent implements OnInit {
   private _pageContentId: string;
   private _fields: ContentTypeField[];
   private _fieldValues: { [fieldName: string]: any };
+  private _pageContext: PageContext;
+  private _baseUrl: string;
   get pageContentId(): string {
     return this._pageContentId;
   }
@@ -55,7 +57,7 @@ export class EditContentComponent implements OnInit {
   selectedItem: any = {};
   tempItem: any;
   isChanged: boolean;
-  contentSaved: EventEmitter<any> = new EventEmitter();
+  contentSaved: EventEmitter<PageContentTranslation> = new EventEmitter();
   viewStates = ViewState;
 
   Editor = ClassicEditor;
@@ -84,9 +86,16 @@ export class EditContentComponent implements OnInit {
     private _pageContentService: PageContentService,
     private _langaugeService: LanguageService,
     private _pageService: PageService,
-    @Inject(WINDOW) window: any) {
-    this.pageContext = window.pageContext;
+    @Inject(WINDOW) _window: any) {
+    this.pageContext = _window.pageContext;
     this.viewState = ViewState.List;
+    this._pageContext = _window.pageContext;
+    if (this._pageContext.isEmbedded) {
+      this._baseUrl = this._pageContext.siteRoot;
+    }
+    else {
+      this._baseUrl = this._pageContext.debugBaseUrl;
+    }
     _pageService.getPages().subscribe(pages => this.pages = pages)
     this._fieldValues = {
       Link: {
@@ -116,7 +125,7 @@ export class EditContentComponent implements OnInit {
     if (this.contentTranslation.id) {
       this.serializeContentTranslation();
       this._contentTranslationService.updatePageContentTranslation(this.contentTranslation).subscribe(data => {
-        data.contentData = JSON.parse(data.contentData);
+        // data.contentData = JSON.parse(data.contentData);
         console.log(data);
         this.contentSaved.emit(data);
         this.bsModalRef.hide();
@@ -126,7 +135,7 @@ export class EditContentComponent implements OnInit {
       this.contentTranslation.pageContentId = this.pageContentId;
       this.serializeContentTranslation();
       this._contentTranslationService.createPageContentTranslation(this.contentTranslation).subscribe(data => {
-        data.contentData = JSON.parse(data.contentData);
+        // data.contentData = JSON.parse(data.contentData);
         console.log(data);
         this.contentSaved.emit(data);
         this.bsModalRef.hide();
@@ -205,6 +214,10 @@ export class EditContentComponent implements OnInit {
       let url = page.pageTypeId === Globals.appSettings.pageTypes.url ? translation.uRL : `${this.pageContext.siteRoot}${translation.uRL}`;
       return url;
     }
+  }
+
+  getImageUrl(image: Image){
+    return image && image.imageUrl ? `${this._baseUrl}${image.imageUrl}` : null;
   }
 
   private init() {

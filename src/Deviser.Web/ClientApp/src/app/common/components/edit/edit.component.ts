@@ -31,6 +31,7 @@ import { PageState } from '../../domain-types/page-state';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { EditContentComponent } from '../edit-content/edit-content.component';
 import { EditPermissionComponent } from '../edit-permission/edit-permission.component';
+import { PageContentTranslation } from '../../domain-types/page-content-translation';
 
 @Component({
   selector: 'app-edit',
@@ -242,28 +243,28 @@ export class EditComponent implements OnInit {
 
   onEditContent(node: PlaceHolder) {
     let param: ModalOptions = JSON.parse(JSON.stringify(this._modalConfig));
-    let contentSaved: EventEmitter<any>;
+    let contentSaved: EventEmitter<PageContentTranslation>;
     param.initialState = {
       pageContentId: node.pageContent.id,      
     }
     param.class = 'edit-content-modal';
 
     if (this.bsModalRef && this.bsModalRef.content) {
-      contentSaved = this.bsModalRef.content.contentSaved as EventEmitter<any>;
+      contentSaved = this.bsModalRef.content.contentSaved as EventEmitter<PageContentTranslation>;
       contentSaved.unsubscribe();
     }
 
     this.bsModalRef = this._modalService.show(EditContentComponent, param), this._modalConfig;
-    contentSaved = this.bsModalRef.content.contentSaved as EventEmitter<any>;
+    contentSaved = this.bsModalRef.content.contentSaved as EventEmitter<PageContentTranslation>;
     contentSaved.subscribe(node => this.onContentSaved(node));
     this.bsModalRef.content.closeBtnName = 'Close';
   }
 
-  onContentSaved(node: PlaceHolder) {
+  onContentSaved(pageContentTranslation: PageContentTranslation) {
+    this.selectedPlaceHolder.pageContent.pageContentTranslation[0] = pageContentTranslation;
   }
 
   onSaveProperties() {
-
     let properties = [];
     this.selectedPlaceHolder.properties.forEach(srcProp => {
       if (srcProp) {

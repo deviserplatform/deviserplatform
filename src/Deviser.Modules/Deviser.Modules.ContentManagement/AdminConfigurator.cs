@@ -45,6 +45,7 @@ namespace Deviser.Modules.ContentManagement
                 {
                     childForm.GridBuilder
                         .AddField(c => c.FieldName, option => option.DisplayName="Field Name")
+                        .AddField(c => c.FieldLabel, option => option.DisplayName = "Field Label")
                         .AddField(c => c.ContentFieldTypeName, option => option.DisplayName = "Field Type")
                         .AddField(c => c.IsShownOnList, option => option.DisplayName = "Is Shown On List")
                         .AddField(c => c.IsShownOnPreview, option => option.DisplayName = "Is Shown On Preview")
@@ -55,6 +56,7 @@ namespace Deviser.Modules.ContentManagement
                         .AddKeyField(c => c.Id)
                         .AddSelectField(c => c.ContentFieldType, c => c.Label)
                         .AddField(c => c.FieldName, option => option.DisplayName = "Field Name")
+                        .AddField(c => c.FieldLabel, option => option.DisplayName = "Field Label")
                         .AddField(c => c.FieldDescription, option => option.DisplayName = "Field Description")
                         .AddField(c => c.IsShownOnList, option => option.DisplayName = "Is Shown On List")
                         .AddField(c => c.IsShownOnPreview, option => option.DisplayName = "Is Shown On Preview");

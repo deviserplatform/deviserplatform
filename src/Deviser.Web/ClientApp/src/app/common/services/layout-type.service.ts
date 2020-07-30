@@ -10,7 +10,7 @@ import { LayoutType } from '../domain-types/layout-type';
 export class LayoutTypeService extends BaseService {
 
   getLayoutTypes(): Observable<LayoutType[]> {
-    const serviceUrl: string = `${this.baseUrl}/api/layouttype/`;
+    const serviceUrl: string = `${this.baseUrl}api/layouttype/`;
     return this.http.get<LayoutType[]>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched layouts')),

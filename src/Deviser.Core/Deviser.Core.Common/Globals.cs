@@ -143,7 +143,7 @@ namespace Deviser.Core.Common
         {
             get
             {
-                return "~/assets/";
+                return "assets/";
             }
         }
 

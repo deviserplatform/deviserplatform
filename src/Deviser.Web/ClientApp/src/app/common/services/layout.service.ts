@@ -14,7 +14,7 @@ import { PageLayout } from '../domain-types/page-layout';
 export class LayoutService extends BaseService {
 
   getLayouts(): Observable<PageLayout[]> {
-    const serviceUrl: string = `${this.baseUrl}/api/layout/`;
+    const serviceUrl: string = `${this.baseUrl}api/layout/`;
     return this.http.get<PageLayout[]>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched layouts')),
@@ -23,7 +23,7 @@ export class LayoutService extends BaseService {
   }
 
   getLayout(id: string): Observable<PageLayout> {
-    const serviceUrl: string = `${this.baseUrl}/api/layout/${id}`;
+    const serviceUrl: string = `${this.baseUrl}api/layout/${id}`;
     return this.http.get<PageLayout>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched layouts')),
@@ -32,7 +32,7 @@ export class LayoutService extends BaseService {
   }
 
   createLayout(pageLayout: PageLayout) {
-    const serviceUrl: string = `${this.baseUrl}/api/layout/`;
+    const serviceUrl: string = `${this.baseUrl}api/layout/`;
     return this.http.post<PageLayout>(serviceUrl, pageLayout, this.httpOptions)
       .pipe(
         tap(_ => this.log('created a record')),
@@ -41,7 +41,7 @@ export class LayoutService extends BaseService {
   }
 
   updateLayout(pageLayout: PageLayout) {
-    const serviceUrl: string = `${this.baseUrl}/api/layout/`;
+    const serviceUrl: string = `${this.baseUrl}api/layout/`;
     return this.http.put<PageLayout>(serviceUrl, pageLayout, this.httpOptions)
       .pipe(
         tap(_ => this.log('created a record')),
@@ -51,7 +51,7 @@ export class LayoutService extends BaseService {
 
 
   deleteLayout(id: string) {
-    const serviceUrl: string = `${this.baseUrl}/api/layout/${id}`;
+    const serviceUrl: string = `${this.baseUrl}api/layout/${id}`;
     return this.http.delete<any>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log(`deleted a record id:${id}`)),

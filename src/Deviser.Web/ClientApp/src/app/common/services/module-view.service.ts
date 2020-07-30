@@ -11,7 +11,7 @@ import { ModuleView } from '../domain-types/module-view';
 export class ModuleViewService extends BaseService {
 
   getModuleViews(): Observable<ModuleView[]> {
-    const serviceUrl: string = `${this.baseUrl}/api/moduleview/`;
+    const serviceUrl: string = `${this.baseUrl}api/moduleview/`;
     return this.http.get<ModuleView[]>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched moduleViews')),
@@ -20,7 +20,7 @@ export class ModuleViewService extends BaseService {
   }
 
   getEditActions(id: string): Observable<ModuleView[]> {
-    const serviceUrl: string = `${this.baseUrl}/api/moduleview/edit/${id}`;
+    const serviceUrl: string = `${this.baseUrl}api/moduleview/edit/${id}`;
     return this.http.get<ModuleView[]>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched moduleViews')),

@@ -10,7 +10,7 @@ import { catchError, tap} from 'rxjs/operators';
 export class ContentTypeService extends BaseService {
 
   getContentTypes(): Observable<ContentType[]> {
-    const serviceUrl: string = `${this.baseUrl}/api/contenttype/`;
+    const serviceUrl: string = `${this.baseUrl}api/contenttype/`;
     return this.http.get<ContentType[]>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched contentTypes')),

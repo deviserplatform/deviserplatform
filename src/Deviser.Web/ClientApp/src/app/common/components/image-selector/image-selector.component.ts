@@ -24,7 +24,7 @@ export class ImageSelectorComponent implements OnInit {
   cropWidth: any;
   focusPointAttr: { x: number; y: number; w: number; h: number; };
   files = [];
-  images$: Observable<FileItem[]>;
+  files$: Observable<FileItem[]>;
   imageAltText: string = '';
   imageCropSize: any;
   imageSelected: EventEmitter<Image> = new EventEmitter();
@@ -81,9 +81,9 @@ export class ImageSelectorComponent implements OnInit {
     this.upload(0, file);
   }
 
-  select() {
+  selectImage() {
     const image = {
-      imageUrl: `${this._baseUrl}${this.selectedImage.path}`,
+      imageUrl: this.selectedImage.path,
       imageAltText: this.imageAltText,
       focusPoint: {}
     }
@@ -96,15 +96,15 @@ export class ImageSelectorComponent implements OnInit {
   }
 
   isActive(file) {
-    if (file && file.path) {
+    if (file && file.path && this.selectedImage && this.selectedImage.path) {
       let path = file.path.split('?')[0];
-      let imageSource = this.imageSource.split('?')[0];
+      let imageSource = this.selectedImage.path.split('?')[0];
       return imageSource === path;
     }
     return false;
   }
 
-  selectImage(file) {
+  selectFile(file) {
     this.selectedImage = file;
     this.imageSource = `${this._baseUrl}${this.selectedImage.path}`;
     this.selectedTab = 'PREVIEW';
@@ -159,7 +159,7 @@ export class ImageSelectorComponent implements OnInit {
       }
     }
     this.getCropSize();
-    this.images$ = this._searchTerms.pipe(
+    this.files$ = this._searchTerms.pipe(
       // wait 300ms after each keystroke before considering the term
       debounceTime(300),
 
@@ -175,30 +175,29 @@ export class ImageSelectorComponent implements OnInit {
     //if (ModuleSettings.TabModuleSettings.ImageCropSize) {
     //    imageCropSize = JSON.parse(ModuleSettings.TabModuleSettings.ImageCropSize);
     //}
-
     this.cropWidth = (this.imageCropSize && this.imageCropSize.width) || 300;
     this.cropHeight = (this.imageCropSize && this.imageCropSize.height) || 200;
 
   }
 
   private getImages() {
-    this._assetService.getImages().subscribe(images => {
-      images.forEach(image => {
+    this._assetService.getImages().subscribe(files => {
+      files.forEach(image => {
         image.path += '?' + Math.random() * 100;
       });
-      this.images$ = of(images);
+      this.files$ = of(files);
       if (this._image) {
-        let selectedImage = images.find(image => this._image.imageUrl.indexOf(image.path));
-        this.selectImage(selectedImage);
+        let selectedFile = files.find(image => image.path.split('?')[0] === this._image.imageUrl.split('?')[0]);
+        selectedFile && this.selectFile(selectedFile);
       }
     });
   }
 
-  private uploadSuccess() {
-    // file is uploaded successfully
-    this.init();
-    // this.imageSource = data.data[0];
+  private uploadSuccess(filePath) {
+    // file is uploaded successfully    
+    // this.imageSource = `${this._baseUrl}${filePath}`;
     // this.imageSource += '?' + Math.random() * 100;
+    this.init();
     this.progressInfos = [];
     this._alertService.showMessage(AlertType.Info, 'File uploaded successfully!');
   }
@@ -217,33 +216,6 @@ export class ImageSelectorComponent implements OnInit {
   }
 
   private upload(index: number, file: File) {
-    // //$files: an array of files selected, each file has name, size, and type.
-    // if ($files) {
-    //   //for (let i = 0; i < $files.length; i++) {
-    //   //    let file = $files[i];
-
-    //   //}
-
-    //   let uploadObj = this._assetService.upload({
-    //     url: 'api/upload/images', //upload.php script, node.js route, or servlet url
-    //     method: 'POST',// or 'PUT',
-    //     data: {
-    //       files: $files
-    //     },
-    //     fileFormDataName: 'files'
-    //     //headers: { 'IsReplace': this.isReplace },
-    //     //withCredentials: true,
-    //     //file: file // or list of files ($files) for html5 only
-    //     //fileName: 'doc.jpg' or ['1.jpg', '2.jpg', ...] // to modify the name of the file(s)
-    //     // customize file formData name ('Content-Disposition'), server side file letiable name. 
-    //     //fileFormDataName: myFile, //or a list of names for multiple files (html5). Default is 'file' 
-    //     // customize how data is added to formData. See #40#issuecomment-28612000 for sample code
-    //     //formDataAppender: private(formData, key, val){}
-    //   });
-
-    //   //$scope.upload.then(success, error, progress);
-    //   uploadObj.then(uploadSuccess, uploadError, uploadProgress);
-    // }
     this.progressInfos[index] = { value: 0, fileName: file.name };
 
     this._assetService.upload(file).subscribe(
@@ -251,7 +223,7 @@ export class ImageSelectorComponent implements OnInit {
         if (event.type === HttpEventType.UploadProgress) {
           this.progressInfos[index].value = Math.round(100 * event.loaded / event.total);
         } else if (event instanceof HttpResponse) {
-          this.uploadSuccess()
+          this.uploadSuccess(event.body[0])
         }
       },
       err => {

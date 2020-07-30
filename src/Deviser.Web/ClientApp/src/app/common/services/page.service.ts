@@ -24,7 +24,7 @@ export class PageService extends BaseService {
       return this._pages$;
     }
     else {
-      const serviceUrl: string = `${this.baseUrl}/api/page/list`;
+      const serviceUrl: string = `${this.baseUrl}api/page/list`;
       this._pages$ = this.http.get<Page[]>(serviceUrl, { headers: this.httpHeaders }).pipe(
         tap(next => {
           this._pages = next;
@@ -37,7 +37,7 @@ export class PageService extends BaseService {
   }
 
   getPage(id: string): Observable<any> {
-    const serviceUrl: string = `${this.baseUrl}/api/page/${id}`;
+    const serviceUrl: string = `${this.baseUrl}api/page/${id}`;
 
     return this.http.get<any>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
@@ -47,7 +47,7 @@ export class PageService extends BaseService {
   }
 
   draftPage(id: string): Observable<any> {
-    const serviceUrl: string = `${this.baseUrl}/api/page/draft/${id}`;
+    const serviceUrl: string = `${this.baseUrl}api/page/draft/${id}`;
     return this.http.put<any>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log(`current page has been changed to draft state, pageId: ${id}`)),
@@ -56,7 +56,7 @@ export class PageService extends BaseService {
   }
 
   publishPage(id: string): Observable<any> {
-    const serviceUrl: string = `${this.baseUrl}/api/page/publish/${id}`;
+    const serviceUrl: string = `${this.baseUrl}api/page/publish/${id}`;
     return this.http.put<any>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log(`current page has been published, pageId: ${id}`)),

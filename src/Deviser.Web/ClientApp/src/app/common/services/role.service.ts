@@ -11,7 +11,7 @@ import { Role } from '../domain-types/role';
 export class RoleService  extends BaseService {
 
   getRoles(): Observable<Role[]> {
-    const serviceUrl: string = `${this.baseUrl}/api/role/`;
+    const serviceUrl: string = `${this.baseUrl}api/role/`;
     return this.http.get<Role[]>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched roles')),

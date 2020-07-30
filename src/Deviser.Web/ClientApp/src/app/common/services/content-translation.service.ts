@@ -12,7 +12,7 @@ import { PageContentTranslation } from '../domain-types/page-content-translation
 export class ContentTranslationService extends BaseService {
 
   createPageContentTranslation(pageContentTranslation: PageContentTranslation) {
-    const serviceUrl: string = `${this.baseUrl}/api/contenttranslation/`;
+    const serviceUrl: string = `${this.baseUrl}api/contenttranslation/`;
     return this.http.post<any>(serviceUrl, pageContentTranslation, this.httpOptions)
       .pipe(
         tap(_ => this.log('created a pageContentTranslation')),
@@ -21,7 +21,7 @@ export class ContentTranslationService extends BaseService {
   }
 
   updatePageContentTranslation(pageContentTranslation: PageContentTranslation) {
-    const serviceUrl: string = `${this.baseUrl}/api/contenttranslation/`;
+    const serviceUrl: string = `${this.baseUrl}api/contenttranslation/`;
     return this.http.put<PageLayout>(serviceUrl, pageContentTranslation, this.httpOptions)
       .pipe(
         tap(_ => this.log('updated a pageContentTranslation')),

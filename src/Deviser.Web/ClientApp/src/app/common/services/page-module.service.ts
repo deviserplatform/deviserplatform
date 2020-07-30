@@ -10,7 +10,7 @@ import { PageModule } from '../domain-types/page-module';
 export class PageModuleService extends BaseService {
 
   getPageModules(pageId: string): Observable<PageModule[]> {
-    const serviceUrl: string = `${this.baseUrl}/api/pagemodule/page/${pageId}`;
+    const serviceUrl: string = `${this.baseUrl}api/pagemodule/page/${pageId}`;
     return this.http.get<PageModule[]>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched pageModules')),
@@ -19,7 +19,7 @@ export class PageModuleService extends BaseService {
   }
 
   getPageModule(pageModuleId: string): Observable<PageModule> {
-    const serviceUrl: string = `${this.baseUrl}/api/pagemodule/${pageModuleId}`;
+    const serviceUrl: string = `${this.baseUrl}api/pagemodule/${pageModuleId}`;
     return this.http.get<PageModule>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched pageModule')),
@@ -28,7 +28,7 @@ export class PageModuleService extends BaseService {
   }
 
   deletePageModule(id: string) {
-    const serviceUrl: string = `${this.baseUrl}/api/pagemodule/${id}`;
+    const serviceUrl: string = `${this.baseUrl}api/pagemodule/${id}`;
     return this.http.delete<any>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log(`deleted a pageModule id:${id}`)),
@@ -39,7 +39,7 @@ export class PageModuleService extends BaseService {
 
   // updatePageContents
   updatePageModule(pageModule: PageModule) {
-    const serviceUrl: string = `${this.baseUrl}/api/pagemodule/`;
+    const serviceUrl: string = `${this.baseUrl}api/pagemodule/`;
     return this.http.put<any>(serviceUrl, pageModule, this.httpOptions)
       .pipe(
         tap(_ => this.log('updated pageModule')),
@@ -48,7 +48,7 @@ export class PageModuleService extends BaseService {
   }
 
   updatePageModules(pageModules: PageModule[]) {
-    const serviceUrl: string = `${this.baseUrl}/api/pagemodule/list`;
+    const serviceUrl: string = `${this.baseUrl}api/pagemodule/list`;
     return this.http.put<any>(serviceUrl, pageModules, this.httpOptions)
       .pipe(
         tap(_ => this.log('updated pageModules')),
@@ -57,7 +57,7 @@ export class PageModuleService extends BaseService {
   }
 
   updatePageModulePermissions(pageModule: PageModule) {
-    const serviceUrl: string = `${this.baseUrl}/api/pagemodule/permission`;
+    const serviceUrl: string = `${this.baseUrl}api/pagemodule/permission`;
     return this.http.put<any>(serviceUrl, pageModule, this.httpOptions)
       .pipe(
         tap(_ => this.log('updated pageModulePermissions')),

@@ -10,7 +10,7 @@ import { tap, catchError } from 'rxjs/operators';
 export class AssetService extends BaseService {
 
   getImages(): Observable<FileItem[]> {
-    const serviceUrl: string = `${this.baseUrl}/api/upload/images/`;
+    const serviceUrl: string = `${this.baseUrl}api/upload/images/`;
     return this.http.get<FileItem[]>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched contentTypes')),
@@ -19,7 +19,7 @@ export class AssetService extends BaseService {
   }
 
   searchImages(term: string) {
-    const serviceUrl: string = `${this.baseUrl}/api/upload/images?search=${term}`;
+    const serviceUrl: string = `${this.baseUrl}api/upload/images?search=${term}`;
     return this.http.get<FileItem[]>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched contentTypes')),
@@ -28,7 +28,7 @@ export class AssetService extends BaseService {
   }
 
   upload(file: File) {
-    const serviceUrl: string = `${this.baseUrl}/api/upload/images/`;
+    const serviceUrl: string = `${this.baseUrl}api/upload/images/`;
     const formData: FormData = new FormData();
     formData.append('file', file);
     return this.http.post<any>(serviceUrl, formData, {

@@ -10,7 +10,7 @@ import { PageContent } from '../domain-types/page-content';
 export class PageContentService extends BaseService {
 
   getPageContents(pageId: string, cultureCode: string): Observable<PageContent[]> {
-    const serviceUrl: string = `${this.baseUrl}/api/pagecontent/${cultureCode}/${pageId}`;
+    const serviceUrl: string = `${this.baseUrl}api/pagecontent/${cultureCode}/${pageId}`;
     return this.http.get<PageContent[]>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched pageContents')),
@@ -19,7 +19,7 @@ export class PageContentService extends BaseService {
   }
 
   getPageContent(pageContentId: string): Observable<PageContent> {
-    const serviceUrl: string = `${this.baseUrl}/api/pagecontent/${pageContentId}`;
+    const serviceUrl: string = `${this.baseUrl}api/pagecontent/${pageContentId}`;
     return this.http.get<PageContent>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched pageContents')),
@@ -28,7 +28,7 @@ export class PageContentService extends BaseService {
   }
 
   deletePageContent(id: string) {
-    const serviceUrl: string = `${this.baseUrl}/api/pagecontent/${id}`;
+    const serviceUrl: string = `${this.baseUrl}api/pagecontent/${id}`;
     return this.http.delete<any>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log(`deleted a pageContent id:${id}`)),
@@ -37,7 +37,7 @@ export class PageContentService extends BaseService {
   }
 
   updatePageContent(pageContent: PageContent) {
-    const serviceUrl: string = `${this.baseUrl}/api/pagecontent`;
+    const serviceUrl: string = `${this.baseUrl}api/pagecontent`;
     return this.http.put<any>(serviceUrl, pageContent, this.httpOptions)
       .pipe(
         tap(_ => this.log('updated pageContent')),
@@ -46,7 +46,7 @@ export class PageContentService extends BaseService {
   }
 
   updatePageContents(pageContents: PageContent[]) {
-    const serviceUrl: string = `${this.baseUrl}/api/pagecontent/list`;
+    const serviceUrl: string = `${this.baseUrl}api/pagecontent/list`;
     return this.http.put<any>(serviceUrl, pageContents, this.httpOptions)
       .pipe(
         tap(_ => this.log('updated pageContents')),
@@ -55,7 +55,7 @@ export class PageContentService extends BaseService {
   }
 
   updatePageContentPermissions(pageContent: PageContent) {
-    const serviceUrl: string = `${this.baseUrl}/api/pagecontent/permission`;
+    const serviceUrl: string = `${this.baseUrl}api/pagecontent/permission`;
     return this.http.put<any>(serviceUrl, pageContent, this.httpOptions)
       .pipe(
         tap(_ => this.log('updated pageContentPermissions')),

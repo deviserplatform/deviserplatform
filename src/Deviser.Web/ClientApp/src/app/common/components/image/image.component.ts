@@ -1,9 +1,11 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, Inject } from '@angular/core';
 import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
 import { Image } from '../../domain-types/image';
 import { Property } from '../../domain-types/property';
 import { ImageSelectorComponent } from '../image-selector/image-selector.component';
 import { ContentTypeField } from '../../domain-types/content-type-field';
+import { WINDOW } from '../../services/window.service';
+import { PageContext } from '../../domain-types/page-context';
 
 @Component({
   selector: 'app-image',
@@ -12,33 +14,43 @@ import { ContentTypeField } from '../../domain-types/content-type-field';
 })
 export class ImageComponent implements OnInit {
 
-
-
-  bsModalRef: BsModalRef;
-
-  get image(): Image {
-    return this._image;
-  }
-
   @Input() set image(value: Image) {
     this._image = value
     this.init();
   }
-
   @Input() field: ContentTypeField;
   @Input() properties: Property[]
 
   @Output() imageSelected: EventEmitter<Image> = new EventEmitter();
 
-  imageCropSize: any
+  get image(): Image {
+    return this._image;
+  }
+  get imageSource(): string {
+    return this.image && this.image.imageUrl ? `${this._baseUrl}${this.image.imageUrl}` : null;
+  }
 
+  imageCropSize: any
+  bsModalRef: BsModalRef;
+
+  private readonly _baseUrl;
   private _image: Image;
   private _modalConfig: any = {
     ignoreBackdropClick: true
   }
+  private _pageContext: PageContext;
 
-  constructor(private _modalService: BsModalService) {
+  constructor(private _modalService: BsModalService,
+    @Inject(WINDOW) private _window: any) {
     this.imageCropSize = {};
+    this._pageContext = _window.pageContext;
+
+    if (this._pageContext.isEmbedded) {
+      this._baseUrl = this._pageContext.siteRoot;
+    }
+    else {
+      this._baseUrl = this._pageContext.debugBaseUrl;
+    }
   }
 
   ngOnInit(): void {
@@ -62,7 +74,7 @@ export class ImageComponent implements OnInit {
     let imageSelected: EventEmitter<Image>;
     param.class = 'image-selector-modal';
     param.initialState = {
-      image : this.image
+      image: this.image
     }
     if (this.bsModalRef && this.bsModalRef.content) {
       imageSelected = this.bsModalRef.content.imageSelected as EventEmitter<any>;
