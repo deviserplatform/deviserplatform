@@ -1,6 +1,7 @@
 ﻿using Deviser.Admin;
 using Deviser.Admin.Config;
 using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Data.Repositories;
 using Deviser.Modules.ContentManagement.Services;
 using Microsoft.Extensions.DependencyInjection;
 using FieldType = Deviser.Admin.Config.FieldType;
@@ -35,10 +36,37 @@ namespace Deviser.Modules.ContentManagement
                     {
                         option.EnableIn = FormMode.Create;
                     })
-                    .AddField(c => c.IconClass)
-                    .AddField(c => c.IsActive)
+                    .AddField(c => c.IconClass, option => option.DisplayName = "Icon")
+                    .AddField(c => c.IsActive, option => option.DisplayName = "Is Active")
+                    .AddField(c => c.IsList, option => option.DisplayName = "Is List")
                     .AddMultiselectField(c => c.Properties, c => $"{c.Label} ({c.Name})");
 
+                modelBuilder.AddChildConfig(c => c.ContentTypeFields, (childForm) =>
+                {
+                    childForm.GridBuilder
+                        .AddField(c => c.FieldName, option => option.DisplayName="Field Name")
+                        .AddField(c => c.FieldLabel, option => option.DisplayName = "Field Label")
+                        .AddField(c => c.ContentFieldTypeName, option => option.DisplayName = "Field Type")
+                        .AddField(c => c.IsShownOnList, option => option.DisplayName = "Is Shown On List")
+                        .AddField(c => c.IsShownOnPreview, option => option.DisplayName = "Is Shown On Preview")
+                        .EnableSortingBy(c=>c.SortOrder, 
+                            (provider, pageNo, pageSize, contentTypes) => provider.GetService<ContentTypeAdminService>().SortContentType(pageNo, pageSize, contentTypes));
+
+                    childForm.FormBuilder
+                        .AddKeyField(c => c.Id)
+                        .AddSelectField(c => c.ContentFieldType, c => c.Label)
+                        .AddField(c => c.FieldName, option => option.DisplayName = "Field Name")
+                        .AddField(c => c.FieldLabel, option => option.DisplayName = "Field Label")
+                        .AddField(c => c.FieldDescription, option => option.DisplayName = "Field Description")
+                        .AddField(c => c.IsShownOnList, option => option.DisplayName = "Is Shown On List")
+                        .AddField(c => c.IsShownOnPreview, option => option.DisplayName = "Is Shown On Preview");
+
+                    childForm.FormBuilder
+                        .Property(u => u.ContentFieldType)
+                        .HasLookup(sp => sp.GetService<IContentTypeRepository>().GetContentFieldTypes(),
+                            ke => ke.Id,
+                            de => de.Label);
+                });
 
 
                 modelBuilder.FormBuilder.Property(c => c.Properties).HasLookup(sp => sp.GetService<ContentTypeAdminService>().GetProperties(),

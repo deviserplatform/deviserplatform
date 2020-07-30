@@ -7,7 +7,7 @@ namespace Deviser.Core.Data.Entities
     {
         public Module()
         {
-            ModuleAction = new HashSet<ModuleAction>();
+            ModuleView = new HashSet<ModuleView>();
             PageModule = new HashSet<PageModule>();
         }
 
@@ -19,7 +19,7 @@ namespace Deviser.Core.Data.Entities
         public DateTime? LastModifiedDate { get; set; }
         public string Name { get; set; }
         public string Version { get; set; }
-        public virtual ICollection<ModuleAction> ModuleAction { get; set; }
+        public virtual ICollection<ModuleView> ModuleView { get; set; }
         public virtual ICollection<PageModule> PageModule { get; set; }
         public virtual ICollection<AdminPage> AdminPage { get; set; }
 

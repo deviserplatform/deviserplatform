@@ -15,7 +15,7 @@ namespace Deviser.Core.Common.DomainTypes
         public DateTime? LastModifiedDate { get; set; }
         public string Name { get; set; }
         public string Version { get; set; }
-        public virtual ICollection<ModuleAction> ModuleAction { get; set; }
+        public virtual ICollection<ModuleView> ModuleView { get; set; }
         //public string IsActiveText => IsActive ? "Active" : "In Active";
         public string IsActiveBadgeClass => IsActive ? "badge-primary" : "badge-secondary";
     }

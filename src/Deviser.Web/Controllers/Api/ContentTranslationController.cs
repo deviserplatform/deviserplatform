@@ -78,7 +78,7 @@ namespace Deviser.Web.Controllers.Api
                 var translation = _pageContentRepository.GetTranslation(id);
                 if (translation != null)
                 {
-                    translation.IsDeleted = true;
+                    translation.IsActive = false;
                     _pageContentRepository.UpdateTranslation(translation);
                     return Ok();
                 }

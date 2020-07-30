@@ -30,6 +30,10 @@ namespace DeviserWI.Controllers.API
             {
                 var siteAssetPath = Path.Combine(hostEnvironment.WebRootPath, Globals.SiteAssetsPath.Replace("~/", "").Replace("/", @"\"));
                 _localImageUploadPath = Path.Combine(siteAssetPath, Globals.ImagesFolder);
+                if (!Directory.Exists(_localImageUploadPath))
+                {
+                    Directory.CreateDirectory(_localImageUploadPath);
+                }
             }
             catch (Exception ex)
             {
@@ -43,23 +47,19 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                DirectoryInfo dir = new DirectoryInfo(_localImageUploadPath);
-                List<FileItem> fileList = new List<FileItem>();
-                string path = "";
+                var dir = new DirectoryInfo(_localImageUploadPath);
+                var fileList = new List<FileItem>();
                 foreach (var file in dir.GetFiles())
                 {
-                    path = "";
-                    if (file != null && !file.Name.Contains(Globals.OriginalFileSuffix))
+                    if (file == null || file.Name.Contains(Globals.OriginalFileSuffix)) continue;
+                    var path = Globals.SiteAssetsPath.Replace("~", "") + Globals.ImagesFolder + "/" + file.Name;
+                    fileList.Add(new FileItem
                     {
-                        path = Globals.SiteAssetsPath.Replace("~", "") + Globals.ImagesFolder + "/" + file.Name;
-                        fileList.Add(new FileItem
-                        {
-                            Name = file.Name,
-                            Path = path,
-                            Extension = file.Extension,
-                            Type = FileItemType.File
-                        });
-                    }
+                        Name = file.Name,
+                        Path = path,
+                        Extension = file.Extension,
+                        Type = FileItemType.File
+                    });
                 }
 
                 if (fileList.Count > 0)
@@ -77,34 +77,31 @@ namespace DeviserWI.Controllers.API
         [Route("images")]
         public async Task<IActionResult> UploadImage()
         {
-            List<string> fileList = new List<string>();
+            var fileList = new List<string>();
             try
             {
-                if (HttpContext.Request.Form.Files != null && HttpContext.Request.Form.Files.Count > 0)
+                if (HttpContext.Request.Form.Files == null || HttpContext.Request.Form.Files.Count <= 0)
+                    return BadRequest();
+                foreach (var file in HttpContext.Request.Form.Files)
                 {
-                    foreach (IFormFile file in HttpContext.Request.Form.Files)
-                    {
-                        if (file.Length > 0)
-                        {
-                            string fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.ToString().Trim('"');
-                            string filePath = Path.Combine(_localImageUploadPath, fileName);
-                            string originalfilePath = filePath + Globals.OriginalFileSuffix;
-                            using (var memoryStream = new MemoryStream())
-                            {
-                                var sourImage = memoryStream.ToArray();
-                                await file.CopyToAsync(memoryStream);
-                                SaveFile(sourImage, originalfilePath);
-                                sourImage = memoryStream.ToArray();
-                                var optimizedImage = _imageOptimizer.OptimizeImage(sourImage);
-                                SaveFile(optimizedImage, filePath);
-                            }
+                    if (file.Length <= 0) continue;
 
-                            fileList.Add(Globals.SiteAssetsPath.Replace("~", "") + Globals.ImagesFolder + "/" + fileName);
-                        }
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.ToString().Trim('"');
+                    var filePath = Path.Combine(_localImageUploadPath, fileName);
+                    var originalPath = filePath + Globals.OriginalFileSuffix;
+                    await using (var memoryStream = new MemoryStream())
+                    {
+                        var sourImage = memoryStream.ToArray();
+                        await file.CopyToAsync(memoryStream);
+                        SaveFile(sourImage, originalPath);
+                        sourImage = memoryStream.ToArray();
+                        var optimizedImage = _imageOptimizer.OptimizeImage(sourImage);
+                        SaveFile(optimizedImage, filePath);
                     }
-                    return Ok(fileList);
+
+                    fileList.Add(Globals.SiteAssetsPath.Replace("~", "") + Globals.ImagesFolder + "/" + fileName);
                 }
-                return BadRequest();
+                return Ok(fileList);
             }
             catch (Exception ex)
             {
@@ -115,10 +112,8 @@ namespace DeviserWI.Controllers.API
 
         private async Task SaveFile(Stream stream, string path)
         {
-            using (var fileStream = System.IO.File.Create(path))
-            {
-                await stream.CopyToAsync(fileStream);
-            }
+            await using var fileStream = System.IO.File.Create(path);
+            await stream.CopyToAsync(fileStream);
         }
 
         private void SaveFile(byte[] arrBytes, string path)

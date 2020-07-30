@@ -40,8 +40,8 @@ namespace Deviser.Core.Data.Repositories
         //PageModule GetPageModuleByContainer(Guid containerId);
         PageModule CreatePageModule(PageModule dbPageModule);
         PageModule UpdatePageModule(PageModule dbPageModule);
-        void UpdatePageModules(IList<PageModule> dbPageModules);
-        void UpdateModulePermission(PageModule dbPageModule);
+        void AddOrUpdatePageModules(IList<PageModule> dbPageModules);
+        PageModule UpdateModulePermission(PageModule dbPageModule);
         IList<PagePermission> AddPagePermissions(IList<PagePermission> dbPagePermissions);
         IList<ModulePermission> AddModulePermissions(IList<ModulePermission> dbModulePermissions);
         PageModule RestorePageModule(Guid id);
@@ -79,7 +79,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 /*IEnumerable<> returnData = context.Pages.Include(x => x.ChildPages
                                                                     .Select(y => y.ChildPages.Select(c => c.ChildPages.Select(gc => gc.ChildPages.Select(ggc => ggc.ChildPages)))))
-                                                                    .Where(.Where(e=>e.ParentId==null&&e.IsDeleted==false));*/
+                                                                    .Where(.Where(e=>e.ParentId==null&&e.IsCurrentPage==false));*/
                 /*IList<> returnData = new IList<>();
                 returnData.Add(context.Pages.ToList().First());*/
                 //var cacheName = nameof(GetPageTree);
@@ -91,7 +91,7 @@ namespace Deviser.Core.Data.Repositories
 
                 //using var context = new DeviserDbContext(_dbOptions);
                 var allPagesInFlat = GetPagesFlat()
-                    .Where(p => isActiveOnly && !p.IsDeleted || !isActiveOnly) //This Query cannot be translated to SQL by EF. Therefore, evaluating in client side.
+                    .Where(p => isActiveOnly && p.IsActive || !isActiveOnly) //This Query cannot be translated to SQL by EF. Therefore, evaluating in client side.
                     .ToList();
 
                 var rootOnly = allPagesInFlat.First(p => p.ParentId == null);
@@ -112,7 +112,7 @@ namespace Deviser.Core.Data.Repositories
             try
             {
                 var allPagesInFlat = GetPagesFlat()
-                    .Where(p => isActiveOnly && !p.IsDeleted || !isActiveOnly) //This Query cannot be translated to SQL by EF. Therefore, evaluating in client side.
+                    .Where(p => isActiveOnly && p.IsActive || !isActiveOnly) //This Query cannot be translated to SQL by EF. Therefore, evaluating in client side.
                     .ToList();
 
                 var rootOnly = allPagesInFlat.First(p => p.Id == pageId);
@@ -243,7 +243,7 @@ namespace Deviser.Core.Data.Repositories
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.Page
                     .Include(p => p.PageTranslation)
-                    .Where(e => e.ParentId != null && e.IsDeleted).AsNoTracking()
+                    .Where(e => e.ParentId != null && !e.IsActive).AsNoTracking()
                     .ToList();
 
                 return _mapper.Map<IList<Page>>(result);
@@ -312,7 +312,7 @@ namespace Deviser.Core.Data.Repositories
                         .Include(p => p.PagePermissions)
                         .Include(p => p.Layout)
                         .Include(p => p.PageContent).ThenInclude(pc => pc.PageContentTranslation)
-                        .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType)
+                        .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType).ThenInclude(ct=>ct.ContentTypeFields)
                         .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType).ThenInclude(ct => ct.ContentTypeProperties).ThenInclude(ctp => ctp.Property).ThenInclude(p => p.OptionList)
                         .Include(p => p.PageContent).ThenInclude(pc => pc.ContentPermissions)
                         .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
@@ -328,12 +328,12 @@ namespace Deviser.Core.Data.Repositories
 
                 if (dbResult.PageModule != null)
                 {
-                    dbResult.PageModule = dbResult.PageModule.Where(pm => !pm.IsDeleted).ToList();
+                    dbResult.PageModule = dbResult.PageModule.Where(pm => pm.IsActive).ToList();
                 }
 
                 if (dbResult.PageContent != null)
                 {
-                    dbResult.PageContent = dbResult.PageContent.Where(pc => !pc.IsDeleted).ToList();
+                    dbResult.PageContent = dbResult.PageContent.Where(pc => pc.IsActive).ToList();
                 }
 
                 var result = _mapper.Map<Page>(dbResult);
@@ -441,7 +441,7 @@ namespace Deviser.Core.Data.Repositories
 
         /// <summary>
         /// Updates following properties of the Page only:
-        /// 1. Page.IsActive
+        /// 1. Page.IsCurrentPage
         /// 2. Page.LayoutId
         /// </summary>
         /// <param name="page"></param>
@@ -453,7 +453,7 @@ namespace Deviser.Core.Data.Repositories
                 using var context = new DeviserDbContext(_dbOptions);
                 var dbPage = context.Page.First(p => p.Id == page.Id);
                 dbPage.LayoutId = page.LayoutId;
-                dbPage.IsDeleted = page.IsDeleted;
+                dbPage.IsActive = page.IsActive;
                 var result = context.Page.Update(dbPage).Entity;
                 context.SaveChanges();
                 //Refresh cache
@@ -496,9 +496,9 @@ namespace Deviser.Core.Data.Repositories
                         .ToList();
 
                     var toDelete = matchPagePermissions.Where(dbPermission =>
+                        dbPermission.RoleId != Globals.AdministratorRoleId && //Skip Administrator role from delete process
                         !pagePermissions.Any(pagePermission => pagePermission.PermissionId == dbPermission.PermissionId
-                                                               && pagePermission.RoleId == dbPermission.RoleId
-                                                               && pagePermission.RoleId == Globals.AdministratorRoleId)).ToList();
+                                                               && pagePermission.RoleId == dbPermission.RoleId)).ToList();
 
                     if (toDelete.Count > 0)
                         context.PagePermission.RemoveRange(toDelete);
@@ -575,9 +575,9 @@ namespace Deviser.Core.Data.Repositories
             {
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.PageModule
-                    .Where(e => e.PageId == pageId && !e.IsDeleted)
+                    .Where(e => e.PageId == pageId && e.IsActive)
                     .Include(e => e.Module)
-                    .Include(e => e.ModuleAction).ThenInclude(mp => mp.ModuleActionProperties).ThenInclude(cp => cp.Property)
+                    .Include(e => e.ModuleView).ThenInclude(mp => mp.ModuleViewProperties).ThenInclude(cp => cp.Property)
                     .Include(e => e.ModulePermissions)
                     .OrderBy(p => p.Id)
                     .ToList();
@@ -599,8 +599,8 @@ namespace Deviser.Core.Data.Repositories
                 var result = context.PageModule
                     .Include(pm => pm.ModulePermissions)
                     .Include(pm => pm.Module)
-                    .Include(e => e.ModuleAction).ThenInclude(ma => ma.ModuleActionProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
-                    .Where(e => e.Id == pageModuleId && !e.IsDeleted)
+                    .Include(e => e.ModuleView).ThenInclude(ma => ma.ModuleViewProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
+                    .Where(e => e.Id == pageModuleId && e.IsActive)
                     .OrderBy(p => p.Id)
                     .FirstOrDefault();
 
@@ -620,7 +620,7 @@ namespace Deviser.Core.Data.Repositories
                 using var context = new DeviserDbContext(_dbOptions);
                 var result = context.PageModule
                     .Include(P => P.Page).ThenInclude(P => P.PageTranslation)
-                    .Where(e => e.IsDeleted)
+                    .Where(e => !e.IsActive)
                     .OrderBy(p => p.Id)
                     .ToList();
 
@@ -667,30 +667,60 @@ namespace Deviser.Core.Data.Repositories
             return null;
         }
 
-        public void UpdatePageModules(IList<PageModule> pageModules)
+        public void AddOrUpdatePageModules(IList<PageModule> pageModules)
         {
             try
             {
                 using var context = new DeviserDbContext(_dbOptions);
                 var dbPageModules = _mapper.Map<IList<Entities.PageModule>>(pageModules);
+                var pageModuleIds = context.PageModule.AsNoTracking().Select(pc => pc.Id).ToHashSet();
                 foreach (var pageModule in dbPageModules)
                 {
-                    if (context.PageModule.Any(pm => pm.Id == pageModule.Id))
+                    //if (context.PageModule.Any(pm => pm.Id == pageModule.Id))
+                    if (pageModuleIds.Contains(pageModule.Id))
                     {
-                        //page module exist, therefore update it
-                        context.PageModule.Update(pageModule);
-                        //UpdateModulePermission(pageModule, context); //Here, intensions is mostly to update the container. Moreover, permissions might not be included in each page module object.
+                        var dbPageModule = context.PageModule.First(pc => pc.Id == pageModule.Id);
+                        dbPageModule.ContainerId = pageModule.ContainerId;
+                        dbPageModule.SortOrder = pageModule.SortOrder;
                     }
                     else
                     {
-                        context.PageModule.Add(pageModule);
+                        context.PageModule.Add(new Entities.PageModule()
+                        {
+                            Id = pageModule.Id,
+                            PageId = pageModule.PageId,
+                            ContainerId = pageModule.ContainerId,
+                            ModuleId = pageModule.ModuleId,
+                            ModuleViewId = pageModule.ModuleViewId,
+                            SortOrder = pageModule.SortOrder,
+                            IsActive = true,
+                            InheritEditPermissions = true,
+                            InheritViewPermissions = true
+                        });
+
+                        var adminPermissions = new List<Entities.ModulePermission>()
+                        {
+                            new Entities.ModulePermission()
+                            {
+                                PageModuleId = pageModule.Id,
+                                RoleId = Globals.AdministratorRoleId,
+                                PermissionId = Globals.ModuleViewPermissionId,
+                            },
+                            new Entities.ModulePermission()
+                            {
+                                PageModuleId  = pageModule.Id,
+                                RoleId = Globals.AdministratorRoleId,
+                                PermissionId = Globals.ModuleEditPermissionId,
+                            }
+                        };
+                        context.ModulePermission.AddRange(adminPermissions);
                     }
                 }
                 context.SaveChanges();
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error occured while calling UpdatePageModules", ex);
+                _logger.LogError("Error occured while calling AddOrUpdatePageModules", ex);
                 throw;
             }
         }
@@ -775,53 +805,58 @@ namespace Deviser.Core.Data.Repositories
             return null;
         }
 
-        public void UpdateModulePermission(PageModule pageModule)
+        public PageModule UpdateModulePermission(PageModule pageModule)
         {
-            if (pageModule.ModulePermissions != null && pageModule.ModulePermissions.Count > 0)
+            if (pageModule.ModulePermissions == null || pageModule.ModulePermissions.Count <= 0)
+                throw new InvalidOperationException("PageModule ModulePermissions cannot be null or empty");
+
+            var dbPageModule = _mapper.Map<Entities.PageModule>(pageModule);
+            //Assuming all permissions have same pageModuleId
+            var pageModuleId = dbPageModule.Id;
+            var modulePermissions = dbPageModule.ModulePermissions;
+
+            try
             {
-                var dbPageModule = _mapper.Map<Entities.PageModule>(pageModule);
-                //Assuming all permissions have same pageModuleId
-                var pageModuleId = dbPageModule.Id;
-                var modulePermissions = dbPageModule.ModulePermissions;
+                using var context = new DeviserDbContext(_dbOptions);
+                //Update InheritViewPermissions only
+                var dbPageContent = context.PageModule.First(pc => pc.Id == pageModuleId);
+                dbPageContent.InheritViewPermissions = dbPageModule.InheritViewPermissions;
+                dbPageContent.InheritEditPermissions = dbPageModule.InheritEditPermissions;
 
-                try
+                //Filter deleted permissions in UI and delete all of them
+                var toDelete = context.ModulePermission
+                    .Where(dbPermission => dbPermission.PageModuleId == pageModuleId)
+                    .ToList()
+                    .Where(dbPermission => !modulePermissions.Any(modulePermission => modulePermission.PermissionId == dbPermission.PermissionId && modulePermission.RoleId == dbPermission.RoleId))
+                    .ToList();
+
+                if (toDelete.Count > 0)
+                    context.ModulePermission.RemoveRange(toDelete);
+
+                //Filter new permissions which are not in db and add all of them
+                var toAdd = modulePermissions.Where(modulePermission => !context.ModulePermission.Any(dbPermission =>
+                    dbPermission.PermissionId == modulePermission.PermissionId &&
+                    dbPermission.PageModuleId == modulePermission.PageModuleId &&
+                    dbPermission.RoleId == modulePermission.RoleId)).ToList();
+                if (toAdd.Count > 0)
                 {
-                    using var context = new DeviserDbContext(_dbOptions);
-                    //Update InheritViewPermissions only
-                    var dbPageContent = context.PageModule.First(pc => pc.Id == pageModuleId);
-                    dbPageContent.InheritViewPermissions = dbPageModule.InheritViewPermissions;
-                    dbPageContent.InheritEditPermissions = dbPageModule.InheritEditPermissions;
-
-                    //Filter deleted permissions in UI and delete all of them
-                    var toDelete = context.ModulePermission.Where(dbPermission => dbPermission.PageModuleId == pageModuleId &&
-                                                                                  !modulePermissions.Any(modulePermission => modulePermission.PermissionId == dbPermission.PermissionId && modulePermission.RoleId == dbPermission.RoleId)).ToList();
-                    if (toDelete.Count > 0)
-                        context.ModulePermission.RemoveRange(toDelete);
-
-                    //Filter new permissions which are not in db and add all of them
-                    var toAdd = modulePermissions.Where(modulePermission => !context.ModulePermission.Any(dbPermission =>
-                        dbPermission.PermissionId == modulePermission.PermissionId &&
-                        dbPermission.PageModuleId == modulePermission.PageModuleId &&
-                        dbPermission.RoleId == modulePermission.RoleId)).ToList();
-                    if (toAdd.Count > 0)
+                    foreach (var permission in toAdd)
                     {
-                        foreach (var permission in toAdd)
-                        {
-                            //permission.Page = null;
-                            if (permission.Id == Guid.Empty)
-                                permission.Id = Guid.NewGuid();
-                            context.ModulePermission.Add(permission);
-                        }
+                        //permission.Page = null;
+                        if (permission.Id == Guid.Empty)
+                            permission.Id = Guid.NewGuid();
+                        context.ModulePermission.Add(permission);
                     }
-
-                    context.SaveChanges();
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error occured while updating module permissions", ex);
-                    throw;
-                }
+                context.SaveChanges();
+                return GetPageModule(pageModule.Id);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occured while updating module permissions", ex);
+                throw;
+            }
+
         }
 
         public PageModule RestorePageModule(Guid id)
@@ -833,7 +868,7 @@ namespace Deviser.Core.Data.Repositories
 
                 if (dbPageModule != null)
                 {
-                    dbPageModule.IsDeleted = false;
+                    dbPageModule.IsActive = true;
                     var result = context.PageModule.Update(dbPageModule).Entity;
                     context.SaveChanges();
                     return _mapper.Map<PageModule>(result);
@@ -877,7 +912,7 @@ namespace Deviser.Core.Data.Repositories
             try
             {
                 using var context = new DeviserDbContext(_dbOptions);
-                var pageModule = context.PageModule.First(p => p.Id == id && p.IsDeleted);
+                var pageModule = context.PageModule.First(p => p.Id == id && !p.IsActive);
 
                 return pageModule;
             }
@@ -897,7 +932,7 @@ namespace Deviser.Core.Data.Repositories
 
                 if (dbPage != null)
                 {
-                    dbPage.IsDeleted = false;
+                    dbPage.IsActive = true;
                     var result = context.Update(dbPage).Entity;
                     context.SaveChanges();
                     return _mapper.Map<Page>(result);
@@ -1067,7 +1102,7 @@ namespace Deviser.Core.Data.Repositories
             try
             {
                 using var context = new DeviserDbContext(_dbOptions);
-                var page = context.Page.First(p => p.Id == id && p.IsDeleted);
+                var page = context.Page.First(p => p.Id == id && !p.IsActive);
 
                 return page;
             }

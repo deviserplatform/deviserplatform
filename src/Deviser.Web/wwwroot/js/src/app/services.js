@@ -11,7 +11,7 @@
     app.factory('pageContentService', ['$http', '$q', 'globals',pageContentService]);
     app.factory('contentTranslationService', ['$http', '$q', 'globals',contentTranslationService]);
     app.factory('moduleService', ['$http', '$q', 'globals',moduleService]);
-    app.factory('moduleActionService', ['$http', '$q', 'globals',moduleActionService]);
+    app.factory('moduleViewService', ['$http', '$q', 'globals',moduleViewService]);
     app.factory('pageModuleService', ['$http', '$q', 'globals',pageModuleService]);
     app.factory('themeService', ['$http', '$q', 'globals',themeService]);
     app.factory('userService', ['$http', '$q', 'globals',userService]);
@@ -340,14 +340,14 @@
     function moduleService($http, $q, globals) {
         var serviceUrl = '/module';
         var service = baseService($http, $q, globals, '/module');
-        service.getModuleActionTypes = getModuleActionTypes;        
+        service.getModuleViewTypes = getModuleViewTypes;        
         return service;
         
 
         ////////////////////////////////
         /*Function declarations only*/
-        function getModuleActionTypes() {
-            var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/moduleactiontype';
+        function getModuleViewTypes() {
+            var getUrl = globals.appSettings.serviceBaseUrl + serviceUrl + '/moduleviewtype';
             var request = $http({
                 method: 'GET',
                 url: getUrl
@@ -359,8 +359,8 @@
 
     }
 
-    function moduleActionService($http, $q, globals) {
-        var serviceUrl = '/moduleaction';
+    function moduleViewService($http, $q, globals) {
+        var serviceUrl = '/moduleview';
         var service = baseService($http, $q, globals, serviceUrl);
         service.getEditActions = getEditActions;
         service.getEditActionView = getEditActionView;
@@ -378,8 +378,8 @@
             });
         }
 
-        function getEditActionView(currentUrl, pageModuleId, moduleActionId) {
-            var getUrl = '/page/editmodule/pageModuleId/' + pageModuleId + '/moduleActionId/' + moduleActionId + '?currentLink=' + currentUrl;
+        function getEditActionView(currentUrl, pageModuleId, moduleViewId) {
+            var getUrl = '/page/editmodule/pageModuleId/' + pageModuleId + '/moduleViewId/' + moduleViewId + '?currentLink=' + currentUrl;
 
             var request = $http({
                 method: 'GET',

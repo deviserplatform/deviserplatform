@@ -57,12 +57,12 @@ namespace DeviserWI.Controllers.API
 
 
         [HttpGet]
-        [Route("moduleactiontype/")]
-        public IActionResult GetModuleActionType()
+        [Route("moduleviewtype/")]
+        public IActionResult GetModuleViewType()
         {
             try
             {   
-                var result = _moduleRepository.GetModuleActionType();
+                var result = _moduleRepository.GetModuleViewType();
                 if (result != null)
                     return Ok(result);
                 return NotFound();

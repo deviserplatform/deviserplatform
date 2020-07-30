@@ -21,6 +21,7 @@ import { AdminConfigType } from '../common/domain-types/admin-confit-type';
 import { TreeControlComponent } from '../common/components/tree-control/tree-control.component';
 import { AdminFormComponent } from '../admin-form/admin-form.component';
 import { Subscription } from 'rxjs';
+import { AlertService } from '../common/services/alert.service';
 
 
 @Component({
@@ -31,7 +32,6 @@ import { Subscription } from 'rxjs';
 export class AdminTreeComponent implements OnInit {
 
   adminConfig: AdminConfig;
-  alerts: Alert[];
   tree: any;
   labelType = LabelType;
   daConfig: DAConfig;
@@ -50,12 +50,12 @@ export class AdminTreeComponent implements OnInit {
 
   private formSubmitSubscription: Subscription;
 
-  constructor(private adminService: AdminService,
-    private recordIdPipe: RecordIdPipe,
-    private router: Router,
-    @Inject(WINDOW) private window: any) {
-    this.alerts = [];
-    this.daConfig = window.daConfig;
+  constructor(private _adminService: AdminService,
+    private _alertService: AlertService,
+    private _recordIdPipe: RecordIdPipe,
+    private _router: Router,
+    @Inject(WINDOW) private _window: any) {
+    this.daConfig = _window.daConfig;
   }
 
   ngOnInit() {
@@ -74,12 +74,12 @@ export class AdminTreeComponent implements OnInit {
 
 
   getAdminConfig(): void {
-    this.adminService.getAdminConfig()
+    this._adminService.getAdminConfig()
       .subscribe(adminConfig => this.adminConfig = adminConfig, error => this.handleError(error));
   }
 
   getTree(): void {
-    this.adminService.getTree()
+    this._adminService.getTree()
       .subscribe(tree => this.onGetTree(tree), error => this.handleError(error));
   }
 
@@ -96,7 +96,7 @@ export class AdminTreeComponent implements OnInit {
     const treeToUpdate = JSON.parse(JSON.stringify(this.tree));
     treeToUpdate[this.adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase] = node as any[];
     console.log(node);
-    this.adminService.updateTree(treeToUpdate)
+    this._adminService.updateTree(treeToUpdate)
       .subscribe(response => this.onActionResult(response), error => this.handleError(error));
   }
 
@@ -144,10 +144,10 @@ export class AdminTreeComponent implements OnInit {
 
   onYesToDelete(item: any): void {
     console.log('confirm');
-    const itemId = this.recordIdPipe.transform(item, this.adminConfig.modelConfig.keyField);
+    const itemId = this._recordIdPipe.transform(item, this.adminConfig.modelConfig.keyField);
     this.selectedNode = null;
     if (!itemId) { return; }
-    this.adminService.deleteRecord(itemId)
+    this._adminService.deleteRecord(itemId)
       .subscribe(response => this.onActionResult(response), error => this.handleError(error));
   }
 
@@ -158,27 +158,17 @@ export class AdminTreeComponent implements OnInit {
 
   onRowAction(actionName: string, item: any) {
     if (actionName && item) {
-      this.adminService.executeGridAction(actionName, item)
+      this._adminService.executeGridAction(actionName, item)
         .subscribe(adminResult => this.onActionResult(adminResult));
     }
   }
 
   onActionResult(adminResult: AdminResult): void {
     if (adminResult && adminResult.isSucceeded) {
-      const alert: Alert = {
-        alterType: AlertType.Success,
-        message: adminResult.successMessage,
-        timeout: 5000
-      };
-      this.alerts.push(alert);
+      this._alertService.showMessage(AlertType.Success, adminResult.successMessage);
       this.treeControl.rebuildTreeForData(adminResult.result[this.adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase]);
     } else {
-      const alert: Alert = {
-        alterType: AlertType.Error,
-        message: adminResult.errorMessage,
-        timeout: 5000
-      };
-      this.alerts.push(alert);
+      this._alertService.showMessage(AlertType.Error, adminResult.errorMessage);
       this.getTree();
     }
   }
@@ -190,12 +180,7 @@ export class AdminTreeComponent implements OnInit {
   }
 
   handleError(message: string) {
-    const alert: Alert = {
-      alterType: AlertType.Error,
-      message,
-      timeout: 5000
-    };
-    this.alerts.push(alert);
+    this._alertService.showMessage(AlertType.Error, message);
   }
 
   getBadge(item: any, field: Field): string {

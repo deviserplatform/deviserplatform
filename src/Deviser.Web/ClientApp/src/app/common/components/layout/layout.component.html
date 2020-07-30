@@ -1,0 +1,183 @@
+<div class="layout-container">
+  <div class="container-fluid">
+    <div class="row header">
+      <div class="col-2">
+        <h3 class="layout-title">
+          Layout Designer
+        </h3>
+      </div>
+      <div class="col action-bar">
+        <div class="left-group">
+          <button type="button" class="action-control btn btn-sm btn-primary" (click)="onNewLayout();">
+            <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/add_circle_outline.svg'| envPath"></i>
+            New
+          </button>
+
+          <button type="button" class="action-control btn btn-sm btn-secondary" (click)="onCopyLayout();" *ngIf="!isNewMode">
+            <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/copy.svg'| envPath"></i> Copy
+          </button>
+
+          <div class="action-control layout-name">
+            <div class="input-group layout-name-edit" *ngIf="isLayoutNameEditable">
+              <input type="text" class="form-control" placeholder="Enter layout name" [(ngModel)]="layoutName">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="onSaveLayoutName()">
+                  <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/check.svg'| envPath"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="onCancelEditLayoutName()">
+                  <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-clear.svg'| envPath"></i>
+                </button>
+              </div>
+            </div>
+            <div class="layout-name-readonly" *ngIf="!isLayoutNameEditable && selectedLayout && selectedLayout.name">
+              <span>{{selectedLayout.name}}</span>
+              <div class="input-group-append">
+                <button type="button" class="btn btn-default" (click)="onEditLayoutName()">
+                  <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/edit-2.svg'| envPath"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="action-control btn btn-sm btn-primary" (click)="onSaveLayout();">
+            <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/save.svg'| envPath"></i> Save
+          </button>
+
+          <button type="button" class="action-control btn btn-sm btn-danger" (click)="onDeleteLayout();" *ngIf="!isNewMode">
+            <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/trash.svg'| envPath"></i> Delete
+          </button>
+        </div>
+        <div class="right-group">
+          <div class="action-control layout-dropdown" *ngIf="!isNewMode">
+            <ng-select id="ngslayouts" [items]="pageLayouts" bindLabel="name" [(ngModel)]="selectedLayout"
+              (change)="onPageLayoutChange($event);" autofocus [selectOnTab]="true" [multiple]="false"
+              placeholder="Select a Layout">
+            </ng-select>
+          </div>
+        </div>
+        <dev-alert class="dev-alerts" [alerts]="alerts"></dev-alert>
+      </div>
+      <div class="col-2 page-name" ngPreserveWhitespaces>
+        <b>Page: </b><span *ngIf="pageContext && pageContext.currentTranslation">{{pageContext.currentTranslation.name}}</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-2">
+        <div class="card">
+          <div class="card-header">
+            <b>New Elements</b>
+          </div>
+          <div class="card-body" *ngIf="layoutTypes && layoutTypes.length > 0">
+            <div #newElementList cdkDropList class="new-element-list"
+              [cdkDropListConnectedTo]="nestedContainersDropListIds" [cdkDropListData]="layoutTypes">
+              <div class="new-element node-element" *ngFor="let layoutType of layoutTypes" cdkDrag
+                [cdkDragData]="layoutType" cdkDragBoundary=".layout-container">
+                <div class="icon">
+                  <i class="{{layoutType.iconClass}}" *ngIf="layoutType.iconClass"></i>
+                  <img src="{{layoutType.iconImage}}" *ngIf="layoutType.iconImage" alt="{{layoutType.name}}" />
+                </div>
+                <div class="label">
+                  {{layoutType.label}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col container-element-wrapper">
+        <div class="container-element root">
+          <div class="container-element-header">
+            <b>Page Containers</b>
+          </div>
+          <div class="container-element-body" *ngIf="root">
+            <ng-container *ngTemplateOutlet="list, context:{node:root}">
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="card properties-container">
+          <div class="card-header">
+            <b>Selected</b>
+          </div>
+          <div class="card-body properties" *ngIf="selectedPlaceHolder && selectedPlaceHolder.properties">
+
+            <div class="row" *ngIf="selectedPlaceHolder && selectedPlaceHolder.label">
+              <div class="col-md-6">
+                <strong>Layout Type</strong>
+              </div>
+              <div class="col-md-6">
+                {{selectedPlaceHolder.label}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <strong>Properties</strong>
+              </div>
+            </div>
+
+            <div class="row" *ngFor="let property of selectedPlaceHolder.properties">
+              <div class="col-md-6">
+                {{property.label}}
+              </div>
+              <div class="col-md-6" *ngIf="!property.optionList">
+                <input type="text" class="form-control input-sm" [(ngModel)]="property.value" />
+              </div>
+              <div class="col-md-6" *ngIf="property.optionList">
+                <select class="form-control input-sm" name="repeatSelect" id="repeatSelect"
+                  [(ngModel)]="property.value">
+                  <option value="">Select</option>
+                  <option *ngFor="let option of property.optionList.list" [value]="option.id">{{option.label}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card trash-container">
+          <div class="card-header">
+            <b>Trash</b>
+          </div>
+          <div class="card-body">
+            <div id="trashList" cdkDropList class="trash-list" (cdkDropListDropped)="onDropToTrash($event)">
+              <svg viewBox="0 0 24 24">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #list let-node="node">
+    <div cdkDropList [id]="node.id" [cdkDropListConnectedTo]="trashDropListIds" [cdkDropListData]="node"
+      [ngClass]="{'horizontal': node.type==='row', 'vertical': node.type!=='row'}"
+      [cdkDropListEnterPredicate]="elementDropPredicate" (cdkDropListDropped)="onDragDrop($event)" class="drop-list">
+      <div *ngFor="let child of node.placeHolders;let i = index" cdkDrag [cdkDragData]="child" class="drop-item"
+        [ngClass]="getColumnClass(child)" cdkDragBoundary=".layout-container">
+        <!-- <div [ngClass]="{'row': node.type==='row'}">
+          <div [ngClass]="{'col': child.type==='column'}"> -->
+        <ng-container *ngTemplateOutlet="templateSelector, context:{node:child, index:i}">
+        </ng-container>
+        <!-- </div>
+        </div> -->
+        <div class="item-placeholder" *cdkDragPlaceholder></div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #templateSelector let-node="node" let-index="index">
+    <div class="container-element" [ngClass]="getPlaceHolderClass(node)" (click)="onPlaceHolderSelected($event, node)">
+      <div class="container-element-header">
+        <b>{{getLayoutTypeName(node.layoutTypeId)}} {{index+1}}</b>
+      </div>
+      <div class="container-element-body">
+        <ng-container *ngTemplateOutlet="list, context:{node:node}">
+        </ng-container>
+      </div>
+    </div>
+  </ng-template>
+
+  <app-confirm-dialog [title]="'Confirmation'" [content]="'Are you sure to delete the layout?'" [btnConfirmText]="'Yes'"
+    [btnCancelText]="'No'" (confirm)="onYesToDelete($event)" (cancel)="onNoToDelete($event)"></app-confirm-dialog>
+</div>

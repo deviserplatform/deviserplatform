@@ -200,7 +200,7 @@
                 if (page) {
                     var pageId = page.id;
                     pageService.remove(pageId).then(function (data) {
-                        page.isDeleted = true;
+                        page.isActive = false;
                         showMessage("success", "Page has been removed");
                     }, function (error) {
                         showMessage("error", "'Cannot remove page, please contact administrator");

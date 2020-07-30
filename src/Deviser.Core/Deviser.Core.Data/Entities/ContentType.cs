@@ -10,11 +10,13 @@ namespace Deviser.Core.Data.Entities
         public Guid Id { get; set; }
         public string Name { get; set; } //old property - Type        
         public string Label { get; set; }
+        public bool IsList { get; set; }
         public string IconImage { get; set; }
         public string IconClass { get; set; }
         public int SortOrder { get; set; }        
         public ICollection<ContentTypeProperty> ContentTypeProperties { get; set; }
-        public ICollection<PageContent> PageContents { get; set; }     
+        public ICollection<PageContent> PageContents { get; set; }
+        public ICollection<ContentTypeField> ContentTypeFields { get; set; }
         public bool IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }

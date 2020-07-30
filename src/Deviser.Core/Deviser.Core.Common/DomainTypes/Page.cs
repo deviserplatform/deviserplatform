@@ -10,7 +10,7 @@ namespace Deviser.Core.Common.DomainTypes
         public Guid Id { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsActive { get; set; }
         public bool IsSystem { get; set; }
         public bool IsIncludedInMenu { get; set; }
         public DateTime? LastModifiedDate { get; set; }
@@ -33,7 +33,7 @@ namespace Deviser.Core.Common.DomainTypes
         public virtual AdminPage AdminPage { get; set; }
 
         //Non DB Properties
-        public bool IsActive { get; set; }
+        public bool IsCurrentPage { get; set; }
         public bool IsBreadCrumb { get; set; }
     }
 }

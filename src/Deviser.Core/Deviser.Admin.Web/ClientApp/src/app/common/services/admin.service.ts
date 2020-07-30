@@ -11,6 +11,7 @@ import { WINDOW } from './window.service';
 import { DAConfig } from '../domain-types/da-config';
 import { FormType } from '../domain-types/form-type';
 import { FilterNode } from '../domain-types/filter-node';
+import { GridType } from '../domain-types/grid-type';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class AdminService {
   private _httpHeaders;
 
   private _daConfig: DAConfig;
-  private _adminConfigSubject: BehaviorSubject<AdminConfig> = new BehaviorSubject<AdminConfig>(null);
+  // private _adminConfigSubject: BehaviorSubject<AdminConfig> = new BehaviorSubject<AdminConfig>(null);
   private _adminConfig: AdminConfig;
   private _adminConfig$: Observable<AdminConfig>;
   // private _adminConfigCache: AdminConfig;
@@ -163,6 +164,22 @@ export class AdminService {
       .pipe(
         tap(_ => this.log('tree has been updated ')),
         catchError(this.handleError('updateTree', null))
+      );
+  }
+
+  sortGridItems(items: any[], childModel: string = null, pagination: Pagination = null): Observable<any> {
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/sort/${childModel}`;
+    let params = new HttpParams();
+    
+    if (pagination != null) {
+      params = params.append('pageNo', pagination.pageNo.toString());
+      params = params.append('pageSize', pagination.pageSize.toString());
+    }
+
+    return this.http.put<any>(serviceUrl, items, { headers: this._httpHeaders, params })
+      .pipe(
+        tap(_ => this.log('all items have been sorted')),
+        catchError(this.handleError('sortGridItems', null))
       );
   }
 

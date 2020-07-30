@@ -10,11 +10,11 @@
         'deviser.config'        
     ]);
 
-    app.controller('ModuleManagementCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'moduleService', 'moduleActionService', 'propertyService', editCtrl]);
+    app.controller('ModuleManagementCtrl', ['$scope', '$timeout', '$filter', '$q', 'globals', 'moduleService', 'moduleViewService', 'propertyService', editCtrl]);
 
     ////////////////////////////////
     /*Function declarations only*/
-    function editCtrl($scope, $timeout, $filter, $q, globals, moduleService, moduleActionService, propertyService) {
+    function editCtrl($scope, $timeout, $filter, $q, globals, moduleService, moduleViewService, propertyService) {
         var vm = this;
         SYS_ERROR_MSG = globals.appSettings.systemErrorMsg;
         vm.alerts = [];
@@ -28,9 +28,9 @@
         vm.save = save;
         vm.cancel = cancel;
         //vm.hasError = hasError;
-        vm.addModuleActions = addModuleActions;
-        vm.editModuleActions = editModuleActions;
-        vm.removeModuleActions = removeModuleActions;
+        vm.addModuleViews = addModuleViews;
+        vm.editModuleViews = editModuleViews;
+        vm.removeModuleViews = removeModuleViews;
         vm.saveModuleAction = saveModuleAction;
         vm.addProperty = addProperty;
         vm.isPropExist = isPropExist;
@@ -49,9 +49,9 @@
         init();
         function init() {
             vm.modules = {};
-            vm.moduleActions = {};
+            vm.moduleViews = {};
             getModules();
-            getModuleActions();
+            getModuleViews();
             getModuleActionTypes();
             getProperties();
         }
@@ -69,9 +69,9 @@
         }
 
 
-        function getModuleActions() {
-            moduleActionService.get().then(function (moduleActions) {
-                vm.moduleActions = moduleActions;
+        function getModuleViews() {
+            moduleViewService.get().then(function (moduleViews) {
+                vm.moduleViews = moduleViews;
             }, function (error) {
                 showMessage("error", "Cannot get all module actions, please contact administrator");
             });
@@ -157,7 +157,7 @@
             });
         }
 
-        function addModuleActions() {
+        function addModuleViews() {
             vm.currentViewState = vm.viewStates.NEWMODULEACTION;
             var moduleAction = {
                 displayName: ''
@@ -169,14 +169,14 @@
             vm.selectedModuleAction = moduleAction;
         }
 
-        function editModuleActions(moduleAction) {
+        function editModuleViews(moduleAction) {
             vm.currentViewState = vm.viewStates.EDITMODULEACTION;
             vm.selectedModuleAction = moduleAction;
         }
 
 
 
-        function removeModuleActions(moduleAction) {
+        function removeModuleViews(moduleAction) {
             var index = vm.selectedModule.moduleAction.indexOf(moduleAction);
             vm.selectedModule.moduleAction.splice(index, 1);
         }

@@ -1,0 +1,592 @@
+@use "sass:selector";
+
+/* You can add global styles to this file, and also import other style files */
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";
+@import "../node_modules/bootstrap/scss/root";
+@import "../node_modules/bootstrap/scss/reboot";
+@import "../node_modules/bootstrap/scss/type";
+@import "../node_modules/bootstrap/scss/images";
+@import "../node_modules/bootstrap/scss/code";
+@import "../node_modules/bootstrap/scss/grid";
+@import "../node_modules/bootstrap/scss/tables";
+@import "../node_modules/bootstrap/scss/forms";
+@import "../node_modules/bootstrap/scss/buttons";
+@import "../node_modules/bootstrap/scss/transitions";
+@import "../node_modules/bootstrap/scss/dropdown";
+@import "../node_modules/bootstrap/scss/button-group";
+@import "../node_modules/bootstrap/scss/input-group";
+@import "../node_modules/bootstrap/scss/custom-forms";
+@import "../node_modules/bootstrap/scss/nav";
+@import "../node_modules/bootstrap/scss/navbar";
+@import "../node_modules/bootstrap/scss/card";
+@import "../node_modules/bootstrap/scss/breadcrumb";
+@import "../node_modules/bootstrap/scss/pagination";
+@import "../node_modules/bootstrap/scss/badge";
+@import "../node_modules/bootstrap/scss/jumbotron";
+@import "../node_modules/bootstrap/scss/alert";
+@import "../node_modules/bootstrap/scss/progress";
+@import "../node_modules/bootstrap/scss/media";
+@import "../node_modules/bootstrap/scss/list-group";
+@import "../node_modules/bootstrap/scss/close";
+@import "../node_modules/bootstrap/scss/modal";
+@import "../node_modules/bootstrap/scss/tooltip";
+@import "../node_modules/bootstrap/scss/popover";
+@import "../node_modules/bootstrap/scss/carousel";
+@import "../node_modules/bootstrap/scss/utilities";
+@import "../node_modules/bootstrap/scss/print";
+
+@import "../node_modules/@ng-select/ng-select/themes/default.theme.css";
+
+$drag-placeholder-bg-color: theme-color-level("primary", -10);
+$drag-placeholder-border-color: theme-color-level("primary", 6);
+$action-bar-font-size: 0.84rem;
+
+@mixin unify-parent($child) {
+  @at-root #{selector.unify(&, $child)} {
+    @content;
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.edit-layout-container {
+  /*Following styles should be in global level since cdk appends the drag element in body*/
+  .drop-list {
+    border: solid 1px #ccc;
+    min-height: 60px;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+    display: block;
+    &.horizontal {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  }
+
+  .drop-item {
+    color: rgba(0, 0, 0, 0.87);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-sizing: border-box;
+    cursor: move;
+    background: white;
+    font-size: 14px;
+
+    &.col-12,
+    &.col-11,
+    &.col-10,
+    &.col-9,
+    &.col-8,
+    &.col-7,
+    &.col-6,
+    &.col-5,
+    &.col-4,
+    &.col-3,
+    &.col-2,
+    &.col-1 {
+      padding: 0;
+    }
+  }
+
+  .new-element-list {
+    @extend .drop-list;
+  }
+
+  .new-element {
+    @extend .drop-item;
+    border-bottom: solid 1px #ccc;
+    padding: 10px;
+    .icon {
+      margin-left: 0.4rem;
+    }
+    .label {
+      margin-left: 0.75rem;
+    }
+  }
+
+  .cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+      0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  }
+
+  .cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  .drop-item:last-child,
+  .new-element:last-child {
+    border: none;
+  }
+
+  .drop-list.cdk-drop-list-dragging .drop-item:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  // .cdk-drop-list-dragging {
+  //   background: lightgreen;
+  // }
+
+  .item-placeholder,
+  .new-element.node-element.cdk-drag-placeholder {
+    background: $drag-placeholder-bg-color;
+    border: dashed 1px $drag-placeholder-border-color;
+    min-height: 60px;
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  .container-element {
+    width: 100%;
+    margin: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    // border-top: solid 1px #ccc;
+    // border-bottom: solid 1px #ccc;
+    border: 1px solid rgba($black, 0.125);
+    border-radius: 0.25rem;
+
+    .container-element-header {
+      align-items: center;
+      background-color: rgba($black, 0.03);
+      border-bottom: 1px solid rgba($black, 0.125);
+      display: flex;
+      padding: 0.4rem 0.6rem;
+      margin-bottom: 0;
+    }
+
+    .container-element-body {
+      .drop-list {
+        border: none;
+      }
+      .preview-container {
+        padding: 10px;
+        img{
+          width: 150px;
+        }
+      }
+    }
+    &.root {
+      margin: 0;
+      & > .container-element-header {
+        padding: 0.6rem 0.8rem;
+      }
+    }
+    &.unassigned {
+      margin-top: 10px;
+      min-height: 100px;
+    }
+  }
+
+  .container-element-wrapper {
+    height: 90vh;
+    margin: 0;
+    overflow: auto;
+  }
+
+  overflow: hidden;
+  .dev-alerts {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-right: auto;
+    margin-left: auto;
+    top: 1rem;
+    z-index: 10;
+  }
+
+  svg {
+    width: 18px;
+    stroke-width: 2px;
+  }
+
+  .card-header {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .container-element {
+    &.root {
+      .container-element-header {
+        @extend .card-header;
+      }
+    }
+
+    .container-element-header {
+      .title {
+        flex-grow: 1;
+        i {
+          margin-right: 0.3rem;
+        }
+      }
+
+      .permission-action {
+        .action-control {
+          border-radius: unset;
+        }
+      }
+    }
+
+    &.selected {
+      border-color: $primary;
+      .container-element {
+        border-color: $primary;
+      }
+      .container-element-header {
+        background-color: $primary;
+        color: $white;
+      }
+    }
+
+    &.placeholder {
+      .container-element-header {
+        padding: 0.1rem 0.6rem;
+      }
+    }
+
+    &.content {
+      .container-element-header {
+        // border-bottom: none;
+        padding-right: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+
+    &.module {
+      .container-element-header {
+        // border-bottom: none;
+        padding-right: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  .card {
+    .card-body {
+      &.properties {
+        font-size: 0.8rem;
+        padding: 0.3rem;
+        .row {
+          margin-left: -5px;
+          margin-right: -5px;
+          padding: 0.3rem 0;
+          border-bottom: 1px solid #ddd;
+          display: flex;
+          align-items: center;
+
+          &:first-child {
+            padding-top: 0px;
+          }
+        }
+
+        .box-content {
+          margin: 20px -10px 0 -10px;
+        }
+
+        .form-control,
+        select.input-sm {
+          height: 1.8rem;
+          padding: 0.1rem;
+          font-size: 0.8rem;
+          border-top: none;
+          border-right: none;
+          border-left: none;
+        }
+
+        .col-md-12,
+        .col-md-6 {
+          padding-left: 5px;
+          padding-right: 2px;
+        }
+
+        // .btn-xs {
+        //   width: 100%;
+        // }
+      }
+    }
+    &.properties-container {
+      margin-bottom: 1rem;
+      height: 56vh;
+    }
+  }
+
+  .header {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    .action-bar {
+      font-size: $action-bar-font-size;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .left-group {
+        display: flex;
+        width: 75%;
+        align-items: center;
+      }
+      .right-group {
+        display: flex;
+        width: 25%;
+        align-items: center;
+      }
+      .action-control {
+        margin-left: 1rem;
+        &:first-child {
+          margin-left: 0;
+        }
+        input {
+          width: 10%;
+        }
+        @include unify-parent("button") {
+          font-size: $action-bar-font-size;
+        }
+        &.layout-name {
+          width: 34%;
+          .layout-name-readonly {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            // font-size: 0.84rem;
+          }
+          .layout-name-edit {
+            display: flex;
+            // align-items: center;
+            // .btn {
+            //   padding: 0.2rem 0.5rem;
+            // }
+          }
+        }
+        &.layout-dropdown {
+          width: 100%;
+        }
+      }
+    }
+    .page-name {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .edit-container {
+    .header {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      .edit-info {
+        display: flex;
+      }
+      .action-bar {
+        justify-content: flex-end;
+        .left-group {
+          width: 75%;
+        }
+        .right-group {
+          width: 25%;
+        }
+      }
+    }
+
+    .content-type {
+      height: 44.3vh;
+      margin-bottom: 1rem;
+      .card-body {
+        overflow-y: auto;
+      }
+    }
+
+    .module-view {
+      height: 44.3vh;
+      .card-body {
+        overflow-y: auto;
+      }
+    }
+
+    .property-control {
+      width: 100%;
+      font-size: 0.85rem;
+      padding: 1px 5px;
+    }
+  }
+
+  .layout-container {
+    .header {
+      .action-bar {
+        .left-group {
+          width: 75%;
+        }
+        .right-group {
+          width: 25%;
+        }
+        .action-control {
+          &.layout-name {
+            width: 34%;
+            .layout-name-readonly {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            }
+            .layout-name-edit {
+              display: flex;
+            }
+          }
+          &.layout-dropdown {
+            width: 100%;
+          }
+        }
+      }
+      .page-name {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+
+  .trash-list {
+    min-height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    svg {
+      width: 18rem;
+    }
+    .item-placeholder {
+      position: absolute;
+      opacity: 0;
+      left: 0;
+      right: 0;
+    }
+  }
+
+  .modal-dialog {
+    min-height: calc(100vh - 60px);
+    max-width: unset;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: auto;
+    @media (max-width: 768px) {
+      min-height: calc(100vh - 20px);
+    }
+    /*svg {
+      width: 24px;
+      stroke-width: 2px;
+    }*/
+  }
+
+  .edit-content-modal {
+    width: 90%;
+    .modal-content {
+      flex: 1;
+      app-edit-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        .modal-body {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          .no-image-message {
+            background: rgba($black, 0.03);
+            border: 1px solid rgba($black, 0.125);
+            text-align: center;
+            padding: 20px 10px;
+          }
+          .edit-content-container{
+            img{
+              width: 150px;
+            }
+          }
+          .image-preview {            
+            position: relative;
+            width: 50%;
+            img{
+              width: 100%;
+            }
+            .image-action-bar{
+              @extend .btn-group;
+              position: absolute;
+              right: 10px;
+              top: 10px;
+              display: flex;
+              flex-direction: row;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .image-selector-modal {
+    width: 80%;
+    .modal-content {
+      flex: 0.6;
+      app-image-selector {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        .modal-body {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          padding: 0 1rem;
+          img{
+            width: 100%;
+          }
+          .image-selector-row {
+            flex: 1;
+            .file-list {
+              padding: 1rem;
+              border-right: 1px solid rgba($black, 0.125);
+              .list-group {
+                .list-group-item {
+                  font-size: 0.875rem;
+                  padding: 0.25rem 0.75rem;
+                  overflow: hidden;
+                }
+              }
+            }
+            .detail-col {
+              display: flex;
+              flex-direction: column;
+              padding: 1rem;
+              .tab-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                .tab-pane {
+                  flex: 1;
+                  display: flex;
+                  flex-direction: column;
+                }
+              }
+
+              .image-drop-zone {
+                background: rgba($black, 0.03);
+                border: 1px solid rgba($black, 0.125);
+                text-align: center;
+                padding: 20px 10px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

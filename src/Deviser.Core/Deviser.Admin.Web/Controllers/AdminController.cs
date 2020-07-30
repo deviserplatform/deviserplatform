@@ -271,6 +271,34 @@ namespace Deviser.Admin.Web.Controllers
         }
 
         [HttpPut]
+        [Route("modules/[area]/api/{model:required}/sort/{childModel?}")]
+        public async Task<IActionResult> SortItems(string model, string childModel, [FromBody] object modelObject, int pageNo = 1, int pageSize = Globals.AdminDefaultPageCount)
+        {
+            try
+            {
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                
+                var modelType = coreAdminService.GetModelType(model);
+                if (modelType == null)
+                {
+                    return BadRequest($"Model {model} is not found");
+                }
+
+                var result = await coreAdminService.SortItemsFor(modelType, pageNo, pageSize, modelObject, childModel); //_adminRepository.UpdateItemFor(model, fieldObject);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while sorting items for model: {model}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
         [Route("modules/[area]/api/{model:required}/grid/{actionName:required}")]
         public async Task<IActionResult> ExecuteGridAction(string model, string actionName, [FromBody]object modelObject)
         {

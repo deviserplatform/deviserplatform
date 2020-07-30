@@ -140,22 +140,22 @@ namespace Deviser.Modules.Language.Services
         //    {
         //        case "Layouts":
         //            var layout = _layoutRepository.GetLayout(item.Id);
-        //            layout.IsDeleted = false;
+        //            layout.IsActive = false;
         //            resultItem = _layoutRepository.UpdateLayout(layout);
         //            break;
         //        case "Page":
         //            var page = _pageRepository.GetPage(item.Id);
-        //            page.IsDeleted = false;
+        //            page.IsCurrentPage = false;
         //            resultItem = _pageRepository.UpdatePage(page);
         //            break;
         //        case "PageContent":
         //            var pageContent = _pageContentRepository.Get(item.Id);
-        //            pageContent.IsDeleted = false;
+        //            pageContent.IsActive = false;
         //            resultItem = _pageContentRepository.Update(pageContent);
         //            break;
         //        case "PageModule":
         //            var pageModule = _pageRepository.GetPageModule(item.Id);
-        //            pageModule.IsDeleted = false;
+        //            pageModule.IsActive = false;
         //            resultItem = _pageRepository.UpdatePageModule(pageModule);
         //            break;
         //    };
@@ -200,60 +200,55 @@ namespace Deviser.Modules.Language.Services
         public async Task<IFormResult<Core.Common.DomainTypes.Language>> CreateItem(Core.Common.DomainTypes.Language item)
         {
             var languageResult = _languageManager.CreateLanguage(item);
-            if (languageResult != null)
-            {
-                var result = new FormResult<Core.Common.DomainTypes.Language>(languageResult)
+            if (languageResult == null)
+                return new FormResult<Core.Common.DomainTypes.Language>()
                 {
-                    IsSucceeded = true,
-                    SuccessMessage = "Language has been added successfully"
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to add the language"
                 };
-                return await Task.FromResult(result);
-            }
-
-            return new FormResult<Core.Common.DomainTypes.Language>()
+            var result = new FormResult<Core.Common.DomainTypes.Language>(languageResult)
             {
-                IsSucceeded = false,
-                ErrorMessage = "Unable to add the language"
+                IsSucceeded = true,
+                SuccessMessage = "Language has been added successfully"
             };
+            return await Task.FromResult(result);
 
         }
 
         public async Task<IFormResult<Core.Common.DomainTypes.Language>> UpdateItem(Core.Common.DomainTypes.Language item)
         {
             var languageResult = _languageManager.UpdateLanguage(item);
-            if (languageResult != null)
-            {
-                // Make sure the required properties in _scopeService.PageContext are initialized in PageContext Middleware
-                var isMultilingual = _languageManager.GetActiveLanguages().Count > 1;
-                var currentUrl = _scopeService.PageContext.CurrentUrl;
-                var currentLocale = _scopeService.PageContext.CurrentLocale;
-                if (isMultilingual && !currentUrl.ToLower().StartsWith(currentLocale.ToLower()))
+            if (languageResult == null)
+                return new FormResult<Core.Common.DomainTypes.Language>()
                 {
-                    currentUrl = $"{currentLocale.ToLower()}/{currentUrl}";
-                }
-                else if (!isMultilingual && currentUrl.ToLower().StartsWith(currentLocale.ToLower()))
-                {
-                    currentUrl = currentUrl.Replace($"{currentLocale.ToLower()}/","");
-                }
-                var result = new FormResult<Core.Common.DomainTypes.Language>(languageResult)
-                {
-                    IsSucceeded = true,
-                    SuccessMessage = "Language has been updated successfully",
-                    SuccessAction = new OpenUrlAction()
-                    {
-                        OpenAfterSec = 5,
-                        Url = currentUrl
-                    }
-
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to update the language"
                 };
-                return await Task.FromResult(result);
-            }
-
-            return new FormResult<Core.Common.DomainTypes.Language>()
+            // Make sure the required properties in _scopeService.PageContext are initialized in PageContext Middleware
+            var isMultilingual = _languageManager.GetActiveLanguages().Count > 1;
+            var currentUrl = _scopeService.PageContext.CurrentUrl;
+            var currentLocale = _scopeService.PageContext.CurrentLocale;
+            if (isMultilingual && !currentUrl.ToLower().StartsWith(currentLocale.ToLower()))
             {
-                IsSucceeded = false,
-                ErrorMessage = "Unable to update the language"
+                currentUrl = $"{currentLocale.ToLower()}/{currentUrl}";
+            }
+            else if (!isMultilingual && currentUrl.ToLower().StartsWith(currentLocale.ToLower()))
+            {
+                currentUrl = currentUrl.Replace($"{currentLocale.ToLower()}/","");
+            }
+            var result = new FormResult<Core.Common.DomainTypes.Language>(languageResult)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "Language has been updated successfully. Please wait, this page will be reloaded in 3 seconds",
+                SuccessAction = new OpenUrlAction()
+                {
+                    OpenAfterSec = 3,
+                    Url = currentUrl
+                }
+
             };
+            return await Task.FromResult(result);
+
         }
 
         public async Task<IAdminResult<Core.Common.DomainTypes.Language>> DeleteItem(string itemId)

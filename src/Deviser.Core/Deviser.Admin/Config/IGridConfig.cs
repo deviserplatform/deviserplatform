@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 using Deviser.Admin.Config;
 using Newtonsoft.Json;
 
@@ -11,7 +12,10 @@ namespace Deviser.Admin
         ICollection<Field> Fields { get; }
         bool IsEditVisible { get; set; }
         bool IsDeleteVisible { get; set; }
+        bool IsSortable { get; }
         IDictionary<string, AdminAction> RowActions { get; }
+        public Field SortField { get; set; }
+        [JsonIgnore] public LambdaExpression OnSortExpression { get; set; }
         void AddField(Field field);
         void RemoveField(Field field);
     }

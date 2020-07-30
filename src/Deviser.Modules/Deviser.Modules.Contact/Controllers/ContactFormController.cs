@@ -99,9 +99,9 @@ namespace Deviser.Modules.ContactForm.Controllers
             var pageModule = _moduleManager.GetPageModule(pageModuleId);
             var pageModuleProperties = pageModule.Properties;
             //Copy property options from master data
-            if (pageModule.ModuleAction.Properties != null && pageModule.ModuleAction.Properties.Count > 0)
+            if (pageModule.ModuleView.Properties != null && pageModule.ModuleView.Properties.Count > 0)
             {
-                foreach (var prop in pageModule.ModuleAction.Properties)
+                foreach (var prop in pageModule.ModuleView.Properties)
                 {
                     var propValue = pageModule.Properties.FirstOrDefault(p => p.Id == prop.Id);
                     if (propValue != null)

@@ -152,35 +152,35 @@ namespace Deviser.Core.Library.Layouts
             _pageRepository.UpdatePageActiveAndLayout(page);
         }
 
-        private void DeleteModulesAndContent(PageLayout pageLayout)
-        {
-            //When page layout is being copied, all modules and contents should be deleted.
-            var pageModules = _pageRepository.GetPageModules(pageLayout.PageId);
-            var pageContents = _pageContentRepository.Get(pageLayout.PageId, Globals.FallbackLanguage);
-            if (pageModules != null && pageModules.Count > 0)
-            {
-                foreach (var pageModule in pageModules)
-                {
-                    pageModule.IsDeleted = true;
-                    _pageRepository.UpdatePageModule(pageModule);
-                }
-            }
+        //private void DeleteModulesAndContent(PageLayout pageLayout)
+        //{
+        //    //When page layout is being copied, all modules and contents should be deleted.
+        //    var pageModules = _pageRepository.GetPageModules(pageLayout.PageId);
+        //    var pageContents = _pageContentRepository.Get(pageLayout.PageId, Globals.FallbackLanguage);
+        //    if (pageModules != null && pageModules.Count > 0)
+        //    {
+        //        foreach (var pageModule in pageModules)
+        //        {
+        //            pageModule.IsActive = false;
+        //            _pageRepository.UpdatePageModule(pageModule);
+        //        }
+        //    }
 
-            if (pageContents != null && pageContents.Count > 0)
-            {
-                foreach (var content in pageContents)
-                {
-                    content.IsDeleted = true;
-                    _pageContentRepository.Update(content);
-                }
-            }
-        }
+        //    if (pageContents != null && pageContents.Count > 0)
+        //    {
+        //        foreach (var content in pageContents)
+        //        {
+        //            content.IsActive = false;
+        //            _pageContentRepository.Update(content);
+        //        }
+        //    }
+        //}
 
         public Layout UpdateLayout(Layout layout)
         {
             try
             {
-                layout.IsDeleted = false;
+                layout.IsActive = true;
                 var result = _layoutRepository.UpdateLayout(layout);
                 return result;
             }

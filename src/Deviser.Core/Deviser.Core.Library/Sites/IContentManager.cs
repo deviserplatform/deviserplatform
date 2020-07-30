@@ -14,7 +14,7 @@ namespace Deviser.Core.Library.Sites
         void AddOrUpdatePageContents(List<PageContent> contents);
         bool RemovePageContent(Guid id);
         bool DeletePageContent(Guid id);
-        void UpdateContentPermission(PageContent pageContent);
+        PageContent UpdateContentPermission(PageContent pageContent);
         bool HasViewPermission(PageContent pageContent, bool isForCurrentRequest = false);
         bool HasEditPermission(PageContent pageContent, bool isForCurrentRequest = false);
     }

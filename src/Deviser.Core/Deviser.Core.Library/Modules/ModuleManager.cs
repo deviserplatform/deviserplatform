@@ -68,7 +68,7 @@ namespace Deviser.Core.Library.Modules
         {
             try
             {
-                var pageModules = _pageRepository.GetDeletedPageModules();               
+                var pageModules = _pageRepository.GetDeletedPageModules();
                 return pageModules;
             }
             catch (Exception ex)
@@ -105,9 +105,9 @@ namespace Deviser.Core.Library.Modules
                     else
                     {
                         dbPageModule.Title = pageModule.Title;
-                        dbPageModule.IsDeleted = false;
+                        dbPageModule.IsActive = true;
                         dbPageModule.ContainerId = pageModule.ContainerId;
-                        dbPageModule.SortOrder = pageModule.SortOrder;                       
+                        dbPageModule.SortOrder = pageModule.SortOrder;
                         dbPageModule.Properties = pageModule.Properties;
                         dbPageModule = _pageRepository.UpdatePageModule(dbPageModule);
                     }
@@ -130,22 +130,22 @@ namespace Deviser.Core.Library.Modules
             {
                 if (pageModules != null)
                 {
-                    _pageRepository.UpdatePageModules(pageModules);
+                    _pageRepository.AddOrUpdatePageModules(pageModules);
 
-                    foreach (var pageModule in pageModules)
-                    {
-                        var adminPermissions = AddAdminPermissions(pageModule) as List<ModulePermission>;
+                    //foreach (var pageModule in pageModules)
+                    //{
+                    //    var adminPermissions = AddAdminPermissions(pageModule) as List<ModulePermission>;
 
-                        if (pageModule.ModulePermissions == null)
-                        {
-                            pageModule.ModulePermissions = adminPermissions;
-                        }
-                        else
-                        {
-                            adminPermissions.AddRange(pageModule.ModulePermissions);
-                            pageModule.ModulePermissions = adminPermissions;
-                        }
-                    }
+                    //    if (pageModule.ModulePermissions == null)
+                    //    {
+                    //        pageModule.ModulePermissions = adminPermissions;
+                    //    }
+                    //    else
+                    //    {
+                    //        adminPermissions.AddRange(pageModule.ModulePermissions);
+                    //        pageModule.ModulePermissions = adminPermissions;
+                    //    }
+                    //}
                 }
             }
             catch (Exception ex)
@@ -154,18 +154,17 @@ namespace Deviser.Core.Library.Modules
             }
         }
 
-        public void UpdateModulePermission(PageModule pageModule)
+        public PageModule UpdateModulePermission(PageModule pageModule)
         {
             try
             {
-                if (pageModule != null)
-                {
-                    _pageRepository.UpdateModulePermission(pageModule);
-                }
+                return _pageRepository.UpdateModulePermission(pageModule);
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format("Error occured while updating page content"), ex);
+                throw;
             }
         }
 
@@ -190,7 +189,7 @@ namespace Deviser.Core.Library.Modules
             return adminPermissions;
         }
 
-        public bool HasViewPermission(PageModule pageModule, bool isForCurrentRequest=false)
+        public bool HasViewPermission(PageModule pageModule, bool isForCurrentRequest = false)
         {
             if (pageModule == null || pageModule.ModulePermissions == null)
                 throw new ArgumentNullException("pageModule.ModulePermissions", "PageModule and ModulePermissions should not be null");
@@ -198,7 +197,7 @@ namespace Deviser.Core.Library.Modules
             var result = (pageModule.ModulePermissions.Any(modulePermission => modulePermission.PermissionId == Globals.ModuleViewPermissionId &&
               (modulePermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == modulePermission.RoleId)))));
 
-            var page = isForCurrentRequest? _scopeService.PageContext.CurrentPage : _pageRepository.GetPageAndPagePermissions(pageModule.PageId);
+            var page = isForCurrentRequest ? _scopeService.PageContext.CurrentPage : _pageRepository.GetPageAndPagePermissions(pageModule.PageId);
             return result || (pageModule.InheritViewPermissions && HasViewPermission(page));
         }
 

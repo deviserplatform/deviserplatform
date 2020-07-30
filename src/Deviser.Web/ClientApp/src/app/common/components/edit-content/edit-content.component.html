@@ -1,0 +1,168 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left" *ngIf="pageContent">Edit {{pageContent.contentType.label}}</h4>
+    <button type="button" class="btn btn-light pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+        <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/x.svg'| envPath"></i>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="edit-content-container" *ngIf="pageContent">
+        <div class="non-list" *ngIf="!isList">
+            <div *ngFor="let field of fields">
+                <ng-container *ngTemplateOutlet="editFieldSelector, context:{content:content, field:field}">
+                </ng-container>
+            </div>
+        </div>
+        <div class="list" *ngIf="isList">
+            <div *ngIf="viewState===viewStates.List">
+                <div class="row action-bar mb-3">
+                    <div class="col">
+                        <div class="float-left">
+                            <button type="button" class="btn btn-primary" (click)="newItem()">
+                                <i class="my-icon" aria-label="My icon"
+                                    [inlineSVG]="'assets/icons/plus-circle.svg'| envPath"></i>
+                                New
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-hover" style="max-height:500px;overflow:auto"
+                    *ngIf="content.items && content.items.length > 0">
+                    <thead>
+                        <tr>
+                            <th *ngFor="let field of fields">{{(field.fieldLabel || field.fieldName)}}</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of content.items" class="item">
+                            <td *ngFor="let field of fields">
+                                <ng-container *ngTemplateOutlet="previewFieldSelector, context:{content:item, field:field}">
+                                </ng-container>
+                            </td>
+                            <td>
+                                <button type="button" class="action-control btn btn-sm btn-light"
+                                    (click)="editItem(item);">
+                                    <i class="my-icon" aria-label="My icon"
+                                        [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="action-control btn btn-sm btn-light"
+                                    (click)="removeItem(item);">
+                                    <i class="my-icon" aria-label="My icon"
+                                        [inlineSVG]="'assets/icons/x.svg'| envPath"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div *ngIf="!content.items || content.items.length <= 0">
+                    No contents! Click edit button to add some contents.
+                </div>
+            </div>
+            <div *ngIf="viewState===viewStates.New || viewState===viewStates.Edit">
+                <div *ngFor="let field of fields">
+                    <ng-container *ngTemplateOutlet="editFieldSelector, context:{content:selectedItem, field:field}">
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <div *ngIf="viewState===viewStates.List">
+        <button class="btn btn-default" type="button" (click)="cancel()">Cancel</button>
+        <button class="btn btn-primary" type="button" (click)="save()">Save</button>
+    </div>
+    <div *ngIf="viewState===viewStates.New || viewState===viewStates.Edit">
+        <button class="btn btn-default" (click)="cancelDetailView()">Back to List</button>
+        <button class="btn btn-primary" (click)="updateItem()">Save Item</button>
+    </div>
+</div>
+
+<ng-template #editFieldSelector let-content="content" let-field="field">
+    <ng-container [ngSwitch]="field.contentFieldType.name">
+        <ng-container *ngSwitchCase="'Textarea'">
+            <div class="form-group">
+                <label for="field.fieldName">{{field.fieldLabel || field.fieldName}}</label>
+                <textarea class="form-control" [id]="field.fieldName" [(ngModel)]="content[field.fieldName]"></textarea>
+            </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'RichText'">
+            <div class="form-group">
+                <label for="field.fieldName">{{field.fieldLabel || field.fieldName}}</label>
+                <ckeditor [editor]="Editor" [id]="field.fieldName" [(ngModel)]="content[field.fieldName]"></ckeditor>
+            </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Date'">
+            <div class="form-group">
+                <label for="field.fieldName">{{field.fieldLabel || field.fieldName}}</label>
+                <div class="input-group date-control">
+                    <input type="text" class="form-control" [id]="field.fieldName"
+                        [(ngModel)]="content[field.fieldName]" #dp="bsDatepicker" bsDatepicker [bsConfig]="bsConfig">
+                    <div class="input-group-append">
+                        <button class="btn btn-secondary" type="button" (click)="dp.toggle()">
+                            <i class="my-icon" aria-label="My icon"
+                                [inlineSVG]="'assets/icons/calendar.svg' | envPath"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Link'">
+            <!-- <a [href]="getLinkUrl(content[field.fieldName])" target="_blank">
+                {{content[field.fieldName].linkText}}
+            </a> -->
+        </ng-container>
+        <ng-container *ngSwitchCase="'Attachment'">
+            <a [href]="content[field.fieldName].filePath" target="_blank">
+                {{content[field.fieldName].fileName}}
+            </a>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Text'">
+            <div class="form-group">
+                <label for="field.fieldName">{{field.fieldLabel || field.fieldName}}</label>
+                <input type="text" class="form-control" [id]="field.fieldName" [(ngModel)]="content[field.fieldName]">
+            </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Image'">
+            <!-- <img *ngIf="content[field.fieldName].imageUrl" [src]="content[field.fieldName].imageUrl"
+                alt="content[field.fieldName].imageAltText"> -->
+            <app-image [image]="content[field.fieldName]" [field]="field" [properties]="pageContent.properties" (imageSelected)="onImageSelected($event, content, field)">
+            </app-image>
+        </ng-container>
+    </ng-container>
+</ng-template>
+
+
+<ng-template #previewFieldSelector let-content="content" let-field="field">
+    <ng-container [ngSwitch]="field.contentFieldType.name" *ngIf="content[field.fieldName]">
+        <ng-container *ngSwitchCase="'Textarea'">
+            <div [innerHtml]="content[field.fieldName] | sanitizeHtml"></div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'RichText'">
+            <div [innerHtml]="content[field.fieldName] | sanitizeHtml"></div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Date'">
+            {{content[field.fieldName]}}
+        </ng-container>
+        <ng-container *ngSwitchCase="'Link'">
+            <a [href]="getLinkUrl(content[field.fieldName])" target="_blank">
+                {{content[field.fieldName].linkText}}
+            </a>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Attachment'">
+            <a [href]="content[field.fieldName].filePath" target="_blank">
+                {{content[field.fieldName].fileName}}
+            </a>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Text'">
+            <div [innerHtml]="content[field.fieldName] | sanitizeHtml"></div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Image'">
+            <img *ngIf="content[field.fieldName].imageUrl" [src]="getImageUrl(content[field.fieldName])"
+                alt="content[field.fieldName].imageAltText">
+        </ng-container>
+    </ng-container>
+</ng-template>

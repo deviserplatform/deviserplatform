@@ -44,9 +44,9 @@ namespace Deviser.Core.Library.Internal
             }
         }
 
-        public async Task<IActionResult> InvokeAction(HttpContext httpContext, ModuleAction moduleAction, ActionContext actionContext)
+        public async Task<IActionResult> InvokeAction(HttpContext httpContext, ModuleView moduleView, ActionContext actionContext)
         {            
-            return await InvokeAction(httpContext, moduleAction.ControllerNamespace, moduleAction.ControllerName, moduleAction.ActionName, actionContext);
+            return await InvokeAction(httpContext, moduleView.ControllerNamespace, moduleView.ControllerName, moduleView.ActionName, actionContext);
         }
 
         public async Task<IActionResult> InvokeAction(HttpContext httpContext, string controllerNamespace, string controllerName, string actionName, ActionContext actionContext)

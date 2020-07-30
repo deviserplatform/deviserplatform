@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { AlertComponent } from 'ngx-bootstrap/alert/alert.component';
 
 import { Alert } from '../../domain-types/alert';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-admin-alert',
@@ -10,9 +11,15 @@ import { Alert } from '../../domain-types/alert';
 })
 export class AdminAlertComponent implements OnInit {
 
-  @Input() alerts: Alert[];
+  alerts: Alert[] = [];
 
-  constructor() { }
+  constructor(private _alertService: AlertService) {
+    this._alertService.alerts.subscribe(alert => {
+      if (alert) {
+        this.alerts.push(alert)
+      }
+    });
+  }
 
   ngOnInit() {
   }

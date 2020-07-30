@@ -9,7 +9,7 @@ namespace Deviser.Admin.ConfiguratorTest.Models
         public string ContentData { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string CultureCode { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsActive { get; set; }
         public DateTime? LastModifiedDate { get; set; }
         public Guid PageContentId { get; set; }
 

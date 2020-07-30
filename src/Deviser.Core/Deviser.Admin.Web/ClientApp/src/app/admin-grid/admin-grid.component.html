@@ -15,15 +15,14 @@
         </div>
       </div>
 
-      <app-admin-alert class="admin-alerts" [alerts]="alerts"></app-admin-alert>
-
       <div class="row">
         <div class="col-sm-12 data-table">
           <table class="table table-bordered" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info"
             style="width: 100%;">
             <thead gridHeader (filterSortChange)="onFilterSortChange($event);"></thead>
-            <tbody *ngIf="entityRecords && entityRecords.data && entityRecords.data.length>0">
-              <tr *ngFor="let item of entityRecords.data">
+            <tbody *ngIf="entityRecords && entityRecords.data && entityRecords.data.length>0"
+              cdkDropList [cdkDropListData]="entityRecords.data" (cdkDropListDropped)="drop($event)">
+              <tr *ngFor="let item of entityRecords.data" cdkDrag [cdkDragDisabled]="!isSortable">
                 <td *ngFor="let field of adminConfig.modelConfig.gridConfig.fields">
                   <app-grid-control [field]="field" [item]="item" [lookUps]="this.adminConfig.lookUps">
                   </app-grid-control>

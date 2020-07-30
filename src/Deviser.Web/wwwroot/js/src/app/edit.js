@@ -20,12 +20,12 @@
     app.directive("devContentPreview", ['$compile', '$templateCache', devContentPreviewDir]);
 
     app.controller('EditCtrl', ['$scope', '$timeout', '$filter', '$q', '$uibModal', 'globals', 'devUtil', 'editLayoutUtil', 'layoutService', 'pageService',
-        'contentTypeService', 'layoutTypeService', 'pageContentService', 'moduleService', 'moduleActionService', 'pageModuleService', editCtrl]);
+        'contentTypeService', 'layoutTypeService', 'pageContentService', 'moduleService', 'moduleViewService', 'pageModuleService', editCtrl]);
 
     app.controller('EditContentCtrl', ['$scope', '$uibModalInstance', '$q', 'devUtil', 'languageService',
         'pageContentService', 'contentTranslationService', 'dateConverter','contentInfo', editContentCtrl]);
 
-    app.controller('EditModuleCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', '$sce', 'devUtil', 'globals', 'moduleActionService', 'moduleInfo', editModuleCtrl]);
+    app.controller('EditModuleCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', '$sce', 'devUtil', 'globals', 'moduleViewService', 'moduleInfo', editModuleCtrl]);
 
     app.controller('ModulePermissionCtrl', ['$scope', '$timeout', '$uibModalInstance', '$q', 'devUtil', 'globals', 'roleService', 'pageModuleService',
         'pageModule', modulePermissionCtrl]);
@@ -131,7 +131,7 @@
     }
 
     function editCtrl($scope, $timeout, $filter, $q, $uibModal, globals, devUtil, editLayoutUtil, layoutService, pageService,
-        contentTypeService, layoutTypeService, pageContentService, moduleService, moduleActionService, pageModuleService) {
+        contentTypeService, layoutTypeService, pageContentService, moduleService, moduleViewService, pageModuleService) {
         var vm = this;
 
         var containerIds = [];
@@ -156,7 +156,7 @@
         //vm.copyElement = copyElement;
         vm.editContent = editContent;
         vm.editModule = editModule;
-        vm.openModuleActionEdit = openModuleActionEdit;
+        vm.openModuleViewEdit = openModuleViewEdit;
         vm.changeModulePermission = changeModulePermission;
         vm.changeContentPermission = changeContentPermission;
         vm.saveProperties = saveProperties;
@@ -179,7 +179,7 @@
                     getLayout(),
                     getContentTypes(),
                     getLayoutTypes(),
-                    getModuleActions(),
+                    getModuleViews(),
                     getPageContents(),
                     getPageModules()
                 ]).then(function () {
@@ -296,10 +296,10 @@
                 moduleId = item.pageModule.moduleId
             }
             else {
-                moduleId = item.moduleAction.moduleId;
+                moduleId = item.moduleView.moduleId;
             }
 
-            moduleActionService.getEditActions(moduleId).then(function (editActions) {
+            moduleViewService.getEditActions(moduleId).then(function (editActions) {
                 if (!vm.selectedItem.pageModule) {
                     vm.selectedItem.pageModule = {};
                 }
@@ -310,7 +310,7 @@
             });
         }
 
-        function openModuleActionEdit(moduleAction) {
+        function openModuleViewEdit(moduleView) {
             var defer = $q.defer();
             var modalInstance = $uibModal.open({
                 animation: true,
@@ -322,7 +322,7 @@
                 resolve: {
                     moduleInfo: function () {
                         var returnObject = {
-                            moduleActionId: moduleAction.id,
+                            moduleViewId: moduleView.id,
                             pageModuleId: vm.selectedItem.id
                         };
                         return returnObject;
@@ -554,18 +554,18 @@
             return defer.promise;
         }
 
-        function getModuleActions() {
+        function getModuleViews() {
             var defer = $q.defer();
-            moduleActionService.get()
+            moduleViewService.get()
                 .then(function (data) {
-                    var moduleActions = data;
+                    var moduleViews = data;
                     vm.modules = [];
-                    _.forEach(moduleActions, function (moduleAction) {
+                    _.forEach(moduleViews, function (moduleView) {
                         vm.modules.push({
                             layoutTemplate: "module",
                             type: "module",
-                            moduleAction: moduleAction,    
-                            properties: moduleAction.properties
+                            moduleView: moduleView,    
+                            properties: moduleView.properties
                         });
                     });
                     defer.resolve('data received!');
@@ -661,7 +661,7 @@
                             var index = pageModule.sortOrder - 1;
                             var module = getPageModulesWithProperties(pageModule);
                             if (!module.title) {                               
-                                module.title = module.moduleAction.displayName + ' ' + (item.placeHolders.length + 1);
+                                module.title = module.moduleView.displayName + ' ' + (item.placeHolders.length + 1);
                             }
                             item.placeHolders.push(module);
                         });
@@ -735,9 +735,9 @@
         function getPageModulesWithProperties(pageModule) {
             var propertiesValue = pageModule.properties;
             var masterModule = _.find(vm.modules, function (item) {
-                return item.moduleAction.id === pageModule.moduleAction.id;
+                return item.moduleView.id === pageModule.moduleView.id;
             });
-            var properties = angular.copy(masterModule.moduleAction.properties);
+            var properties = angular.copy(masterModule.moduleView.properties);
 
             //Loading values to the properties
             _.forEach(properties, function (prop) {
@@ -755,7 +755,7 @@
                 layoutTemplate: "module",
                 type: "module",
                 title: pageModule.title,
-                moduleAction: pageModule.moduleAction,
+                moduleView: pageModule.moduleView,
                 pageModule: pageModule,
                 sortOrder: pageModule.sortOrder,
                 properties: properties
@@ -909,7 +909,7 @@
                 }
 
                 var properties = [];
-                var sourceProperties = (item.element.pageModule && item.element.pageModule.properties)? item.element.pageModule.properties : item.element.moduleAction.properties;
+                var sourceProperties = (item.element.pageModule && item.element.pageModule.properties)? item.element.pageModule.properties : item.element.moduleView.properties;
                 _.forEach(sourceProperties, function (srcProp) {
                     if (srcProp) {
                         var prop = {
@@ -926,12 +926,12 @@
                 if (item.element.pageModule && item.element.pageModule.module) {
                     //pagemodule from db
                     module.moduleId = item.element.pageModule.module.id;
-                    module.moduleActionId = item.element.pageModule.moduleActionId;                    
+                    module.moduleViewId = item.element.pageModule.moduleViewId;                    
                 }
                 else {
                     //newely created module                    
-                    module.moduleId = item.element.moduleAction.moduleId;
-                    module.moduleActionId = item.element.moduleAction.id;
+                    module.moduleId = item.element.moduleView.moduleId;
+                    module.moduleViewId = item.element.moduleView.id;
                     module.hasEditPermission = true; //New content always has edit permission                  
                     item.element.pageModule = module;
                 }
@@ -1220,10 +1220,10 @@
 
     };
 
-    function editModuleCtrl($scope, $timeout, $uibModalInstance, $q, $sce, devUtil, globals, moduleActionService, moduleInfo) {
+    function editModuleCtrl($scope, $timeout, $uibModalInstance, $q, $sce, devUtil, globals, moduleViewService, moduleInfo) {
         var vm = this;
         vm.pageModuleId = moduleInfo.pageModuleId;
-        vm.moduleActionId = moduleInfo.moduleActionId;
+        vm.moduleViewId = moduleInfo.moduleViewId;
 
         vm.cancel = cancel;
 
@@ -1232,7 +1232,7 @@
         /////////////////////////////////////////////
         /*Function declarations only*/
         function init() {
-            getModuleActionContent();
+            getModuleViewContent();
         }
 
         //Event handlers 
@@ -1240,8 +1240,8 @@
             $uibModalInstance.dismiss('cancel');
         }
 
-        function getModuleActionContent() {
-            moduleActionService.getEditActionView(pageContext.currentUrl, vm.pageModuleId, vm.moduleActionId).then(function (response) {
+        function getModuleViewContent() {
+            moduleViewService.getEditActionView(pageContext.currentUrl, vm.pageModuleId, vm.moduleViewId).then(function (response) {
                 console.log(response);
                 vm.editView = $sce.trustAsHtml(response);
             }, function (response) {
