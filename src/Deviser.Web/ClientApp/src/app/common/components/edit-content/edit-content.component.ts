@@ -23,6 +23,7 @@ import { Link } from '../../domain-types/link';
 import { PageService } from '../../services/page.service';
 import { Page } from '../../domain-types/page';
 import { Globals } from '../../config/globals';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-edit-content',
@@ -73,6 +74,14 @@ export class EditContentComponent implements OnInit {
     // let content = (contentTranslation && contentTranslation.contentData) ? JSON.parse(contentTranslation.contentData) : {};
     // return content;
     return this.contentTranslation.contentData;
+  }
+
+  get contentItems(): any[] {
+    if (!this.content || !this.content.items) return;
+
+    let contentItems: any[] = this.content.items;
+    let sortedItems = contentItems.sort((a, b) => a.sortOrder > b.sortOrder ? 1 : -1);
+    return sortedItems;
   }
 
   get fields(): ContentTypeField[] {
@@ -216,8 +225,14 @@ export class EditContentComponent implements OnInit {
     }
   }
 
-  getImageUrl(image: Image){
+  getImageUrl(image: Image) {
     return image && image.imageUrl ? `${this._baseUrl}${image.imageUrl}` : null;
+  }
+
+  drop(event: CdkDragDrop<any[]>) {
+    let gridItems = event.container.data;
+    moveItemInArray(gridItems, event.previousIndex, event.currentIndex);
+    gridItems.forEach((item, index) => item.sortOrder = index + 1);
   }
 
   private init() {
@@ -232,7 +247,7 @@ export class EditContentComponent implements OnInit {
 
       const currentCultureCode = this.pageContext.currentLocale;
       this.selectedLocale = this.languages.find(langauge => langauge.cultureCode === currentCultureCode);
-      //load correct translation
+      //load the current translation
       let translation = this.getTranslationForLocale(this.selectedLocale.cultureCode);
       this.contentTranslation = translation;
       this.deserializeContentTranslation();

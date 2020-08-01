@@ -25,8 +25,8 @@
                         </div>
                     </div>
                 </div>
-                <table class="table table-hover" style="max-height:500px;overflow:auto"
-                    *ngIf="content.items && content.items.length > 0">
+                <table class="table table-hover table-content-items" style="max-height:500px;overflow:auto"
+                    *ngIf="contentItems && contentItems.length > 0">
                     <thead>
                         <tr>
                             <th *ngFor="let field of fields">{{(field.fieldLabel || field.fieldName)}}</th>
@@ -34,21 +34,21 @@
                             <th>Delete</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr *ngFor="let item of content.items" class="item">
+                    <tbody cdkDropList [cdkDropListData]="contentItems" (cdkDropListDropped)="drop($event)">
+                        <tr *ngFor="let item of contentItems" class="item" cdkDrag>
                             <td *ngFor="let field of fields">
                                 <ng-container *ngTemplateOutlet="previewFieldSelector, context:{content:item, field:field}">
                                 </ng-container>
                             </td>
                             <td>
-                                <button type="button" class="action-control btn btn-sm btn-light"
+                                <button type="button" class="action-control btn btn-sm btn-default"
                                     (click)="editItem(item);">
                                     <i class="my-icon" aria-label="My icon"
                                         [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
                                 </button>
                             </td>
                             <td>
-                                <button type="button" class="action-control btn btn-sm btn-light"
+                                <button type="button" class="action-control btn btn-sm btn-default"
                                     (click)="removeItem(item);">
                                     <i class="my-icon" aria-label="My icon"
                                         [inlineSVG]="'assets/icons/x.svg'| envPath"></i>
@@ -57,7 +57,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <div *ngIf="!content.items || content.items.length <= 0">
+                <div *ngIf="!contentItems || contentItems.length <= 0">
                     No contents! Click edit button to add some contents.
                 </div>
             </div>
