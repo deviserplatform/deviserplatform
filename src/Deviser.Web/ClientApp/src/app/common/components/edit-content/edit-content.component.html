@@ -51,7 +51,7 @@
                                 <button type="button" class="action-control btn btn-sm btn-default"
                                     (click)="removeItem(item);">
                                     <i class="my-icon" aria-label="My icon"
-                                        [inlineSVG]="'assets/icons/x.svg'| envPath"></i>
+                                        [inlineSVG]="'assets/icons/trash-2.svg'| envPath"></i>
                                 </button>
                             </td>
                         </tr>
@@ -114,6 +114,7 @@
             <!-- <a [href]="getLinkUrl(content[field.fieldName])" target="_blank">
                 {{content[field.fieldName].linkText}}
             </a> -->
+            <app-link [link]="content[field.fieldName]" [field]="field" [properties]="pageContent.properties" (linkChanged)="onLinkChanged($event, content, field)"></app-link>
         </ng-container>
         <ng-container *ngSwitchCase="'Attachment'">
             <a [href]="content[field.fieldName].filePath" target="_blank">
@@ -126,9 +127,7 @@
                 <input type="text" class="form-control" [id]="field.fieldName" [(ngModel)]="content[field.fieldName]">
             </div>
         </ng-container>
-        <ng-container *ngSwitchCase="'Image'">
-            <!-- <img *ngIf="content[field.fieldName].imageUrl" [src]="content[field.fieldName].imageUrl"
-                alt="content[field.fieldName].imageAltText"> -->
+        <ng-container *ngSwitchCase="'Image'">            
             <app-image [image]="content[field.fieldName]" [field]="field" [properties]="pageContent.properties" (imageSelected)="onImageSelected($event, content, field)">
             </app-image>
         </ng-container>

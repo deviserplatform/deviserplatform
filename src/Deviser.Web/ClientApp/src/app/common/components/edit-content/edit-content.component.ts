@@ -24,6 +24,8 @@ import { PageService } from '../../services/page.service';
 import { Page } from '../../domain-types/page';
 import { Globals } from '../../config/globals';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { LinkType } from '../../domain-types/link-type';
+import { EditService } from '../../services/edit.service';
 
 @Component({
   selector: 'app-edit-content',
@@ -92,6 +94,7 @@ export class EditContentComponent implements OnInit {
     public bsModalRef: BsModalRef,
     private _coreService: CoreService,
     private _contentTranslationService: ContentTranslationService,
+    private _editService: EditService,
     private _pageContentService: PageContentService,
     private _langaugeService: LanguageService,
     private _pageService: PageService,
@@ -209,20 +212,25 @@ export class EditContentComponent implements OnInit {
     content[field.fieldName] = $event;
   }
 
+  onLinkChanged($event: Link, content: any, field: ContentTypeField) {
+    content[field.fieldName] = $event;
+  }
+
   getLinkUrl(content: any) {
-    let link: Link = content;
+    // let link: Link = content;
 
-    if (!link || !link.linkType) return '';
+    // if (!link || !link.linkType) return '';
 
-    if (link.linkType === 'URL') {
-      return link.url;
-    } else if (link.linkType === 'PAGE') {
-      let page = this.pages.find(p => p.id === link.pageId);
-      let translation = page.pageTranslation.find(pt => pt.locale === this.pageContext.currentLocale);
-      translation = translation ? translation : page.pageTranslation[0];
-      let url = page.pageTypeId === Globals.appSettings.pageTypes.url ? translation.uRL : `${this.pageContext.siteRoot}${translation.uRL}`;
-      return url;
-    }
+    // if (link.linkType === LinkType.Url) {
+    //   return link.url;
+    // } else if (link.linkType === LinkType.Page) {
+    //   let page = this.pages.find(p => p.id === link.pageId);
+    //   let translation = page.pageTranslation.find(pt => pt.locale === this.pageContext.currentLocale);
+    //   translation = translation ? translation : page.pageTranslation[0];
+    //   let url = page.pageTypeId === Globals.appSettings.pageTypes.url ? translation.uRL : `${this.pageContext.siteRoot}${translation.uRL}`;
+    //   return url;
+    // }
+    return this._editService.getLinkUrl(content);
   }
 
   getImageUrl(image: Image) {

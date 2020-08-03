@@ -28,8 +28,8 @@ import { AttachmentComponent } from './common/components/attachment/attachment.c
 import { LinkComponent } from './common/components/link/link.component';
 import { ImageComponent } from './common/components/image/image.component';
 import { ImageSelectorComponent } from './common/components/image-selector/image-selector.component';
-import { FileSelectorComponent } from './common/components/file-selector/file-selector.component';
 import { DndUploadDirective } from './common/directives/dnd-upload.directive';
+import { EditLinkComponent } from './common/components/edit-link/edit-link.component';
 
 
 
@@ -49,8 +49,8 @@ import { DndUploadDirective } from './common/directives/dnd-upload.directive';
     LinkComponent,
     ImageComponent,
     ImageSelectorComponent,
-    FileSelectorComponent,
-    DndUploadDirective
+    DndUploadDirective,
+    EditLinkComponent
   ],
   imports: [
     AlertModule.forRoot(),

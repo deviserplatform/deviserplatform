@@ -11,6 +11,7 @@ import { Page } from '../../domain-types/page';
 import { Globals } from '../../config/globals';
 import { Image } from '../../domain-types/image';
 import { DomSanitizer } from '@angular/platform-browser';
+import { LinkType } from '../../domain-types/link-type';
 
 @Component({
   selector: 'app-preview-content',
@@ -19,10 +20,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class PreviewContentComponent implements OnInit {
 
-  
+
   _pageContext: PageContext;
   pages: Page[];
-  
+
   private _baseUrl: string;
   private _fields: ContentTypeField[];
   private _pageContent: PageContent
@@ -53,7 +54,7 @@ export class PreviewContentComponent implements OnInit {
 
   constructor(private _sanitizer: DomSanitizer,
     private _pageService: PageService,
-    @Inject(WINDOW) private _window: any) {    
+    @Inject(WINDOW) private _window: any) {
     this._pageContext = _window.pageContext;
     if (this._pageContext.isEmbedded) {
       this._baseUrl = this._pageContext.siteRoot;
@@ -73,9 +74,9 @@ export class PreviewContentComponent implements OnInit {
 
     if (!link || !link.linkType) return '';
 
-    if (link.linkType === 'URL') {
+    if (link.linkType === LinkType.Url) {
       return link.url;
-    } else if (link.linkType === 'PAGE') {
+    } else if (link.linkType === LinkType.Page) {
       let page = this.pages.find(p => p.id === link.pageId);
       let translation = page.pageTranslation.find(pt => pt.locale === this._pageContext.currentLocale);
       translation = translation ? translation : page.pageTranslation[0];
@@ -84,7 +85,7 @@ export class PreviewContentComponent implements OnInit {
     }
   }
 
-  getImageUrl(image: Image){
+  getImageUrl(image: Image) {
     return image && image.imageUrl ? `${this._baseUrl}${image.imageUrl}` : null;
   }
 

@@ -216,7 +216,7 @@ export class EditComponent implements OnInit {
     }
     if (this.bsModalRef && this.bsModalRef.content) {
       permissionSaved = this.bsModalRef.content.permissionSaved as EventEmitter<any>;
-      permissionSaved.unsubscribe();
+      permissionSaved && permissionSaved.unsubscribe();
     }
     this.bsModalRef = this._modalService.show(EditPermissionComponent, param);
     permissionSaved = this.bsModalRef.content.permissionSaved as EventEmitter<any>;
@@ -251,7 +251,7 @@ export class EditComponent implements OnInit {
 
     if (this.bsModalRef && this.bsModalRef.content) {
       contentSaved = this.bsModalRef.content.contentSaved as EventEmitter<PageContentTranslation>;
-      contentSaved.unsubscribe();
+      contentSaved && contentSaved.unsubscribe();
     }
 
     this.bsModalRef = this._modalService.show(EditContentComponent, param), this._modalConfig;

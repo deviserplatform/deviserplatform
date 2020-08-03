@@ -1,5 +1,7 @@
+import { LinkType } from './link-type';
+
 export interface Link {
-    linkType: 'URL' | 'PAGE';
+    linkType: LinkType;
     linkText: string;
     isNewWindow: boolean;
     url: string;

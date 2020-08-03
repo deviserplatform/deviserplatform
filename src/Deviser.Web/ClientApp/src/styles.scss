@@ -483,15 +483,21 @@ body {
   }
 
   .modal-dialog {
-    min-height: calc(100vh - 60px);
-    max-width: unset;
+    // min-height: calc(100vh - 60px);
+    bottom: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    left: 10px;
+    max-width: unset;
     overflow: auto;
-    @media (max-width: 768px) {
-      min-height: calc(100vh - 20px);
-    }
+    position: absolute;
+    right: 10px;
+    top: 0;
+    width: 90%;
+    // @media (max-width: 768px) {
+    //   min-height: calc(100vh - 20px);
+    // }
     /*svg {
       width: 24px;
       stroke-width: 2px;
@@ -499,15 +505,19 @@ body {
   }
 
   .edit-content-modal {
-    width: 90%;
+    
     .modal-content {
       flex: 1;
       app-edit-content {
         display: flex;
         flex-direction: column;
         flex: 1;
-        .modal-body {
+        justify-content: space-around;
+        .modal-header {
           flex: 1;
+        }
+        .modal-body {
+          flex: 30;
           display: flex;
           flex-direction: column;
           .no-image-message {
@@ -536,21 +546,29 @@ body {
               flex-direction: row;
             }
           }
-          table.table-content-items {            
+          .link-container{
+            .link-preview-container{
+              display: flex;
+            }
+          }
+          table.table-content-items {
             tbody.cdk-drop-list-dragging tr:not(.cdk-drag-placeholder) {
               transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
             }
           }
         }
+        .modal-footer {
+          flex: 1;
+        }
       }
     }
   }
 
-  .image-selector-modal {
+  .image-selector-modal, .link-selector-modal {
     width: 80%;
     .modal-content {
       flex: 0.6;
-      app-image-selector {
+      app-image-selector, app-edit-link {
         display: flex;
         flex-direction: column;
         flex: 1;
@@ -564,7 +582,7 @@ body {
           }
           .image-selector-row {
             flex: 1;
-            .file-list {
+            .left-nav {
               padding: 1rem;
               border-right: 1px solid rgba($black, 0.125);
               .list-group {
