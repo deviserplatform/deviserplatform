@@ -31,7 +31,7 @@ export interface Page
         layout: Layout;
         parent: Page;
         pageType: PageType;
-        childPage: Page;
+        childPage: Page[];
         adminPage: AdminPage;
         //Non DB Properties
         isCurrentPage: boolean;

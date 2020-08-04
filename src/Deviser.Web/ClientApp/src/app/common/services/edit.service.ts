@@ -14,19 +14,26 @@ export class EditService {
 
   pages: Page[];
   private _pageContext: PageContext;
+  private _baseUrl: string;
 
   constructor(private _pageService: PageService,
     @Inject(WINDOW) _window: any) {
     this._pageContext = _window.pageContext;
-    _pageService.getPages().subscribe(pages => this.pages = pages)
+    _pageService.getPages().subscribe(pages => this.pages = pages);
+    if (this._pageContext.isEmbedded) {
+      this._baseUrl = this._pageContext.siteRoot;
+    }
+    else {
+      this._baseUrl = this._pageContext.debugBaseUrl;
+    }
   }
 
 
   getLinkUrl(link: Link) {
     if (!link || !link.linkType) return '';
 
-    if (link.linkType === LinkType.Url) {
-      return link.url;
+    if (link.linkType === LinkType.Url || link.linkType === LinkType.File) {
+      return `${this._baseUrl}${link.url}`;
     } else if (link.linkType === LinkType.Page) {
       let page = this.pages.find(p => p.id === link.pageId);
       let translation = page.pageTranslation.find(pt => pt.locale === this._pageContext.currentLocale);

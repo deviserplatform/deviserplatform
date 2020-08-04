@@ -5,7 +5,7 @@
     <div class="form-group">
         <div class="link-preview-container">            
             <div class="link-preview" *ngIf="link">
-                <a href="getLinkUrl()">{{link.linkText}}</a>                
+                <a [href]="getLinkUrl()">{{link.linkText}}</a>                
             </div>
             <div class="link-action-bar" *ngIf="link">
                 <button type="button" class="action-control btn btn-sm btn-light" (click)="showPopup();" title="Edit Link">

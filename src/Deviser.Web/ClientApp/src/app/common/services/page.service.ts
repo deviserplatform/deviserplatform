@@ -36,6 +36,18 @@ export class PageService extends BaseService {
     }
   }
 
+  getPageTree(): Observable<Page> {
+    const serviceUrl: string = `${this.baseUrl}api/page`;
+    let pageRoot$ = this.http.get<Page>(serviceUrl, { headers: this.httpHeaders }).pipe(
+      tap(next => {
+        // pageRoot$ = next;
+        this.log('fetched pages');
+      }),
+      catchError(this.handleError<Page>('getPages'))
+    );
+    return pageRoot$;
+  }
+
   getPage(id: string): Observable<any> {
     const serviceUrl: string = `${this.baseUrl}api/page/${id}`;
 

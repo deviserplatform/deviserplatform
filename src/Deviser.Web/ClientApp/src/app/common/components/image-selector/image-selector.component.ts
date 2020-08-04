@@ -218,7 +218,7 @@ export class ImageSelectorComponent implements OnInit {
   private upload(index: number, file: File) {
     this.progressInfos[index] = { value: 0, fileName: file.name };
 
-    this._assetService.upload(file).subscribe(
+    this._assetService.uploadImages(file).subscribe(
       event => {
         if (event.type === HttpEventType.UploadProgress) {
           this.progressInfos[index].value = Math.round(100 * event.loaded / event.total);

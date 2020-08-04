@@ -12,6 +12,7 @@ import { Globals } from '../../config/globals';
 import { Image } from '../../domain-types/image';
 import { DomSanitizer } from '@angular/platform-browser';
 import { LinkType } from '../../domain-types/link-type';
+import { EditService } from '../../services/edit.service';
 
 @Component({
   selector: 'app-preview-content',
@@ -52,7 +53,8 @@ export class PreviewContentComponent implements OnInit {
   }
 
 
-  constructor(private _sanitizer: DomSanitizer,
+  constructor(private _editService: EditService,
+    private _sanitizer: DomSanitizer,
     private _pageService: PageService,
     @Inject(WINDOW) private _window: any) {
     this._pageContext = _window.pageContext;
@@ -70,19 +72,7 @@ export class PreviewContentComponent implements OnInit {
   }
 
   getLinkUrl(content: any) {
-    let link: Link = content;
-
-    if (!link || !link.linkType) return '';
-
-    if (link.linkType === LinkType.Url) {
-      return link.url;
-    } else if (link.linkType === LinkType.Page) {
-      let page = this.pages.find(p => p.id === link.pageId);
-      let translation = page.pageTranslation.find(pt => pt.locale === this._pageContext.currentLocale);
-      translation = translation ? translation : page.pageTranslation[0];
-      let url = page.pageTypeId === Globals.appSettings.pageTypes.url ? translation.uRL : `${this._pageContext.siteRoot}${translation.uRL}`;
-      return url;
-    }
+    return this._editService.getLinkUrl(content);
   }
 
   getImageUrl(image: Image) {
