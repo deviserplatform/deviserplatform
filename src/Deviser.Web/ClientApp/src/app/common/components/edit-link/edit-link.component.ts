@@ -9,10 +9,11 @@ import { PageContext } from '../../domain-types/page-context';
 import { WINDOW } from '../../services/window.service';
 import { AlertService } from '../../services/alert.service';
 import { AssetService } from '../../services/asset.service';
-import { Observable, of } from 'rxjs';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 import { FileItem } from '../../domain-types/file-item';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { AlertType } from '../../domain-types/alert';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-link',
@@ -33,6 +34,7 @@ export class EditLinkComponent implements OnInit {
   selectedTab: string;
 
   private _pageContext: PageContext;
+  private _searchTerms = new BehaviorSubject<string>('');
 
   set link(value: Link) {
     this._link = value
@@ -71,6 +73,10 @@ export class EditLinkComponent implements OnInit {
     return false;
   }
 
+  search(searchText: string): void {
+    this._searchTerms.next(searchText);
+  }
+
   selectLink() {
     this.linkChanged.emit(this.link);
     this.bsModalRef.hide();
@@ -99,8 +105,18 @@ export class EditLinkComponent implements OnInit {
   }
 
   private init() {
-    this.getDocuments();
     this._pageService.getPageTree().subscribe(pageRoot => this.onGetPageRoot(pageRoot))
+
+    this._searchTerms.pipe(
+      // wait 300ms after each keystroke before considering the term
+      debounceTime(300),
+
+      // ignore new term if same as previous term
+      distinctUntilChanged(),
+
+      // switch to new search observable each time the term changes
+      switchMap((term: string) => this._assetService.searchDocuments(term)),
+    ).subscribe(files => this.onGetFiles(files));
   }
 
   private onGetPageRoot(pageRoot: Page) {
@@ -109,21 +125,17 @@ export class EditLinkComponent implements OnInit {
     this.processPage(this.pageRoot);
   }
 
-  private getDocuments() {
-    this._assetService.getDocuments().subscribe(files => {
-      if (!files) return;
-      files.forEach(image => {
-        image.path += '?' + Math.random() * 100;
-      });
-      this.files$ = of(files);
-      if (this.link && this.link.linkType === LinkType.File && this.link.url) {
-        let selectedFile = files.find(image => image.path.split('?')[0] === this.link.url.split('?')[0]);
-        selectedFile && this.selectFile(selectedFile);
-      }
+  private onGetFiles(files: FileItem[]) {
+    if (!files) return;
+    files.forEach(file => {
+      file.path += '?' + Math.random() * 100;
     });
+    this.files$ = of(files);
+    if (this.link && this.link.linkType === LinkType.File && this.link.url) {
+      let selectedFile = files.find(image => image.path.split('?')[0] === this.link.url.split('?')[0]);
+      selectedFile && this.selectFile(selectedFile);
+    }
   }
-
-
 
   private processPage(page: Page, levelPrefix?: string) {
     if (!levelPrefix) {

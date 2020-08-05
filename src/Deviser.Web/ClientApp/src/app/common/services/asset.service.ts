@@ -28,7 +28,7 @@ export class AssetService extends BaseService {
   }
 
   searchDocuments(term: string) {
-    const serviceUrl: string = `${this.baseUrl}api/upload/documents?search=${term}`;
+    const serviceUrl: string = `${this.baseUrl}api/upload/documents?searchTerm=${term}`;
     return this.http.get<FileItem[]>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched images')),
@@ -37,7 +37,7 @@ export class AssetService extends BaseService {
   }
 
   searchImages(term: string) {
-    const serviceUrl: string = `${this.baseUrl}api/upload/images?search=${term}`;
+    const serviceUrl: string = `${this.baseUrl}api/upload/images?searchTerm=${term}`;
     return this.http.get<FileItem[]>(serviceUrl, { headers: this.httpHeaders })
       .pipe(
         tap(_ => this.log('fetched images')),

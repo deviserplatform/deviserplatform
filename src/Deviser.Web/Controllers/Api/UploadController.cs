@@ -9,6 +9,7 @@ using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DeviserWI.Controllers.API
@@ -45,7 +46,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpGet]
         [Route("images")]
-        public IActionResult GetImages()
+        public IActionResult GetImages(string searchTerm)
         {
             try
             {
@@ -63,6 +64,13 @@ namespace DeviserWI.Controllers.API
                         Type = FileItemType.File
                     });
                 }
+
+                if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    fileList = fileList.Where(file => file.Name.Contains(searchTerm) || file.Path.Contains(searchTerm))
+                        .ToList();
+                }
+
 
                 if (fileList.Count > 0)
                     return Ok(fileList);
@@ -114,7 +122,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpGet]
         [Route("documents")]
-        public IActionResult Get()
+        public IActionResult Get(string searchTerm)
         {
             try
             {
@@ -131,6 +139,12 @@ namespace DeviserWI.Controllers.API
                         Extension = file.Extension,
                         Type = FileItemType.File
                     });
+                }
+
+                if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    fileList = fileList.Where(file => file.Name.Contains(searchTerm) || file.Path.Contains(searchTerm))
+                        .ToList();
                 }
 
                 if (fileList.Count > 0)

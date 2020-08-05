@@ -5,7 +5,7 @@ import { AlertService } from '../../services/alert.service';
 import { AlertType } from '../../domain-types/alert';
 import { map, catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { HttpEventType, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { of, Observable, Subject } from 'rxjs';
+import { of, Observable, Subject, BehaviorSubject } from 'rxjs';
 import { Image } from '../../domain-types/image';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { FileItem } from '../../domain-types/file-item';
@@ -43,7 +43,7 @@ export class ImageSelectorComponent implements OnInit {
 
   @ViewChild("fileUpload", { static: false }) fileUpload: ElementRef;
 
-  private _searchTerms = new Subject<string>();
+  private _searchTerms = new BehaviorSubject<string>('');
   private _pageContext: PageContext;
   private _image: Image;
   private readonly _baseUrl;
@@ -91,8 +91,8 @@ export class ImageSelectorComponent implements OnInit {
     this.bsModalRef.hide();
   }
 
-  search(term: string): void {
-    this._searchTerms.next(term);
+  search(searchText: string): void {
+    this._searchTerms.next(searchText);
   }
 
   isActive(file) {
@@ -143,7 +143,6 @@ export class ImageSelectorComponent implements OnInit {
   }
 
   private init() {
-    this.getImages();
     this.focusPointAttr = {
       x: 0,
       y: 0,
@@ -159,7 +158,7 @@ export class ImageSelectorComponent implements OnInit {
       }
     }
     this.getCropSize();
-    this.files$ = this._searchTerms.pipe(
+    this._searchTerms.pipe(
       // wait 300ms after each keystroke before considering the term
       debounceTime(300),
 
@@ -168,7 +167,7 @@ export class ImageSelectorComponent implements OnInit {
 
       // switch to new search observable each time the term changes
       switchMap((term: string) => this._assetService.searchImages(term)),
-    );
+    ).subscribe(files => this.onGetImages(files));
   }
 
   private getCropSize() {
@@ -180,18 +179,17 @@ export class ImageSelectorComponent implements OnInit {
 
   }
 
-  private getImages() {
-    this._assetService.getImages().subscribe(files => {
-      files.forEach(image => {
-        image.path += '?' + Math.random() * 100;
-      });
-      this.files$ = of(files);
-      if (this._image) {
-        let selectedFile = files.find(image => image.path.split('?')[0] === this._image.imageUrl.split('?')[0]);
-        selectedFile && this.selectFile(selectedFile);
-      }
+  private onGetImages(files: FileItem[]) {
+    files.forEach(image => {
+      image.path += '?' + Math.random() * 100;
     });
+    this.files$ = of(files);
+    if (this._image) {
+      let selectedFile = files.find(image => image.path.split('?')[0] === this._image.imageUrl.split('?')[0]);
+      selectedFile && this.selectFile(selectedFile);
+    }
   }
+
 
   private uploadSuccess(filePath) {
     // file is uploaded successfully    
