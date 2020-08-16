@@ -127,13 +127,8 @@ export class LayoutComponent {
       this.layoutTypes = results[0];
       this.pageLayouts = results[1];
       this.onGetLayouts();
-    }, error => {
-      const alert: Alert = {
-        alertType: AlertType.Error,
-        message: 'Unable to get this item, please contact administrator',
-        timeout: 5000
-      }
-      this._alertService.addAlert(alert);
+    }, error => {      
+      this._alertService.showMessage(AlertType.Error, 'Unable to  get this item');
     });
   }
 
@@ -270,23 +265,11 @@ export class LayoutComponent {
       this.selectedLayout.id = formValue.id;
       this.selectedLayout.placeHolders = formValue.placeHolders;
       this.selectedLayout.isChanged = false;
-      this.setPageLayout();
-      //     vm.isLayoutEdit = false;
-
-      const alert: Alert = {
-        alertType: AlertType.Success,
-        message: 'Layout has been saved',
-        timeout: 50000
-      }
-      this._alertService.addAlert(alert);
+      this.setPageLayout();      
+      this._alertService.showMessage(AlertType.Success, 'Layout has been saved');
     }
-    else {
-      const alert: Alert = {
-        alertType: AlertType.Error,
-        message: 'Layout has been saved',
-        timeout: 50000
-      }
-      this._alertService.addAlert(alert);
+    else {      
+      this._alertService.showMessage(AlertType.Error, 'Unable to save the Layout');
     }
   }
 

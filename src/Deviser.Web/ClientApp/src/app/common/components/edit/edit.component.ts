@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, EventEmitter } from '@angular/core';
-import { Alert, AlertType, Globals, Guid, ContentType, LayoutType, ModuleView, Page, PageLayout, PageContent, PageContext, PageModule, PlaceHolder, PageState, WINDOW } from 'deviser-shared';
+import { AlertType, Globals, Guid, ContentType, LayoutType, ModuleView, Page, PageLayout, PageContent, PageContext, PageModule, PlaceHolder, PageState, WINDOW } from 'deviser-shared';
 import { AlertService, PageService, PageContentService, LayoutService, LayoutTypeService, ContentTypeService, ModuleViewService, PageModuleService, SharedService} from 'deviser-shared';
 import { forkJoin } from 'rxjs';
 import { sortBy, reject } from 'lodash-es';
@@ -300,12 +300,7 @@ export class EditComponent implements OnInit {
     if (this.currentPageState === PageState.Draft) {
       this._pageService.publishPage(this.currentPage.id).subscribe(response => {
         this.currentPageState = PageState.Published;
-        this._alertService.showMessage(AlertType.Success, 'The Page has been published.');
-        const alert: Alert = {
-          alertType: AlertType.Success,
-          message: 'The Page has been published.',
-          timeout: 5000
-        }
+        this._alertService.showMessage(AlertType.Success, 'The Page has been published.');        
       }, error => this._alertService.showMessage(AlertType.Error, 'Cannot publish the page, please contact the administrator.'));
     }
   }

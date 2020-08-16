@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Alert } from '../../domain-types/alert';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'dev-alert',
@@ -8,9 +9,15 @@ import { Alert } from '../../domain-types/alert';
 })
 export class DevAlertComponent implements OnInit {
 
-  @Input() alerts: Alert[];
-  
-  constructor() { }
+  alerts: Alert[] = [];
+
+  constructor(private _alertService: AlertService) {
+    this._alertService.alerts.subscribe(alert => {
+      if (alert) {
+        this.alerts.push(alert)
+      }
+    });
+  }
 
   ngOnInit(): void {
   }

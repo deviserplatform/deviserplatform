@@ -60,6 +60,125 @@ body {
 
 .edit-layout-container {
   /*Following styles should be in global level since cdk appends the drag element in body*/
+
+  svg {
+    width: 18px;
+    stroke-width: 2px;
+  }
+
+  .card {
+    .card-body {
+      &.properties {
+        font-size: 0.8rem;
+        padding: 0.3rem;
+        .row {
+          margin-left: -5px;
+          margin-right: -5px;
+          padding: 0.3rem 0;
+          border-bottom: 1px solid #ddd;
+          display: flex;
+          align-items: center;
+
+          &:first-child {
+            padding-top: 0px;
+          }
+        }
+
+        .box-content {
+          margin: 20px -10px 0 -10px;
+        }
+
+        .form-control,
+        select.input-sm {
+          height: 1.8rem;
+          padding: 0.1rem;
+          font-size: 0.8rem;
+          border-top: none;
+          border-right: none;
+          border-left: none;
+        }
+
+        .col-md-12,
+        .col-md-6 {
+          padding-left: 5px;
+          padding-right: 2px;
+        }
+
+        // .btn-xs {
+        //   width: 100%;
+        // }
+      }
+    }
+    &.properties-container {
+      margin-bottom: 1rem;
+      flex: 3;
+    }
+    &.trash-container {
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .header-row {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    .action-bar {
+      font-size: $action-bar-font-size;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .left-group {
+        display: flex;
+        width: 75%;
+        align-items: center;
+      }
+      .right-group {
+        display: flex;
+        width: 25%;
+        align-items: center;
+      }
+      .action-control {
+        margin-left: 1rem;
+        &:first-child {
+          margin-left: 0;
+        }
+        input {
+          width: 10%;
+        }
+        @include unify-parent("button") {
+          font-size: $action-bar-font-size;
+        }
+        &.layout-name {
+          width: 34%;
+          .layout-name-readonly {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            // font-size: 0.84rem;
+          }
+          .layout-name-edit {
+            display: flex;
+            // align-items: center;
+            // .btn {
+            //   padding: 0.2rem 0.5rem;
+            // }
+          }
+        }
+        &.layout-dropdown {
+          width: 100%;
+        }
+      }
+    }
+    .page-name {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .content-row {
+    flex: 1;
+  }
+
   .drop-list {
     border: solid 1px #ccc;
     min-height: 60px;
@@ -156,6 +275,10 @@ body {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
 
+  .card-header {
+    padding: 0.4rem 0.6rem;
+  }
+
   .container-element {
     width: 100%;
     margin: 10px;
@@ -178,63 +301,6 @@ body {
       display: flex;
       padding: 0.4rem 0.6rem;
       margin-bottom: 0;
-    }
-
-    .container-element-body {
-      .drop-list {
-        border: none;
-      }
-      .preview-container {
-        padding: 10px;
-        img {
-          width: 150px;
-        }
-      }
-    }
-    &.root {
-      margin: 0;
-      & > .container-element-header {
-        padding: 0.6rem 0.8rem;
-      }
-    }
-    &.unassigned {
-      margin-top: 10px;
-      min-height: 100px;
-    }
-  }
-
-  .container-element-wrapper {
-    height: 90vh;
-    margin: 0;
-    overflow: auto;
-  }
-
-  overflow: hidden;
-  .dev-alerts {
-    min-width: 50%;
-    position: absolute;
-    right: 1em;
-    top: 1rem;    
-    z-index: 10000;
-  }
-
-  svg {
-    width: 18px;
-    stroke-width: 2px;
-  }
-
-  .card-header {
-    padding: 0.4rem 0.6rem;
-  }
-
-  .container-element {
-    &.root {
-      .container-element-header {
-        @extend .card-header;
-      }
-    }
-
-    .container-element-header {
       .title {
         flex-grow: 1;
         i {
@@ -250,6 +316,38 @@ body {
       }
     }
 
+    .container-element-body {
+      .drop-list {
+        border: none;
+      }
+      .preview-container {
+        padding: 10px;
+        img {
+          width: 150px;
+        }
+      }
+    }
+    &.root {
+      flex: 3;
+      margin: 0;
+      // .container-element-header {
+      //   @extend .card-header;
+      // }
+      & > .container-element-header {
+        padding: 0.4rem 0.6rem;
+      }
+      > .container-element-body {
+        height: 0px;
+        flex: 1 1 auto;
+        overflow-y: auto;
+      }
+    }
+    &.unassigned {
+      flex: 1;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      min-height: 100px;
+    }
     &.selected {
       border-color: $primary;
       .container-element {
@@ -286,115 +384,37 @@ body {
     }
   }
 
-  .card {
-    .card-body {
-      &.properties {
-        font-size: 0.8rem;
-        padding: 0.3rem;
-        .row {
-          margin-left: -5px;
-          margin-right: -5px;
-          padding: 0.3rem 0;
-          border-bottom: 1px solid #ddd;
-          display: flex;
-          align-items: center;
-
-          &:first-child {
-            padding-top: 0px;
-          }
-        }
-
-        .box-content {
-          margin: 20px -10px 0 -10px;
-        }
-
-        .form-control,
-        select.input-sm {
-          height: 1.8rem;
-          padding: 0.1rem;
-          font-size: 0.8rem;
-          border-top: none;
-          border-right: none;
-          border-left: none;
-        }
-
-        .col-md-12,
-        .col-md-6 {
-          padding-left: 5px;
-          padding-right: 2px;
-        }
-
-        // .btn-xs {
-        //   width: 100%;
-        // }
-      }
-    }
-    &.properties-container {
-      margin-bottom: 1rem;
-      height: 56vh;
-    }
+  .page-elements-col,
+  .container-element-col,
+  .properties-trash-col {
+    display: flex;
+    flex-direction: column;
   }
 
-  .header {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    .action-bar {
-      font-size: $action-bar-font-size;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      .left-group {
-        display: flex;
-        width: 75%;
-        align-items: center;
-      }
-      .right-group {
-        display: flex;
-        width: 25%;
-        align-items: center;
-      }
-      .action-control {
-        margin-left: 1rem;
-        &:first-child {
-          margin-left: 0;
-        }
-        input {
-          width: 10%;
-        }
-        @include unify-parent("button") {
-          font-size: $action-bar-font-size;
-        }
-        &.layout-name {
-          width: 34%;
-          .layout-name-readonly {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            // font-size: 0.84rem;
-          }
-          .layout-name-edit {
-            display: flex;
-            // align-items: center;
-            // .btn {
-            //   padding: 0.2rem 0.5rem;
-            // }
-          }
-        }
-        &.layout-dropdown {
-          width: 100%;
-        }
-      }
-    }
-    .page-name {
-      display: flex;
-      align-items: center;
-    }
+  .container-element-col {
+    // height: 90vh;
+    display: flex;
+    margin: 0;
+    overflow: auto;
+  }
+
+  overflow: hidden;
+  .dev-alerts {
+    min-width: 50%;
+    position: absolute;
+    right: 1em;
+    top: 1rem;
+    z-index: 10000;
   }
 
   .edit-container {
-    .header {
-      margin-top: 1rem;
-      margin-bottom: 1rem;
+    height: 100%;
+    .container-fluid {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .header-row {
       .edit-info {
         display: flex;
       }
@@ -409,20 +429,33 @@ body {
       }
     }
 
-    .content-type {
-      height: 44.3vh;
+    .page-elements-card {
+      // height: 44.3vh;
+      flex: 1;
       margin-bottom: 1rem;
-      .card-body {
+      > .card-body {
+        padding: 0;
+        flex: 1 1 auto;
         overflow-y: auto;
+        height: 0px;
+        .panel.card {
+          border: none;
+          border-radius: 0;
+        }
+        .panel.panel-open {
+          .panel.card {
+            border-bottom: 1px solid rgba($black, 0.125);
+          }
+        }
       }
     }
 
-    .module-view {
-      height: 44.3vh;
-      .card-body {
-        overflow-y: auto;
-      }
-    }
+    // .module-view {
+    //   height: 44.3vh;
+    //   .card-body {
+    //     overflow-y: auto;
+    //   }
+    // }
 
     .property-control {
       width: 100%;
@@ -432,6 +465,12 @@ body {
   }
 
   .layout-container {
+    height: 100%;
+    .container-fluid {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
     .header {
       .action-bar {
         .left-group {
@@ -461,6 +500,24 @@ body {
         display: flex;
         align-items: center;
       }
+    }
+
+    .layout-elements-col{
+      display: flex;
+      .layout-elements-card {
+        // height: 44.3vh;
+        flex: 1;
+        margin-bottom: 1rem;
+        > .card-body {          
+          flex: 1 1 auto;
+          overflow-y: auto;
+          height: 0px;        
+        }
+      }
+    }
+
+    .container-element.root{
+      margin-bottom: 1rem;
     }
   }
 

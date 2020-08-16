@@ -17,7 +17,7 @@ export class AlertService {
     this._alertSubject.next(alert);
   }
 
-  showMessage(alertType: AlertType, message: string, timeout: number = 50000) {
+  showMessage(alertType: AlertType, message: string, timeout: number = 10000) {
     this._alertSubject.next({
       alertType,
       message,

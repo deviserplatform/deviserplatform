@@ -19,7 +19,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { QuillModule } from 'ngx-quill'
 
-
+import { DeviserSharedModule } from 'deviser-shared';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AdminGridComponent } from './admin-grid/admin-grid.component';
@@ -33,7 +33,6 @@ import { ValidationErrorComponent } from './validation-error/validation-error.co
 import { EntityFormComponent } from './entity-form/entity-form.component';
 import { ChildGridComponent } from './child-grid/child-grid.component';
 import { CheckboxListComponent } from './common/components/checkbox-list/checkbox-list.component';
-import { AdminAlertComponent } from './common/components/admin-alert/admin-alert.component';
 import { WINDOW_PROVIDERS } from './common/services/window.service';
 import { EnvPathPipe } from './common/pipes/env-path.pipe';
 import { AdminTreeComponent } from './admin-tree/admin-tree.component';
@@ -44,13 +43,10 @@ import { GridHeaderComponent } from './common/components/grid-header/grid-header
 import { GridControlComponent } from './common/components/grid-control/grid-control.component';
 import { DevCheckboxComponent } from './common/components/controls/dev-checkbox/dev-checkbox.component';
 import { CheckBoxListComponent } from './common/components/controls/check-box-list/check-box-list.component';
-import { AlertService } from './common/services/alert.service';
-
 
 @NgModule({
   declarations: [
     AppComponent,
-    AdminAlertComponent,
     AdminFormComponent,
     AdminGridComponent,
     AdminTreeComponent,
@@ -80,6 +76,7 @@ import { AlertService } from './common/services/alert.service';
     BsDatepickerModule.forRoot(),
     CdkTreeModule,
     CKEditorModule,
+    DeviserSharedModule,
     DragDropModule,
     FormsModule,
     HttpClientModule,
@@ -92,7 +89,6 @@ import { AlertService } from './common/services/alert.service';
     ReactiveFormsModule
   ],
   providers: [
-    AlertService,
     DatePipe,
     RecordIdPipe,
     WINDOW_PROVIDERS

@@ -1,6 +1,6 @@
 <div class="layout-container">
   <div class="container-fluid">
-    <div class="row header">
+    <div class="row header-row">
       <div class="col-2">
         <h3 class="layout-title">
           Layout Designer
@@ -60,9 +60,9 @@
         <b>Page: </b><span *ngIf="pageContext && pageContext.currentTranslation">{{pageContext.currentTranslation.name}}</span>
       </div>
     </div>
-    <div class="row">
-      <div class="col-2">
-        <div class="card">
+    <div class="row content-row">
+      <div class="col-2 layout-elements-col">
+        <div class="card layout-elements-card">
           <div class="card-header">
             <b>New Elements</b>
           </div>
@@ -83,7 +83,7 @@
           </div>
         </div>
       </div>
-      <div class="col container-element-wrapper">
+      <div class="col container-element-col">
         <div class="container-element root">
           <div class="container-element-header">
             <b>Page Containers</b>
@@ -94,7 +94,7 @@
           </div>
         </div>
       </div>
-      <div class="col-2">
+      <div class="col-2 properties-trash-col">
         <div class="card properties-container">
           <div class="card-header">
             <b>Selected</b>

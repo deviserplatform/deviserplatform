@@ -1,9 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
@@ -45,8 +47,10 @@ import { PreviewContentComponent } from './common/components/preview-content/pre
     PreviewContentComponent    
   ],
   imports: [
+    AccordionModule.forRoot(),
     AlertModule.forRoot(),
     AppRoutingModule,
+    BrowserAnimationsModule,
     BrowserModule,
     BsDatepickerModule.forRoot(),
     CKEditorModule,
