@@ -211,13 +211,11 @@ body {
 
   overflow: hidden;
   .dev-alerts {
+    min-width: 50%;
     position: absolute;
-    left: 0;
-    right: 0;
-    margin-right: auto;
-    margin-left: auto;
-    top: 1rem;
-    z-index: 10;
+    right: 1em;
+    top: 1rem;    
+    z-index: 10000;
   }
 
   svg {
@@ -244,7 +242,8 @@ body {
         }
       }
 
-      .permission-action {
+      .content-actions {
+        @extend .btn-group;
         .action-control {
           border-radius: unset;
         }

@@ -12,24 +12,25 @@ import { InlineSVGModule } from 'ng-inline-svg';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgSelectModule } from '@ng-select/ng-select';
 
+import { DeviserSharedModule } from 'deviser-shared';
+// import { EnvPathPipe } from 'deviser-shared';
+// import { ConfirmDialogComponent } from 'deviser-shared';
+// import { DevAlertComponent } from 'deviser-shared';
+// import { SanitizeHtmlPipe } from 'deviser-shared';
+// import { LinkComponent } from 'deviser-shared';
+// import { ImageComponent } from 'deviser-shared';
+// import { ImageSelectorComponent } from 'deviser-shared';
+// import { DndUploadDirective } from 'deviser-shared';
+// import { EditLinkComponent } from 'deviser-shared';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { EditComponent } from './common/components/edit/edit.component';
 import { LayoutComponent } from './common/components/layout/layout.component';
-import { WINDOW_PROVIDERS } from './common/services/window.service';
-import { EnvPathPipe } from './common/pipes/env-path.pipe';
-import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
-import { DevAlertComponent } from './common/components/alert/dev-alert.component';
 import { EditPermissionComponent } from './common/components/edit-permission/edit-permission.component';
 import { EditContentComponent } from './common/components/edit-content/edit-content.component';
 import { PreviewContentComponent } from './common/components/preview-content/preview-content.component';
-import { SanitizeHtmlPipe } from './common/pipes/sanitize-html.pipe';
-import { AttachmentComponent } from './common/components/attachment/attachment.component';
-import { LinkComponent } from './common/components/link/link.component';
-import { ImageComponent } from './common/components/image/image.component';
-import { ImageSelectorComponent } from './common/components/image-selector/image-selector.component';
-import { DndUploadDirective } from './common/directives/dnd-upload.directive';
-import { EditLinkComponent } from './common/components/edit-link/edit-link.component';
+
 
 
 
@@ -38,19 +39,10 @@ import { EditLinkComponent } from './common/components/edit-link/edit-link.compo
     AppComponent,
     EditComponent,
     LayoutComponent,
-    EnvPathPipe,
-    ConfirmDialogComponent,
-    DevAlertComponent,
+   
     EditPermissionComponent,
     EditContentComponent,
-    PreviewContentComponent,
-    SanitizeHtmlPipe,
-    AttachmentComponent,
-    LinkComponent,
-    ImageComponent,
-    ImageSelectorComponent,
-    DndUploadDirective,
-    EditLinkComponent
+    PreviewContentComponent    
   ],
   imports: [
     AlertModule.forRoot(),
@@ -58,16 +50,26 @@ import { EditLinkComponent } from './common/components/edit-link/edit-link.compo
     BrowserModule,
     BsDatepickerModule.forRoot(),
     CKEditorModule,
+    DeviserSharedModule,
+    // ConfirmDialogComponent,
+    // DevAlertComponent,
     DragDropModule,
-    HttpClientModule,
-    ImageCropperModule, 
-    InlineSVGModule.forRoot(),
-    NgSelectModule,
+    // DndUploadDirective,
+    // EditLinkComponent,
+    // EnvPathPipe,
     FormsModule,
+    HttpClientModule,
+    // ImageComponent,
+    ImageCropperModule, 
+    // ImageSelectorComponent,
+    InlineSVGModule.forRoot(),
+    // LinkComponent,
+    ModalModule.forRoot(), 
+    NgSelectModule,    
     ReactiveFormsModule,
-    ModalModule.forRoot(),
+    // SanitizeHtmlPipe
   ],
-  providers: [WINDOW_PROVIDERS],
+  // providers: [WINDOW_PROVIDERS],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

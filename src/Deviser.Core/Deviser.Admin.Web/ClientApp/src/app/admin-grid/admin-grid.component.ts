@@ -53,7 +53,9 @@ export class AdminGridComponent implements OnInit {
   private confirmDialogComponent: ConfirmDialogComponent;
 
   get isSortable(): boolean {
-    return this.adminConfig.modelConfig.gridConfig.isSortable;
+    return this.adminConfig && this.adminConfig.modelConfig &&
+      this.adminConfig.modelConfig.gridConfig &&
+      this.adminConfig.modelConfig.gridConfig.isSortable;
   }
 
   constructor(private _adminService: AdminService,
@@ -62,7 +64,7 @@ export class AdminGridComponent implements OnInit {
     private _router: Router,
     @Inject(WINDOW) private _window: any) {
     this.getAdminConfig();
-    this.daConfig = _window.daConfig;    
+    this.daConfig = _window.daConfig;
   }
 
   ngOnInit() {

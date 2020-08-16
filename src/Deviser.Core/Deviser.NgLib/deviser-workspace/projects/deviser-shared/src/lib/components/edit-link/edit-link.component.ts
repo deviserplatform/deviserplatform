@@ -12,7 +12,7 @@ import { AssetService } from '../../services/asset.service';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { FileItem } from '../../domain-types/file-item';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { AlertType } from '../../domain-types/alert';
+import { AlertType } from '../../domain-types/alert-type';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 @Component({

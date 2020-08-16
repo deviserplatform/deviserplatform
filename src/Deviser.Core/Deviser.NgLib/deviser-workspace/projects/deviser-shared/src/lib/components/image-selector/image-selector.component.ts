@@ -2,7 +2,7 @@ import { Component, OnInit, EventEmitter, ViewChild, ElementRef, Inject } from '
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { AssetService } from '../../services/asset.service';
 import { AlertService } from '../../services/alert.service';
-import { AlertType } from '../../domain-types/alert';
+import { AlertType } from '../../domain-types/alert-type';
 import { map, catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { HttpEventType, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { of, Observable, Subject, BehaviorSubject } from 'rxjs';

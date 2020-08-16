@@ -1,16 +1,7 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { PlaceHolder } from '../../domain-types/place-holder';
-import { Globals } from '../../config/globals';
-import { RoleService } from '../../services/role.service';
-import { Role } from '../../domain-types/role';
-import { AlertService } from '../../services/alert.service';
-import { AlertType } from '../../domain-types/alert';
-import { PageModuleService } from '../../services/page-module.service';
-import { PageModule } from '../../domain-types/page-module';
-import { PageContent } from '../../domain-types/page-content';
-import { PageContentService } from '../../services/page-content.service';
-import { JsonPipe } from '@angular/common';
+import { AlertType, Globals, PageContent, PageModule, PlaceHolder, Role } from 'deviser-shared';
+import { AlertService, PageContentService, PageModuleService, RoleService, } from 'deviser-shared';
 
 @Component({
   selector: 'app-edit-permission',

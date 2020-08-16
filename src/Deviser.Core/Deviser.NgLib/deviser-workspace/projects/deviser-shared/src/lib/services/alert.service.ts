@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Alert, AlertType } from '../domain-types/alert';
+import { Alert } from '../domain-types/alert';
+import { AlertType } from '../domain-types/alert-type';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class AlertService {
     this._alertSubject.next(alert);
   }
 
-  showMessage(alertType: AlertType, message: string, timeout: number = 5000) {
+  showMessage(alertType: AlertType, message: string, timeout: number = 50000) {
     this._alertSubject.next({
       alertType,
       message,

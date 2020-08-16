@@ -1,37 +1,13 @@
 import { Component, OnInit, Inject, EventEmitter } from '@angular/core';
-import { PageContext } from '../../domain-types/page-context';
-import { WINDOW } from '../../services/window.service';
-import { AlertService } from '../../services/alert.service';
-import { Alert, AlertType } from '../../domain-types/alert';
-import { PageService } from '../../services/page.service';
-import { PageContentService } from '../../services/page-content.service';
-import { LayoutService } from '../../services/layout.service';
-import { LayoutTypeService } from '../../services/layout-type.service';
-import { ContentTypeService } from '../../services/content-type.service';
-import { ModuleViewService } from '../../services/module-view.service';
-import { PageModuleService } from '../../services/page-module.service';
+import { Alert, AlertType, Globals, Guid, ContentType, LayoutType, ModuleView, Page, PageLayout, PageContent, PageContext, PageModule, PlaceHolder, PageState, WINDOW } from 'deviser-shared';
+import { AlertService, PageService, PageContentService, LayoutService, LayoutTypeService, ContentTypeService, ModuleViewService, PageModuleService, SharedService} from 'deviser-shared';
 import { forkJoin } from 'rxjs';
-import { Page } from '../../domain-types/page';
-import { Globals } from '../../config/globals';
-import { PageLayout } from '../../domain-types/page-layout';
-import { ContentType } from '../../domain-types/content-type';
-import { PageElement } from '../../domain-types/page-element';
-import { LayoutType } from '../../domain-types/layout-type';
-import { ModuleView } from '../../domain-types/module-view';
-import { PageContent } from '../../domain-types/page-content';
-import { PageModule } from '../../domain-types/page-module';
-import { PlaceHolder } from '../../domain-types/place-holder';
-import { element } from 'protractor';
-import { sortBy, includes, reject, iteratee } from 'lodash-es';
-import { SharedService } from '../../services/shared.service';
+import { sortBy, reject } from 'lodash-es';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, DragRef, DropListRef, CdkDragEnter, CdkDragExit } from '@angular/cdk/drag-drop';
-import { Guid } from '../../services/guid';
-import { ItemsList } from '@ng-select/ng-select/lib/items-list';
-import { PageState } from '../../domain-types/page-state';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { EditContentComponent } from '../edit-content/edit-content.component';
 import { EditPermissionComponent } from '../edit-permission/edit-permission.component';
-import { PageContentTranslation } from '../../domain-types/page-content-translation';
+import { PageContentTranslation } from 'deviser-shared/lib/domain-types/page-content-translation';
 
 @Component({
   selector: 'app-edit',
@@ -40,7 +16,7 @@ import { PageContentTranslation } from '../../domain-types/page-content-translat
 })
 export class EditComponent implements OnInit {
 
-  alerts: Alert[] = [];
+  
   bsModalRef: BsModalRef;
   currentPage: Page;
   currentPageState: PageState;
@@ -91,12 +67,6 @@ export class EditComponent implements OnInit {
     private _sharedService: SharedService,
     @Inject(WINDOW) private _window: any) {
     this.pageContext = _window.pageContext;
-    this._alertService.alerts.subscribe(alert => {
-      if (alert) {
-        this.alerts.push(alert)
-      }
-    });
-
     this.init();
   }
 
@@ -245,7 +215,7 @@ export class EditComponent implements OnInit {
     let param: ModalOptions = JSON.parse(JSON.stringify(this._modalConfig));
     let contentSaved: EventEmitter<PageContentTranslation>;
     param.initialState = {
-      pageContentId: node.pageContent.id,      
+      pageContentId: node.pageContent.id,
     }
     param.class = 'edit-content-modal';
 

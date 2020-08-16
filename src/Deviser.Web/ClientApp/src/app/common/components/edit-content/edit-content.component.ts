@@ -1,31 +1,17 @@
 import { Component, OnInit, Inject, EventEmitter } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { PageContentService } from '../../services/page-content.service';
-import { LanguageService } from '../../services/language.service';
+import {
+  AlertService, CoreService, ContentTranslationService, EditService,
+  Guid, LanguageService, PageService, PageContentService
+} from 'deviser-shared';
 import { forkJoin } from 'rxjs';
-import { PageContext } from '../../domain-types/page-context';
-import { WINDOW } from '../../services/window.service';
-import { Language } from '../../domain-types/language';
-import { PageContentTranslation } from '../../domain-types/page-content-translation';
-import { ContentType } from '../../domain-types/content-type';
-import { PageContent } from '../../domain-types/page-content';
-import { CoreService } from '../../services/core.service';
-import { ContentTranslationService } from '../../services/content-translation.service';
-import { AlertService } from '../../services/alert.service';
-import { AlertType } from '../../domain-types/alert';
-import { Guid } from '../../services/guid';
-import { ContentTypeField } from '../../domain-types/content-type-field';
+import {
+  AlertType, ContentType, ContentTypeField, Image, Language, Link, 
+  Page, PageContent, PageContentTranslation, PageContext, WINDOW
+} from 'deviser-shared';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Image } from '../../domain-types/image';
-import { Link } from '../../domain-types/link';
-import { PageService } from '../../services/page.service';
-import { Page } from '../../domain-types/page';
-import { Globals } from '../../config/globals';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { LinkType } from '../../domain-types/link-type';
-import { EditService } from '../../services/edit.service';
 
 @Component({
   selector: 'app-edit-content',

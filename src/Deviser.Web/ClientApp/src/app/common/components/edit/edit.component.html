@@ -14,7 +14,6 @@
                 <div class="layout-name">
 
                 </div>
-                <dev-alert class="dev-alerts" [alerts]="alerts"></dev-alert>
             </div>
             <div class="col-2 action-bar">
                 <button type="button" class="action-control btn btn-sm btn-secondary"
@@ -226,14 +225,12 @@
                                 [alt]="node.contentType.name" />
                             <b>{{node.title}}</b>
                         </div>
-                        <div class="permission-action">
+                        <div class="content-actions">
                             <button type="button" class="action-control btn btn-sm btn-light"
                                 *ngIf="currentPageState === pageState.Published" (click)="onOpenPermission(node);">
                                 <i class="my-icon" aria-label="My icon"
                                     [inlineSVG]="'assets/icons/shield.svg'| envPath"></i>
                             </button>
-                        </div>
-                        <div class="edit-action">
                             <button type="button" class="action-control btn btn-sm btn-light"
                                 *ngIf="currentPageState === pageState.Published" (click)="onEditContent(node);">
                                 <i class="my-icon" aria-label="My icon"

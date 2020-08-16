@@ -11,11 +11,13 @@ import { CdkTreeModule } from '@angular/cdk/tree';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import { QuillModule } from 'ngx-quill'
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -28,7 +30,6 @@ import { FormControlComponent } from './form-control/form-control.component';
 import { FormatFieldPipe } from './common/pipes/format-field.pipe';
 import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
 import { ValidationErrorComponent } from './validation-error/validation-error.component';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { EntityFormComponent } from './entity-form/entity-form.component';
 import { ChildGridComponent } from './child-grid/child-grid.component';
 import { CheckboxListComponent } from './common/components/checkbox-list/checkbox-list.component';
@@ -87,6 +88,7 @@ import { AlertService } from './common/services/alert.service';
     NgSelectModule,
     PaginationModule.forRoot(),
     PopoverModule.forRoot(),
+    QuillModule.forRoot(),
     ReactiveFormsModule
   ],
   providers: [

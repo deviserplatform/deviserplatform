@@ -11,11 +11,8 @@ export class AssetService extends BaseService {
 
   getDocuments(): Observable<FileItem[]> {
     const serviceUrl: string = `${this.baseUrl}api/upload/documents/`;
-    return this.http.get<FileItem[]>(serviceUrl, { headers: this.httpHeaders })
-      .pipe(
-        tap(_ => this.log('fetched documents')),
-        catchError(this.handleError('getDocuments', null))
-      );
+    var obs = this.http.get<FileItem[]>(serviceUrl, { headers: this.httpHeaders });
+    return obs;
   }
 
   getImages(): Observable<FileItem[]> {

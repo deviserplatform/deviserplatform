@@ -1,18 +1,7 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
-import { PageContent } from '../../domain-types/page-content';
-import { WINDOW } from '../../services/window.service';
-import { PageContext } from '../../domain-types/page-context';
-import { PageContentTranslation } from '../../domain-types/page-content-translation';
-import { ContentFieldType } from '../../domain-types/content-field-type';
-import { ContentTypeField } from '../../domain-types/content-type-field';
-import { Link } from '../../domain-types/link';
-import { PageService } from '../../services/page.service';
-import { Page } from '../../domain-types/page';
-import { Globals } from '../../config/globals';
-import { Image } from '../../domain-types/image';
 import { DomSanitizer } from '@angular/platform-browser';
-import { LinkType } from '../../domain-types/link-type';
-import { EditService } from '../../services/edit.service';
+import { ContentTypeField, Image, Page, PageContent, PageContext, WINDOW } from 'deviser-shared';
+import { EditService, PageService } from 'deviser-shared';
 
 @Component({
   selector: 'app-preview-content',
