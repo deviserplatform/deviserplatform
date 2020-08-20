@@ -35,7 +35,7 @@ export class LinkComponent implements OnInit {
   }
 
   constructor(private _editService: EditService,
-    private _modalService: BsModalService,) { }
+    private _modalService: BsModalService) { }
 
   ngOnInit(): void {
   }
@@ -54,7 +54,7 @@ export class LinkComponent implements OnInit {
 
     this.bsModalRef = this._modalService.show(EditLinkComponent, param), this._modalConfig;
     linkChanged = this.bsModalRef.content.linkChanged as EventEmitter<Link>;
-    linkChanged.subscribe(image => this.onLinkChanged(image));
+    linkChanged.subscribe(link => this.onLinkChanged(link));
     this.bsModalRef.content.closeBtnName = 'Close';
   }
 

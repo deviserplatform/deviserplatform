@@ -184,8 +184,8 @@ export class ImageSelectorComponent implements OnInit {
       image.path += '?' + Math.random() * 100;
     });
     this.files$ = of(files);
-    if (this._image) {
-      let selectedFile = files.find(image => image.path.split('?')[0] === this._image.imageUrl.split('?')[0]);
+    if (this._image && this._image.imageUrl) {
+      let selectedFile = files.find(image => image && image.path && image.path.split('?')[0] === this._image.imageUrl.split('?')[0]);
       selectedFile && this.selectFile(selectedFile);
     }
   }

@@ -23,6 +23,8 @@
 <script>
     (function () {
         var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
+        pageContext.isEmbedded = true;
+        pageContext.assetPath = '/_content/Deviser.Web/ClientApp/';
         window.pageContext = pageContext;
     }());
 </script>

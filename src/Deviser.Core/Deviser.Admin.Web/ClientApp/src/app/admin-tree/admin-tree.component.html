@@ -36,5 +36,5 @@
     </div>
   
     <app-confirm-dialog [title]="'Confirmation'" [content]="'Are you sure to delete this item?'" [btnConfirmText]="'Yes'"
-      [btnCancelText]="'No'" (confirm)="onYesToDelete($event)" (cancel)="onNoToDelete($event)"></app-confirm-dialog>
+      [btnCancelText]="'No'" (confirm)="onYesToDelete($event)" (cancel)="onNoToDelete()"></app-confirm-dialog>
   </div>

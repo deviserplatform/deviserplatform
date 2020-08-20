@@ -502,21 +502,21 @@ body {
       }
     }
 
-    .layout-elements-col{
+    .layout-elements-col {
       display: flex;
       .layout-elements-card {
         // height: 44.3vh;
         flex: 1;
         margin-bottom: 1rem;
-        > .card-body {          
+        > .card-body {
           flex: 1 1 auto;
           overflow-y: auto;
-          height: 0px;        
+          height: 0px;
         }
       }
     }
 
-    .container-element.root{
+    .container-element.root {
       margin-bottom: 1rem;
     }
   }
@@ -658,8 +658,14 @@ body {
           .left-nav {
             padding: 1rem;
             border-right: 1px solid rgba($black, 0.125);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
             .list-group {
+              flex: 1 1 auto;
               overflow-y: auto;
+              height: 0px;
+              display: unset;
               .list-group-item {
                 font-size: 0.875rem;
                 padding: 0.25rem 0.75rem;
@@ -671,10 +677,15 @@ body {
             display: flex;
             flex-direction: column;
             padding: 1rem;
+            flex: 1;
             .tab-content {
-              flex: 1;
-              display: flex;
-              flex-direction: column;
+              flex: 1 1 auto;
+              overflow-y: auto;
+              overflow-x: hidden;
+              height: 0px;
+              img{
+                max-width: 600px;
+              }
               .tab-pane {
                 flex: 1;
                 display: flex;

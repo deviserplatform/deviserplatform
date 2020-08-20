@@ -22,7 +22,38 @@
         adminConfigType: "GridAndForm", //GridOnly OR GridAndForm OR FormOnly OR TreeAndForm
         assetPath:"/admin/dist"
       }
+      var pageContext = {
+        assetPath: "/admin/dist",
+        currentPageId: "42e0d3c9-2269-46fd-a42a-08d587845981",
+        currentUrl: "Admin",
+        currentTranslation: {
+          pageId: "42e0d3c9-2269-46fd-a42a-08d587845981",
+          locale: "en-US",
+          description: null,
+          keywords: null,
+          name: "Home Demo",
+          title: "Home Demo",
+          url: "HomeDemo",
+          redirectUrl: null,
+          isLinkNewWindow: false,
+          pageHeaderTags: "<meta property=\"og:image\" content=\"https://localhost:44304/images/favicons/apple-touch-icon.png\" />",
+          language: null
+        },
+        currentLocale: "en-US",
+        debugBaseUrl: "https://localhost:44328/",
+        hasPageViewPermission: true,
+        hasPageEditPermission: true,
+        homePageUrl: "HomeDemo",
+        homePageFullUrl: "/HomeDemo",
+        isEmbedded: false, //true for embedded in admin module, false for standalone
+        isMultilingual: false,
+        layoutId: "bef258d0-173c-4b70-343c-08d58851a063",
+        siteRoot: "/",
+        siteLanguage: "en-US",
+        selectedTheme: "Skyline"
+      };
       window.daConfig = daConfig;
+      window.pageContext = pageContext;
     }());
   </script>
   <app-root></app-root>

@@ -38,7 +38,7 @@ export class EditService {
       let page = this.pages.find(p => p.id === link.pageId);
       let translation = page.pageTranslation.find(pt => pt.locale === this._pageContext.currentLocale);
       translation = translation ? translation : page.pageTranslation[0];
-      let url = page.pageTypeId === Globals.appSettings.pageTypes.url ? translation.uRL : `${this._pageContext.siteRoot}${translation.uRL}`;
+      let url = page.pageTypeId === Globals.appSettings.pageTypes.url ? translation.url : `${this._pageContext.siteRoot}${translation.url}`;
       return url;
     }
   }

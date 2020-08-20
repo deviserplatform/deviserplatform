@@ -5,7 +5,7 @@ export interface PageTranslation {
     keywords: string;
     name: string;
     title: string;
-    uRL: string;
+    url: string;
     redirectUrl: string;
     isLinkNewWindow: boolean;
     pageHeaderTags: string;

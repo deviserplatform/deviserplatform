@@ -83,10 +83,9 @@ namespace Deviser.Modules.Blog
                 .AddField(p => p.Title)
                 //.AddField(s => s.Content, fieldOption => { fieldOption.ValidationType = ValidationType.UserExist; })
                 .AddField(s => s.Content)
-                .AddInlineSelectField(s => s.Category, expr => expr.Name)
+                .AddSelectField(s => s.Category, expr => expr.Name)
                 .AddInlineMultiSelectField<DTO.Tag>(s => s.Tags, expr => expr.TagName)
-                .AddField(p => p.CreatedOn)
-                .AddField(p => p.CreatedBy);
+                .AddField(p => p.CreatedBy, option => option.DisplayName="Author");
 
                 //form.Property(s => s.Content)
                 //.ValidateOn(p => p.Title == "Test");
@@ -100,12 +99,28 @@ namespace Deviser.Modules.Blog
                       .AddField(c => c.CreatedOn)
                       .AddField(c => c.IsApproved);
                   });
+            });
 
+            adminBuilder.Register<DTO.Category>(modelBuilder =>
+            {
 
-                //form.FieldSetBuilder
-                //.AddFieldSet("General", fieldBuilder =>
-                //                        fieldBuilder.AddField(s => s.FirstName).AddInlineField(s => s.LastName)
-                //                    );
+                modelBuilder.GridBuilder
+                    .AddField(p => p.Name);
+
+                modelBuilder.FormBuilder
+                    .AddKeyField(p => p.Id)
+                    .AddField(p => p.Name);
+            });
+
+            adminBuilder.Register<DTO.Tag>(modelBuilder =>
+            {
+
+                modelBuilder.GridBuilder
+                    .AddField(p => p.TagName);
+
+                modelBuilder.FormBuilder
+                    .AddKeyField(p => p.Id)
+                    .AddField(p => p.TagName);
             });
         }
     }

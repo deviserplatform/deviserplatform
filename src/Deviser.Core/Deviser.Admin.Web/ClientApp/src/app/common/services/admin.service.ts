@@ -149,6 +149,15 @@ export class AdminService {
       );
   }
 
+  createRecordFor(model:string, record: any) {
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${model}/`;
+    return this.http.post<any>(serviceUrl, record, this._httpOptions)
+      .pipe(
+        tap(_ => this.log('created a record')),
+        catchError(this.handleError('createRecord', null))
+      );
+  }
+
   updateRecord(record: any) {
     const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/`;
     return this.http.put<any>(serviceUrl, record, this._httpOptions)

@@ -28,7 +28,7 @@ import { AdminFormComponent } from './admin-form/admin-form.component';
 import { RecordIdPipe } from './common/pipes/record-id.pipe';
 import { FormControlComponent } from './form-control/form-control.component';
 import { FormatFieldPipe } from './common/pipes/format-field.pipe';
-import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
+// import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
 import { ValidationErrorComponent } from './validation-error/validation-error.component';
 import { EntityFormComponent } from './entity-form/entity-form.component';
 import { ChildGridComponent } from './child-grid/child-grid.component';
@@ -50,7 +50,7 @@ import { CheckBoxListComponent } from './common/components/controls/check-box-li
     AdminFormComponent,
     AdminGridComponent,
     AdminTreeComponent,
-    ConfirmDialogComponent,
+    // ConfirmDialogComponent,
     ChildGridComponent,
     CheckboxMatrixComponent,
     CheckboxListComponent,
