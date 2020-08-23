@@ -2,7 +2,7 @@ import { Component, OnInit, Input, SimpleChanges, OnChanges, EventEmitter, Injec
 import { FormGroup, FormControl, Validators, ValidatorFn, AsyncValidatorFn } from '@angular/forms';
 import { Field } from '../common/domain-types/field';
 import { FieldType } from '../common/domain-types/field-type';
-import { repeat, pairwise, startWith } from 'rxjs/operators';
+import { repeat, pairwise, startWith, map } from 'rxjs/operators';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { ValidationType } from '../common/domain-types/validation-type';
 import { EmailExistValidator } from '../common/validators/async-email-exist.validator';
@@ -21,6 +21,7 @@ import { FieldOption } from '../common/domain-types/field-option';
 import { CheckBoxMatrix } from '../common/domain-types/checkbox-matrix';
 import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
 import { Image, Link, EditLinkComponent, LinkType, PageService, Page, WINDOW, PageContext, ImageSelectorComponent } from 'deviser-shared';
+import { FormResult } from '../common/domain-types/form-result';
 
 var formControlComponent: FormControlComponent;
 
@@ -30,7 +31,6 @@ var formControlComponent: FormControlComponent;
   styleUrls: ['./form-control.component.scss']
 })
 export class FormControlComponent implements OnInit {
-
   // @Input() entityType: string;
   @Input() field: Field;
   @Input() form: FormGroup;
@@ -107,25 +107,7 @@ export class FormControlComponent implements OnInit {
   }
 
   ngOnInit() {
-
-    if (this.field && this.field.fieldOption && this.field.fieldOption.hasLookupFilter) {
-      console.log(this.field.fieldOption);
-      let filterFormCtrl = this.form.get(this.field.fieldOption.lookupFilterField.fieldNameCamelCase);
-      this._valChangeSubscription = filterFormCtrl.valueChanges
-        .pipe(startWith(null), pairwise())
-        .subscribe(([prev, next]: [any, any]) => {
-          let val = next ? next : prev;
-          console.log(val);
-          this._adminService.getLookUp(this.formType, this.formName, this.field.fieldName, val)
-            .subscribe(lookupResult => {
-              // console.log(lookupResult);
-              this.parseControlValue(lookupResult);
-            });
-        });
-    }
-    else {
-      this.parseControlValue(null);
-    }
+    this.init();
   }
 
   ngOnDestroy() {
@@ -133,6 +115,8 @@ export class FormControlComponent implements OnInit {
       this._valChangeSubscription.unsubscribe();
     }
   }
+
+
 
   ngOnChanges(changes: SimpleChanges) {
 
@@ -221,6 +205,50 @@ export class FormControlComponent implements OnInit {
     let imageUrl = `${this.pageContext.siteRoot}\\${image.imageUrl}`
     quill.insertEmbed(10, 'image', imageUrl);
   }
+
+  addTagPromise = (value: string) => {
+    if (this.field.fieldOption.addItemBy) {
+      let fieldName = this.field.fieldOption.addItemBy.fieldNameCamelCase;
+      let newObj = {};
+      newObj[fieldName] = value;
+      let promise = this._adminService
+        .createRecordFor(this.field.fieldClrType, newObj)
+        .pipe(
+          map(result => {
+            let newRecordResult = (result as FormResult).result;
+            this.refreshLookUp().subscribe(adminConfig => {
+              this.lookUps = adminConfig.lookUps;
+              this.init();
+            })
+            return newRecordResult
+          })
+        ).toPromise();
+
+
+      return promise;
+    }
+    // this._adminService.createRecordFor()
+
+    return false;
+
+  };
+
+  // addTagPromise(value: string) {
+
+  //   if (this.field.fieldOption.addItemBy) {
+  //     let fieldName = this.field.fieldOption.addItemBy.fieldNameCamelCase;
+  //     this._adminService
+  //     .createRecordFor(this.field.fieldClrType, { fieldName: value })
+  //     .pipe(
+  //       map(result => {
+  //         return (result as FormResult).result
+  //       })
+  //     ).toPromise();
+  //   }
+  //   // this._adminService.createRecordFor()
+
+  //   return false;
+  // }
 
   parseControlValue(lookUpGeneric: any) {
     if (this.field && this.field.fieldOption && this.field.fieldOption.relationType) {
@@ -359,7 +387,30 @@ export class FormControlComponent implements OnInit {
     }
   }
 
+  private init() {
+    if (this.field && this.field.fieldOption && this.field.fieldOption.hasLookupFilter) {
+      console.log(this.field.fieldOption);
+      let filterFormCtrl = this.form.get(this.field.fieldOption.lookupFilterField.fieldNameCamelCase);
+      this._valChangeSubscription = filterFormCtrl.valueChanges
+        .pipe(startWith(null), pairwise())
+        .subscribe(([prev, next]: [any, any]) => {
+          let val = next ? next : prev;
+          console.log(val);
+          this._adminService.getLookUp(this.formType, this.formName, this.field.fieldName, val)
+            .subscribe(lookupResult => {
+              // console.log(lookupResult);
+              this.parseControlValue(lookupResult);
+            });
+        });
+    }
+    else {
+      this.parseControlValue(null);
+    }
+  }
 
+  private refreshLookUp() {
+    return this._adminService.getAdminConfig(true);
+  }
 
   private getLookUp(lookUpGeneric: any): any[] {
     if (lookUpGeneric) {

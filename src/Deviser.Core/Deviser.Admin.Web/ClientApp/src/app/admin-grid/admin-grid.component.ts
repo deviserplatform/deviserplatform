@@ -56,7 +56,10 @@ export class AdminGridComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getAllRecords();
+    // if(this.adminConfig && this.adminConfig.modelConfig && this.adminConfig.modelConfig.gridConfig){
+      this.getAllRecords();
+    // }
+    
   }
 
 

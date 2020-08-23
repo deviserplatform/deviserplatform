@@ -8,6 +8,7 @@ import { Field } from './field';
 import { CheckBoxMatrix } from './checkbox-matrix';
 
 export interface FieldOption {
+    addItemBy: Field;
     checkBoxMatrix: CheckBoxMatrix;
     description: string;
     displayName: string;

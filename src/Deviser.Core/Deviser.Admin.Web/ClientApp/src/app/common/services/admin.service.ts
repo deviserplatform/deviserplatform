@@ -50,11 +50,11 @@ export class AdminService {
     }
   }
 
-  getAdminConfig(): Observable<AdminConfig> {
-    if (this._adminConfig) {
+  getAdminConfig(isRefreshCache: boolean = false): Observable<AdminConfig> {
+    if (this._adminConfig && !isRefreshCache) {
       return of(this._adminConfig);
     }
-    else if (this._adminConfig$) {
+    else if (this._adminConfig$ && !isRefreshCache) {
       return this._adminConfig$;
     }
     else {
@@ -149,7 +149,7 @@ export class AdminService {
       );
   }
 
-  createRecordFor(model:string, record: any) {
+  createRecordFor(model: string, record: any) {
     const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${model}/`;
     return this.http.post<any>(serviceUrl, record, this._httpOptions)
       .pipe(
@@ -179,7 +179,7 @@ export class AdminService {
   sortGridItems(items: any[], childModel: string = null, pagination: Pagination = null): Observable<any> {
     const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/sort/${childModel}`;
     let params = new HttpParams();
-    
+
     if (pagination != null) {
       params = params.append('pageNo', pagination.pageNo.toString());
       params = params.append('pageSize', pagination.pageSize.toString());

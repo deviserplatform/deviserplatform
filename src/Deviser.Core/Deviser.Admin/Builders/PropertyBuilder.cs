@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Deviser.Admin.Builders
 {
-    public class PropertyBuilder<TModel>
+    public class PropertyBuilder<TModel, TProperty>
         where TModel : class
     {
         private readonly IFormConfig _formConfig;
@@ -31,8 +31,20 @@ namespace Deviser.Admin.Builders
             }
         }
 
+        /// <summary>
+        /// On enabling this field new item(s) can be added in multi select field. Applicable only for multi select field.
+        /// </summary>
+        /// <returns></returns>
+        public PropertyBuilder<TModel, TProperty> AddItemBy(Expression<Func<TProperty, string>> expression)
+        {
+            _field.FieldOption.AddItemBy = new Field()
+            {
+                FieldExpression = expression
+            };
+            return this;
+        }
 
-        public PropertyBuilder<TModel> ShowOn(Expression<Func<TModel, bool>> predicate)
+        public PropertyBuilder<TModel, TProperty> ShowOn(Expression<Func<TModel, bool>> predicate)
         {
             _fieldConditions.ShowOnConditions.Add(new FieldCondition
             {
@@ -42,7 +54,7 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public PropertyBuilder<TModel> EnableOn(Expression<Func<TModel, bool>> predicate)
+        public PropertyBuilder<TModel, TProperty> EnableOn(Expression<Func<TModel, bool>> predicate)
 
         {
             _fieldConditions.EnableOnConditions.Add(new FieldCondition
@@ -53,7 +65,7 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public PropertyBuilder<TModel> ValidateOn(Expression<Func<TModel, bool>> predicate)
+        public PropertyBuilder<TModel, TProperty> ValidateOn(Expression<Func<TModel, bool>> predicate)
         {
             _fieldConditions.ValidateOnConditions.Add(new FieldCondition
             {
@@ -63,7 +75,7 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public PropertyBuilder<TModel> HasLookup<TRelatedModel, TKey>(
+        public PropertyBuilder<TModel, TProperty> HasLookup<TRelatedModel, TKey>(
             Expression<Func<IServiceProvider, IList<TRelatedModel>>> lookupExpression,
             Expression<Func<TRelatedModel, TKey>> lookUpKeyExpression,
             Expression<Func<TRelatedModel, string>> lookupDisplayExpression)
@@ -75,7 +87,7 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public PropertyBuilder<TModel> HasMatrixLookup<TRowType, TColumnType, TKey>(
+        public PropertyBuilder<TModel, TProperty> HasMatrixLookup<TRowType, TColumnType, TKey>(
             Expression<Func<IServiceProvider, IList<TRowType>>> rowExpression,
             Expression<Func<TRowType, TKey>> rowKeyExpression,
             Expression<Func<TRowType, string>> rowDisplayExpression,
@@ -93,7 +105,7 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public PropertyBuilder<TModel> HasLookup<TRelatedModel, TKey, TFilterProperty>(
+        public PropertyBuilder<TModel, TProperty> HasLookup<TRelatedModel, TKey, TFilterProperty>(
             Expression<Func<IServiceProvider, TFilterProperty, IList<TRelatedModel>>> lookupExpression,
             Expression<Func<TRelatedModel, TKey>> lookUpKeyExpression,
             Expression<Func<TRelatedModel, string>> lookupDisplayExpression,
@@ -120,4 +132,5 @@ namespace Deviser.Admin.Builders
         //public AdminConfig<TEntity> AdminConfig { get; set; }
         //public LambdaExpression FieldExpression { get; set; }
     }
+
 }

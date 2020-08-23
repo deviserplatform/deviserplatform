@@ -71,7 +71,7 @@ namespace Deviser.Modules.Blog.DTO
         public Category Category { get; set; }
 
         [Order]
-        public List<Tag> Tags { get; set; }
+        public ICollection<Tag> Tags { get; set; }
 
         [Order]
         public List<Comments> Comments { get; set; }

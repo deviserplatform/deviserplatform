@@ -108,7 +108,10 @@
 
         <ng-select [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
           [ngClass]="{ 'is-invalid': hasError(field) }" [items]="lookUpData$ | async" [selectOnTab]="true"
-          bindLabel="displayName" [multiple]="true" [placeholder]="field.fieldOption.displayName">
+          bindLabel="displayName" [multiple]="true" [placeholder]="field.fieldOption.displayName" [addTag]="addTagPromise">
+          <ng-template ng-tag-tmp let-search="searchTerm">
+            <b>Create new</b>: {{search}}
+        </ng-template>
         </ng-select>
 
         <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
