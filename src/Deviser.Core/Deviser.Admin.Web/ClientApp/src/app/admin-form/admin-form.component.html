@@ -36,9 +36,9 @@
               <div class="form-action-container">
                 <div class="form-actions d-flex">
 
-                  <button type="button" class="mr-auto btn btn-dark" (click)="goBack()" [disabled]="daConfig.adminConfigType != adminConfigType.GridAndForm">
+                  <button type="button" class="mr-auto btn btn-sm btn-light" (click)="goBack()" [disabled]="daConfig.adminConfigType != adminConfigType.GridAndForm">
                     <i class="my-icon" aria-label="My icon"
-                      [inlineSVG]="'assets/icons/baseline-keyboard_arrow_left.svg' | envPath"></i>
+                      [inlineSVG]="'assets/icons/chevron-left.svg' | envPath"></i>
                   </button>
 
                   <ng-container *ngIf="formTab.formConfig.formActions && formMode === FormMode.Update">
@@ -52,7 +52,7 @@
                   <ng-container *ngIf="formTab.formType == formType.MainForm">
                     <button class="btn btn-primary" type="submit" [disabled]="!adminForm.valid">
                       <i class="my-icon" aria-label="My icon"
-                        [inlineSVG]="'assets/icons/baseline-save.svg' | envPath"></i>
+                        [inlineSVG]="'assets/icons/save.svg' | envPath"></i>
                       Save
                     </button>
                   </ng-container>

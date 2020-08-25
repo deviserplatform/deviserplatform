@@ -30,7 +30,15 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 })
 export class AdminGridComponent implements OnInit {
 
-  adminConfig: AdminConfig;
+  private _adminConfig: AdminConfig
+
+  get adminConfig(): AdminConfig {
+    return this._adminConfig;
+  };
+  set adminConfig(value) {
+    this._adminConfig = value;
+    this.getAllRecords();
+  }
   adminConfigType = AdminConfigType;
   entityRecords: any;
   daConfig: DAConfig;
@@ -56,10 +64,7 @@ export class AdminGridComponent implements OnInit {
   }
 
   ngOnInit() {
-    // if(this.adminConfig && this.adminConfig.modelConfig && this.adminConfig.modelConfig.gridConfig){
-      this.getAllRecords();
-    // }
-    
+
   }
 
 

@@ -9161,6 +9161,142 @@ a.text-dark:hover, a.text-dark:focus {
   .sidebar-nav a:active, .sidebar-nav .mm-active > a {
     background: #ec3d28; }
 
+.modal-dialog {
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  left: 10px;
+  max-width: unset;
+  overflow: auto;
+  position: absolute;
+  right: 10px;
+  top: 0;
+  width: 90%;
+  /*svg {
+      width: 24px;
+      stroke-width: 2px;
+    }*/ }
+
+.image-selector-modal,
+.link-selector-modal {
+  width: 80%; }
+  .image-selector-modal .modal-content,
+  .link-selector-modal .modal-content {
+    flex: 0.83;
+    overflow: hidden; }
+    .image-selector-modal .modal-content app-image-selector,
+    .image-selector-modal .modal-content app-edit-link,
+    .link-selector-modal .modal-content app-image-selector,
+    .link-selector-modal .modal-content app-edit-link {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-around; }
+      .image-selector-modal .modal-content app-image-selector .modal-header,
+      .image-selector-modal .modal-content app-edit-link .modal-header,
+      .link-selector-modal .modal-content app-image-selector .modal-header,
+      .link-selector-modal .modal-content app-edit-link .modal-header {
+        flex: 1; }
+      .image-selector-modal .modal-content app-image-selector .modal-body,
+      .image-selector-modal .modal-content app-edit-link .modal-body,
+      .link-selector-modal .modal-content app-image-selector .modal-body,
+      .link-selector-modal .modal-content app-edit-link .modal-body {
+        flex: 20;
+        display: flex;
+        flex-direction: column;
+        padding: 0 1rem; }
+        .image-selector-modal .modal-content app-image-selector .modal-body img,
+        .image-selector-modal .modal-content app-edit-link .modal-body img,
+        .link-selector-modal .modal-content app-image-selector .modal-body img,
+        .link-selector-modal .modal-content app-edit-link .modal-body img {
+          width: 100%; }
+        .image-selector-modal .modal-content app-image-selector .modal-body .image-selector-row,
+        .image-selector-modal .modal-content app-image-selector .modal-body .file-selector-row,
+        .image-selector-modal .modal-content app-edit-link .modal-body .image-selector-row,
+        .image-selector-modal .modal-content app-edit-link .modal-body .file-selector-row,
+        .link-selector-modal .modal-content app-image-selector .modal-body .image-selector-row,
+        .link-selector-modal .modal-content app-image-selector .modal-body .file-selector-row,
+        .link-selector-modal .modal-content app-edit-link .modal-body .image-selector-row,
+        .link-selector-modal .modal-content app-edit-link .modal-body .file-selector-row {
+          flex: 1; }
+        .image-selector-modal .modal-content app-image-selector .modal-body .search-box .input-group-text,
+        .image-selector-modal .modal-content app-edit-link .modal-body .search-box .input-group-text,
+        .link-selector-modal .modal-content app-image-selector .modal-body .search-box .input-group-text,
+        .link-selector-modal .modal-content app-edit-link .modal-body .search-box .input-group-text {
+          background: none;
+          padding-right: 0; }
+        .image-selector-modal .modal-content app-image-selector .modal-body .search-box input,
+        .image-selector-modal .modal-content app-edit-link .modal-body .search-box input,
+        .link-selector-modal .modal-content app-image-selector .modal-body .search-box input,
+        .link-selector-modal .modal-content app-edit-link .modal-body .search-box input {
+          border-left: none; }
+        .image-selector-modal .modal-content app-image-selector .modal-body .left-nav,
+        .image-selector-modal .modal-content app-edit-link .modal-body .left-nav,
+        .link-selector-modal .modal-content app-image-selector .modal-body .left-nav,
+        .link-selector-modal .modal-content app-edit-link .modal-body .left-nav {
+          padding: 1rem;
+          border-right: 1px solid rgba(0, 0, 0, 0.125);
+          display: flex;
+          flex-direction: column;
+          flex: 1; }
+          .image-selector-modal .modal-content app-image-selector .modal-body .left-nav .list-group,
+          .image-selector-modal .modal-content app-edit-link .modal-body .left-nav .list-group,
+          .link-selector-modal .modal-content app-image-selector .modal-body .left-nav .list-group,
+          .link-selector-modal .modal-content app-edit-link .modal-body .left-nav .list-group {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            height: 0px;
+            display: unset; }
+            .image-selector-modal .modal-content app-image-selector .modal-body .left-nav .list-group .list-group-item,
+            .image-selector-modal .modal-content app-edit-link .modal-body .left-nav .list-group .list-group-item,
+            .link-selector-modal .modal-content app-image-selector .modal-body .left-nav .list-group .list-group-item,
+            .link-selector-modal .modal-content app-edit-link .modal-body .left-nav .list-group .list-group-item {
+              font-size: 0.875rem;
+              padding: 0.25rem 0.75rem;
+              overflow: hidden; }
+        .image-selector-modal .modal-content app-image-selector .modal-body .detail-col,
+        .image-selector-modal .modal-content app-edit-link .modal-body .detail-col,
+        .link-selector-modal .modal-content app-image-selector .modal-body .detail-col,
+        .link-selector-modal .modal-content app-edit-link .modal-body .detail-col {
+          display: flex;
+          flex-direction: column;
+          padding: 1rem;
+          flex: 1; }
+          .image-selector-modal .modal-content app-image-selector .modal-body .detail-col .tab-content,
+          .image-selector-modal .modal-content app-edit-link .modal-body .detail-col .tab-content,
+          .link-selector-modal .modal-content app-image-selector .modal-body .detail-col .tab-content,
+          .link-selector-modal .modal-content app-edit-link .modal-body .detail-col .tab-content {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: 0px; }
+            .image-selector-modal .modal-content app-image-selector .modal-body .detail-col .tab-content img,
+            .image-selector-modal .modal-content app-edit-link .modal-body .detail-col .tab-content img,
+            .link-selector-modal .modal-content app-image-selector .modal-body .detail-col .tab-content img,
+            .link-selector-modal .modal-content app-edit-link .modal-body .detail-col .tab-content img {
+              max-width: 600px; }
+            .image-selector-modal .modal-content app-image-selector .modal-body .detail-col .tab-content .tab-pane,
+            .image-selector-modal .modal-content app-edit-link .modal-body .detail-col .tab-content .tab-pane,
+            .link-selector-modal .modal-content app-image-selector .modal-body .detail-col .tab-content .tab-pane,
+            .link-selector-modal .modal-content app-edit-link .modal-body .detail-col .tab-content .tab-pane {
+              flex: 1;
+              display: flex;
+              flex-direction: column; }
+          .image-selector-modal .modal-content app-image-selector .modal-body .detail-col .file-drop-zone,
+          .image-selector-modal .modal-content app-edit-link .modal-body .detail-col .file-drop-zone,
+          .link-selector-modal .modal-content app-image-selector .modal-body .detail-col .file-drop-zone,
+          .link-selector-modal .modal-content app-edit-link .modal-body .detail-col .file-drop-zone {
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.125);
+            text-align: center;
+            padding: 20px 10px; }
+      .image-selector-modal .modal-content app-image-selector .modal-footer,
+      .image-selector-modal .modal-content app-edit-link .modal-footer,
+      .link-selector-modal .modal-content app-image-selector .modal-footer,
+      .link-selector-modal .modal-content app-edit-link .modal-footer {
+        flex: 1; }
+
 .admin-wrapper {
   display: flex !important;
   min-height: 100vh;
@@ -9186,10 +9322,10 @@ a.text-dark:hover, a.text-dark:focus {
       height: 65px;
       font-size: 18px;
       line-height: 60px; }
-    .admin-wrapper .admin-body .admin-container .btn svg {
-      fill: #fff; }
     .admin-wrapper .admin-body .admin-container label {
       display: inline-flex; }
+    .admin-wrapper .admin-body .admin-container .ql-editor {
+      min-height: 300px; }
     .admin-wrapper .admin-body .admin-container .form-check-label {
       margin-left: 0.5rem; }
     .admin-wrapper .admin-body .admin-container .date-control svg {
@@ -9210,18 +9346,20 @@ a.text-dark:hover, a.text-dark:focus {
       align-items: center; }
       .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .label {
         margin-right: auto; }
-      .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .btn-sort {
+      .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .sort-icon {
         opacity: 0; }
-        .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .btn-sort.ascending {
+        .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .sort-icon.ascending {
           opacity: 1; }
-          .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .btn-sort.ascending svg {
+          .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .sort-icon.ascending svg {
             transform: rotate(-90deg); }
-        .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .btn-sort.descending {
+        .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .sort-icon.descending {
           opacity: 1; }
-          .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .btn-sort.descending svg {
+          .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .sort-icon.descending svg {
             transform: rotate(90deg); }
       .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container {
         position: relative; }
+        .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .btn-filter svg {
+          fill: #212529; }
         .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content {
           position: absolute;
           background-color: #fff;
@@ -9247,6 +9385,11 @@ a.text-dark:hover, a.text-dark:focus {
               min-width: 60px; }
             .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content .filter-actions .btn-filter:last-child {
               margin-right: 0; }
+      .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .bs-datepicker-body table td,
+      .admin-wrapper .admin-body .admin-container .admin-grid .data-table .header-field-cotnainer .bs-datepicker-body table th {
+        border: none;
+        border-top: none;
+        border-bottom: none; }
     .admin-wrapper .admin-body .admin-container .admin-grid svg {
       width: 24px;
       height: 24px; }
@@ -9334,7 +9477,8 @@ a.text-dark:hover, a.text-dark:focus {
         padding-right: 1.25rem;
         padding-bottom: 1.25rem; }
         .admin-wrapper .admin-body .admin-container .admin-form .card-body .form-action-container .form-actions button {
-          margin-left: 1.25rem; }
+          margin-left: 1.25rem;
+          min-width: 40px; }
     .admin-wrapper .admin-body .admin-container .admin-form .nav-tabs .nav-link.active,
     .admin-wrapper .admin-body .admin-container .admin-form .nav-tabs .nav-item.show .nav-link {
       background-color: #dee2e6;

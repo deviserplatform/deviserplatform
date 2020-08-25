@@ -217,6 +217,33 @@ namespace Deviser.Admin.Web.Controllers
         }
 
         [HttpPut]
+        [Route("modules/[area]/api/{model:required}/autofill/{fieldName:required}")]
+        public async Task<IActionResult> AutoFill(string model, string fieldName, [FromBody] dynamic modelObject)
+        {
+            try
+            {
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(model);
+                if (modelType == null)
+                {
+                    return BadRequest($"Model {model} is not found");
+                }
+
+                var result = await coreAdminService.AutoFill(modelType, fieldName, modelObject.fieldValue); //_adminRepository.UpdateItemFor(model, fieldObject);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occured while autofilling for model: {model}, fieldName: {fieldName}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
         [Route("modules/[area]/api/{model:required}")]
         public async Task<IActionResult> Update(string model, [FromBody]object modelObject)
         {
@@ -497,8 +524,8 @@ namespace Deviser.Admin.Web.Controllers
         }
 
         [HttpPut]
-        [Route("modules/[area]/api/{model:required}/validate/{formType:required}/field/{fieldName:required}")]
-        [Route("modules/[area]/api/{model:required}/validate/{formType:required}/form/{formName:required}/field/{fieldName:required}")]
+        [Route("modules/[area]/api/{model:required}/validate/{formType:required}/fieldName/{fieldName:required}")]
+        [Route("modules/[area]/api/{model:required}/validate/{formType:required}/form/{formName:required}/fieldName/{fieldName:required}")]
         public async Task<IActionResult> CustomValidate(string model, string formType, string formName, string fieldName, [FromBody]object fieldObject)
         {
             try
@@ -551,13 +578,13 @@ namespace Deviser.Admin.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occured while executing custom validation for field: {fieldName} in model: {model}", ex);
+                _logger.LogError($"Error occured while executing custom validation for fieldName: {fieldName} in model: {model}", ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpPut]
-        [Route("modules/[area]/api/{model:required}/lookup/{formType:required}/field/{fieldName:required}")]
+        [Route("modules/[area]/api/{model:required}/lookup/{formType:required}/fieldName/{fieldName:required}")]
         public async Task<IActionResult> GetLookupFor(string model, string formType, string formName, string fieldName,
             [FromBody]object filterParam)
         {

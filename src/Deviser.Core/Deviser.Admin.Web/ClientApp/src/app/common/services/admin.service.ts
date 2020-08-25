@@ -70,6 +70,15 @@ export class AdminService {
     }
   }
 
+  autoFill(fieldName: string, fieldValue: string): Observable<any> {
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/autofill/${fieldName}`;
+    return this.http.put<any>(serviceUrl, { fieldValue: fieldValue }, this._httpOptions)
+      .pipe(
+        tap(_ => this.log('autofill a field')),
+        catchError(this.handleError('autoFill', null))
+      );
+  }
+
   getAllRecords(pagination: Pagination = null): Observable<any> {
     const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}`;
 

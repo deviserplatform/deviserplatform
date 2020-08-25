@@ -44,93 +44,103 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public PropertyBuilder<TModel, TProperty> ShowOn(Expression<Func<TModel, bool>> predicate)
+        public PropertyBuilder<TModel, TProperty> AutoFillBasedOn<TPropertyField>(Expression<Func<TModel, TPropertyField>> fieldExpression, Expression<Func<IServiceProvider, TProperty, Task<TProperty>>> expression)
         {
-            _fieldConditions.ShowOnConditions.Add(new FieldCondition
+            _field.FieldOption.AutoFillField = new Field()
             {
-                ConditionExpression = predicate,
-                FieldExpression = _fieldExpression
-            });
+                FieldExpression = fieldExpression
+            };
+            _field.FieldOption.AutoFillExpression = expression;
             return this;
         }
 
-        public PropertyBuilder<TModel, TProperty> EnableOn(Expression<Func<TModel, bool>> predicate)
-
+    public PropertyBuilder<TModel, TProperty> ShowOn(Expression<Func<TModel, bool>> predicate)
+    {
+        _fieldConditions.ShowOnConditions.Add(new FieldCondition
         {
-            _fieldConditions.EnableOnConditions.Add(new FieldCondition
-            {
-                ConditionExpression = predicate,
-                FieldExpression = _fieldExpression
-            });
-            return this;
-        }
-
-        public PropertyBuilder<TModel, TProperty> ValidateOn(Expression<Func<TModel, bool>> predicate)
-        {
-            _fieldConditions.ValidateOnConditions.Add(new FieldCondition
-            {
-                ConditionExpression = predicate,
-                FieldExpression = _fieldExpression
-            });
-            return this;
-        }
-
-        public PropertyBuilder<TModel, TProperty> HasLookup<TRelatedModel, TKey>(
-            Expression<Func<IServiceProvider, IList<TRelatedModel>>> lookupExpression,
-            Expression<Func<TRelatedModel, TKey>> lookUpKeyExpression,
-            Expression<Func<TRelatedModel, string>> lookupDisplayExpression)
-            where TRelatedModel : class
-        {
-            _field.FieldOption.LookupExpression = lookupExpression;
-            _field.FieldOption.LookupKeyExpression = lookUpKeyExpression;
-            _field.FieldOption.LookupDisplayExpression = lookupDisplayExpression;
-            return this;
-        }
-
-        public PropertyBuilder<TModel, TProperty> HasMatrixLookup<TRowType, TColumnType, TKey>(
-            Expression<Func<IServiceProvider, IList<TRowType>>> rowExpression,
-            Expression<Func<TRowType, TKey>> rowKeyExpression,
-            Expression<Func<TRowType, string>> rowDisplayExpression,
-            Expression<Func<IServiceProvider, IList<TColumnType>>> colExpression,
-            Expression<Func<TColumnType, TKey>> colKeyExpression,
-            Expression<Func<TColumnType, string>> colDisplayExpression)
-            where TRowType : class
-        {
-            _field.FieldOption.CheckBoxMatrix.RowLookupExpression = rowExpression;
-            _field.FieldOption.CheckBoxMatrix.RowLookupKeyExpression = rowKeyExpression;
-            _field.FieldOption.CheckBoxMatrix.RowLookupDisplayExpression = rowDisplayExpression;
-            _field.FieldOption.CheckBoxMatrix.ColLookupExpression = colExpression;
-            _field.FieldOption.CheckBoxMatrix.ColLookupKeyExpression = colKeyExpression;
-            _field.FieldOption.CheckBoxMatrix.ColLookupDisplayExpression = colDisplayExpression;
-            return this;
-        }
-
-        public PropertyBuilder<TModel, TProperty> HasLookup<TRelatedModel, TKey, TFilterProperty>(
-            Expression<Func<IServiceProvider, TFilterProperty, IList<TRelatedModel>>> lookupExpression,
-            Expression<Func<TRelatedModel, TKey>> lookUpKeyExpression,
-            Expression<Func<TRelatedModel, string>> lookupDisplayExpression,
-            Expression<Func<TModel, TFilterProperty>> lookupFilterExpression)
-            where TRelatedModel : class
-        {
-            var filterFieldName = ReflectionExtensions.GetMemberName(lookupFilterExpression);
-            var filterField = _formConfig.AllFormFields.FirstOrDefault(f => f.FieldName == filterFieldName);
-            if (filterField == null)
-            {
-                throw new InvalidOperationException(Resources.FieldNotFoundInvaidOperation);
-            }
-
-            _field.FieldOption.LookupExpression = lookupExpression;
-            _field.FieldOption.LookupKeyExpression = lookUpKeyExpression;
-            _field.FieldOption.LookupDisplayExpression = lookupDisplayExpression;
-            _field.FieldOption.LookupFilterExpression = lookupFilterExpression;
-            _field.FieldOption.LookupFilterField = filterField;
-            return this;
-        }
-
-
-
-        //public AdminConfig<TEntity> AdminConfig { get; set; }
-        //public LambdaExpression FieldExpression { get; set; }
+            ConditionExpression = predicate,
+            FieldExpression = _fieldExpression
+        });
+        return this;
     }
+
+    public PropertyBuilder<TModel, TProperty> EnableOn(Expression<Func<TModel, bool>> predicate)
+
+    {
+        _fieldConditions.EnableOnConditions.Add(new FieldCondition
+        {
+            ConditionExpression = predicate,
+            FieldExpression = _fieldExpression
+        });
+        return this;
+    }
+
+    public PropertyBuilder<TModel, TProperty> ValidateOn(Expression<Func<TModel, bool>> predicate)
+    {
+        _fieldConditions.ValidateOnConditions.Add(new FieldCondition
+        {
+            ConditionExpression = predicate,
+            FieldExpression = _fieldExpression
+        });
+        return this;
+    }
+
+    public PropertyBuilder<TModel, TProperty> HasLookup<TRelatedModel, TKey>(
+        Expression<Func<IServiceProvider, IList<TRelatedModel>>> lookupExpression,
+        Expression<Func<TRelatedModel, TKey>> lookUpKeyExpression,
+        Expression<Func<TRelatedModel, string>> lookupDisplayExpression)
+        where TRelatedModel : class
+    {
+        _field.FieldOption.LookupExpression = lookupExpression;
+        _field.FieldOption.LookupKeyExpression = lookUpKeyExpression;
+        _field.FieldOption.LookupDisplayExpression = lookupDisplayExpression;
+        return this;
+    }
+
+    public PropertyBuilder<TModel, TProperty> HasMatrixLookup<TRowType, TColumnType, TKey>(
+        Expression<Func<IServiceProvider, IList<TRowType>>> rowExpression,
+        Expression<Func<TRowType, TKey>> rowKeyExpression,
+        Expression<Func<TRowType, string>> rowDisplayExpression,
+        Expression<Func<IServiceProvider, IList<TColumnType>>> colExpression,
+        Expression<Func<TColumnType, TKey>> colKeyExpression,
+        Expression<Func<TColumnType, string>> colDisplayExpression)
+        where TRowType : class
+    {
+        _field.FieldOption.CheckBoxMatrix.RowLookupExpression = rowExpression;
+        _field.FieldOption.CheckBoxMatrix.RowLookupKeyExpression = rowKeyExpression;
+        _field.FieldOption.CheckBoxMatrix.RowLookupDisplayExpression = rowDisplayExpression;
+        _field.FieldOption.CheckBoxMatrix.ColLookupExpression = colExpression;
+        _field.FieldOption.CheckBoxMatrix.ColLookupKeyExpression = colKeyExpression;
+        _field.FieldOption.CheckBoxMatrix.ColLookupDisplayExpression = colDisplayExpression;
+        return this;
+    }
+
+    public PropertyBuilder<TModel, TProperty> HasLookup<TRelatedModel, TKey, TFilterProperty>(
+        Expression<Func<IServiceProvider, TFilterProperty, IList<TRelatedModel>>> lookupExpression,
+        Expression<Func<TRelatedModel, TKey>> lookUpKeyExpression,
+        Expression<Func<TRelatedModel, string>> lookupDisplayExpression,
+        Expression<Func<TModel, TFilterProperty>> lookupFilterExpression)
+        where TRelatedModel : class
+    {
+        var filterFieldName = ReflectionExtensions.GetMemberName(lookupFilterExpression);
+        var filterField = _formConfig.AllFormFields.FirstOrDefault(f => f.FieldName == filterFieldName);
+        if (filterField == null)
+        {
+            throw new InvalidOperationException(Resources.FieldNotFoundInvaidOperation);
+        }
+
+        _field.FieldOption.LookupExpression = lookupExpression;
+        _field.FieldOption.LookupKeyExpression = lookUpKeyExpression;
+        _field.FieldOption.LookupDisplayExpression = lookupDisplayExpression;
+        _field.FieldOption.LookupFilterExpression = lookupFilterExpression;
+        _field.FieldOption.LookupFilterField = filterField;
+        return this;
+    }
+
+
+
+    //public AdminConfig<TEntity> AdminConfig { get; set; }
+    //public LambdaExpression FieldExpression { get; set; }
+}
 
 }

@@ -61,6 +61,9 @@ namespace Deviser.Modules.Blog.DTO
         public string Title { get; set; }
 
         [Order]
+        public string Slug { get; set; }
+
+        [Order]
         [FieldInfo(FieldType.RichText)]
         public string Content { get; set; }
 

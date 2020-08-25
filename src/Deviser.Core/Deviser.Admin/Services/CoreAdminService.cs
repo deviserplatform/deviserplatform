@@ -170,6 +170,21 @@ namespace Deviser.Admin.Services
             return await CallGenericMethod(nameof(UpdateItem), new Type[] { modelType }, new object[] { item });
         }
 
+        public async Task<object> AutoFill(Type modelType, string fieldName, object fieldValue)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+            var field = adminConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f =>
+                f.FieldName.Equals(fieldName, StringComparison.InvariantCultureIgnoreCase));
+            if (field != null)
+            {
+                var del = field.FieldOption.AutoFillExpression.Compile();
+                var resultStr = await (dynamic)del.DynamicInvoke(_serviceProvider, fieldValue.ToString());
+                return await Task.FromResult(new { result = resultStr });
+            }
+
+            return await Task.FromResult<object>(null);
+        }
+
         public async Task<object> UpdateTreeFor(Type modelType, object item)
         {
             return await CallGenericMethod(nameof(UpdateTree), new Type[] { modelType }, new object[] { item });
@@ -383,7 +398,7 @@ namespace Deviser.Admin.Services
                     throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
             }
         }
-        
+
         private async Task<TModel> GetTree<TModel>() where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));

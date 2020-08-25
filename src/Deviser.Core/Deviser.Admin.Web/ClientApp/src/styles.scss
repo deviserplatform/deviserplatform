@@ -179,14 +179,18 @@ body {
         }
     }
 
-    .btn {
-        svg {
-            fill: $white;
-        }
-    }
+    // .btn {
+    //     svg {
+    //         fill: $white;
+    //     }
+    // }
 
     label {
         display: inline-flex;
+    }
+
+    .ql-editor{
+        min-height: 300px;
     }
 
     .form-check-label {
@@ -436,6 +440,7 @@ body {
 
                     button {
                         margin-left: 1.25rem;
+                        min-width: 40px;
                     }
                 }
             }

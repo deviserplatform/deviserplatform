@@ -6,6 +6,8 @@ using AutoMapper;
 using Deviser.Admin;
 using Deviser.Admin.Extensions;
 using Deviser.Modules.Blog.Models;
+using Deviser.Modules.Blog.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Deviser.Modules.Blog
 {
@@ -73,6 +75,7 @@ namespace Deviser.Modules.Blog
 
                 modelBuilder.GridBuilder
                     .AddField(p => p.Title)
+                    
                     .AddField(p => p.Category)
                     .AddField(p => p.Tags)
                     .AddField(p => p.CreatedOn, option => option.Format = "dd.MM.yyyy")
@@ -81,11 +84,20 @@ namespace Deviser.Modules.Blog
                 modelBuilder.FormBuilder
                 .AddKeyField(p => p.Id)
                 .AddField(p => p.Title)
-                
+                .AddField(p => p.Slug)
                 .AddField(s => s.Content)
                 .AddSelectField(s => s.Category, expr => expr.Name)
                 .AddInlineMultiSelectField<DTO.Tag>(s => s.Tags, expr => expr.TagName)
                 .AddField(p => p.CreatedBy, option => option.DisplayName="Author");
+
+
+                modelBuilder.FormBuilder.SetCustomValidationFor(c => c.Slug,
+                    (sp, slug) =>
+                        sp.GetService<BlogService>().ValidateSlug(slug));
+
+                modelBuilder.FormBuilder.Property(c => c.Slug).AutoFillBasedOn(p => p.Title,
+                    (sp, title) =>
+                        sp.GetService<BlogService>().GetSlugFor(title));
 
                 modelBuilder.FormBuilder
                     .Property(p => p.Tags)

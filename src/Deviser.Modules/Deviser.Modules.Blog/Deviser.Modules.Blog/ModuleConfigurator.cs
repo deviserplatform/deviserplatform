@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Deviser.Modules.Blog.Services;
 
 namespace Deviser.Modules.Blog
 {
@@ -19,7 +20,7 @@ namespace Deviser.Modules.Blog
 
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            services.AddScoped<BlogService>();
         }
     }
 }

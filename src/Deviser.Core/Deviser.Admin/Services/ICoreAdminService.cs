@@ -36,5 +36,6 @@ namespace Deviser.Admin.Services
         Task<ICollection<LookUpField>> GetLookUpForMainForm(Type modelType, string fieldName, object filterParam);
         Task<ICollection<LookUpField>> GetLookUpForChildForm(Type modelType, string formName, string fieldName, object filterParam);
         Task<ICollection<LookUpField>> GetLookUpForCustomForm(Type modelType, string formName, string fieldName, object filterParam);
+        Task<object> AutoFill(Type modelType, string fieldName, object modelObject);
     }
 }

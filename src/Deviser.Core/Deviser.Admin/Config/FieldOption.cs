@@ -13,7 +13,13 @@ namespace Deviser.Admin.Config
     public class FieldOption
     {
         public FieldType FieldType { get; set; }
+
         public Field AddItemBy { get; set; }
+
+        public Field AutoFillField { get; set; }
+
+        [JsonIgnore]
+        public LambdaExpression AutoFillExpression { get; set; }
 
         public CheckBoxMatrix CheckBoxMatrix { get; set; }
 
