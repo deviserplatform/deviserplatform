@@ -92,7 +92,7 @@
             class="form-control" [ngClass]="{ 'is-invalid': hasError(field) }" #dp="bsDatepicker" bsDatepicker
             [bsConfig]="bsConfig">
           <div class="input-group-append">
-            <button class="btn btn-secondary" type="button" (click)="dp.toggle()">
+            <button class="btn btn-light" type="button" (click)="dp.toggle()">
               <i class="my-icon" aria-label="My icon"
                 [inlineSVG]="'assets/icons/calendar.svg' | envPath"></i>
             </button>

@@ -6,11 +6,11 @@
         <div class="image-preview-container">            
             <div class="image-preview" *ngIf="imageSource">
                 <div class="image-action-bar">
-                    <button type="button" class="action-control btn btn-sm btn-light" (click)="showPopup();" title="Edit Image">
+                    <button type="button" class="action-control btn btn-light" (click)="showPopup();" title="Edit Image">
                         <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
                     </button>
     
-                    <button type="button" class="action-control btn btn-sm btn-light" (click)="removeImage();" title="Remove Image">
+                    <button type="button" class="action-control btn btn-light" (click)="removeImage();" title="Remove Image">
                         <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/x.svg'| envPath"></i>
                     </button>
                 </div>

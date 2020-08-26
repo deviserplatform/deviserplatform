@@ -5,6 +5,7 @@
         Layout = "~/Sites/Default/Themes/Skyline/LayoutDesigner.cshtml";
     }
     var currentPage = scopeService.PageContext.CurrentPage;
+    ViewBag.BodyClass += "edit-layout-container page-edit";
 }
 <script type="text/javascript">
     (function () {
@@ -12,12 +13,6 @@
         pageContext.isEmbedded = true;
         pageContext.assetPath = '/_content/Deviser.Web/ClientApp/';
         window.pageContext = pageContext;
-    }());
-
-    (function () {
-        $(function () {
-            $('body').addClass('page-edit');
-        });
     }());
 </script>
 

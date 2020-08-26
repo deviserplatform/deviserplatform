@@ -2,6 +2,7 @@
 @inject IScopeService scopeService
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.BodyClass += "admin-container";
     var currentPage = scopeService.PageContext.CurrentPage;
 }
 
@@ -30,6 +31,13 @@
 
 
 @await Component.InvokeAsync("ControlBar")
+@*<script>
+    (function () {
+        $(function () {
+            $('body').addClass('admin-container');
+        });
+    }());
+</script>*@
 <div class="admin-wrapper">
 
     <div class="admin-sidebar overlay-scroll">

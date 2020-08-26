@@ -8,11 +8,11 @@
                 <a [href]="getLinkUrl()">{{link.linkText}}</a>                
             </div>
             <div class="link-action-bar" *ngIf="link">
-                <button type="button" class="action-control btn btn-sm btn-light" (click)="showPopup();" title="Edit Link">
+                <button type="button" class="action-control btn btn-light" (click)="showPopup();" title="Edit Link">
                     <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
                 </button>
 
-                <button type="button" class="action-control btn btn-sm btn-light" (click)="removeLink();" title="Remove Link">
+                <button type="button" class="action-control btn btn-light" (click)="removeLink();" title="Remove Link">
                     <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/x.svg'| envPath"></i>
                 </button>
             </div>
