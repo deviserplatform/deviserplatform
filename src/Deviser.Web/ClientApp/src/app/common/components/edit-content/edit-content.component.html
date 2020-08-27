@@ -17,7 +17,7 @@
                 <div class="row action-bar mb-3">
                     <div class="col">
                         <div class="float-left">
-                            <button type="button" class="btn btn-primary" (click)="newItem()">
+                            <button type="button" class="btn btn-action btn-primary" (click)="newItem()">
                                 <i class="my-icon" aria-label="My icon"
                                     [inlineSVG]="'assets/icons/plus-circle.svg'| envPath"></i>
                                 New
@@ -41,14 +41,14 @@
                                 </ng-container>
                             </td>
                             <td>
-                                <button type="button" class="action-control btn btn-sm btn-default"
+                                <button type="button" class="action-control btn btn-default"
                                     (click)="editItem(item);">
                                     <i class="my-icon" aria-label="My icon"
                                         [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
                                 </button>
                             </td>
                             <td>
-                                <button type="button" class="action-control btn btn-sm btn-default"
+                                <button type="button" class="action-control btn btn-default"
                                     (click)="removeItem(item);">
                                     <i class="my-icon" aria-label="My icon"
                                         [inlineSVG]="'assets/icons/trash-2.svg'| envPath"></i>
@@ -72,12 +72,12 @@
 </div>
 <div class="modal-footer">
     <div *ngIf="viewState===viewStates.List">
-        <button class="btn btn-default" type="button" (click)="cancel()">Cancel</button>
-        <button class="btn btn-primary" type="button" (click)="save()">Save</button>
+        <button class="btn btn-action btn-default" type="button" (click)="cancel()">Cancel</button>
+        <button class="btn btn-action btn-primary" type="button" (click)="save()">Save</button>
     </div>
     <div *ngIf="viewState===viewStates.New || viewState===viewStates.Edit">
-        <button class="btn btn-default" (click)="cancelDetailView()">Back to List</button>
-        <button class="btn btn-primary" (click)="updateItem()">Save Item</button>
+        <button class="btn btn-action btn-default" (click)="cancelDetailView()">Back to List</button>
+        <button class="btn btn-action btn-primary" (click)="updateItem()">Save Item</button>
     </div>
 </div>
 
@@ -102,7 +102,7 @@
                     <input type="text" class="form-control" [id]="field.fieldName"
                         [(ngModel)]="content[field.fieldName]" #dp="bsDatepicker" bsDatepicker [bsConfig]="bsConfig">
                     <div class="input-group-append">
-                        <button class="btn btn-secondary" type="button" (click)="dp.toggle()">
+                        <button class="btn btn-light" type="button" (click)="dp.toggle()">
                             <i class="my-icon" aria-label="My icon"
                                 [inlineSVG]="'assets/icons/calendar.svg' | envPath"></i>
                         </button>

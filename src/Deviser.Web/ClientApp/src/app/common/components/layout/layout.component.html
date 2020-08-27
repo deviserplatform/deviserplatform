@@ -8,12 +8,12 @@
       </div>
       <div class="col action-bar">
         <div class="left-group">
-          <button type="button" class="action-control btn btn-sm btn-primary" (click)="onNewLayout();">
+          <button type="button" class="action-control btn btn-action btn-primary" (click)="onNewLayout();">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/add_circle_outline.svg'| envPath"></i>
             New
           </button>
 
-          <button type="button" class="action-control btn btn-sm btn-secondary" (click)="onCopyLayout();" *ngIf="!isNewMode">
+          <button type="button" class="action-control btn btn-action btn-secondary" (click)="onCopyLayout();" *ngIf="!isNewMode">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/copy.svg'| envPath"></i> Copy
           </button>
 
@@ -21,10 +21,10 @@
             <div class="input-group layout-name-edit" *ngIf="isLayoutNameEditable">
               <input type="text" class="form-control" placeholder="Enter layout name" [(ngModel)]="layoutName">
               <div class="input-group-append">
-                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="onSaveLayoutName()">
+                <button type="button" class="btn btn-outline-secondary" (click)="onSaveLayoutName()">
                   <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/check.svg'| envPath"></i>
                 </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="onCancelEditLayoutName()">
+                <button type="button" class="btn btn-outline-secondary" (click)="onCancelEditLayoutName()">
                   <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-clear.svg'| envPath"></i>
                 </button>
               </div>
@@ -39,11 +39,11 @@
             </div>
           </div>
 
-          <button type="button" class="action-control btn btn-sm btn-primary" (click)="onSaveLayout();">
+          <button type="button" class="action-control btn btn-action btn-primary" (click)="onSaveLayout();">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/save.svg'| envPath"></i> Save
           </button>
 
-          <button type="button" class="action-control btn btn-sm btn-danger" (click)="onDeleteLayout();" *ngIf="!isNewMode">
+          <button type="button" class="action-control btn btn-action btn-danger" (click)="onDeleteLayout();" *ngIf="!isNewMode">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/trash.svg'| envPath"></i> Delete
           </button>
         </div>
