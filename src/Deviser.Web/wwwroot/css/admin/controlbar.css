@@ -14,7 +14,7 @@ Page Header
     min-height: 50px;
     filter: none;
     background-image: none;
-    background-color: #2b3643;
+    background-color: #1d2127;
     position: fixed;
     top: 0;
     z-index: 100;
@@ -46,11 +46,11 @@ Page Header
         display: block;
         float: left;
         margin: 0;
+        font-size: 0;
     }
 
         .dev-controlbar .top-menu .dev-navbar-nav > li.dropdown {
             margin: 0;
-            padding: 0 4px;
             display: inline-block;
         }
 
@@ -90,14 +90,16 @@ a.dev-toggle::after {
 }
 
 .dev-controlbar .top-menu .dev-navbar-nav > li.dropdown .dropdown-toggle:hover,
-.dev-dropdown-menu.dropdown-menu li > a:hover,
+.dev-dropdown-menu.dropdown-menu li > a:hover {
+    background-color: #171717
+}
 .dev-controlbar .top-menu .dev-navbar-nav > li.dropdown.open .dropdown-toggle,
 .dev-controlbar .top-menu .dev-navbar-nav > li.dropdown.active {
-    background-color: #3f4f62;
+    background-color: #485261;
 }
 
 .dev-dropdown-menu.dropdown-menu {
-    background-color: #2b3643;
+    background-color: #1d2127;
 }
 
     .dev-dropdown-menu.dropdown-menu li > a {
