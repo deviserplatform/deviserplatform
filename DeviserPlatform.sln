@@ -61,6 +61,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeviserApp", "src\DeviserAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Core.Resources", "src\Deviser.Core\Deviser.Core.Resources\Deviser.Core.Resources.csproj", "{CD5144F7-E62B-420D-B296-AFA45DF4563A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Themes.Skyline", "src\Deviser.Themes\Deviser.Themes.Skyline\Deviser.Themes.Skyline.csproj", "{A3768C5E-BA6A-4ECA-9583-A52F0890C4A5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deviser.Themes", "Deviser.Themes", "{1306D17F-1883-4A03-9369-84A5CC505ED5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +163,10 @@ Global
 		{CD5144F7-E62B-420D-B296-AFA45DF4563A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD5144F7-E62B-420D-B296-AFA45DF4563A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD5144F7-E62B-420D-B296-AFA45DF4563A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3768C5E-BA6A-4ECA-9583-A52F0890C4A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3768C5E-BA6A-4ECA-9583-A52F0890C4A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3768C5E-BA6A-4ECA-9583-A52F0890C4A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3768C5E-BA6A-4ECA-9583-A52F0890C4A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -189,6 +197,8 @@ Global
 		{076ACC63-8E9E-400A-BD54-E2DA3D33CB59} = {91BD4D35-CFF1-48D1-BAF6-BA0E3FB96B3B}
 		{E808AB4B-8C15-4F09-B092-A96ABF23824F} = {91BD4D35-CFF1-48D1-BAF6-BA0E3FB96B3B}
 		{CD5144F7-E62B-420D-B296-AFA45DF4563A} = {F3FFE0B0-32B0-4867-AA80-7FB130E72263}
+		{A3768C5E-BA6A-4ECA-9583-A52F0890C4A5} = {1306D17F-1883-4A03-9369-84A5CC505ED5}
+		{1306D17F-1883-4A03-9369-84A5CC505ED5} = {91BD4D35-CFF1-48D1-BAF6-BA0E3FB96B3B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {91F2FF8F-6646-4F1E-A7D9-059D41B096BE}

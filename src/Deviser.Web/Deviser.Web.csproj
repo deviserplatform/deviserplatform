@@ -19,22 +19,18 @@
     <Compile Remove="TagHelpers\**" />
     <Compile Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
     <Compile Remove="wwwroot\lib\bootstrap\.github\**" />
-    <Compile Remove="wwwroot\lib\lodash\.github\**" />
     <Compile Remove="wwwroot\lib\metisMenu\.github\**" />
     <Content Remove="TagHelpers\**" />
     <Content Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
     <Content Remove="wwwroot\lib\bootstrap\.github\**" />
-    <Content Remove="wwwroot\lib\lodash\.github\**" />
     <Content Remove="wwwroot\lib\metisMenu\.github\**" />
     <EmbeddedResource Remove="TagHelpers\**" />
     <EmbeddedResource Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
     <EmbeddedResource Remove="wwwroot\lib\bootstrap\.github\**" />
-    <EmbeddedResource Remove="wwwroot\lib\lodash\.github\**" />
     <EmbeddedResource Remove="wwwroot\lib\metisMenu\.github\**" />
     <None Remove="TagHelpers\**" />
     <None Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
     <None Remove="wwwroot\lib\bootstrap\.github\**" />
-    <None Remove="wwwroot\lib\lodash\.github\**" />
     <None Remove="wwwroot\lib\metisMenu\.github\**" />
   </ItemGroup>
 
@@ -61,6 +57,7 @@
     <ProjectReference Include="..\Deviser.Modules\Deviser.Modules.SiteManagement\Deviser.Modules.SiteManagement.csproj" />
     <ProjectReference Include="..\Deviser.Modules\Deviser.Modules.UserManagement\Deviser.Modules.UserManagement.csproj" />
     <ProjectReference Include="..\Deviser.Core\Deviser.ClientDependency\Deviser.ClientDependency.csproj" />
+    <ProjectReference Include="..\Deviser.Themes\Deviser.Themes.Skyline\Deviser.Themes.Skyline.csproj" />
   </ItemGroup>
 
   <ItemGroup>

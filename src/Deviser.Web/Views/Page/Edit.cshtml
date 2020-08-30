@@ -2,12 +2,12 @@
 @{
     if (ViewBag.Theme != null)
     {
-        Layout = "~/Sites/Default/Themes/Skyline/LayoutDesignerBS4.cshtml";
+        Layout = "~/Sites/Default/Themes/Skyline/LayoutDesigner.cshtml";
     }
     var currentPage = scopeService.PageContext.CurrentPage;
     ViewBag.BodyClass += "edit-layout-container page-edit";
 }
-<require dependency-type="Css" include="Development" priority="15" file-path="~/_content/Deviser.Web/css/admin/admin.css" test="test"></require>
+
 <script type="text/javascript">
     (function () {
         var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));

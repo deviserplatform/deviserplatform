@@ -1,8 +1,39 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Modules\Contact\Views\ContactForm\EmailTemplates\AdminNotification.cshtml" />
+    <None Remove="Modules\Contact\Views\ContactForm\EmailTemplates\ContactNotification.cshtml" />
+    <None Remove="Modules\Contact\Views\ContactForm\ViewTemplates\DefaultForm.cshtml" />
+    <None Remove="Modules\Contact\Views\ContactForm\ViewTemplates\SimpleForm.cshtml" />
+    <None Remove="Modules\Contact\_ViewImports.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Modules\Contact\Views\ContactForm\EmailTemplates\AdminNotification.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Modules\Contact\Views\ContactForm\EmailTemplates\ContactNotification.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Modules\Contact\Views\ContactForm\ViewTemplates\DefaultForm.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Modules\Contact\Views\ContactForm\ViewTemplates\SimpleForm.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Modules\Contact\_ViewImports.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj" />
