@@ -46,7 +46,7 @@
                                     [cdkDropListConnectedTo]="nestedContainersDropListIds"
                                     [cdkDropListData]="contentTypes">
                                     <div class="new-element node-element" *ngFor="let contentElement of contentTypes"
-                                        cdkDrag [cdkDragData]="contentElement" cdkDragBoundary=".layout-container">
+                                        cdkDrag [cdkDragData]="contentElement">
                                         <div class="icon">
                                             <i class="{{contentElement.contentType.iconClass}}"
                                                 *ngIf="contentElement.contentType.iconClass"></i>
@@ -68,7 +68,7 @@
                                     [cdkDropListConnectedTo]="nestedContainersDropListIds"
                                     [cdkDropListData]="moduleViews">
                                     <div class="new-element node-element" *ngFor="let moduleElement of moduleViews"
-                                        cdkDrag [cdkDragData]="moduleElement" cdkDragBoundary=".layout-container">
+                                        cdkDrag [cdkDragData]="moduleElement">
                                         <div class="icon">
                                             <i class="{{moduleElement.moduleView.iconClass}}"
                                                 *ngIf="moduleElement.moduleView.iconClass"></i>
@@ -206,7 +206,7 @@
             [ngClass]="{'horizontal': node.type==='row', 'vertical': node.type!=='row'}"
             (cdkDropListDropped)="onDragDrop($event)" class="drop-list">
             <div *ngFor="let child of node.placeHolders;let i = index" cdkDrag [cdkDragData]="child" class="drop-item"
-                [ngClass]="getColumnClass(child)" cdkDragBoundary=".layout-container"
+                [ngClass]="getColumnClass(child)"
                 [cdkDragDisabled]="child.layoutTemplate === 'container'">
                 <!-- <div [ngClass]="{'row': node.type==='row'}">
             <div [ngClass]="{'col': child.type==='column'}"> -->

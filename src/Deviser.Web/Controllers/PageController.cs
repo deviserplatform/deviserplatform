@@ -101,6 +101,12 @@ namespace Deviser.Web.Controllers
                                 ViewBag.AdminResult = result;
                                 return View(currentPage);
                             }
+                            else if (currentPage.PageTypeId == Globals.PageTypeURL)
+                            {
+                                var pageTranslation = currentPage.PageTranslation.FirstOrDefault(pt =>
+                                    pt.Locale.Equals(_scopeService.PageContext.CurrentLocale));
+                                return Redirect(pageTranslation.RedirectUrl);
+                            }
                         }
                         else
                         {

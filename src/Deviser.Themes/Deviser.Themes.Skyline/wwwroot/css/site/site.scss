@@ -547,6 +547,18 @@ body {
     .white-section {
         padding: 2rem 0;
         background-color: $devWhite;
+
+        .welcome-text-col {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .call-to-action-col {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+        }
     }
     /*Video conent type*/
     .video-container {
@@ -605,18 +617,24 @@ body {
     }
 
     .features {
-        .info .icon-circle {
-            background: $devPrimary;
-            color: $white;
-            border: 0 solid transparent;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            margin-bottom: 20px;
-            display: inline-block;
-            transition: all .3s ease;
-            font-size: 1.6rem;
-            padding-top: 18px;
+        .info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .icon-circle {
+                background: $devPrimary;
+                color: $white;
+                border: 0 solid transparent;
+                border-radius: 50%;
+                width: 60px;
+                height: 60px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                transition: all .3s ease;
+                margin-bottom: 2rem;
+            }
         }
     }
 
@@ -653,9 +671,9 @@ body {
     padding: 20px;
 
     .validation-summary-errors {
-        ul{
-            list-style:none;
-            padding:0;
+        ul {
+            list-style: none;
+            padding: 0;
         }
     }
 
@@ -853,3 +871,4 @@ body {
         }
     }
 }
+ 

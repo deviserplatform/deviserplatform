@@ -1,8 +1,8 @@
 {
-  "name": "deviser.web",
+  "name": "deviser.themes.skyline",
   "version": "1.0.0",
   "description": "",
-  "main": "gulpfile.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

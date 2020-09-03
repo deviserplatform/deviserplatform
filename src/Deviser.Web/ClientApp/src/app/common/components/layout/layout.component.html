@@ -13,7 +13,8 @@
             New
           </button>
 
-          <button type="button" class="action-control btn btn-action btn-secondary" (click)="onCopyLayout();" *ngIf="!isNewMode">
+          <button type="button" class="action-control btn btn-action btn-secondary" (click)="onCopyLayout();"
+            *ngIf="!isNewMode">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/copy.svg'| envPath"></i> Copy
           </button>
 
@@ -43,7 +44,8 @@
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/save.svg'| envPath"></i> Save
           </button>
 
-          <button type="button" class="action-control btn btn-action btn-danger" (click)="onDeleteLayout();" *ngIf="!isNewMode">
+          <button type="button" class="action-control btn btn-action btn-danger" (click)="onDeleteLayout();"
+            *ngIf="!isNewMode">
             <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/trash.svg'| envPath"></i> Delete
           </button>
         </div>
@@ -57,7 +59,8 @@
         </div>
       </div>
       <div class="col-2 page-name" ngPreserveWhitespaces>
-        <b>Page: </b><span *ngIf="pageContext && pageContext.currentTranslation">{{pageContext.currentTranslation.name}}</span>
+        <b>Page: </b><span
+          *ngIf="pageContext && pageContext.currentTranslation">{{pageContext.currentTranslation.name}}</span>
       </div>
     </div>
     <div class="row content-row">
@@ -70,7 +73,7 @@
             <div #newElementList cdkDropList class="new-element-list"
               [cdkDropListConnectedTo]="nestedContainersDropListIds" [cdkDropListData]="layoutTypes">
               <div class="new-element node-element" *ngFor="let layoutType of layoutTypes" cdkDrag
-                [cdkDragData]="layoutType" cdkDragBoundary=".layout-container">
+                [cdkDragData]="layoutType">
                 <div class="icon">
                   <i class="{{layoutType.iconClass}}" *ngIf="layoutType.iconClass"></i>
                   <img src="{{layoutType.iconImage}}" *ngIf="layoutType.iconImage" alt="{{layoutType.name}}" />
@@ -123,11 +126,17 @@
                 <input type="text" class="form-control input-sm" [(ngModel)]="property.value" />
               </div>
               <div class="col-md-6" *ngIf="property.optionList">
-                <select class="form-control input-sm" name="repeatSelect" id="repeatSelect"
+                <!-- <select class="form-control input-sm" name="repeatSelect" id="repeatSelect"
                   [(ngModel)]="property.value">
                   <option value="">Select</option>
                   <option *ngFor="let option of property.optionList.list" [value]="option.id">{{option.label}}</option>
-                </select>
+                </select> -->
+
+                <ng-select class="form-control input-sm" [items]="property.optionList.list" bindLabel="label" bindValue="id" [(ngModel)]="property.value"
+                  autofocus [selectOnTab]="true" [multiple]="false" [clearable]="false"
+                  placeholder="Select">
+                </ng-select>
+
               </div>
             </div>
           </div>
@@ -153,13 +162,9 @@
       [ngClass]="{'horizontal': node.type==='row', 'vertical': node.type!=='row'}"
       [cdkDropListEnterPredicate]="elementDropPredicate" (cdkDropListDropped)="onDragDrop($event)" class="drop-list">
       <div *ngFor="let child of node.placeHolders;let i = index" cdkDrag [cdkDragData]="child" class="drop-item"
-        [ngClass]="getColumnClass(child)" cdkDragBoundary=".layout-container">
-        <!-- <div [ngClass]="{'row': node.type==='row'}">
-          <div [ngClass]="{'col': child.type==='column'}"> -->
+        [ngClass]="getColumnClass(child)">
         <ng-container *ngTemplateOutlet="templateSelector, context:{node:child, index:i}">
         </ng-container>
-        <!-- </div>
-        </div> -->
         <div class="item-placeholder" *cdkDragPlaceholder></div>
       </div>
     </div>

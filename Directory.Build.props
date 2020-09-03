@@ -13,6 +13,7 @@
 		<VersionSuffix>alpha3</VersionSuffix>
 		<ExperimentalVersionPrefix>0.1.0</ExperimentalVersionPrefix>
 		<ExperimentalVersionSuffix>rtm</ExperimentalVersionSuffix>
+		<TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
 		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
 	</PropertyGroup>
 </Project>
