@@ -14,10 +14,11 @@ namespace Deviser.Core.Library
     public class ViewProvider : IViewProvider
     {
         private readonly ApplicationPartManager _applicationPartManager;
-        public ViewProvider()
+        public ViewProvider(ApplicationPartManager applicationPartManager)
         {
-            _applicationPartManager = new ApplicationPartManager();
+            _applicationPartManager = applicationPartManager;
         }
+
         public IList<CompiledViewDescriptor> GetCompiledViewDescriptors()
         {
             var feature = new ViewsFeature();

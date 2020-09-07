@@ -241,7 +241,9 @@ namespace Deviser.Admin.Internal
                 {
                     var lookUpFields = new List<LookUpField>();
                     var ShowOnStaticExpressionDel = childConfig.ShowOnStaticExpression.Compile();
-                    var result = ShowOnStaticExpressionDel.DynamicInvoke(new object[] { _serviceProvider });
+                    var serviceProvider =
+                        _serviceProvider.GetService<IHttpContextAccessor>().HttpContext.RequestServices;
+                    var result = ShowOnStaticExpressionDel.DynamicInvoke(new object[] { serviceProvider });
                     return (bool)result;
                 }
 
@@ -785,7 +787,10 @@ namespace Deviser.Admin.Internal
                 var displayExprDelegate = lookupDisplayExpression.Compile();
                 var keyFieldName = ReflectionExtensions.GetMemberName(lookupKeyExpression);
 
-                var items = entityLookupExprDelegate.DynamicInvoke(new object[] { _serviceProvider }) as IList;
+                var serviceProvider =
+                    _serviceProvider.GetService<IHttpContextAccessor>().HttpContext.RequestServices;
+
+                var items = entityLookupExprDelegate.DynamicInvoke(new object[] { serviceProvider }) as IList;
 
                 foreach (var item in items)
                 {

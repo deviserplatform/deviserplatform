@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Deviser.Modules.SecurityRoles.Services
 {
-    public class SecurityRoleAdminService:IAdminService<Role>
+    public class SecurityRoleAdminService : IAdminService<Role>
     {
         private readonly ILogger<SecurityRoleAdminService> _logger;
         private readonly IRoleRepository _roleRepository;
@@ -50,21 +50,56 @@ namespace Deviser.Modules.SecurityRoles.Services
         public async Task<IFormResult<Role>> CreateItem(Role role)
         {
             role = _roleRepository.CreateRole(role);
-            var result = new FormResult<Role>(role);
+
+            if (role == null)
+                return new FormResult<Role>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to save the Role"
+                };
+
+            var result = new FormResult<Role>(role)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "Role has been saved successfully"
+            };
             return await Task.FromResult(result);
         }
 
         public async Task<IFormResult<Role>> UpdateItem(Role role)
         {
             role = _roleRepository.UpdateRole(role);
-            var result = new FormResult<Role>(role);
+            if (role == null)
+                return new FormResult<Role>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to save the Role"
+                };
+
+            var result = new FormResult<Role>(role)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "Role has been updated successfully"
+            };
             return await Task.FromResult(result);
         }
 
         public async Task<IAdminResult<Role>> DeleteItem(string RoleId)
         {
-            Role role = _roleRepository.DeleteRole(Guid.Parse(RoleId));
-            var result = new AdminResult<Role>(role);
+            var role = _roleRepository.DeleteRole(Guid.Parse(RoleId));
+
+            if (role == null)
+                return new FormResult<Role>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to delete the Role"
+                };
+
+            var result = new AdminResult<Role>(role)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "Role has been deleted successfully"
+            };
             return await Task.FromResult(result);
         }
 
@@ -82,6 +117,6 @@ namespace Deviser.Modules.SecurityRoles.Services
     }
 }
 
-   
+
 
 

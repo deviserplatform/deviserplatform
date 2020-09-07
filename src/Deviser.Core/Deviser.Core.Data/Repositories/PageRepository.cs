@@ -424,6 +424,7 @@ namespace Deviser.Core.Data.Repositories
             try
             {
                 var dbPage = _mapper.Map<Entities.Page>(page);
+                dbPage.IsActive = true;
                 dbPage.CreatedDate = DateTime.Now; dbPage.LastModifiedDate = DateTime.Now;
                 var result = context.Page.Add(dbPage).Entity;
                 context.SaveChanges();
