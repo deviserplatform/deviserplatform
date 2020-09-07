@@ -58,7 +58,7 @@ namespace Deviser.Admin.Internal
                     adminSite = new AdminSite(serviceProvider, contextObj/*, serviceProvider.GetRequiredService<IModelMetadataProvider>()*/);
                     adminBuilder = new AdminBuilder(adminSite);
 
-                    if (!contextObj.Database.Exists())
+                    if (!contextObj.Database.CanConnect())
                         throw new InvalidOperationException($"Database is not exist for {dbContextType}, create a database and try again");
 
                     ConfigureAdminSites(adminConfiguratorType, adminSite, adminBuilder);

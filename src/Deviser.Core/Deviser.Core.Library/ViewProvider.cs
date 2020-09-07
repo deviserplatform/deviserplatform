@@ -14,9 +14,9 @@ namespace Deviser.Core.Library
     public class ViewProvider : IViewProvider
     {
         private readonly ApplicationPartManager _applicationPartManager;
-        public ViewProvider(ApplicationPartManager applicationPartManager)
+        public ViewProvider()
         {
-            _applicationPartManager = applicationPartManager;
+            _applicationPartManager = new ApplicationPartManager();
         }
         public IList<CompiledViewDescriptor> GetCompiledViewDescriptors()
         {

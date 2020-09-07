@@ -65,18 +65,16 @@ namespace Deviser.Web.DependencyInjection
                 InternalServiceProvider.Instance.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
             IInstallationProvider installationProvider = InternalServiceProvider.Instance.ServiceProvider.GetRequiredService<IInstallationProvider>();
 
+            services.AddHttpContextAccessor();
 
             services.AddDbContext<DeviserDbContext>(
-                   (internalServiceProvider, dbContextOptionBuilder) =>
-                   {
-                       installationProvider.GetDbContextOptionsBuilder<DeviserDbContext>(dbContextOptionBuilder);
-                   });
+                (internalServiceProvider, dbContextOptionBuilder) =>
+                {
+                    installationProvider.GetDbContextOptionsBuilder<DeviserDbContext>(dbContextOptionBuilder);
+                });
 
-            services.AddIdentity<User, Role>()
-               .AddEntityFrameworkStores<DeviserDbContext>()
-               .AddDefaultTokenProviders();
 
-            services.AddHttpContextAccessor();
+
 
 
             services.AddAutoMapper(typeof(DeviserPlatformServiceCollectionExtensions).Assembly);
@@ -120,10 +118,19 @@ namespace Deviser.Web.DependencyInjection
             services.AddScoped<ISitemapService, SitemapService>();
             services.AddScoped<IViewProvider, ViewProvider>();
 
+            services.AddTransient<IEmailSender, MessageSender>();
+            services.AddTransient<ISmsSender, MessageSender>();
+            services.TryAddSingleton<ObjectMethodExecutorCache>();
+            services.TryAddSingleton<ITypeActivatorCache, TypeActivatorCache>();
+
             InternalServiceProvider.Instance.BuildServiceProvider(services);
 
             if (installationProvider.IsPlatformInstalled)
             {
+                services.AddIdentity<User, Role>()
+                    .AddEntityFrameworkStores<DeviserDbContext>()
+                    .AddDefaultTokenProviders();
+
                 //ISettingManager cannot be used here since most of ISettingManager dependencies are not yet initialized at this point.
                 var siteSettingRepository = InternalServiceProvider.Instance.ServiceProvider.GetService<ISiteSettingRepository>();
                 var siteSettings = siteSettingRepository.GetSettings();
@@ -164,9 +171,12 @@ namespace Deviser.Web.DependencyInjection
                         googleOptions.ClientSecret = googleClientSecret;
                     });
                 }
+
+                RegisterModuleDependencies(services);
+                services.AddDeviserAdmin();
             }
 
-            RegisterModuleDependencies(services);
+
 
             services
                 .AddControllersWithViews()
@@ -181,8 +191,44 @@ namespace Deviser.Web.DependencyInjection
                     options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
 
                 })
-                .AddControllersAsServices()
+                //.AddControllersAsServices()
                 .AddRazorRuntimeCompilation();
+
+            if (installationProvider.IsPlatformInstalled)
+            {
+                services
+                    .AddControllersWithViews()
+                    .AddNewtonsoftJson(options =>
+                    {
+                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                        options.SerializerSettings.Formatting = Formatting.Indented;
+                        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    })
+                    .AddRazorOptions(options =>
+                    {
+                        options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
+
+                    })
+                    .AddControllersAsServices()
+                    .AddRazorRuntimeCompilation();
+            }
+            else
+            {
+                services
+                    .AddControllersWithViews()
+                    .AddNewtonsoftJson(options =>
+                    {
+                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                        options.SerializerSettings.Formatting = Formatting.Indented;
+                        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    })
+                    .AddRazorOptions(options =>
+                    {
+                        options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
+
+                    })
+                    .AddRazorRuntimeCompilation();
+            }
 
             if (hostEnvironment.IsDevelopment())
             {
@@ -202,7 +248,7 @@ namespace Deviser.Web.DependencyInjection
                 });
             }
 
-            services.AddDeviserAdmin();
+
 
             services.AddSignalR();
 
@@ -223,12 +269,6 @@ namespace Deviser.Web.DependencyInjection
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
-
-            // Add core application services.
-            services.AddTransient<IEmailSender, MessageSender>();
-            services.AddTransient<ISmsSender, MessageSender>();
-            services.TryAddSingleton<ObjectMethodExecutorCache>();
-            services.TryAddSingleton<ITypeActivatorCache, TypeActivatorCache>();
 
             return services;
         }

@@ -5,15 +5,14 @@ using Deviser.Core.Library.Sites;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Deviser.Core.Library.Services;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace Deviser.Core.Library.Middleware
 {
@@ -39,11 +38,7 @@ namespace Deviser.Core.Library.Middleware
 
         public async Task Invoke(HttpContext httpContext,
             IInstallationProvider installationManager,
-            IPageManager pageManager,
-            IModuleRepository moduleRepository,
-            ISettingManager settingManager,
-            ILanguageRepository languageRepository,
-            IScopeService scopeService)
+            IServiceProvider serviceProvider)
         {
             var requestPath = httpContext.Request.Path.ToString().ToLower();
             var requestParts = requestPath.Split('.');
@@ -60,6 +55,13 @@ namespace Deviser.Core.Library.Middleware
 
             if (isInstalled)
             {
+
+                var pageManager = serviceProvider.GetService<IPageManager>();
+                var moduleRepository = serviceProvider.GetService<IModuleRepository>();
+                var settingManager = serviceProvider.GetService<ISettingManager>();
+                var languageRepository = serviceProvider.GetService<ILanguageRepository>();
+                var scopeService = serviceProvider.GetService<IScopeService>();
+
                 var routeData = httpContext.GetRouteData();
                 var activeLanguages = languageRepository.GetActiveLanguages();
                 pageContext.IsMultilingual = languageRepository.IsMultilingual();
