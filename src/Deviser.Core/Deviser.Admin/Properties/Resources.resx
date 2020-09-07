@@ -135,4 +135,7 @@
   <data name="MoreKeyFieldsInvalidOperation" xml:space="preserve">
     <value>More than one KeyField cannot be configured. </value>
   </data>
+  <data name="SortExpressionCannotBeNull" xml:space="preserve">
+    <value>Sort and sorting function expression cannot be null.</value>
+  </data>
 </root>

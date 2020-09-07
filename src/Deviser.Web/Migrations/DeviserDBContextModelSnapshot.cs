@@ -37,6 +37,26 @@ namespace Deviser.Web.Migrations
                     b.ToTable("AdminPage");
                 });
 
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ContentFieldType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Label")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("Name");
+
+                    b.ToTable("ContentFieldType");
+                });
+
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentPermission", b =>
                 {
                     b.Property<Guid>("Id")
@@ -79,9 +99,11 @@ namespace Deviser.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
+
+                    b.Property<bool>("IsList")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Label")
                         .HasColumnType("nvarchar(max)");
@@ -98,6 +120,45 @@ namespace Deviser.Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ContentType");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeField", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ContentFieldTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ContentTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FieldDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FieldLabel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FieldName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsShownOnList")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsShownOnPreview")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContentFieldTypeId");
+
+                    b.HasIndex("ContentTypeId");
+
+                    b.ToTable("ContentTypeField");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeProperty", b =>
@@ -134,7 +195,6 @@ namespace Deviser.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
@@ -159,7 +219,6 @@ namespace Deviser.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
@@ -188,7 +247,6 @@ namespace Deviser.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
@@ -238,7 +296,6 @@ namespace Deviser.Web.Migrations
                         .HasMaxLength(2000);
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
@@ -320,7 +377,6 @@ namespace Deviser.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDefault")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
@@ -380,7 +436,6 @@ namespace Deviser.Web.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
@@ -415,7 +470,6 @@ namespace Deviser.Web.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
@@ -423,7 +477,6 @@ namespace Deviser.Web.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsSystem")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
@@ -482,17 +535,14 @@ namespace Deviser.Web.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("InheritEditPermissions")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
                     b.Property<bool>("InheritViewPermissions")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
@@ -538,7 +588,6 @@ namespace Deviser.Web.Migrations
                         .HasMaxLength(10);
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
@@ -564,17 +613,14 @@ namespace Deviser.Web.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("InheritEditPermissions")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
                     b.Property<bool>("InheritViewPermissions")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
@@ -736,7 +782,6 @@ namespace Deviser.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
@@ -1012,6 +1057,21 @@ namespace Deviser.Web.Migrations
                     b.HasOne("Deviser.Core.Data.Entities.Role", "Role")
                         .WithMany("ContentPermissions")
                         .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeField", b =>
+                {
+                    b.HasOne("Deviser.Core.Data.Entities.ContentFieldType", "ContentFieldType")
+                        .WithMany("ContentTypeFields")
+                        .HasForeignKey("ContentFieldTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Deviser.Core.Data.Entities.ContentType", "ContentType")
+                        .WithMany("ContentTypeFields")
+                        .HasForeignKey("ContentTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

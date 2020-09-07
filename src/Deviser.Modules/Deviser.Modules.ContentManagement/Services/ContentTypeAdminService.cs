@@ -50,15 +50,39 @@ namespace Deviser.Modules.ContentManagement.Services
 
         public async Task<IFormResult<ContentType>> CreateItem(ContentType contentType)
         {
+            ParseContentTypeField(contentType);
             contentType = _contentTypeRepository.CreateContentType(contentType);
-            var result = new FormResult<ContentType>(contentType);
+            if (contentType == null)
+                return new FormResult<ContentType>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to save the ContentType"
+                };
+
+            var result = new FormResult<ContentType>(contentType)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "ContentType has been saved successfully"
+            };
             return await Task.FromResult(result);
         }
 
         public async Task<IFormResult<ContentType>> UpdateItem(ContentType contentType)
         {
+            ParseContentTypeField(contentType);
             contentType = _contentTypeRepository.UpdateContentType(contentType);
-            var result = new FormResult<ContentType>(contentType);
+            if (contentType == null)
+                return new FormResult<ContentType>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to save the ContentType"
+                };
+
+            var result = new FormResult<ContentType>(contentType)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "ContentType has been update successfully"
+            };
             return await Task.FromResult(result);
         }
 
@@ -72,13 +96,31 @@ namespace Deviser.Modules.ContentManagement.Services
 
             contentType.IsActive = false;
             contentType = _contentTypeRepository.UpdateContentType(contentType);
-            var result = new AdminResult<ContentType>(contentType);
+            if (contentType == null)
+                return new FormResult<ContentType>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to delete the ContentType"
+                };
+
+            var result = new AdminResult<ContentType>(contentType)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "ContentType has been deleted successfully"
+            };
             return await Task.FromResult(result);
+        }
+
+        public async Task<PagedResult<ContentTypeField>> SortContentType(int pageNo, int pageSize, IList<ContentTypeField> contentTypeFields)
+        {
+            var sortedContentTypeFields = await _contentTypeRepository.SortContentTypeFields(contentTypeFields);
+            var result = new PagedResult<ContentTypeField>(sortedContentTypeFields, pageNo, pageSize);
+            return result;
         }
 
         public async Task<ValidationResult> ValidateContentTypeName(string contentTypeName)
         {
-            var result = _contentTypeRepository.GetContentType(contentTypeName) != null ? ValidationResult.Failed(new ValidationError(){Code = "ContentType available!", Description = "LayoutType already exist" }) : ValidationResult.Success;
+            var result = _contentTypeRepository.GetContentType(contentTypeName) != null ? ValidationResult.Failed(new ValidationError() { Code = "ContentType available!", Description = "ContentType already exist" }) : ValidationResult.Success;
             return await Task.FromResult(result);
         }
 
@@ -86,6 +128,18 @@ namespace Deviser.Modules.ContentManagement.Services
         {
             var result = _propertyRepository.GetProperties();
             return result;
+        }
+
+        private static void ParseContentTypeField(ContentType contentType)
+        {
+            if (contentType.ContentTypeFields != null)
+            {
+                foreach (var ctf in contentType.ContentTypeFields)
+                {
+                    ctf.ContentFieldTypeId = ctf.ContentFieldType.Id;
+                    ctf.ContentFieldType = null;
+                }
+            }
         }
     }
 }

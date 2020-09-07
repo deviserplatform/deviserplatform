@@ -14,6 +14,13 @@ namespace Deviser.Admin.Config
     {
         public FieldType FieldType { get; set; }
 
+        public Field AddItemBy { get; set; }
+
+        public Field AutoFillField { get; set; }
+
+        [JsonIgnore]
+        public LambdaExpression AutoFillExpression { get; set; }
+
         public CheckBoxMatrix CheckBoxMatrix { get; set; }
 
         [JsonConverter(typeof(ExpressionJsonConverter))]
@@ -86,5 +93,6 @@ namespace Deviser.Admin.Config
         [JsonConverter(typeof(StringEnumConverter))]
         public ValidationType ValidationType { get; set; }
         public string ValidatorRegEx { get; set; }
+        
     }
 }

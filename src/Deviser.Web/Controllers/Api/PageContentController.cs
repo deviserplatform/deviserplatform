@@ -118,11 +118,11 @@ namespace DeviserWI.Controllers.API
 
         [HttpPut]
         [Route("list/")]
-        public IActionResult Put([FromBody] IEnumerable<PageContent> pageContents)
+        public IActionResult Put([FromBody] PageContent[] pageContents)
         {
             try
             {
-                if (pageContents == null || pageContents.Count() == 0)
+                if (pageContents == null || pageContents.Length == 0)
                     return BadRequest();
 
                 _contentManager.AddOrUpdatePageContents(new List<PageContent>(pageContents));
@@ -141,11 +141,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                if (pageContent == null || pageContent.ContentPermissions == null || pageContent.ContentPermissions.Count() == 0)
+                if (pageContent?.ContentPermissions == null || pageContent.ContentPermissions.Count == 0)
                     return BadRequest();
 
-                _contentManager.UpdateContentPermission(pageContent);
-                return Ok();
+                //var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
+                //if (!_pageManager.HasEditPermission(page)) return Unauthorized();
+
+                var result = _contentManager.UpdateContentPermission(pageContent);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -178,6 +181,9 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
+                //var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
+                //if (!_pageManager.HasEditPermission(page)) return Unauthorized();
+
                 var deleteResult = _contentManager.RemovePageContent(id);
                 if (deleteResult)
                 {

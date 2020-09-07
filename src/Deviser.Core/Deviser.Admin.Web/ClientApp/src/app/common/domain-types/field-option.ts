@@ -7,7 +7,9 @@ import { LabelOption } from './label-option';
 import { Field } from './field';
 import { CheckBoxMatrix } from './checkbox-matrix';
 
-export interface FieldOption {
+export interface FieldOption {    
+    addItemBy: Field;
+    autoFillField: Field;
     checkBoxMatrix: CheckBoxMatrix;
     description: string;
     displayName: string;

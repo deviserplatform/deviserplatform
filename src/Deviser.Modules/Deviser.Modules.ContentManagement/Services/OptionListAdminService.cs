@@ -48,7 +48,18 @@ namespace Deviser.Modules.ContentManagement.Services
             ParseProperty(item);
             var resultOptionList = _optionListRepository.CreateOptionList(item);
             ParseResult(resultOptionList);
-            var result = new FormResult<OptionList>(resultOptionList);
+            if (resultOptionList == null)
+                return new FormResult<OptionList>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to create the OptionList"
+                };
+
+            var result = new FormResult<OptionList>(resultOptionList)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "OptionList has been created successfully"
+            };
             return await Task.FromResult(result);
         }
 
@@ -57,7 +68,18 @@ namespace Deviser.Modules.ContentManagement.Services
             ParseProperty(item);
             var resultOptionList = _optionListRepository.UpdateOptionList(item);
             ParseResult(resultOptionList);
-            var result = new FormResult<OptionList>(resultOptionList);
+            if (resultOptionList == null)
+                return new FormResult<OptionList>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to save the OptionList"
+                };
+
+            var result = new FormResult<OptionList>(resultOptionList)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "OptionList has been saved successfully"
+            };
             return await Task.FromResult(result);
         }
 
@@ -71,7 +93,18 @@ namespace Deviser.Modules.ContentManagement.Services
 
             optionList.IsActive = false;
             optionList = _optionListRepository.UpdateOptionList(optionList);
-            var result = new AdminResult<OptionList>(optionList);
+            if (optionList == null)
+                return new FormResult<OptionList>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to delete the OptionList"
+                };
+
+            var result = new AdminResult<OptionList>(optionList)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "OptionList has been deleted successfully"
+            };
             return await Task.FromResult(result);
         }
 

@@ -4,22 +4,22 @@ import { DatePipe } from '@angular/common';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { MatButtonModule } from '@angular/material/button';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CdkTreeModule } from '@angular/cdk/tree';
-import { MatIconModule } from '@angular/material/icon';
 
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import { QuillModule } from 'ngx-quill'
 
-
+import { DeviserSharedModule } from 'deviser-shared';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AdminGridComponent } from './admin-grid/admin-grid.component';
@@ -28,13 +28,11 @@ import { AdminFormComponent } from './admin-form/admin-form.component';
 import { RecordIdPipe } from './common/pipes/record-id.pipe';
 import { FormControlComponent } from './form-control/form-control.component';
 import { FormatFieldPipe } from './common/pipes/format-field.pipe';
-import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
+// import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
 import { ValidationErrorComponent } from './validation-error/validation-error.component';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { EntityFormComponent } from './entity-form/entity-form.component';
 import { ChildGridComponent } from './child-grid/child-grid.component';
 import { CheckboxListComponent } from './common/components/checkbox-list/checkbox-list.component';
-import { AdminAlertComponent } from './common/components/admin-alert/admin-alert.component';
 import { WINDOW_PROVIDERS } from './common/services/window.service';
 import { EnvPathPipe } from './common/pipes/env-path.pipe';
 import { AdminTreeComponent } from './admin-tree/admin-tree.component';
@@ -46,15 +44,13 @@ import { GridControlComponent } from './common/components/grid-control/grid-cont
 import { DevCheckboxComponent } from './common/components/controls/dev-checkbox/dev-checkbox.component';
 import { CheckBoxListComponent } from './common/components/controls/check-box-list/check-box-list.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
-    AdminAlertComponent,
     AdminFormComponent,
     AdminGridComponent,
     AdminTreeComponent,
-    ConfirmDialogComponent,
+    // ConfirmDialogComponent,
     ChildGridComponent,
     CheckboxMatrixComponent,
     CheckboxListComponent,
@@ -80,16 +76,16 @@ import { CheckBoxListComponent } from './common/components/controls/check-box-li
     BsDatepickerModule.forRoot(),
     CdkTreeModule,
     CKEditorModule,
+    DeviserSharedModule,
     DragDropModule,
     FormsModule,
     HttpClientModule,
     InlineSVGModule.forRoot(),
-    MatButtonModule,
-    MatIconModule,
     ModalModule.forRoot(),
     NgSelectModule,
     PaginationModule.forRoot(),
     PopoverModule.forRoot(),
+    QuillModule.forRoot(),
     ReactiveFormsModule
   ],
   providers: [

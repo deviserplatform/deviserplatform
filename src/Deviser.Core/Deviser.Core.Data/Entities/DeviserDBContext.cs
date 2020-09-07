@@ -49,7 +49,7 @@ namespace Deviser.Core.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasMany(e => e.UserRoles)
-                .WithOne(u=>u.User)
+                .WithOne(u => u.User)
                 .HasForeignKey(e => e.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
@@ -77,7 +77,7 @@ namespace Deviser.Core.Data
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.HasMany(e => e.UserRoles)
-                .WithOne(ur=>ur.Role)
+                .WithOne(ur => ur.Role)
                 .HasForeignKey(e => e.RoleId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
@@ -104,7 +104,7 @@ namespace Deviser.Core.Data
 
             //modelBuilder.Entity<IdentityUserRole<Guid>>(entity =>
             //{
-                
+
             //});
 
             modelBuilder.Entity<IdentityUserLogin<Guid>>(entity =>
@@ -114,7 +114,9 @@ namespace Deviser.Core.Data
 
             modelBuilder.Entity<Layout>(entity =>
             {
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Name).HasMaxLength(50);
             });
@@ -125,7 +127,9 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.Description).HasMaxLength(2000);
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Label)
                     .IsRequired()
@@ -154,7 +158,9 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.DisplayName).HasMaxLength(50);
 
-                entity.Property(e => e.IsDefault).IsRequired().HasDefaultValue(false);
+                entity.Property(e => e.IsDefault).IsRequired()
+                    .HasDefaultValue(false)
+                    .ValueGeneratedNever();
 
                 entity.HasOne(d => d.ModuleViewType).WithMany(p => p.ModuleView).HasForeignKey(d => d.ModuleViewTypeId).OnDelete(DeleteBehavior.Restrict);
 
@@ -166,7 +172,7 @@ namespace Deviser.Core.Data
                 entity.Property(e => e.ControlType).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<Page>((System.Action<Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Page>>)((Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Page> entity) =>
+            modelBuilder.Entity<Page>(entity =>
             {
                 entity.HasIndex(e => e.ParentId).HasName("IX_FK_Pages_Pages");
 
@@ -174,9 +180,13 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.EndDate);
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.IsSystem).HasDefaultValue(false);
+                entity.Property(e => e.IsSystem)
+                    .HasDefaultValue(false)
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.LastModifiedDate);
 
@@ -191,7 +201,7 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Parent).WithMany(p => p.ChildPage).HasForeignKey(d => d.ParentId);
 
                 entity.Ignore(e => e.IsBreadCrumb);
-            }));
+            });
 
 
             modelBuilder.Entity<PageContent>(entity =>
@@ -200,11 +210,17 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.CreatedDate);
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.InheritViewPermissions).HasDefaultValue(true);
+                entity.Property(e => e.InheritViewPermissions)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.InheritEditPermissions).HasDefaultValue(true);
+                entity.Property(e => e.InheritEditPermissions)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
                 entity.Ignore(e => e.HasEditPermission);
 
@@ -226,7 +242,9 @@ namespace Deviser.Core.Data
                     .IsRequired()
                     .HasMaxLength(10);
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.LastModifiedDate);
 
@@ -241,11 +259,17 @@ namespace Deviser.Core.Data
 
                 entity.HasIndex(e => e.PageId).HasName("IX_FK_PageModule_Module");
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.InheritViewPermissions).HasDefaultValue(true);
+                entity.Property(e => e.InheritViewPermissions)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.InheritEditPermissions).HasDefaultValue(true);
+                entity.Property(e => e.InheritEditPermissions)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
                 entity.Ignore(e => e.HasEditPermission);
 
@@ -300,7 +324,9 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.CreatedDate);
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.LastModifiedDate);
 
@@ -310,23 +336,58 @@ namespace Deviser.Core.Data
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
+            });
+
+            modelBuilder.Entity<ContentFieldType>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasAlternateKey(e => e.Name);
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Name)
+                    .ValueGeneratedNever();
             });
 
             modelBuilder.Entity<ContentType>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
             });
+
+            modelBuilder.Entity<ContentTypeField>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                
+                entity.HasOne(d => d.ContentFieldType)
+                    .WithMany(p => p.ContentTypeFields)
+                    .HasForeignKey(d => d.ContentFieldTypeId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(d => d.ContentType)
+                    .WithMany(p => p.ContentTypeFields)
+                    .HasForeignKey(d => d.ContentTypeId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
             modelBuilder.Entity<Property>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Ignore(e => e.Value);
 
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
 
                 entity.HasOne(d => d.OptionList).WithMany(p => p.Properties).HasForeignKey(d => d.OptionListId).OnDelete(DeleteBehavior.Restrict);
             });
@@ -335,7 +396,9 @@ namespace Deviser.Core.Data
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
                 entity.Property(e => e.Name).IsRequired();
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsActive)
+                    .HasDefaultValue(true)
+                    .ValueGeneratedNever();
             });
 
             modelBuilder.Entity<LayoutTypeProperty>(entity =>
@@ -395,7 +458,9 @@ namespace Deviser.Core.Data
 
         public virtual DbSet<AdminPage> AdminPage { get; set; }
         public virtual DbSet<ContentPermission> ContentPermission { get; set; }
+        public virtual DbSet<ContentFieldType> ContentFieldType { get; set; }
         public virtual DbSet<ContentType> ContentType { get; set; }
+        public virtual DbSet<ContentTypeField> ContentTypeField { get; set; }
         public virtual DbSet<ContentTypeProperty> ContentTypeProperty { get; set; }
         public virtual DbSet<Language> Language { get; set; }
         public virtual DbSet<Layout> Layout { get; set; }

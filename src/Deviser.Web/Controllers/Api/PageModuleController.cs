@@ -46,7 +46,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dbResult = _moduleManager.GetPageModule(id);                
+                var dbResult = _moduleManager.GetPageModule(id);
                 if (dbResult != null && _moduleManager.HasEditPermission(dbResult))
                 {
                     var result = _mapper.Map<PageModule>(dbResult);
@@ -68,9 +68,9 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                var dbResult = _moduleManager.GetPageModuleByPage(pageId);                
+                var dbResult = _moduleManager.GetPageModuleByPage(pageId);
                 if (dbResult != null)
-                {  
+                {
                     var result = _mapper.Map<List<PageModule>>(dbResult);
                     return Ok(result);
                 }
@@ -105,7 +105,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpPut]
-        public IActionResult CreateUpdatePageModule([FromBody]PageModule pageModule)
+        public IActionResult CreateUpdatePageModule([FromBody] PageModule pageModule)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace DeviserWI.Controllers.API
                 {
                     var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
                     if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
-                    {               
+                    {
 
                         var dbResult = _moduleManager.CreateUpdatePageModule(pageModule);
                         var result = _mapper.Map<PageModule>(dbResult);
@@ -134,21 +134,21 @@ namespace DeviserWI.Controllers.API
 
         [HttpPut]
         [Route("list/")]
-        public IActionResult UpdatePageModules([FromBody]List<PageModule> pageModules)
+        public IActionResult UpdatePageModules([FromBody] List<PageModule> pageModules)
         {
             try
             {
                 if (pageModules == null || pageModules.Count == 0)
                     return BadRequest();
 
-                var page = _pageRepository.GetPageAndDependencies(pageModules.First().PageId);
-                if (_pageManager.HasEditPermission(page))//Check edit permission for the page
-                {
-                    _moduleManager.UpdatePageModules(pageModules);
-                    return Ok();
-                }
+                //var page = _pageRepository.GetPageAndDependencies(pageModules.First().PageId);
+                //if (_pageManager.HasEditPermission(page))//Check edit permission for the page
+                //{
+                _moduleManager.UpdatePageModules(pageModules);
+                return Ok();
+                //}
 
-                return Unauthorized();
+                //return Unauthorized();
             }
             catch (Exception ex)
             {
@@ -163,16 +163,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                if (pageModule == null || pageModule.ModulePermissions == null || pageModule.ModulePermissions.Count == 0)
+                if (pageModule?.ModulePermissions == null || pageModule.ModulePermissions.Count == 0)
                     return BadRequest();
 
-                var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
-                if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
-                {
-                    _moduleManager.UpdateModulePermission(pageModule);
-                    return Ok();
-                }
-                return Unauthorized();
+                //var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
+                //if (!_pageManager.HasEditPermission(page)) return Unauthorized();
+
+                var result = _moduleManager.UpdateModulePermission(pageModule);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -193,7 +191,7 @@ namespace DeviserWI.Controllers.API
 
                 return NotFound();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(string.Format("Error occured while updating pageModule permissions"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
@@ -209,15 +207,12 @@ namespace DeviserWI.Controllers.API
                 var pageModule = _pageRepository.GetPageModule(id);
                 if (pageModule != null)
                 {
-                    var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
-                    System.Threading.Tasks.Task.Delay(200).Wait();
-                    if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
-                    {
-                        pageModule.IsActive = false;
-                        _pageRepository.UpdatePageModule(pageModule);
-                        return Ok();
-                    }
-                    return Unauthorized();
+                    //var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
+                    //if (!_pageManager.HasEditPermission(page)) return Unauthorized();
+
+                    pageModule.IsActive = false;
+                    _pageRepository.UpdatePageModule(pageModule);
+                    return Ok();
                 }
                 return BadRequest();
             }
@@ -246,11 +241,11 @@ namespace DeviserWI.Controllers.API
 
                     }
                     return Unauthorized();
-                }   
+                }
                 return BadRequest();
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(string.Format("Error occured while deleting page module"), ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);

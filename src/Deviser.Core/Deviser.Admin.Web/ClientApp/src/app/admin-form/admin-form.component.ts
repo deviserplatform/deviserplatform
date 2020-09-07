@@ -3,6 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Location, DOCUMENT } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { forkJoin, Observable, BehaviorSubject } from 'rxjs';
+import { AlertType } from 'deviser-shared';
+import { AlertService } from 'deviser-shared';
+
 
 import { AdminService } from '../common/services/admin.service';
 import { AdminConfig } from '../common/domain-types/admin-config';
@@ -10,7 +13,7 @@ import { FormControlService } from '../common/services/form-control.service';
 import { FormMode } from '../common/domain-types/form-mode';
 import { Field } from '../common/domain-types/field';
 import { ChildConfig } from '../common/domain-types/child-config';
-import { Alert, AlertType } from '../common/domain-types/alert';
+
 import { FormResult } from '../common/domain-types/form-result';
 import { FormContext } from '../common/domain-types/form-context';
 import { FormType } from '../common/domain-types/form-type';
@@ -27,7 +30,6 @@ import { OpenUrlAction } from '../common/domain-types/open-url-action';
 })
 export class AdminFormComponent implements OnInit {
   adminConfig: AdminConfig;
-  alerts: Alert[];
   record: any;
   adminForm: FormGroup;
   formMode: FormMode;
@@ -43,22 +45,22 @@ export class AdminFormComponent implements OnInit {
   adminConfigType = AdminConfigType;
   activeChildConfigs: ChildConfig[];
 
-  constructor(private route: ActivatedRoute,
-    private adminService: AdminService,
-    @Inject(DOCUMENT) private document: Document,
-    private formControlService: FormControlService,
-    private fb: FormBuilder,
-    private location: Location,
-    @Inject(WINDOW) private window: any) {
-    this.alerts = [];
-    this.daConfig = window.daConfig;
+  constructor(private _route: ActivatedRoute,
+    private _adminService: AdminService,
+    private _alertService: AlertService,
+    @Inject(DOCUMENT) private _document: Document,
+    private _formControlService: FormControlService,
+    private _fb: FormBuilder,
+    private _location: Location,
+    @Inject(WINDOW) private _window: any) {
+    this.daConfig = _window.daConfig;
     // this.childFormContexts;
   }
 
   ngOnInit() {
     // this.getAdminConfig();
     // this.getRecord();
-    const id = this.route.snapshot.paramMap.get('id');
+    const id = this._route.snapshot.paramMap.get('id');
     this.initForm(id);
   }
 
@@ -72,22 +74,15 @@ export class AdminFormComponent implements OnInit {
     }
 
     if (this.formMode === FormMode.Update) {
-      const adminConfig$ = this.adminService.getAdminConfig();
-      const record$ = this.adminService.getRecord(itemId);
+      const adminConfig$ = this._adminService.getAdminConfig();
+      const record$ = this._adminService.getRecord(itemId);
       forkJoin([adminConfig$, record$]).subscribe(results => {
         this.record = results[1];
         this.onGetAdminConfig(results[0]);
-      }, error => {
-        const alert: Alert = {
-          alterType: AlertType.Error,
-          message: 'Unable to get this item, please contact administrator',
-          timeout: 5000
-        }
-        this.alerts.push(alert);
-      });
+      }, error => this._alertService.showMessage(AlertType.Error, 'Unable to get this item, please contact administrator'));
     } else if (this.formMode === FormMode.Create) {
       this.record = record;
-      this.adminService.getAdminConfig()
+      this._adminService.getAdminConfig()
         .subscribe(adminConfig => this.onGetAdminConfig(adminConfig));
     }
 
@@ -126,7 +121,7 @@ export class AdminFormComponent implements OnInit {
       }
 
 
-      this.adminForm = this.formControlService.toFormGroup(adminConfig, this.formMode, this.record);
+      this.adminForm = this._formControlService.toFormGroup(adminConfig, this.formMode, this.record);
       this.formTabs.push({
         formGroup: this.adminForm,
         formConfig: this.adminConfig.modelConfig.formConfig,
@@ -141,7 +136,7 @@ export class AdminFormComponent implements OnInit {
       if (this.formMode == FormMode.Update && this.adminConfig.modelConfig.customForms) {
         for (let customFormName in this.adminConfig.modelConfig.customForms) {
           let customForm = this.adminConfig.modelConfig.customForms[customFormName];
-          let customFormGroup = this.formControlService.toFormGroupWithFormConfig(customForm.formConfig, this.formMode, customForm.keyField, this.record);
+          let customFormGroup = this._formControlService.toFormGroupWithFormConfig(customForm.formConfig, this.formMode, customForm.keyField, this.record);
           this.formTabs.push({
             formGroup: customFormGroup,
             formConfig: customForm.formConfig,
@@ -167,25 +162,25 @@ export class AdminFormComponent implements OnInit {
     // TODO: Use EventEmitter with form value
     console.warn(this.adminForm.value);
     if (this.formMode === FormMode.Create) {
-      this.adminService.createRecord(this.adminForm.value)
+      this._adminService.createRecord(this.adminForm.value)
         .subscribe(formValue => this.onActionResult(formValue));
     } else if (this.formMode === FormMode.Update) {
-      this.adminService.updateRecord(this.adminForm.value)
+      this._adminService.updateRecord(this.adminForm.value)
         .subscribe(formValue => this.onActionResult(formValue));
     }
   }
 
   onCustomFormSubmit(formTab: any) {
-    this.adminService.customFormSubmit(formTab.formName, formTab.formGroup.value)
+    this._adminService.customFormSubmit(formTab.formName, formTab.formGroup.value)
       .subscribe(formValue => this.onActionResult(formValue));
   }
 
   onAction(formName: string, actionName: string): void {
     if (formName) {
-      this.adminService.executeCustomFormAction(formName, actionName, this.adminForm.value)
+      this._adminService.executeCustomFormAction(formName, actionName, this.adminForm.value)
         .subscribe(formValue => this.onActionResult(formValue));
     } else {
-      this.adminService.executeMainFormAction(actionName, this.adminForm.value)
+      this._adminService.executeMainFormAction(actionName, this.adminForm.value)
         .subscribe(formValue => this.onActionResult(formValue));
     }
   }
@@ -193,31 +188,20 @@ export class AdminFormComponent implements OnInit {
   onActionResult(formValue: FormResult): void {
     this.submitSubject.next(formValue);
     if (formValue && formValue.isSucceeded) {
+      this._alertService.showMessage(AlertType.Success, formValue.successMessage);
       if (formValue.formBehaviour === FormBehaviour.RedirectToGrid && this.adminConfig.adminConfigType === AdminConfigType.GridAndForm) {
         const openUrlAction = formValue.successAction as OpenUrlAction;
         if (openUrlAction) {
           console.log(openUrlAction);
           setTimeout(() => {
-            this.document.location.href = `${this.daConfig.basePath}${openUrlAction.url}`;
+            this._document.location.href = `${this.daConfig.basePath}${openUrlAction.url}`;
           }, openUrlAction.openAfterSec * 1000);
         }
         this.goBack();
-      } else {
-        let alert: Alert = {
-          alterType: AlertType.Success,
-          message: formValue.successMessage,
-          timeout: 5000
-        }
-        this.alerts.push(alert);
       }
     }
     else {
-      let alert: Alert = {
-        alterType: AlertType.Error,
-        message: formValue.successMessage,
-        timeout: 5000
-      }
-      this.alerts.push(alert);
+      this._alertService.showMessage(AlertType.Error, formValue.errorMessage);
     }
   }
 
@@ -226,19 +210,14 @@ export class AdminFormComponent implements OnInit {
       this.adminForm.patchValue(formValue);
     }
     else {
-      let alert: Alert = {
-        alterType: AlertType.Error,
-        message: "Unable to update/save this item, please contact administrator",
-        timeout: 5000
-      }
-      this.alerts.push(alert);
+      this._alertService.showMessage(AlertType.Error, 'Unable to update/save this item, please contact administrator');
     }
 
   }
 
   getChildForm(childFieldName: string): FormGroup {
     let childFormObj = this.adminForm.controls[childFieldName].value;
-    let childForm: FormGroup = this.fb.group(childFormObj);
+    let childForm: FormGroup = this._fb.group(childFormObj);
     return childForm;
   }
 
@@ -251,7 +230,7 @@ export class AdminFormComponent implements OnInit {
   }
 
   goBack(): void {
-    this.location.back();
+    this._location.back();
   }
 
 }

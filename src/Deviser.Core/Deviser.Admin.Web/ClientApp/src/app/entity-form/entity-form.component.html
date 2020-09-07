@@ -38,9 +38,9 @@
       </app-form-control>
     </ng-container>
 
-    <accordion [isAnimated]="true">
+    <accordion [isAnimated]="true" class="admin-accordion">
       <accordion-group *ngFor="let fieldSet of formContext.formConfig.fieldSetConfig.fieldSets" [isOpen]="fieldSet.isOpen">        
-        <div class="btn btn-link btn-block clearfix" accordion-heading type="div">          
+        <div accordion-heading type="div">          
           <div class="pull-left float-left">{{fieldSet.groupName}}</div>          
         </div>
 

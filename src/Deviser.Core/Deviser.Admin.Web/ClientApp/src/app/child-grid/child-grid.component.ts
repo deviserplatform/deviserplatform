@@ -1,18 +1,22 @@
 import { Component, OnInit, Input, forwardRef, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors, Validator } from "@angular/forms";
 
+import { ConfirmDialogComponent } from 'deviser-shared';
+
 import { ModelConfig } from '../common/domain-types/model-config';
 import { Field } from '../common/domain-types/field';
 import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { FormControlService } from '../common/services/form-control.service';
-import { ConfirmDialogComponent } from '../common/components/confirm-dialog/confirm-dialog.component';
 import { FormMode } from '../common/domain-types/form-mode';
 import { FormContext } from '../common/domain-types/form-context';
 import { ChildConfig } from '../common/domain-types/child-config';
 import { FormType } from '../common/domain-types/form-type';
 import { LabelType } from '../common/domain-types/label-type';
 import { FieldType } from '../common/domain-types/field-type';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { AdminService } from '../common/services/admin.service';
+import { GridType } from '../common/domain-types/grid-type';
 
 @Component({
   selector: 'app-child-grid',
@@ -54,14 +58,17 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
 
   // _childForm: BehaviorSubject<FormGroup | undefined>;
 
-  childRecordsObservable = new Observable((observer) => {
-    // observable execution
-    observer.next(this.childRecords);
-    observer.complete();
-  });
+  // childRecordsObservable = new Observable((observer) => {
+  //   // observable execution
+  //   observer.next(this.childRecords);
+  //   observer.complete();
+  // });
+  get isSortable(): boolean {
+    return this.childConfig.modelConfig.gridConfig.isSortable;
+  }
 
-
-  constructor(private _formControlService: FormControlService) {
+  constructor(private _formControlService: FormControlService,
+    private _adminService: AdminService) {
     this.viewState = ViewState.LIST;
   }
 
@@ -82,6 +89,15 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
     }
     // this.childForm = this._formControlService.toFormGroupWithFormConfig(this.childFormContext.formConfig, this.childFormContext.formMode, this.childFormContext.keyField, {});
     // this.formContext.formGroup = this.childForm;
+  }
+
+  drop(event: CdkDragDrop<any[]>) {
+    let gridItems = event.container.data;
+    moveItemInArray(gridItems, event.previousIndex, event.currentIndex);
+    //update sorting
+    gridItems.forEach((item, index) => item[this.childConfig.modelConfig.gridConfig.sortField.fieldNameCamelCase] = index + 1);
+
+    this._adminService.sortGridItems(gridItems, this.childConfig.field.fieldClrType).subscribe(result => console.log(result), error => console.log(error));
   }
 
   onNewItem(): void {
@@ -151,8 +167,13 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
   writeValue(obj: [any]): void {
     // throw new Error("Method not implemented.");
     this.childRecords = obj;
+    let gridConfig = this.childConfig.modelConfig.gridConfig;
+    if (this.isSortable) {
+      let sortField = gridConfig.sortField.fieldNameCamelCase;
+      this.childRecords = this.childRecords.sort((a, b) => a[sortField] > b[sortField] ? 1 : -1);
+    }
   }
-  
+
   registerOnChange(fn: any): void {
     // throw new Error("Method not implemented.");
     // this.childRecordsObservable.subscribe(fn);

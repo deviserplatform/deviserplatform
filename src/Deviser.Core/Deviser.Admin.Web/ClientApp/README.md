@@ -14,6 +14,8 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build. --output-hashing none to skip output hashing.
 
+Run `ng build --prod --output-hashing none --deploy-url /_content/Deviser.Admin.Web/ClientApp/` to build it to Deviser.Admin.Web This loads the chunks properly
+
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).

@@ -1,0 +1,35 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<require dependency-type="Css" include="Development" priority="10" file-path="~/_content/Deviser.Web/lib/font-awesome/css/font-awesome.css" test="test"></require>
+<require dependency-type="Css" include="Development" priority="15" file-path="~/_content/Deviser.Themes.Skyline/css/admin/admin.css" test="test"></require>
+
+<require dependency-type="Script" include="Development" location="Head" priority="10" file-path="~/_content/Deviser.Web/lib/jquery/dist/jquery.js" test="test"></require>
+<require dependency-type="Script" include="Development" priority="16" file-path="~/_content/Deviser.Web/lib/aspnet/signalr/dist/browser/signalr.min.js"></require>
+<require dependency-type="Script" include="Development" priority="31" file-path="~/_content/Deviser.Web/js/dev-form-helper.js"></require>
+
+@await Component.InvokeAsync("ControlBar")
+    <div class="clearfix"></div>
+
+    <!-- BEGIN CONTAINER -->
+
+    @RenderBody()
+
+
+    <footer class="footer footer-classic bg-dark">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="text-center">
+                        <p>
+                            Copyright &copy; @DateTime.Now.Year Karthick Sundararajan. Released on <a href="https://github.com/deviserplatform/deviserplatform" title="Source" target="_blank"> <i class="fa fa-github"></i></a>
+                            under the <a href="/install/License" title="License" target="_blank">MIT License</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>

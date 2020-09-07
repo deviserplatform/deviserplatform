@@ -3,12 +3,12 @@
         <div class="header-field-cotnainer">
             <div class="label" (click)="onSortToggle(field);">{{field.fieldOption.displayName}}</div>
 
-            <deiv mat-icon-button class="sort-icon" [ngClass]="getSortCssClass(field)">
+            <div class="sort-icon" [ngClass]="getSortCssClass(field)">
                 <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/trending_flat.svg' | envPath"></i>
-            </deiv>
+            </div>
             <div class="filter-container">
-                <button mat-icon-button (click)="onFilterToggle($event, field);" class="btn-filter">
-                    <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/filter_list.svg' | envPath"></i>
+                <button (click)="onFilterToggle($event, field);" class="btn btn-light btn-filter">
+                    <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/filter.svg' | envPath"></i>
                 </button>
                 <div class="filter-content" *ngIf="selectedFilter && selectedFilter.filterType && isFilterVisible(field)"
                     [ngStyle]="filterStyle">

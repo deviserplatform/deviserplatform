@@ -24,6 +24,9 @@ namespace Deviser.Modules.Blog.Models
             {
                 entity.Property(p => p.Id).ValueGeneratedOnAdd();
                 entity.Property(p => p.Title).IsRequired();
+                entity.Property(p => p.Slug)
+                    .IsRequired();
+                entity.HasIndex(p => p.Slug).IsUnique();
                 entity.Property(p => p.CreatedOn).IsRequired();
                 entity.HasOne(p => p.Category).WithMany(c => c.Posts).HasForeignKey(p => p.CategoryId);
             });
@@ -72,6 +75,9 @@ namespace Deviser.Modules.Blog.Models
 
         [Order]
         public string Title { get; set; }
+
+        [Order]
+        public string Slug { get; set; }
 
         [Order]
         [FieldInfo(FieldType.RichText)]

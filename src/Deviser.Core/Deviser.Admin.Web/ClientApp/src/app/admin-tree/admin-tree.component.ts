@@ -1,15 +1,13 @@
-import { Component, OnInit, TemplateRef, ViewChild, Inject } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
-import { Router, DefaultUrlSerializer, UrlTree } from '@angular/router';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { AlertType } from 'deviser-shared';
+import { AlertService } from 'deviser-shared';
+import { ConfirmDialogComponent } from 'deviser-shared';
 
 import { AdminService } from '../common/services/admin.service';
 import { AdminConfig } from '../common/domain-types/admin-config';
-import { Pagination } from '../common/domain-types/pagination';
-import { ConfirmDialogComponent } from '../common/components/confirm-dialog/confirm-dialog.component';
 import { RecordIdPipe } from '../common/pipes/record-id.pipe';
-import { Alert, AlertType } from '../common/domain-types/alert';
-import { DOCUMENT } from '@angular/common';
 import { WINDOW } from '../common/services/window.service';
 import { LabelType } from '../common/domain-types/label-type';
 import { Field } from '../common/domain-types/field';
@@ -31,7 +29,6 @@ import { Subscription } from 'rxjs';
 export class AdminTreeComponent implements OnInit {
 
   adminConfig: AdminConfig;
-  alerts: Alert[];
   tree: any;
   labelType = LabelType;
   daConfig: DAConfig;
@@ -50,12 +47,11 @@ export class AdminTreeComponent implements OnInit {
 
   private formSubmitSubscription: Subscription;
 
-  constructor(private adminService: AdminService,
-    private recordIdPipe: RecordIdPipe,
-    private router: Router,
-    @Inject(WINDOW) private window: any) {
-    this.alerts = [];
-    this.daConfig = window.daConfig;
+  constructor(private _adminService: AdminService,
+    private _alertService: AlertService,
+    private _recordIdPipe: RecordIdPipe,
+    @Inject(WINDOW) _window: any) {
+    this.daConfig = _window.daConfig;
   }
 
   ngOnInit() {
@@ -74,16 +70,16 @@ export class AdminTreeComponent implements OnInit {
 
 
   getAdminConfig(): void {
-    this.adminService.getAdminConfig()
+    this._adminService.getAdminConfig()
       .subscribe(adminConfig => this.adminConfig = adminConfig, error => this.handleError(error));
   }
 
   getTree(): void {
-    this.adminService.getTree()
+    this._adminService.getTree()
       .subscribe(tree => this.onGetTree(tree), error => this.handleError(error));
   }
 
-  onChangePage(event: any): void {
+  onChangePage(): void {
     this.getTree();
   }
 
@@ -96,7 +92,7 @@ export class AdminTreeComponent implements OnInit {
     const treeToUpdate = JSON.parse(JSON.stringify(this.tree));
     treeToUpdate[this.adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase] = node as any[];
     console.log(node);
-    this.adminService.updateTree(treeToUpdate)
+    this._adminService.updateTree(treeToUpdate)
       .subscribe(response => this.onActionResult(response), error => this.handleError(error));
   }
 
@@ -144,41 +140,31 @@ export class AdminTreeComponent implements OnInit {
 
   onYesToDelete(item: any): void {
     console.log('confirm');
-    const itemId = this.recordIdPipe.transform(item, this.adminConfig.modelConfig.keyField);
+    const itemId = this._recordIdPipe.transform(item, this.adminConfig.modelConfig.keyField);
     this.selectedNode = null;
     if (!itemId) { return; }
-    this.adminService.deleteRecord(itemId)
+    this._adminService.deleteRecord(itemId)
       .subscribe(response => this.onActionResult(response), error => this.handleError(error));
   }
 
-  onNoToDelete(item: any): void {
+  onNoToDelete(): void {
     console.log('declined');
     this.getTree();
   }
 
   onRowAction(actionName: string, item: any) {
     if (actionName && item) {
-      this.adminService.executeGridAction(actionName, item)
+      this._adminService.executeGridAction(actionName, item)
         .subscribe(adminResult => this.onActionResult(adminResult));
     }
   }
 
   onActionResult(adminResult: AdminResult): void {
     if (adminResult && adminResult.isSucceeded) {
-      const alert: Alert = {
-        alterType: AlertType.Success,
-        message: adminResult.successMessage,
-        timeout: 5000
-      };
-      this.alerts.push(alert);
+      this._alertService.showMessage(AlertType.Success, adminResult.successMessage);
       this.treeControl.rebuildTreeForData(adminResult.result[this.adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase]);
     } else {
-      const alert: Alert = {
-        alterType: AlertType.Error,
-        message: adminResult.errorMessage,
-        timeout: 5000
-      };
-      this.alerts.push(alert);
+      this._alertService.showMessage(AlertType.Error, adminResult.errorMessage);
       this.getTree();
     }
   }
@@ -190,12 +176,7 @@ export class AdminTreeComponent implements OnInit {
   }
 
   handleError(message: string) {
-    const alert: Alert = {
-      alterType: AlertType.Error,
-      message,
-      timeout: 5000
-    };
-    this.alerts.push(alert);
+    this._alertService.showMessage(AlertType.Error, message);
   }
 
   getBadge(item: any, field: Field): string {

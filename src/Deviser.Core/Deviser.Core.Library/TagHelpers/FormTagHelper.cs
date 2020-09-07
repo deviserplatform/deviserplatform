@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Deviser.Core.Library.TagHelpers
 {
@@ -154,7 +155,9 @@ namespace Deviser.Core.Library.TagHelpers
 
             var antiforgeryDefault = true;
 
-            RouteValues = ViewContext.RouteData.Values.ToDictionary(k => k.Key, v => v.Value.ToString());
+            RouteValues = ViewContext.RouteData.Values
+                .Where(v => v.Key != null && v.Value != null && !string.IsNullOrEmpty(v.Value.ToString()))
+                .ToDictionary(k => k.Key, v => v.Value.ToString());
 
             // If "action" is already set, it means the user is attempting to use a normal <form>.
             if (output.Attributes.ContainsName(HtmlActionAttributeName))

@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, OnChanges, EventEmitter, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, ValidatorFn, AsyncValidatorFn } from '@angular/forms';
 import { Field } from '../common/domain-types/field';
 import { FieldType } from '../common/domain-types/field-type';
-import { repeat, pairwise, startWith } from 'rxjs/operators';
+import { repeat, pairwise, startWith, map } from 'rxjs/operators';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { ValidationType } from '../common/domain-types/validation-type';
 import { EmailExistValidator } from '../common/validators/async-email-exist.validator';
@@ -19,6 +19,11 @@ import { FormControlService } from '../common/services/form-control.service';
 import { AdminService } from '../common/services/admin.service';
 import { FieldOption } from '../common/domain-types/field-option';
 import { CheckBoxMatrix } from '../common/domain-types/checkbox-matrix';
+import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
+import { Image, Link, EditLinkComponent, LinkType, PageService, Page, WINDOW, PageContext, ImageSelectorComponent } from 'deviser-shared';
+import { FormResult } from '../common/domain-types/form-result';
+
+var formControlComponent: FormControlComponent;
 
 @Component({
   selector: 'app-form-control',
@@ -26,7 +31,6 @@ import { CheckBoxMatrix } from '../common/domain-types/checkbox-matrix';
   styleUrls: ['./form-control.component.scss']
 })
 export class FormControlComponent implements OnInit {
-
   // @Input() entityType: string;
   @Input() field: Field;
   @Input() form: FormGroup;
@@ -41,16 +45,38 @@ export class FormControlComponent implements OnInit {
 
   //To access FieldType enum
   fieldType = FieldType;
-
-  private lookUpDataSubject = new BehaviorSubject<any[]>([]);
-  lookUpData$ = this.lookUpDataSubject.asObservable();
+  bsModalRef: BsModalRef;
+  private _lookUpDataSubject = new BehaviorSubject<any[]>([]);
+  lookUpData$ = this._lookUpDataSubject.asObservable();
 
   rowLookUp: any[];
   colLookUp: any[];
-  rowLookUpKey: string;
   colLookUpKey: string;
   checkBoxMatrix: CheckBoxMatrix;
-
+  modules: any = {
+    toolbar: {
+      container: [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'align': [] }],
+        ['clean'],
+        ['link', 'image']
+      ],
+      handlers: {
+        'link': function (value) {
+          formControlComponent.onEditorLinkClicked(this.quill, value);
+        },
+        'image': function (callback) {
+          formControlComponent.showImagePopup(this.quill);
+        }
+      }
+    }
+  }
+  pageContext: PageContext;
+  rowLookUpKey: string;
   // _lookUpData: any[];
   Editor = ClassicEditor;
 
@@ -60,45 +86,37 @@ export class FormControlComponent implements OnInit {
     };
   }
 
-  private valChangeSubscription: Subscription;
 
-  constructor(private emailExistValidator: EmailExistValidator,
-    private adminService: AdminService,
-    private passwordValidator: PasswordValidator,
-    private userExistValidator: UserExistValidator,
-    private customValidator: CustomValidator) {
+
+  private _modalConfig: any = {
+    ignoreBackdropClick: true
+  }
+  private _valChangeSubscription: Subscription;
+
+  constructor(private _emailExistValidator: EmailExistValidator,
+    private _adminService: AdminService,
+    private _customValidator: CustomValidator,
+    private _modalService: BsModalService,
+    private _pageService: PageService,
+    private _passwordValidator: PasswordValidator,
+    private _userExistValidator: UserExistValidator,
+    @Inject(WINDOW) private _window: any) {
     // this._lookUpData = [];
-
-
+    this.pageContext = _window.pageContext;
+    formControlComponent = this;
   }
 
   ngOnInit() {
-
-    if (this.field && this.field.fieldOption && this.field.fieldOption.hasLookupFilter) {
-      console.log(this.field.fieldOption);
-      let filterFormCtrl = this.form.get(this.field.fieldOption.lookupFilterField.fieldNameCamelCase);
-      this.valChangeSubscription = filterFormCtrl.valueChanges
-        .pipe(startWith(null), pairwise())
-        .subscribe(([prev, next]: [any, any]) => {
-          let val = next ? next : prev;
-          console.log(val);
-          this.adminService.getLookUp(this.formType, this.formName, this.field.fieldName, val)
-            .subscribe(lookupResult => {
-              // console.log(lookupResult);
-              this.parseControlValue(lookupResult);
-            });
-        });
-    }
-    else {
-      this.parseControlValue(null);
-    }
+    this.init();
   }
 
   ngOnDestroy() {
-    if (this.valChangeSubscription) {
-      this.valChangeSubscription.unsubscribe();
+    if (this._valChangeSubscription) {
+      this._valChangeSubscription.unsubscribe();
     }
   }
+
+
 
   ngOnChanges(changes: SimpleChanges) {
 
@@ -113,6 +131,124 @@ export class FormControlComponent implements OnInit {
 
     // }
   }
+
+  onEditorLinkClicked(quill: any, value: any) {
+    console.log('from angular component!');
+    if (value) {
+      // let href = prompt('Enter the URL');
+      // quill.format('link', href);
+      this.showLinkPopup(quill);
+    } else {
+      quill.format('link', false);
+    }
+  }
+
+  showLinkPopup(quill: any) {
+    let param: ModalOptions = JSON.parse(JSON.stringify(this._modalConfig));
+    let linkChanged: EventEmitter<Link>;
+    param.class = 'link-selector-modal';
+    param.initialState = {
+      link: {}
+    }
+    if (this.bsModalRef && this.bsModalRef.content) {
+      linkChanged = this.bsModalRef.content.linkChanged as EventEmitter<Link>;
+      linkChanged.unsubscribe();
+    }
+
+    this.bsModalRef = this._modalService.show(EditLinkComponent, param), this._modalConfig;
+    linkChanged = this.bsModalRef.content.linkChanged as EventEmitter<Link>;
+    linkChanged.subscribe(link => this.onLinkChanged(quill, link));
+    this.bsModalRef.content.closeBtnName = 'Close';
+  }
+
+  showImagePopup(quill: any) {
+    let param: ModalOptions = JSON.parse(JSON.stringify(this._modalConfig));
+    let imageSelected: EventEmitter<Image>;
+    param.class = 'image-selector-modal';
+    param.initialState = {
+      image: {}
+    }
+    if (this.bsModalRef && this.bsModalRef.content) {
+      imageSelected = this.bsModalRef.content.imageSelected as EventEmitter<any>;
+      imageSelected.unsubscribe();
+    }
+
+    this.bsModalRef = this._modalService.show(ImageSelectorComponent, param), this._modalConfig;
+    imageSelected = this.bsModalRef.content.imageSelected as EventEmitter<Image>;
+    imageSelected.subscribe(image => this.onImageSelected(image, quill));
+    this.bsModalRef.content.closeBtnName = 'Close';
+
+
+    // showImageManager().then(function (selectedImage) {
+    //   vm.src = selectedImage.imageSource;
+    //   vm.alt = selectedImage.imageAlt;
+    //   vm.focusPoint = selectedImage.focusPoint;
+    //   //setFocusPoint(vm.focusPoint);
+    // }, function (response) {
+    //   console.log(response);
+    // });
+  }
+
+  onLinkChanged(quill: any, link: Link) {
+    if (link.linkType === LinkType.File || link.linkType === LinkType.Url) {
+      quill.format('link', link.url);
+    } else {
+      this._pageService.getPage(link.pageId).subscribe((page: Page) => {
+        let translation = page.pageTranslation.find(pt => pt.locale === this.pageContext.currentLocale);
+        let url = translation.redirectUrl || `${this.pageContext.siteRoot}\\${translation.url}`;
+        quill.format('link', url);
+      });
+    }
+  }
+
+  onImageSelected(image: Image, quill: any) {
+    let imageUrl = `${this.pageContext.siteRoot}\\${image.imageUrl}`
+    quill.insertEmbed(10, 'image', imageUrl);
+  }
+
+  addTagPromise = (value: string) => {
+    if (this.field.fieldOption.addItemBy) {
+      let fieldName = this.field.fieldOption.addItemBy.fieldNameCamelCase;
+      let newObj = {};
+      newObj[fieldName] = value;
+      let promise = this._adminService
+        .createRecordFor(this.field.fieldClrType, newObj)
+        .pipe(
+          map(result => {
+            let newRecordResult = (result as FormResult).result;
+            this.refreshLookUp().subscribe(adminConfig => {
+              this.lookUps = adminConfig.lookUps;
+              this.init();
+            })
+            return newRecordResult
+          })
+        ).toPromise();
+
+
+      return promise;
+    }
+    // this._adminService.createRecordFor()
+
+    return false;
+
+  };
+
+  // addTagPromise(value: string) {
+
+  //   if (this.field.fieldOption.addItemBy) {
+  //     let fieldName = this.field.fieldOption.addItemBy.fieldNameCamelCase;
+  //     this._adminService
+  //     .createRecordFor(this.field.fieldClrType, { fieldName: value })
+  //     .pipe(
+  //       map(result => {
+  //         return (result as FormResult).result
+  //       })
+  //     ).toPromise();
+  //   }
+  //   // this._adminService.createRecordFor()
+
+  //   return false;
+  // }
 
   parseControlValue(lookUpGeneric: any) {
     if (this.field && this.field.fieldOption && this.field.fieldOption.relationType) {
@@ -201,7 +337,7 @@ export class FormControlComponent implements OnInit {
 
       }
 
-      this.lookUpDataSubject.next(lookUp);
+      this._lookUpDataSubject.next(lookUp);
     }
   }
 
@@ -247,8 +383,33 @@ export class FormControlComponent implements OnInit {
 
       }
 
-      this.lookUpDataSubject.next(lookUp);
+      this._lookUpDataSubject.next(lookUp);
     }
+  }
+
+  private init() {
+    if (this.field && this.field.fieldOption && this.field.fieldOption.hasLookupFilter) {
+      console.log(this.field.fieldOption);
+      let filterFormCtrl = this.form.get(this.field.fieldOption.lookupFilterField.fieldNameCamelCase);
+      this._valChangeSubscription = filterFormCtrl.valueChanges
+        .pipe(startWith(null), pairwise())
+        .subscribe(([prev, next]: [any, any]) => {
+          let val = next ? next : prev;
+          console.log(val);
+          this._adminService.getLookUp(this.formType, this.formName, this.field.fieldName, val)
+            .subscribe(lookupResult => {
+              // console.log(lookupResult);
+              this.parseControlValue(lookupResult);
+            });
+        });
+    }
+    else {
+      this.parseControlValue(null);
+    }
+  }
+
+  private refreshLookUp() {
+    return this._adminService.getAdminConfig(true);
   }
 
   private getLookUp(lookUpGeneric: any): any[] {
