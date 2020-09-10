@@ -17,7 +17,7 @@ namespace Deviser.Core.Common
 
         public const string InstallConfigFile = "installconfig.json";
 
-        public const string PlatformAssembly = "Deviser.Web";
+        public const string MigrationAssembly = "Deviser.Core.Data";
 
         public const string ModuleMigrationTableName = "__ModuleMigrationsHistory";
 

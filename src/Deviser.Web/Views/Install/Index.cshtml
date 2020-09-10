@@ -215,6 +215,20 @@
 
         </form>
 
+        <div class="install-progress-container">
+            <div class="row">
+                <div class="col install-progress-content">
+
+                </div>
+            </div>
+
+            <div class="row alert-row">
+                <div class="col">
+                    <span class="alert alert-danger error-summary" role="alert"></span>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </div>
@@ -227,50 +241,43 @@
 
     <script>
 
-        (function () {
+        (function() {
 
-            var $inputDatabaseProvider = $('#DatabaseProvider'),
-
+            var $alertRow = $('.alert-row'),
+                $installForm = $('#installForm'),
+                $inputDatabaseProvider = $('#DatabaseProvider'),
                 $inputIsIntegratedSecurity = $('#IsIntegratedSecurity'),
-
-                $inputAcceptLicense = $('#AcceptLicense');
-
-
-
-            $(function () {
+                $inputAcceptLicense = $('#AcceptLicense'),
+                $installProgressContainer = $('.install-progress-container');
 
 
-
+            $(function() {
+                $alertRow.hide();
+                $installProgressContainer.hide();
                 $inputDatabaseProvider.on('change', onDBProviderISChange);
 
                 $inputIsIntegratedSecurity.on('change', onDBProviderISChange);
 
 
-
                 changeDbProvider(parseInt($inputDatabaseProvider.val()), $inputIsIntegratedSecurity.prop('checked'));
 
 
-
-                $inputAcceptLicense.rules("add", {
-
+                $inputAcceptLicense.rules("add",
+                    {
                         required: true,
 
                         messages: {
-
                             required: "Accept the license to install.",
 
                         }
 
-                });
+                    });
 
 
-
-                $('#installForm').on('submit', formSubmit);
-
+                $installForm.on('submit', formSubmit);
 
 
                 initSignalR();
-
 
 
                 //console.log($inputDatabaseProvider.val());
@@ -278,7 +285,6 @@
                 //console.log($inputIsIntegratedSecurity.prop('checked'));
 
             });
-
 
 
             function onDBProviderISChange() {
@@ -292,9 +298,7 @@
             }
 
 
-
             function changeDbProvider(dbProvider, isIntegratedSecurity) {
-
 
 
                 var $inputServerName = $("#ServerName"),
@@ -303,16 +307,12 @@
 
                     $inputDBUserName = $("#DBUserName"),
 
-                    $inputDBPassword =  $("#DBPassword");
-
+                    $inputDBPassword = $("#DBPassword");
 
 
                 //Hide all
 
                 $('.connection-string').hide();
-
-
-
 
 
                 //Remove all rules in connectionstring
@@ -326,7 +326,6 @@
                 $inputDBPassword.rules("remove");
 
 
-
                 if (dbProvider === 1) {
 
                     //SQL LocalDb
@@ -336,36 +335,30 @@
                     $('#fldDatabaseName').show();
 
 
+                    $inputServerName.rules("add",
+                        {
+                            required: true,
 
-                    $inputServerName.rules("add", {
+                            messages: {
+                                required: "The @Html.DisplayNameFor(t => t.ServerName) field is required.",
 
-                        required: true,
+                            }
 
-                        messages: {
-
-                            required: "The @Html.DisplayNameFor(t => t.ServerName) field is required.",
-
-                        }
-
-                    });
+                        });
 
 
+                    $inputDatabaseName.rules("add",
+                        {
+                            required: true,
 
-                    $inputDatabaseName.rules("add", {
+                            messages: {
+                                required: "The @Html.DisplayNameFor(t => t.DatabaseName) field is required.",
 
-                        required: true,
+                            }
 
-                        messages: {
+                        });
 
-                            required: "The @Html.DisplayNameFor(t => t.DatabaseName) field is required.",
-
-                        }
-
-                    });
-
-                }
-
-                else if (dbProvider === 2) {
+                } else if (dbProvider === 2) {
 
                     //SQL Server
 
@@ -376,33 +369,28 @@
                     $('#fldIsIntegratedSecurity').show();
 
 
+                    $inputServerName.rules("add",
+                        {
+                            required: true,
 
-                    $inputServerName.rules("add", {
+                            messages: {
+                                required: "The @Html.DisplayNameFor(t => t.ServerName) field is required.",
 
-                        required: true,
+                            }
 
-                        messages: {
-
-                            required: "The @Html.DisplayNameFor(t => t.ServerName) field is required.",
-
-                        }
-
-                    });
+                        });
 
 
+                    $inputDatabaseName.rules("add",
+                        {
+                            required: true,
 
-                    $inputDatabaseName.rules("add", {
+                            messages: {
+                                required: "The @Html.DisplayNameFor(t => t.DatabaseName) field is required.",
 
-                        required: true,
+                            }
 
-                        messages: {
-
-                            required: "The @Html.DisplayNameFor(t => t.DatabaseName) field is required.",
-
-                        }
-
-                    });
-
+                        });
 
 
                     if (isIntegratedSecurity === false) {
@@ -412,60 +400,50 @@
                         $('#fldDBPassword').show();
 
 
+                        $inputDBUserName.rules("add",
+                            {
+                                required: true,
 
-                         $inputDBUserName.rules("add", {
+                                messages: {
+                                    required: "The @Html.DisplayNameFor(t => t.DBUserName) field is required.",
 
-                            required: true,
+                                }
 
-                            messages: {
-
-                                required: "The @Html.DisplayNameFor(t => t.DBUserName) field is required.",
-
-                            }
-
-                        });
+                            });
 
 
+                        $inputDBPassword.rules("add",
+                            {
+                                required: true,
 
-                         $inputDBPassword.rules("add", {
+                                messages: {
+                                    required: "The @Html.DisplayNameFor(t => t.DBPassword) field is required.",
 
-                            required: true,
+                                }
 
-                            messages: {
-
-                                required: "The @Html.DisplayNameFor(t => t.DBPassword) field is required.",
-
-                            }
-
-                        });
+                            });
 
                     }
 
-                }
-
-                else if (dbProvider === 3) {
+                } else if (dbProvider === 3) {
 
                     //SQLite
 
                     $('#fldDatabaseName').show();
 
 
+                    $inputDatabaseName.rules("add",
+                        {
+                            required: true,
 
-                    $inputDatabaseName.rules("add", {
+                            messages: {
+                                required: "The @Html.DisplayNameFor(t => t.DatabaseName) field is required.",
 
-                        required: true,
+                            }
 
-                        messages: {
+                        });
 
-                            required: "The @Html.DisplayNameFor(t => t.DatabaseName) field is required.",
-
-                        }
-
-                    });
-
-                }
-
-                else if (dbProvider === 4 || dbProvider === 5) {
+                } else if (dbProvider === 4 || dbProvider === 5) {
 
                     //PostgreSQL or MySQL
 
@@ -478,75 +456,63 @@
                     $('#fldDBPassword').show();
 
 
+                    $inputServerName.rules("add",
+                        {
+                            required: true,
 
-                    $inputServerName.rules("add", {
+                            messages: {
+                                required: "The @Html.DisplayNameFor(t => t.ServerName) field is required.",
 
-                        required: true,
+                            }
 
-                        messages: {
-
-                            required: "The @Html.DisplayNameFor(t => t.ServerName) field is required.",
-
-                        }
-
-                    });
+                        });
 
 
+                    $inputDatabaseName.rules("add",
+                        {
+                            required: true,
 
-                    $inputDatabaseName.rules("add", {
+                            messages: {
+                                required: "The @Html.DisplayNameFor(t => t.DatabaseName) field is required.",
 
-                        required: true,
+                            }
 
-                        messages: {
-
-                            required: "The @Html.DisplayNameFor(t => t.DatabaseName) field is required.",
-
-                        }
-
-                     });
+                        });
 
 
+                    $inputDBUserName.rules("add",
+                        {
+                            required: true,
 
-                    $inputDBUserName.rules("add", {
+                            messages: {
+                                required: "The @Html.DisplayNameFor(t => t.DBUserName) field is required.",
 
-                        required: true,
+                            }
 
-                        messages: {
-
-                            required: "The @Html.DisplayNameFor(t => t.DBUserName) field is required.",
-
-                        }
-
-                    });
+                        });
 
 
+                    $inputDBPassword.rules("add",
+                        {
+                            required: true,
 
-                    $inputDBPassword.rules("add", {
+                            messages: {
+                                required: "The @Html.DisplayNameFor(t => t.DBPassword) field is required.",
 
-                        required: true,
+                            }
 
-                        messages: {
-
-                            required: "The @Html.DisplayNameFor(t => t.DBPassword) field is required.",
-
-                        }
-
-                    });
-
+                        });
 
 
                 }
 
 
-
             }
-
 
 
             function formSubmit(event) {
 
                 event.preventDefault();
-
 
 
                 var $form = $(this),
@@ -562,135 +528,69 @@
                     hasError = Object.keys(result.invalid).length > 0;
 
 
-
                 if (!hasError) {
 
                     $('.progress-overlay').removeClass('hide');
-
+                    $installForm .hide();
+                    $installProgressContainer.show();
                     var request = $.ajax({
-
                         type: formMethod,
-
                         url: url,
-
                         data: fromData, // serializes the form's elements.
-
                         headers: {
-
                             IsAjaxRequest: true
-
                         }
+                    });
+
+
+                    request.done(function(data, textStatus, jqXHR) {
+
+                        var restartRequest = $.ajax({
+                            type: formMethod,
+
+                            url: '/api/application/restart',
+
+                            data: fromData, // serializes the form's elements.
+
+                            headers: {
+                                IsAjaxRequest: true
+                            }
+                        });
+
+                        setTimeout(function () {
+                            window.location.href = '/';
+                        }, 5000);
 
                     });
 
 
-
-                    request.done(function (data, textStatus, jqXHR) {
-
-
-
-                    });
-
-
-
-                    request.fail(function (data, textStatus, errorThrown) {
-
+                    request.fail(function(data, textStatus, errorThrown) {
+                        $alertRow.show();
                         console.log(data); // show response from the server.
-
-                        $('.error-summary').text(data);
-
+                        $('.error-summary').text(data.responseText);
                         $('.progress-overlay').addClass('hide');
 
                     });
 
                 }
-
-
-
                 return false;
-
             }
-
 
 
             function initSignalR() {
 
                 var connection = new signalR.HubConnectionBuilder()
-
                     .withUrl("/appHub")
-
-                    .configureLogging(signalR.LogLevel.Information)
-
                     .build();
-
-
-
-                connection.on("OnStarted", function (message) {
-
-                    console.log(message);
-
-                    onStarted();
-
+                
+                connection.on("OnUpdateInstallLog", function (message) {
+                    //var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                    var span = document.createElement("span");
+                    span.textContent = message;
+                    //document.getElementById("messagesList").appendChild(li);
+                    $('.install-progress-content').appendChild(span);
                 });
-
-
-
-                connect(connection);
-
-
-
-                function connect(conn) {
-
-                    conn.start().catch(function (e) {
-
-                        sleep(3000);
-
-                        console.log("Reconnecting Socket");
-
-                        connect(conn);
-
-                    });
-
-                }
-
-
-
-                connection.onclose(function (e) {
-
-                    connect(connection);
-
-                });
-
-
-
-                function sleep(milliseconds) {
-
-                    var start = new Date().getTime();
-
-                    for (var i = 0; i < 1e7; i++) {
-
-                        if (new Date().getTime() - start > milliseconds) {
-
-                            break;
-
-                        }
-
-                    }
-
-                }
-
             }
-
-
-
-            function onStarted() {
-
-                window.location.href = '/Install/Success';
-
-            }
-
-
-
         }());
 
     </script>

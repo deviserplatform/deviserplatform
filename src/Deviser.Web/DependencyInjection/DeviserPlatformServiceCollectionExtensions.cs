@@ -47,10 +47,7 @@ namespace Deviser.Web.DependencyInjection
     {
         public static IServiceCollection AddDeviserPlatform(this IServiceCollection services)
         {
-            var logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.RollingFile(Path.Combine("./logs", "log-{Date}.txt"))
-                .CreateLogger();
+            var logger = Logger.GetLogger();
 
             services.AddLogging(loggingBuilder =>
                 loggingBuilder.AddSerilog(logger, true));
@@ -58,6 +55,7 @@ namespace Deviser.Web.DependencyInjection
             services.AddSingleton<IInstallationProvider, InstallationProvider>();
             services.AddScoped<ISiteSettingRepository, SiteSettingRepository>();
             services.AddSingleton<IModuleRegistry, ModuleRegistry>();
+            services.AddSignalR();
 
             InternalServiceProvider.Instance.BuildServiceProvider(services);
 
@@ -72,9 +70,6 @@ namespace Deviser.Web.DependencyInjection
                 {
                     installationProvider.GetDbContextOptionsBuilder<DeviserDbContext>(dbContextOptionBuilder);
                 });
-
-
-
 
 
             services.AddAutoMapper(typeof(DeviserPlatformServiceCollectionExtensions).Assembly);
@@ -176,9 +171,7 @@ namespace Deviser.Web.DependencyInjection
                 services.AddDeviserAdmin();
             }
 
-
-
-            services
+            var mvcBuilder = services
                 .AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 {
@@ -191,43 +184,11 @@ namespace Deviser.Web.DependencyInjection
                     options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
 
                 })
-                //.AddControllersAsServices()
                 .AddRazorRuntimeCompilation();
 
             if (installationProvider.IsPlatformInstalled)
             {
-                services
-                    .AddControllersWithViews()
-                    .AddNewtonsoftJson(options =>
-                    {
-                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                        options.SerializerSettings.Formatting = Formatting.Indented;
-                        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                    })
-                    .AddRazorOptions(options =>
-                    {
-                        options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
-
-                    })
-                    .AddControllersAsServices()
-                    .AddRazorRuntimeCompilation();
-            }
-            else
-            {
-                services
-                    .AddControllersWithViews()
-                    .AddNewtonsoftJson(options =>
-                    {
-                        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                        options.SerializerSettings.Formatting = Formatting.Indented;
-                        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                    })
-                    .AddRazorOptions(options =>
-                    {
-                        options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
-
-                    })
-                    .AddRazorRuntimeCompilation();
+                mvcBuilder.AddControllersAsServices();
             }
 
             if (hostEnvironment.IsDevelopment())
@@ -248,10 +209,6 @@ namespace Deviser.Web.DependencyInjection
                 });
             }
 
-
-
-            services.AddSignalR();
-
             services.AddDistributedMemoryCache();
 
             services.AddSession(options =>
@@ -270,6 +227,7 @@ namespace Deviser.Web.DependencyInjection
                        .AllowAnyHeader();
             }));
 
+            InternalServiceProvider.Instance.BuildServiceProvider(services);
             return services;
         }
 

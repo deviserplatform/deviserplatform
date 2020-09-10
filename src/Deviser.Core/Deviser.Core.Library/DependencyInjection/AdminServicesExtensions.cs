@@ -9,7 +9,6 @@ using Deviser.Core.Data;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Data.Extension;
 using Deviser.Core.Data.Repositories;
-using Deviser.Core.Library.Hubs;
 using Deviser.Core.Library.Internal;
 using Deviser.Core.Library.Messaging;
 using Deviser.Core.Library.Middleware;

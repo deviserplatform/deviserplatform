@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Hosting;
 
 namespace Deviser.Web.Controllers
 {
@@ -15,11 +17,14 @@ namespace Deviser.Web.Controllers
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IInstallationProvider _installationProvider;
         private readonly IConfiguration _configuration;
+        private readonly IHostApplicationLifetime _hostApplicationLifetime;
 
-        public InstallController(IWebHostEnvironment hostingEnvironment, 
+        public InstallController(IHostApplicationLifetime hostApplicationLifetime,
+            IWebHostEnvironment hostingEnvironment, 
             IInstallationProvider installationProvider,
             IConfiguration configuration)
         {
+            _hostApplicationLifetime = hostApplicationLifetime;
             _hostingEnvironment = hostingEnvironment;
             _installationProvider = installationProvider;
             _configuration = configuration;
@@ -65,6 +70,10 @@ namespace Deviser.Web.Controllers
                 {
                     _installationProvider.InstallPlatform(installModel);
                     //ApplicationManager.Instance.Restart();
+                    Task.Run(() =>
+                    {
+                        _hostApplicationLifetime.StopApplication();
+                    });
                     return Ok();
                 }
                 catch (SqlException ex)
