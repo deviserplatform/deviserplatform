@@ -10,22 +10,10 @@
 }
 
 
-<div class="row justify-content-center">
 
-    <div class="col-8">
-
-        <div class="row">
-
-            <div class="col">
-
-                <h2>Deviser Platform - Installation</h2>
-
-                <hr />
-
-            </div>
-
-        </div>
-
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Deviser Platform - Installation</h4>
         <form id="installForm" asp-action="Index">
 
             <div asp-validation-summary="ModelOnly" class="error-summary text-danger"></div>
@@ -214,11 +202,34 @@
             </div>
 
         </form>
-
         <div class="install-progress-container">
             <div class="row">
-                <div class="col install-progress-content">
+                <div id="installProgressContent" class="col">
+                    <div class="progress-title">
+                        <svg version="1.1" id="L7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve" style="
+                                      width: 50px;
+                                  ">
+                            <path fill="#ec3d28" d="M31.6,3.5C5.9,13.6-6.6,42.7,3.5,68.4c10.1,25.7,39.2,38.3,64.9,28.1l-3.1-7.9c-21.3,8.4-45.4-2-53.8-23.3
+  c-8.4-21.3,2-45.4,23.3-53.8L31.6,3.5z">
+                                <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
 
+                            </path>
+                            <path fill="#ec3d28" d="M42.3,39.6c5.7-4.3,13.9-3.1,18.1,2.7c4.3,5.7,3.1,13.9-2.7,18.1l4.1,5.5c8.8-6.5,10.6-19,4.1-27.7
+  c-6.5-8.8-19-10.6-27.7-4.1L42.3,39.6z">
+                                <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="-360 50 50" repeatCount="indefinite"></animateTransform>
+
+                            </path>
+                            <path fill="#f06453" d="M82,35.7C74.1,18,53.4,10.1,35.7,18S10.1,46.6,18,64.3l7.6-3.4c-6-13.5,0-29.3,13.5-35.3s29.3,0,35.3,13.5
+  L82,35.7z">
+                                <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="2s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform>
+
+                            </path>
+                        </svg>
+                        <h5>Please wait, Deviser Platform is being installed...</h5>
+                    </div>
+                    <ul id="installSteps" class="install-steps">
+
+                    </ul>
                 </div>
             </div>
 
@@ -228,10 +239,19 @@
                 </div>
             </div>
         </div>
-
     </div>
-
 </div>
+<div class="icons" style="display: none">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ec3d28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square">
+        <polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+    </svg>
+    
+    
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ec3d28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+        <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+</div>
+
 
 
 @section Scripts {
@@ -241,25 +261,24 @@
 
     <script>
 
+        var $alertRow = $('.alert-row'),
+            $installForm = $('#installForm'),
+            $inputDatabaseProvider = $('#DatabaseProvider'),
+            $inputIsIntegratedSecurity = $('#IsIntegratedSecurity'),
+            $inputAcceptLicense = $('#AcceptLicense'),
+            $installProgressContainer = $('.install-progress-container');
+
         (function() {
 
-            var $alertRow = $('.alert-row'),
-                $installForm = $('#installForm'),
-                $inputDatabaseProvider = $('#DatabaseProvider'),
-                $inputIsIntegratedSecurity = $('#IsIntegratedSecurity'),
-                $inputAcceptLicense = $('#AcceptLicense'),
-                $installProgressContainer = $('.install-progress-container');
-
+            initSignalR();
 
             $(function() {
                 $alertRow.hide();
                 $installProgressContainer.hide();
                 $inputDatabaseProvider.on('change', onDBProviderISChange);
-
                 $inputIsIntegratedSecurity.on('change', onDBProviderISChange);
-
-
                 changeDbProvider(parseInt($inputDatabaseProvider.val()), $inputIsIntegratedSecurity.prop('checked'));
+
 
 
                 $inputAcceptLicense.rules("add",
@@ -272,18 +291,7 @@
                         }
 
                     });
-
-
                 $installForm.on('submit', formSubmit);
-
-
-                initSignalR();
-
-
-                //console.log($inputDatabaseProvider.val());
-
-                //console.log($inputIsIntegratedSecurity.prop('checked'));
-
             });
 
 
@@ -530,7 +538,7 @@
 
                 if (!hasError) {
 
-                    $('.progress-overlay').removeClass('hide');
+                    //$('.progress-overlay').removeClass('hide');
                     $installForm .hide();
                     $installProgressContainer.show();
                     var request = $.ajax({
@@ -582,16 +590,36 @@
                 var connection = new signalR.HubConnectionBuilder()
                     .withUrl("/appHub")
                     .build();
-                
-                connection.on("OnUpdateInstallLog", function (message) {
-                    //var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                    var span = document.createElement("span");
-                    span.textContent = message;
-                    //document.getElementById("messagesList").appendChild(li);
-                    $('.install-progress-content').appendChild(span);
+
+                connection.on("OnUpdateInstallLog", onMessageReceived);
+
+                connection.start().then(function () {
+                    console.log('connected started');
+                }).catch(function (err) {
+                    return console.error(err.toString());
                 });
+
             }
+
         }());
+
+
+        function onMessageReceived(message) {
+            const msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const $stepItem = $('<li></li>');
+            const $inProgressIcon = $('.feather-chevron-right').first().clone();
+            const $doneIcon = $('.feather-check-square').first().clone();
+            const $messageContent = $('<span></span>');
+            $messageContent.append(message);
+
+            $('#installSteps li svg.feather').remove();
+            $doneIcon.insertBefore('#installSteps li span');
+
+            $stepItem.append($inProgressIcon);
+            $stepItem.append($messageContent);
+
+            $('#installSteps').append($stepItem);
+        }
 
     </script>
 

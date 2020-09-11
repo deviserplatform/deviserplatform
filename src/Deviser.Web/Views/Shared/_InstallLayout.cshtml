@@ -19,12 +19,6 @@
             padding: 24px 0;
         }
 
-        .body-content {
-            margin-top: 40px;
-        }
-
-
-
         .btn-install {
             width: 50%;
         }
@@ -33,19 +27,57 @@
             text-align: center;
         }
 
-        body.install{
-            position:relative;
-            height:100vh;
+        body.install {
+            position: relative;
+            height: 100vh;
         }
 
         .progress-overlay.hide {
-            display:none;
+            display: none;
+        }
+
+        .card-title {
+            padding: 1rem 0;
+        }
+
+        .progress-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+            .progress-title svg {
+                margin-right: 1rem;
+            }
+
+        .installation-step svg {
+            margin-right: 0.5rem;
+        }
+
+        ul.install-steps {
+            list-style: none;
+        }
+
+        ul.install.steps li {
+            display: flex;
+            align-items: center;
+            /* justify-content: center; */
+        }
+
+        svg.feather {
+            margin-right: 0.5rem;
+        }
+
+        footer {
+            padding-top: 1rem;
+            font-size: 0.8rem;
+            line-height: 0.8rem;
         }
     </style>
 </head>
-<body class="install">
+<body class="install bg-light">
 
-    <header class="header-container skyline-nav navbar navbar-expand-lg navbar-light bg-light">
+    <header class="header-container skyline-nav navbar navbar-expand-lg navbar-light">
         <div class="container d-flex justify-content-center">
             <a class="navbar-brand">
                 <img src="/_content/Deviser.Web/images/DeviserLogoDark.svg" style="width:240px" onerror="this.src='/images/DeviserLogoDark.png'; this.onerror=null;" alt="DEVISER">
@@ -58,8 +90,7 @@
 
         <footer>
             <div class="row justify-content-center">
-                <div class="col-12">
-                    <hr />
+                <div class="col">
                     <p>
                         Copyright &copy; @DateTime.Now.Year Karthick Sundararajan.</a>
                     </p>

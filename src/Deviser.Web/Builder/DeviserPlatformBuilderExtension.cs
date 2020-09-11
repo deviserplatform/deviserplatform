@@ -1,8 +1,12 @@
 ﻿using Deviser.Core.Common;
+using Deviser.Core.Common.Hubs;
+using Deviser.Core.Common.Internal;
 using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,10 +15,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Deviser.Core.Common.Hubs;
-using Deviser.Core.Common.Internal;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
 
 namespace Deviser.Web.Builder
 {

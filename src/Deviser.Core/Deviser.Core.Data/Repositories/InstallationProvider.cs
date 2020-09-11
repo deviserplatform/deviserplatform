@@ -35,7 +35,7 @@ namespace Deviser.Core.Data.Repositories
 
         bool IsDatabaseExist { get; }
 
-        void InstallPlatform(InstallModel installModel);
+        Task InstallPlatform(InstallModel installModel);
         void InsertData(DbContextOptions<DeviserDbContext> dbOption);
         string GetConnectionString(InstallModel model);
         DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null);
@@ -109,7 +109,7 @@ namespace Deviser.Core.Data.Repositories
             }
         }
 
-        public void InstallPlatform(InstallModel installModel)
+        public async Task InstallPlatform(InstallModel installModel)
         {
             var connectionString = GetConnectionString(installModel);
             var settingFile = Path.Combine(_hostingEnvironment.ContentRootPath, $"appsettings.{_hostingEnvironment.EnvironmentName}.json");
@@ -117,24 +117,22 @@ namespace Deviser.Core.Data.Repositories
             var dbOption = dbContextOptionsBuilder.Options;
             _isInstallInProgress = true;
             _installModel = installModel;
-            UpdateInstallLog($"Deviser Platform Installation begins");
-            UpdateInstallLog($"Verifying whether the database exist");
+            await UpdateInstallLog($"Deviser Platform Installation begins");
+            await UpdateInstallLog($"Verifying whether the database exist");
             if (!IsDatabaseExistsFor(connectionString))
             {
                 //Creating database                        
-                UpdateInstallLog($"Creating database");
-                using (var context = new DeviserDbContext(dbOption))
-                {
-                    UpdateInstallLog($"Creating platform database objects");
-                    context.Database.Migrate();
-                }
+                await UpdateInstallLog($"Creating database");
+                await using var context = new DeviserDbContext(dbOption);
+                await UpdateInstallLog($"Creating platform database objects");
+                await context.Database.MigrateAsync();
 
                 //Insert data
-                UpdateInstallLog($"Inserting platform data");
+                await UpdateInstallLog($"Inserting platform data");
                 InsertData(dbOption);
 
                 //Migrate module
-                UpdateInstallLog($"Creating module database objects");
+                await UpdateInstallLog($"Creating module database objects");
                 MigrateModuleContexts(installModel);
 
                 IServiceCollection services = new ServiceCollection();
@@ -152,7 +150,7 @@ namespace Deviser.Core.Data.Repositories
                     .AddDefaultTokenProviders();
                 var sp = services.BuildServiceProvider();
                 //Create user account
-                UpdateInstallLog($"Creating admin user account");
+                await UpdateInstallLog($"Creating admin user account");
                 _userManager = sp.GetService<UserManager<Entities.User>>();
 
                 var user = new Entities.User { UserName = installModel.AdminEmail, Email = installModel.AdminEmail };
@@ -160,12 +158,12 @@ namespace Deviser.Core.Data.Repositories
                 if (result.Succeeded)
                 {
                     //Assign user to admin role
-                    _userManager.AddToRoleAsync(user, "Administrators");
+                    await _userManager.AddToRoleAsync(user, "Administrators");
                 }
             }
 
             //Write install settings
-            UpdateInstallLog($"Creating the config files");
+            await UpdateInstallLog($"Creating the config files");
             WriteInstallSettings(installModel);
 
             //Update connection string 
@@ -176,7 +174,7 @@ namespace Deviser.Core.Data.Repositories
                 fs.Close();
             }
 
-            UpdateInstallLog($"Finalizing the installation");
+            await UpdateInstallLog($"Finalizing the installation");
             var json = File.ReadAllText(settingFile);
             if (string.IsNullOrEmpty(json))
             {
@@ -188,14 +186,14 @@ namespace Deviser.Core.Data.Repositories
                     }
                 });
                 var output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
-                File.WriteAllText(settingFile, output);
+                await File.WriteAllTextAsync(settingFile, output);
             }
             else
             {
                 var jsonObj = JObject.Parse(json);
                 jsonObj["ConnectionStrings"]["DefaultConnection"] = connectionString;
                 var output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
-                File.WriteAllText(settingFile, output);
+                await File.WriteAllTextAsync(settingFile, output);
             }
             
 
@@ -206,6 +204,7 @@ namespace Deviser.Core.Data.Repositories
             _dbContextOptions = dbOption;
             _dbContextOptionsBuilder = dbContextOptionsBuilder;
             _isInstallInProgress = false;
+            await UpdateInstallLog($"Deviser Platform has been installed successfully!");
         }
 
         public void InsertData(DbContextOptions<DeviserDbContext> dbOption)
@@ -547,7 +546,7 @@ namespace Deviser.Core.Data.Repositories
         private async Task UpdateInstallLog(string message)
         {
             _logger.LogInformation(message);
-            _hubContext.Clients.All.SendAsync("OnUpdateInstallLog", message).GetAwaiter().GetResult();
+            await _hubContext.Clients.All.SendAsync("OnUpdateInstallLog", message);
         }
     }
 }
