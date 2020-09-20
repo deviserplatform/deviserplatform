@@ -5,10 +5,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using Deviser.Core.Common.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeviserWI.Controllers.API
 {
     [Route("api/[controller]")]
+    [PermissionAuthorize("PAGE", "EDIT")]
     public class LayoutController : Controller
     {
         private readonly ILogger<LayoutController> _logger;
@@ -25,6 +28,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Get()
         {
             try
@@ -60,6 +64,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public IActionResult Get(Guid id)
         {
             try

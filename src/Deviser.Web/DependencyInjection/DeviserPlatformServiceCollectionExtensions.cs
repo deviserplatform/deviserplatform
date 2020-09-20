@@ -39,6 +39,9 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Deviser.Core.Library.Security;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Deviser.Web.DependencyInjection
 {
@@ -114,6 +117,10 @@ namespace Deviser.Web.DependencyInjection
 
             services.AddTransient<IEmailSender, MessageSender>();
             services.AddTransient<ISmsSender, MessageSender>();
+
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+            services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+
             services.TryAddSingleton<ObjectMethodExecutorCache>();
             services.TryAddSingleton<ITypeActivatorCache, TypeActivatorCache>();
 
@@ -166,6 +173,15 @@ namespace Deviser.Web.DependencyInjection
                     });
                 }
 
+                // Add cookie authentication so that it's possible to sign-in to test the
+                // custom authorization policy behavior of the sample
+                //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                //    .AddCookie(options =>
+                //    {
+                //        options.AccessDeniedPath = "/account/denied";
+                //        options.LoginPath = "/account/signin";
+                //    });
+
                 RegisterModuleDependencies(services);
                 services.AddDeviserAdmin();
             }
@@ -189,6 +205,8 @@ namespace Deviser.Web.DependencyInjection
             {
                 mvcBuilder.AddControllersAsServices();
             }
+
+
 
             if (hostEnvironment.IsDevelopment())
             {

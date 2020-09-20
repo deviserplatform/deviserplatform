@@ -4,12 +4,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using Deviser.Core.Common.Security;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Deviser.Web.Controllers
 {
     [Produces("application/json")]
     [Route("api/ModuleView")]
+    [PermissionAuthorize("PAGE", "EDIT")]
     public class ModuleViewController : Controller
     {
         private readonly ILogger<ModuleViewController> _logger;
@@ -23,6 +26,7 @@ namespace Deviser.Web.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Get()
         {
             try

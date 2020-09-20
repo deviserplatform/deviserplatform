@@ -61,7 +61,7 @@ namespace Deviser.Modules.ContactForm.Controllers
                 if (contact != null)
                 {
                     var userName = HttpContext.User.Identity.Name;
-                    contact.CreatedBy = _userProvider.GetUser(userName);
+                    contact.CreatedBy = _userProvider.GetUser(userName).Id;
                     contact.CreatedOn = DateTime.Now;
                     var result = _contactProvider.submitData(contact);
                     System.Collections.Generic.ICollection<Property> pageModuleProperties = GetModuleProperties(contact.PageModuleId);

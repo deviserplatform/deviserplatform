@@ -11,10 +11,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Deviser.Core.Common.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeviserWI.Controllers.API
 {
     [Route("api/[controller]")]
+    [PermissionAuthorize("PAGE", "EDIT")]
     public class UploadController : Controller
     {
         private readonly ILogger<UploadController> _logger;
@@ -46,6 +49,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpGet]
         [Route("images")]
+        [AllowAnonymous]
         public IActionResult GetImages(string searchTerm)
         {
             try
@@ -122,6 +126,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpGet]
         [Route("documents")]
+        [AllowAnonymous]
         public IActionResult Get(string searchTerm)
         {
             try

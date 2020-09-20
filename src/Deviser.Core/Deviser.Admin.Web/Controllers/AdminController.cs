@@ -11,9 +11,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Deviser.Admin.Config.Filters;
 using Deviser.Core.Common.DomainTypes;
+using Deviser.Core.Common.Security;
 
 namespace Deviser.Admin.Web.Controllers
 {
+    [PermissionAuthorize("PAGE", "EDIT")]
     public class AdminController<TAdminConfigurator> : Controller, IAdminController
         where TAdminConfigurator : IAdminConfigurator
     {

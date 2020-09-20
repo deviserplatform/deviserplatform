@@ -4,10 +4,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using Deviser.Core.Common.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Deviser.Web.Controllers.Api
 {
     [Route("api/[controller]")]
+    [PermissionAuthorize("PAGE", "EDIT")]
     public class ContentTranslationController : Controller
     {
         private readonly ILogger<ContentTranslationController> _logger;
@@ -18,8 +21,9 @@ namespace Deviser.Web.Controllers.Api
             _logger = logger;
             _pageContentRepository = pageContentRepository;
         }
-
+        
         [HttpGet("{cultureCode}/{contentId}")]
+        [AllowAnonymous]
         public IActionResult Get(string cultureCode, Guid contentId)
         {
             try

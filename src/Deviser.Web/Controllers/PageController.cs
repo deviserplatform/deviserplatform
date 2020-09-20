@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Deviser.Core.Common.Security;
+using Deviser.Core.Library.Security;
 
 namespace Deviser.Web.Controllers
 {
@@ -62,6 +64,7 @@ namespace Deviser.Web.Controllers
 
         }
 
+        [PermissionAuthorize("PAGE", "VIEW")]
         public async Task<IActionResult> Index(string permalink)
         {
             try
@@ -123,6 +126,7 @@ namespace Deviser.Web.Controllers
             return View("NotFound");
         }
 
+        [PermissionAuthorize("PAGE","EDIT")]
         public IActionResult Layout(string permalink)
         {
             Page currentPage = _scopeService.PageContext.CurrentPage;
@@ -136,6 +140,7 @@ namespace Deviser.Web.Controllers
             return null;
         }
 
+        [PermissionAuthorize("PAGE", "EDIT")]
         public IActionResult Edit(string permalink)
         {
             Page currentPage = _scopeService.PageContext.CurrentPage;

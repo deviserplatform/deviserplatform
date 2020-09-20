@@ -118,10 +118,13 @@ namespace Deviser.Web.Builder
             app.UseStaticFiles();
 
             app.UseRouting();
+            //Deviser Specific
+            app.UsePageContext();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UsePageAuthorization();
             //app.Use(async (context, next) =>
             //{
             //    var cultureQuery = context.Request.Query["culture"];
@@ -136,10 +139,9 @@ namespace Deviser.Web.Builder
             //    await next();
             //});
 
-            app.UseSession();
 
-            //Deviser Specific
-            app.UsePageContext();
+
+            app.UseSession();
 
             return app.UseEndpoints(endpoints =>
             {

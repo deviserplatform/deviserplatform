@@ -13,7 +13,7 @@ namespace Deviser.Core.Data.Repositories
     {
         List<User> GetUsers();
         User GetUser(Guid userId);
-        Guid GetUser(string userName);
+        User GetUser(string userName);
 
     }
 
@@ -75,25 +75,17 @@ namespace Deviser.Core.Data.Repositories
             try
             {
                 using var context = new DeviserDbContext(_dbOptions);
-                var result = context.Users
+                var dbUser = context.Users
                     .Where(e => e.Id == userId)
                     .Include(u => u.UserRoles)
                     .FirstOrDefault();
-                var returnResult = _mapper.Map<User>(result);
+                var user = _mapper.Map<User>(dbUser);
 
-                if (result != null && (result.UserRoles != null && result.UserRoles.Count > 0))
-                {
-                    returnResult.Roles = new List<Role>();
-                    foreach (var userRole in result.UserRoles)
-                    {
-                        if (userRole == null) continue;
+                if (dbUser?.UserRoles == null || dbUser.UserRoles.Count <= 0) return user;
 
-                        var role = context.Roles.FirstOrDefault(e => e.Id == userRole.RoleId);
-                        returnResult.Roles.Add(_mapper.Map<Role>(role));
-                    }
-                }
+                AddUserRoles(user, context, dbUser);
 
-                return returnResult;
+                return user;
             }
             catch (Exception ex)
             {
@@ -101,25 +93,41 @@ namespace Deviser.Core.Data.Repositories
             }
             return null;
         }
-
-        public Guid GetUser(string userName)
+        
+        public User GetUser(string userName)
         {
             try
             {
                 using var context = new DeviserDbContext(_dbOptions);
-                var userId = context.User
-                    .Where(u => u.UserName == userName)
-                    .Select(u => u.Id).FirstOrDefault();
-                return userId;
+                var dbUser = context.User
+                    .Include(u => u.UserRoles)
+                    .FirstOrDefault(u => u.UserName == userName);
+
+                var user = _mapper.Map<User>(dbUser);
+
+                if (dbUser?.UserRoles == null || dbUser.UserRoles.Count <= 0) return user;
+
+                AddUserRoles(user, context, dbUser);
+
+                return user;
             }
             catch (Exception ex)
             {
                 _logger.LogError("Error occured while retrieving user details", ex);
             }
-            return Guid.Empty;
+            return null;
         }
 
-
+        private void AddUserRoles(User returnResult, DeviserDbContext context, Entities.User dbUser)
+        {
+            returnResult.Roles = new List<Role>();
+            var allRoles = context.Role.ToDictionary(k => k.Id, v => v);
+            foreach (var userRole in dbUser.UserRoles)
+            {
+                var role = allRoles[userRole.RoleId];
+                returnResult.Roles.Add(_mapper.Map<Role>(role));
+            }
+        }
     }
 
 }//End namespace

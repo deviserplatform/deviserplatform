@@ -4,10 +4,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using Deviser.Core.Common.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Deviser.Web.Controllers.Api
 {
     [Route("api/[controller]")]
+    [PermissionAuthorize("PAGE", "EDIT")]
     public class LanguageController : Controller
     {
         //Logger
@@ -22,6 +25,7 @@ namespace Deviser.Web.Controllers.Api
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Get()
         {
             try
@@ -39,6 +43,7 @@ namespace Deviser.Web.Controllers.Api
         }
 
         [HttpGet("site")]
+        [AllowAnonymous]
         public IActionResult GetSiteLanguage()
         {
             try
@@ -56,6 +61,7 @@ namespace Deviser.Web.Controllers.Api
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public IActionResult Get(Guid id)
         {
             try

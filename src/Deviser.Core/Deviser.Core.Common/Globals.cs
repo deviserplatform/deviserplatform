@@ -23,6 +23,8 @@ namespace Deviser.Core.Common
 
         public const string OriginalFileSuffix = ".original";
 
+        public const string POLICY_PREFIX = "DEVISERPERMISSION";
+
         public const int ImageOptimizeDpi = 72;
         public const int ImageOptimizeMaxWidth = 1024;
         public const int ImageOptimizeMaxHeight = 1204;

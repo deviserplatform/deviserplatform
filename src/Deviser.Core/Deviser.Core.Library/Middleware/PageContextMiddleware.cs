@@ -122,41 +122,33 @@ namespace Deviser.Core.Library.Middleware
         private static void InitModuleContext(HttpContext httpContext, IModuleRepository moduleRepository,
             IScopeService scopeService, RouteData routeData)
         {
-            object moduleName;
-            object pageModuleId;
             var moduleContext = new ModuleContext();
 
-            //scopeService.ModuleContext = moduleContext;
-
-
-            if (routeData.Values.TryGetValue("area", out moduleName))
+            if (routeData.Values.TryGetValue("area", out var moduleName))
             {
                 moduleContext.ModuleInfo = moduleRepository.GetModule((string)moduleName);
             }
 
-            if (routeData.Values.TryGetValue("pageModuleId", out pageModuleId))
+            if (routeData.Values.TryGetValue("pageModuleId", out var pageModuleId))
             {
                 moduleContext.PageModuleId = Guid.Parse((string)pageModuleId);
 
-                if (moduleContext.ModuleInfo == null)
-                {
-                    moduleContext.ModuleInfo = moduleRepository.GetModuleByPageModuleId(moduleContext.PageModuleId);
-                }
+                moduleContext.ModuleInfo ??= moduleRepository.GetModuleByPageModuleId(moduleContext.PageModuleId);
             }
 
-            if (moduleContext.ModuleInfo != null || moduleContext.PageModuleId != null)
+            if (moduleContext.ModuleInfo == null && moduleContext.PageModuleId == null) return;
+
+
+            if (!httpContext.Items.ContainsKey("ModuleContext"))
             {
-                if (!httpContext.Items.ContainsKey("ModuleContext"))
-                {
-                    httpContext.Items.Add("ModuleContext", moduleContext);
-                }
-                else
-                {
-                    httpContext.Items["ModuleContext"] = moduleContext;
-                }
-
-                scopeService.ModuleContext = moduleContext;
+                httpContext.Items.Add("ModuleContext", moduleContext);
             }
+            else
+            {
+                httpContext.Items["ModuleContext"] = moduleContext;
+            }
+
+            scopeService.ModuleContext = moduleContext;
         }
 
         private static void InitPageContext(HttpContext httpContext, IPageManager pageManager, IScopeService scopeService,
@@ -165,8 +157,6 @@ namespace Deviser.Core.Library.Middleware
             pageContext.CurrentPageId = currentPage.Id;
             pageContext.CurrentUrl = currentPage.PageTranslation.First(p => p.Locale.Equals(pageContext.CurrentCulture.ToString(), StringComparison.InvariantCultureIgnoreCase)).URL;
             pageContext.CurrentPage = currentPage;
-            pageContext.HasPageViewPermission = pageManager.HasViewPermission(currentPage);
-            pageContext.HasPageEditPermission = pageManager.HasEditPermission(currentPage);
 
             if (!httpContext.Items.ContainsKey("PageContext"))
             {

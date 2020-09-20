@@ -10,7 +10,7 @@ namespace Deviser.Web.Controllers.Api
 {
     [Produces("application/json")]
     [Route("api/Application")]
-    [Authorize]
+    [Authorize(Roles = "Administrators")]
     public class ApplicationController : Controller
     {
         //Logger
