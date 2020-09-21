@@ -106,7 +106,7 @@ namespace Deviser.Core.Library.Middleware
                         _logger.LogError(errorMessage, ex);
                     }
                 }
-                else if (httpContext.Request.Headers.ContainsKey("currentPageId") && Guid.TryParse(httpContext.Request.Headers["currentPageId"], out Guid currentPageId))
+                else if (httpContext.Request.Headers.ContainsKey("currentPageId") && Guid.TryParse(httpContext.Request.Headers["currentPageId"], out var currentPageId))
                 {
                     var currentPage = pageManager.GetPageAndTranslation(currentPageId);
                     InitPageContext(httpContext, pageManager, scopeService, currentPage, pageContext);
@@ -185,7 +185,7 @@ namespace Deviser.Core.Library.Middleware
         private CultureInfo GetCurrentCulture(RouteData routeData, HttpContext httpContext, IList<Language> activeLanguages, bool isSiteMultilingual, string siteDefaultCulture)
         {
             var requestCultureFeature = httpContext.Features.Get<IRequestCultureFeature>();
-            CultureInfo requestCulture = requestCultureFeature.RequestCulture.UICulture;
+            var requestCulture = requestCultureFeature.RequestCulture.UICulture;
 
             //if (isSiteMultilingual)
             //{
@@ -211,7 +211,7 @@ namespace Deviser.Core.Library.Middleware
         private string GetPermalink(RouteData routeData, HttpContext httpContext)
         {
             //permalink in the url has first preference
-            string permalink = (routeData.Values["permalink"] != null) ? routeData.Values["permalink"].ToString() : "";
+            var permalink = (routeData.Values["permalink"] != null) ? routeData.Values["permalink"].ToString() : "";
             if (string.IsNullOrEmpty(permalink))
             {
                 //if permalink is null, check for querystring

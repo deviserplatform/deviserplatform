@@ -124,7 +124,7 @@ namespace Deviser.Admin.Extensions
 
 
             var fieldExpr = Expression.Property(paramExpression, propertyInfo);
-            List<BinaryExpression> binaryExpressions = new List<BinaryExpression>();
+            var binaryExpressions = new List<BinaryExpression>();
 
             if (booleanFilter.IsTrue)
             {
@@ -267,15 +267,15 @@ namespace Deviser.Admin.Extensions
                     predicateExpr = Expression.Equal(fieldExpr, valExpr);
                     break;
                 case TextOperator.Contains:
-                    MethodInfo containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                    var containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
                     predicateExpr = Expression.Call(fieldExpr, containsMethod, valExpr);
                     break;
                 case TextOperator.StartsWith:
-                    MethodInfo startsWithMethod = typeof(string).GetMethod("StartsWith", new[] { typeof(string) });
+                    var startsWithMethod = typeof(string).GetMethod("StartsWith", new[] { typeof(string) });
                     predicateExpr = Expression.Call(fieldExpr, startsWithMethod, valExpr);
                     break;
                 case TextOperator.EndsWith:
-                    MethodInfo endsWithMethod = typeof(string).GetMethod("EndsWith", new[] { typeof(string) });
+                    var endsWithMethod = typeof(string).GetMethod("EndsWith", new[] { typeof(string) });
                     predicateExpr = Expression.Call(fieldExpr, endsWithMethod, valExpr);
                     break;
                 case TextOperator.NotEqual:

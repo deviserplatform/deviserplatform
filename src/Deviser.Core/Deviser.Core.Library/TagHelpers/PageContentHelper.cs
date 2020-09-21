@@ -59,13 +59,7 @@ namespace Deviser.Core.Library.TagHelpers
 
         protected ICollection<PageContent> PageContents { get; set; }
 
-        protected CultureInfo CurrentCulture
-        {
-            get
-            {
-                return _scopeService.PageContext.CurrentCulture;
-            }
-        }
+        protected CultureInfo CurrentCulture => _scopeService.PageContext.CurrentCulture;
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -87,95 +81,82 @@ namespace Deviser.Core.Library.TagHelpers
                 return;
             }
 
-            try
-            {
+
                 ((HtmlHelper)_htmlHelper).Contextualize(ViewContext);
 
-                PageLayout pageLayout = new PageLayout();
-                pageLayout.Name = CurrentPage.Layout.Name;
+            var pageLayout = new PageLayout { Name = CurrentPage.Layout.Name };
 
-                var properties = _propertyRepository.GetProperties();
-                pageLayout.PlaceHolders = JsonConvert.DeserializeObject<List<PlaceHolder>>(CurrentPage.Layout.Config);
+            var properties = _propertyRepository.GetProperties();
+            pageLayout.PlaceHolders = JsonConvert.DeserializeObject<List<PlaceHolder>>(CurrentPage.Layout.Config);
 
-                GetPropertyValue(pageLayout.PlaceHolders, properties);
+            GetPropertyValue(pageLayout.PlaceHolders, properties);
 
-                PageContents = _mapper.Map<ICollection<PageContent>>(CurrentPage.PageContent);
+            PageContents = _mapper.Map<ICollection<PageContent>>(CurrentPage.PageContent);
 
-                //Copy property options from master data
-                if (PageContents != null && PageContents.Count > 0)
-                {
-                    foreach (var pageContent in PageContents)
-                    {
-                        if (pageContent.ContentType.Properties != null && pageContent.ContentType.Properties.Count > 0)
-                        {
-                            foreach (var prop in pageContent.ContentType.Properties)
-                            {
-                                var propValue = pageContent.Properties.FirstOrDefault(p => p.Id == prop.Id);
-                                if (propValue != null)
-                                {
-                                    propValue.OptionListId = prop.OptionListId;
-                                    propValue.OptionList = prop.OptionList;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (pageLayout.PlaceHolders != null && pageLayout.PlaceHolders.Count > 0)
-                {
-                    HtmlContentBuilder result = RenderContentItems(pageLayout.PlaceHolders);
-                    if (ModuleViewResults.Count > 0)
-                    {
-                        //One or more modules are not added in containers
-                        foreach (var moduleViewResult in ModuleViewResults)
-                        {
-                            if (moduleViewResult.Value != null && moduleViewResult.Value.Count > 0)
-                            {
-                                foreach (var contentResult in moduleViewResult.Value)
-                                {
-                                    //result += contentResult.HtmlResult;
-                                    result.AppendHtml(contentResult.HtmlResult);
-                                }
-                            }
-                        }
-                    }
-                    output.Content.SetHtmlContent(result);
-
-                    //Release all resources
-                    pageLayout.RegisterForDispose(ViewContext.HttpContext);
-                    PageContents.GetEnumerator().RegisterForDispose(ViewContext.HttpContext);
-                    ModuleViewResults.GetEnumerator().RegisterForDispose(ViewContext.HttpContext);
-                    pageLayout.RegisterForDispose(ViewContext.HttpContext);
-                }
-            }
-            catch (Exception ex)
+            //Copy property options from master data
+            if (PageContents != null && PageContents.Count > 0)
             {
-                throw ex;
+                foreach (var pageContent in PageContents)
+                {
+                    if (pageContent.ContentType.Properties != null && pageContent.ContentType.Properties.Count > 0)
+                    {
+                        foreach (var prop in pageContent.ContentType.Properties)
+                        {
+                            var propValue = pageContent.Properties.FirstOrDefault(p => p.Id == prop.Id);
+                            if (propValue != null)
+                            {
+                                propValue.OptionListId = prop.OptionListId;
+                                propValue.OptionList = prop.OptionList;
+                            }
+                        }
+                    }
+                }
             }
+
+            if (pageLayout.PlaceHolders == null || pageLayout.PlaceHolders.Count <= 0) return;
+            var result = RenderContentItems(pageLayout.PlaceHolders);
+            if (ModuleViewResults.Count > 0)
+            {
+                //One or more modules are not added in containers
+                foreach (var moduleViewResult in ModuleViewResults)
+                {
+                    if (moduleViewResult.Value != null && moduleViewResult.Value.Count > 0)
+                    {
+                        foreach (var contentResult in moduleViewResult.Value)
+                        {
+                            //result += contentResult.HtmlResult;
+                            result.AppendHtml(contentResult.HtmlResult);
+                        }
+                    }
+                }
+            }
+            output.Content.SetHtmlContent(result);
+
+            //Release all resources
+            pageLayout.RegisterForDispose(ViewContext.HttpContext);
+            PageContents.GetEnumerator().RegisterForDispose(ViewContext.HttpContext);
+            ModuleViewResults.GetEnumerator().RegisterForDispose(ViewContext.HttpContext);
+            pageLayout.RegisterForDispose(ViewContext.HttpContext);
         }
 
         private void GetPropertyValue(List<PlaceHolder> placeHolders, List<Property> properties)
         {
-            foreach(var placeHolder in placeHolders)
+            foreach (var placeHolder in placeHolders)
             {
-                if(placeHolder!=null)
+                if (placeHolder == null) continue;
+                if (placeHolder.Properties != null && placeHolder.Properties.Count > 0)
                 {
-                    if(placeHolder.Properties!=null && placeHolder.Properties.Count > 0)
+                    foreach (var prop in placeHolder.Properties)
                     {
-                        foreach(var prop in placeHolder.Properties)
-                        {
-                            if (prop != null)
-                            {
-                                var masterProp = properties.FirstOrDefault(p => p.Id == prop.Id);
-                                prop.OptionList = masterProp.OptionList;
-                            }
-                        }
+                        if (prop == null) continue;
+                        var masterProp = properties.FirstOrDefault(p => p.Id == prop.Id);
+                        prop.OptionList = masterProp.OptionList;
                     }
+                }
 
-                    if(placeHolder.PlaceHolders != null && placeHolder.PlaceHolders.Count > 0)
-                    {
-                        GetPropertyValue(placeHolder.PlaceHolders, properties);
-                    }
+                if (placeHolder.PlaceHolders != null && placeHolder.PlaceHolders.Count > 0)
+                {
+                    GetPropertyValue(placeHolder.PlaceHolders, properties);
                 }
             }
         }
@@ -183,14 +164,12 @@ namespace Deviser.Core.Library.TagHelpers
         private HtmlContentBuilder RenderContentItems(List<PlaceHolder> placeHolders)
         {
             //StringBuilder sb = new StringBuilder();
-            HtmlContentBuilder contentBuilder = new HtmlContentBuilder();
-            if (placeHolders != null)
+            var contentBuilder = new HtmlContentBuilder();
+            if (placeHolders == null) return contentBuilder;
+            foreach (var placeHolder in placeHolders)
             {
-                foreach (var placeHolder in placeHolders)
-                {
-                    var result = RenderContentItem(placeHolder);
-                    contentBuilder.AppendHtml(result);
-                }
+                var result = RenderContentItem(placeHolder);
+                contentBuilder.AppendHtml(result);
             }
             //return sb.ToString();
             return contentBuilder;
@@ -199,101 +178,96 @@ namespace Deviser.Core.Library.TagHelpers
         private IHtmlContent RenderContentItem(PlaceHolder placeHolder)
         {
             IHtmlContent htmlContentItems = null;
-            if (placeHolder != null)
+            if (placeHolder == null) return htmlContentItems;
+            //string currentResult = "";
+            var htmlCurrentResult = new HtmlContentBuilder();
+
+            var currentResults = new List<ContentResult>();
+            List<ContentResult> moduleResult = null;
+            var layoutType = placeHolder.Type;
+            ViewContext.ViewData["isEditMode"] = false;
+
+
+            if (ModuleViewResults.ContainsKey(placeHolder.Id.ToString()))
             {
-                //string currentResult = "";
-                var htmlCurrentResult = new HtmlContentBuilder();
-
-                List<ContentResult> currentResults = new List<ContentResult>();
-                List<ContentResult> moduleResult = null;
-                var layoutType = placeHolder.Type;
-                ViewContext.ViewData["isEditMode"] = false;
-                
-
-                if (ModuleViewResults.ContainsKey(placeHolder.Id.ToString()))
+                //Modules                            
+                if (ModuleViewResults.TryGetValue(placeHolder.Id.ToString(), out moduleResult))
                 {
-                    //Modules                            
-                    if (ModuleViewResults.TryGetValue(placeHolder.Id.ToString(), out moduleResult))
-                    {
-                        //sb.Append(moduleResult);
-                        ModuleViewResults.Remove(placeHolder.Id.ToString());
-                        currentResults.AddRange(moduleResult);
-                    }
+                    //sb.Append(moduleResult);
+                    ModuleViewResults.Remove(placeHolder.Id.ToString());
+                    currentResults.AddRange(moduleResult);
                 }
-
-                if (PageContents.Any(pc => pc.ContainerId == placeHolder.Id))
-                {
-                    //Page contents                            
-                    var pageContents = PageContents
-                        .Where(pc => pc.ContainerId == placeHolder.Id)
-                        .OrderBy(pc => pc.SortOrder).ToList();
-                    foreach (var pageContent in pageContents)
-                    {
-                        string typeName = pageContent.ContentType.Name;
-                        var contentTranslation = pageContent.PageContentTranslation.FirstOrDefault(t => t.CultureCode.ToLower() == CurrentCulture.ToString().ToLower());
-                        dynamic content = (contentTranslation != null) ? SDJsonConvert.DeserializeObject<dynamic>(contentTranslation.ContentData) : null;
-
-                        if (content != null)
-                        {
-                            var dynamicContent = new DynamicContent
-                            {
-                                PageContent = pageContent,
-                                Content = content
-                            };
-
-                            string contentTypesViewPath = string.Format(Globals.ContentTypesViewPath, _scopeService.PageContext.SelectedTheme, typeName);
-
-                            var htmlPageContent = _htmlHelper.Partial(contentTypesViewPath, dynamicContent);
-                            //var contentResult = GetString(htmlContent);
-                            currentResults.Add(new ContentResult
-                            {
-                                //Result = contentResult,
-                                HtmlResult = htmlPageContent,
-                                SortOrder = pageContent.SortOrder
-                            });
-                        }
-                    }
-                }
-
-                //var placeHolderResult = RenderContentItems(placeHolder.PlaceHolders);
-                //currentResults.Add(new ContentResult
-                //{                    
-                //    HtmlResult = placeHolderResult,
-                //    SortOrder = placeHolder.SortOrder
-                //});
-
-                if(placeHolder.PlaceHolders!=null && placeHolder.PlaceHolders.Count > 0)
-                {
-                    foreach (var childPlaceHolder in placeHolder.PlaceHolders)
-                    {
-                        var placeHolderResult = RenderContentItem(childPlaceHolder);
-                        currentResults.Add(new ContentResult
-                        {
-                            HtmlResult = placeHolderResult,
-                            SortOrder = childPlaceHolder.SortOrder
-                        });
-                    }
-                }
-
-
-                var sortedResult = currentResults.OrderBy(r => r.SortOrder).ToList();
-                foreach (var contentResult in sortedResult)
-                {
-                    //currentResult += contentResult.Result;
-                    htmlCurrentResult.AppendHtml(contentResult.HtmlResult);
-                }
-
-                var layoutContent = new LayoutContent
-                {
-                    PlaceHolder = placeHolder,
-                    ContentResult = htmlCurrentResult
-                };
-
-                htmlContentItems = _htmlHelper.Partial(string.Format(Globals.LayoutTypesPath, _scopeService.PageContext.SelectedTheme, layoutType), layoutContent);
-                //var layoutResult = GetString(htmlContent);                
-                //sb.Append(layoutResult);
-
             }
+
+            if (PageContents.Any(pc => pc.ContainerId == placeHolder.Id))
+            {
+                //Page contents                            
+                var pageContents = PageContents
+                    .Where(pc => pc.ContainerId == placeHolder.Id)
+                    .OrderBy(pc => pc.SortOrder).ToList();
+                foreach (var pageContent in pageContents)
+                {
+                    var typeName = pageContent.ContentType.Name;
+                    var contentTranslation = pageContent.PageContentTranslation.FirstOrDefault(t => t.CultureCode.ToLower() == CurrentCulture.ToString().ToLower());
+                    var content = (contentTranslation != null) ? SDJsonConvert.DeserializeObject<dynamic>(contentTranslation.ContentData) : null;
+
+                    if (content == null) continue;
+                    var dynamicContent = new DynamicContent
+                    {
+                        PageContent = pageContent,
+                        Content = content
+                    };
+
+                    var contentTypesViewPath = string.Format(Globals.ContentTypesViewPath, _scopeService.PageContext.SelectedTheme, typeName);
+
+                    var htmlPageContent = _htmlHelper.Partial(contentTypesViewPath, dynamicContent);
+                    //var contentResult = GetString(htmlContent);
+                    currentResults.Add(new ContentResult
+                    {
+                        //Result = contentResult,
+                        HtmlResult = htmlPageContent,
+                        SortOrder = pageContent.SortOrder
+                    });
+                }
+            }
+
+            //var placeHolderResult = RenderContentItems(placeHolder.PlaceHolders);
+            //currentResults.Add(new ContentResult
+            //{                    
+            //    HtmlResult = placeHolderResult,
+            //    SortOrder = placeHolder.SortOrder
+            //});
+
+            if (placeHolder.PlaceHolders != null && placeHolder.PlaceHolders.Count > 0)
+            {
+                foreach (var childPlaceHolder in placeHolder.PlaceHolders)
+                {
+                    var placeHolderResult = RenderContentItem(childPlaceHolder);
+                    currentResults.Add(new ContentResult
+                    {
+                        HtmlResult = placeHolderResult,
+                        SortOrder = childPlaceHolder.SortOrder
+                    });
+                }
+            }
+
+
+            var sortedResult = currentResults.OrderBy(r => r.SortOrder).ToList();
+            foreach (var contentResult in sortedResult)
+            {
+                //currentResult += contentResult.Result;
+                htmlCurrentResult.AppendHtml(contentResult.HtmlResult);
+            }
+
+            var layoutContent = new LayoutContent
+            {
+                PlaceHolder = placeHolder,
+                ContentResult = htmlCurrentResult
+            };
+
+            htmlContentItems = _htmlHelper.Partial(string.Format(Globals.LayoutTypesPath, _scopeService.PageContext.SelectedTheme, layoutType), layoutContent);
+            //var layoutResult = GetString(htmlContent);                
+            //sb.Append(layoutResult);
 
             return htmlContentItems;
         }

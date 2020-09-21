@@ -18,7 +18,7 @@ namespace Deviser.Core.Common
 
         public static string SerializeObject(object value)
         {
-            string result = JsonConvert.SerializeObject(value, settings);
+            var result = JsonConvert.SerializeObject(value, settings);
             return result;
         }
 

@@ -47,7 +47,7 @@ namespace Deviser.Modules.ContactForm.Controllers
         public IActionResult Index()
         {
             var moduleProperties = GetModuleProperties(PageModuleId);
-            string viewTemplate = moduleProperties.Get("cf_view_template")?.ToString();
+            var viewTemplate = moduleProperties.Get("cf_view_template")?.ToString();
             var viewPath = $"{_modulePath}/ViewTemplates/{viewTemplate}.cshtml";
             return View(viewPath);
         }
@@ -64,13 +64,13 @@ namespace Deviser.Modules.ContactForm.Controllers
                     contact.CreatedBy = _userProvider.GetUser(userName).Id;
                     contact.CreatedOn = DateTime.Now;
                     var result = _contactProvider.submitData(contact);
-                    System.Collections.Generic.ICollection<Property> pageModuleProperties = GetModuleProperties(contact.PageModuleId);
+                    var pageModuleProperties = GetModuleProperties(contact.PageModuleId);
 
-                    string adminEmail = pageModuleProperties.Get("cf_admin_email")?.ToString();
-                    string fromEmail = pageModuleProperties.Get("from")?.ToString();
-                    string subject = pageModuleProperties.Get("subject")?.ToString();
-                    string adminEmailTemplate = pageModuleProperties.Get("cf_admin_email_template")?.ToString();
-                    string contactEmailTemplate = pageModuleProperties.Get("cf_contact_email_template")?.ToString();
+                    var adminEmail = pageModuleProperties.Get("cf_admin_email")?.ToString();
+                    var fromEmail = pageModuleProperties.Get("from")?.ToString();
+                    var subject = pageModuleProperties.Get("subject")?.ToString();
+                    var adminEmailTemplate = pageModuleProperties.Get("cf_admin_email_template")?.ToString();
+                    var contactEmailTemplate = pageModuleProperties.Get("cf_contact_email_template")?.ToString();
                     dynamic data = JObject.Parse(contact.Data);
 
                     //Send Email to Admin

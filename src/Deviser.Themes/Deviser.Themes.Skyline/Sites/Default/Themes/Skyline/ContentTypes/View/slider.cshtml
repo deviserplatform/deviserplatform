@@ -6,8 +6,8 @@
     var properties = Model.PageContent.Properties;
     var pageContentId = Model.PageContent.Id;
 
-    dynamic rootObj = Model.Content;
-    int totalItems = 0;
+    var rootObj = Model.Content;
+    var totalItems = 0;
     if (rootObj != null)
     {
         totalItems = rootObj.items.Count;
@@ -36,16 +36,16 @@
     //autoHeight = !string.IsNullOrEmpty(autoHeight) ? autoHeight : properties.Get("swiper_autoHeight")?.DefaultValue;
     //roundLengths = !string.IsNullOrEmpty(roundLengths) ? roundLengths : properties.Get("swiper_roundLengths")?.DefaultValue;
     //effect = !string.IsNullOrEmpty(effect) ? effect : properties.Get("swiper_effect")?.DefaultValue;
-    bool hasNavigation = !string.IsNullOrEmpty(navigation) && navigation == "true";
-    bool hasPagination = !string.IsNullOrEmpty(pagination) && pagination == "true";
+    var hasNavigation = !string.IsNullOrEmpty(navigation) && navigation == "true";
+    var hasPagination = !string.IsNullOrEmpty(pagination) && pagination == "true";
     //paginationType = !string.IsNullOrEmpty(paginationType) ? paginationType : properties.Get("swiper_pagination_type")?.DefaultValue;
 
-    bool hasScrollbar = !string.IsNullOrEmpty(scrollbar) && scrollbar == "true";
+    var hasScrollbar = !string.IsNullOrEmpty(scrollbar) && scrollbar == "true";
 
     //spaceBetween = !string.IsNullOrEmpty(spaceBetween) ? spaceBetween : properties.Get("swiper_spaceBetween")?.DefaultValue;
     //loop = !string.IsNullOrEmpty(loop) ? loop : properties.Get("swiper_loop")?.DefaultValue;
-    bool hasKeyboard = !string.IsNullOrEmpty(keyboard) && keyboard == "true";
-    bool hasMousewheel = !string.IsNullOrEmpty(mousewheel) && mousewheel == "true";
+    var hasKeyboard = !string.IsNullOrEmpty(keyboard) && keyboard == "true";
+    var hasMousewheel = !string.IsNullOrEmpty(mousewheel) && mousewheel == "true";
 }
 
 @if (rootObj != null)

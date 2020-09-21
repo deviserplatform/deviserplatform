@@ -210,7 +210,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                bool result = _contentManager.DeletePageContent(id);
+                var result = _contentManager.DeletePageContent(id);
                 if (result)
                     return Ok();
 

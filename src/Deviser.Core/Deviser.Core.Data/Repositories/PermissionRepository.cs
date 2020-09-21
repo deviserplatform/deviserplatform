@@ -9,12 +9,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Deviser.Core.Data.Repositories
 {
-    public interface IPermissionRepository
-    {
-        IList<Permission> GetPagePermissions();
-        IList<Permission> GerPermissions();
-    }
-
     public class PermissionRepository : IPermissionRepository
     {
         private readonly ILogger<PermissionRepository> _logger;
@@ -29,43 +23,27 @@ namespace Deviser.Core.Data.Repositories
             _dbOptions = dbOptions;
             _mapper = mapper;
         }
-        
+
         public IList<Permission> GetPagePermissions()
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.Permission
-                    .Where(p => p.Entity == "PAGE")
-                    .OrderBy(r => r.Name)
-                    .ToList();
-                return _mapper.Map<List<Permission>>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while PAGE Permissions", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.Permission
+                .Where(p => p.Entity == "PAGE")
+                .OrderBy(r => r.Name)
+                .ToList();
+            return _mapper.Map<List<Permission>>(result);
         }
 
         public IList<Permission> GerPermissions()
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.Permission
-                    .Include(p=>p.ContentPermissions)
-                    .Include(p => p.ModulePermissions)
-                    .Include(p => p.PagePermissions)
-                    .OrderBy(r => r.Name)
-                    .ToList();
-                return _mapper.Map<List<Permission>>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while PAGE Permissions", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.Permission
+                .Include(p => p.ContentPermissions)
+                .Include(p => p.ModulePermissions)
+                .Include(p => p.PagePermissions)
+                .OrderBy(r => r.Name)
+                .ToList();
+            return _mapper.Map<List<Permission>>(result);
         }
     }
 }

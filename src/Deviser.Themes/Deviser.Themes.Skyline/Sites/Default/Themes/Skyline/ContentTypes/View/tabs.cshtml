@@ -4,13 +4,13 @@
     var pageContext = scopeService.PageContext;
     var currentCulture = pageContext.CurrentCulture.ToString();
 
-    dynamic rootObj = Model.Content;
-    int totalItems = 0;
+    var rootObj = Model.Content;
+    var totalItems = 0;
     if (rootObj != null)
     {
         totalItems = rootObj.items.Count;
     }
-    int index = 0;
+    var index = 0;
 
 }
 

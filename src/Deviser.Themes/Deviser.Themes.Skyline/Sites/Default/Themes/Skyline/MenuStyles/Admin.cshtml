@@ -22,7 +22,7 @@
     {
         if (menuItem != null)
         {
-            string activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "active open" : "";
+            var activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "active open" : "";
             <li class=" @activeClass ">
                 <a href="#"> @menuItem.PageName<span class="fa arrow"></span></a>
                 @if (menuItem.ChildMenuItems != null && menuItem.ChildMenuItems.Count > 0)
@@ -40,7 +40,7 @@ else if (Model.PageLevel == 1)
         {
             if (menuItem != null)
             {
-                string activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "active open" : "";
+                var activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "active open" : "";
                 <li class="@activeClass">
                     <a href="@menuItem.URL">
                         @menuItem.PageName
@@ -65,7 +65,7 @@ else if (Model.PageLevel == 2)
         {
             if (menuItem != null)
             {
-                string activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "active open" : "";                
+                var activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "active open" : "";                
                 <li class="@activeClass">
                     <a href="@menuItem.URL">
                         @menuItem.PageName

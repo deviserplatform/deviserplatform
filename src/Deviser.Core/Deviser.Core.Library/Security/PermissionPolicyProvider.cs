@@ -30,17 +30,15 @@ namespace Deviser.Core.Library.Security
 
         public Task<AuthorizationPolicy> GetPolicyAsync(string policyName)
         {
-            if (policyName.StartsWith(Globals.POLICY_PREFIX, StringComparison.OrdinalIgnoreCase) && policyName.Split("_").Length == 3)
-            {
-                var policy = new AuthorizationPolicyBuilder();
-                var policyParts = policyName.Split("_");
-                var entity = policyParts[1];
-                var permission = policyParts[2];
-                policy.AddRequirements(new PermissionRequirement(entity, permission));
-                return Task.FromResult(policy.Build());
-            }
+            if (!policyName.StartsWith(Globals.POLICY_PREFIX, StringComparison.OrdinalIgnoreCase) ||
+                policyName.Split("_").Length != 3) return Task.FromResult<AuthorizationPolicy>(null);
+            var policy = new AuthorizationPolicyBuilder();
+            var policyParts = policyName.Split("_");
+            var entity = policyParts[1];
+            var permission = policyParts[2];
+            policy.AddRequirements(new PermissionRequirement(entity, permission));
+            return Task.FromResult(policy.Build());
 
-            return Task.FromResult<AuthorizationPolicy>(null);
         }
 
         public Task<AuthorizationPolicy> GetDefaultPolicyAsync() => FallbackPolicyProvider.GetDefaultPolicyAsync();

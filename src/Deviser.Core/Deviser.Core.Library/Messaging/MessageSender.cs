@@ -23,10 +23,9 @@ namespace Deviser.Core.Library.Messaging
             var myMessage = new MimeMessage();            
             myMessage.To.Add(new MailboxAddress("", email));
 
-            if(optfromaddress == null)
-                myMessage.From.Add(new MailboxAddress("Deviser", siteSetting.SiteAdminEmail));   
-            else
-                myMessage.From.Add(new MailboxAddress("Deviser", optfromaddress));
+            myMessage.From.Add(optfromaddress == null
+                ? new MailboxAddress("Deviser", siteSetting.SiteAdminEmail)
+                : new MailboxAddress("Deviser", optfromaddress));
             myMessage.Subject = subject;
             myMessage.Body = new TextPart("HTML")
             {

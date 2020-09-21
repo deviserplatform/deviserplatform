@@ -21,11 +21,11 @@ namespace Deviser.Core.Library.Layouts
 
         public List<KeyValuePair<string, string>> GetHostThemes()
         {
-            string themeRoot = "Themes";
+            var themeRoot = "Themes";
             var themes = new List<KeyValuePair<string, string>>();
 
             var views = _viewProvider.GetCompiledViewDescriptors(); ;
-            string root = Path.Combine(Globals.HostMapPath, themeRoot);
+            var root = Path.Combine(Globals.HostMapPath, themeRoot);
 
             var themeViews = views.Where(v => v.RelativePath.Contains(root) && 
                                               !v.RelativePath.Contains("_")&&

@@ -73,53 +73,50 @@ namespace Deviser.Core.Library.Controllers
         {
             var actionResults = new Dictionary<string, List<ContentResult>>();
             var currentPage = _scopeService.PageContext.CurrentPage;
-            if (currentPage.PageModule != null && currentPage.PageModule.Count > 0)
+            if (currentPage.PageModule == null || currentPage.PageModule.Count <= 0) return actionResults;
+            currentPage.PageModule = currentPage.PageModule.Where(pm => pm.IsActive).ToList();
+            foreach (var pageModule in currentPage.PageModule)
             {
-                currentPage.PageModule = currentPage.PageModule.Where(pm => pm.IsActive).ToList();
-                foreach (var pageModule in currentPage.PageModule)
-                {
-                    Module module = _moduleRepository.GetModule(pageModule.ModuleId);
-                    ModuleView moduleView = module.ModuleView.FirstOrDefault(ma => ma.Id == pageModule.ModuleViewId);
-                    ModuleContext moduleContext = new ModuleContext();
-                    moduleContext.ModuleInfo = module;
-                    moduleContext.PageModuleId = pageModule.Id;
-                    if (module != null && moduleView != null)
-                    {
-                        List<ContentResult> contentResults;
-                        string containerId = pageModule.ContainerId.ToString();
-                        //Prepare the result object
-                        if (actionResults.ContainsKey(containerId))
-                        {
-                            contentResults = actionResults[containerId];
-                        }
-                        else
-                        {
-                            contentResults = new List<ContentResult>();
-                            actionResults.Add(containerId, contentResults);
-                        }
+                var module = _moduleRepository.GetModule(pageModule.ModuleId);
+                var moduleView = module.ModuleView.FirstOrDefault(ma => ma.Id == pageModule.ModuleViewId);
+                var moduleContext = new ModuleContext();
+                moduleContext.ModuleInfo = module;
+                moduleContext.PageModuleId = pageModule.Id;
+                if (moduleView == null) continue;
 
-                        try
-                        {
-                            IHtmlContent actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleView);
-                            IHtmlContent moduleResult = GetModuleResult(actionResult, moduleContext);
-                            contentResults.Add(new ContentResult
-                            {
-                                HtmlResult = moduleResult,
-                                SortOrder = pageModule.SortOrder
-                            });
-                        }
-                        catch (Exception ex)
-                        {
-                            var actionResult = "Module load exception has been occured";
-                            contentResults.Add(new ContentResult
-                            {
-                                //Result = actionResult,
-                                HtmlResult = new HtmlString(actionResult),
-                                SortOrder = pageModule.SortOrder
-                            });
-                            _logger.LogError("Module load exception has been occured", ex);
-                        }
-                    }
+                List<ContentResult> contentResults;
+                var containerId = pageModule.ContainerId.ToString();
+                //Prepare the result object
+                if (actionResults.ContainsKey(containerId))
+                {
+                    contentResults = actionResults[containerId];
+                }
+                else
+                {
+                    contentResults = new List<ContentResult>();
+                    actionResults.Add(containerId, contentResults);
+                }
+
+                try
+                {
+                    var actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleView);
+                    var moduleResult = GetModuleResult(actionResult, moduleContext);
+                    contentResults.Add(new ContentResult
+                    {
+                        HtmlResult = moduleResult,
+                        SortOrder = pageModule.SortOrder
+                    });
+                }
+                catch (Exception ex)
+                {
+                    var actionResult = "Module load exception has been occured";
+                    contentResults.Add(new ContentResult
+                    {
+                        //Result = actionResult,
+                        HtmlResult = new HtmlString(actionResult),
+                        SortOrder = pageModule.SortOrder
+                    });
+                    _logger.LogError("Module load exception has been occured", ex);
                 }
             }
 
@@ -157,14 +154,14 @@ namespace Deviser.Core.Library.Controllers
             try
             {
                 var module = _moduleRepository.GetModule(pageModule.ModuleId);
-                ModuleView moduleView = module.ModuleView.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleViewType
-                ModuleContext moduleContext = new ModuleContext();
+                var moduleView = module.ModuleView.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleViewType
+                var moduleContext = new ModuleContext();
                 moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleViewType
                 moduleContext.PageModuleId = pageModule.Id;
                 if (module != null && moduleView != null)
                 {
 
-                    IHtmlContent actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleView);
+                    var actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleView);
                     editResult = GetModuleResult(actionResult, moduleContext);
                 }
             }
@@ -195,7 +192,7 @@ namespace Deviser.Core.Library.Controllers
             var actionName = nameof(AdminController<IAdminConfigurator>.Admin);
 
 
-            RouteContext routeContext = new RouteContext(actionContext.HttpContext);
+            var routeContext = new RouteContext(actionContext.HttpContext);
             routeContext.RouteData = new RouteData();
             //routeContext.RouteData.Values.Add("area", moduleName);
             //routeContext.RouteData.Values.Add("controller", controllerName);
@@ -223,7 +220,7 @@ namespace Deviser.Core.Library.Controllers
 
             var result = await _actionInvoker.InvokeAction(actionContext.HttpContext, controllerTypeInfo.Namespace, controllerName, actionName, adminActionContext) as ViewResult;
 
-            IHtmlContent htmlResult = result.ExecuteResultToHTML(adminActionContext);
+            var htmlResult = result.ExecuteResultToHTML(adminActionContext);
             return htmlResult;
         }
 
@@ -261,19 +258,19 @@ namespace Deviser.Core.Library.Controllers
                 return null;
             }
 
-            ActionContext moduleActionContext = GetModuleActionContext(actionContext, moduleContext, moduleView);
+            var moduleActionContext = GetModuleActionContext(actionContext, moduleContext, moduleView);
 
             //var invoker = _moduleInvokerProvider.CreateInvoker(moduleActionContext);
             //var result = await invoker.InvokeAction() as ViewResult;
             var result = await _actionInvoker.InvokeAction(actionContext.HttpContext, moduleView, moduleActionContext) as ViewResult;
 
-            IHtmlContent htmlResult = result.ExecuteResultToHTML(moduleActionContext);
+            var htmlResult = result.ExecuteResultToHTML(moduleActionContext);
             return htmlResult;
         }
 
         private ActionContext GetModuleActionContext(ActionContext actionContext, ModuleContext moduleContext, ModuleView moduleView)
         {
-            RouteContext routeContext = new RouteContext(actionContext.HttpContext);
+            var routeContext = new RouteContext(actionContext.HttpContext);
             routeContext.RouteData = new RouteData();
             routeContext.RouteData.Values.Add("area", moduleContext.ModuleInfo.Name);
             routeContext.RouteData.Values.Add("pageModuleId", moduleContext.PageModuleId);
@@ -350,7 +347,7 @@ namespace Deviser.Core.Library.Controllers
             var values = new string[keys.Length];
             for (var i = 0; i < keys.Length; i++)
             {
-                context.RouteData.Values.TryGetValue(keys[i], out object value);
+                context.RouteData.Values.TryGetValue(keys[i], out var value);
 
                 if (value != null)
                 {
@@ -459,19 +456,15 @@ namespace Deviser.Core.Library.Controllers
             int? order = null;
 
             // Perf: Avoid allocations
-            for (var i = 0; i < candidates.Count; i++)
+            foreach (var candidate in candidates)
             {
-                var candidate = candidates[i];
-                if (candidate.Constraints != null)
+                if (candidate.Constraints == null) continue;
+                foreach (var constraint in candidate.Constraints)
                 {
-                    for (var j = 0; j < candidate.Constraints.Count; j++)
+                    if ((startingOrder == null || constraint.Order > startingOrder) &&
+                        (order == null || constraint.Order < order))
                     {
-                        var constraint = candidate.Constraints[j];
-                        if ((startingOrder == null || constraint.Order > startingOrder) &&
-                            (order == null || constraint.Order < order))
-                        {
-                            order = constraint.Order;
-                        }
+                        order = constraint.Order;
                     }
                 }
             }
@@ -492,32 +485,26 @@ namespace Deviser.Core.Library.Controllers
             constraintContext.RouteContext = context;
 
             // Perf: Avoid allocations
-            for (var i = 0; i < candidates.Count; i++)
+            foreach (var candidate in candidates)
             {
-                var candidate = candidates[i];
                 var isMatch = true;
                 var foundMatchingConstraint = false;
 
                 if (candidate.Constraints != null)
                 {
                     constraintContext.CurrentCandidate = candidate;
-                    for (var j = 0; j < candidate.Constraints.Count; j++)
+                    foreach (var constraint in candidate.Constraints)
                     {
-                        var constraint = candidate.Constraints[j];
-                        if (constraint.Order == order)
-                        {
-                            foundMatchingConstraint = true;
+                        if (constraint.Order != order) continue;
+                        foundMatchingConstraint = true;
 
-                            if (!constraint.Accept(constraintContext))
-                            {
-                                isMatch = false;
-                                _logger.ConstraintMismatch(
-                                    candidate.Action.DisplayName,
-                                    candidate.Action.Id,
-                                    constraint);
-                                break;
-                            }
-                        }
+                        if (constraint.Accept(constraintContext)) continue;
+                        isMatch = false;
+                        _logger.ConstraintMismatch(
+                            candidate.Action.DisplayName,
+                            candidate.Action.Id,
+                            constraint);
+                        break;
                     }
                 }
 
@@ -532,24 +519,19 @@ namespace Deviser.Core.Library.Controllers
             }
 
             // If we have matches with constraints, those are better so try to keep processing those
-            if (actionsWithConstraint.Count > 0)
+            if (actionsWithConstraint.Count <= 0)
+                return actionsWithoutConstraint.Count == 0
+                    ? null
+                    : EvaluateActionConstraintsCore(context, actionsWithoutConstraint, order);
+
+            var matches = EvaluateActionConstraintsCore(context, actionsWithConstraint, order);
+            if (matches?.Count > 0)
             {
-                var matches = EvaluateActionConstraintsCore(context, actionsWithConstraint, order);
-                if (matches?.Count > 0)
-                {
-                    return matches;
-                }
+                return matches;
             }
 
             // If the set of matches with constraints can't work, then process the set without constraints.
-            if (actionsWithoutConstraint.Count == 0)
-            {
-                return null;
-            }
-            else
-            {
-                return EvaluateActionConstraintsCore(context, actionsWithoutConstraint, order);
-            }
+            return actionsWithoutConstraint.Count == 0 ? null : EvaluateActionConstraintsCore(context, actionsWithoutConstraint, order);
         }
 
 
@@ -567,17 +549,15 @@ namespace Deviser.Core.Library.Controllers
                 // We need to first identify of the keys that action selection will look at (in route data). 
                 // We want to only consider conventionally routed actions here.
                 var routeKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                for (var i = 0; i < actions.Items.Count; i++)
+                foreach (var action in actions.Items)
                 {
-                    var action = actions.Items[i];
-                    if (action.AttributeRouteInfo == null)
+                    if (action.AttributeRouteInfo != null) continue;
+
+                    // This is a conventionally routed action - so make sure we include its keys in the set of
+                    // known route value keys.
+                    foreach (var kvp in action.RouteValues)
                     {
-                        // This is a conventionally routed action - so make sure we include its keys in the set of
-                        // known route value keys.
-                        foreach (var kvp in action.RouteValues)
-                        {
-                            routeKeys.Add(kvp.Key);
-                        }
+                        routeKeys.Add(kvp.Key);
                     }
                 }
 
@@ -586,9 +566,8 @@ namespace Deviser.Core.Library.Controllers
                 // route values.
                 RouteKeys = routeKeys.ToArray();
 
-                for (var i = 0; i < actions.Items.Count; i++)
+                foreach (var action in actions.Items)
                 {
-                    var action = actions.Items[i];
                     if (action.AttributeRouteInfo != null)
                     {
                         // This only handles conventional routing. Ignore attribute routed actions.
@@ -687,9 +666,9 @@ namespace Deviser.Core.Library.Controllers
                 }
 
                 var hash = new HashCodeCombiner();
-                for (var i = 0; i < obj.Length; i++)
+                foreach (var t in obj)
                 {
-                    var o = obj[i];
+                    var o = t;
 
                     // Route values define null and "" to be equivalent.
                     if (string.IsNullOrEmpty(o))
@@ -710,7 +689,7 @@ namespace Deviser.Core.Library.Controllers
             public int CombinedHash
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get { return _combinedHash64.GetHashCode(); }
+                get => _combinedHash64.GetHashCode();
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -729,7 +708,7 @@ namespace Deviser.Core.Library.Controllers
                 else
                 {
                     var count = 0;
-                    foreach (object o in e)
+                    foreach (var o in e)
                     {
                         Add(o);
                         count++;
@@ -753,14 +732,14 @@ namespace Deviser.Core.Library.Controllers
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void Add(string s)
             {
-                var hashCode = (s != null) ? s.GetHashCode() : 0;
+                var hashCode = s?.GetHashCode() ?? 0;
                 Add(hashCode);
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void Add(object o)
             {
-                var hashCode = (o != null) ? o.GetHashCode() : 0;
+                var hashCode = o?.GetHashCode() ?? 0;
                 Add(hashCode);
             }
 

@@ -5,7 +5,7 @@
     var pageContext = scopeService.PageContext;
     var currentCulture = pageContext.CurrentCulture.ToString();
 
-    dynamic rootObj = Model.Content;
+    var rootObj = Model.Content;
     var videoPreview = Model.PageContent.Properties.Get("video_preview");
 }
 

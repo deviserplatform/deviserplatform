@@ -22,30 +22,21 @@ namespace Deviser.Core.Library.IO
 
         public List<FileItem> GetFilesAndFolders()
         {
-            //Linq (Language Integrated Query) to Objects
-            try
+            var assetsPath = Path.Combine(_hostingEnvironment.ContentRootPath + "\\wwwroot\\assets");
+            var folders = Directory.GetDirectories(assetsPath).Select(folderPath => new FileItem
             {
-                string assetsPath = Path.Combine(_hostingEnvironment.ContentRootPath + "\\wwwroot\\assets");
-                List<FileItem> folders = Directory.GetDirectories(assetsPath).Select(folderPath => new FileItem
-                {
-                    Name = folderPath.Replace(assetsPath, ""),
-                    Type = FileItemType.Folder
-                }).ToList();
+                Name = folderPath.Replace(assetsPath, ""),
+                Type = FileItemType.Folder
+            }).ToList();
 
-                List<FileItem> files = Directory.GetFiles(assetsPath).Select(folderPath => new FileItem
-                {
-                    Name = folderPath.Replace(assetsPath, ""),
-                    Type = FileItemType.File
-                }).ToList();
-
-                folders.AddRange(files);
-                return folders;
-            }
-            catch (Exception ex)
+            var files = Directory.GetFiles(assetsPath).Select(folderPath => new FileItem
             {
-                _logger.LogError(string.Format("Error occured while getting all files and folders"), ex);
-                throw ex;
-            }
+                Name = folderPath.Replace(assetsPath, ""),
+                Type = FileItemType.File
+            }).ToList();
+
+            folders.AddRange(files);
+            return folders;
         }
     }
 }

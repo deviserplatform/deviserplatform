@@ -61,9 +61,9 @@ namespace Deviser.Web.DependencyInjection
 
             InternalServiceProvider.Instance.BuildServiceProvider(services);
 
-            IWebHostEnvironment hostEnvironment =
+            var hostEnvironment =
                 InternalServiceProvider.Instance.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
-            IInstallationProvider installationProvider = InternalServiceProvider.Instance.ServiceProvider.GetRequiredService<IInstallationProvider>();
+            var installationProvider = InternalServiceProvider.Instance.ServiceProvider.GetRequiredService<IInstallationProvider>();
 
             services.AddHttpContextAccessor();
 

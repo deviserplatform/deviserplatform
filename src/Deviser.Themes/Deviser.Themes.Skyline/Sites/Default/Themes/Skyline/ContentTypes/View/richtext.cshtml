@@ -5,7 +5,7 @@
     var currentCulture = pageContext.CurrentCulture.ToString();
     var properties = Model.PageContent.Properties;
 
-    dynamic rootObj = Model.Content;
+    var rootObj = Model.Content;
     var cssClass = properties.Get("css_class")?.ToString();
 }
 

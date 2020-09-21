@@ -8,16 +8,6 @@ using System.Linq;
 
 namespace Deviser.Core.Data.Repositories
 {
-    public interface IOptionListRepository
-    {
-        OptionList CreateOptionList(OptionList dbOptionList);
-        List<OptionList> GetOptionLists();
-        OptionList GetOptionList(Guid optionListId);
-        OptionList GetOptionList(string listName);
-        OptionList UpdateOptionList(OptionList dbContentType);
-        bool IsPropertyExist(string propertyName);
-    }
-
     public class OptionListRepository : IOptionListRepository
     {
         //Logger
@@ -37,103 +27,53 @@ namespace Deviser.Core.Data.Repositories
 
         public OptionList CreateOptionList(OptionList optionList)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var dbOptionList = _mapper.Map<Entities.OptionList>(optionList);
-                dbOptionList.CreatedDate = dbOptionList.LastModifiedDate = DateTime.Now;
-                var result = context.OptionList.Add(dbOptionList).Entity;
-                context.SaveChanges();
-                return _mapper.Map<OptionList>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while creating OptionList", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var dbOptionList = _mapper.Map<Entities.OptionList>(optionList);
+            dbOptionList.CreatedDate = dbOptionList.LastModifiedDate = DateTime.Now;
+            var result = context.OptionList.Add(dbOptionList).Entity;
+            context.SaveChanges();
+            return _mapper.Map<OptionList>(result);
         }
 
         public List<OptionList> GetOptionLists()
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.OptionList.ToList();
-                return _mapper.Map<List<OptionList>>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting OptionList", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.OptionList.ToList();
+            return _mapper.Map<List<OptionList>>(result);
         }
 
         public OptionList GetOptionList(Guid optionListId)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.OptionList
-                    .FirstOrDefault(e => e.Id == optionListId);
-                return _mapper.Map<OptionList>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting OptionList by id", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.OptionList
+                .FirstOrDefault(e => e.Id == optionListId);
+            return _mapper.Map<OptionList>(result);
         }
 
         public OptionList GetOptionList(string listName)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.OptionList
-                    .FirstOrDefault(e => e.Name.ToLower() == listName.ToLower());
-                return _mapper.Map<OptionList>(result);
-            }
-
-
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting OptionList by id", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.OptionList
+                .FirstOrDefault(e => e.Name.ToLower() == listName.ToLower());
+            return _mapper.Map<OptionList>(result);
         }
 
 
         public OptionList UpdateOptionList(OptionList optionList)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var dbOptionList = _mapper.Map<Entities.OptionList>(optionList);
-                dbOptionList.LastModifiedDate = DateTime.Now;
-                var result = context.OptionList.Update(dbOptionList).Entity;
-                context.SaveChanges();
-                return _mapper.Map<OptionList>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while updating OptionList", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var dbOptionList = _mapper.Map<Entities.OptionList>(optionList);
+            dbOptionList.LastModifiedDate = DateTime.Now;
+            var result = context.OptionList.Update(dbOptionList).Entity;
+            context.SaveChanges();
+            return _mapper.Map<OptionList>(result);
         }
 
         public bool IsPropertyExist(string optionListName)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.OptionList.Count(e => e.Name == optionListName);
-                return result > 0;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while checking whether OptionList by optionListName", ex);
-            }
-            return false;
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.OptionList.Count(e => e.Name == optionListName);
+            return result > 0;
         }
     }
 }

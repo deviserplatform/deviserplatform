@@ -18,7 +18,7 @@ namespace Deviser.Web
         {
             //Debugger.Launch();
 
-            IConfigurationRoot configuration = new ConfigurationBuilder()
+            var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.Development.json")
                 .Build();
@@ -35,7 +35,7 @@ namespace Deviser.Web
         {
             //Debugger.Launch();
 
-            IConfigurationRoot configuration = new ConfigurationBuilder()
+            var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.Development.json")
                 .Build();
@@ -55,7 +55,7 @@ namespace Deviser.Web
         {
             //Debugger.Launch();
 
-            IConfigurationRoot configuration = new ConfigurationBuilder()
+            var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.Development.json")
                 .Build();
@@ -72,7 +72,7 @@ namespace Deviser.Web
         {
             //Debugger.Launch();
 
-            IConfigurationRoot configuration = new ConfigurationBuilder()
+            var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.Development.json")
                 .Build();
@@ -89,7 +89,7 @@ namespace Deviser.Web
         {
             //Debugger.Launch();
 
-            IConfigurationRoot configuration = new ConfigurationBuilder()
+            var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.Development.json")
                 .Build();

@@ -25,25 +25,6 @@ using Serilog;
 
 namespace Deviser.Core.Data.Repositories
 {
-
-    public interface IInstallationProvider
-    {
-        //bool IsPlatformInstalled();
-        //bool IsDatabaseExist();
-
-        bool IsPlatformInstalled { get; }
-
-        bool IsDatabaseExist { get; }
-
-        Task InstallPlatform(InstallModel installModel);
-        void InsertData(DbContextOptions<DeviserDbContext> dbOption);
-        string GetConnectionString(InstallModel model);
-        DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null);
-        DbContextOptionsBuilder<TContext> GetDbContextOptionsBuilder<TContext>(DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null)
-            where TContext : DbContext;
-
-    }
-
     public class InstallationProvider : IInstallationProvider
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
@@ -178,7 +159,7 @@ namespace Deviser.Core.Data.Repositories
             var json = File.ReadAllText(settingFile);
             if (string.IsNullOrEmpty(json))
             {
-                JObject jsonObj = JObject.FromObject(new
+                var jsonObj = JObject.FromObject(new
                 {
                     ConnectionStrings = new
                     {
@@ -228,8 +209,8 @@ namespace Deviser.Core.Data.Repositories
             }
             else if (model.DatabaseProvider == DatabaseProvider.PostgreSQL)
             {
-                string host = model.ServerName;
-                string port = "";
+                var host = model.ServerName;
+                var port = "";
 
                 if (host.Contains(":"))
                 {
@@ -242,8 +223,8 @@ namespace Deviser.Core.Data.Repositories
             }
             else if (model.DatabaseProvider == DatabaseProvider.MySQL)
             {
-                string host = model.ServerName;
-                string port = "";
+                var host = model.ServerName;
+                var port = "";
 
                 if (host.Contains(":"))
                 {
@@ -392,7 +373,7 @@ namespace Deviser.Core.Data.Repositories
         private DbContextOptionsBuilder<TContext> GetDbContextOptionsBuilder<TContext>(InstallModel installModel, DbContextOptionsBuilder<TContext> optionsBuilder, string moduleAssembly = null)
             where TContext : DbContext
         {
-            string connectionString = IsPlatformInstalled ? _configuration.GetConnectionString("DefaultConnection") : GetConnectionString(installModel);
+            var connectionString = IsPlatformInstalled ? _configuration.GetConnectionString("DefaultConnection") : GetConnectionString(installModel);
 
 
             if (installModel.DatabaseProvider == DatabaseProvider.SQLServer || installModel.DatabaseProvider == DatabaseProvider.SQLLocalDb)

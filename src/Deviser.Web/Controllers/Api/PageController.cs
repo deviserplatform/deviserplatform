@@ -128,7 +128,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                bool result = _pageRepository.DraftPage(id);
+                var result = _pageRepository.DraftPage(id);
                 if (result)
                     return Ok();
 
@@ -147,7 +147,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                bool result = _pageRepository.PublishPage(id);
+                var result = _pageRepository.PublishPage(id);
                 if (result)
                     return Ok();
 
@@ -175,7 +175,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                string errorMessage = string.Format("Error occured while updating page tree");
+                var errorMessage = string.Format("Error occured while updating page tree");
                 _logger.LogError(errorMessage, ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
@@ -196,7 +196,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                string errorMessage = string.Format("Error occured while updating a page, PageId: ", page.Id);
+                var errorMessage = string.Format("Error occured while updating a page, PageId: ", page.Id);
                 _logger.LogError(errorMessage, ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
@@ -227,7 +227,7 @@ namespace DeviserWI.Controllers.API
             {
                 if (id != Guid.Empty)
                 {
-                    bool result = _navigation.DeletePage(id);
+                    var result = _navigation.DeletePage(id);
                     if (result)
                         return Ok(result);
                 }
@@ -235,7 +235,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                string errorMessage = string.Format("Error occured while deleting page, PageId: ", id);
+                var errorMessage = string.Format("Error occured while deleting page, PageId: ", id);
                 _logger.LogError(errorMessage, ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
@@ -247,7 +247,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                bool result = _pageRepository.DeletePage(id);
+                var result = _pageRepository.DeletePage(id);
                 if (result)
                     return Ok();
 

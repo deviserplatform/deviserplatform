@@ -69,7 +69,7 @@ namespace Deviser.Admin.Services
         {
             var adminConfig = GetAdminConfig(modelType);
             var model = ((JObject)entityObject).ToObject(adminConfig.ModelType);
-            if (adminConfig.ModelConfig.FormConfig.FormActions.TryGetValue(actionName.Pascalize(), out AdminAction adminAction) && adminConfig.ModelType == model.GetType())
+            if (adminConfig.ModelConfig.FormConfig.FormActions.TryGetValue(actionName.Pascalize(), out var adminAction) && adminConfig.ModelType == model.GetType())
             {
                 return await CallGenericMethod(nameof(ExecuteAdminAction), new Type[] { model.GetType() }, new object[] { model, adminAction });
             }
@@ -80,7 +80,7 @@ namespace Deviser.Admin.Services
         {
             var adminConfig = GetAdminConfig(modelType);
             var model = ((JObject)entityObject).ToObject(adminConfig.ModelType);
-            if (adminConfig.ModelConfig.GridConfig.RowActions.TryGetValue(actionName.Pascalize(), out AdminAction adminAction) &&
+            if (adminConfig.ModelConfig.GridConfig.RowActions.TryGetValue(actionName.Pascalize(), out var adminAction) &&
                 adminConfig.ModelType == model.GetType())
             {
                 return await CallGenericMethod(nameof(ExecuteAdminAction), new Type[] { model.GetType() }, new object[] { model, adminAction });
@@ -92,8 +92,8 @@ namespace Deviser.Admin.Services
         {
             var adminConfig = GetAdminConfig(modelType);
             var model = ((JObject)entityObject).ToObject(adminConfig.ModelType);
-            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out CustomForm customForm) &&
-                customForm.FormConfig.FormActions.TryGetValue(actionName.Pascalize(), out AdminAction adminAction) &&
+            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out var customForm) &&
+                customForm.FormConfig.FormActions.TryGetValue(actionName.Pascalize(), out var adminAction) &&
                 adminConfig.ModelType == model.GetType())
             {
                 return await CallGenericMethod(nameof(ExecuteAdminAction), new Type[] { model.GetType() }, new object[] { model, adminAction });
@@ -106,7 +106,7 @@ namespace Deviser.Admin.Services
             var adminConfig = GetAdminConfig(strModelType);
             var modelType = GetCustomFormModelType(strModelType, formName);
             var model = ((JObject)entityObject).ToObject(modelType);
-            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out CustomForm customForm) &&
+            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out var customForm) &&
                 customForm.ModelType == model.GetType())
             {
                 return await CallGenericMethod(nameof(ExecuteCustomFormSubmitAction), new Type[] { model.GetType() }, new object[] { model, customForm });
@@ -143,7 +143,7 @@ namespace Deviser.Admin.Services
         public Type GetCustomFormModelType(string strModelType, string formName)
         {
             var adminConfig = GetAdminConfig(strModelType);
-            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out CustomForm customForm))
+            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out var customForm))
             {
                 return customForm.ModelType;
             }
@@ -498,7 +498,7 @@ namespace Deviser.Admin.Services
 
         private IAdminConfig GetAdminConfig(Type modelType)
         {
-            if (_adminSite.AdminConfigs.TryGetValue(modelType, out IAdminConfig adminConfig))
+            if (_adminSite.AdminConfigs.TryGetValue(modelType, out var adminConfig))
             {
                 return adminConfig;
             }

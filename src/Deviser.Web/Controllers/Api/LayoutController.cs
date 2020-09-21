@@ -143,7 +143,7 @@ namespace DeviserWI.Controllers.API
                 {
                     if (!layout.IsActive)
                     {
-                         bool result = _layoutRepository.DeleteLayout(id);
+                         var result = _layoutRepository.DeleteLayout(id);
                         if (result)
                             return Ok();
                     }

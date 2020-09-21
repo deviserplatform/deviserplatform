@@ -45,13 +45,7 @@ namespace Deviser.Core.Library.TagHelpers
         }
 
         /// <inheritdoc />
-        public override int Order
-        {
-            get
-            {
-                return -1000;
-            }
-        }
+        public override int Order => -1000;
 
         [HtmlAttributeNotBound]
         [ViewContext]
@@ -109,17 +103,9 @@ namespace Deviser.Core.Library.TagHelpers
         {
             get
             {
-                if (_routeValues == null)
-                {
-                    _routeValues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                }
-
-                return _routeValues;
+                return _routeValues ??= new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             }
-            set
-            {
-                _routeValues = value;
-            }
+            set => _routeValues = value;
         }
 
         /// <inheritdoc />
@@ -193,10 +179,7 @@ namespace Deviser.Core.Library.TagHelpers
 
                 if (Area != null)
                 {
-                    if (routeValues == null)
-                    {
-                        routeValues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                    }
+                    routeValues ??= new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
                     // Unconditionally replace any value from dev-route-area. 
                     AddOrUpdate(routeValues, "area", Area);
@@ -260,13 +243,11 @@ namespace Deviser.Core.Library.TagHelpers
                 }
             }
 
-            if (Antiforgery ?? antiforgeryDefault)
+            if (!(Antiforgery ?? antiforgeryDefault)) return;
+            var antiforgeryTag = Generator.GenerateAntiforgery(ViewContext);
+            if (antiforgeryTag != null)
             {
-                var antiforgeryTag = Generator.GenerateAntiforgery(ViewContext);
-                if (antiforgeryTag != null)
-                {
-                    output.PostContent.AppendHtml(antiforgeryTag);
-                }
+                output.PostContent.AppendHtml(antiforgeryTag);
             }
         }
 

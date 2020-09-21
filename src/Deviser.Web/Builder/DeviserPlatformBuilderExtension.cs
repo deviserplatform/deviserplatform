@@ -166,7 +166,7 @@ namespace Deviser.Web.Builder
         {
             var routeData = httpContext.GetRouteData();
             //permalink in the url has first preference
-            string permalink = (routeData.Values["permalink"] != null) ? routeData.Values["permalink"].ToString() : "";
+            var permalink = (routeData.Values["permalink"] != null) ? routeData.Values["permalink"].ToString() : "";
             if (string.IsNullOrEmpty(permalink))
             {
                 //if permalink is null, check for querystring

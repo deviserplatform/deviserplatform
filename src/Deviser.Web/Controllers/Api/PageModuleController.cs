@@ -241,7 +241,7 @@ namespace DeviserWI.Controllers.API
                     var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
                     if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
                     {
-                        bool result = _pageRepository.DeletePageModule(id);
+                        var result = _pageRepository.DeletePageModule(id);
                         if (result)
                             return Ok();
 

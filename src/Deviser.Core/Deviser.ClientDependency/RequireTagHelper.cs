@@ -94,7 +94,7 @@ namespace Deviser.ClientDependency
         private bool HasEnvironment()
         {
             var currentEnvironmentName = HostingEnvironment.EnvironmentName?.Trim();
-            bool hasEnvironment = true;
+            var hasEnvironment = true;
 
             if (string.IsNullOrEmpty(Include) && string.IsNullOrEmpty(Exclude))
                 return hasEnvironment; //by default add the dependency

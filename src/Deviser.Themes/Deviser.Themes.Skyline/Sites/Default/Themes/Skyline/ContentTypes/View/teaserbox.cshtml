@@ -6,8 +6,8 @@
     var currentCulture = pageContext.CurrentCulture.ToString();
     var properties = Model.PageContent.Properties;
 
-    dynamic rootObj = Model.Content;
-    int totalItems = 0;
+    var rootObj = Model.Content;
+    var totalItems = 0;
     if (rootObj != null)
     {
         totalItems = rootObj.items.Count;

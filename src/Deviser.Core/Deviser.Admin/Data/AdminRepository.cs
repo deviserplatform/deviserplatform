@@ -143,10 +143,10 @@ namespace Deviser.Admin.Data
             var adminConfig = GetAdminConfig(modelType);
 
             // Determine the number of records to skip
-            int skip = (pageNo - 1) * pageSize;
+            var skip = (pageNo - 1) * pageSize;
 
             // Get total number of records
-            int total = dbSet.Count();
+            var total = dbSet.Count();
 
             IQueryable<TEntity> query = dbSet;
 
@@ -175,7 +175,7 @@ namespace Deviser.Admin.Data
             where TEntity : class
             where TModel : class
         {
-            TEntity dbResult = await GetDbItem<TModel, TEntity>(itemId);
+            var dbResult = await GetDbItem<TModel, TEntity>(itemId);
             var result = _adminSite.Mapper.Map<TModel>(dbResult);
             return result;
         }
@@ -188,8 +188,8 @@ namespace Deviser.Admin.Data
             var adminConfig = GetAdminConfig(modelType);
 
 
-            TModel modelToAdd = item;//((JObject)item).ToObject<TModel>(_serializer);
-            TEntity itemToAdd = _adminSite.Mapper.Map<TEntity>(modelToAdd);
+            var modelToAdd = item;//((JObject)item).ToObject<TModel>(_serializer);
+            var itemToAdd = _adminSite.Mapper.Map<TEntity>(modelToAdd);
 
             var m2ofields = GetManyToOneFields(adminConfig);
 
@@ -211,12 +211,12 @@ namespace Deviser.Admin.Data
             var entityClrType = typeof(TEntity);
             var adminConfig = GetAdminConfig(modelType);
 
-            TModel modelToUpdate = item;//((JObject)item).ToObject<TModel>(_serializer);
-            TEntity itemToUpdate = _adminSite.Mapper.Map<TEntity>(modelToUpdate);
+            var modelToUpdate = item;//((JObject)item).ToObject<TModel>(_serializer);
+            var itemToUpdate = _adminSite.Mapper.Map<TEntity>(modelToUpdate);
 
             var dbSet = _dbContext.Set<TEntity>();
 
-            List<GraphConfig> graphConfigs = new List<GraphConfig>();
+            var graphConfigs = new List<GraphConfig>();
 
             var navigationFields = GetFieldsFor(adminConfig, f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne);
             if (navigationFields != null && navigationFields.Count > 0)
@@ -257,7 +257,7 @@ namespace Deviser.Admin.Data
             where TEntity : class
             where TModel : class
         {
-            TEntity itemToDelete = await GetDbItem<TModel, TEntity>(itemId);
+            var itemToDelete = await GetDbItem<TModel, TEntity>(itemId);
             var dbSet = _dbContext.Set<TEntity>();
             var queryableData = dbSet.Remove(itemToDelete);
             await _dbContext.SaveChangesAsync();
@@ -273,9 +273,9 @@ namespace Deviser.Admin.Data
             var queryableData = dbSet.AsQueryable();
             var adminConfig = GetAdminConfig(modelType);
 
-            LambdaExpression filterExpression = CreatePrimaryKeyFilter(adminConfig, new List<string> { itemId });
+            var filterExpression = CreatePrimaryKeyFilter(adminConfig, new List<string> { itemId });
 
-            MethodCallExpression whereCallExpression = ExpressionHelper.GetWhereExpression(entityClrType, queryableData.Expression, filterExpression);
+            var whereCallExpression = ExpressionHelper.GetWhereExpression(entityClrType, queryableData.Expression, filterExpression);
 
             var query = queryableData.Provider.CreateQuery<TEntity>(whereCallExpression);
 
@@ -325,10 +325,10 @@ namespace Deviser.Admin.Data
             var adminConfig = GetAdminConfig(modelType);
 
             // Determine the number of records to skip
-            int skip = (pageNo - 1) * pageSize;
+            var skip = (pageNo - 1) * pageSize;
 
             // Get total number of records
-            int total = dbSet.Count();
+            var total = dbSet.Count();
 
             IQueryable<TEntity> query = dbSet;
 
@@ -403,7 +403,7 @@ namespace Deviser.Admin.Data
 
         private string GetIncludeString(TypeMap typeMap, Type relatedEntityType)
         {
-            PropertyMap propMap = GetPropertyMapFor(typeMap, relatedEntityType);
+            var propMap = GetPropertyMapFor(typeMap, relatedEntityType);
 
             if (propMap.CustomMapExpression == null)
             {
@@ -413,7 +413,7 @@ namespace Deviser.Admin.Data
             var srcExpressions = (propMap.CustomMapExpression.Body as MethodCallExpression)?.Arguments;
             if (srcExpressions != null)
             {
-                List<string> includeMembers = new List<string>();
+                var includeMembers = new List<string>();
                 foreach (var expr in srcExpressions)
                 {
                     if (expr is MemberExpression me)
@@ -442,12 +442,12 @@ namespace Deviser.Admin.Data
             var graphConfig = new List<GraphConfig>();
             foreach (var field in fields)
             {
-                LambdaExpression entityFieldExpression = GetEntityFieldExpressionFor(entityClrType, field.FieldClrType);
+                var entityFieldExpression = GetEntityFieldExpressionFor(entityClrType, field.FieldClrType);
                 if (entityFieldExpression != null)
                 {
                     if (entityFieldExpression.Body.Type.IsCollectionType())
                     {
-                        bool isManyToMany = field.FieldOption.RelationType == RelationType.ManyToMany;
+                        var isManyToMany = field.FieldOption.RelationType == RelationType.ManyToMany;
                         graphConfig.Add(new GraphConfig
                         {
                             FieldExpression = entityFieldExpression.Body as MemberExpression,

@@ -84,7 +84,7 @@ namespace Deviser.Web.Controllers
                 if (_isInstalled && _isDbExist)
                 {
                     //Platform is properly installed
-                    Page currentPage = _pageManager.GetPageAndDependencies(_scopeService.PageContext.CurrentPage.Id);
+                    var currentPage = _pageManager.GetPageAndDependencies(_scopeService.PageContext.CurrentPage.Id);
                     _scopeService.PageContext.CurrentPage = currentPage;
                     FilterPageElements(currentPage);
                     if (currentPage != null)
@@ -93,7 +93,7 @@ namespace Deviser.Web.Controllers
                         {
                             if (currentPage.PageTypeId == Globals.PageTypeStandard)
                             {
-                                Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleViewResult = await _deviserControllerFactory.GetPageModuleResults(Context);
+                                var moduleViewResult = await _deviserControllerFactory.GetPageModuleResults(Context);
                                 ViewBag.ModuleViewResults = moduleViewResult;
                                 return View(currentPage);
 
@@ -129,7 +129,7 @@ namespace Deviser.Web.Controllers
         [PermissionAuthorize("PAGE","EDIT")]
         public IActionResult Layout(string permalink)
         {
-            Page currentPage = _scopeService.PageContext.CurrentPage;
+            var currentPage = _scopeService.PageContext.CurrentPage;
             FilterPageElements(currentPage);
             if (_scopeService.PageContext != null)
             {
@@ -143,7 +143,7 @@ namespace Deviser.Web.Controllers
         [PermissionAuthorize("PAGE", "EDIT")]
         public IActionResult Edit(string permalink)
         {
-            Page currentPage = _scopeService.PageContext.CurrentPage;
+            var currentPage = _scopeService.PageContext.CurrentPage;
             FilterPageElements(currentPage);
             if (currentPage != null && _scopeService.PageContext != null)
             {
@@ -220,7 +220,7 @@ namespace Deviser.Web.Controllers
                 }
 
                 //Themes are not used for sometime period
-                string theme = "";
+                var theme = "";
                 if (!string.IsNullOrEmpty(currentPage.ThemeSrc))
                     theme = currentPage.ThemeSrc;
                 else

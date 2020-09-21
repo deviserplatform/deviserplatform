@@ -39,11 +39,7 @@ namespace Microsoft.Extensions.Internal
                 throw new ArgumentNullException(nameof(interfaceType));
             }
 
-            if (IsGenericInstantiation(queryType, interfaceType))
-            {
-                // queryType matches (i.e. is a closed generic type created from) the open generic type.
-                return queryType;
-            }
+            return IsGenericInstantiation(queryType, interfaceType) ? queryType : GetGenericInstantiation(queryType, interfaceType);
 
             // Otherwise check all interfaces the type implements for a match.
             // - If multiple different generic instantiations exists, we want the most derived one.
@@ -51,7 +47,6 @@ namespace Microsoft.Extensions.Internal
             //
             // We do this by looking at interfaces on the type, and recursing to the base type 
             // if we don't find any matches.
-            return GetGenericInstantiation(queryType, interfaceType);
         }
 
         private static bool IsGenericInstantiation(Type candidate, Type interfaceType)
@@ -67,21 +62,14 @@ namespace Microsoft.Extensions.Internal
             var interfaces = queryType.GetInterfaces();
             foreach (var @interface in interfaces)
             {
-                if (IsGenericInstantiation(@interface, interfaceType))
+                if (!IsGenericInstantiation(@interface, interfaceType)) continue;
+                if (bestMatch == null)
                 {
-                    if (bestMatch == null)
-                    {
-                        bestMatch = @interface;
-                    }
-                    else if (StringComparer.Ordinal.Compare(@interface.FullName, bestMatch.FullName) < 0)
-                    {
-                        bestMatch = @interface;
-                    }
-                    else
-                    {
-                        // There are two matches at this level of the class hierarchy, but @interface is after
-                        // bestMatch in the sort order.
-                    }
+                    bestMatch = @interface;
+                }
+                else if (StringComparer.Ordinal.Compare(@interface.FullName, bestMatch.FullName) < 0)
+                {
+                    bestMatch = @interface;
                 }
             }
 
@@ -92,14 +80,7 @@ namespace Microsoft.Extensions.Internal
 
             // BaseType will be null for object and interfaces, which means we've reached 'bottom'.
             var baseType = queryType?.GetTypeInfo().BaseType;
-            if (baseType == null)
-            {
-                return null;
-            }
-            else
-            {
-                return GetGenericInstantiation(baseType, interfaceType);
-            }
+            return baseType == null ? null : GetGenericInstantiation(baseType, interfaceType);
         }
     }
 }

@@ -5,7 +5,7 @@
     var pageContext = scopeService.PageContext;
     var currentCulture = pageContext.CurrentCulture.ToString();
 
-    dynamic rootObj = Model.Content;
+    var rootObj = Model.Content;
     var target = "";
     var url = "";
 
@@ -13,7 +13,7 @@
 
     if (rootObj.link != null && rootObj.link.linkType != null)
     {
-        string linkType = (string)rootObj.link.linkType;
+        var linkType = (string)rootObj.link.linkType;
         target = ((bool)(rootObj?.link?.isNewWindow ?? false)) ? "target=\"_blank\"" : "";
         url = linkType == "PAGE" ? navigation.NavigateUrl((string)rootObj.link.pageId) : (string)rootObj.link.url;
     }

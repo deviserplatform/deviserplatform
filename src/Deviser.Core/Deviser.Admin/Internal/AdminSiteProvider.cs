@@ -35,7 +35,7 @@ namespace Deviser.Admin.Internal
             //    var provider = scope.ServiceProvider;
 
             var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.EntryPointAssembly);
-            List<TypeInfo> adminConfiguratorTypes = assemblies.GetDerivedTypeInfos(typeof(IAdminConfigurator));
+            var adminConfiguratorTypes = assemblies.GetDerivedTypeInfos(typeof(IAdminConfigurator));
 
             //assemblies.GetDerivedTypeInfos(typeof(IAdminConfigurator))[0].GetInterfaces()[1].IsGenericType
 

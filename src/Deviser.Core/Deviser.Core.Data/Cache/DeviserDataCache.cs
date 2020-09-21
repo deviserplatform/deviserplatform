@@ -28,7 +28,7 @@ namespace Deviser.Core.Data.Cache
 
         public T GetItem<T>(string key)
         {
-            if (_cacheDictionary.TryGetValue(key, out object value))
+            if (_cacheDictionary.TryGetValue(key, out var value))
             {
                 return (T)value;
             }

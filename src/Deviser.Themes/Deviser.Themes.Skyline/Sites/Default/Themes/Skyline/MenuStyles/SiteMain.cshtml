@@ -18,7 +18,7 @@
     {
         if (menuItem != null)
         {
-            string activeClass = menuItem.IsActive || menuItem.IsBreadCrumb ? "active" : "";
+            var activeClass = menuItem.IsActive || menuItem.IsBreadCrumb ? "active" : "";
             <li class="nav-item @(menuItem.HasChild?"dropdown":"") @activeClass">
                 <a class="nav-link @(menuItem.HasChild && menuItem.PageLevel>1?"dropdown-toggle":"")" href="@menuItem.URL" @(menuItem.IsLinkNewWindow?"target=\"_blank\"":"") >@menuItem.PageName</a>
                 @if (menuItem.HasChild)

@@ -148,7 +148,7 @@ namespace Deviser.Modules.PageManagement.Services
         public async Task<IAdminResult<PageViewModel>> DeleteItem(string itemId)
         {
 
-            Page page = _pageRepository.GetPage(Guid.Parse(itemId));
+            var page = _pageRepository.GetPage(Guid.Parse(itemId));
             if (page != null)
             {
                 page.IsActive = false;
