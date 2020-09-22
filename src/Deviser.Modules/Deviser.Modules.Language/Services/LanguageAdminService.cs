@@ -209,7 +209,7 @@ namespace Deviser.Modules.Language.Services
             var result = new FormResult<Core.Common.DomainTypes.Language>(languageResult)
             {
                 IsSucceeded = true,
-                SuccessMessage = "Language has been added successfully"
+                SuccessMessage = "Language has been added"
             };
             return await Task.FromResult(result);
 
@@ -234,12 +234,12 @@ namespace Deviser.Modules.Language.Services
             }
             else if (!isMultilingual && currentUrl.ToLower().StartsWith(currentLocale.ToLower()))
             {
-                currentUrl = currentUrl.Replace($"{currentLocale.ToLower()}/","");
+                currentUrl = currentUrl.Replace($"{currentLocale.ToLower()}/", "");
             }
             var result = new FormResult<Core.Common.DomainTypes.Language>(languageResult)
             {
                 IsSucceeded = true,
-                SuccessMessage = "Language has been updated successfully. Please wait, this page will be reloaded in 3 seconds",
+                SuccessMessage = "Language has been updated. Please wait, this page will be reloaded in 3 seconds",
                 SuccessAction = new OpenUrlAction()
                 {
                     OpenAfterSec = 3,
@@ -257,21 +257,20 @@ namespace Deviser.Modules.Language.Services
             var language = languages.FirstOrDefault(l => string.Equals(l.CultureCode, itemId));
             language.IsActive = false;
             var languageResult = _languageManager.UpdateLanguage(language);
-            if (languageResult != null)
-            {
-                var result = new FormResult<Core.Common.DomainTypes.Language>(languageResult)
+            if (languageResult == null)
+                return new FormResult<Core.Common.DomainTypes.Language>()
                 {
-                    IsSucceeded = true,
-                    SuccessMessage = "Language has been updated successfully"
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to update the language"
                 };
-                return await Task.FromResult(result);
-            }
 
-            return new FormResult<Core.Common.DomainTypes.Language>()
+            var result = new FormResult<Core.Common.DomainTypes.Language>(languageResult)
             {
-                IsSucceeded = false,
-                ErrorMessage = "Unable to update the language"
+                IsSucceeded = true,
+                SuccessMessage = "Language has been updated"
             };
+            return await Task.FromResult(result);
+
         }
 
         public IList<Core.Common.DomainTypes.Language> GetAllLanguages()

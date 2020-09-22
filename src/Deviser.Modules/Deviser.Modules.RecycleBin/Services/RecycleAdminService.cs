@@ -123,7 +123,7 @@ namespace Deviser.Modules.RecycleBin.Services
                 return await Task.FromResult(new AdminResult<RecycleItem>(itemToBeDeleted)
                 {
                     IsSucceeded = true,
-                    SuccessMessage = $"{itemToBeDeleted.RecycleItemType.Name} has been removed"
+                    SuccessMessage = $"{itemToBeDeleted.RecycleItemType.Name} has been deleted"
                 });
             }
 

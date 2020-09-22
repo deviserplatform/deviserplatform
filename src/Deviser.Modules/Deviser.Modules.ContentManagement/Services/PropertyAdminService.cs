@@ -61,7 +61,7 @@ namespace Deviser.Modules.ContentManagement.Services
             var result = new FormResult<Property>(resultProperty)
             {
                 IsSucceeded = true,
-                SuccessMessage = "Property has been created successfully"
+                SuccessMessage = "Property has been created"
             };
             return await Task.FromResult(result);
         }
@@ -81,7 +81,7 @@ namespace Deviser.Modules.ContentManagement.Services
             var result = new FormResult<Property>(resultProperty)
             {
                 IsSucceeded = true,
-                SuccessMessage = "Property has been saved successfully"
+                SuccessMessage = "Property has been saved"
             };
             return await Task.FromResult(result);
         }

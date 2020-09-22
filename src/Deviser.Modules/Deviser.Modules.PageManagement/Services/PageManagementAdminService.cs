@@ -80,21 +80,19 @@ namespace Deviser.Modules.PageManagement.Services
             var isMultilingual = translateLanguages.Count > 0;
 
             var pageResult = _navigation.CreatePage(ConvertToSingePage(item, isMultilingual, translateLanguages));
-            if (pageResult != null)
-            {
-                var result = new FormResult<PageViewModel>(ConvertToPageViewModel(pageResult, isMultilingual, translateLanguages))
+            if (pageResult == null)
+                return new FormResult<PageViewModel>()
                 {
-                    IsSucceeded = true,
-                    SuccessMessage = "Page has been created successfully"
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to create a page"
                 };
-                return await Task.FromResult(result);
-            }
-
-            return new FormResult<PageViewModel>()
+            var result = new FormResult<PageViewModel>(ConvertToPageViewModel(pageResult, isMultilingual, translateLanguages))
             {
-                IsSucceeded = false,
-                ErrorMessage = "Unable to create a page"
+                IsSucceeded = true,
+                SuccessMessage = "Page has been created"
             };
+            return await Task.FromResult(result);
+
         }
 
         public async Task<IFormResult<PageViewModel>> UpdateItem(PageViewModel item)
@@ -103,21 +101,19 @@ namespace Deviser.Modules.PageManagement.Services
             var isMultilingual = translateLanguages.Count > 0;
 
             var pageResult = _navigation.UpdatePageAndChildren(ConvertToSingePage(item, isMultilingual, translateLanguages));
-            if (pageResult != null)
-            {
-                var result = new FormResult<PageViewModel>(ConvertToPageViewModel(pageResult, isMultilingual, translateLanguages))
+            if (pageResult == null)
+                return new FormResult<PageViewModel>()
                 {
-                    IsSucceeded = true,
-                    SuccessMessage = "Page has been updated successfully"
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to update page tree"
                 };
-                return await Task.FromResult(result);
-            }
-
-            return new FormResult<PageViewModel>()
+            var result = new FormResult<PageViewModel>(ConvertToPageViewModel(pageResult, isMultilingual, translateLanguages))
             {
-                IsSucceeded = false,
-                ErrorMessage = "Unable to update page tree"
+                IsSucceeded = true,
+                SuccessMessage = "Page has been updated"
             };
+            return await Task.FromResult(result);
+
         }
 
         public async Task<IFormResult<PageViewModel>> UpdateTree(PageViewModel item)
@@ -126,51 +122,50 @@ namespace Deviser.Modules.PageManagement.Services
             var isMultilingual = translateLanguages.Count > 0;
             var pageTreeToBeUpdated = ConvertToPage(item, isMultilingual, translateLanguages);
             var pageResult = _navigation.UpdatePageTree(pageTreeToBeUpdated);
-            if (pageResult != null)
-            {
-                //UpdateSinglePage returns only the single node. However, the UI expects full tree
-                var pageViewModel = await GetTree();
-                var result = new FormResult<PageViewModel>(pageViewModel)
+            if (pageResult == null)
+                return new FormResult<PageViewModel>()
                 {
-                    IsSucceeded = true,
-                    SuccessMessage = "Page tree has been updated successfully"
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to update page tree"
                 };
-                return await Task.FromResult(result);
-            }
-
-            return new FormResult<PageViewModel>()
+            //UpdateSinglePage returns only the single node. However, the UI expects full tree
+            var pageViewModel = await GetTree();
+            var result = new FormResult<PageViewModel>(pageViewModel)
             {
-                IsSucceeded = false,
-                ErrorMessage = "Unable to update page tree"
+                IsSucceeded = true,
+                SuccessMessage = "Page tree has been updated"
             };
+            return await Task.FromResult(result);
+
         }
 
         public async Task<IAdminResult<PageViewModel>> DeleteItem(string itemId)
         {
 
             var page = _pageRepository.GetPage(Guid.Parse(itemId));
-            if (page != null)
-            {
-                page.IsActive = false;
-                var pageResult = _pageRepository.UpdatePageActiveAndLayout(page);
-                if (pageResult != null)
+            if (page == null)
+                return new FormResult<PageViewModel>()
                 {
-                    //UpdateSinglePage returns only the single node. However, the UI expects full tree
-                    var pageViewModel = await GetTree();
-                    var result = new FormResult<PageViewModel>(pageViewModel)
-                    {
-                        IsSucceeded = true,
-                        SuccessMessage = "Page has been deleted successfully"
-                    };
-                    return await Task.FromResult(result);
-                }
-            }
-
-            return new FormResult<PageViewModel>()
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to delete page"
+                };
+            page.IsActive = false;
+            var pageResult = _pageRepository.UpdatePageActiveAndLayout(page);
+            if (pageResult == null)
+                return new FormResult<PageViewModel>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to delete page"
+                };
+            //UpdateSinglePage returns only the single node. However, the UI expects full tree
+            var pageViewModel = await GetTree();
+            var result = new FormResult<PageViewModel>(pageViewModel)
             {
-                IsSucceeded = false,
-                ErrorMessage = "Unable to delete page"
+                IsSucceeded = true,
+                SuccessMessage = "Page has been deleted"
             };
+            return await Task.FromResult(result);
+
         }
 
         public IList<PageType> GetPageTypes()
@@ -211,14 +206,13 @@ namespace Deviser.Modules.PageManagement.Services
         {
             var pageViewModel = ConvertToSinglePageViewModel(page, isMultilingual, translateLanguages);
 
-            if (page.ChildPage != null && page.ChildPage.Count > 0)
+            if (page.ChildPage == null || page.ChildPage.Count <= 0) return pageViewModel;
+
+            pageViewModel.ChildPage = new List<PageViewModel>();
+            foreach (var child in page.ChildPage)
             {
-                pageViewModel.ChildPage = new List<PageViewModel>();
-                foreach (var child in page.ChildPage)
-                {
-                    var childPageViewModel = ConvertToPageViewModel(child, isMultilingual, translateLanguages);
-                    pageViewModel.ChildPage.Add(childPageViewModel);
-                }
+                var childPageViewModel = ConvertToPageViewModel(child, isMultilingual, translateLanguages);
+                pageViewModel.ChildPage.Add(childPageViewModel);
             }
             return pageViewModel;
         }
@@ -257,14 +251,15 @@ namespace Deviser.Modules.PageManagement.Services
                 ? _themes.FirstOrDefault(t => t.Key == pageViewModel.ThemeSrc)
                 : null;
 
-            if (isMultilingual && pageViewModel?.PageTranslation != null && pageViewModel.PageTranslation.Count > 0)
+            if (!isMultilingual || pageViewModel?.PageTranslation == null || pageViewModel.PageTranslation.Count <= 0)
+                return pageViewModel;
+
+            foreach (var translation in pageViewModel.PageTranslation)
             {
-                foreach (var translation in pageViewModel.PageTranslation)
-                {
-                    pageTranslation.Language =
-                        translateLanguages.FirstOrDefault(t => string.Equals(t?.CultureCode, translation?.Locale));
-                }
+                pageTranslation.Language =
+                    translateLanguages.FirstOrDefault(t => string.Equals(t?.CultureCode, translation?.Locale));
             }
+
 
             return pageViewModel;
 
@@ -274,14 +269,13 @@ namespace Deviser.Modules.PageManagement.Services
         {
             var page = ConvertToSingePage(pageViewModel, isMultilingual, translateLanguages);
 
-            if (pageViewModel.ChildPage != null && pageViewModel.ChildPage.Count > 0)
+            if (pageViewModel.ChildPage == null || pageViewModel.ChildPage.Count <= 0) return page;
+
+            page.ChildPage = new List<Page>();
+            foreach (var child in pageViewModel.ChildPage)
             {
-                page.ChildPage = new List<Page>();
-                foreach (var child in pageViewModel.ChildPage)
-                {
-                    var childPage = ConvertToPage(child, isMultilingual, translateLanguages);
-                    page.ChildPage.Add(childPage);
-                }
+                var childPage = ConvertToPage(child, isMultilingual, translateLanguages);
+                page.ChildPage.Add(childPage);
             }
             return page;
         }
@@ -340,7 +334,7 @@ namespace Deviser.Modules.PageManagement.Services
                 {
                     var selectedLanguage = translateLanguages.FirstOrDefault(t => string.Equals(t?.CultureCode, translation?.Language?.CultureCode,
                             StringComparison.InvariantCultureIgnoreCase));
-                    
+
                     if (selectedLanguage != null)
                     {
                         translation.Locale = selectedLanguage.CultureCode;

@@ -55,13 +55,13 @@ namespace Deviser.Modules.SecurityRoles.Services
                 return new FormResult<Role>()
                 {
                     IsSucceeded = false,
-                    ErrorMessage = "Unable to save the Role"
+                    ErrorMessage = "Unable to create the Role"
                 };
 
             var result = new FormResult<Role>(role)
             {
                 IsSucceeded = true,
-                SuccessMessage = "Role has been saved successfully"
+                SuccessMessage = "Role has been created"
             };
             return await Task.FromResult(result);
         }
@@ -73,13 +73,13 @@ namespace Deviser.Modules.SecurityRoles.Services
                 return new FormResult<Role>()
                 {
                     IsSucceeded = false,
-                    ErrorMessage = "Unable to save the Role"
+                    ErrorMessage = "Unable to update the Role"
                 };
 
             var result = new FormResult<Role>(role)
             {
                 IsSucceeded = true,
-                SuccessMessage = "Role has been updated successfully"
+                SuccessMessage = "Role has been updated"
             };
             return await Task.FromResult(result);
         }
@@ -98,7 +98,7 @@ namespace Deviser.Modules.SecurityRoles.Services
             var result = new AdminResult<Role>(role)
             {
                 IsSucceeded = true,
-                SuccessMessage = "Role has been deleted successfully"
+                SuccessMessage = "Role has been deleted"
             };
             return await Task.FromResult(result);
         }

@@ -35,36 +35,56 @@ namespace Deviser.Modules.UserManagement
 
         public async Task<IFormResult<User>> CreateItem(User item)
         {
-            if (item != null)
+            if (item == null) return await Task.FromResult<IFormResult<User>>(new FormResult<User>()
             {
-                var user = _mapper.Map<Core.Data.Entities.User>(item);
-                user.Id = Guid.NewGuid();
-                user.UserName = item.Email;
-                var identityResult = await _userManager.CreateAsync(user, item.Password);
-                if (identityResult.Succeeded)
-                {
-                    var resultUser = _mapper.Map<User>(user);
-                    var result = new FormResult<User>(resultUser);
-                    return result;
-                }
-            }
-            return null;
+                IsSucceeded = false,
+                SuccessMessage = "User cannot be null"
+            });
+
+            var user = _mapper.Map<Core.Data.Entities.User>(item);
+            user.Id = Guid.NewGuid();
+            user.UserName = item.Email;
+            var identityResult = await _userManager.CreateAsync(user, item.Password);
+
+            if (!identityResult.Succeeded) return await Task.FromResult<IFormResult<User>>(new FormResult<User>()
+            {
+                IsSucceeded = false,
+                SuccessMessage = "Unable to create the user"
+            });
+
+            var resultUser = _mapper.Map<User>(user);
+            var result = new FormResult<User>(resultUser)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "User has been created"
+            };
+            return result;
         }
 
         public async Task<IAdminResult<User>> DeleteItem(string userId)
         {
             var user = _userManager.Users.FirstOrDefault(u => u.Id == Guid.Parse(userId));
-            if (user != null)
-            {
-                var identityResult = await _userManager.DeleteAsync(user);
-                if (identityResult != null)
+            if (user == null)
+                return await Task.FromResult<IAdminResult<User>>(new AdminResult<User>()
                 {
-                    var userResult = _mapper.Map<User>(user);
-                    var result = new AdminResult<User>(userResult);
-                    return result;
-                }
-            }
-            return null;
+                    IsSucceeded = false,
+                    SuccessMessage = "Requested user is not found"
+                });
+            var identityResult = await _userManager.DeleteAsync(user);
+            if (identityResult == null)
+                return await Task.FromResult<IAdminResult<User>>(new AdminResult<User>()
+                {
+                    IsSucceeded = false,
+                    SuccessMessage = "Unable to create the user"
+                });
+
+            var userResult = _mapper.Map<User>(user);
+            var result = new AdminResult<User>(userResult)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "User has been deleted"
+            };
+            return result;
         }
 
         public async Task<PagedResult<User>> GetAll(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null)
@@ -93,34 +113,46 @@ namespace Deviser.Modules.UserManagement
         public async Task<IFormResult<User>> UpdateItem(User user)
         {
             var dbUser = _userManager.Users.FirstOrDefault(u => u.Id == user.Id);
-            if (dbUser != null)
+            if (dbUser == null)
+                return await Task.FromResult<IFormResult<User>>(new FormResult<User>()
+                {
+                    IsSucceeded = false,
+                    SuccessMessage = "Requested user cannot be found"
+                });
+
+            dbUser.FirstName = user.FirstName;
+            dbUser.LastName = user.LastName;
+
+            var currentRoles = await _userManager.GetRolesAsync(dbUser);
+            foreach (var role in currentRoles)
             {
-                dbUser.FirstName = user.FirstName;
-                dbUser.LastName = user.LastName;
-
-                var currentRoles = await _userManager.GetRolesAsync(dbUser);
-                foreach (var role in currentRoles)
-                {
-                    await _userManager.RemoveFromRoleAsync(dbUser, role);
-                }
-
-                var roles = _roleManager.Roles.Where(r => user.Roles.Any(ur => ur.Id == r.Id)).ToList();
-
-                foreach (var role in roles)
-                {
-                    await _userManager.AddToRoleAsync(dbUser, role.Name);
-                }
-
-                var identityResult = await _userManager.UpdateAsync(dbUser);
-                if (identityResult != null)
-                {
-                    var userResult = _mapper.Map<User>(user);
-                    var result = new FormResult<User>(userResult);
-                    return await Task.FromResult(result);
-                }
+                await _userManager.RemoveFromRoleAsync(dbUser, role);
             }
 
-            return await Task.FromResult<FormResult<User>>(null);
+            var roles = _roleManager.Roles.ToList()
+                .Where(r => user.Roles.Any(ur => ur.Id == r.Id)).ToList();
+
+            foreach (var role in roles)
+            {
+                await _userManager.AddToRoleAsync(dbUser, role.Name);
+            }
+
+            var identityResult = await _userManager.UpdateAsync(dbUser);
+            if (identityResult == null)
+                return await Task.FromResult<IFormResult<User>>(new FormResult<User>()
+                {
+                    IsSucceeded = false,
+                    SuccessMessage = "Unable to update the user"
+                });
+
+            var userResult = _mapper.Map<User>(user);
+            var result = new FormResult<User>(userResult)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "User has been updated"
+            };
+            return await Task.FromResult(result);
+
         }
 
         public async Task<IFormResult> ResetPassword(PasswordReset passwordReset)
@@ -150,7 +182,7 @@ namespace Deviser.Modules.UserManagement
                 {
                     IsSucceeded = true,
                     FormBehaviour = FormBehaviour.StayOnEditMode,
-                    SuccessMessage = "Password has been reset successfully"
+                    SuccessMessage = "Password has been reset"
                 };
                 return await Task.FromResult(result);
             }
@@ -180,7 +212,7 @@ namespace Deviser.Modules.UserManagement
                 result = new FormResult<User>()
                 {
                     IsSucceeded = true,
-                    SuccessMessage = "User has been unlocked successfully"
+                    SuccessMessage = "User has been unlocked"
                 };
                 return await Task.FromResult(result);
             }
@@ -205,7 +237,7 @@ namespace Deviser.Modules.UserManagement
                 result = new FormResult<User>()
                 {
                     IsSucceeded = true,
-                    SuccessMessage = "User has been locked successfully"
+                    SuccessMessage = "User has been locked"
                 };
                 return await Task.FromResult(result);
             }

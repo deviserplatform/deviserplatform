@@ -79,7 +79,7 @@ namespace Deviser.Modules.ContentManagement.Services
             var result = new FormResult<LayoutType>(resultLayoutType)
             {
                 IsSucceeded = true,
-                SuccessMessage = "LayoutType has been created successfully"
+                SuccessMessage = "LayoutType has been created"
             };
             return await Task.FromResult(result);
         }
@@ -134,7 +134,7 @@ namespace Deviser.Modules.ContentManagement.Services
             var result = new AdminResult<LayoutType>(layoutType)
             {
                 IsSucceeded = true,
-                SuccessMessage = "LayoutType has been deleted successfully"
+                SuccessMessage = "LayoutType has been deleted"
             };
             return await Task.FromResult(result);
         }

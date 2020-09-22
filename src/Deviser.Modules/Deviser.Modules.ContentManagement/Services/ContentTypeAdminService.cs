@@ -56,13 +56,13 @@ namespace Deviser.Modules.ContentManagement.Services
                 return new FormResult<ContentType>()
                 {
                     IsSucceeded = false,
-                    ErrorMessage = "Unable to save the ContentType"
+                    ErrorMessage = "Unable to create the ContentType"
                 };
 
             var result = new FormResult<ContentType>(contentType)
             {
                 IsSucceeded = true,
-                SuccessMessage = "ContentType has been saved successfully"
+                SuccessMessage = "ContentType has been created"
             };
             return await Task.FromResult(result);
         }
@@ -75,13 +75,13 @@ namespace Deviser.Modules.ContentManagement.Services
                 return new FormResult<ContentType>()
                 {
                     IsSucceeded = false,
-                    ErrorMessage = "Unable to save the ContentType"
+                    ErrorMessage = "Unable to update the ContentType"
                 };
 
             var result = new FormResult<ContentType>(contentType)
             {
                 IsSucceeded = true,
-                SuccessMessage = "ContentType has been update successfully"
+                SuccessMessage = "ContentType has been updated"
             };
             return await Task.FromResult(result);
         }
@@ -106,7 +106,7 @@ namespace Deviser.Modules.ContentManagement.Services
             var result = new AdminResult<ContentType>(contentType)
             {
                 IsSucceeded = true,
-                SuccessMessage = "ContentType has been deleted successfully"
+                SuccessMessage = "ContentType has been deleted"
             };
             return await Task.FromResult(result);
         }
