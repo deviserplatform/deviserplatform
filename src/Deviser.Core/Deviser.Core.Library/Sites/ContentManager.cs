@@ -32,169 +32,89 @@ namespace Deviser.Core.Library.Sites
 
         public PageContent Get(Guid pageContentId)
         {
-            try
-            {
-                var result = _pageContentRepository.Get(pageContentId);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling Get", ex);
-            }
-            return null;
+            var result = _pageContentRepository.Get(pageContentId);
+            return result;
         }
 
         public List<PageContent> Get(Guid pageId, string cultureCode)
         {
-            try
+            var pageContents = _pageContentRepository.Get(pageId, cultureCode);
+            if (pageContents == null) return pageContents;
+            foreach (var pageContent in pageContents)
             {
-                var pageContents = _pageContentRepository.Get(pageId, cultureCode);
-                if (pageContents != null)
-                {
-                    foreach (var pageContent in pageContents)
-                    {
-                        pageContent.HasEditPermission = HasEditPermission(pageContent);
-                    }
-                }
-                return pageContents;
+                pageContent.HasEditPermission = HasEditPermission(pageContent);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling Get", ex);
-            }
-            return null;
+            return pageContents;
         }
 
         public List<PageContent> GetDeletedPageContents()
         {
-            try
-            {
-                var result = _pageContentRepository.GetDeletedPageContents();
-                return result;
-            }
-            catch (Exception ex)
-            {
-
-                _logger.LogError("Error occured while getting deleted page contents", ex);
-            }
-            return null;
-
+            var result = _pageContentRepository.GetDeletedPageContents();
+            return result;
         }
 
         public PageContent RestorePageContent(Guid id)
         {
-            try
-            {
-                var result = _pageContentRepository.RestorePageContent(id);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while restoring page content", ex);
-            }
-            return null;
+            var result = _pageContentRepository.RestorePageContent(id);
+            return result;
         }
         public PageContent AddOrUpdatePageContent(PageContent pageContent)
         {
-            try
+            var result = _pageContentRepository.Get(pageContent.Id);
+            if (result == null)
             {
-                PageContent result = _pageContentRepository.Get(pageContent.Id);
-                if (result == null)
+                result = _pageContentRepository.Create(pageContent);
+
+                var adminPermissions = AddAdminPermissions(result);
+
+                if (result.ContentPermissions == null)
                 {
-                    result = _pageContentRepository.Create(pageContent);
-
-                    List<ContentPermission> adminPermissions = AddAdminPermissions(result);
-
-                    if (result.ContentPermissions == null)
-                    {
-                        result.ContentPermissions = adminPermissions;
-                    }
-                    else
-                    {
-                        adminPermissions.AddRange(result.ContentPermissions);
-                        result.ContentPermissions = adminPermissions;
-                    }
+                    result.ContentPermissions = adminPermissions;
                 }
                 else
                 {
-                    pageContent.IsActive = true;
-                    result.Title = pageContent.Title;
-                    result.ContainerId = pageContent.ContainerId;
-                    result.SortOrder = pageContent.SortOrder;
-                    result.LastModifiedDate = DateTime.Now;
-                    result.Properties = pageContent.Properties;
-                    result = _pageContentRepository.Update(result);
+                    adminPermissions.AddRange(result.ContentPermissions);
+                    result.ContentPermissions = adminPermissions;
                 }
-                return result;
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(string.Format("Error occured while creating a page content"), ex);
+                pageContent.IsActive = true;
+                result.Title = pageContent.Title;
+                result.ContainerId = pageContent.ContainerId;
+                result.SortOrder = pageContent.SortOrder;
+                result.LastModifiedDate = DateTime.Now;
+                result.Properties = pageContent.Properties;
+                result = _pageContentRepository.Update(result);
             }
-            return null;
+            return result;
         }
 
         public void AddOrUpdatePageContents(List<PageContent> contents)
         {
-            try
-            {
-                if (contents != null)
-                {
-                    _pageContentRepository.AddOrUpdate(contents);
-                    //foreach (var pageContent in contents)
-                    //{
-                    //    var adminPermissions = AddAdminPermissions(pageContent);
+            if (contents == null) throw new InvalidOperationException($"PageContents cannot be null");
 
-                    //    if (pageContent.ContentPermissions == null)
-                    //    {
-                    //        pageContent.ContentPermissions = adminPermissions;
-                    //    }
-                    //    else
-                    //    {
-                    //        adminPermissions.AddRange(pageContent.ContentPermissions);
-                    //        pageContent.ContentPermissions = adminPermissions;
-                    //    }
-                    //}
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(string.Format("Error occured while updating page content"), ex);
-            }
+            _pageContentRepository.AddOrUpdate(contents);
         }
 
         public bool RemovePageContent(Guid id)
         {
             var content = _pageContentRepository.Get(id);
-            if (content != null)
-            {
-                content.IsActive = false;
-                _pageContentRepository.Update(content);
-                return true;
-            }
-            return false;
+            if (content == null) throw new InvalidOperationException($"PageContents cannot be found {id}");
+            content.IsActive = false;
+            _pageContentRepository.Update(content);
+            return true;
         }
 
         public bool DeletePageContent(Guid id)
         {
-            bool result = _pageContentRepository.DeletePageContent(id);
-            if (result)
-                return true;
-
-            return false;
+            var result = _pageContentRepository.DeletePageContent(id);
+            return result;
         }
 
         public PageContent UpdateContentPermission(PageContent pageContent)
         {
-            try
-            {
-                return _pageContentRepository.UpdateContentPermission(pageContent);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(string.Format("Error occured while updating page content permissions"), ex);
-                throw;
-            }
+            return _pageContentRepository.UpdateContentPermission(pageContent);
         }
 
         private List<ContentPermission> AddAdminPermissions(PageContent pageContent)

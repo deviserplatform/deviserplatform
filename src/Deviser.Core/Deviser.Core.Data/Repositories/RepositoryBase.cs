@@ -9,55 +9,16 @@ namespace Deviser.Core.Data.Repositories
     {
 
         protected readonly DbContextOptions<DeviserDbContext> _dbOptions;
-        private readonly ILogger<RepositoryBase> _logger;
-        //protected readonly DeviserDbContext context;
 
-        public RepositoryBase(DbContextOptions<DeviserDbContext> dbOptions,
-            ILogger<PropertyRepository> logger)
+        public RepositoryBase(DbContextOptions<DeviserDbContext> dbOptions)
         {
             _dbOptions = dbOptions;
-            _logger = _logger;
-
-            //context = container.Resolve<DeviserDbContext>();
-            //context.ChangeTracker.AutoDetectChangesEnabled = false;
-
         }
 
         public bool IsDatabaseExist()
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                return context.Database.Exists();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while creating ContentControl", ex);
-            }
-            return false;
+            using var context = new DeviserDbContext(_dbOptions);
+            return context.Database.Exists();
         }
-
-        //public DomainType CreateContentControl<DomainType, DbType>(DomainType contentControl)
-        //    where DomainType:class where DbType:class
-        //{
-        //    try
-        //    {
-        //        using (var context = new DeviserDbContext(DbOptions))
-        //        {
-        //            var dbContentControl = Mapper.Map<DbType>(contentControl);
-        //            //dbContentControl.Id = Guid.NewGuid();
-        //            //dbContentControl.CreatedDate = dbContentControl.LastModifiedDate = DateTime.Now;
-        //            var result = context.Add(dbContentControl);
-        //            context.SaveChanges();
-        //            return Mapper.Map<DomainType>(result);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError("Error occured while creating ContentControl", ex);
-        //    }
-        //    return null;
-        //}
-
     }
 }

@@ -61,6 +61,9 @@ namespace Deviser.Modules.Blog.DTO
         public string Title { get; set; }
 
         [Order]
+        public string Slug { get; set; }
+
+        [Order]
         [FieldInfo(FieldType.RichText)]
         public string Content { get; set; }
 
@@ -71,7 +74,7 @@ namespace Deviser.Modules.Blog.DTO
         public Category Category { get; set; }
 
         [Order]
-        public List<Tag> Tags { get; set; }
+        public ICollection<Tag> Tags { get; set; }
 
         [Order]
         public List<Comments> Comments { get; set; }

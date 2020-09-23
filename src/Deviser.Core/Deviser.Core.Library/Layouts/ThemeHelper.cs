@@ -9,18 +9,17 @@ namespace Deviser.Core.Library.Layouts
     {
         public static List<KeyValuePair<string, string>> GetHostThemes()
         {
-            string ThemeRoot = "Themes";
+            var ThemeRoot = "Themes";
             var themes = new List<KeyValuePair<string, string>>();
 
-            string root = Globals.HostMapPath + ThemeRoot;
-            if (Directory.Exists(root))
+            var root = Globals.HostMapPath + ThemeRoot;
+            if (!Directory.Exists(root)) return themes;
+
+            foreach (var themeFolder in Directory.GetDirectories(root))
             {
-                foreach (string ThemeFolder in Directory.GetDirectories(root))
+                if (!themeFolder.EndsWith(Globals.glbHostThemeFolder))
                 {
-                    if (!ThemeFolder.EndsWith(Globals.glbHostThemeFolder))
-                    {
-                        AddThemeFiles(themes, ThemeRoot, ThemeFolder, false);
-                    }
+                    AddThemeFiles(themes, ThemeRoot, themeFolder, false);
                 }
             }
             return themes;
@@ -28,17 +27,16 @@ namespace Deviser.Core.Library.Layouts
         
         private static void AddThemeFiles(List<KeyValuePair<string, string>> themes, string themeRoot, string themeFolder, bool isPortal)
         {
-            foreach (string themeFile in Directory.GetFiles(themeFolder, "*.cshtml"))
+            foreach (var themeFile in Directory.GetFiles(themeFolder, "*.cshtml"))
             {
-                string fileName = Path.GetFileNameWithoutExtension(themeFile);
-                if(!fileName.StartsWith("_"))
-                {
-                    string folder = themeFolder.Substring(themeFolder.LastIndexOf("\\") + 1);
-                    string key = ((isPortal) ? "Site: " : "Host: ") + FormatThemeName(folder, Path.GetFileNameWithoutExtension(themeFile));
-                    string prefix = (isPortal) ? "[S]" : "[G]"; //to be compliant with all versions
-                    string value = prefix + themeRoot + "/" + folder + "/" + Path.GetFileName(themeFile);
-                    themes.Add(new KeyValuePair<string, string>(key, value));
-                }
+                var fileName = Path.GetFileNameWithoutExtension(themeFile);
+                if (fileName.StartsWith("_")) continue;
+
+                var folder = themeFolder.Substring(themeFolder.LastIndexOf("\\") + 1);
+                var key = ((isPortal) ? "Site: " : "Host: ") + FormatThemeName(folder, Path.GetFileNameWithoutExtension(themeFile));
+                var prefix = (isPortal) ? "[S]" : "[G]"; //to be compliant with all versions
+                var value = prefix + themeRoot + "/" + folder + "/" + Path.GetFileName(themeFile);
+                themes.Add(new KeyValuePair<string, string>(key, value));
             }
         }
 

@@ -50,11 +50,11 @@ export class AdminService {
     }
   }
 
-  getAdminConfig(): Observable<AdminConfig> {
-    if (this._adminConfig) {
+  getAdminConfig(isRefreshCache: boolean = false): Observable<AdminConfig> {
+    if (this._adminConfig && !isRefreshCache) {
       return of(this._adminConfig);
     }
-    else if (this._adminConfig$) {
+    else if (this._adminConfig$ && !isRefreshCache) {
       return this._adminConfig$;
     }
     else {
@@ -68,6 +68,15 @@ export class AdminService {
       );
       return this._adminConfig$;
     }
+  }
+
+  autoFill(fieldName: string, fieldValue: string): Observable<any> {
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/autofill/${fieldName}`;
+    return this.http.put<any>(serviceUrl, { fieldValue: fieldValue }, this._httpOptions)
+      .pipe(
+        tap(_ => this.log('autofill a field')),
+        catchError(this.handleError('autoFill', null))
+      );
   }
 
   getAllRecords(pagination: Pagination = null): Observable<any> {
@@ -149,6 +158,15 @@ export class AdminService {
       );
   }
 
+  createRecordFor(model: string, record: any) {
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${model}/`;
+    return this.http.post<any>(serviceUrl, record, this._httpOptions)
+      .pipe(
+        tap(_ => this.log('created a record')),
+        catchError(this.handleError('createRecord', null))
+      );
+  }
+
   updateRecord(record: any) {
     const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/`;
     return this.http.put<any>(serviceUrl, record, this._httpOptions)
@@ -170,7 +188,7 @@ export class AdminService {
   sortGridItems(items: any[], childModel: string = null, pagination: Pagination = null): Observable<any> {
     const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/sort/${childModel}`;
     let params = new HttpParams();
-    
+
     if (pagination != null) {
       params = params.append('pageNo', pagination.pageNo.toString());
       params = params.append('pageSize', pagination.pageSize.toString());

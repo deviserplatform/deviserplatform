@@ -11,10 +11,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Deviser.Core.Common;
+using Deviser.Core.Common.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeviserWI.Controllers.API
 {
     [Route("api/[controller]")]
+    [PermissionAuthorize("PAGE", "EDIT")]
     public class PageModuleController : Controller
     {
         //Logger
@@ -42,6 +45,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpGet]
         [Route("{id}")]
+        [AllowAnonymous]
         public IActionResult Get(Guid id)
         {
             try
@@ -64,6 +68,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpGet]
         [Route("page/{pageId}")]
+        [AllowAnonymous]
         public IActionResult GetByPage(Guid pageId)
         {
             try
@@ -85,6 +90,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpGet]
         [Route("list/")]
+        [AllowAnonymous]
         public IActionResult Get()
         {
             try
@@ -235,7 +241,7 @@ namespace DeviserWI.Controllers.API
                     var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
                     if (_pageManager.HasEditPermission(page)) //Check edit permission for the page
                     {
-                        bool result = _pageRepository.DeletePageModule(id);
+                        var result = _pageRepository.DeletePageModule(id);
                         if (result)
                             return Ok();
 

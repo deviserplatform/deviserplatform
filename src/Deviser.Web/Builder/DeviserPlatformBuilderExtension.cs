@@ -1,9 +1,12 @@
 ﻿using Deviser.Core.Common;
+using Deviser.Core.Common.Hubs;
+using Deviser.Core.Common.Internal;
 using Deviser.Core.Data.Repositories;
-using Deviser.Core.Library.Hubs;
 using Deviser.Core.Library.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,9 +15,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Deviser.Core.Common.Internal;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
 
 namespace Deviser.Web.Builder
 {
@@ -73,6 +73,15 @@ namespace Deviser.Web.Builder
                     }));
                 app.UseRequestLocalization(requestLocalizationOptions);
             }
+            else
+            {
+                var supportedCultures = new[] { "en-US"};
+                var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
+                    .AddSupportedCultures(supportedCultures)
+                    .AddSupportedUICultures(supportedCultures);
+
+                app.UseRequestLocalization(localizationOptions);
+            }
 
             //services.Configure<RequestLocalizationOptions>(options =>
             //{
@@ -109,10 +118,13 @@ namespace Deviser.Web.Builder
             app.UseStaticFiles();
 
             app.UseRouting();
+            //Deviser Specific
+            app.UsePageContext();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UsePageAuthorization();
             //app.Use(async (context, next) =>
             //{
             //    var cultureQuery = context.Request.Query["culture"];
@@ -127,10 +139,9 @@ namespace Deviser.Web.Builder
             //    await next();
             //});
 
-            app.UseSession();
 
-            //Deviser Specific
-            app.UsePageContext();
+
+            app.UseSession();
 
             return app.UseEndpoints(endpoints =>
             {
@@ -155,7 +166,7 @@ namespace Deviser.Web.Builder
         {
             var routeData = httpContext.GetRouteData();
             //permalink in the url has first preference
-            string permalink = (routeData.Values["permalink"] != null) ? routeData.Values["permalink"].ToString() : "";
+            var permalink = (routeData.Values["permalink"] != null) ? routeData.Values["permalink"].ToString() : "";
             if (string.IsNullOrEmpty(permalink))
             {
                 //if permalink is null, check for querystring

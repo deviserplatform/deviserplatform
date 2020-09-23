@@ -48,14 +48,22 @@ namespace Deviser.Modules.ModuleManagement.Services
         public async Task<IFormResult<Module>> CreateItem(Module item)
         {
             var resultModule = _moduleRepository.Create(item);
-            var result = new FormResult<Module>(resultModule);
+            var result = new FormResult<Module>(resultModule)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "Module has been created"
+            };
             return await Task.FromResult(result);
         }
 
         public async Task<IFormResult<Module>> UpdateItem(Module item)
         {
             var resultModule = _moduleRepository.UpdateModule(item);
-            var result = new FormResult<Module>(resultModule);
+            var result = new FormResult<Module>(resultModule)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "Module has been updated"
+            };
             return await Task.FromResult(result);
         }
 
@@ -64,12 +72,20 @@ namespace Deviser.Modules.ModuleManagement.Services
             var contentType = _moduleRepository.GetModule(Guid.Parse(itemId));
             if (contentType == null)
             {
-                return await Task.FromResult<AdminResult<Module>>(null);
+                return await Task.FromResult<AdminResult<Module>>(new AdminResult<Module>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to delete Module"
+                });
             }
 
             contentType.IsActive = false;
             contentType = _moduleRepository.UpdateModule(contentType);
-            var result = new FormResult<Module>(contentType);
+            var result = new FormResult<Module>(contentType)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "Module has been deleted"
+            };
             return await Task.FromResult(result);
         }
 

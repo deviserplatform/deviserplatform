@@ -1,6 +1,7 @@
 ﻿using Deviser.Admin.Config;
 using Deviser.Admin.Properties;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -48,9 +49,14 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public PropertyBuilder<TModel> Property<TProperty>(Expression<Func<TModel, TProperty>> expression)
+        public PropertyBuilder<TModel, TProperty> Property<TProperty>(Expression<Func<TModel, TProperty>> expression)
         {
-            return new PropertyBuilder<TModel>(_formConfig, expression);
+            return new PropertyBuilder<TModel, TProperty>(_formConfig, expression);
+        }
+
+        public PropertyBuilder<TModel, TProperty> Property<TProperty>(Expression<Func<TModel, ICollection<TProperty>>> expression)
+        {
+            return new PropertyBuilder<TModel, TProperty>(_formConfig, expression);
         }
 
         public FormBuilder<TModel> SetCustomValidationFor<TProperty>(Expression<Func<TModel, TProperty>> fieldExpression, Expression<Func<IServiceProvider, TProperty, Task<ValidationResult>>> validationExpression)

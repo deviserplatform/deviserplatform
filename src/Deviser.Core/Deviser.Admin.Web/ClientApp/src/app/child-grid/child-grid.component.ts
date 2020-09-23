@@ -1,12 +1,13 @@
 import { Component, OnInit, Input, forwardRef, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors, Validator } from "@angular/forms";
 
+import { ConfirmDialogComponent } from 'deviser-shared';
+
 import { ModelConfig } from '../common/domain-types/model-config';
 import { Field } from '../common/domain-types/field';
 import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { FormControlService } from '../common/services/form-control.service';
-import { ConfirmDialogComponent } from '../common/components/confirm-dialog/confirm-dialog.component';
 import { FormMode } from '../common/domain-types/form-mode';
 import { FormContext } from '../common/domain-types/form-context';
 import { ChildConfig } from '../common/domain-types/child-config';

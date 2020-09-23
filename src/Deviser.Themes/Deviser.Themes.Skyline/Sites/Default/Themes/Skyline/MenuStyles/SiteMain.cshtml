@@ -1,0 +1,34 @@
+﻿@model Deviser.Core.Common.DomainTypes.MenuItem
+@inject IScopeService scopeService
+@using System.Security.Claims
+@using Deviser.Core.Library
+@using Deviser.Core.Common;
+@{
+    Layout = null;
+    //var pageContext = scopeService.PageContext;
+    //var currentCulture = pageContext.CurrentCulture.ToString();
+    //var siteRoot = pageContext.SiteSettingInfo.SiteRoot;
+}
+
+
+
+@if (Model.ChildMenuItems != null)
+{
+    foreach (var menuItem in Model.ChildMenuItems)
+    {
+        if (menuItem != null)
+        {
+            var activeClass = menuItem.IsActive || menuItem.IsBreadCrumb ? "active" : "";
+            <li class="nav-item @(menuItem.HasChild?"dropdown":"") @activeClass">
+                <a class="nav-link @(menuItem.HasChild && menuItem.PageLevel>1?"dropdown-toggle":"")" href="@menuItem.URL" @(menuItem.IsLinkNewWindow?"target=\"_blank\"":"") >@menuItem.PageName</a>
+                @if (menuItem.HasChild)
+                {
+                    <ul class="dropdown-menu @(menuItem.PageLevel>1?"submenu":"")">
+                        @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "SiteMain"), menuItem)
+                    </ul>
+
+                }
+            </li>
+        }
+    }
+}

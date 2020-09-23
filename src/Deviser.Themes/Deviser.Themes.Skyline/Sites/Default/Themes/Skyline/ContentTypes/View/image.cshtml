@@ -1,0 +1,21 @@
+﻿@model Deviser.Core.Common.DomainTypes.DynamicContent
+@inject IScopeService scopeService
+@{
+    var pageContext = scopeService.PageContext;
+    var currentCulture = pageContext.CurrentCulture.ToString();
+    var properties = Model.PageContent.Properties;
+
+    var rootObj = Model.Content;
+    var cssClass = properties.Get("css_class")?.ToString();
+
+}
+
+@if (rootObj != null)
+{
+    <img class="@cssClass" src="@rootObj.imageUrl" alt="@rootObj.imageAltText"/>
+}
+else{
+    <div>
+        Please enter the content
+    </div>
+}

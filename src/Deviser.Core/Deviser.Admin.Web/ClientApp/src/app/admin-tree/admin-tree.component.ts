@@ -1,15 +1,13 @@
-import { Component, OnInit, TemplateRef, ViewChild, Inject } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
-import { Router, DefaultUrlSerializer, UrlTree } from '@angular/router';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { AlertType } from 'deviser-shared';
+import { AlertService } from 'deviser-shared';
+import { ConfirmDialogComponent } from 'deviser-shared';
 
 import { AdminService } from '../common/services/admin.service';
 import { AdminConfig } from '../common/domain-types/admin-config';
-import { Pagination } from '../common/domain-types/pagination';
-import { ConfirmDialogComponent } from '../common/components/confirm-dialog/confirm-dialog.component';
 import { RecordIdPipe } from '../common/pipes/record-id.pipe';
-import { Alert, AlertType } from '../common/domain-types/alert';
-import { DOCUMENT } from '@angular/common';
 import { WINDOW } from '../common/services/window.service';
 import { LabelType } from '../common/domain-types/label-type';
 import { Field } from '../common/domain-types/field';
@@ -21,7 +19,6 @@ import { AdminConfigType } from '../common/domain-types/admin-confit-type';
 import { TreeControlComponent } from '../common/components/tree-control/tree-control.component';
 import { AdminFormComponent } from '../admin-form/admin-form.component';
 import { Subscription } from 'rxjs';
-import { AlertService } from '../common/services/alert.service';
 
 
 @Component({
@@ -53,8 +50,7 @@ export class AdminTreeComponent implements OnInit {
   constructor(private _adminService: AdminService,
     private _alertService: AlertService,
     private _recordIdPipe: RecordIdPipe,
-    private _router: Router,
-    @Inject(WINDOW) private _window: any) {
+    @Inject(WINDOW) _window: any) {
     this.daConfig = _window.daConfig;
   }
 
@@ -83,7 +79,7 @@ export class AdminTreeComponent implements OnInit {
       .subscribe(tree => this.onGetTree(tree), error => this.handleError(error));
   }
 
-  onChangePage(event: any): void {
+  onChangePage(): void {
     this.getTree();
   }
 
@@ -151,7 +147,7 @@ export class AdminTreeComponent implements OnInit {
       .subscribe(response => this.onActionResult(response), error => this.handleError(error));
   }
 
-  onNoToDelete(item: any): void {
+  onNoToDelete(): void {
     console.log('declined');
     this.getTree();
   }

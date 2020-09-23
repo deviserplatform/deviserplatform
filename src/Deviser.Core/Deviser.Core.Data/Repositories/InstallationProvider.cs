@@ -17,35 +17,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using Deviser.Core.Common.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Deviser.Core.Data.Repositories
 {
-
-    public interface IInstallationProvider
-    {
-        //bool IsPlatformInstalled();
-        //bool IsDatabaseExist();
-
-        bool IsPlatformInstalled { get; }
-
-        bool IsDatabaseExist { get; }
-
-        void InstallPlatform(InstallModel installModel);
-        void InsertData(DbContextOptions<DeviserDbContext> dbOption);
-        string GetConnectionString(InstallModel model);
-        DbContextOptionsBuilder GetDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null);
-        DbContextOptionsBuilder<TContext> GetDbContextOptionsBuilder<TContext>(DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null)
-            where TContext : DbContext;
-
-    }
-
     public class InstallationProvider : IInstallationProvider
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
+        private readonly IHubContext<ApplicationHub> _hubContext;
+        private readonly ILogger<InstallationProvider> _logger;
+
         private UserManager<Entities.User> _userManager;
         private IServiceCollection _services;
+
 
         private DbContextOptions _dbContextOptions;
         private DbContextOptionsBuilder _dbContextOptionsBuilder;
@@ -54,10 +44,16 @@ namespace Deviser.Core.Data.Repositories
         private static bool _isPlatformInstalled;
         private static bool _isDbExist;
 
-        public InstallationProvider(IWebHostEnvironment hostingEnvironment, IConfiguration configuration, IServiceProvider serviceProvider)
+        public InstallationProvider(IWebHostEnvironment hostingEnvironment,
+            IHubContext<ApplicationHub> hubContext,
+            IConfiguration configuration,
+            ILogger<InstallationProvider> logger,
+            IServiceProvider serviceProvider)
         {
             _hostingEnvironment = hostingEnvironment;
+            _hubContext = hubContext;
             _configuration = configuration;
+            _logger = logger;
             _serviceProvider = serviceProvider;
         }
 
@@ -94,7 +90,7 @@ namespace Deviser.Core.Data.Repositories
             }
         }
 
-        public void InstallPlatform(InstallModel installModel)
+        public async Task InstallPlatform(InstallModel installModel)
         {
             var connectionString = GetConnectionString(installModel);
             var settingFile = Path.Combine(_hostingEnvironment.ContentRootPath, $"appsettings.{_hostingEnvironment.EnvironmentName}.json");
@@ -102,43 +98,85 @@ namespace Deviser.Core.Data.Repositories
             var dbOption = dbContextOptionsBuilder.Options;
             _isInstallInProgress = true;
             _installModel = installModel;
+            await UpdateInstallLog($"Deviser Platform Installation begins");
+            await UpdateInstallLog($"Verifying whether the database exist");
             if (!IsDatabaseExistsFor(connectionString))
             {
                 //Creating database                        
-                using (var context = new DeviserDbContext(dbOption))
-                {
-                    context.Database.Migrate();
-                }
+                await UpdateInstallLog($"Creating database");
+                await using var context = new DeviserDbContext(dbOption);
+                await UpdateInstallLog($"Creating platform database objects");
+                await context.Database.MigrateAsync();
 
                 //Insert data
+                await UpdateInstallLog($"Inserting platform data");
                 InsertData(dbOption);
 
                 //Migrate module
+                await UpdateInstallLog($"Creating module database objects");
                 MigrateModuleContexts(installModel);
 
+                IServiceCollection services = new ServiceCollection();
+                var logger = Logger.GetLogger();
 
-                //Create user account                
-                _userManager = _serviceProvider.GetService<UserManager<Entities.User>>();
+                services.AddLogging(loggingBuilder =>
+                    loggingBuilder.AddSerilog(logger, true));
+                services.AddDbContext<DeviserDbContext>(
+                    (internalServiceProvider, dbContextOptionBuilder) =>
+                    {
+                        GetDbContextOptionsBuilder<DeviserDbContext>(dbContextOptionBuilder);
+                    });
+                services.AddIdentity<Entities.User, Entities.Role>()
+                    .AddEntityFrameworkStores<DeviserDbContext>()
+                    .AddDefaultTokenProviders();
+                var sp = services.BuildServiceProvider();
+                //Create user account
+                await UpdateInstallLog($"Creating admin user account");
+                _userManager = sp.GetService<UserManager<Entities.User>>();
 
                 var user = new Entities.User { UserName = installModel.AdminEmail, Email = installModel.AdminEmail };
                 var result = _userManager.CreateAsync(user, installModel.AdminPassword).GetAwaiter().GetResult();
                 if (result.Succeeded)
                 {
                     //Assign user to admin role
-                    _userManager.AddToRoleAsync(user, "Administrators");
+                    await _userManager.AddToRoleAsync(user, "Administrators");
                 }
             }
 
             //Write install settings
+            await UpdateInstallLog($"Creating the config files");
             WriteInstallSettings(installModel);
 
             //Update connection string 
             //Writing to appsettings.json file
+            if (!File.Exists(settingFile))
+            {
+                var fs = File.Create(settingFile);
+                fs.Close();
+            }
+
+            await UpdateInstallLog($"Finalizing the installation");
             var json = File.ReadAllText(settingFile);
-            var jsonObj = JObject.Parse(json);
-            jsonObj["ConnectionStrings"]["DefaultConnection"] = connectionString;
-            var output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
-            File.WriteAllText(settingFile, output);
+            if (string.IsNullOrEmpty(json))
+            {
+                var jsonObj = JObject.FromObject(new
+                {
+                    ConnectionStrings = new
+                    {
+                        DefaultConnection = connectionString
+                    }
+                });
+                var output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
+                await File.WriteAllTextAsync(settingFile, output);
+            }
+            else
+            {
+                var jsonObj = JObject.Parse(json);
+                jsonObj["ConnectionStrings"]["DefaultConnection"] = connectionString;
+                var output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
+                await File.WriteAllTextAsync(settingFile, output);
+            }
+            
 
             //Updating it in cache
             //_configuration["ConnectionStrings:DefaultConnection"] = connectionString;
@@ -147,6 +185,7 @@ namespace Deviser.Core.Data.Repositories
             _dbContextOptions = dbOption;
             _dbContextOptionsBuilder = dbContextOptionsBuilder;
             _isInstallInProgress = false;
+            await UpdateInstallLog($"Deviser Platform has been installed successfully!");
         }
 
         public void InsertData(DbContextOptions<DeviserDbContext> dbOption)
@@ -170,8 +209,8 @@ namespace Deviser.Core.Data.Repositories
             }
             else if (model.DatabaseProvider == DatabaseProvider.PostgreSQL)
             {
-                string host = model.ServerName;
-                string port = "";
+                var host = model.ServerName;
+                var port = "";
 
                 if (host.Contains(":"))
                 {
@@ -184,8 +223,8 @@ namespace Deviser.Core.Data.Repositories
             }
             else if (model.DatabaseProvider == DatabaseProvider.MySQL)
             {
-                string host = model.ServerName;
-                string port = "";
+                var host = model.ServerName;
+                var port = "";
 
                 if (host.Contains(":"))
                 {
@@ -227,7 +266,7 @@ namespace Deviser.Core.Data.Repositories
 
             var installModel = GetInstallationModel();
             if (installModel == null)
-                return null;            
+                return null;
 
             _dbContextOptionsBuilder = GetDbContextOptionsBuilder(installModel, optionsBuilder, moduleAssembly);
 
@@ -251,7 +290,7 @@ namespace Deviser.Core.Data.Repositories
         }
 
         private DbContextOptionsBuilder<TContext> GetDbContextOptionsBuilder<TContext>(InstallModel installModel)
-            where TContext:DbContext
+            where TContext : DbContext
         {
             var optionsBuilder = new DbContextOptionsBuilder<TContext>();
             return GetDbContextOptionsBuilder<TContext>(installModel, optionsBuilder);
@@ -266,7 +305,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
-                    optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                    optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly(Globals.MigrationAssembly));
                 }
                 else
                 {
@@ -274,7 +313,7 @@ namespace Deviser.Core.Data.Repositories
                     {
                         x.MigrationsAssembly(moduleAssembly);
                         x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
-                    })                    
+                    })
                     .ReplaceService<IHistoryRepository, SqlServerModuleHistoryRepository>();
                 }
 
@@ -283,7 +322,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
-                    optionsBuilder.UseNpgsql(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                    optionsBuilder.UseNpgsql(connectionString, b => b.MigrationsAssembly(Globals.MigrationAssembly));
                 }
                 else
                 {
@@ -299,7 +338,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
-                    optionsBuilder.UseMySql(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                    optionsBuilder.UseMySql(connectionString, b => b.MigrationsAssembly(Globals.MigrationAssembly));
                 }
                 else
                 {
@@ -315,7 +354,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
-                    optionsBuilder.UseSqlite(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                    optionsBuilder.UseSqlite(connectionString, b => b.MigrationsAssembly(Globals.MigrationAssembly));
                 }
                 else
                 {
@@ -334,14 +373,14 @@ namespace Deviser.Core.Data.Repositories
         private DbContextOptionsBuilder<TContext> GetDbContextOptionsBuilder<TContext>(InstallModel installModel, DbContextOptionsBuilder<TContext> optionsBuilder, string moduleAssembly = null)
             where TContext : DbContext
         {
-            string connectionString = IsPlatformInstalled ? _configuration.GetConnectionString("DefaultConnection") : GetConnectionString(installModel);
+            var connectionString = IsPlatformInstalled ? _configuration.GetConnectionString("DefaultConnection") : GetConnectionString(installModel);
 
 
             if (installModel.DatabaseProvider == DatabaseProvider.SQLServer || installModel.DatabaseProvider == DatabaseProvider.SQLLocalDb)
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
-                    optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                    optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly(Globals.MigrationAssembly));
                 }
                 else
                 {
@@ -358,7 +397,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
-                    optionsBuilder.UseNpgsql(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                    optionsBuilder.UseNpgsql(connectionString, b => b.MigrationsAssembly(Globals.MigrationAssembly));
                 }
                 else
                 {
@@ -374,7 +413,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
-                    optionsBuilder.UseMySql(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                    optionsBuilder.UseMySql(connectionString, b => b.MigrationsAssembly(Globals.MigrationAssembly));
                 }
                 else
                 {
@@ -390,7 +429,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
-                    optionsBuilder.UseSqlite(connectionString, b => b.MigrationsAssembly(Globals.PlatformAssembly));
+                    optionsBuilder.UseSqlite(connectionString, b => b.MigrationsAssembly(Globals.MigrationAssembly));
                 }
                 else
                 {
@@ -433,7 +472,7 @@ namespace Deviser.Core.Data.Repositories
                 return _installModel;
 
             var installationFilePath = Path.Combine(_hostingEnvironment.ContentRootPath, Globals.InstallConfigFile);
-            
+
             if (!File.Exists(installationFilePath)) return null;
 
             var strInstallation = File.ReadAllText(installationFilePath);
@@ -483,6 +522,12 @@ namespace Deviser.Core.Data.Repositories
                 //registerServiceMethodInfo.Invoke(obj, new object[] { serviceCollection });
 
             }
+        }
+
+        private async Task UpdateInstallLog(string message)
+        {
+            _logger.LogInformation(message);
+            await _hubContext.Clients.All.SendAsync("OnUpdateInstallLog", message);
         }
     }
 }

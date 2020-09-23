@@ -1,28 +1,17 @@
 import { Component, OnInit, Inject, EventEmitter } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { PageContentService } from '../../services/page-content.service';
-import { LanguageService } from '../../services/language.service';
+import {
+  AlertService, CoreService, ContentTranslationService, EditService,
+  Guid, LanguageService, PageService, PageContentService
+} from 'deviser-shared';
 import { forkJoin } from 'rxjs';
-import { PageContext } from '../../domain-types/page-context';
-import { WINDOW } from '../../services/window.service';
-import { Language } from '../../domain-types/language';
-import { PageContentTranslation } from '../../domain-types/page-content-translation';
-import { ContentType } from '../../domain-types/content-type';
-import { PageContent } from '../../domain-types/page-content';
-import { CoreService } from '../../services/core.service';
-import { ContentTranslationService } from '../../services/content-translation.service';
-import { AlertService } from '../../services/alert.service';
-import { AlertType } from '../../domain-types/alert';
-import { Guid } from '../../services/guid';
-import { ContentTypeField } from '../../domain-types/content-type-field';
+import {
+  AlertType, ContentType, ContentTypeField, Image, Language, Link, 
+  Page, PageContent, PageContentTranslation, PageContext, WINDOW
+} from 'deviser-shared';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Image } from '../../domain-types/image';
-import { Link } from '../../domain-types/link';
-import { PageService } from '../../services/page.service';
-import { Page } from '../../domain-types/page';
-import { Globals } from '../../config/globals';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-edit-content',
@@ -75,6 +64,14 @@ export class EditContentComponent implements OnInit {
     return this.contentTranslation.contentData;
   }
 
+  get contentItems(): any[] {
+    if (!this.content || !this.content.items) return;
+
+    let contentItems: any[] = this.content.items;
+    let sortedItems = contentItems.sort((a, b) => a.sortOrder > b.sortOrder ? 1 : -1);
+    return sortedItems;
+  }
+
   get fields(): ContentTypeField[] {
     return this._fields;
   }
@@ -83,6 +80,7 @@ export class EditContentComponent implements OnInit {
     public bsModalRef: BsModalRef,
     private _coreService: CoreService,
     private _contentTranslationService: ContentTranslationService,
+    private _editService: EditService,
     private _pageContentService: PageContentService,
     private _langaugeService: LanguageService,
     private _pageService: PageService,
@@ -200,24 +198,35 @@ export class EditContentComponent implements OnInit {
     content[field.fieldName] = $event;
   }
 
-  getLinkUrl(content: any) {
-    let link: Link = content;
-
-    if (!link || !link.linkType) return '';
-
-    if (link.linkType === 'URL') {
-      return link.url;
-    } else if (link.linkType === 'PAGE') {
-      let page = this.pages.find(p => p.id === link.pageId);
-      let translation = page.pageTranslation.find(pt => pt.locale === this.pageContext.currentLocale);
-      translation = translation ? translation : page.pageTranslation[0];
-      let url = page.pageTypeId === Globals.appSettings.pageTypes.url ? translation.uRL : `${this.pageContext.siteRoot}${translation.uRL}`;
-      return url;
-    }
+  onLinkChanged($event: Link, content: any, field: ContentTypeField) {
+    content[field.fieldName] = $event;
   }
 
-  getImageUrl(image: Image){
+  getLinkUrl(content: any) {
+    // let link: Link = content;
+
+    // if (!link || !link.linkType) return '';
+
+    // if (link.linkType === LinkType.Url) {
+    //   return link.url;
+    // } else if (link.linkType === LinkType.Page) {
+    //   let page = this.pages.find(p => p.id === link.pageId);
+    //   let translation = page.pageTranslation.find(pt => pt.locale === this.pageContext.currentLocale);
+    //   translation = translation ? translation : page.pageTranslation[0];
+    //   let url = page.pageTypeId === Globals.appSettings.pageTypes.url ? translation.uRL : `${this.pageContext.siteRoot}${translation.uRL}`;
+    //   return url;
+    // }
+    return this._editService.getLinkUrl(content);
+  }
+
+  getImageUrl(image: Image) {
     return image && image.imageUrl ? `${this._baseUrl}${image.imageUrl}` : null;
+  }
+
+  drop(event: CdkDragDrop<any[]>) {
+    let gridItems = event.container.data;
+    moveItemInArray(gridItems, event.previousIndex, event.currentIndex);
+    gridItems.forEach((item, index) => item.sortOrder = index + 1);
   }
 
   private init() {
@@ -232,7 +241,7 @@ export class EditContentComponent implements OnInit {
 
       const currentCultureCode = this.pageContext.currentLocale;
       this.selectedLocale = this.languages.find(langauge => langauge.cultureCode === currentCultureCode);
-      //load correct translation
+      //load the current translation
       let translation = this.getTranslationForLocale(this.selectedLocale.cultureCode);
       this.contentTranslation = translation;
       this.deserializeContentTranslation();

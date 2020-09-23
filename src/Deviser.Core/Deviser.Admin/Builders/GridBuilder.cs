@@ -143,7 +143,7 @@ namespace Deviser.Admin.Builders
             if (_modelConfig.GridConfig.ExcludedFields.Count > 0)
                 ThrowAddRemoveInvalidOperationException();
 
-            FieldOption fieldOption = new FieldOption();
+            var fieldOption = new FieldOption();
             fieldOptionAction?.Invoke(fieldOption);
             return new Field
             {

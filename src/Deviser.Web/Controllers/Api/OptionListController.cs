@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using Deviser.Core.Common.Security;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Deviser.Web.Controllers.Api
 {
     [Route("api/[controller]")]
+    [PermissionAuthorize("PAGE", "EDIT")]
     public class OptionListController : Controller
     {
         private readonly ILogger<OptionListController> _logger;
@@ -21,6 +24,7 @@ namespace Deviser.Web.Controllers.Api
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetOptionList()
         {
             try

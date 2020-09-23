@@ -45,7 +45,7 @@ namespace Deviser.Core.Library.Services
 
 
             var publicPages = _navigation.GetPublicPages();
-            List<SitemapUrl> sitemapUrls = new List<SitemapUrl>();
+            var sitemapUrls = new List<SitemapUrl>();
 
             if (publicPages != null && publicPages.Count > 0)
             {
@@ -56,90 +56,61 @@ namespace Deviser.Core.Library.Services
             }
 
 
-            XmlWriterSettings settings = new XmlWriterSettings();
+            var settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.Encoding = Encoding.UTF8;
 
-            using (var stringWriter = new StringWriterUtf8())
+            using var stringWriter = new StringWriterUtf8();
+            using var writer = XmlWriter.Create(stringWriter, settings);
+            // build header
+            writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/" + SITEMAP_VERSION);
+            writer.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
+            writer.WriteAttributeString("xmlns", "xhtml", null, "http://www.w3.org/1999/xhtml");
+            var schemaLocation = "http://www.sitemaps.org/schemas/sitemap/" + SITEMAP_VERSION;
+            writer.WriteAttributeString("xsi", "schemaLocation", null, string.Format("{0} {0}/sitemap.xsd", schemaLocation));
+
+            // write urls to output
+            foreach (var url in sitemapUrls)
             {
-                using (var writer = XmlWriter.Create(stringWriter, settings))
-                {
-                    // build header
-                    writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/" + SITEMAP_VERSION);
-                    writer.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
-                    writer.WriteAttributeString("xmlns", "xhtml", null, "http://www.w3.org/1999/xhtml");
-                    var schemaLocation = "http://www.sitemaps.org/schemas/sitemap/" + SITEMAP_VERSION;
-                    writer.WriteAttributeString("xsi", "schemaLocation", null, string.Format("{0} {0}/sitemap.xsd", schemaLocation));
-
-                    // write urls to output
-                    foreach (SitemapUrl url in sitemapUrls)
-                    {
-                        AddURL(url, writer);
-                    }
-
-                    writer.WriteEndElement();
-                    writer.Close();
-                }
-                return stringWriter.ToString();
+                AddURL(url, writer);
             }
+
+            writer.WriteEndElement();
+            writer.Close();
+            return stringWriter.ToString();
         }
 
         private SitemapUrl GetSitemapUrl(Page page)
         {
-            try
+            var sitemapUrl = new SitemapUrl();
+            sitemapUrl.Url = _protocolHost + _navigation.NavigateUrl(page); ;
+            sitemapUrl.Priority = GetPriority(page);
+            sitemapUrl.LastModified = page.LastModifiedDate != null ? (DateTime)page.LastModifiedDate : DateTime.Now;
+            sitemapUrl.ChangeFrequency = SitemapChangeFrequency.Daily;
+
+            if (_isMultilingual)
             {
-                SitemapUrl sitemapUrl = new SitemapUrl();
-                sitemapUrl.Url = _protocolHost + _navigation.NavigateUrl(page); ;
-                sitemapUrl.Priority = GetPriority(page);
-                sitemapUrl.LastModified = page.LastModifiedDate != null ? (DateTime)page.LastModifiedDate : DateTime.Now;
-                sitemapUrl.ChangeFrequency = SitemapChangeFrequency.Daily;
-
-                if (_isMultilingual)
+                sitemapUrl.AlternateUrls = new List<AlternateUrl>();
+                foreach (var language in _enabledLanguages)
                 {
-                    sitemapUrl.AlternateUrls = new List<AlternateUrl>();
-                    foreach (var language in _enabledLanguages)
-                    {
 
-                        var alternativeUrl = _navigation.NavigateUrl(page, language);
-                        if (!string.IsNullOrEmpty(alternativeUrl))
+                    var alternativeUrl = _navigation.NavigateUrl(page, language);
+                    if (!string.IsNullOrEmpty(alternativeUrl))
+                    {
+                        sitemapUrl.AlternateUrls.Add(new AlternateUrl()
                         {
-                            sitemapUrl.AlternateUrls.Add(new AlternateUrl()
-                            {
-                                Language = language.ToLower(),
-                                Url = _protocolHost + alternativeUrl
-                            });
-                        }
+                            Language = language.ToLower(),
+                            Url = _protocolHost + alternativeUrl
+                        });
                     }
                 }
-                return sitemapUrl;
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return sitemapUrl;
         }
 
         private float GetPriority(Page page)
         {
-            float priority = page.SiteMapPriority > 0 ? page.SiteMapPriority : (float)0.5;
-
-            //if (useLevelBasedPagePriority)
-            //{
-            //    if (page.Level >= 9)
-            //    {
-            //        priority = 0.1F;
-            //    }
-            //    else
-            //    {
-            //        priority = Convert.ToSingle(1 - (page.Level * 0.1));
-            //    }
-
-            //    if (priority < minPagePriority)
-            //    {
-            //        priority = minPagePriority;
-            //    }
-            //}
-
+            var priority = page.SiteMapPriority > 0 ? page.SiteMapPriority : (float)0.5;
             return priority;
         }
 
@@ -153,7 +124,7 @@ namespace Deviser.Core.Library.Services
 
             if (sitemapUrl.AlternateUrls != null)
             {
-                foreach (AlternateUrl alternate in sitemapUrl.AlternateUrls)
+                foreach (var alternate in sitemapUrl.AlternateUrls)
                 {
                     writer.WriteStartElement("link", "http://www.w3.org/1999/xhtml");
                     writer.WriteAttributeString("rel", "alternate");

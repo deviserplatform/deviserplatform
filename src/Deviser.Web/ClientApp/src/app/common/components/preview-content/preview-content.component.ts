@@ -1,16 +1,7 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
-import { PageContent } from '../../domain-types/page-content';
-import { WINDOW } from '../../services/window.service';
-import { PageContext } from '../../domain-types/page-context';
-import { PageContentTranslation } from '../../domain-types/page-content-translation';
-import { ContentFieldType } from '../../domain-types/content-field-type';
-import { ContentTypeField } from '../../domain-types/content-type-field';
-import { Link } from '../../domain-types/link';
-import { PageService } from '../../services/page.service';
-import { Page } from '../../domain-types/page';
-import { Globals } from '../../config/globals';
-import { Image } from '../../domain-types/image';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ContentTypeField, Image, Page, PageContent, PageContext, WINDOW } from 'deviser-shared';
+import { EditService, PageService } from 'deviser-shared';
 
 @Component({
   selector: 'app-preview-content',
@@ -19,10 +10,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class PreviewContentComponent implements OnInit {
 
-  
+
   _pageContext: PageContext;
   pages: Page[];
-  
+
   private _baseUrl: string;
   private _fields: ContentTypeField[];
   private _pageContent: PageContent
@@ -51,9 +42,10 @@ export class PreviewContentComponent implements OnInit {
   }
 
 
-  constructor(private _sanitizer: DomSanitizer,
+  constructor(private _editService: EditService,
+    private _sanitizer: DomSanitizer,
     private _pageService: PageService,
-    @Inject(WINDOW) private _window: any) {    
+    @Inject(WINDOW) private _window: any) {
     this._pageContext = _window.pageContext;
     if (this._pageContext.isEmbedded) {
       this._baseUrl = this._pageContext.siteRoot;
@@ -69,22 +61,10 @@ export class PreviewContentComponent implements OnInit {
   }
 
   getLinkUrl(content: any) {
-    let link: Link = content;
-
-    if (!link || !link.linkType) return '';
-
-    if (link.linkType === 'URL') {
-      return link.url;
-    } else if (link.linkType === 'PAGE') {
-      let page = this.pages.find(p => p.id === link.pageId);
-      let translation = page.pageTranslation.find(pt => pt.locale === this._pageContext.currentLocale);
-      translation = translation ? translation : page.pageTranslation[0];
-      let url = page.pageTypeId === Globals.appSettings.pageTypes.url ? translation.uRL : `${this._pageContext.siteRoot}${translation.uRL}`;
-      return url;
-    }
+    return this._editService.getLinkUrl(content);
   }
 
-  getImageUrl(image: Image){
+  getImageUrl(image: Image) {
     return image && image.imageUrl ? `${this._baseUrl}${image.imageUrl}` : null;
   }
 

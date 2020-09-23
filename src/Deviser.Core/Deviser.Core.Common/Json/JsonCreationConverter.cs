@@ -31,8 +31,8 @@ namespace Deviser.Core.Common.Json
             if (reader.TokenType == JsonToken.Null)
                 return null;
 
-            JObject jObject = JObject.Load(reader);
-            T target = Create(objectType, jObject);
+            var jObject = JObject.Load(reader);
+            var target = Create(objectType, jObject);
             serializer.Populate(jObject.CreateReader(), target);
             return target;
         }

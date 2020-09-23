@@ -1,21 +1,9 @@
 import { Component, Inject, ViewChild } from '@angular/core';
-import { CdkDragDrop, CdkDragEnter, CdkDragExit, moveItemInArray, transferArrayItem, DragRef, DropListRef } from '@angular/cdk/drag-drop';
-import { Guid } from '../../services/guid';
-import { LayoutTypeService } from '../../services/layout-type.service';
-import { LayoutService } from '../../services/layout.service';
-import { PageService } from '../../services/page.service';
-import { PageContext } from '../../domain-types/page-context';
-import { WINDOW } from '../../services/window.service';
 import { forkJoin } from 'rxjs';
-import { PageLayout } from '../../domain-types/page-layout';
-import { LayoutType } from '../../domain-types/layout-type';
-import { Alert, AlertType } from '../../domain-types/alert';
-import { AlertService } from '../../services/alert.service';
-import { PlaceHolder } from '../../domain-types/place-holder';
-import { SharedService } from '../../services/shared.service';
-import { Property } from '../../domain-types/property';
-import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { CdkDragDrop, CdkDragEnter, CdkDragExit, moveItemInArray, transferArrayItem, DragRef, DropListRef } from '@angular/cdk/drag-drop';
+import { Alert, AlertType, Guid, LayoutType, PageContext, PageLayout, PlaceHolder, WINDOW } from 'deviser-shared';
+import { AlertService, LayoutService, LayoutTypeService, SharedService } from 'deviser-shared';
+import { ConfirmDialogComponent } from 'deviser-shared';
 
 export class Node {
   id?: string;
@@ -87,7 +75,6 @@ const TREE_DATA: Node[] = [
 })
 export class LayoutComponent {
 
-  alerts: Alert[] = [];
   isLayoutNameEditable: boolean;
   isNewMode: boolean;
   layoutName: string;
@@ -97,7 +84,7 @@ export class LayoutComponent {
   root: PlaceHolder;
   selectedLayout: PageLayout;
   selectedPlaceHolder: PlaceHolder;
-  
+
   get nestedContainersDropListIds(): string[] {
     // We reverse ids here to respect items nesting hierarchy
     const recursiveIds = this.getIdsRecursive(this.root).reverse();
@@ -123,12 +110,6 @@ export class LayoutComponent {
   ) {
 
     this.pageContext = window.pageContext;
-    this._alertService.alerts.subscribe(alert => {
-      if(alert){
-        this.alerts.push(alert)
-      }
-    });
-
     // this.root = {
     //   id: 'root',
     //   type: 'container',
@@ -146,13 +127,8 @@ export class LayoutComponent {
       this.layoutTypes = results[0];
       this.pageLayouts = results[1];
       this.onGetLayouts();
-    }, error => {
-      const alert: Alert = {
-        alertType: AlertType.Error,
-        message: 'Unable to get this item, please contact administrator',
-        timeout: 5000
-      }
-      this._alertService.addAlert(alert);
+    }, error => {      
+      this._alertService.showMessage(AlertType.Error, 'Unable to  get this item');
     });
   }
 
@@ -289,23 +265,11 @@ export class LayoutComponent {
       this.selectedLayout.id = formValue.id;
       this.selectedLayout.placeHolders = formValue.placeHolders;
       this.selectedLayout.isChanged = false;
-      this.setPageLayout();
-      //     vm.isLayoutEdit = false;
-
-      const alert: Alert = {
-        alertType: AlertType.Success,
-        message: 'Layout has been saved',
-        timeout: 50000
-      }
-      this._alertService.addAlert(alert);
+      this.setPageLayout();      
+      this._alertService.showMessage(AlertType.Success, 'Layout has been saved');
     }
-    else {
-      const alert: Alert = {
-        alertType: AlertType.Error,
-        message: 'Layout has been saved',
-        timeout: 50000
-      }
-      this._alertService.addAlert(alert);
+    else {      
+      this._alertService.showMessage(AlertType.Error, 'Unable to save the Layout');
     }
   }
 
@@ -400,7 +364,7 @@ export class LayoutComponent {
   }
 
   private syncPropertyForElement(placeHolder: PlaceHolder) {
-    if(!placeHolder.properties){
+    if (!placeHolder.properties) {
       placeHolder.properties = [];
     }
     let propertiesValue = placeHolder.properties;

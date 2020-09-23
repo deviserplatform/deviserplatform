@@ -7,10 +7,13 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Deviser.Core.Common.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeviserWI.Controllers.API
 {
     [Route("api/[controller]")]
+    [PermissionAuthorize("PAGE", "EDIT")]
     public class PageContentController : Controller
     {
         private readonly ILogger<PageContentController> _logger;
@@ -27,6 +30,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpGet("{contentId}")]
+        [AllowAnonymous]
         public IActionResult Get(Guid contentId)
         {
             try
@@ -44,6 +48,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpGet("{cultureCode}/{pageId}")]
+        [AllowAnonymous]
         public IActionResult Get(string cultureCode, Guid pageId)
         {
             try
@@ -64,6 +69,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpGet]
         [Route("list/")]
+        [AllowAnonymous]
         public IActionResult Get()
         {
             try
@@ -204,7 +210,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                bool result = _contentManager.DeletePageContent(id);
+                var result = _contentManager.DeletePageContent(id);
                 if (result)
                     return Ok();
 

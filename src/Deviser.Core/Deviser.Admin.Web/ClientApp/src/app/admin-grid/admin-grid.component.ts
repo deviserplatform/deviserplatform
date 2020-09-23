@@ -1,37 +1,25 @@
-import { Component, OnInit, TemplateRef, ViewChild, Inject } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { Router, DefaultUrlSerializer, UrlTree } from '@angular/router';
+
+import { AlertType } from 'deviser-shared';
+import { AlertService } from 'deviser-shared';
+import { ConfirmDialogComponent } from 'deviser-shared';
 
 import { AdminService } from '../common/services/admin.service';
 import { AdminConfig } from '../common/domain-types/admin-config';
 import { Pagination } from '../common/domain-types/pagination';
-import { ConfirmDialogComponent } from '../common/components/confirm-dialog/confirm-dialog.component';
+
 import { RecordIdPipe } from '../common/pipes/record-id.pipe';
-import { Alert, AlertType } from '../common/domain-types/alert';
-import { DOCUMENT } from '@angular/common';
 import { WINDOW } from '../common/services/window.service';
 import { LabelType } from '../common/domain-types/label-type';
-import { Field } from '../common/domain-types/field';
-import { FieldType } from '../common/domain-types/field-type';
-import { FormResult } from '../common/domain-types/form-result';
 import { AdminResult } from '../common/domain-types/admin-result';
 import { DAConfig } from '../common/domain-types/da-config';
 import { AdminConfigType } from '../common/domain-types/admin-confit-type';
 import { SortField } from '../common/domain-types/sort-field';
 import { SortState } from '../common/domain-types/sort-state';
 import { FilterField } from '../common/domain-types/filter-field';
-import { Filter } from '../common/domain-types/filter';
-import { DateFilter } from '../common/domain-types/date-filter';
-import { NumberFilter } from '../common/domain-types/number-filter';
-import { SelectFilter } from '../common/domain-types/select-filter';
-import { TextFilter } from '../common/domain-types/text-filter';
-import { FilterType } from '../common/domain-types/filter-type';
-import { BooleanFilter } from '../common/domain-types/boolean-filter';
 import { FilterNode } from '../common/domain-types/filter-node';
 import { LogicalOperator } from '../common/domain-types/logical-operator';
-import { filter } from 'rxjs/operators';
-import { AlertService } from '../common/services/alert.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 
@@ -42,7 +30,15 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 })
 export class AdminGridComponent implements OnInit {
 
-  adminConfig: AdminConfig;
+  private _adminConfig: AdminConfig
+
+  get adminConfig(): AdminConfig {
+    return this._adminConfig;
+  };
+  set adminConfig(value) {
+    this._adminConfig = value;
+    this.getAllRecords();
+  }
   adminConfigType = AdminConfigType;
   entityRecords: any;
   daConfig: DAConfig;
@@ -53,20 +49,22 @@ export class AdminGridComponent implements OnInit {
   private confirmDialogComponent: ConfirmDialogComponent;
 
   get isSortable(): boolean {
-    return this.adminConfig.modelConfig.gridConfig.isSortable;
+    return this.adminConfig && this.adminConfig.modelConfig &&
+      this.adminConfig.modelConfig.gridConfig &&
+      this.adminConfig.modelConfig.gridConfig.isSortable;
   }
 
   constructor(private _adminService: AdminService,
     private _alertService: AlertService,
     private _recordIdPipe: RecordIdPipe,
     private _router: Router,
-    @Inject(WINDOW) private _window: any) {
+    @Inject(WINDOW) _window: any) {
     this.getAdminConfig();
-    this.daConfig = _window.daConfig;    
+    this.daConfig = _window.daConfig;
   }
 
   ngOnInit() {
-    this.getAllRecords();
+
   }
 
 
@@ -124,7 +122,7 @@ export class AdminGridComponent implements OnInit {
       .subscribe(response => this.onActionResult(response));
   }
 
-  onNoToDelete(item: any): void {
+  onNoToDelete(): void {
     console.log('declined');
   }
 
@@ -171,8 +169,3 @@ export class AdminGridComponent implements OnInit {
   }
 }
 
-class CustomUrlSerializer extends DefaultUrlSerializer {
-  parse(url: string): UrlTree {
-    return super.parse(url);
-  }
-}

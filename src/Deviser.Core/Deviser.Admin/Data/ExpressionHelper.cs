@@ -24,17 +24,17 @@ namespace Deviser.Admin.Data
 
         public static LambdaExpression GetPropertyExpression(Type type, string propertyName)
         {
-            ParameterExpression paramterExpression = Expression.Parameter(type);
-            MemberExpression memberExpression = Expression.Property(paramterExpression, propertyName);
-            LambdaExpression propertyExpression = Expression.Lambda(memberExpression, paramterExpression);
+            var paramterExpression = Expression.Parameter(type);
+            var memberExpression = Expression.Property(paramterExpression, propertyName);
+            var propertyExpression = Expression.Lambda(memberExpression, paramterExpression);
             return propertyExpression;
         }
 
         public static LambdaExpression GetPropertyExpression(Type type, PropertyInfo propertyInfo)
         {
-            ParameterExpression paramterExpression = Expression.Parameter(type);
-            MemberExpression propertyExpression = Expression.Property(paramterExpression, propertyInfo);
-            LambdaExpression lambdaExpression = Expression.Lambda(propertyExpression, paramterExpression);
+            var paramterExpression = Expression.Parameter(type);
+            var propertyExpression = Expression.Property(paramterExpression, propertyInfo);
+            var lambdaExpression = Expression.Lambda(propertyExpression, paramterExpression);
             return lambdaExpression;
         }
 
@@ -45,11 +45,11 @@ namespace Deviser.Admin.Data
 
         public static MethodCallExpression GetOrderByExpression(string orderByProp, Type eType, Expression parentExpression, string orderByMethod)
         {
-            ParameterExpression paramterExpression = Expression.Parameter(eType);
-            MemberExpression memberExpression = Expression.Property(paramterExpression, orderByProp);
-            LambdaExpression propertyExpression = Expression.Lambda(memberExpression, paramterExpression);
+            var paramterExpression = Expression.Parameter(eType);
+            var memberExpression = Expression.Property(paramterExpression, orderByProp);
+            var propertyExpression = Expression.Lambda(memberExpression, paramterExpression);
 
-            MethodCallExpression orderByCallExpression = Expression.Call(
+            var orderByCallExpression = Expression.Call(
                 typeof(Queryable),
                 orderByMethod,
                 new Type[] { eType, memberExpression.Type },
@@ -60,7 +60,7 @@ namespace Deviser.Admin.Data
 
         public static MethodCallExpression GetWhereExpression(Type eType, Expression parentExpression, LambdaExpression filterExpression)
         {
-            MethodCallExpression whereCallExpression = Expression.Call(
+            var whereCallExpression = Expression.Call(
                 typeof(Queryable),
                 nameof(Queryable.Where),
                 new Type[] { eType },
@@ -71,7 +71,7 @@ namespace Deviser.Admin.Data
 
         public static MethodCallExpression GetSelectExpression(Type eType, Expression parentExpression, LambdaExpression selectExpression)
         {
-            MethodCallExpression selectCallExpression = Expression.Call(
+            var selectCallExpression = Expression.Call(
                 typeof(Queryable),
                 nameof(Queryable.Select),
                 new Type[] { eType },

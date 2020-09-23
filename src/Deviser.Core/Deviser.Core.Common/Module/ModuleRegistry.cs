@@ -37,15 +37,15 @@ namespace Deviser.Core.Common.Module
 
         public ModuleMetaInfo GetModuleMetaInfoByAssembly(string assemblyName)
         {
-            _moduleAssemblyMetaInfo.TryGetValue(assemblyName, out ModuleMetaInfo moduleMetaInfo);
+            _moduleAssemblyMetaInfo.TryGetValue(assemblyName, out var moduleMetaInfo);
             return moduleMetaInfo;
         }
 
         public ModuleMetaInfo GetModuleMetaInfoByModuleName(string moduleName)
         {
-            if (_moduleNameAssemblyMapping.TryGetValue(moduleName, out string assemblyName))
+            if (_moduleNameAssemblyMapping.TryGetValue(moduleName, out var assemblyName))
             {
-                _moduleAssemblyMetaInfo.TryGetValue(assemblyName, out ModuleMetaInfo moduleMetaInfo);
+                _moduleAssemblyMetaInfo.TryGetValue(assemblyName, out var moduleMetaInfo);
                 return moduleMetaInfo;
             }
             return null;

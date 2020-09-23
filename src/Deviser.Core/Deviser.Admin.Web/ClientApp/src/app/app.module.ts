@@ -16,8 +16,9 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import { QuillModule } from 'ngx-quill'
 
-
+import { DeviserSharedModule } from 'deviser-shared';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AdminGridComponent } from './admin-grid/admin-grid.component';
@@ -26,13 +27,11 @@ import { AdminFormComponent } from './admin-form/admin-form.component';
 import { RecordIdPipe } from './common/pipes/record-id.pipe';
 import { FormControlComponent } from './form-control/form-control.component';
 import { FormatFieldPipe } from './common/pipes/format-field.pipe';
-import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
+// import { ConfirmDialogComponent } from './common/components/confirm-dialog/confirm-dialog.component';
 import { ValidationErrorComponent } from './validation-error/validation-error.component';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { EntityFormComponent } from './entity-form/entity-form.component';
 import { ChildGridComponent } from './child-grid/child-grid.component';
 import { CheckboxListComponent } from './common/components/checkbox-list/checkbox-list.component';
-import { AdminAlertComponent } from './common/components/admin-alert/admin-alert.component';
 import { WINDOW_PROVIDERS } from './common/services/window.service';
 import { EnvPathPipe } from './common/pipes/env-path.pipe';
 import { AdminTreeComponent } from './admin-tree/admin-tree.component';
@@ -43,17 +42,14 @@ import { GridHeaderComponent } from './common/components/grid-header/grid-header
 import { GridControlComponent } from './common/components/grid-control/grid-control.component';
 import { DevCheckboxComponent } from './common/components/controls/dev-checkbox/dev-checkbox.component';
 import { CheckBoxListComponent } from './common/components/controls/check-box-list/check-box-list.component';
-import { AlertService } from './common/services/alert.service';
-
 
 @NgModule({
   declarations: [
     AppComponent,
-    AdminAlertComponent,
     AdminFormComponent,
     AdminGridComponent,
     AdminTreeComponent,
-    ConfirmDialogComponent,
+    // ConfirmDialogComponent,
     ChildGridComponent,
     CheckboxMatrixComponent,
     CheckboxListComponent,
@@ -78,7 +74,7 @@ import { AlertService } from './common/services/alert.service';
     BrowserModule,
     BsDatepickerModule.forRoot(),
     CdkTreeModule,
-    CKEditorModule,
+    DeviserSharedModule,
     DragDropModule,
     FormsModule,
     HttpClientModule,
@@ -87,10 +83,10 @@ import { AlertService } from './common/services/alert.service';
     NgSelectModule,
     PaginationModule.forRoot(),
     PopoverModule.forRoot(),
+    QuillModule.forRoot(),
     ReactiveFormsModule
   ],
   providers: [
-    AlertService,
     DatePipe,
     RecordIdPipe,
     WINDOW_PROVIDERS

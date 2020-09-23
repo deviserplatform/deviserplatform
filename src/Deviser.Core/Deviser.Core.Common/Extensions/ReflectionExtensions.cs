@@ -10,7 +10,7 @@ namespace Deviser.Core.Common.Extensions
     {
         public static List<TypeInfo> GetDerivedTypeInfos(this IEnumerable<Assembly> assemblies, Type baseType)
         {
-            List<TypeInfo> derivedTypeList = new List<TypeInfo>();
+            var derivedTypeList = new List<TypeInfo>();
             foreach (var assembly in assemblies)
             {
                 List<TypeInfo> derivedTypes = assembly.GetDerivedTypeInfos(baseType);
@@ -36,7 +36,7 @@ namespace Deviser.Core.Common.Extensions
 
             if (fieldExpression.Body is UnaryExpression)
             {
-                UnaryExpression unaryExpression = (UnaryExpression)(fieldExpression.Body);
+                var unaryExpression = (UnaryExpression)(fieldExpression.Body);
                 memberExpression = (MemberExpression)(unaryExpression.Operand);
             }
             else

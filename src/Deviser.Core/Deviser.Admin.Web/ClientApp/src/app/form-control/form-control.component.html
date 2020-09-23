@@ -18,7 +18,8 @@
         <label [ngClass]="{ 'is-invalid': hasError(field) }"
           for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
         <input type="text" class="form-control" [id]="field.fieldNameCamelCase"
-          [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }" [readonly]="field.fieldOption.isReadOnly">
+          [formControlName]="field.fieldNameCamelCase" [ngClass]="{ 'is-invalid': hasError(field) }"
+          [readonly]="field.fieldOption.isReadOnly">
         <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
       </ng-container>
 
@@ -73,8 +74,12 @@
       <ng-container *ngSwitchCase="fieldType.RichText">
         <label [ngClass]="{ 'is-invalid': hasError(field) }"
           for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
-        <ckeditor [editor]="Editor" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
-          [ngClass]="{ 'is-invalid': hasError(field) }"></ckeditor>
+        <!-- <ckeditor [editor]="Editor" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
+          [ngClass]="{ 'is-invalid': hasError(field) }"></ckeditor> -->
+
+        <quill-editor [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase" [modules]="modules"
+          [ngClass]="{ 'is-invalid': hasError(field) }">
+        </quill-editor>
         <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
       </ng-container>
 
@@ -84,11 +89,12 @@
 
         <div class="input-group date-control">
           <input type="text" [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
-            class="form-control" [ngClass]="{ 'is-invalid': hasError(field) }" #dp="bsDatepicker" bsDatepicker [bsConfig]="bsConfig">
+            class="form-control" [ngClass]="{ 'is-invalid': hasError(field) }" #dp="bsDatepicker" bsDatepicker
+            [bsConfig]="bsConfig">
           <div class="input-group-append">
-            <button class="btn btn-secondary" type="button" (click)="dp.toggle()">
+            <button class="btn btn-light" type="button" (click)="dp.toggle()">
               <i class="my-icon" aria-label="My icon"
-                [inlineSVG]="'assets/icons/baseline-calendar_today.svg' | envPath"></i>
+                [inlineSVG]="'assets/icons/calendar.svg' | envPath"></i>
             </button>
           </div>
           <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
@@ -102,7 +108,10 @@
 
         <ng-select [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
           [ngClass]="{ 'is-invalid': hasError(field) }" [items]="lookUpData$ | async" [selectOnTab]="true"
-          bindLabel="displayName" [multiple]="true" placeholder="Select age">
+          bindLabel="displayName" [multiple]="true" [placeholder]="field.fieldOption.displayName" [addTag]="addTagPromise">
+          <ng-template ng-tag-tmp let-search="searchTerm">
+            <b>Create new</b>: {{search}}
+        </ng-template>
         </ng-select>
 
         <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
@@ -114,7 +123,7 @@
 
         <ng-select [id]="field.fieldNameCamelCase" [formControlName]="field.fieldNameCamelCase"
           [ngClass]="{ 'is-invalid': hasError(field) }" [items]="lookUpData$ | async" [selectOnTab]="true"
-          bindLabel="displayName" [multiple]="false" placeholder="displayName">
+          bindLabel="displayName" [multiple]="false" [placeholder]="field.fieldOption.displayName">
         </ng-select>
 
         <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>
@@ -147,14 +156,9 @@
         <label [ngClass]="{ 'is-invalid': hasError(field) }"
           for="field.fieldNameCamelCase">{{field.fieldOption.displayName}}</label>
 
-        <app-checkbox-matrix [formControlName]="field.fieldNameCamelCase" 
-        [rowLookUp]="rowLookUp"
-        [colLookUp]="colLookUp"
-        [rowLookUpKey]="rowLookUpKey"
-        [colLookUpKey]="colLookUpKey"
-        [checkBoxMatrix]="checkBoxMatrix"
-        [contextId]="formItemId"
-        bindLabel="displayName">
+        <app-checkbox-matrix [formControlName]="field.fieldNameCamelCase" [rowLookUp]="rowLookUp"
+          [colLookUp]="colLookUp" [rowLookUpKey]="rowLookUpKey" [colLookUpKey]="colLookUpKey"
+          [checkBoxMatrix]="checkBoxMatrix" [contextId]="formItemId" bindLabel="displayName">
         </app-checkbox-matrix>
 
         <app-validation-error *ngIf="hasError(field)" [field]="field" [form]="form"></app-validation-error>

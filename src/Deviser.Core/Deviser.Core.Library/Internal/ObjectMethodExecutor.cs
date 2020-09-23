@@ -103,7 +103,7 @@ namespace Deviser.Core.Library.Internal
             // Build parameter list
             var parameters = new List<Expression>();
             var paramInfos = methodInfo.GetParameters();
-            for (int i = 0; i < paramInfos.Length; i++)
+            for (var i = 0; i < paramInfos.Length; i++)
             {
                 var paramInfo = paramInfos[i];
                 var valueObj = Expression.ArrayIndex(parametersParameter, Expression.Constant(i));
@@ -152,7 +152,7 @@ namespace Deviser.Core.Library.Internal
             // Build parameter list
             var parameters = new List<Expression>();
             var paramInfos = methodInfo.GetParameters();
-            for (int i = 0; i < paramInfos.Length; i++)
+            for (var i = 0; i < paramInfos.Length; i++)
             {
                 var paramInfo = paramInfos[i];
                 var valueObj = Expression.ArrayIndex(parametersParameter, Expression.Constant(i));
@@ -212,39 +212,37 @@ namespace Deviser.Core.Library.Internal
 
         private void EnsureParameterDefaultValues()
         {
-            if (_parameterDefaultValues == null)
+            if (_parameterDefaultValues != null) return;
+            var count = ActionParameters.Length;
+            _parameterDefaultValues = new object[count];
+
+            for (var i = 0; i < count; i++)
             {
-                var count = ActionParameters.Length;
-                _parameterDefaultValues = new object[count];
+                var parameterInfo = ActionParameters[i];
+                object defaultValue;
 
-                for (var i = 0; i < count; i++)
+                if (parameterInfo.HasDefaultValue)
                 {
-                    var parameterInfo = ActionParameters[i];
-                    object defaultValue;
+                    defaultValue = parameterInfo.DefaultValue;
+                }
+                else
+                {
+                    var defaultValueAttribute = parameterInfo
+                        .GetCustomAttribute<DefaultValueAttribute>(inherit: false);
 
-                    if (parameterInfo.HasDefaultValue)
+                    if (defaultValueAttribute?.Value == null)
                     {
-                        defaultValue = parameterInfo.DefaultValue;
+                        defaultValue = parameterInfo.ParameterType.GetTypeInfo().IsValueType
+                            ? Activator.CreateInstance(parameterInfo.ParameterType)
+                            : null;
                     }
                     else
                     {
-                        var defaultValueAttribute = parameterInfo
-                            .GetCustomAttribute<DefaultValueAttribute>(inherit: false);
-
-                        if (defaultValueAttribute?.Value == null)
-                        {
-                            defaultValue = parameterInfo.ParameterType.GetTypeInfo().IsValueType
-                                ? Activator.CreateInstance(parameterInfo.ParameterType)
-                                : null;
-                        }
-                        else
-                        {
-                            defaultValue = defaultValueAttribute.Value;
-                        }
+                        defaultValue = defaultValueAttribute.Value;
                     }
-
-                    _parameterDefaultValues[i] = defaultValue;
                 }
+
+                _parameterDefaultValues[i] = defaultValue;
             }
         }
     }

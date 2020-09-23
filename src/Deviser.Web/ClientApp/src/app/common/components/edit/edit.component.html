@@ -1,6 +1,6 @@
 <div class="edit-container">
     <div class="container-fluid">
-        <div class="row header">
+        <div class="row header-row">
             <div class="col-2">
                 <h3 class="edit-title">
                     Page Editor
@@ -14,73 +14,90 @@
                 <div class="layout-name">
 
                 </div>
-                <dev-alert class="dev-alerts" [alerts]="alerts"></dev-alert>
             </div>
             <div class="col-2 action-bar">
-                <button type="button" class="action-control btn btn-sm btn-secondary"
+                <button type="button" class="action-control btn btn-action  btn-secondary"
                     *ngIf="currentPageState === pageState.Published" (click)="onDraft();">
                     <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
                     Draft
                 </button>
 
-                <button type="button" class="action-control btn btn-sm btn-primary"
+                <button type="button" class="action-control btn btn-action  btn-primary"
                     *ngIf="currentPageState === pageState.Draft" (click)="onPublish();">
                     <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/globe.svg'| envPath"></i>
                     Publish
                 </button>
             </div>
         </div>
-        <div class="row">
-            <div class="col-2">
-                <div class="card content-type">
+        <div class="row content-row">
+            <div class="col-2 page-elements-col">
+                <div class="card page-elements-card">
                     <div class="card-header">
-                        <b>Content Types</b>
+                        <b>Page Elements</b>
                     </div>
-                    <div class="card-body" *ngIf="contentTypes && contentTypes.length > 0">
-                        <div #newElementList cdkDropList class="new-element-list"
-                            [cdkDropListConnectedTo]="nestedContainersDropListIds" [cdkDropListData]="contentTypes">
-                            <div class="new-element node-element" *ngFor="let contentElement of contentTypes" cdkDrag
-                                [cdkDragData]="contentElement" cdkDragBoundary=".layout-container">
-                                <div class="icon">
-                                    <i class="{{contentElement.contentType.iconClass}}"
-                                        *ngIf="contentElement.contentType.iconClass"></i>
-                                    <img src="{{contentElement.contentType.iconImage}}"
-                                        *ngIf="contentElement.contentType.iconImage"
-                                        alt="{{contentElement.contentType.name}}" />
+                    <div class="card-body">
+
+                        <accordion>
+                            <accordion-group>
+                                <div accordion-heading>
+                                    <span>Content Types</span>
                                 </div>
-                                <div class="label">
-                                    {{contentElement.contentType.label}}
+                                <div #newElementList cdkDropList class="new-element-list" *ngIf="contentTypes && contentTypes.length > 0"
+                                    [cdkDropListConnectedTo]="nestedContainersDropListIds"
+                                    [cdkDropListData]="contentTypes">
+                                    <div class="new-element node-element" *ngFor="let contentElement of contentTypes"
+                                        cdkDrag [cdkDragData]="contentElement">
+                                        <div class="icon">
+                                            <i class="{{contentElement.contentType.iconClass}}"
+                                                *ngIf="contentElement.contentType.iconClass"></i>
+                                            <img src="{{contentElement.contentType.iconImage}}"
+                                                *ngIf="contentElement.contentType.iconImage"
+                                                alt="{{contentElement.contentType.name}}" />
+                                        </div>
+                                        <div class="label">
+                                            {{contentElement.contentType.label}}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                            </accordion-group>
+                            <accordion-group>
+                                <div accordion-heading>
+                                    <span>Module Views</span>
+                                </div>
+                                <div #newElementList cdkDropList class="new-element-list" *ngIf="moduleViews && moduleViews.length > 0"
+                                    [cdkDropListConnectedTo]="nestedContainersDropListIds"
+                                    [cdkDropListData]="moduleViews">
+                                    <div class="new-element node-element" *ngFor="let moduleElement of moduleViews"
+                                        cdkDrag [cdkDragData]="moduleElement">
+                                        <div class="icon">
+                                            <i class="{{moduleElement.moduleView.iconClass}}"
+                                                *ngIf="moduleElement.moduleView.iconClass"></i>
+                                            <img src="{{moduleElement.moduleView.iconImage}}"
+                                                *ngIf="moduleElement.moduleView.iconImage"
+                                                alt="{{moduleElement.moduleView.name}}" />
+                                        </div>
+                                        <div class="label">
+                                            {{moduleElement.moduleView.displayName}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </accordion-group>
+                        </accordion>
+
+
                     </div>
                 </div>
 
-                <div class="card module-view">
+                <!-- <div class="card module-view">
                     <div class="card-header">
                         <b>Module Views</b>
                     </div>
-                    <div class="card-body" *ngIf="moduleViews && moduleViews.length > 0">
-                        <div #newElementList cdkDropList class="new-element-list"
-                            [cdkDropListConnectedTo]="nestedContainersDropListIds" [cdkDropListData]="moduleViews">
-                            <div class="new-element node-element" *ngFor="let moduleElement of moduleViews" cdkDrag
-                                [cdkDragData]="moduleElement" cdkDragBoundary=".layout-container">
-                                <div class="icon">
-                                    <i class="{{moduleElement.moduleView.iconClass}}"
-                                        *ngIf="moduleElement.moduleView.iconClass"></i>
-                                    <img src="{{moduleElement.moduleView.iconImage}}"
-                                        *ngIf="moduleElement.moduleView.iconImage"
-                                        alt="{{moduleElement.moduleView.name}}" />
-                                </div>
-                                <div class="label">
-                                    {{moduleElement.moduleView.displayName}}
-                                </div>
-                            </div>
-                        </div>
+                    <div class="card-body" >
+
                     </div>
-                </div>
+                </div> -->
             </div>
-            <div class="col container-element-wrapper">
+            <div class="col container-element-col">
                 <div class="container-element root">
                     <div class="container-element-header">
                         <b>Page Containers</b>
@@ -100,7 +117,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-2">
+            <div class="col-2 properties-trash-col">
                 <div class="card properties-container">
                     <div class="card-header">
                         <b>Selected</b>
@@ -160,7 +177,7 @@
                             <div class="col-md-6">
                             </div>
                             <div class="col-md-6">
-                                <button type="button" class="property-control btn btn-sm btn-primary"
+                                <button type="button" class="property-control btn btn-action  btn-primary"
                                     (click)="onSaveProperties();"> Save
                                 </button>
                             </div>
@@ -189,7 +206,7 @@
             [ngClass]="{'horizontal': node.type==='row', 'vertical': node.type!=='row'}"
             (cdkDropListDropped)="onDragDrop($event)" class="drop-list">
             <div *ngFor="let child of node.placeHolders;let i = index" cdkDrag [cdkDragData]="child" class="drop-item"
-                [ngClass]="getColumnClass(child)" cdkDragBoundary=".layout-container"
+                [ngClass]="getColumnClass(child)"
                 [cdkDragDisabled]="child.layoutTemplate === 'container'">
                 <!-- <div [ngClass]="{'row': node.type==='row'}">
             <div [ngClass]="{'col': child.type==='column'}"> -->
@@ -226,15 +243,13 @@
                                 [alt]="node.contentType.name" />
                             <b>{{node.title}}</b>
                         </div>
-                        <div class="permission-action">
-                            <button type="button" class="action-control btn btn-sm btn-light"
+                        <div class="content-actions">
+                            <button type="button" class="action-control btn btn-light"
                                 *ngIf="currentPageState === pageState.Published" (click)="onOpenPermission(node);">
                                 <i class="my-icon" aria-label="My icon"
                                     [inlineSVG]="'assets/icons/shield.svg'| envPath"></i>
                             </button>
-                        </div>
-                        <div class="edit-action">
-                            <button type="button" class="action-control btn btn-sm btn-light"
+                            <button type="button" class="action-control btn btn-light"
                                 *ngIf="currentPageState === pageState.Published" (click)="onEditContent(node);">
                                 <i class="my-icon" aria-label="My icon"
                                     [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
@@ -257,14 +272,14 @@
                             <b>{{node.title}}</b>
                         </div>
                         <div class="permission-action">
-                            <button type="button" class="action-control btn btn-sm btn-light"
+                            <button type="button" class="action-control btn btn-light"
                                 *ngIf="currentPageState === pageState.Published" (click)="onOpenPermission(node);">
                                 <i class="my-icon" aria-label="My icon"
                                     [inlineSVG]="'assets/icons/shield.svg'| envPath"></i>
                             </button>
                         </div>
                         <div class="edit-action">
-                            <!-- <button type="button" class="action-control btn btn-sm btn-light"
+                            <!-- <button type="button" class="action-control btn btn-light"
                                 *ngIf="currentPageState === pageState.Published">
                                 <i class="my-icon" aria-label="My icon"
                                     [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>

@@ -5,20 +5,8 @@ namespace Deviser.Core.Library.Controllers
 {
     public class ModuleController : DeviserController
     {
-        public ModuleContext ModuleContext
-        {
-            get
-            {
-                return ScoperService.ModuleContext;
-            }
-        }
+        public ModuleContext ModuleContext => ScoperService.ModuleContext;
 
-        public Guid PageModuleId
-        {
-            get
-            {
-                return (Guid)RouteData.Values["pageModuleId"];
-            }
-        }
+        public Guid PageModuleId => (Guid)RouteData.Values["pageModuleId"];
     }
 }

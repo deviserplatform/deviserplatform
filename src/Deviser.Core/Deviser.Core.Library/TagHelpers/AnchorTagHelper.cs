@@ -41,13 +41,7 @@ namespace Deviser.Core.Library.TagHelpers
         }
 
         /// <inheritdoc />
-        public override int Order
-        {
-            get
-            {
-                return -1000;
-            }
-        }
+        public override int Order => -1000;
 
         protected IHtmlGenerator Generator { get; }
 
@@ -105,19 +99,9 @@ namespace Deviser.Core.Library.TagHelpers
         [HtmlAttributeName(RouteValuesDictionaryName, DictionaryAttributePrefix = RouteValuesPrefix)]
         public IDictionary<string, string> RouteValues
         {
-            get
-            {
-                if (_routeValues == null)
-                {
-                    _routeValues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                }
-
-                return _routeValues;
-            }
-            set
-            {
-                _routeValues = value;
-            }
+            get =>
+                _routeValues ??= new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            set => _routeValues = value;
         }
 
         /// <summary>
@@ -189,10 +173,7 @@ namespace Deviser.Core.Library.TagHelpers
 
                 if (Area != null)
                 {
-                    if (routeValues == null)
-                    {
-                        routeValues = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-                    }
+                    routeValues ??= new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
                     // Unconditionally replace any value from dev-route-area. 
                     routeValues["area"] = Area;

@@ -73,7 +73,7 @@ namespace Deviser.ClientDependency
                 {
                     foreach (var file in dependencyFiles)
                     {
-                        TagBuilder itemBuilder = new TagBuilder("link");
+                        var itemBuilder = new TagBuilder("link");
                         string resolvedPath;
 
                         if (file.FilePath.StartsWith("~"))
@@ -100,7 +100,7 @@ namespace Deviser.ClientDependency
 
                     foreach (var file in filteredFiles)
                     {
-                        TagBuilder itemBuilder = new TagBuilder("script");
+                        var itemBuilder = new TagBuilder("script");
                         string resolvedPath;
 
                         if (file.FilePath.StartsWith("~"))

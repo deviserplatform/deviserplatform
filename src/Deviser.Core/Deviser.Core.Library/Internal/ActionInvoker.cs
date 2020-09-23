@@ -191,13 +191,7 @@ namespace Deviser.Core.Library.Internal
                 return false;
             }
 
-            if (!typeInfo.Name.EndsWith(ControllerTypeNameSuffix, StringComparison.OrdinalIgnoreCase) &&
-                !typeInfo.IsDefined(typeof(ControllerAttribute)))
-            {
-                return false;
-            }
-
-            return true;
+            return typeInfo.Name.EndsWith(ControllerTypeNameSuffix, StringComparison.OrdinalIgnoreCase) || typeInfo.IsDefined(typeof(ControllerAttribute));
         }
 
         private object[] PrepareArguments(
@@ -230,10 +224,7 @@ namespace Deviser.Core.Library.Internal
 
         public void Dispose()
         {
-            if(_allControllers!=null)
-            {
-                _allControllers.GetEnumerator().Dispose();
-            }
+            _allControllers?.GetEnumerator().Dispose();
 
             _cache.Dispose();
             //_typeActivatorCache.Dispose();

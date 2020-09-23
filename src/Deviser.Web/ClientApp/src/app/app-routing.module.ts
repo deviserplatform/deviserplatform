@@ -4,8 +4,7 @@ import { LayoutComponent } from './common/components/layout/layout.component';
 import { EditComponent } from './common/components/edit/edit.component';
 
 
-const routes: Routes = [
-  { path: '', redirectTo: '/edit', pathMatch: 'full' },
+const routes: Routes = [  
   { path: 'edit', component: EditComponent },
   { path: 'layout', component: LayoutComponent }
 ];

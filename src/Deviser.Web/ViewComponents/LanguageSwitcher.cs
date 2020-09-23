@@ -30,7 +30,7 @@ namespace Deviser.Web.ViewComponents
         {
             var languages = _languageRepository.GetLanguages();
             languages = languages.Where(l => l.IsActive).ToList();
-            List<LanguageViewModel> viewModel = new List<LanguageViewModel>();
+            var viewModel = new List<LanguageViewModel>();
             foreach (var lang in languages)
             {
                 viewModel.Add(new LanguageViewModel
@@ -47,16 +47,13 @@ namespace Deviser.Web.ViewComponents
 
         private string GetLocalizedUrl(string cultureCode)
         {
-            if (_scopeService.PageContext != null && _scopeService.PageContext.CurrentPage != null && _scopeService.PageContext.CurrentPage.PageTranslation != null)
-            {
-                PageTranslation translation = null;
-                if (_scopeService.PageContext.CurrentPage.PageTranslation.Any(t => t.Locale.ToLower() == cultureCode.ToLower()))
-                {
-                    translation = _scopeService.PageContext.CurrentPage.PageTranslation.Get(cultureCode.ToLower());
-                    return "/" + translation.URL;
-                }
-            }
-            return "";
+            if (_scopeService.PageContext?.CurrentPage?.PageTranslation == null) return "";
+
+            PageTranslation translation = null;
+            if (_scopeService.PageContext.CurrentPage.PageTranslation.All(t => t.Locale.ToLower() != cultureCode.ToLower())) return "";
+
+            translation = _scopeService.PageContext.CurrentPage.PageTranslation.Get(cultureCode.ToLower());
+            return "/" + translation.URL;
         }
     }
 }

@@ -13,8 +13,8 @@ namespace Deviser.Core.Common.Extensions
         {
             if (e is Enum)
             {
-                Type type = e.GetType();
-                Array values = System.Enum.GetValues(type);
+                var type = e.GetType();
+                var values = System.Enum.GetValues(type);
 
                 foreach (int val in values)
                 {

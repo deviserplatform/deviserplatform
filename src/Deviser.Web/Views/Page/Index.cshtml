@@ -17,12 +17,14 @@
     ViewBag.SiteHeaderTags = siteHeaderTags != null ? siteHeaderTags : "";
     ViewBag.PageHeaderTags = pageHeaderTags != null ? pageHeaderTags : "";
 
-    Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>> moduleViewResults =
+    var moduleViewResults =
 (Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>>)ViewBag.ModuleViewResults;
 }
 <script>
     (function () {
         var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
+        pageContext.isEmbedded = true;
+        pageContext.assetPath = '/_content/Deviser.Web/ClientApp/';
         window.pageContext = pageContext;
     }());
 </script>

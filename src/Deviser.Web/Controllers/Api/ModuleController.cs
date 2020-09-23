@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using Deviser.Core.Common.Security;
+using Microsoft.AspNetCore.Authorization;
 using Module = Deviser.Core.Common.DomainTypes.Module;
 
 namespace DeviserWI.Controllers.API
 {
-    [Produces("application/json")]
     [Route("api/[controller]")]
+    [PermissionAuthorize("PAGE", "EDIT")]
     public class ModuleController : Controller
     {
         private readonly ILogger<ModuleController> _logger;
@@ -22,6 +24,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Get()
         {
             try
@@ -39,6 +42,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public IActionResult Get(Guid id)
         {
             try
@@ -58,6 +62,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpGet]
         [Route("moduleviewtype/")]
+        [AllowAnonymous]
         public IActionResult GetModuleViewType()
         {
             try

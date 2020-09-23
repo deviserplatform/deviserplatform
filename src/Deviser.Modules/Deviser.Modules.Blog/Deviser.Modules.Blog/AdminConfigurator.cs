@@ -6,6 +6,8 @@ using AutoMapper;
 using Deviser.Admin;
 using Deviser.Admin.Extensions;
 using Deviser.Modules.Blog.Models;
+using Deviser.Modules.Blog.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Deviser.Modules.Blog
 {
@@ -73,6 +75,7 @@ namespace Deviser.Modules.Blog
 
                 modelBuilder.GridBuilder
                     .AddField(p => p.Title)
+                    
                     .AddField(p => p.Category)
                     .AddField(p => p.Tags)
                     .AddField(p => p.CreatedOn, option => option.Format = "dd.MM.yyyy")
@@ -81,15 +84,25 @@ namespace Deviser.Modules.Blog
                 modelBuilder.FormBuilder
                 .AddKeyField(p => p.Id)
                 .AddField(p => p.Title)
-                //.AddField(s => s.Content, fieldOption => { fieldOption.ValidationType = ValidationType.UserExist; })
+                .AddField(p => p.Slug)
                 .AddField(s => s.Content)
-                .AddInlineSelectField(s => s.Category, expr => expr.Name)
+                .AddSelectField(s => s.Category, expr => expr.Name)
                 .AddInlineMultiSelectField<DTO.Tag>(s => s.Tags, expr => expr.TagName)
-                .AddField(p => p.CreatedOn)
-                .AddField(p => p.CreatedBy);
+                .AddField(p => p.CreatedBy, option => option.DisplayName="Author");
 
-                //form.Property(s => s.Content)
-                //.ValidateOn(p => p.Title == "Test");
+
+                modelBuilder.FormBuilder.SetCustomValidationFor(c => c.Slug,
+                    (sp, slug) =>
+                        sp.GetService<BlogService>().ValidateSlug(slug));
+
+                modelBuilder.FormBuilder.Property(c => c.Slug).AutoFillBasedOn(p => p.Title,
+                    (sp, title) =>
+                        sp.GetService<BlogService>().GetSlugFor(title));
+
+                modelBuilder.FormBuilder
+                    .Property(p => p.Tags)
+                    .AddItemBy(t => t.TagName);
+                    
 
                 modelBuilder.AddChildConfig(s => s.Comments, (childForm) =>
                   {
@@ -100,12 +113,28 @@ namespace Deviser.Modules.Blog
                       .AddField(c => c.CreatedOn)
                       .AddField(c => c.IsApproved);
                   });
+            });
 
+            adminBuilder.Register<DTO.Category>(modelBuilder =>
+            {
 
-                //form.FieldSetBuilder
-                //.AddFieldSet("General", fieldBuilder =>
-                //                        fieldBuilder.AddField(s => s.FirstName).AddInlineField(s => s.LastName)
-                //                    );
+                modelBuilder.GridBuilder
+                    .AddField(p => p.Name);
+
+                modelBuilder.FormBuilder
+                    .AddKeyField(p => p.Id)
+                    .AddField(p => p.Name);
+            });
+
+            adminBuilder.Register<DTO.Tag>(modelBuilder =>
+            {
+
+                modelBuilder.GridBuilder
+                    .AddField(p => p.TagName);
+
+                modelBuilder.FormBuilder
+                    .AddKeyField(p => p.Id)
+                    .AddField(p => p.TagName);
             });
         }
     }

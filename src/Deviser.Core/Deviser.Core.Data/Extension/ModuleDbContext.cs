@@ -41,11 +41,11 @@ namespace Deviser.Core.Data.Extension
 
             //var _installationProvider = SharedObjects.ServiceProvider.GetService<IInstallationProvider>();
 
-            if (ModuleMetaInfo == null)
-                throw new ArgumentNullException(nameof(ModuleMetaInfo));
+            //if (ModuleMetaInfo == null)
+            //    throw new ArgumentNullException(nameof(ModuleMetaInfo));
 
-            if(string.IsNullOrEmpty(ModuleMetaInfo.ModuleName))
-                throw new ArgumentNullException(nameof(ModuleMetaInfo.ModuleName));
+            //if(string.IsNullOrEmpty(ModuleMetaInfo.ModuleName))
+            //    throw new ArgumentNullException(nameof(ModuleMetaInfo.ModuleName));
 
             //if (string.IsNullOrEmpty(ModuleMetaInfo.ModuleAssembly))
             //    throw new ArgumentNullException(nameof(ModuleMetaInfo.ModuleAssembly));

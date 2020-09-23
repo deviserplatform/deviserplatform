@@ -58,7 +58,7 @@ namespace Deviser.Modules.ContentManagement.Services
             var result = new FormResult<OptionList>(resultOptionList)
             {
                 IsSucceeded = true,
-                SuccessMessage = "OptionList has been created successfully"
+                SuccessMessage = "OptionList has been created"
             };
             return await Task.FromResult(result);
         }
@@ -72,13 +72,13 @@ namespace Deviser.Modules.ContentManagement.Services
                 return new FormResult<OptionList>()
                 {
                     IsSucceeded = false,
-                    ErrorMessage = "Unable to save the OptionList"
+                    ErrorMessage = "Unable to update the OptionList"
                 };
 
             var result = new FormResult<OptionList>(resultOptionList)
             {
                 IsSucceeded = true,
-                SuccessMessage = "OptionList has been saved successfully"
+                SuccessMessage = "OptionList has been updated"
             };
             return await Task.FromResult(result);
         }
@@ -103,7 +103,7 @@ namespace Deviser.Modules.ContentManagement.Services
             var result = new AdminResult<OptionList>(optionList)
             {
                 IsSucceeded = true,
-                SuccessMessage = "OptionList has been deleted successfully"
+                SuccessMessage = "OptionList has been deleted"
             };
             return await Task.FromResult(result);
         }

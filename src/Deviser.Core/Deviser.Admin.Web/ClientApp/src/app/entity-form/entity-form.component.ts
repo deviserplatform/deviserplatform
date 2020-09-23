@@ -18,7 +18,8 @@ import { PasswordValidator } from '../common/validators/async-password.validator
 import { UserExistValidator } from '../common/validators/async-user-exist.validator';
 import { CustomValidator } from '../common/validators/async-custom.validator';
 import { EmailExistValidator } from '../common/validators/async-email-exist.validator';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, takeUntil, debounceTime } from 'rxjs/operators';
+import { AdminService } from '../common/services/admin.service';
 
 @Component({
   selector: 'app-entity-form',
@@ -54,7 +55,8 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   private valChangeSubscription: Subscription;
   private allFields: Field[];
 
-  constructor(private emailExistValidator: EmailExistValidator,
+  constructor(private _adminService: AdminService,
+    private emailExistValidator: EmailExistValidator,
     private passwordValidator: PasswordValidator,
     private userExistValidator: UserExistValidator,
     private customValidator: CustomValidator) {
@@ -66,6 +68,8 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
     this.unsubscribeValueChanges();
     this.valChangeSubscription = this.formContext.formGroup.valueChanges
       .pipe(
+        // wait 300ms after each keystroke before considering the term
+        debounceTime(300),
         distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
       )
       .subscribe(val => {
@@ -124,6 +128,18 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
       let isEnabled = this.isFieldEnabled(field);
       let isShown = this.isFieldShown(field);
       let isValidate = field.fieldOption.isRequired && this.isFieldValidate(field);
+
+      if (field.fieldOption.autoFillField) {
+        let srcField = this.allFields.find(f => f.fieldNameCamelCase === field.fieldOption.autoFillField.fieldNameCamelCase);
+        let srcFieldVal = this.formContext.formGroup.value[srcField.fieldNameCamelCase]
+        srcFieldVal && this._adminService.autoFill(field.fieldName, srcFieldVal).subscribe(val => {
+          let valToPatch = {};
+          valToPatch[field.fieldNameCamelCase] = val.result;
+          this.formContext.formGroup.patchValue(valToPatch);
+          // this.formContext.formGroup.value[field.fieldNameCamelCase] = val;
+        });
+      }
+
 
       setTimeout(() => {
         field.isEnabledSubject.next(isEnabled);

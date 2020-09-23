@@ -3,6 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Location, DOCUMENT } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { forkJoin, Observable, BehaviorSubject } from 'rxjs';
+import { AlertType } from 'deviser-shared';
+import { AlertService } from 'deviser-shared';
+
 
 import { AdminService } from '../common/services/admin.service';
 import { AdminConfig } from '../common/domain-types/admin-config';
@@ -10,7 +13,7 @@ import { FormControlService } from '../common/services/form-control.service';
 import { FormMode } from '../common/domain-types/form-mode';
 import { Field } from '../common/domain-types/field';
 import { ChildConfig } from '../common/domain-types/child-config';
-import { Alert, AlertType } from '../common/domain-types/alert';
+
 import { FormResult } from '../common/domain-types/form-result';
 import { FormContext } from '../common/domain-types/form-context';
 import { FormType } from '../common/domain-types/form-type';
@@ -19,7 +22,6 @@ import { WINDOW } from '../common/services/window.service';
 import { AdminConfigType } from '../common/domain-types/admin-confit-type';
 import { FormBehaviour } from '../common/domain-types/form-behaviour';
 import { OpenUrlAction } from '../common/domain-types/open-url-action';
-import { AlertService } from '../common/services/alert.service';
 
 @Component({
   selector: 'app-admin-form',
@@ -185,7 +187,7 @@ export class AdminFormComponent implements OnInit {
 
   onActionResult(formValue: FormResult): void {
     this.submitSubject.next(formValue);
-    if (formValue && formValue.isSucceeded) {      
+    if (formValue && formValue.isSucceeded) {
       this._alertService.showMessage(AlertType.Success, formValue.successMessage);
       if (formValue.formBehaviour === FormBehaviour.RedirectToGrid && this.adminConfig.adminConfigType === AdminConfigType.GridAndForm) {
         const openUrlAction = formValue.successAction as OpenUrlAction;
