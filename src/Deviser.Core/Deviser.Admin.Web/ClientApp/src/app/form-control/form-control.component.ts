@@ -9,7 +9,6 @@ import { EmailExistValidator } from '../common/validators/async-email-exist.vali
 import { PasswordValidator } from '../common/validators/async-password.validator';
 import { UserExistValidator } from '../common/validators/async-user-exist.validator';
 import { LookUpDictionary } from '../common/domain-types/look-up-dictionary';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 import { RelatedField } from '../common/domain-types/related-field';
 import { RelationType } from '../common/domain-types/relation-type';
@@ -78,7 +77,6 @@ export class FormControlComponent implements OnInit {
   pageContext: PageContext;
   rowLookUpKey: string;
   // _lookUpData: any[];
-  Editor = ClassicEditor;
 
   get bsConfig(): any {
     return {

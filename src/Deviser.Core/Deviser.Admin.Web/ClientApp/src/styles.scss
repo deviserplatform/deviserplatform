@@ -43,10 +43,10 @@
 @import "../node_modules/bootstrap/scss/utilities";
 @import "../node_modules/bootstrap/scss/print";
 
-@import "../node_modules/@ng-select/ng-select/themes/default.theme.css";
-@import "../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css";
-@import "../node_modules/quill/dist/quill.bubble.css";
-@import "../node_modules/quill/dist/quill.snow.css";
+@import "../node_modules/@ng-select/ng-select/themes/default.theme";
+@import "../node_modules/ngx-bootstrap/datepicker/bs-datepicker";
+@import "../node_modules/quill/dist/quill.bubble";
+@import "../node_modules/quill/dist/quill.snow";
 
 $white: #ffffff;
 
