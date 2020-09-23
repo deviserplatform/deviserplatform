@@ -24,6 +24,8 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Build
-      run: ./build.sh
+      run: |
+        chmod +x ./build.sh
+        ./build.sh
     - name: Test
       run: dotnet test --no-restore --verbosity normal
