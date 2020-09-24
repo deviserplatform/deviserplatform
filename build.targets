@@ -82,7 +82,8 @@
 
 		<Message Importance="High" Text="Building Web Client" />
 		<Copy SourceFiles="@(DeviserSharedLibFiles)" DestinationFolder="$(DeviserWebClientDir)\node_modules\%(RecursiveDir)"/>
-		<Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm run build --prod --output-hashing none" ConsoleToMSBuild="true"/>
+
+		<Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm run build" ConsoleToMSBuild="true"/>
 		<Message Importance="High" Text="Finished building Web Client" />
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
 	</Target>
