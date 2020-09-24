@@ -287,3 +287,4 @@ src/Deviser.Core/Deviser.Core.Common/DomainTypes/ModuleActionType_BACKUP_16112.c
 /src/DeviserApp/wwwroot/assets/images
 /src/DeviserApp/wwwroot/assets/documents
 /release
+/packages-microsoft-prod.deb

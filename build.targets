@@ -2,7 +2,7 @@
 <Project DefaultTargets="Clean;BuildClientApp;Build;PublishOutput">
 	<PropertyGroup>
 		<WorkspaceDir>.\src\Deviser.Core\Deviser.NgLib\deviser-workspace\</WorkspaceDir>
-		<WorkspaceOutputDir>.\src\Deviser.Core\Deviser.NgLib\deviser-workspace\dist\deviser-shared\</WorkspaceOutputDir>
+		<WorkspaceOutputDir>.\src\Deviser.Core\Deviser.NgLib\deviser-workspace\dist</WorkspaceOutputDir>
 		<DeviserAdminClientDir>.\src\Deviser.Core\Deviser.Admin.Web\ClientApp\</DeviserAdminClientDir>
 		<DeviserWebClientDir>.\src\Deviser.Web\ClientApp\</DeviserWebClientDir>
 		<OutputDir>.\release</OutputDir>
@@ -10,6 +10,11 @@
 		<DeviserPlatformProj>$(DeviserPlatformPath)\Deviser.Web.csproj</DeviserPlatformProj>
 		<Configuration>Release</Configuration>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<NugetFiles Include="$(DeviserPlatformPath)\bin\Release\*.nupkg"/>
+		<DeviserSharedLibFiles Include="$(WorkspaceOutputDir)\**\*.*"/>
+	</ItemGroup>
 
 	<Target Name="Clean">
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
@@ -32,10 +37,6 @@
 		<Message Importance="High" Text="Building Angular shared library" />
 		<Exec WorkingDirectory="$(WorkspaceDir)" Command="ng build --prod" ConsoleToMSBuild="true"/>
 		<Message Importance="High" Text="Finished building Angular shared library" />
-
-		<Message Importance="High" Text="Creating symlink (npm link)" />
-		<Exec WorkingDirectory="$(WorkspaceOutputDir)" Command="npm link" ConsoleToMSBuild="true"/>
-		<Message Importance="High" Text="Finished creating symlink (npm link)" />
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
 	</Target>
 
@@ -51,7 +52,8 @@
 		<Delete Files="$(DeviserAdminClientDir)**\*.css"/>
 
 		<Message Importance="High" Text="Building Admin Client" />
-		<Exec WorkingDirectory="$(DeviserAdminClientDir)" Command="npm link deviser-shared" ConsoleToMSBuild="true"/>
+		<Copy SourceFiles="@(DeviserSharedLibFiles)" DestinationFolder="$(DeviserAdminClientDir)\node_modules\%(RecursiveDir)"/>
+		
 		<Exec WorkingDirectory="$(DeviserAdminClientDir)" Command="ng build --prod --output-hashing none" ConsoleToMSBuild="true" />
 		<Message Importance="High" Text="Finished building Admin Client" />
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
@@ -69,7 +71,7 @@
 		<Delete Files="$(DeviserWebClientDir)**\*.css" />
 
 		<Message Importance="High" Text="Building Web Client" />
-		<Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm link deviser-shared" ConsoleToMSBuild="true"/>
+		<Copy SourceFiles="@(DeviserSharedLibFiles)" DestinationFolder="$(DeviserWebClientDir)\node_modules\%(RecursiveDir)"/>
 		<Exec WorkingDirectory="$(DeviserWebClientDir)" Command="ng build --prod --output-hashing none" ConsoleToMSBuild="true"/>
 		<Message Importance="High" Text="Finished building Web Client" />
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
@@ -89,10 +91,6 @@
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
 	</Target>
 
-	<ItemGroup>
-		<MySourceFiles Include="$(DeviserPlatformPath)\bin\Release\*.nupkg"/>
-	</ItemGroup>
-
 	<Target Name="PublishOutput" AfterTargets="PostBuildEvent">
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
 		<Message Importance="High" Text="PUBLISH OUTPUT" />
@@ -100,7 +98,7 @@
 		<Message Importance="High" Text="Copying nuget to release folder" />
 		<MakeDir Directories="$(OutputDir)" />
 		<MakeDir Directories="$(OutputDir)\nuget" />
-		<Copy SourceFiles="@(MySourceFiles)" DestinationFiles="@(MySourceFiles->'$(OutputDir)\nuget\%(RecursiveDir)%(Filename)%(Extension)')" 
+		<Copy SourceFiles="@(NugetFiles)" DestinationFiles="@(NugetFiles->'$(OutputDir)\nuget\%(RecursiveDir)%(Filename)%(Extension)')" 
 		      OverwriteReadOnlyFiles="true"
 		      SkipUnchangedFiles="false"/>
 		<Message Importance="High" Text="Copied nuget to release folder" />
