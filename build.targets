@@ -13,9 +13,9 @@
 
 	<ItemGroup>
 		<NugetFiles Include="$(DeviserPlatformPath)\bin\Release\*.nupkg"/>
-		<DeviserSharedLibFiles Include="$(WorkspaceOutputDir)\**\*.*"/>
+		<DeviserSharedLibFiles Include="$(WorkspaceOutputDir)\**\*.*"/>		
 	</ItemGroup>
-
+	
 	<Target Name="Clean">
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
 		<Message Importance="High" Text="CLEAN" />
@@ -62,9 +62,11 @@
 		<Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
 		<Delete Files="$(DeviserAdminClientDir)**\*.css"/>
 
-		<Message Importance="High" Text="Building Admin Client" />
+		<Message Importance="High" Text="Copying deviser-shared" />
 		<Copy SourceFiles="@(DeviserSharedLibFiles)" DestinationFolder="$(DeviserAdminClientDir)\node_modules\%(RecursiveDir)"/>
+		<Message Importance="High" Text="Finished copying deviser-shared" />
 		
+		<Message Importance="High" Text="Building Admin Client" />
 		<Exec WorkingDirectory="$(DeviserAdminClientDir)" Command="npm run build" ConsoleToMSBuild="true" />
 		<Message Importance="High" Text="Finished building Admin Client" />
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
@@ -81,9 +83,11 @@
 		<Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
 		<Delete Files="$(DeviserWebClientDir)**\*.css" />
 
-		<Message Importance="High" Text="Building Web Client" />
+		<Message Importance="High" Text="Copying deviser-shared" />		
 		<Copy SourceFiles="@(DeviserSharedLibFiles)" DestinationFolder="$(DeviserWebClientDir)\node_modules\%(RecursiveDir)"/>
-
+		<Message Importance="High" Text="Finished copying deviser-shared" />
+		
+		<Message Importance="High" Text="Building Web Client" />
 		<Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm run build" ConsoleToMSBuild="true"/>
 		<Message Importance="High" Text="Finished building Web Client" />
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
