@@ -17,9 +17,15 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.301
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v1.4.3
+    - name: Angular Github Actions
+      uses: mayurrawte/github-angular-actions@latest 
     - name: Install dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: |
+        chmod +x ./build.sh
+        ./build.sh
     - name: Test
       run: dotnet test --no-restore --verbosity normal
