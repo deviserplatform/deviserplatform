@@ -5,5 +5,7 @@ export interface GridConfig {
     fields: Field[][];
     isDeleteVisible: boolean;
     isEditVisible: boolean;
+    isSortable: boolean;
     rowActions: { [key: string]: AdminAction };
+    sortField: Field;
 }

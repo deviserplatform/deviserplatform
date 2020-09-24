@@ -7,10 +7,13 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Deviser.Core.Common.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeviserWI.Controllers.API
 {
     [Route("api/[controller]")]
+    [PermissionAuthorize("PAGE", "EDIT")]
     public class PageContentController : Controller
     {
         private readonly ILogger<PageContentController> _logger;
@@ -27,6 +30,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpGet("{contentId}")]
+        [AllowAnonymous]
         public IActionResult Get(Guid contentId)
         {
             try
@@ -44,6 +48,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpGet("{cultureCode}/{pageId}")]
+        [AllowAnonymous]
         public IActionResult Get(string cultureCode, Guid pageId)
         {
             try
@@ -64,6 +69,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpGet]
         [Route("list/")]
+        [AllowAnonymous]
         public IActionResult Get()
         {
             try
@@ -118,11 +124,11 @@ namespace DeviserWI.Controllers.API
 
         [HttpPut]
         [Route("list/")]
-        public IActionResult Put([FromBody] IEnumerable<PageContent> pageContents)
+        public IActionResult Put([FromBody] PageContent[] pageContents)
         {
             try
             {
-                if (pageContents == null || pageContents.Count() == 0)
+                if (pageContents == null || pageContents.Length == 0)
                     return BadRequest();
 
                 _contentManager.AddOrUpdatePageContents(new List<PageContent>(pageContents));
@@ -141,11 +147,14 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                if (pageContent == null || pageContent.ContentPermissions == null || pageContent.ContentPermissions.Count() == 0)
+                if (pageContent?.ContentPermissions == null || pageContent.ContentPermissions.Count == 0)
                     return BadRequest();
 
-                _contentManager.UpdateContentPermission(pageContent);
-                return Ok();
+                //var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
+                //if (!_pageManager.HasEditPermission(page)) return Unauthorized();
+
+                var result = _contentManager.UpdateContentPermission(pageContent);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -178,6 +187,9 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
+                //var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
+                //if (!_pageManager.HasEditPermission(page)) return Unauthorized();
+
                 var deleteResult = _contentManager.RemovePageContent(id);
                 if (deleteResult)
                 {
@@ -198,7 +210,7 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
-                bool result = _contentManager.DeletePageContent(id);
+                var result = _contentManager.DeletePageContent(id);
                 if (result)
                     return Ok();
 

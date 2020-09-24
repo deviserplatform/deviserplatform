@@ -9,22 +9,6 @@ using Module = Deviser.Core.Common.DomainTypes.Module;
 
 namespace Deviser.Core.Data.Repositories
 {
-    public interface IModuleRepository //: IRepositoryBase
-    {
-        List<Module> GetModules();
-        Module GetModule(Guid moduleId);
-        ModuleAction GetModuleAction(Guid moduleActionId);
-        List<ModuleAction> GetModuleActions();
-        List<ModuleActionType> GetModuleActionType();
-        List<ModuleAction> GetEditModuleActions(Guid moduleId);
-        Module GetModule(string moduleName);
-        Module GetModuleByPageModuleId(Guid pageModuleId);
-        Module Create(Module dbModule);
-        Module UpdateModule(Module dbModule);
-        ModuleAction CreateModuleAction(ModuleAction moduleAction);
-        ModuleAction UpdateModuleAction(ModuleAction moduleAction);
-    }
-
     public class ModuleRepository : IModuleRepository
     {
         //Logger
@@ -45,272 +29,177 @@ namespace Deviser.Core.Data.Repositories
         //Custom Field Declaration
         public List<Module> GetModules()
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.Module
-                    .Include(m => m.ModuleAction).ThenInclude(mp => mp.ModuleActionProperties).ThenInclude(p => p.Property).ThenInclude(p => p.OptionList)
-                    .ToList();
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.Module
+                .Include(m => m.ModuleView).ThenInclude(mp => mp.ModuleViewProperties).ThenInclude(p => p.Property).ThenInclude(p => p.OptionList)
+                .ToList();
 
-                return _mapper.Map<List<Module>>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting Get", ex);
-            }
-            return null;
+            return _mapper.Map<List<Module>>(result);
+
         }
 
-        public ModuleAction GetModuleAction(Guid moduleActionId)
+        public ModuleView GetModuleView(Guid moduleViewId)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.ModuleAction
-                    .FirstOrDefault(m => m.Id == moduleActionId);
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.ModuleView
+                .FirstOrDefault(m => m.Id == moduleViewId);
 
-                return _mapper.Map<ModuleAction>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting Get", ex);
-            }
-            return null;
+            return _mapper.Map<ModuleView>(result);
         }
 
-        public List<ModuleAction> GetModuleActions()
+        public List<ModuleView> GetModuleViews()
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.ModuleAction
-                    .Include(mp => mp.ModuleActionProperties).ThenInclude(p => p.Property).ThenInclude(p => p.OptionList)
-                    .Where(m => m.ModuleActionType.ControlType.ToLower() == "view" && m.Module.IsActive) //Selecting View Actions Only
-                    .OrderBy(ma => ma.DisplayName)
-                    .ToList();
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.ModuleView
+                .Include(mp => mp.ModuleViewProperties).ThenInclude(p => p.Property).ThenInclude(p => p.OptionList)
+                .Where(m => m.ModuleViewType.ControlType.ToLower() == "view" && m.Module.IsActive) //Selecting View Actions Only
+                .OrderBy(ma => ma.DisplayName)
+                .ToList();
 
-                return _mapper.Map<List<ModuleAction>>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting ModuleActions", ex);
-            }
-            return null;
+            return _mapper.Map<List<ModuleView>>(result);
         }
 
-        public List<ModuleActionType> GetModuleActionType()
+        public List<ModuleViewType> GetModuleViewType()
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.ModuleActionType
-                    .OrderBy(cd => cd.Id)
-                    .ToList();
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.ModuleViewType
+                .OrderBy(cd => cd.Id)
+                .ToList();
 
-                return _mapper.Map<List<ModuleActionType>>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting Module Action Type", ex);
-            }
-            return null;
+            return _mapper.Map<List<ModuleViewType>>(result);
         }
 
-        public List<ModuleAction> GetEditModuleActions(Guid moduleId)
+        public List<ModuleView> GetEditModuleViews(Guid moduleId)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.ModuleAction
-                    .Include(mp => mp.ModuleActionProperties).ThenInclude(p => p.Property)
-                    .Where(m => m.ModuleId == moduleId && m.ModuleActionType.ControlType.ToLower() == "edit") //Selecting View Actions Only
-                    .ToList();
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.ModuleView
+                .Include(mp => mp.ModuleViewProperties).ThenInclude(p => p.Property)
+                .Where(m => m.ModuleId == moduleId && m.ModuleViewType.ControlType.ToLower() == "edit") //Selecting View Actions Only
+                .ToList();
 
-                return _mapper.Map<List<ModuleAction>>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting ModuleActions", ex);
-            }
-            return null;
+            return _mapper.Map<List<ModuleView>>(result);
         }
 
         public Module GetModule(Guid moduleId)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.Module
-                    .Where(e => e.Id == moduleId)
-                    .Include(m => m.ModuleAction).ThenInclude(ma=>ma.ModuleActionProperties).ThenInclude(p=>p.Property)
-                    .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) // ("ModuleActions.ModuleActionType")                              
-                    .FirstOrDefault();
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.Module
+                .Where(e => e.Id == moduleId)
+                .Include(m => m.ModuleView).ThenInclude(ma => ma.ModuleViewProperties).ThenInclude(p => p.Property)
+                .Include(m => m.ModuleView).ThenInclude(ma => ma.ModuleViewType) // ("ModuleViews.ModuleViewType")                              
+                .FirstOrDefault();
 
-                return _mapper.Map<Module>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling Get", ex);
-            }
-            return null;
+            return _mapper.Map<Module>(result);
         }
 
         public Module GetModule(string moduleName)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.Module
-                    .Where(e => e.Name == moduleName)
-                    .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")                              
-                    .FirstOrDefault();
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.Module
+                .Where(e => e.Name == moduleName)
+                .Include(m => m.ModuleView).ThenInclude(ma => ma.ModuleViewType) //("ModuleViews.ModuleViewType")                              
+                .FirstOrDefault();
 
-                return _mapper.Map<Module>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling Get", ex);
-            }
-            return null;
+            return _mapper.Map<Module>(result);
         }
 
         public Module GetModuleByPageModuleId(Guid pageModuleId)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.Module
-                    .Where(e => e.PageModule.Any(pm => pm.Id == pageModuleId))
-                    .Include(m => m.ModuleAction).ThenInclude(ma => ma.ModuleActionType) //("ModuleActions.ModuleActionType")
-                    .FirstOrDefault();
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.Module
+                .Where(e => e.PageModule.Any(pm => pm.Id == pageModuleId))
+                .Include(m => m.ModuleView).ThenInclude(ma => ma.ModuleViewType) //("ModuleViews.ModuleViewType")
+                .FirstOrDefault();
 
-                return _mapper.Map<Module>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling Get", ex);
-            }
-            return null;
+            return _mapper.Map<Module>(result);
         }
 
         public Module Create(Module module)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var dbModule = _mapper.Map<Entities.Module>(module);
-                dbModule.CreatedDate = dbModule.LastModifiedDate = DateTime.Now;
-                var result = context.Module.Add(dbModule).Entity;
-                context.SaveChanges();
-                return _mapper.Map<Module>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling Create", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var dbModule = _mapper.Map<Entities.Module>(module);
+            dbModule.CreatedDate = dbModule.LastModifiedDate = DateTime.Now;
+            var result = context.Module.Add(dbModule).Entity;
+            context.SaveChanges();
+            return _mapper.Map<Module>(result);
         }
         public Module UpdateModule(Module module)
         {
-            try
+            using var context = new DeviserDbContext(_dbOptions);
+            var dbModule = _mapper.Map<Entities.Module>(module);
+            var moduleViews = dbModule.ModuleView;
+            dbModule.ModuleView = null;
+            foreach (var moduleView in moduleViews)
             {
-                using var context = new DeviserDbContext(_dbOptions);
-                var dbModule = _mapper.Map<Entities.Module>(module);
-                var moduleActions = dbModule.ModuleAction;
-                dbModule.ModuleAction = null;
-                foreach (var moduleAction in moduleActions)
+                if (moduleView.ModuleViewType != null)
                 {
-                    if (moduleAction.ModuleActionType != null)
-                    {
-                        moduleAction.ModuleActionTypeId = moduleAction.ModuleActionType.Id;
-                        moduleAction.ModuleActionType = null;
-                    }
-                    
-
-                    if (context.ModuleAction.Any(pc => pc.Id == moduleAction.Id))
-                    {                           
-
-                        UpdateModuleActionProperties(context, moduleAction);
-
-                        //content exist, therefore update the content 
-                        context.ModuleAction.Update(moduleAction);
-                    }
-                    else
-                    {
-                        moduleAction.ModuleId = dbModule.Id;
-                        context.ModuleAction.Add(moduleAction);
-                    }
+                    moduleView.ModuleViewTypeId = moduleView.ModuleViewType.Id;
+                    moduleView.ModuleViewType = null;
                 }
-                //No need to delte a row from dbo.ModuleAction since the key s referred in dbo.pagemodule.
 
-                //var toDelete = context.ModuleAction.Where(dbModuleAction => dbModuleAction.ModuleId == dbModule.Id &&
-                //!moduleActions.Any(moduleAction => moduleAction.Id != dbModuleAction.Id)).ToList();
 
-                //context.ModuleAction.RemoveRange(toDelete);
+                if (context.ModuleView.Any(pc => pc.Id == moduleView.Id))
+                {
 
-                var result = context.Module.Update(dbModule).Entity;
-                context.SaveChanges();
-                return _mapper.Map<Module>(result);
+                    UpdateModuleViewProperties(context, moduleView);
+
+                    //content exist, therefore update the content 
+                    context.ModuleView.Update(moduleView);
+                }
+                else
+                {
+                    moduleView.ModuleId = dbModule.Id;
+                    context.ModuleView.Add(moduleView);
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling Update", ex);
-            }
-            return null;
+            //No need to delete a row from dbo.ModuleView since the key is referred in dbo.PageModule.
+
+            //var toDelete = context.ModuleView.Where(dbModuleView => dbModuleView.ModuleId == dbModule.Id &&
+            //!moduleViews.Any(moduleView => moduleView.Id != dbModuleView.Id)).ToList();
+
+            //context.ModuleView.RemoveRange(toDelete);
+
+            var result = context.Module.Update(dbModule).Entity;
+            context.SaveChanges();
+            return _mapper.Map<Module>(result);
         }
 
-        public ModuleAction CreateModuleAction(ModuleAction moduleAction)
+        public ModuleView CreateModuleView(ModuleView moduleView)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var dbModuleAction = _mapper.Map<Entities.ModuleAction>(moduleAction);
-                var result = context.ModuleAction.Add(dbModuleAction).Entity;
-                context.SaveChanges();
-                return _mapper.Map<ModuleAction>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling Create", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var dbModuleView = _mapper.Map<Entities.ModuleView>(moduleView);
+            var result = context.ModuleView.Add(dbModuleView).Entity;
+            context.SaveChanges();
+            return _mapper.Map<ModuleView>(result);
         }
 
-        public ModuleAction UpdateModuleAction(ModuleAction moduleAction)
+        public ModuleView UpdateModuleView(ModuleView moduleView)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var dbModuleAction = _mapper.Map<Entities.ModuleAction>(moduleAction);
-                var result = context.ModuleAction.Update(dbModuleAction).Entity;
+            using var context = new DeviserDbContext(_dbOptions);
+            var dbModuleView = _mapper.Map<Entities.ModuleView>(moduleView);
+            var result = context.ModuleView.Update(dbModuleView).Entity;
 
-                UpdateModuleActionProperties(context, dbModuleAction);
+            UpdateModuleViewProperties(context, dbModuleView);
 
-                context.SaveChanges();
-                return _mapper.Map<ModuleAction>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling Update", ex);
-            }
-            return null;
+            context.SaveChanges();
+            return _mapper.Map<ModuleView>(result);
         }
 
-        private void UpdateModuleActionProperties(DeviserDbContext context, Entities.ModuleAction moduleAction)
-        {   
-            if (moduleAction.ModuleActionProperties != null && moduleAction.ModuleActionProperties.Count > 0)
+        private void UpdateModuleViewProperties(DeviserDbContext context, Entities.ModuleView moduleView)
+        {
+            if (moduleView.ModuleViewProperties != null && moduleView.ModuleViewProperties.Count > 0)
             {
 
-                var currentTypeProperties = context.ModuleActionProperty.Where(ctp => ctp.ModuleActionId == moduleAction.Id).ToList();
+                var currentTypeProperties = context.ModuleViewProperty.Where(ctp => ctp.ModuleViewId == moduleView.Id).ToList();
 
-                var toRemoveFromClient = moduleAction.ModuleActionProperties.Where(clientProp => context.ModuleActionProperty.Any(dbProp =>
-                 clientProp.ModuleActionId == dbProp.ModuleActionId && clientProp.PropertyId == dbProp.PropertyId)).ToList();
+                var toRemoveFromClient = moduleView.ModuleViewProperties.Where(clientProp => context.ModuleViewProperty.Any(dbProp =>
+                 clientProp.ModuleViewId == dbProp.ModuleViewId && clientProp.PropertyId == dbProp.PropertyId)).ToList();
 
-                List<Entities.ModuleActionProperty> toRemoveFromDb = null;
+                List<Entities.ModuleViewProperty> toRemoveFromDb = null;
 
                 if (currentTypeProperties.Count > 0)
                 {
-                    toRemoveFromDb = currentTypeProperties.Where(dbProp => !moduleAction.ModuleActionProperties.Any(clientProp => dbProp.PropertyId == clientProp.PropertyId)).ToList();
+                    toRemoveFromDb = currentTypeProperties.Where(dbProp => !moduleView.ModuleViewProperties.Any(clientProp => dbProp.PropertyId == clientProp.PropertyId)).ToList();
                 }
 
                 if (toRemoveFromClient.Count > 0)
@@ -318,23 +207,23 @@ namespace Deviser.Core.Data.Repositories
                     foreach (var contentTypeProp in toRemoveFromClient)
                     {
                         //ContentTypeProperty exist in db, therefore remove it from contentType (client source)
-                        moduleAction.ModuleActionProperties.Remove(contentTypeProp);
+                        moduleView.ModuleViewProperties.Remove(contentTypeProp);
                     }
                 }
 
                 if (toRemoveFromDb != null && toRemoveFromDb.Count > 0)
                 {
                     //ContentTypeProperty is not exist in contentType (client source), because client has been removed it. Therefor, remove it from db.
-                    context.ModuleActionProperty.RemoveRange(toRemoveFromDb);
+                    context.ModuleViewProperty.RemoveRange(toRemoveFromDb);
                 }
 
 
-                if (moduleAction.ModuleActionProperties != null && moduleAction.ModuleActionProperties.Count > 0)
+                if (moduleView.ModuleViewProperties != null && moduleView.ModuleViewProperties.Count > 0)
                 {
-                    foreach (var moduleProp in moduleAction.ModuleActionProperties)
+                    foreach (var moduleProp in moduleView.ModuleViewProperties)
                     {
                         moduleProp.Property = null;
-                        context.ModuleActionProperty.Add(moduleProp);
+                        context.ModuleViewProperty.Add(moduleProp);
                     }
                 }
             }

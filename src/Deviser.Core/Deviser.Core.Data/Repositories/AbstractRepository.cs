@@ -10,7 +10,7 @@ namespace Deviser.Core.Data.Repositories
         protected T GetResultFromCache<T>(string cacheName)
             where T : class
         {
-            if (repoCache.ContainsKey(cacheName) && repoCache.TryGetValue(cacheName, out object objResult) && objResult != null)
+            if (repoCache.ContainsKey(cacheName) && repoCache.TryGetValue(cacheName, out var objResult) && objResult != null)
             {
                 return (T)objResult;
             }

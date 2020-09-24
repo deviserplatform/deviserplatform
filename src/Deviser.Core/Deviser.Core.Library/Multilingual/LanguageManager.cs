@@ -33,111 +33,61 @@ namespace Deviser.Core.Library.Multilingual
 
         public List<Language> GetAllLanguages(bool exceptEnabled = false)
         {
-            try
-            {
-                //string culuresJsonPath = Path.Combine(_hostingEnvironment.ContentRootPath, "cultures.json");
-                var json = EmbeddedProvider.GetFileContentAsString(typeof(LanguageManager).Assembly, "Cultures.json");
-                List<Language> cultures = SDJsonConvert.DeserializeObject<List<Language>>(json);
+            var json = EmbeddedProvider.GetFileContentAsString(typeof(LanguageManager).Assembly, "Cultures.json");
+            var cultures = SDJsonConvert.DeserializeObject<List<Language>>(json);
 
-                cultures.ForEach(c => c.FallbackCulture = Globals.FallbackLanguage);
-                
-                if (exceptEnabled)
-                {
-                    var enabledLanguages = _languageRepository.GetLanguages();
-                    cultures = cultures.Where(language => !enabledLanguages.Any(el => el.CultureCode == language.CultureCode)).ToList();
-                }
+            cultures.ForEach(c => c.FallbackCulture = Globals.FallbackLanguage);
 
-                return cultures;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting all languages", ex);
-                throw ex;
-            }
+            if (!exceptEnabled) return cultures;
+
+            var enabledLanguages = _languageRepository.GetLanguages();
+            cultures = cultures.Where(language => enabledLanguages.All(el => el.CultureCode != language.CultureCode)).ToList();
+
+            return cultures;
         }
 
         public List<Language> GetActiveLanguages()
         {
-            try
-            {
-                var enabledLanguages = _languageRepository.GetActiveLanguages();
-                return enabledLanguages;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting active languages", ex);
-                throw ex;
-            }
+            var enabledLanguages = _languageRepository.GetActiveLanguages();
+            return enabledLanguages;
         }
 
         public List<Language> GetLanguages()
         {
-            try
-            {
-                var result = _languageRepository.GetLanguages();
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting languages", ex);
-                throw ex;
-            }
+            var result = _languageRepository.GetLanguages();
+            return result;
         }
 
         public Language GetLanguage(Guid languageId)
         {
-            try
-            {
-                var result = _languageRepository.GetLanguage(languageId);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting a language", ex);
-                throw ex;
-            }
+            var result = _languageRepository.GetLanguage(languageId);
+            return result;
         }
 
         public Language CreateLanguage(Language language)
         {
-            try
+            var before = _languageRepository.IsMultilingual();
+            var result = _languageRepository.CreateLanguage(language);
+            var after = _languageRepository.IsMultilingual();
+            if (before != after)
             {
-                var before = _languageRepository.IsMultilingual();
-                var result = _languageRepository.CreateLanguage(language);
-                var after = _languageRepository.IsMultilingual();
-                if (before != after)
-                {
-                    TranslateAllPages();
-                }
-                return result;
+                TranslateAllPages();
             }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while creating a language", ex);
-                throw ex;
-            }
+            return result;
         }
 
         public Language UpdateLanguage(Language language)
         {
-            try
+            var before = _languageRepository.IsMultilingual();
+            var result = _languageRepository.UpdateLanguage(language);
+            var after = _languageRepository.IsMultilingual();
+            if (before != after)
             {
-                var before = _languageRepository.IsMultilingual();
-                var result = _languageRepository.UpdateLanguage(language);
-                var after = _languageRepository.IsMultilingual();
-                if(before!=after)
-                {
-                    TranslateAllPages();
-                }
-                return result;
+                TranslateAllPages();
             }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while updating languages", ex);
-                throw ex;
-            }
+            return result;
         }
-        
+
         /// <summary>
         /// Update URL in page translation when site is not multilingual
         /// </summary>

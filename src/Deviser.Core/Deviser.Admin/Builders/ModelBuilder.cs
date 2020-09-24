@@ -35,7 +35,7 @@ namespace Deviser.Admin.Builders
             Action<ModelBuilder<TProperty>> childFormBuilderAction)
             where TProperty : class
         {
-            AdminConfig<TProperty> childConfig = new AdminConfig<TProperty>();
+            var childConfig = new AdminConfig<TProperty>();
             var childFormBuilder = new ModelBuilder<TProperty>(childConfig);
             childFormBuilderAction(childFormBuilder);
             _adminConfig.ChildConfigs.Add(new ChildConfig

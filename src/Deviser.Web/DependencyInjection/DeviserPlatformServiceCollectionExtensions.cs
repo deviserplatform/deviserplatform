@@ -6,6 +6,7 @@ using Deviser.Core.Common.Extensions;
 using Deviser.Core.Common.Internal;
 using Deviser.Core.Common.Module;
 using Deviser.Core.Data;
+using Deviser.Core.Data.Cache;
 using Deviser.Core.Data.Entities;
 using Deviser.Core.Data.Extension;
 using Deviser.Core.Data.Repositories;
@@ -20,13 +21,17 @@ using Deviser.Core.Library.Modules;
 using Deviser.Core.Library.Multilingual;
 using Deviser.Core.Library.Services;
 using Deviser.Core.Library.Sites;
+using Deviser.Web.Infrastructure;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Serilog;
@@ -34,12 +39,9 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Deviser.Core.Data.Cache;
-using Deviser.Web.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
+using Deviser.Core.Library.Security;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Deviser.Web.DependencyInjection
 {
@@ -47,10 +49,7 @@ namespace Deviser.Web.DependencyInjection
     {
         public static IServiceCollection AddDeviserPlatform(this IServiceCollection services)
         {
-            var logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.RollingFile(Path.Combine("./logs", "log-{Date}.txt"))
-                .CreateLogger();
+            var logger = Logger.GetLogger();
 
             services.AddLogging(loggingBuilder =>
                 loggingBuilder.AddSerilog(logger, true));
@@ -58,25 +57,21 @@ namespace Deviser.Web.DependencyInjection
             services.AddSingleton<IInstallationProvider, InstallationProvider>();
             services.AddScoped<ISiteSettingRepository, SiteSettingRepository>();
             services.AddSingleton<IModuleRegistry, ModuleRegistry>();
+            services.AddSignalR();
 
             InternalServiceProvider.Instance.BuildServiceProvider(services);
 
-            IWebHostEnvironment hostEnvironment =
+            var hostEnvironment =
                 InternalServiceProvider.Instance.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
-            IInstallationProvider installationProvider = InternalServiceProvider.Instance.ServiceProvider.GetRequiredService<IInstallationProvider>();
-
-
-            services.AddDbContext<DeviserDbContext>(
-                   (internalServiceProvider, dbContextOptionBuilder) =>
-                   {
-                       installationProvider.GetDbContextOptionsBuilder<DeviserDbContext>(dbContextOptionBuilder);
-                   });
-
-            services.AddIdentity<User, Role>()
-               .AddEntityFrameworkStores<DeviserDbContext>()
-               .AddDefaultTokenProviders();
+            var installationProvider = InternalServiceProvider.Instance.ServiceProvider.GetRequiredService<IInstallationProvider>();
 
             services.AddHttpContextAccessor();
+
+            services.AddDbContext<DeviserDbContext>(
+                (internalServiceProvider, dbContextOptionBuilder) =>
+                {
+                    installationProvider.GetDbContextOptionsBuilder<DeviserDbContext>(dbContextOptionBuilder);
+                });
 
 
             services.AddAutoMapper(typeof(DeviserPlatformServiceCollectionExtensions).Assembly);
@@ -120,10 +115,23 @@ namespace Deviser.Web.DependencyInjection
             services.AddScoped<ISitemapService, SitemapService>();
             services.AddScoped<IViewProvider, ViewProvider>();
 
+            services.AddTransient<IEmailSender, MessageSender>();
+            services.AddTransient<ISmsSender, MessageSender>();
+
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+            services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+
+            services.TryAddSingleton<ObjectMethodExecutorCache>();
+            services.TryAddSingleton<ITypeActivatorCache, TypeActivatorCache>();
+
             InternalServiceProvider.Instance.BuildServiceProvider(services);
 
             if (installationProvider.IsPlatformInstalled)
             {
+                services.AddIdentity<User, Role>()
+                    .AddEntityFrameworkStores<DeviserDbContext>()
+                    .AddDefaultTokenProviders();
+
                 //ISettingManager cannot be used here since most of ISettingManager dependencies are not yet initialized at this point.
                 var siteSettingRepository = InternalServiceProvider.Instance.ServiceProvider.GetService<ISiteSettingRepository>();
                 var siteSettings = siteSettingRepository.GetSettings();
@@ -164,11 +172,21 @@ namespace Deviser.Web.DependencyInjection
                         googleOptions.ClientSecret = googleClientSecret;
                     });
                 }
+
+                // Add cookie authentication so that it's possible to sign-in to test the
+                // custom authorization policy behavior of the sample
+                //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                //    .AddCookie(options =>
+                //    {
+                //        options.AccessDeniedPath = "/account/denied";
+                //        options.LoginPath = "/account/signin";
+                //    });
+
+                RegisterModuleDependencies(services);
+                services.AddDeviserAdmin();
             }
 
-            RegisterModuleDependencies(services);
-
-            services
+            var mvcBuilder = services
                 .AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 {
@@ -181,8 +199,14 @@ namespace Deviser.Web.DependencyInjection
                     options.ViewLocationExpanders.Add(new ModuleLocationRemapper());
 
                 })
-                .AddControllersAsServices()
                 .AddRazorRuntimeCompilation();
+
+            if (installationProvider.IsPlatformInstalled)
+            {
+                mvcBuilder.AddControllersAsServices();
+            }
+
+
 
             if (hostEnvironment.IsDevelopment())
             {
@@ -195,12 +219,12 @@ namespace Deviser.Web.DependencyInjection
                     libraryPath = Path.GetFullPath(
                         Path.Combine(hostEnvironment.ContentRootPath, "..", "Deviser.Core", "Deviser.Admin.Web"));
                     options.FileProviders.Add(new PhysicalFileProvider(libraryPath));
+
+                    libraryPath = Path.GetFullPath(
+                        Path.Combine(hostEnvironment.ContentRootPath, "..", "Deviser.Themes", "Deviser.Themes.Skyline"));
+                    options.FileProviders.Add(new PhysicalFileProvider(libraryPath));
                 });
             }
-
-            services.AddDeviserAdmin();
-
-            services.AddSignalR();
 
             services.AddDistributedMemoryCache();
 
@@ -220,12 +244,7 @@ namespace Deviser.Web.DependencyInjection
                        .AllowAnyHeader();
             }));
 
-            // Add core application services.
-            services.AddTransient<IEmailSender, MessageSender>();
-            services.AddTransient<ISmsSender, MessageSender>();
-            services.TryAddSingleton<ObjectMethodExecutorCache>();
-            services.TryAddSingleton<ITypeActivatorCache, TypeActivatorCache>();
-
+            InternalServiceProvider.Instance.BuildServiceProvider(services);
             return services;
         }
 

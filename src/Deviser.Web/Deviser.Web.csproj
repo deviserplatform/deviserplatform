@@ -1,69 +1,79 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-    <IsShippingPackage>true</IsShippingPackage>
-    <!--<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>-->
-  </PropertyGroup>
+		<IsShippingPackage>true</IsShippingPackage>
+		<!--<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>-->
+		<!--Angular App-->
+		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+		<TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+		<SpaRoot>ClientApp\</SpaRoot>
+		<DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+		<!-- Set this to true if you enable server-side prerendering -->
+		<BuildServerSideRenderer>false</BuildServerSideRenderer>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
-    <Compile Remove="wwwroot\lib\bootstrap\.github\**" />
-    <Compile Remove="wwwroot\lib\lodash\.github\**" />
-    <Compile Remove="wwwroot\lib\metisMenu\.github\**" />
-    <Content Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
-    <Content Remove="wwwroot\lib\bootstrap\.github\**" />
-    <Content Remove="wwwroot\lib\lodash\.github\**" />
-    <Content Remove="wwwroot\lib\metisMenu\.github\**" />
-    <EmbeddedResource Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
-    <EmbeddedResource Remove="wwwroot\lib\bootstrap\.github\**" />
-    <EmbeddedResource Remove="wwwroot\lib\lodash\.github\**" />
-    <EmbeddedResource Remove="wwwroot\lib\metisMenu\.github\**" />
-    <None Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
-    <None Remove="wwwroot\lib\bootstrap\.github\**" />
-    <None Remove="wwwroot\lib\lodash\.github\**" />
-    <None Remove="wwwroot\lib\metisMenu\.github\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="TagHelpers\**" />
+		<Compile Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
+		<Compile Remove="wwwroot\lib\bootstrap\.github\**" />
+		<Compile Remove="wwwroot\lib\metisMenu\.github\**" />
+		<Content Remove="TagHelpers\**" />
+		<Content Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
+		<Content Remove="wwwroot\lib\bootstrap\.github\**" />
+		<Content Remove="wwwroot\lib\metisMenu\.github\**" />
+		<EmbeddedResource Remove="TagHelpers\**" />
+		<EmbeddedResource Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
+		<EmbeddedResource Remove="wwwroot\lib\bootstrap\.github\**" />
+		<EmbeddedResource Remove="wwwroot\lib\metisMenu\.github\**" />
+		<None Remove="TagHelpers\**" />
+		<None Remove="wwwroot\lib\bootstrap-sass\assets\images\**" />
+		<None Remove="wwwroot\lib\bootstrap\.github\**" />
+		<None Remove="wwwroot\lib\metisMenu\.github\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.8" />
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Deviser.Core\Deviser.Admin.Web\Deviser.Admin.Web.csproj" />
-    <ProjectReference Include="..\Deviser.Core\Deviser.Core.Common\Deviser.Core.Common.csproj" />
-    <ProjectReference Include="..\Deviser.Core\Deviser.Core.Data\Deviser.Core.Data.csproj" />
-    <ProjectReference Include="..\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj" />
-    <ProjectReference Include="..\Deviser.Modules\Deviser.Modules.Blog\Deviser.Modules.Blog\Deviser.Modules.Blog.csproj" />
-    <ProjectReference Include="..\Deviser.Modules\Deviser.Modules.Contact\Deviser.Modules.ContactForm.csproj" />
-    <ProjectReference Include="..\Deviser.Modules\Deviser.Modules.ContentManagement\Deviser.Modules.ContentManagement.csproj" />
-    <ProjectReference Include="..\Deviser.Modules\Deviser.Modules.FileManager\Deviser.Modules.FileManager.csproj" />
-    <ProjectReference Include="..\Deviser.Modules\Deviser.Modules.Language\Deviser.Modules.Language.csproj" />
-    <ProjectReference Include="..\Deviser.Modules\Deviser.Modules.ModuleManagement\Deviser.Modules.ModuleManagement.csproj" />
-    <ProjectReference Include="..\Deviser.Modules\Deviser.Modules.PageManagement\Deviser.Modules.PageManagement.csproj" />
-    <ProjectReference Include="..\Deviser.Modules\Deviser.Modules.RecycleBin\Deviser.Modules.RecycleBin.csproj" />
-    <ProjectReference Include="..\Deviser.Modules\Deviser.Modules.Security\Deviser.Modules.Security.csproj" />
-    <ProjectReference Include="..\Deviser.Modules\Deviser.Modules.SecurityRoles\Deviser.Modules.SecurityRoles.csproj" />
-    <ProjectReference Include="..\Deviser.Modules\Deviser.Modules.SiteManagement\Deviser.Modules.SiteManagement.csproj" />
-    <ProjectReference Include="..\Deviser.Modules\Deviser.Modules.UserManagement\Deviser.Modules.UserManagement.csproj" />
-    <ProjectReference Include="..\Deviser.Core\Deviser.ClientDependency\Deviser.ClientDependency.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Deviser.Core\Deviser.Admin.Web\Deviser.Admin.Web.csproj" />
+		<ProjectReference Include="..\Deviser.Core\Deviser.Core.Common\Deviser.Core.Common.csproj" />
+		<ProjectReference Include="..\Deviser.Core\Deviser.Core.Data\Deviser.Core.Data.csproj" />
+		<ProjectReference Include="..\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj" />
+		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.Blog\Deviser.Modules.Blog\Deviser.Modules.Blog.csproj" />
+		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.Contact\Deviser.Modules.ContactForm.csproj" />
+		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.ContentManagement\Deviser.Modules.ContentManagement.csproj" />
+		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.FileManager\Deviser.Modules.FileManager.csproj" />
+		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.Language\Deviser.Modules.Language.csproj" />
+		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.ModuleManagement\Deviser.Modules.ModuleManagement.csproj" />
+		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.PageManagement\Deviser.Modules.PageManagement.csproj" />
+		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.RecycleBin\Deviser.Modules.RecycleBin.csproj" />
+		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.Security\Deviser.Modules.Security.csproj" />
+		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.SecurityRoles\Deviser.Modules.SecurityRoles.csproj" />
+		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.SiteManagement\Deviser.Modules.SiteManagement.csproj" />
+		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.UserManagement\Deviser.Modules.UserManagement.csproj" />
+		<ProjectReference Include="..\Deviser.Core\Deviser.ClientDependency\Deviser.ClientDependency.csproj" />
+		<ProjectReference Include="..\Deviser.Themes\Deviser.Themes.Skyline\Deviser.Themes.Skyline.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="MailKit" Version="2.5.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
-    <PackageReference Include="Serilog.Sinks.Literate" Version="3.0.0" />
-    <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="10.0.0" />
+		<PackageReference Include="MailKit" Version="2.8.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.8" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+		<PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
+		<PackageReference Include="Serilog.Sinks.Literate" Version="3.0.0" />
+		<PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="TagHelpers\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="wwwroot\lib\aspnet\signalr\dist\" />
+	</ItemGroup>
 
 </Project>

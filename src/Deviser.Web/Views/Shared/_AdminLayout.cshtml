@@ -22,11 +22,11 @@
 
     <render type="Css"></render>
 
-    <link rel="stylesheet" href="~/_content/Deviser.Web/css/admin/controlbar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/_content/Deviser.Web/css/controlbar.css" asp-append-version="true" />
 
     <render type="Script" location="Head"></render>
 </head>
-<body>
+<body class="@ViewBag.BodyClass">
     <render type="Script" location="BodyStart"></render>
 
     @RenderBody()

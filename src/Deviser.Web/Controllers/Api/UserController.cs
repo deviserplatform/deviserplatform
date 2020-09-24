@@ -8,10 +8,12 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Deviser.Web.Controllers.Api
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Administrators")]
     public class UserController : Controller
     {
         //Logger

@@ -1,0 +1,298 @@
+<div class="edit-container">
+    <div class="container-fluid">
+        <div class="row header-row">
+            <div class="col-2">
+                <h3 class="edit-title">
+                    Page Editor
+                </h3>
+            </div>
+            <div class="col edit-info">
+                <div class="page-name" ngPreserveWhitespaces>
+                    <b>Page: </b> <span
+                        *ngIf="pageContext && pageContext.currentTranslation">{{pageContext.currentTranslation.name}}</span>
+                </div>
+                <div class="layout-name">
+
+                </div>
+            </div>
+            <div class="col-2 action-bar">
+                <button type="button" class="action-control btn btn-action  btn-secondary"
+                    *ngIf="currentPageState === pageState.Published" (click)="onDraft();">
+                    <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
+                    Draft
+                </button>
+
+                <button type="button" class="action-control btn btn-action  btn-primary"
+                    *ngIf="currentPageState === pageState.Draft" (click)="onPublish();">
+                    <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/globe.svg'| envPath"></i>
+                    Publish
+                </button>
+            </div>
+        </div>
+        <div class="row content-row">
+            <div class="col-2 page-elements-col">
+                <div class="card page-elements-card">
+                    <div class="card-header">
+                        <b>Page Elements</b>
+                    </div>
+                    <div class="card-body">
+
+                        <accordion>
+                            <accordion-group>
+                                <div accordion-heading>
+                                    <span>Content Types</span>
+                                </div>
+                                <div #newElementList cdkDropList class="new-element-list" *ngIf="contentTypes && contentTypes.length > 0"
+                                    [cdkDropListConnectedTo]="nestedContainersDropListIds"
+                                    [cdkDropListData]="contentTypes">
+                                    <div class="new-element node-element" *ngFor="let contentElement of contentTypes"
+                                        cdkDrag [cdkDragData]="contentElement">
+                                        <div class="icon">
+                                            <i class="{{contentElement.contentType.iconClass}}"
+                                                *ngIf="contentElement.contentType.iconClass"></i>
+                                            <img src="{{contentElement.contentType.iconImage}}"
+                                                *ngIf="contentElement.contentType.iconImage"
+                                                alt="{{contentElement.contentType.name}}" />
+                                        </div>
+                                        <div class="label">
+                                            {{contentElement.contentType.label}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </accordion-group>
+                            <accordion-group>
+                                <div accordion-heading>
+                                    <span>Module Views</span>
+                                </div>
+                                <div #newElementList cdkDropList class="new-element-list" *ngIf="moduleViews && moduleViews.length > 0"
+                                    [cdkDropListConnectedTo]="nestedContainersDropListIds"
+                                    [cdkDropListData]="moduleViews">
+                                    <div class="new-element node-element" *ngFor="let moduleElement of moduleViews"
+                                        cdkDrag [cdkDragData]="moduleElement">
+                                        <div class="icon">
+                                            <i class="{{moduleElement.moduleView.iconClass}}"
+                                                *ngIf="moduleElement.moduleView.iconClass"></i>
+                                            <img src="{{moduleElement.moduleView.iconImage}}"
+                                                *ngIf="moduleElement.moduleView.iconImage"
+                                                alt="{{moduleElement.moduleView.name}}" />
+                                        </div>
+                                        <div class="label">
+                                            {{moduleElement.moduleView.displayName}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </accordion-group>
+                        </accordion>
+
+
+                    </div>
+                </div>
+
+                <!-- <div class="card module-view">
+                    <div class="card-header">
+                        <b>Module Views</b>
+                    </div>
+                    <div class="card-body" >
+
+                    </div>
+                </div> -->
+            </div>
+            <div class="col container-element-col">
+                <div class="container-element root">
+                    <div class="container-element-header">
+                        <b>Page Containers</b>
+                    </div>
+                    <div class="container-element-body" *ngIf="root">
+                        <ng-container *ngTemplateOutlet="list, context:{node:root}">
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="container-element root unassigned">
+                    <div class="container-element-header">
+                        <b>Unassigned Elements</b>
+                    </div>
+                    <div class="container-element-body" *ngIf="root">
+                        <ng-container *ngTemplateOutlet="list, context:{node:uaLayout}">
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2 properties-trash-col">
+                <div class="card properties-container">
+                    <div class="card-header">
+                        <b>Selected</b>
+                    </div>
+                    <div class="card-body properties" *ngIf="selectedPlaceHolder && selectedPlaceHolder.properties">
+
+                        <div class="row" *ngIf="selectedPlaceHolder && selectedPlaceHolder.contentType">
+                            <div class="col-md-6">
+                                <strong>Content Type</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{selectedPlaceHolder.contentType.label}}
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="selectedPlaceHolder && selectedPlaceHolder.moduleView">
+                            <div class="col-md-6">
+                                <strong>Module View</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{selectedPlaceHolder.moduleView.displayName}}
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="selectedPlaceHolder">
+                            <div class="col-md-6">
+                                <strong>Title</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-sm"
+                                    [(ngModel)]="selectedPlaceHolder.title" />
+                            </div>
+                        </div>
+                        <div class="row"
+                            *ngIf="selectedPlaceHolder.properties && selectedPlaceHolder.properties.length > 0">
+                            <div class="col-md-6">
+                                <strong>Properties</strong>
+                            </div>
+                        </div>
+
+                        <div class="row" *ngFor="let property of selectedPlaceHolder.properties">
+                            <div class="col-md-6">
+                                {{property.label}}
+                            </div>
+                            <div class="col-md-6" *ngIf="!property.optionList">
+                                <input type="text" class="form-control input-sm" [(ngModel)]="property.value" />
+                            </div>
+                            <div class="col-md-6" *ngIf="property.optionList">
+                                <select class="form-control input-sm" name="repeatSelect" id="repeatSelect"
+                                    [(ngModel)]="property.value">
+                                    <option value="">Select</option>
+                                    <option *ngFor="let option of property.optionList.list" [value]="option.id">
+                                        {{option.label}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" class="property-control btn btn-action  btn-primary"
+                                    (click)="onSaveProperties();"> Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card trash-container">
+                    <div class="card-header">
+                        <b>Trash</b>
+                    </div>
+                    <div class="card-body">
+                        <div id="trashList" cdkDropList class="trash-list" (cdkDropListDropped)="onDropToTrash($event)">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #list let-node="node">
+        <div cdkDropList [id]="node.id" [cdkDropListConnectedTo]="trashDropListIds" [cdkDropListData]="node"
+            [ngClass]="{'horizontal': node.type==='row', 'vertical': node.type!=='row'}"
+            (cdkDropListDropped)="onDragDrop($event)" class="drop-list">
+            <div *ngFor="let child of node.placeHolders;let i = index" cdkDrag [cdkDragData]="child" class="drop-item"
+                [ngClass]="getColumnClass(child)"
+                [cdkDragDisabled]="child.layoutTemplate === 'container'">
+                <!-- <div [ngClass]="{'row': node.type==='row'}">
+            <div [ngClass]="{'col': child.type==='column'}"> -->
+                <ng-container *ngTemplateOutlet="templateSelector, context:{node:child, index:i}">
+                </ng-container>
+                <!-- </div>
+          </div> -->
+                <div class="item-placeholder" *cdkDragPlaceholder></div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #templateSelector let-node="node" let-index="index">
+        <ng-container [ngSwitch]="node.layoutTemplate">
+            <ng-container *ngSwitchCase="'container'">
+                <div class="container-element placeholder">
+                    <div class="container-element-header">
+                        <span>{{getLayoutTypeName(node.layoutTypeId)}} {{index+1}}</span>
+
+                    </div>
+                    <div class="container-element-body">
+                        <ng-container *ngTemplateOutlet="list, context:{node:node}">
+                        </ng-container>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngSwitchCase="'content'">
+                <div class="container-element content" [ngClass]="getPlaceHolderClass(node)"
+                    (click)="onPlaceHolderSelected($event, node)">
+                    <div class="container-element-header">
+                        <div class="title">
+                            <i [ngClass]="node.contentType.iconClass" *ngIf="node.contentType.iconClass"></i>
+                            <img [src]="node.contentType.iconImage" *ngIf="node.contentType.iconImage"
+                                [alt]="node.contentType.name" />
+                            <b>{{node.title}}</b>
+                        </div>
+                        <div class="content-actions">
+                            <button type="button" class="action-control btn btn-light"
+                                *ngIf="currentPageState === pageState.Published" (click)="onOpenPermission(node);">
+                                <i class="my-icon" aria-label="My icon"
+                                    [inlineSVG]="'assets/icons/shield.svg'| envPath"></i>
+                            </button>
+                            <button type="button" class="action-control btn btn-light"
+                                *ngIf="currentPageState === pageState.Published" (click)="onEditContent(node);">
+                                <i class="my-icon" aria-label="My icon"
+                                    [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="container-element-body">
+                        <app-preview-content [pageContent]="node.pageContent"></app-preview-content>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngSwitchCase="'module'">
+                <div class="container-element module" [ngClass]="getPlaceHolderClass(node)"
+                    (click)="onPlaceHolderSelected($event, node)">
+                    <div class="container-element-header">
+                        <div class="title">
+                            <i [ngClass]="node.moduleView.iconClass" *ngIf="node.moduleView.iconClass"></i>
+                            <img [src]="node.moduleView.iconImage" *ngIf="node.moduleView.iconImage"
+                                [alt]="node.moduleView.displayName" />
+                            <b>{{node.title}}</b>
+                        </div>
+                        <div class="permission-action">
+                            <button type="button" class="action-control btn btn-light"
+                                *ngIf="currentPageState === pageState.Published" (click)="onOpenPermission(node);">
+                                <i class="my-icon" aria-label="My icon"
+                                    [inlineSVG]="'assets/icons/shield.svg'| envPath"></i>
+                            </button>
+                        </div>
+                        <div class="edit-action">
+                            <!-- <button type="button" class="action-control btn btn-light"
+                                *ngIf="currentPageState === pageState.Published">
+                                <i class="my-icon" aria-label="My icon"
+                                    [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
+                            </button> -->
+                        </div>
+                    </div>
+                    <!-- <div class="container-element-body">
+                    </div> -->
+                </div>
+            </ng-container>
+        </ng-container>
+
+    </ng-template>
+
+
+</div>

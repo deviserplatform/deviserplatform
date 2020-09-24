@@ -1,40 +1,38 @@
-<div class="admin-container">
-    <div class="admin-tree-container card"
-      *ngIf="adminConfig && 
+<div class="admin-tree-container card" *ngIf="adminConfig && 
       adminConfig.modelConfig && 
       adminConfig.modelConfig.treeConfig && 
       adminConfig.modelConfig.treeConfig.childrenField && 
       adminConfig.modelConfig.treeConfig.displayField &&
       tree">
-      <div class="card-header">
-        {{adminConfig.adminTitle}}
+  <div class="card-header">
+    {{adminConfig.adminTitle}}
+  </div>
+  <div class="card-body">
+    <div class="row action-bar">
+
+    </div>
+
+    <div class="row">
+      <div class="col admin-tree">
+        <app-tree-control [treeData]="tree[adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase]"
+          [keyField]="adminConfig.modelConfig.keyField.fieldNameCamelCase"
+          [childrenField]="adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase"
+          [displayField]="adminConfig.modelConfig.treeConfig.displayField.fieldNameCamelCase"
+          [parentField]="adminConfig.modelConfig.treeConfig.parentField.fieldNameCamelCase"
+          [sortField]="adminConfig.modelConfig.treeConfig.sortField.fieldNameCamelCase" (nodeDrop)="onNodeDrop($event)"
+          (nodeAdd)="onNewItem($event)" (nodeDelete)="onNodeDelete($event)" (nodeSelect)="onNodeSelect($event)">
+        </app-tree-control>
       </div>
-      <div class="card-body">
-        <div class="row action-bar">
-          
-        </div>
-        <app-admin-alert class="admin-alerts" [alerts]="alerts"></app-admin-alert>
-        <div class="row">
-          <div class="col admin-tree">
-            <app-tree-control [treeData]="tree[adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase]" 
-            [keyField]="adminConfig.modelConfig.keyField.fieldNameCamelCase" 
-            [childrenField]="adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase" 
-            [displayField]="adminConfig.modelConfig.treeConfig.displayField.fieldNameCamelCase"
-            [parentField]="adminConfig.modelConfig.treeConfig.parentField.fieldNameCamelCase"
-            [sortField]="adminConfig.modelConfig.treeConfig.sortField.fieldNameCamelCase"
-            (nodeDrop)="onNodeDrop($event)" (nodeAdd)="onNewItem($event)" (nodeDelete)="onNodeDelete($event)" (nodeSelect)="onNodeSelect($event)"></app-tree-control>
-          </div>
-          <div class="col admin-tree-form">
-            <app-admin-form *ngIf="selectedNode"></app-admin-form>
-          </div>
-        </div>
-  
-      </div>
-      <div class="card-footer">
-       
+      <div class="col admin-tree-form">
+        <app-admin-form *ngIf="selectedNode"></app-admin-form>
       </div>
     </div>
-  
-    <app-confirm-dialog [title]="'Confirmation'" [content]="'Are you sure to delete this item?'" [btnConfirmText]="'Yes'"
-      [btnCancelText]="'No'" (confirm)="onYesToDelete($event)" (cancel)="onNoToDelete($event)"></app-confirm-dialog>
+
   </div>
+  <div class="card-footer">
+
+  </div>
+</div>
+
+<app-confirm-dialog [title]="'Confirmation'" [content]="'Are you sure to delete this item?'" [btnConfirmText]="'Yes'"
+  [btnCancelText]="'No'" (confirm)="onYesToDelete($event)" (cancel)="onNoToDelete()"></app-confirm-dialog>

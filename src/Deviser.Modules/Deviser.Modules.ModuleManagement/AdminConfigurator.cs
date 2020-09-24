@@ -38,7 +38,7 @@ namespace Deviser.Modules.ModuleManagement
                     .AddField(c => c.Description)
                     .AddField(c => c.Version);
 
-                modelBuilder.AddChildConfig(s => s.ModuleAction, (childForm) =>
+                modelBuilder.AddChildConfig(s => s.ModuleView, (childForm) =>
                 {
                     childForm.GridBuilder
                         .AddField(c => c.DisplayName);
@@ -48,7 +48,7 @@ namespace Deviser.Modules.ModuleManagement
                     childForm.FormBuilder
                         .AddKeyField(c => c.Id)
                         .AddField(c => c.DisplayName, option=> option.EnableIn = FormMode.Create)
-                        .AddSelectField(c => c.ModuleActionType, de=>de.ControlType)
+                        .AddSelectField(c => c.ModuleViewType, de=>de.ControlType)
                         .AddField(c => c.ControllerName)
                         .AddField(c => c.ControllerNamespace)
                         .AddField(c => c.IconClass)
@@ -56,7 +56,7 @@ namespace Deviser.Modules.ModuleManagement
                         .AddField(c => c.IsDefault)
                         .AddMultiselectField(c => c.Properties, c => $"{c.Label} ({c.Name})");
 
-                    childForm.FormBuilder.Property(u => u.ModuleActionType).HasLookup(sp => sp.GetService<ModuleAdminService>().GetActionType(),
+                    childForm.FormBuilder.Property(u => u.ModuleViewType).HasLookup(sp => sp.GetService<ModuleAdminService>().GetActionType(),
                         ke => ke.Id,
                         de => de.ControlType);
 

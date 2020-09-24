@@ -11,7 +11,7 @@ namespace Deviser.Core.Data.Entities
         public string ContentData { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string CultureCode { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsActive { get; set; }
         public DateTime? LastModifiedDate { get; set; }
         public Guid PageContentId { get; set; }
         public PageContent PageContent { get; set; }

@@ -1,0 +1,38 @@
+﻿@using System.Security.Claims
+@using Deviser.Core.Library.TagHelpers;
+@using Deviser.Core.Library;
+@using Deviser.Core.Library.Services;
+@using Deviser.Core.Common;
+@inject IScopeService scopeService
+@inject INavigation navigation
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var pageContext = scopeService.PageContext;
+    var loggedInClass = pageContext.HasPageEditPermission ? "logged-in" : "";
+    var pageContentLoggedInClass = pageContext.HasPageEditPermission ? "page-content-logged-in" : "";
+    var parentId = Guid.Parse("aaa7c6b9-03e8-424f-a42e-08d587845981");
+}
+
+
+@await Html.PartialAsync("~/Sites/Default/Themes/Skyline/_SiteHeader.cshtml")
+
+<div class="content-wrapper @pageContentLoggedInClass">
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <div dev-nav="SiteSide" dev-nav-parent="parentId" dev-nav-page="PublicOnly" class="side-nav"></div>
+            </div>
+            <div class="col-9">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+@await Html.PartialAsync("~/Sites/Default/Themes/Skyline/_SiteFooter.cshtml")
+
+
+@section Scripts{
+    @RenderSection("scripts", required: false)
+}

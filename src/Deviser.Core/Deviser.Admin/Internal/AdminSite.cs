@@ -117,7 +117,7 @@ namespace Deviser.Admin.Internal
                             _typeMaps = Mapper.ConfigurationProvider.GetAllTypeMaps().ToList();
                         }
 
-                        Type entityClrType = GetEntityClrTypeFor(modelType);
+                        var entityClrType = GetEntityClrTypeFor(modelType);
 
                         if (entityClrType == null)
                         {
@@ -140,7 +140,7 @@ namespace Deviser.Admin.Internal
                             {
                                 var childModelType = childConfig.Field.FieldClrType;
 
-                                Type childEntityClrType = GetEntityClrTypeFor(childModelType);
+                                var childEntityClrType = GetEntityClrTypeFor(childModelType);
 
                                 if (childEntityClrType == null)
                                 {
@@ -207,7 +207,7 @@ namespace Deviser.Admin.Internal
 
         public TypeMap GetTypeMapFor(Type modelType)
         {
-            TypeMap typeMap = _typeMaps.FirstOrDefault(tm => tm.SourceType == modelType);
+            var typeMap = _typeMaps.FirstOrDefault(tm => tm.SourceType == modelType);
             if (typeMap == null)
             {
                 typeMap = _typeMaps.FirstOrDefault(tm => tm.DestinationType == modelType);
@@ -217,7 +217,7 @@ namespace Deviser.Admin.Internal
 
         private Type GetEntityClrTypeFor(Type modelType)
         {
-            Type entityClrType = _typeMaps.FirstOrDefault(tm => tm.SourceType == modelType)?.DestinationType;
+            var entityClrType = _typeMaps.FirstOrDefault(tm => tm.SourceType == modelType)?.DestinationType;
             if (entityClrType == null)
             {
                 entityClrType = _typeMaps.FirstOrDefault(tm => tm.DestinationType == modelType)?.SourceType;
@@ -241,7 +241,9 @@ namespace Deviser.Admin.Internal
                 {
                     var lookUpFields = new List<LookUpField>();
                     var ShowOnStaticExpressionDel = childConfig.ShowOnStaticExpression.Compile();
-                    var result = ShowOnStaticExpressionDel.DynamicInvoke(new object[] { _serviceProvider });
+                    var serviceProvider =
+                        _serviceProvider.GetService<IHttpContextAccessor>().HttpContext.RequestServices;
+                    var result = ShowOnStaticExpressionDel.DynamicInvoke(new object[] { serviceProvider });
                     return (bool)result;
                 }
 
@@ -308,11 +310,11 @@ namespace Deviser.Admin.Internal
 
         private void PopulateFields(Type modelType, IFormConfig formConfig, ICollection<Field> excludeField = null)
         {
-            List<PropertyInfo> properties = GetProperties(modelType);
+            var properties = GetProperties(modelType);
 
             foreach (var prop in properties)
             {
-                bool isExclude = (excludeField != null && excludeField.Any(f => f.FieldClrType == prop.PropertyType));
+                var isExclude = (excludeField != null && excludeField.Any(f => f.FieldClrType == prop.PropertyType));
 
                 if (!isExclude)
                 {
@@ -630,7 +632,7 @@ namespace Deviser.Admin.Internal
             //    fieldType = metadata.UnderlyingOrModelType;
             //}
 
-            foreach (string typeName in GetTypeNames(field.FieldClrType))
+            foreach (var typeName in GetTypeNames(field.FieldClrType))
             {
                 yield return typeName;
             }
@@ -785,7 +787,10 @@ namespace Deviser.Admin.Internal
                 var displayExprDelegate = lookupDisplayExpression.Compile();
                 var keyFieldName = ReflectionExtensions.GetMemberName(lookupKeyExpression);
 
-                var items = entityLookupExprDelegate.DynamicInvoke(new object[] { _serviceProvider }) as IList;
+                var serviceProvider =
+                    _serviceProvider.GetService<IHttpContextAccessor>().HttpContext.RequestServices;
+
+                var items = entityLookupExprDelegate.DynamicInvoke(new object[] { serviceProvider }) as IList;
 
                 foreach (var item in items)
                 {
@@ -825,7 +830,7 @@ namespace Deviser.Admin.Internal
         {
             try
             {
-                IServiceScopeFactory _serviceScopeFactory = _serviceProvider.GetRequiredService<IServiceScopeFactory>();
+                var _serviceScopeFactory = _serviceProvider.GetRequiredService<IServiceScopeFactory>();
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
                     using (var dbContext = (DbContext)scope.ServiceProvider.GetService(_dbContextType))
@@ -855,15 +860,15 @@ namespace Deviser.Admin.Internal
         private List<Expression<Func<TEntity, object>>> GetPrimaryKeyExpressions<TEntity>(DbContext dbContext)
             where TEntity : class
         {
-            Type eClrType = typeof(TEntity);
+            var eClrType = typeof(TEntity);
             var eType = dbContext.Model.FindEntityType(eClrType);
             var primaryKey = eType.FindPrimaryKey();
             var properties = primaryKey.Properties;
             var eTypeParamExpr = Expression.Parameter(eClrType);
-            List<Expression<Func<TEntity, object>>> keySelectorExpressions = new List<Expression<Func<TEntity, object>>>();
+            var keySelectorExpressions = new List<Expression<Func<TEntity, object>>>();
             foreach (var prop in properties)
             {
-                MemberExpression memberExpression = Expression.Property(eTypeParamExpr, prop.PropertyInfo);
+                var memberExpression = Expression.Property(eTypeParamExpr, prop.PropertyInfo);
                 Expression objectMemberExpr = Expression.Convert(memberExpression, typeof(object)); //Convert Value/Reference type to object using boxing/lifting
                 var pkValExpr = Expression.Lambda<Func<TEntity, object>>(objectMemberExpr, eTypeParamExpr);
                 keySelectorExpressions.Add(pkValExpr);

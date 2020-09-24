@@ -55,22 +55,16 @@ namespace Deviser.Core.Library.Controllers
             resultView.EnsureSuccessful(originalLocations: null);
 
             var view = resultView.View;
-            try
+            using (view as IDisposable)
             {
-                using (view as IDisposable)
-                {
-                    var result = executor.ExcuteToStringAsync(context, view, viewResult.ViewData,
+                var result = executor.ExcuteToStringAsync(context, view, viewResult.ViewData,
                     viewResult.TempData,
                     viewResult.ContentType,
                     viewResult.StatusCode);
-                    if (!string.IsNullOrEmpty(result))
-                        return result;
-                }
+                if (!string.IsNullOrEmpty(result))
+                    return result;
             }
-            catch
-            {
-                throw;
-            }
+
             return "Module cannot be loaded";
         }
 
@@ -88,24 +82,18 @@ namespace Deviser.Core.Library.Controllers
             resultView.EnsureSuccessful(originalLocations: null);
 
             var view = resultView.View;
-            try
+            using (view as IDisposable)
             {
-                using (view as IDisposable)
-                {
-                    var result = executor.ExecuteToHTML(context, view,
-                        viewResult.Model,
-                        viewResult.ViewData,
-                        viewResult.TempData,
-                        viewResult.ContentType,
-                        viewResult.StatusCode);
-                    if (result != null)
-                        return result;
-                }
+                var result = executor.ExecuteToHTML(context, view,
+                    viewResult.Model,
+                    viewResult.ViewData,
+                    viewResult.TempData,
+                    viewResult.ContentType,
+                    viewResult.StatusCode);
+                if (result != null)
+                    return result;
             }
-            catch
-            {
-                throw;
-            }
+
             return new HtmlString("Module cannot be loaded");
         }
 
@@ -176,7 +164,7 @@ namespace Deviser.Core.Library.Controllers
 
                 var routeData = new RouteData();
 
-                foreach(var kvp in actionContext.RouteData.Values)
+                foreach (var kvp in actionContext.RouteData.Values)
                 {
                     routeData.Values.Add(kvp.Key, kvp.Value);
                 }
@@ -185,11 +173,11 @@ namespace Deviser.Core.Library.Controllers
                 //routeData.Values.Add("controller", actionContext.RouteData.Values["controller"]);
                 //routeData.Values.Add("action", actionContext.RouteData.Values["action"]);
                 //routeData.Values.Add("pageModuleId", actionContext.RouteData.Values["pageModuleId"]);
-                foreach(var rt in actionContext.RouteData.Routers)
+                foreach (var rt in actionContext.RouteData.Routers)
                 {
                     routeData.Routers.Add(rt);
                 }
-                
+
                 var ac = new ActionContext(actionContext.HttpContext, routeData, actionContext.ActionDescriptor);
 
                 var viewContext = new ViewContext(

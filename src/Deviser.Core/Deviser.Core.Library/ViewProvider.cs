@@ -18,6 +18,7 @@ namespace Deviser.Core.Library
         {
             _applicationPartManager = applicationPartManager;
         }
+
         public IList<CompiledViewDescriptor> GetCompiledViewDescriptors()
         {
             var feature = new ViewsFeature();

@@ -1,49 +1,46 @@
-<div class="admin-container">
-  <div class="admin-grid card"
-    *ngIf="adminConfig && adminConfig.modelConfig && adminConfig.modelConfig.gridConfig && adminConfig.modelConfig.gridConfig.fields && pagination">
-    <div class="card-header">
-      {{adminConfig.adminTitle}}
-    </div>
-    <div class="card-body">
-      <div class="row action-bar">
-        <div class="col" *ngIf="daConfig.adminConfigType == adminConfigType.GridAndForm">
-          <div class="float-left">
-            <button type="button" class="btn btn-primary" (click)="onNewItem()">
-              <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/baseline-add.svg'| envPath"></i> New
-            </button>
-          </div>
+<div class="admin-grid card"
+  *ngIf="adminConfig && adminConfig.modelConfig && adminConfig.modelConfig.gridConfig && adminConfig.modelConfig.gridConfig.fields && pagination">
+  <div class="card-header">
+    {{adminConfig.adminTitle}}
+  </div>
+  <div class="card-body">
+    <div class="row action-bar">
+      <div class="col" *ngIf="daConfig.adminConfigType == adminConfigType.GridAndForm">
+        <div class="float-left">
+          <button type="button" class="btn btn-primary btn-action" (click)="onNewItem()">
+            <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/plus-circle.svg'| envPath"></i> New
+          </button>
         </div>
       </div>
+    </div>
 
-      <app-admin-alert class="admin-alerts" [alerts]="alerts"></app-admin-alert>
-
-      <div class="row">
-        <div class="col-sm-12 data-table">
-          <table class="table table-bordered" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info"
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="data-table">
+          <table class="table" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info"
             style="width: 100%;">
             <thead gridHeader (filterSortChange)="onFilterSortChange($event);"></thead>
-            <tbody *ngIf="entityRecords && entityRecords.data && entityRecords.data.length>0">
-              <tr *ngFor="let item of entityRecords.data">
+            <tbody *ngIf="entityRecords && entityRecords.data && entityRecords.data.length>0" cdkDropList
+              [cdkDropListData]="entityRecords.data" (cdkDropListDropped)="drop($event)">
+              <tr *ngFor="let item of entityRecords.data" cdkDrag [cdkDragDisabled]="!isSortable">
                 <td *ngFor="let field of adminConfig.modelConfig.gridConfig.fields">
                   <app-grid-control [field]="field" [item]="item" [lookUps]="this.adminConfig.lookUps">
                   </app-grid-control>
                 </td>
                 <td *ngFor="let rowAction of adminConfig.modelConfig.gridConfig.rowActions | keyvalue">
-                  <button class="btn btn-secondary" type="button" (click)="onRowAction(rowAction.key, item)">
+                  <button class="btn btn-light" type="button" (click)="onRowAction(rowAction.key, item)">
                     {{rowAction.value.buttonText}}
                   </button>
                 </td>
                 <td *ngIf="adminConfig.modelConfig.gridConfig.isEditVisible">
-                  <a class="btn btn-dark" title="Edit"
+                  <a class="btn btn-light" title="Edit"
                     routerLink="/detail/{{ item | recordId:adminConfig.modelConfig.keyField}}">
-                    <i class="my-icon" aria-label="My icon"
-                      [inlineSVG]="'assets/icons/baseline-edit.svg' | envPath"></i>
+                    <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/edit.svg' | envPath"></i>
                   </a>
                 </td>
                 <td *ngIf="adminConfig.modelConfig.gridConfig.isDeleteVisible">
-                  <a class="btn btn-danger" title="Delete" (click)="openDeleteConfirmationModal(item)">
-                    <i class="my-icon" aria-label="My icon"
-                      [inlineSVG]="'assets/icons/baseline-delete.svg' | envPath"></i>
+                  <a class="btn btn-light" title="Delete" (click)="openDeleteConfirmationModal(item)">
+                    <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/trash.svg' | envPath"></i>
                   </a>
                 </td>
               </tr>
@@ -51,39 +48,39 @@
           </table>
         </div>
       </div>
-
     </div>
-    <div class="card-footer">
-      <div class="row">
-        <div class="col">
-          <div class="form-row">
-            <div class="col-auto dataTables_length">
-              <label class="d-inline"> Items per page </label>
-            </div>
-            <div class="col-auto">
-              <select name="dataTable_length" class="form-control form-control-sm" [(ngModel)]="pagination.pageSize"
-                (change)="onChangePage($event)">
-                <option *ngFor="let pageSize of pagination.pageSizes" [ngValue]="pageSize">{{pageSize}}</option>
-              </select>
-            </div>
-            <div class="col-auto dataTables_info" role="status" aria-live="polite">Showing
-              {{pagination.currentWindowStart}} to {{pagination.currentWindowEnd}} of {{pagination.totalRecordCount}}
-              entries
-            </div>
+
+  </div>
+  <div class="card-footer">
+    <div class="row">
+      <div class="col">
+        <div class="form-row">
+          <div class="col-auto dataTables_length">
+            <label class="d-inline"> Items per page </label>
           </div>
-
+          <div class="col-auto">
+            <select name="dataTable_length" class="form-control form-control-sm" [(ngModel)]="pagination.pageSize"
+              (change)="onChangePage($event)">
+              <option *ngFor="let pageSize of pagination.pageSizes" [ngValue]="pageSize">{{pageSize}}</option>
+            </select>
+          </div>
+          <div class="col-auto dataTables_info" role="status" aria-live="polite">Showing
+            {{pagination.currentWindowStart}} to {{pagination.currentWindowEnd}} of {{pagination.totalRecordCount}}
+            entries
+          </div>
         </div>
-        <div class="col d-flex flex-row-reverse">
-          <pagination [totalItems]="pagination.totalRecordCount" [ngModel]="pagination.pageNo"
-            [itemsPerPage]="pagination.pageSize" (pageChanged)="onChangePage($event)" [boundaryLinks]="true"
-            [maxSize]="3" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
-          </pagination>
 
-        </div>
+      </div>
+      <div class="col d-flex flex-row-reverse">
+        <pagination [totalItems]="pagination.totalRecordCount" [ngModel]="pagination.pageNo"
+          [itemsPerPage]="pagination.pageSize" (pageChanged)="onChangePage($event)" [boundaryLinks]="true" [maxSize]="3"
+          previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+        </pagination>
+
       </div>
     </div>
   </div>
-
-  <app-confirm-dialog [title]="'Confirmation'" [content]="'Are you sure to delete this item?'" [btnConfirmText]="'Yes'"
-    [btnCancelText]="'No'" (confirm)="onYesToDelete($event)" (cancel)="onNoToDelete($event)"></app-confirm-dialog>
 </div>
+
+<app-confirm-dialog [title]="'Confirmation'" [content]="'Are you sure to delete this item?'" [btnConfirmText]="'Yes'"
+  [btnCancelText]="'No'" (confirm)="onYesToDelete($event)" (cancel)="onNoToDelete()"></app-confirm-dialog>

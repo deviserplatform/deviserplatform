@@ -9,7 +9,7 @@ namespace Deviser.Admin.ConfiguratorTest.Models
         {
             ContentTypeProperty = new HashSet<ContentTypeProperty>();
             LayoutTypeProperty = new HashSet<LayoutTypeProperty>();
-            ModuleActionProperty = new HashSet<ModuleActionProperty>();
+            ModuleActionProperty = new HashSet<ModuleViewProperty>();
         }
 
         public Guid Id { get; set; }
@@ -25,6 +25,6 @@ namespace Deviser.Admin.ConfiguratorTest.Models
         public virtual OptionList OptionList { get; set; }
         public virtual ICollection<ContentTypeProperty> ContentTypeProperty { get; set; }
         public virtual ICollection<LayoutTypeProperty> LayoutTypeProperty { get; set; }
-        public virtual ICollection<ModuleActionProperty> ModuleActionProperty { get; set; }
+        public virtual ICollection<ModuleViewProperty> ModuleActionProperty { get; set; }
     }
 }

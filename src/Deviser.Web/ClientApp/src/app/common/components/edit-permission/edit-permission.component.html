@@ -1,0 +1,72 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{label.title}}</h4>
+    <button type="button" class="btn btn-light pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+        <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/x.svg'| envPath"></i>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="permission-content">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Role
+                    </th>
+                    <th>
+                        {{label.tableRowTitleView}}
+                    </th>
+                    <th>
+                        {{label.tableRowTitleEdit}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let role of roles" [ngClass]="{'active':role.id === appSettings.roles.administrator}">
+                    <td>
+                        {{role.name}}
+                    </td>
+                    <td>
+                        <a (click)="changeViewPermission(role)">
+                            <i class="my-icon" aria-label="My icon" *ngIf="isViewChecked(role)"
+                                [inlineSVG]="'assets/icons/check_box.svg' | envPath"></i>
+                            <i class="my-icon" aria-label="My icon" *ngIf="!isViewChecked(role)"
+                                [inlineSVG]="'assets/icons/check_box_outline_blank.svg' | envPath"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a (click)="changeEditPermission(role)">
+                            <i class="my-icon" aria-label="My icon" *ngIf="isEditChecked(role)"
+                                [inlineSVG]="'assets/icons/check_box.svg' | envPath"></i>
+                            <i class="my-icon" aria-label="My icon" *ngIf="!isEditChecked(role)"
+                                [inlineSVG]="'assets/icons/check_box_outline_blank.svg' | envPath"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Inherit</td>
+                    <td>
+                        <a (click)="inheritViewPermissions=!inheritViewPermissions">
+                            <i class="my-icon" aria-label="My icon" *ngIf="inheritViewPermissions"
+                                [inlineSVG]="'assets/icons/check_box.svg' | envPath"></i>
+                            <i class="my-icon" aria-label="My icon" *ngIf="!inheritViewPermissions"
+                                [inlineSVG]="'assets/icons/check_box_outline_blank.svg' | envPath"></i>
+                            view permissions
+                        </a></td>
+                    <td>
+                        <a (click)="inheritEditPermissions=!inheritEditPermissions">
+                            <i class="my-icon" aria-label="My icon" *ngIf="inheritEditPermissions"
+                                [inlineSVG]="'assets/icons/check_box.svg' | envPath"></i>
+                            <i class="my-icon" aria-label="My icon" *ngIf="!inheritEditPermissions"
+                                [inlineSVG]="'assets/icons/check_box_outline_blank.svg' | envPath"></i>
+                            edit permissions
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-action btn-default" type="button" (click)="cancel()">Cancel</button>
+    <button class="btn btn-action btn-primary" type="button" (click)="save()">Save</button>
+</div>

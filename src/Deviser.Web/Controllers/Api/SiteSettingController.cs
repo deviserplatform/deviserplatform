@@ -5,12 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using Deviser.Core.Common.Security;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Deviser.Web.Controllers.Api
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Administrators")]
     public class SiteSettingController : Controller
     {
         private readonly ILogger<SiteSettingController> _logger;

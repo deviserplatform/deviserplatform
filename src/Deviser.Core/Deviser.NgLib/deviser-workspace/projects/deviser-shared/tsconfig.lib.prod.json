@@ -1,0 +1,7 @@
+{
+  "compileOnSave": false,
+  "extends": "./tsconfig.lib.json",
+  "angularCompilerOptions": {
+    "enableIvy": false
+  }
+}

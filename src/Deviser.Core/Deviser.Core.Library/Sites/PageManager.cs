@@ -37,10 +37,10 @@ namespace Deviser.Core.Library.Sites
         {
             get
             {
-                if(!_isAuthenticated)
+                if (!_isAuthenticated)
                     _isAuthenticated = _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
 
-                return _isAuthenticated; 
+                return _isAuthenticated;
             }
         }
 
@@ -48,7 +48,7 @@ namespace Deviser.Core.Library.Sites
         {
             get
             {
-                if(string.IsNullOrEmpty(_currentUserName))
+                if (string.IsNullOrEmpty(_currentUserName))
                     _currentUserName = (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated) ? _httpContextAccessor.HttpContext.User.Identity.Name : "";
 
                 return _currentUserName;
@@ -57,27 +57,13 @@ namespace Deviser.Core.Library.Sites
 
         protected List<Role> CurrentUserRoles
         {
-            get
-            {
-                if(_currentUserRoles==null)
-                    _currentUserRoles = _roleRepository.GetRoles(CurrentUserName);
-
-                return _currentUserRoles;
-            }
+            get { return _currentUserRoles ??= _roleRepository.GetRoles(CurrentUserName); }
         }
 
         public Page GetPageAndDependencies(Guid pageId)
         {
-            try
-            {
-                var returnData = _pageRepository.GetPageAndDependencies(pageId);
-                return returnData;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling GetPage", ex);
-            }
-            return null;
+            var returnData = _pageRepository.GetPageAndDependencies(pageId);
+            return returnData;
         }
 
         public Page GetPageAndTranslation(Guid pageId)
@@ -89,14 +75,12 @@ namespace Deviser.Core.Library.Sites
         public Page GetPageAndTranslationByUrl(string url, string locale)
         {
             Page resultPage = null;
-            if (!string.IsNullOrEmpty(url))
+            if (string.IsNullOrEmpty(url)) return resultPage;
+            var pageTranslation = _pageRepository.GetPageTranslations(locale);
+            var currentPageTranslation = pageTranslation.FirstOrDefault(p => (p != null && string.Equals(p.URL, url, StringComparison.InvariantCultureIgnoreCase)));
+            if (currentPageTranslation != null)
             {
-                var pageTranslation = _pageRepository.GetPageTranslations(locale);
-                var currentPageTranslation = pageTranslation.FirstOrDefault(p => (p != null && string.Equals(p.URL, url, StringComparison.InvariantCultureIgnoreCase)));
-                if (currentPageTranslation != null)
-                {
-                    resultPage = _pageRepository.GetPageAndPageTranslations(currentPageTranslation.PageId);
-                }
+                resultPage = _pageRepository.GetPageAndPageTranslations(currentPageTranslation.PageId);
             }
             return resultPage;
         }

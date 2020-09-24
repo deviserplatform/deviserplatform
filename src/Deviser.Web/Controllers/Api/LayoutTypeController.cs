@@ -8,10 +8,13 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Deviser.Core.Common.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeviserWI.Controllers.API
 {
     [Route("api/[controller]")]
+    [PermissionAuthorize("PAGE", "EDIT")]
     public class LayoutTypeController : Controller
     {
         private readonly ILogger<LayoutTypeController> _logger;
@@ -43,6 +46,7 @@ namespace DeviserWI.Controllers.API
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Get()
         {
             try
@@ -61,6 +65,7 @@ namespace DeviserWI.Controllers.API
 
         [HttpGet]
         [Route("rootallowedtypes")]
+        [AllowAnonymous]
         public IActionResult GetRootAllowedTypes()
         {
             try

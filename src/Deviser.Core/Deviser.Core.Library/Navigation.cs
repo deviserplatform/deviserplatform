@@ -47,117 +47,62 @@ namespace Deviser.Core.Library
 
         public Page GetPageTree()
         {
-            try
-            {
-                var root = _pageRepository.GetPageTree();
-                return root;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting GetPageTree", ex);
-            }
-            return null;
+            var root = _pageRepository.GetPageTree();
+            return root;
         }
 
         public Page GetPageTree(Guid parentId)
         {
-            try
-            {
-                var root = _pageRepository.GetPageTree();
-                return GetPageTreeFrom(root, parentId);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting GetPageTree by id", ex);
-            }
-            return null;
+            var root = _pageRepository.GetPageTree();
+            return GetPageTreeFrom(root, parentId);
         }
 
         public Page GetPageTree(Guid currentPageId, SystemPageFilter systemFilter, Guid parentId = new Guid())
         {
-            try
+            Page root;
+            root = parentId != Guid.Empty ? GetPageTree(parentId) : _pageRepository.GetPageTree();
+
+            Func<Page, bool> predicate = null;
+
+            //system page filter
+            if (systemFilter == SystemPageFilter.PublicOnly)
             {
-                Page root;
-                if (parentId != Guid.Empty)
-                {
-                    root = GetPageTree(parentId);
-                }
-                else
-                {
-                    root = _pageRepository.GetPageTree();
-                }
-
-                Func<Page, bool> predicate = null;
-
-                //system page filter
-                if (systemFilter == SystemPageFilter.PublicOnly)
-                {
-                    //page.ChildPage = page.ChildPage.Where(p => !p.IsSystem).ToList();
-                    predicate = p => !p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && HasViewPermission(p);
-                }
-                else if (systemFilter == SystemPageFilter.SystemOnly)
-                {
-                    //page.ChildPage = page.ChildPage.Where(p => p.IsSystem).ToList();
-                    predicate = p => p.IsSystem && !p.IsDeleted && p.IsIncludedInMenu && HasViewPermission(p);
-                }
-
-
-                FilterPage(root, currentPageId, predicate);
-                SetBreadCrumb(currentPageId, root);
-                return root;
+                //page.ChildPage = page.ChildPage.Where(p => !p.IsSystem).ToList();
+                predicate = p => !p.IsSystem && p.IsActive && p.IsIncludedInMenu && HasViewPermission(p);
             }
-            catch (Exception ex)
+            else if (systemFilter == SystemPageFilter.SystemOnly)
             {
-                _logger.LogError("Error occured while getting GetPageTree with filter", ex);
+                //page.ChildPage = page.ChildPage.Where(p => p.IsSystem).ToList();
+                predicate = p => p.IsSystem && p.IsActive && p.IsIncludedInMenu && HasViewPermission(p);
             }
-            return null;
+
+
+            FilterPage(root, currentPageId, predicate);
+            SetBreadCrumb(currentPageId, root);
+            return root;
         }
 
         public IList<Page> GetPages()
         {
-            try
-            {
-                var result = _pageRepository.GetPagesFlat();
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting all pages in list", ex);
-            }
-            return null;
+            var result = _pageRepository.GetPagesFlat();
+            return result;
         }
 
         public IList<Page> GetPublicPages()
         {
-            try
-            {
-                var allPages = GetPages();
-                var publicPages = allPages.Where(p => HasViewPermission(p)).ToList();
-                return publicPages;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting all public pages in list", ex);
-                throw;
-            }
+            var allPages = GetPages();
+            var publicPages = allPages.Where(p => HasViewPermission(p)).ToList();
+            return publicPages;
         }
 
         public MenuItem GetMenuItemTree(Guid currentPageId, SystemPageFilter systemFilter, Guid parentId = new Guid())
         {
-            try
-            {
-                var rootPage = GetPageTree(currentPageId, systemFilter, parentId);
-                var currentCulture = _scopeService.PageContext.CurrentCulture.ToString();
-                var siteRoot = _scopeService.PageContext.SiteSettingInfo.SiteRoot;
+            var rootPage = GetPageTree(currentPageId, systemFilter, parentId);
+            var currentCulture = _scopeService.PageContext.CurrentCulture.ToString();
+            var siteRoot = _scopeService.PageContext.SiteSettingInfo.SiteRoot;
 
-                var rootMenuItem = GetMenuItemIteratively(rootPage, currentCulture, siteRoot);
-                return rootMenuItem;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting menu item tree", ex);
-            }
-            return null;
+            var rootMenuItem = GetMenuItemIteratively(rootPage, currentCulture, siteRoot);
+            return rootMenuItem;
         }
 
         private MenuItem GetMenuItemIteratively(Page page, string currentCulture, string siteRoot)
@@ -165,14 +110,13 @@ namespace Deviser.Core.Library
             var menuItem = CreateMenuItem(page, currentCulture, siteRoot);
             menuItem.Parent = page.Parent != null ? CreateMenuItem(page.Parent, currentCulture, siteRoot) : null;
 
-            if (page.ChildPage != null && page.ChildPage.Count > 0)
+            if (page.ChildPage == null || page.ChildPage.Count <= 0) return menuItem;
+
+            menuItem.ChildMenuItems = new List<MenuItem>();
+            foreach (var child in page.ChildPage.OrderBy(p => p.PageOrder))
             {
-                menuItem.ChildMenuItems = new List<MenuItem>();
-                foreach (var child in page.ChildPage.OrderBy(p => p.PageOrder))
-                {
-                    var childMenuItem = GetMenuItemIteratively(child, currentCulture, siteRoot);
-                    menuItem.ChildMenuItems.Add(childMenuItem);
-                }
+                var childMenuItem = GetMenuItemIteratively(child, currentCulture, siteRoot);
+                menuItem.ChildMenuItems.Add(childMenuItem);
             }
             return menuItem;
         }
@@ -185,25 +129,24 @@ namespace Deviser.Core.Library
             menuItem.Page = page;
             menuItem.HasChild = page.ChildPage != null && page.ChildPage.Count > 0;
             menuItem.PageLevel = page.PageLevel != null ? (int)page.PageLevel : 0;
-            menuItem.IsActive = page.IsActive;
+            menuItem.IsActive = page.IsCurrentPage;
             menuItem.IsBreadCrumb = page.IsBreadCrumb;
 
-            if (pageTranslation != null)
+            if (pageTranslation == null) return menuItem;
+
+            menuItem.PageName = pageTranslation.Name;
+            menuItem.IsLinkNewWindow = pageTranslation.IsLinkNewWindow;
+            if (page.PageTypeId == Globals.PageTypeStandard || page.PageTypeId == Globals.PageTypeAdmin)
             {
-                menuItem.PageName = pageTranslation.Name;
-                menuItem.IsLinkNewWindow = pageTranslation.IsLinkNewWindow;
-                if (page.PageTypeId == Globals.PageTypeStandard || page.PageTypeId == Globals.PageTypeAdmin)
-                {
-                    menuItem.URL = siteRoot + pageTranslation.URL;
-                }
-                //else if (page.PageTypeId == Globals.PageTypeAdmin)
-                //{
-                //    menuItem.URL = $"{siteRoot}modules/{page?.AdminPage?.ModuleName}/admin/{page?.AdminPage?.EntityName}";
-                //}
-                else
-                {
-                    menuItem.URL = pageTranslation.RedirectUrl;
-                }
+                menuItem.URL = siteRoot + pageTranslation.URL;
+            }
+            //else if (page.PageTypeId == Globals.PageTypeAdmin)
+            //{
+            //    menuItem.URL = $"{siteRoot}modules/{page?.AdminPage?.ModuleName}/admin/{page?.AdminPage?.EntityName}";
+            //}
+            else
+            {
+                menuItem.URL = pageTranslation.RedirectUrl;
             }
 
             return menuItem;
@@ -211,190 +154,98 @@ namespace Deviser.Core.Library
 
         public IList<Page> GetBreadCrumbs(Guid currentPageId)
         {
-            try
-            {
-                Page root = _pageRepository.GetPageTree();
-                FilterPage(root, currentPageId);
-                breadcrumbs = new List<Page>();
-                SetBreadCrumb(currentPageId, root);
-                return breadcrumbs.OrderBy(p => p.PageLevel).ToList();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting breadcrumbs", ex);
-                throw;
-            }
+            var root = _pageRepository.GetPageTree();
+            FilterPage(root, currentPageId);
+            breadcrumbs = new List<Page>();
+            SetBreadCrumb(currentPageId, root);
+            return breadcrumbs.OrderBy(p => p.PageLevel).ToList();
+
         }
 
         public Page CreatePage(Page page)
-        {
-            try
+        {       //Set page URL based on the parent page
+            var parentUrls = GetParentUrl(page.ParentId);
+            foreach (var pageTranslation in page.PageTranslation)
             {
-                //var pageTranslation = page.PageTranslation;
-                //var adminPage = page.AdminPage;
-                //page.PageTranslation = null;
-                //page.AdminPage = null;
-                //var newPage = _pageRepository.CreatePage(page);
-                //if (newPage != null)
-                //{
-                //    page.Id = newPage.Id;
-                //    page.PageTranslation = pageTranslation;
-                //    page.AdminPage = adminPage;
-                //    var result = UpdateSinglePage(page);
-                //    return result;
-                //}
-
-                //Set page URL based on the parent page
-                var parentUrls = GetParentUrl(page.ParentId);
-                foreach (var pageTranslation in page.PageTranslation)
-                {
-                    var parentUrl = parentUrls[pageTranslation.Locale];
-                    var pageName = Regex.Replace(pageTranslation.Name, @"\s+", "");
-                    pageTranslation.URL = !string.IsNullOrEmpty(parentUrl)
-                        ? $"{parentUrl}/{pageName}"
-                        : pageName;
-                }
-
-                SetDefaultPermissions(page);
-
-                var newPage = _pageRepository.CreatePage(page);
-                return newPage;
+                var parentUrl = parentUrls[pageTranslation.Locale];
+                var pageName = Regex.Replace(pageTranslation.Name, @"\s+", "");
+                pageTranslation.URL = !string.IsNullOrEmpty(parentUrl)
+                    ? $"{parentUrl}/{pageName}"
+                    : pageName;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(string.Format("Error occured while creating a page, PageId: ", page.Id), ex);
-            }
-            return null;
+
+            SetDefaultPermissions(page);
+
+            var newPage = _pageRepository.CreatePage(page);
+            return newPage;
+
         }
 
         public Page UpdatePageTree(Page page)
         {
-            try
-            {
-                if (page != null)
-                {
-                    var parentURLs = InitParentUrls();
-                    UpdatePageTreeUrl(page, parentURLs);
-                    var resultPage = _pageRepository.UpdatePageTree(page);
-                    if (resultPage != null)
-                        return resultPage;
-                }
-            }
-            catch (Exception ex)
-            {
-                string errorMessage = string.Format("Error occured while updating a page, PageId: ", page.Id);
-                _logger.LogError(errorMessage, ex);
-            }
-            return null;
+            if (page == null) throw new InvalidOperationException($"Page cannot be null");
+            var parentURLs = InitParentUrls();
+            UpdatePageTreeUrl(page, parentURLs);
+            var resultPage = _pageRepository.UpdatePageTree(page);
+            return resultPage;
         }
 
         public Page UpdatePageAndChildren(Page page)
         {
-            try
-            {
-                if (page != null)
-                {
-                    var parentUrl = GetParentUrl(page.ParentId);
+            if (page == null) throw new InvalidOperationException($"Page cannot be null");
+            var parentUrl = GetParentUrl(page.ParentId);
 
-                    //Updating a page have an influence on it's child pages as well. Therefore, getting all child pages and updating its url
-                    Page pageTree;
-                    if (page.ParentId != null)
-                    {
-                        pageTree = _pageRepository.GetPageTree(page.Id);
-                    }
-                    else
-                    {
-                        pageTree = _pageRepository.GetPageTree();
-                    }
-                    page.ChildPage = pageTree.ChildPage;
-                    UpdatePageTreeUrl(page, parentUrl);
-                    //SetDefaultPermissions(page);
-                    var resultPage = _pageRepository.UpdatePageAndPermissions(page);
-                    return resultPage;
-                }
-            }
-            catch (Exception ex)
+            //Updating a page have an influence on it's child pages as well. Therefore, getting all child pages and updating its url
+            Page pageTree;
+            if (page.ParentId != null)
             {
-                string errorMessage = string.Format("Error occured while updating a page, PageId: ", page.Id);
-                _logger.LogError(errorMessage, ex);
+                pageTree = _pageRepository.GetPageTree(page.Id);
             }
-            return null;
+            else
+            {
+                pageTree = _pageRepository.GetPageTree();
+            }
+            page.ChildPage = pageTree.ChildPage;
+            UpdatePageTreeUrl(page, parentUrl);
+            //SetDefaultPermissions(page);
+            var resultPage = _pageRepository.UpdatePageAndPermissions(page);
+            return resultPage;
         }
 
         public bool DeletePage(Guid pageId, bool forceDelete = false)
         {
-            try
-            {
-                Page page = _pageRepository.GetPage(pageId);
-                if (page != null)
-                {
-                    page.IsDeleted = true;
-                    var resultPage = _pageRepository.UpdatePageActiveAndLayout(page);
-                    if (resultPage != null)
-                        return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                string errorMessage = string.Format("Error occured while deleting a page, PageId: ", pageId);
-                _logger.LogError(errorMessage, ex);
-            }
-            return false;
+            var page = _pageRepository.GetPage(pageId);
+            if (page == null) throw new InvalidOperationException($"Page cannot be found");
+
+            page.IsActive = false;
+            var resultPage = _pageRepository.UpdatePageActiveAndLayout(page);
+            return resultPage != null;
         }
 
         public string NavigateUrl(string pageId, string locale = null)
         {
-            if (!string.IsNullOrEmpty(pageId))
-            {
-                try
-                {
-                    Guid id = Guid.Parse(pageId);
-                    var page = _pageRepository.GetPageAndPageTranslations(id);
-                    return NavigateUrl(page, locale);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error occured while getting page url by pageId and locale", ex);
-                }
-            }
-            return string.Empty;
+            if (string.IsNullOrEmpty(pageId)) return string.Empty;
+
+            var id = Guid.Parse(pageId);
+            var page = _pageRepository.GetPageAndPageTranslations(id);
+            return NavigateUrl(page, locale);
         }
 
         public string NavigateUrl(Guid pageId, string locale = null)
         {
-            if (pageId != Guid.Empty)
-            {
-                try
-                {
-                    var page = _pageRepository.GetPageAndPageTranslations(pageId);
-                    return NavigateUrl(page, locale);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error occured while getting page url by pageId and locale", ex);
-                }
-            }
-            return string.Empty;
+            if (pageId == Guid.Empty) return string.Empty;
+            var page = _pageRepository.GetPageAndPageTranslations(pageId);
+            return NavigateUrl(page, locale);
         }
 
         public string NavigateUrl(Page page, string locale = null)
         {
-            if (page != null)
-            {
-                try
-                {
-                    if (locale == null)
-                        locale = _scopeService.PageContext.CurrentCulture.ToString().ToLower();
-                    var translation = page.PageTranslation.FirstOrDefault(t => t.Locale.ToLower() == locale.ToLower());
+            if (page == null) return string.Empty;
 
-                    return translation != null ? _scopeService.PageContext.SiteRoot + translation.URL : "";
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error occured while getting page url by page and locale", ex);
-                }
-            }
-            return string.Empty;
+            locale ??= _scopeService.PageContext.CurrentCulture.ToString().ToLower();
+            var translation = page.PageTranslation.FirstOrDefault(t => string.Equals(t.Locale, locale, StringComparison.CurrentCultureIgnoreCase));
+
+            return translation != null ? _scopeService.PageContext.SiteRoot + translation.URL : "";
         }
 
         public string NavigateAbsoluteUrl(Page page, string locale = null)
@@ -414,20 +265,6 @@ namespace Deviser.Core.Library
 
         private Dictionary<string, string> InitParentUrls()
         {
-            //var activeLanguages = _languageRepository.GetActiveLanguages();
-            //Dictionary<string, string> parentURLs = new Dictionary<string, string>();
-            //if (activeLanguages != null && activeLanguages.Count > 1)
-            //{
-            //    foreach (var lang in activeLanguages)
-            //    {
-            //        parentURLs.Add(lang.CultureCode, lang.CultureCode.ToLower());
-            //    }
-            //}
-            //else
-            //{
-            //    parentURLs.Add(Globals.FallbackLanguage, "");
-            //}
-            //return parentURLs;
             var activeLocales = _languageRepository.GetActiveLocales();
             var dictionary = activeLocales.ToDictionary(k => k, v => v.ToLower());
             if (!_languageRepository.IsMultilingual())
@@ -453,15 +290,14 @@ namespace Deviser.Core.Library
             if (page.Id == pageId)
                 resultPage = page;
 
-            if (page.ChildPage != null)
+            if (page.ChildPage == null) return resultPage;
+
+            foreach (var child in page.ChildPage)
             {
-                foreach (var child in page.ChildPage)
+                var childResult = GetPageTreeFrom(child, pageId);
+                if (childResult != null)
                 {
-                    var childResult = GetPageTreeFrom(child, pageId);
-                    if (childResult != null)
-                    {
-                        resultPage = childResult;
-                    }
+                    resultPage = childResult;
                 }
             }
             return resultPage;
@@ -513,14 +349,12 @@ namespace Deviser.Core.Library
             }
 
 
-            if (_languageRepository.IsMultilingual())
-            {
-                foreach (var kvp in dictionary)
-                {
-                    dictionary[kvp.Key] = $"{kvp.Key.ToLower()}/{kvp.Value}";
-                }
-            }
+            if (!_languageRepository.IsMultilingual()) return dictionary;
 
+            foreach (var kvp in dictionary)
+            {
+                dictionary[kvp.Key] = $"{kvp.Key.ToLower()}/{kvp.Value}";
+            }
             return dictionary;
         }
 
@@ -626,68 +460,63 @@ namespace Deviser.Core.Library
         {
             var duplicateTranslation = _pageRepository.GetPageTranslation(pageUrl.ToLower());
 
-            if (duplicateTranslation != null && duplicateTranslation.PageId != pageId)
+            if (duplicateTranslation == null || duplicateTranslation.PageId == pageId) return pageUrl;
+            while (duplicateTranslation != null && string.Equals(duplicateTranslation.URL, pageUrl, StringComparison.CurrentCultureIgnoreCase))
             {
-                while (duplicateTranslation != null && duplicateTranslation.URL.ToLower() == pageUrl.ToLower())
-                {
-                    pageUrl += "1";
-                    pageTranslation.Name += "1";
-                    duplicateTranslation = _pageRepository.GetPageTranslation(pageUrl);
-                }
+                pageUrl += "1";
+                pageTranslation.Name += "1";
+                duplicateTranslation = _pageRepository.GetPageTranslation(pageUrl);
             }
             return pageUrl;
         }
 
         private void FilterPage(Page page, Guid currentPageId, Func<Page, bool> predicate = null)
         {
-            if (page != null)
+            if (page == null) return;
+
+            if (page.Id == currentPageId)
             {
-                if (page.Id == currentPageId)
-                {
-                    page.IsActive = true;
-                    activePage = page;
-                }
+                page.IsCurrentPage = true;
+                activePage = page;
+            }
 
-                //Page filter
-                if (page.ChildPage != null)
-                {
-                    if (predicate != null)
-                        page.ChildPage = page.ChildPage.Where(predicate).ToList();
+            //Page filter
+            if (page.ChildPage != null)
+            {
+                if (predicate != null)
+                    page.ChildPage = page.ChildPage.Where(predicate).ToList();
 
-                    page.ChildPage = page.ChildPage.OrderBy(p => p.PageOrder).ToList();
-                }
+                page.ChildPage = page.ChildPage.OrderBy(p => p.PageOrder).ToList();
+            }
 
-                if (page.ChildPage != null && page.ChildPage.Count > 0)
-                {
-                    foreach (var child in page.ChildPage)
-                    {
-                        FilterPage(child, currentPageId, predicate);
-                    }
-                }
+            if (page.ChildPage == null || page.ChildPage.Count <= 0) return;
+
+            foreach (var child in page.ChildPage)
+            {
+                FilterPage(child, currentPageId, predicate);
             }
         }
 
-        
+
 
         private bool IsCurrentHasSelected(Guid currentPageId, Page currentLevel)
         {
-            bool isCurrentBreadCrumb = false;
-            if (currentLevel != null)
-            {
-                bool? isChildActive = currentLevel?.ChildPage?.Any(child => child.Id == currentLevel.Id);
-                isCurrentBreadCrumb = currentLevel.IsActive || (isChildActive ?? false);
+            var isCurrentBreadCrumb = false;
+            if (currentLevel == null) return isCurrentBreadCrumb;
 
-                if (!isCurrentBreadCrumb && currentLevel.ChildPage != null && currentLevel.ChildPage.Count > 0)
+            var isChildActive = currentLevel?.ChildPage?.Any(child => child.Id == currentLevel.Id);
+            isCurrentBreadCrumb = currentLevel.IsCurrentPage || (isChildActive ?? false);
+
+            if (!isCurrentBreadCrumb && currentLevel.ChildPage != null && currentLevel.ChildPage.Count > 0)
+            {
+                foreach (var child in currentLevel.ChildPage)
                 {
-                    foreach (var child in currentLevel.ChildPage)
-                    {
-                        isCurrentBreadCrumb = IsCurrentHasSelected(currentPageId, child);
-                        if (isCurrentBreadCrumb)
-                            break;
-                    }
+                    isCurrentBreadCrumb = IsCurrentHasSelected(currentPageId, child);
+                    if (isCurrentBreadCrumb)
+                        break;
                 }
-                currentLevel.IsBreadCrumb = isCurrentBreadCrumb;
             }
+            currentLevel.IsBreadCrumb = isCurrentBreadCrumb;
             return isCurrentBreadCrumb;
         }
 

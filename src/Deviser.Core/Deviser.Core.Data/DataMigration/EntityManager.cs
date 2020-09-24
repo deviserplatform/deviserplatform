@@ -17,15 +17,15 @@ namespace Deviser.Core.Data.DataMigration
 
         public List<Entity> ExportData()
         {
-            List<Entity> entities = GetOrderedEntities();
+            var entities = GetOrderedEntities();
             FetchDataForEntities(entities);
             return entities;
         }
 
         public void ImportData(string json)
         {
-            List<Entity> etypeWithData = JsonConvert.DeserializeObject<List<Entity>>(json);
-            List<Entity> orderedEntityTypes = GetOrderedEntities();
+            var etypeWithData = JsonConvert.DeserializeObject<List<Entity>>(json);
+            var orderedEntityTypes = GetOrderedEntities();
 
             foreach (var etype in orderedEntityTypes)
             {
@@ -50,7 +50,7 @@ namespace Deviser.Core.Data.DataMigration
 
         public string ExportDataAsJson()
         {
-            List<Entity> entities = ExportData();
+            var entities = ExportData();
             return JsonConvert.SerializeObject(entities, Formatting.None, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
         }
 
@@ -91,7 +91,7 @@ namespace Deviser.Core.Data.DataMigration
         {
             var entityTypes = _dbContext.Model.GetEntityTypes();
 
-            List<Entity> entitesToSorted = new List<Entity>();
+            var entitesToSorted = new List<Entity>();
 
             //Add all entity types
             foreach (var entityType in entityTypes)

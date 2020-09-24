@@ -1,15 +1,21 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
- <PropertyGroup>
-   <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+		<IsShippingPackage>true</IsShippingPackage>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MailKit" Version="2.5.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MailKit" Version="2.8.0" />
+	</ItemGroup>
 
 </Project>

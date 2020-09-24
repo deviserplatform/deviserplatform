@@ -9,6 +9,6 @@ To run module migration
 4. Update-Database -Context {ModuleDbContextName}
 
 ## Using Console
-1. chagne working directory to module project
+1. change working directory to module project
 2. dotnet ef migrations add InitalSchema -c {ModuleDbContextName}
 4. dotnet ef database update -c {ModuleDbContextName}

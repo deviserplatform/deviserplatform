@@ -2,7 +2,7 @@
 @inject IScopeService scopeService
 <require dependency-type="Css" priority="111" file-path="/_content/Deviser.Admin.Web/ClientApp/styles.css"></require>
 @{
-    Deviser.Admin.IAdminConfig adminConfig = ViewBag.AdminConfig as Deviser.Admin.IAdminConfig;
+    var adminConfig = ViewBag.AdminConfig as Deviser.Admin.IAdminConfig;
     var request = ViewContext.HttpContext.Request;
     var pathBase = request.PathBase.HasValue ? $"{request.PathBase}/" : "";
     var basePath = $"{request.Scheme}://{request.Host}/{pathBase}";

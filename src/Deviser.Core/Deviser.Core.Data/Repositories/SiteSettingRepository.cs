@@ -8,23 +8,12 @@ using System.Linq;
 
 namespace Deviser.Core.Data.Repositories
 {
-
-    public interface ISiteSettingRepository
-    {
-        List<SiteSetting> GetSettings();
-        IDictionary<string, string> GetSettingsAsDictionary();
-        string GetSettingValue(string settingName);
-        List<SiteSetting> UpdateSetting(List<SiteSetting> settings);
-    }
-
     public class SiteSettingRepository : AbstractRepository, ISiteSettingRepository
     {
-        //Logger
         private readonly ILogger<SiteSettingRepository> _logger;
         private readonly DbContextOptions<DeviserDbContext> _dbOptions;
         private readonly IMapper _mapper;
 
-        //Constructor
         public SiteSettingRepository(DbContextOptions<DeviserDbContext> dbOptions,
             ILogger<SiteSettingRepository> logger,
             IMapper mapper)
@@ -34,80 +23,38 @@ namespace Deviser.Core.Data.Repositories
             _mapper = mapper;
         }
 
-        //Custom Field Declaration
         public List<SiteSetting> GetSettings()
         {
-            try
-            {
-                //var cacheName = nameof(GetSettings);
-                //var result = GetResultFromCache<List<SiteSetting>>(cacheName);
-                //if (result != null)
-                //{
-                //    return result;
-                //}
-
-                using var context = new DeviserDbContext(_dbOptions);
-                var dbResult = context.SiteSetting.ToList();                    
-                var result = _mapper.Map<List<SiteSetting>>(dbResult);
-                //AddResultToCache(cacheName, result);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting GetSettings", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var dbResult = context.SiteSetting.ToList();
+            var result = _mapper.Map<List<SiteSetting>>(dbResult);
+            return result;
         }
 
         public IDictionary<string, string> GetSettingsAsDictionary()
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.SiteSetting.ToDictionary(s=>s.SettingName, v=>v.SettingValue);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting GetSettings", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.SiteSetting.ToDictionary(s => s.SettingName, v => v.SettingValue);
+            return result;
         }
 
         public string GetSettingValue(string settingName)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var setting = context.SiteSetting.FirstOrDefault(s=>s.SettingName==settingName);
-                if (setting != null)
-                    return setting.SettingValue;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting GetSettings", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var setting = context.SiteSetting.FirstOrDefault(s => s.SettingName == settingName);
+            if (setting == null) throw new InvalidOperationException($"Unable to find setting name {settingName}");
+            return setting.SettingValue;
         }
 
         public List<SiteSetting> UpdateSetting(List<SiteSetting> settings)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var dbSettings = _mapper.Map<List<Entities.SiteSetting>>(settings);
-                context.SiteSetting.UpdateRange(dbSettings);
-                context.SaveChanges();
-                var result = context.SiteSetting.ToList();
-                return _mapper.Map<List<SiteSetting>>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while updating settings", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var dbSettings = _mapper.Map<List<Entities.SiteSetting>>(settings);
+            context.SiteSetting.UpdateRange(dbSettings);
+            context.SaveChanges();
+            var result = context.SiteSetting.ToList();
+            return _mapper.Map<List<SiteSetting>>(result);
         }
 
     }
-
-}//End namespace
+}

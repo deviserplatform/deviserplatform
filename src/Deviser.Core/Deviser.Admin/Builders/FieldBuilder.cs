@@ -244,7 +244,7 @@ namespace Deviser.Admin.Builders
             if (_fieldConfig.ExcludedFields.Count > 0)
                 ThrowAddRemoveInvalidOperationException();
 
-            FieldOption fieldOption = new FieldOption();
+            var fieldOption = new FieldOption();
             fieldOptionAction?.Invoke(fieldOption);
             fieldOption.LookupDisplayExpression = lookupDisplayExpression;
             fieldOption.RelationType = releationType;
@@ -269,7 +269,7 @@ namespace Deviser.Admin.Builders
             if (_fieldConfig.ExcludedFields.Count > 0)
                 ThrowAddRemoveInvalidOperationException();
 
-            FieldOption fieldOption = new FieldOption();
+            var fieldOption = new FieldOption();
             fieldOptionAction?.Invoke(fieldOption);
             return new Field
             {

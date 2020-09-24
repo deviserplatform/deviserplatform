@@ -44,9 +44,9 @@ namespace Deviser.Core.Library.Internal
             }
         }
 
-        public async Task<IActionResult> InvokeAction(HttpContext httpContext, ModuleAction moduleAction, ActionContext actionContext)
+        public async Task<IActionResult> InvokeAction(HttpContext httpContext, ModuleView moduleView, ActionContext actionContext)
         {            
-            return await InvokeAction(httpContext, moduleAction.ControllerNamespace, moduleAction.ControllerName, moduleAction.ActionName, actionContext);
+            return await InvokeAction(httpContext, moduleView.ControllerNamespace, moduleView.ControllerName, moduleView.ActionName, actionContext);
         }
 
         public async Task<IActionResult> InvokeAction(HttpContext httpContext, string controllerNamespace, string controllerName, string actionName, ActionContext actionContext)
@@ -191,13 +191,7 @@ namespace Deviser.Core.Library.Internal
                 return false;
             }
 
-            if (!typeInfo.Name.EndsWith(ControllerTypeNameSuffix, StringComparison.OrdinalIgnoreCase) &&
-                !typeInfo.IsDefined(typeof(ControllerAttribute)))
-            {
-                return false;
-            }
-
-            return true;
+            return typeInfo.Name.EndsWith(ControllerTypeNameSuffix, StringComparison.OrdinalIgnoreCase) || typeInfo.IsDefined(typeof(ControllerAttribute));
         }
 
         private object[] PrepareArguments(
@@ -230,10 +224,7 @@ namespace Deviser.Core.Library.Internal
 
         public void Dispose()
         {
-            if(_allControllers!=null)
-            {
-                _allControllers.GetEnumerator().Dispose();
-            }
+            _allControllers?.GetEnumerator().Dispose();
 
             _cache.Dispose();
             //_typeActivatorCache.Dispose();

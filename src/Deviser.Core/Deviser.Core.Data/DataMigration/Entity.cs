@@ -27,7 +27,7 @@ namespace Deviser.Core.Data.DataMigration
                     return _entityTypeName;
                 }
 
-                Type clrType = EntityType.ClrType;
+                var clrType = EntityType.ClrType;
                 if (clrType.GetTypeInfo().IsGenericType)
                 {
                     var typeName = clrType.Name.Substring(0, clrType.Name.IndexOf("`"));

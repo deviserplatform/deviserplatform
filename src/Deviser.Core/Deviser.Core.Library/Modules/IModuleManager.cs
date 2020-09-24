@@ -11,7 +11,7 @@ namespace Deviser.Core.Library.Modules
         IList<PageModule> GetDeletedPageModules();
         PageModule CreateUpdatePageModule(PageModule pageModule);
         void UpdatePageModules(IList<PageModule> pageModules);
-        void UpdateModulePermission(PageModule pageModule);
+        PageModule UpdateModulePermission(PageModule pageModule);
         bool HasEditPermission(PageModule pageModule, bool isForCurrentRequest = false);
         bool HasViewPermission(PageModule pageModule, bool isForCurrentRequest = false);
     }

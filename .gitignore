@@ -284,3 +284,7 @@ src/Deviser.Core/Deviser.Core.Common/DomainTypes/ModuleActionType_BACKUP_16112.c
 /src/Deviser.Web/wwwroot/lib/jquery-ui/bower.json
 /src/Deviser.Web/wwwroot/lib/jquery-ui/.gitignore
 /src/Deviser.Web/wwwroot/lib/jquery-ui/.bower.json
+/src/DeviserApp/wwwroot/assets/images
+/src/DeviserApp/wwwroot/assets/documents
+/release
+/packages-microsoft-prod.deb

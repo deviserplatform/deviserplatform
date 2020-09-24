@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using Deviser.Core.Common.Security;
+using Microsoft.AspNetCore.Authorization;
 using Property = Deviser.Core.Common.DomainTypes.Property;
 
 namespace Deviser.Web.Controllers.Api
 {
     [Route("api/[controller]")]
+    [PermissionAuthorize("PAGE", "EDIT")]
     public class PropertyController : Controller
     {
         private readonly ILogger<PropertyController> _logger;
@@ -21,6 +24,7 @@ namespace Deviser.Web.Controllers.Api
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Get()
         {
             try
@@ -38,6 +42,7 @@ namespace Deviser.Web.Controllers.Api
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public IActionResult Get(Guid id)
         {
             try

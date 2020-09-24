@@ -69,7 +69,7 @@ namespace Deviser.Admin.Services
         {
             var adminConfig = GetAdminConfig(modelType);
             var model = ((JObject)entityObject).ToObject(adminConfig.ModelType);
-            if (adminConfig.ModelConfig.FormConfig.FormActions.TryGetValue(actionName.Pascalize(), out AdminAction adminAction) && adminConfig.ModelType == model.GetType())
+            if (adminConfig.ModelConfig.FormConfig.FormActions.TryGetValue(actionName.Pascalize(), out var adminAction) && adminConfig.ModelType == model.GetType())
             {
                 return await CallGenericMethod(nameof(ExecuteAdminAction), new Type[] { model.GetType() }, new object[] { model, adminAction });
             }
@@ -80,7 +80,7 @@ namespace Deviser.Admin.Services
         {
             var adminConfig = GetAdminConfig(modelType);
             var model = ((JObject)entityObject).ToObject(adminConfig.ModelType);
-            if (adminConfig.ModelConfig.GridConfig.RowActions.TryGetValue(actionName.Pascalize(), out AdminAction adminAction) &&
+            if (adminConfig.ModelConfig.GridConfig.RowActions.TryGetValue(actionName.Pascalize(), out var adminAction) &&
                 adminConfig.ModelType == model.GetType())
             {
                 return await CallGenericMethod(nameof(ExecuteAdminAction), new Type[] { model.GetType() }, new object[] { model, adminAction });
@@ -92,8 +92,8 @@ namespace Deviser.Admin.Services
         {
             var adminConfig = GetAdminConfig(modelType);
             var model = ((JObject)entityObject).ToObject(adminConfig.ModelType);
-            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out CustomForm customForm) &&
-                customForm.FormConfig.FormActions.TryGetValue(actionName.Pascalize(), out AdminAction adminAction) &&
+            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out var customForm) &&
+                customForm.FormConfig.FormActions.TryGetValue(actionName.Pascalize(), out var adminAction) &&
                 adminConfig.ModelType == model.GetType())
             {
                 return await CallGenericMethod(nameof(ExecuteAdminAction), new Type[] { model.GetType() }, new object[] { model, adminAction });
@@ -106,7 +106,7 @@ namespace Deviser.Admin.Services
             var adminConfig = GetAdminConfig(strModelType);
             var modelType = GetCustomFormModelType(strModelType, formName);
             var model = ((JObject)entityObject).ToObject(modelType);
-            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out CustomForm customForm) &&
+            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out var customForm) &&
                 customForm.ModelType == model.GetType())
             {
                 return await CallGenericMethod(nameof(ExecuteCustomFormSubmitAction), new Type[] { model.GetType() }, new object[] { model, customForm });
@@ -143,17 +143,40 @@ namespace Deviser.Admin.Services
         public Type GetCustomFormModelType(string strModelType, string formName)
         {
             var adminConfig = GetAdminConfig(strModelType);
-            if (adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out CustomForm customForm))
-            {
-                return customForm.ModelType;
-            }
+            return adminConfig.ModelConfig.CustomForms.TryGetValue(formName.Pascalize(), out var customForm) ? customForm.ModelType : null;
+        }
 
-            return null;
+        public async Task<object> SortItemsFor(Type modelType, int pageNo, int pageSize, object modelObject, string childModel)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+            var modelConfig = adminConfig.ModelConfig;
+            if (string.IsNullOrEmpty(childModel))
+                return await CallGenericMethod(nameof(SortItems), new Type[] {modelType},
+                    new object[] {modelConfig, pageNo, pageSize, modelObject, childModel});
+
+            var childConfig = adminConfig.ChildConfigs.First(c => c.Field.FieldClrType.Name == childModel);
+            modelConfig = childConfig.ModelConfig;
+            modelType = childConfig.Field.FieldClrType;
+
+            return await CallGenericMethod(nameof(SortItems), new Type[] { modelType }, new object[] { modelConfig, pageNo, pageSize, modelObject, childModel });
         }
 
         public async Task<object> UpdateItemFor(Type modelType, object item)
         {
             return await CallGenericMethod(nameof(UpdateItem), new Type[] { modelType }, new object[] { item });
+        }
+
+        public async Task<object> AutoFill(Type modelType, string fieldName, object fieldValue)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+            var field = adminConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f =>
+                f.FieldName.Equals(fieldName, StringComparison.InvariantCultureIgnoreCase));
+            if (field == null) return await Task.FromResult<object>(null);
+
+            var del = field.FieldOption.AutoFillExpression.Compile();
+            var resultStr = await (dynamic)del.DynamicInvoke(_serviceProvider, fieldValue.ToString());
+            return await Task.FromResult(new { result = resultStr });
+
         }
 
         public async Task<object> UpdateTreeFor(Type modelType, object item)
@@ -299,7 +322,9 @@ namespace Deviser.Admin.Services
                 }
                 return new FormResult<TModel>(result)
                 {
-                    IsSucceeded = true
+                    IsSucceeded = true,
+                    SuccessMessage = $"{adminConfig.ModelType.Name} has been created"
+                    
                 };
             }
 
@@ -333,7 +358,8 @@ namespace Deviser.Admin.Services
                 }
                 return new AdminResult<TModel>(result)
                 {
-                    IsSucceeded = true
+                    IsSucceeded = true,
+                    SuccessMessage = $"{adminConfig.ModelType.Name} has been deleted"
                 };
             }
 
@@ -369,7 +395,7 @@ namespace Deviser.Admin.Services
                     throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
             }
         }
-        
+
         private async Task<TModel> GetTree<TModel>() where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
@@ -403,6 +429,20 @@ namespace Deviser.Admin.Services
             }
         }
 
+        private async Task<PagedResult<TModel>> SortItems<TModel>(IModelConfig modelConfig, int pageNo, int pageSize, object itemObj, string childModel) where TModel : class
+        {
+            var items = ((JArray)itemObj).ToObject<IList<TModel>>(_serializer);
+
+            if (_adminSite.AdminType == AdminType.Entity)
+            {
+                return await _adminRepository.SortItemsFor(pageNo, pageSize, items);
+            }
+
+            var onSortDel = modelConfig.GridConfig.OnSortExpression.Compile();
+            var result = await (dynamic)onSortDel.DynamicInvoke(_serviceProvider, pageNo, pageSize, items) as PagedResult<TModel>;
+            return result;
+        }
+
         private async Task<IFormResult<TModel>> UpdateItem<TModel>(object item) where TModel : class
         {
             var adminConfig = GetAdminConfig(typeof(TModel));
@@ -421,7 +461,8 @@ namespace Deviser.Admin.Services
                 }
                 return new FormResult<TModel>(result)
                 {
-                    IsSucceeded = true
+                    IsSucceeded = true,
+                    SuccessMessage = $"{adminConfig.ModelType.Name} has been updated"
                 };
             }
 
@@ -455,7 +496,7 @@ namespace Deviser.Admin.Services
 
         private IAdminConfig GetAdminConfig(Type modelType)
         {
-            if (_adminSite.AdminConfigs.TryGetValue(modelType, out IAdminConfig adminConfig))
+            if (_adminSite.AdminConfigs.TryGetValue(modelType, out var adminConfig))
             {
                 return adminConfig;
             }
@@ -465,14 +506,12 @@ namespace Deviser.Admin.Services
         private async Task<object> CallGenericMethod(string methodName, Type[] genericTypes, object[] parmeters)
         {
             var getItemMethodInfo = typeof(CoreAdminService).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
-            if (getItemMethodInfo != null)
-            {
-                var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericTypes);
-                var result = (object)await (dynamic)getItemMethod.Invoke(this, parmeters);
-                return result;
-            }
+            if (getItemMethodInfo == null) return null;
 
-            return null;
+            var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericTypes);
+            var result = (object)await (dynamic)getItemMethod.Invoke(this, parmeters);
+            return result;
+
         }
 
         private async Task<IAdminResult> ExecuteAdminAction<TModel>(TModel entityObject, AdminAction adminAction) where TModel : class

@@ -5,15 +5,14 @@ using Deviser.Core.Library.Sites;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Deviser.Core.Library.Services;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace Deviser.Core.Library.Middleware
 {
@@ -39,11 +38,7 @@ namespace Deviser.Core.Library.Middleware
 
         public async Task Invoke(HttpContext httpContext,
             IInstallationProvider installationManager,
-            IPageManager pageManager,
-            IModuleRepository moduleRepository,
-            ISettingManager settingManager,
-            ILanguageRepository languageRepository,
-            IScopeService scopeService)
+            IServiceProvider serviceProvider)
         {
             var requestPath = httpContext.Request.Path.ToString().ToLower();
             var requestParts = requestPath.Split('.');
@@ -60,6 +55,13 @@ namespace Deviser.Core.Library.Middleware
 
             if (isInstalled)
             {
+
+                var pageManager = serviceProvider.GetService<IPageManager>();
+                var moduleRepository = serviceProvider.GetService<IModuleRepository>();
+                var settingManager = serviceProvider.GetService<ISettingManager>();
+                var languageRepository = serviceProvider.GetService<ILanguageRepository>();
+                var scopeService = serviceProvider.GetService<IScopeService>();
+
                 var routeData = httpContext.GetRouteData();
                 var activeLanguages = languageRepository.GetActiveLanguages();
                 pageContext.IsMultilingual = languageRepository.IsMultilingual();
@@ -104,7 +106,7 @@ namespace Deviser.Core.Library.Middleware
                         _logger.LogError(errorMessage, ex);
                     }
                 }
-                else if (httpContext.Request.Headers.ContainsKey("currentPageId") && Guid.TryParse(httpContext.Request.Headers["currentPageId"], out Guid currentPageId))
+                else if (httpContext.Request.Headers.ContainsKey("currentPageId") && Guid.TryParse(httpContext.Request.Headers["currentPageId"], out var currentPageId))
                 {
                     var currentPage = pageManager.GetPageAndTranslation(currentPageId);
                     InitPageContext(httpContext, pageManager, scopeService, currentPage, pageContext);
@@ -120,41 +122,33 @@ namespace Deviser.Core.Library.Middleware
         private static void InitModuleContext(HttpContext httpContext, IModuleRepository moduleRepository,
             IScopeService scopeService, RouteData routeData)
         {
-            object moduleName;
-            object pageModuleId;
             var moduleContext = new ModuleContext();
 
-            //scopeService.ModuleContext = moduleContext;
-
-
-            if (routeData.Values.TryGetValue("area", out moduleName))
+            if (routeData.Values.TryGetValue("area", out var moduleName))
             {
                 moduleContext.ModuleInfo = moduleRepository.GetModule((string)moduleName);
             }
 
-            if (routeData.Values.TryGetValue("pageModuleId", out pageModuleId))
+            if (routeData.Values.TryGetValue("pageModuleId", out var pageModuleId))
             {
                 moduleContext.PageModuleId = Guid.Parse((string)pageModuleId);
 
-                if (moduleContext.ModuleInfo == null)
-                {
-                    moduleContext.ModuleInfo = moduleRepository.GetModuleByPageModuleId(moduleContext.PageModuleId);
-                }
+                moduleContext.ModuleInfo ??= moduleRepository.GetModuleByPageModuleId(moduleContext.PageModuleId);
             }
 
-            if (moduleContext.ModuleInfo != null || moduleContext.PageModuleId != null)
+            if (moduleContext.ModuleInfo == null && moduleContext.PageModuleId == null) return;
+
+
+            if (!httpContext.Items.ContainsKey("ModuleContext"))
             {
-                if (!httpContext.Items.ContainsKey("ModuleContext"))
-                {
-                    httpContext.Items.Add("ModuleContext", moduleContext);
-                }
-                else
-                {
-                    httpContext.Items["ModuleContext"] = moduleContext;
-                }
-
-                scopeService.ModuleContext = moduleContext;
+                httpContext.Items.Add("ModuleContext", moduleContext);
             }
+            else
+            {
+                httpContext.Items["ModuleContext"] = moduleContext;
+            }
+
+            scopeService.ModuleContext = moduleContext;
         }
 
         private static void InitPageContext(HttpContext httpContext, IPageManager pageManager, IScopeService scopeService,
@@ -163,8 +157,6 @@ namespace Deviser.Core.Library.Middleware
             pageContext.CurrentPageId = currentPage.Id;
             pageContext.CurrentUrl = currentPage.PageTranslation.First(p => p.Locale.Equals(pageContext.CurrentCulture.ToString(), StringComparison.InvariantCultureIgnoreCase)).URL;
             pageContext.CurrentPage = currentPage;
-            pageContext.HasPageViewPermission = pageManager.HasViewPermission(currentPage);
-            pageContext.HasPageEditPermission = pageManager.HasEditPermission(currentPage);
 
             if (!httpContext.Items.ContainsKey("PageContext"))
             {
@@ -193,7 +185,7 @@ namespace Deviser.Core.Library.Middleware
         private CultureInfo GetCurrentCulture(RouteData routeData, HttpContext httpContext, IList<Language> activeLanguages, bool isSiteMultilingual, string siteDefaultCulture)
         {
             var requestCultureFeature = httpContext.Features.Get<IRequestCultureFeature>();
-            CultureInfo requestCulture = requestCultureFeature.RequestCulture.UICulture;
+            var requestCulture = requestCultureFeature.RequestCulture.UICulture;
 
             //if (isSiteMultilingual)
             //{
@@ -219,7 +211,7 @@ namespace Deviser.Core.Library.Middleware
         private string GetPermalink(RouteData routeData, HttpContext httpContext)
         {
             //permalink in the url has first preference
-            string permalink = (routeData.Values["permalink"] != null) ? routeData.Values["permalink"].ToString() : "";
+            var permalink = (routeData.Values["permalink"] != null) ? routeData.Values["permalink"].ToString() : "";
             if (string.IsNullOrEmpty(permalink))
             {
                 //if permalink is null, check for querystring

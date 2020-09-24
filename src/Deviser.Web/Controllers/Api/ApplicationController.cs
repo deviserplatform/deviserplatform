@@ -4,18 +4,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace Deviser.Web.Controllers.Api
 {
     [Produces("application/json")]
     [Route("api/Application")]
-    [Authorize]
+    [Authorize(Roles = "Administrators")]
     public class ApplicationController : Controller
     {
         //Logger
         private readonly ILogger<ApplicationController> _logger;
-        public ApplicationController(ILogger<ApplicationController> logger)
+        private readonly IHostApplicationLifetime _hostApplicationLifetime;
+
+        public ApplicationController(IHostApplicationLifetime hostApplicationLifetime,
+            ILogger<ApplicationController> logger)
         {
+            _hostApplicationLifetime = hostApplicationLifetime;
             _logger = logger;
         }
 
@@ -25,8 +30,12 @@ namespace Deviser.Web.Controllers.Api
         {
             try
             {
-                //ApplicationManager.Instance.Restart();
-                return Ok(new { status = "Application has been restarted" });
+                Task.Run(() =>
+                {
+                    _hostApplicationLifetime.StopApplication();
+                });
+                var result = Ok(new {status = "Application has been restarted"});
+                return await Task.FromResult(result);
             }
             catch (Exception ex)
             {

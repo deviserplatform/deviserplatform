@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project DefaultTargets="Clean;BuildClientApp;Build;PublishOutput">
+	<PropertyGroup>
+		<WorkspaceDir>.\src\Deviser.Core\Deviser.NgLib\deviser-workspace\</WorkspaceDir>
+		<WorkspaceOutputDir>.\src\Deviser.Core\Deviser.NgLib\deviser-workspace\dist</WorkspaceOutputDir>
+		<DeviserAdminClientDir>.\src\Deviser.Core\Deviser.Admin.Web\ClientApp\</DeviserAdminClientDir>
+		<DeviserWebClientDir>.\src\Deviser.Web\ClientApp\</DeviserWebClientDir>
+		<OutputDir>.\release</OutputDir>
+		<DeviserPlatformPath>.\src\Deviser.Web</DeviserPlatformPath>
+		<DeviserPlatformProj>$(DeviserPlatformPath)\Deviser.Web.csproj</DeviserPlatformProj>
+		<Configuration>Release</Configuration>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<NugetFiles Include="$(DeviserPlatformPath)\bin\Release\*.nupkg"/>
+		<DeviserSharedLibFiles Include="$(WorkspaceOutputDir)\**\*.*"/>
+	</ItemGroup>
+
+	<Target Name="Clean">
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		<Message Importance="High" Text="CLEAN" />
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		<Message Importance="High" Text="Cleaning output directory" />
+		<RemoveDir Directories="$(OutputDir)" />
+		<Message Importance="High" Text="Output directory has been cleaned" />
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+	</Target>
+
+	<Target Name="BuildSharedLibClient">
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		<Message Importance="High" Text="BUILDING ANGULAR SHARED LIB" />
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		<Message Importance="High" Text="Running npm install" />
+		<Exec WorkingDirectory="$(WorkspaceDir)" Command="npm install" ConsoleToMSBuild="true"/>
+		<Message Importance="High" Text="Finished npm install" />
+
+		<Message Importance="High" Text="Building Angular shared library" />
+		<Exec WorkingDirectory="$(WorkspaceDir)" Command="ng build --prod" ConsoleToMSBuild="true"/>
+		<Message Importance="High" Text="Finished building Angular shared library" />
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+	</Target>
+
+	<Target Name="BuildDeviserAdminClient">
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		<Message Importance="High" Text="BUILDING DEVISER ADMIN CLIENT" />
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		<Message Importance="High" Text="Running npm install" />
+		<Exec WorkingDirectory="$(DeviserAdminClientDir)" Command="npm install" ConsoleToMSBuild="true"/>
+		<Message Importance="High" Text="Finished npm install" />
+
+		<Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
+		<Delete Files="$(DeviserAdminClientDir)**\*.css"/>
+
+		<Message Importance="High" Text="Building Admin Client" />
+		<Copy SourceFiles="@(DeviserSharedLibFiles)" DestinationFolder="$(DeviserAdminClientDir)\node_modules\%(RecursiveDir)"/>
+		
+		<Exec WorkingDirectory="$(DeviserAdminClientDir)" Command="ng build --prod --output-hashing none" ConsoleToMSBuild="true" />
+		<Message Importance="High" Text="Finished building Admin Client" />
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+	</Target>
+
+	<Target Name="BuildDeviserWebClient">
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		<Message Importance="High" Text="BUILDING DEVISER WEB CLIENT" />
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		<Message Importance="High" Text="Running npm install" />
+		<Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm install" ConsoleToMSBuild="true"/>
+		<Message Importance="High" Text="Finished npm install" />
+
+		<Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
+		<Delete Files="$(DeviserWebClientDir)**\*.css" />
+
+		<Message Importance="High" Text="Building Web Client" />
+		<Copy SourceFiles="@(DeviserSharedLibFiles)" DestinationFolder="$(DeviserWebClientDir)\node_modules\%(RecursiveDir)"/>
+		<Exec WorkingDirectory="$(DeviserWebClientDir)" Command="ng build --prod --output-hashing none" ConsoleToMSBuild="true"/>
+		<Message Importance="High" Text="Finished building Web Client" />
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+	</Target>
+
+	<Target Name ="BuildClientApp"
+	        BeforeTargets="PreBuildEvent"
+	        DependsOnTargets="BuildSharedLibClient;BuildDeviserAdminClient;BuildDeviserWebClient"></Target>
+
+	<Target Name="Build">
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		<Message Importance="High" Text="BUILDING DEVISER PLATFORM" />
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		<Message Importance="High" Text="Building Deviser Platform" />
+		<MSBuild Projects="$(DeviserPlatformProj)" Targets="Build"  />
+		<Message Importance="High" Text="Finished Building Deviser Platform" />
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+	</Target>
+
+	<Target Name="PublishOutput" AfterTargets="PostBuildEvent">
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		<Message Importance="High" Text="PUBLISH OUTPUT" />
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		<Message Importance="High" Text="Copying nuget to release folder" />
+		<MakeDir Directories="$(OutputDir)" />
+		<MakeDir Directories="$(OutputDir)\nuget" />
+		<Copy SourceFiles="@(NugetFiles)" DestinationFiles="@(NugetFiles->'$(OutputDir)\nuget\%(RecursiveDir)%(Filename)%(Extension)')" 
+		      OverwriteReadOnlyFiles="true"
+		      SkipUnchangedFiles="false"/>
+		<Message Importance="High" Text="Copied nuget to release folder" />
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+	</Target>
+</Project>
+

@@ -4,10 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using Deviser.Core.Common.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeviserWI.Controllers.API
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Administrators")]
     public class RoleController : Controller
     {
 
@@ -90,7 +93,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                string errorMessage = string.Format("Error occured while updating role");
+                var errorMessage = string.Format("Error occured while updating role");
                 _logger.LogError(errorMessage, ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
@@ -111,7 +114,7 @@ namespace DeviserWI.Controllers.API
             }
             catch (Exception ex)
             {
-                string errorMessage = string.Format("Error occured while deleting role, roleId: ", id);
+                var errorMessage = string.Format("Error occured while deleting role, roleId: ", id);
                 _logger.LogError(errorMessage, ex);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }

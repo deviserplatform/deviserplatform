@@ -8,7 +8,7 @@ namespace Deviser.Core.Library.Internal
 {
     public interface IActionInvoker: IDisposable
     {
-        Task<IActionResult> InvokeAction(HttpContext httpContext, ModuleAction moduleAction, ActionContext actionContext);
+        Task<IActionResult> InvokeAction(HttpContext httpContext, ModuleView moduleView, ActionContext actionContext);
         Task<IActionResult> InvokeAction(HttpContext httpContext, string controllerNamespace, string controllerName, string actionName, ActionContext actionContext);
     }
 }

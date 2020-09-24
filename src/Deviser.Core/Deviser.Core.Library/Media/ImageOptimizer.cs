@@ -10,32 +10,28 @@ namespace Deviser.Core.Library.Media
 
         public byte[] OptimizeImage(byte[] inputImage, ImageOptimizeParams imageOptimizeParams=null)
         {
-            if (imageOptimizeParams == null)
-            {
-                imageOptimizeParams = GetDefaultParams();
-            }
+            imageOptimizeParams ??= GetDefaultParams();
 
-            using (var c = new JobContext())
-            using (var ms = new MemoryStream())
-            {              
-                c.AddInputBytesPinned(0, inputImage);
-                c.AddOutputBuffer(1);
-                //string commandString = $"dpi={72}&maxwidth={1024}&maxheight={1024}&quality={80}";
-                string commandString = $"dpi={imageOptimizeParams.Dpi}&maxwidth={imageOptimizeParams.MaxWidth}&maxheight={imageOptimizeParams.MaxHeight}&quality={imageOptimizeParams.QualityPercent}";
-                var response = c.ExecuteImageResizer4CommandString(0, 1, commandString);
+            using var c = new JobContext();
+            using var ms = new MemoryStream();
 
-                var data = response.DeserializeDynamic();
-                var outputStream = c.GetOutputBuffer(1);
+            c.AddInputBytesPinned(0, inputImage);
+            c.AddOutputBuffer(1);
+            //string commandString = $"dpi={72}&maxwidth={1024}&maxheight={1024}&quality={80}";
+            var commandString = $"dpi={imageOptimizeParams.Dpi}&maxwidth={imageOptimizeParams.MaxWidth}&maxheight={imageOptimizeParams.MaxHeight}&quality={imageOptimizeParams.QualityPercent}";
+            var response = c.ExecuteImageResizer4CommandString(0, 1, commandString);
 
-                //Assert.Equal(200, (int)data.code);
-                //Assert.Equal(true, (bool)data.success);		
+            var data = response.DeserializeDynamic();
+            var outputStream = c.GetOutputBuffer(1);
 
-                outputStream.CopyTo(ms);
-                return ms.ToArray();
+            //Assert.Equal(200, (int)data.code);
+            //Assert.Equal(true, (bool)data.success);		
 
-                //httpContext.Response.ContentType = "image/png";//cbb.Properties.ContentType;   
-                //await outputStream.CopyToAsync(httpContext.Response.Body);
-            }
+            outputStream.CopyTo(ms);
+            return ms.ToArray();
+
+            //httpContext.Response.ContentType = "image/png";//cbb.Properties.ContentType;   
+            //await outputStream.CopyToAsync(httpContext.Response.Body);
         }
 
         private ImageOptimizeParams GetDefaultParams()

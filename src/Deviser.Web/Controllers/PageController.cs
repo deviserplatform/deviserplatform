@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Deviser.Core.Common.Security;
+using Deviser.Core.Library.Security;
 
 namespace Deviser.Web.Controllers
 {
@@ -62,6 +64,7 @@ namespace Deviser.Web.Controllers
 
         }
 
+        [PermissionAuthorize("PAGE", "VIEW")]
         public async Task<IActionResult> Index(string permalink)
         {
             try
@@ -81,7 +84,7 @@ namespace Deviser.Web.Controllers
                 if (_isInstalled && _isDbExist)
                 {
                     //Platform is properly installed
-                    Page currentPage = _pageManager.GetPageAndDependencies(_scopeService.PageContext.CurrentPage.Id);
+                    var currentPage = _pageManager.GetPageAndDependencies(_scopeService.PageContext.CurrentPage.Id);
                     _scopeService.PageContext.CurrentPage = currentPage;
                     FilterPageElements(currentPage);
                     if (currentPage != null)
@@ -90,8 +93,8 @@ namespace Deviser.Web.Controllers
                         {
                             if (currentPage.PageTypeId == Globals.PageTypeStandard)
                             {
-                                Dictionary<string, List<Core.Common.DomainTypes.ContentResult>> moduleActionResults = await _deviserControllerFactory.GetPageModuleResults(Context);
-                                ViewBag.ModuleActionResults = moduleActionResults;
+                                var moduleViewResult = await _deviserControllerFactory.GetPageModuleResults(Context);
+                                ViewBag.ModuleViewResults = moduleViewResult;
                                 return View(currentPage);
 
                             }
@@ -100,6 +103,12 @@ namespace Deviser.Web.Controllers
                                 var result = await _deviserControllerFactory.GetAdminPageResult(Context);
                                 ViewBag.AdminResult = result;
                                 return View(currentPage);
+                            }
+                            else if (currentPage.PageTypeId == Globals.PageTypeURL)
+                            {
+                                var pageTranslation = currentPage.PageTranslation.FirstOrDefault(pt =>
+                                    pt.Locale.Equals(_scopeService.PageContext.CurrentLocale));
+                                return Redirect(pageTranslation.RedirectUrl);
                             }
                         }
                         else
@@ -117,9 +126,10 @@ namespace Deviser.Web.Controllers
             return View("NotFound");
         }
 
+        [PermissionAuthorize("PAGE","EDIT")]
         public IActionResult Layout(string permalink)
         {
-            Page currentPage = _scopeService.PageContext.CurrentPage;
+            var currentPage = _scopeService.PageContext.CurrentPage;
             FilterPageElements(currentPage);
             if (_scopeService.PageContext != null)
             {
@@ -130,9 +140,10 @@ namespace Deviser.Web.Controllers
             return null;
         }
 
+        [PermissionAuthorize("PAGE", "EDIT")]
         public IActionResult Edit(string permalink)
         {
-            Page currentPage = _scopeService.PageContext.CurrentPage;
+            var currentPage = _scopeService.PageContext.CurrentPage;
             FilterPageElements(currentPage);
             if (currentPage != null && _scopeService.PageContext != null)
             {
@@ -152,14 +163,14 @@ namespace Deviser.Web.Controllers
         }
 
         [HttpGet]
-        [Route("[controller]/[action]/pageModuleId/{pageModuleId}/moduleActionId/{moduleActionId}")]
-        public IActionResult EditModule(string currentLink, Guid pageModuleId, Guid moduleActionId)
+        [Route("[controller]/[action]/pageModuleId/{pageModuleId}/moduleViewId/{moduleViewId}")]
+        public IActionResult EditModule(string currentLink, Guid pageModuleId, Guid moduleViewId)
         {
             if (pageModuleId != Guid.Empty)
             {
                 try
                 {
-                    var pageModule = _pageRepository.GetPageModule(pageModuleId); //It referes PageModule's View ModuleActionType
+                    var pageModule = _pageRepository.GetPageModule(pageModuleId); //It referes PageModule's View ModuleViewType
 
                     if (pageModule == null)
                         return NotFound();
@@ -167,7 +178,7 @@ namespace Deviser.Web.Controllers
                     //if (moduleManager.HasEditPermission(pageModule))
                     if (_scopeService.PageContext.HasPageEditPermission)
                     {
-                        object result = _deviserControllerFactory.GetModuleEditResult(Context, pageModule, moduleActionId).Result;
+                        object result = _deviserControllerFactory.GetModuleEditResult(Context, pageModule, moduleViewId).Result;
                         ViewBag.result = result;
                         return View(result);
                     }
@@ -209,7 +220,7 @@ namespace Deviser.Web.Controllers
                 }
 
                 //Themes are not used for sometime period
-                string theme = "";
+                var theme = "";
                 if (!string.IsNullOrEmpty(currentPage.ThemeSrc))
                     theme = currentPage.ThemeSrc;
                 else

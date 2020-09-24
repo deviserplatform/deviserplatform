@@ -25,148 +25,77 @@ namespace Deviser.Core.Library.Modules
 
         public PageModule GetPageModule(Guid pageModuleId)
         {
-            try
+            var pageModule = _pageRepository.GetPageModule(pageModuleId);
+            if (pageModule != null)
             {
-                var pageModule = _pageRepository.GetPageModule(pageModuleId);
-                if (pageModule != null)
-                {
-                    pageModule.HasEditPermission = HasEditPermission(pageModule);
-                }
-                return pageModule;
+                pageModule.HasEditPermission = HasEditPermission(pageModule);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(string.Format("Error occured while getting pageModule, pageModuleId: ", pageModuleId), ex);
-            }
-
-            return null;
+            return pageModule;
         }
 
         public IList<PageModule> GetPageModuleByPage(Guid pageId)
         {
-            try
-            {
-                var pageModules = _pageRepository.GetPageModules(pageId);
-                if (pageModules != null)
-                {
-                    foreach (var pageModule in pageModules)
-                    {
-                        pageModule.HasEditPermission = HasEditPermission(pageModule);
-                    }
-                }
-                return pageModules;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(string.Format("Error occured while getting pageModules, pageId: ", pageId), ex);
-            }
+            var pageModules = _pageRepository.GetPageModules(pageId);
+            if (pageModules == null) return pageModules;
 
-            return null;
+            foreach (var pageModule in pageModules)
+            {
+                pageModule.HasEditPermission = HasEditPermission(pageModule);
+            }
+            return pageModules;
         }
 
         public IList<PageModule> GetDeletedPageModules()
         {
-            try
-            {
-                var pageModules = _pageRepository.GetDeletedPageModules();               
-                return pageModules;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(string.Format("Error occured while getting deleted pageModules"), ex);
-            }
-
-            return null;
-
+            var pageModules = _pageRepository.GetDeletedPageModules();
+            return pageModules;
         }
         public PageModule CreateUpdatePageModule(PageModule pageModule)
         {
-            try
+            if (pageModule == null) throw new InvalidOperationException($"Parameter PageModule cannot be null");
+
+            var dbPageModule = _pageRepository.GetPageModule(pageModule.Id);
+            if (dbPageModule == null)
             {
-                if (pageModule != null)
+                dbPageModule = _pageRepository.CreatePageModule(pageModule);
+                var adminPermissions = AddAdminPermissions(dbPageModule) as List<ModulePermission>;
+
+                if (dbPageModule.ModulePermissions == null)
                 {
-                    PageModule dbPageModule = _pageRepository.GetPageModule(pageModule.Id);
-                    if (dbPageModule == null)
-                    {
-                        dbPageModule = _pageRepository.CreatePageModule(pageModule);
-                        List<ModulePermission> adminPermissions = AddAdminPermissions(dbPageModule) as List<ModulePermission>;
-
-                        if (dbPageModule.ModulePermissions == null)
-                        {
-                            dbPageModule.ModulePermissions = adminPermissions;
-                        }
-                        else
-                        {
-                            adminPermissions.AddRange(dbPageModule.ModulePermissions);
-                            dbPageModule.ModulePermissions = adminPermissions;
-                        }
-                    }
-
-                    else
-                    {
-                        dbPageModule.Title = pageModule.Title;
-                        dbPageModule.IsDeleted = false;
-                        dbPageModule.ContainerId = pageModule.ContainerId;
-                        dbPageModule.SortOrder = pageModule.SortOrder;                       
-                        dbPageModule.Properties = pageModule.Properties;
-                        dbPageModule = _pageRepository.UpdatePageModule(dbPageModule);
-                    }
-
-                    dbPageModule.HasEditPermission = HasEditPermission(dbPageModule);
-
-                    return dbPageModule;
+                    dbPageModule.ModulePermissions = adminPermissions;
+                }
+                else
+                {
+                    adminPermissions.AddRange(dbPageModule.ModulePermissions);
+                    dbPageModule.ModulePermissions = adminPermissions;
                 }
             }
-            catch (Exception ex)
+
+            else
             {
-                _logger.LogError(string.Format("Error occured while creating a pageModule, moduleId: ", pageModule.ModuleId), ex);
+                dbPageModule.Title = pageModule.Title;
+                dbPageModule.IsActive = true;
+                dbPageModule.ContainerId = pageModule.ContainerId;
+                dbPageModule.SortOrder = pageModule.SortOrder;
+                dbPageModule.Properties = pageModule.Properties;
+                dbPageModule = _pageRepository.UpdatePageModule(dbPageModule);
             }
-            return null;
+
+            dbPageModule.HasEditPermission = HasEditPermission(dbPageModule);
+
+            return dbPageModule;
         }
 
         public void UpdatePageModules(IList<PageModule> pageModules)
         {
-            try
-            {
-                if (pageModules != null)
-                {
-                    _pageRepository.UpdatePageModules(pageModules);
+            if (pageModules == null) throw new InvalidOperationException($"Parameter PageModule cannot be null");
 
-                    foreach (var pageModule in pageModules)
-                    {
-                        var adminPermissions = AddAdminPermissions(pageModule) as List<ModulePermission>;
-
-                        if (pageModule.ModulePermissions == null)
-                        {
-                            pageModule.ModulePermissions = adminPermissions;
-                        }
-                        else
-                        {
-                            adminPermissions.AddRange(pageModule.ModulePermissions);
-                            pageModule.ModulePermissions = adminPermissions;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(string.Format("Error occured while updating pageModules"), ex);
-            }
+            _pageRepository.AddOrUpdatePageModules(pageModules);
         }
 
-        public void UpdateModulePermission(PageModule pageModule)
+        public PageModule UpdateModulePermission(PageModule pageModule)
         {
-            try
-            {
-                if (pageModule != null)
-                {
-                    _pageRepository.UpdateModulePermission(pageModule);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(string.Format("Error occured while updating page content"), ex);
-            }
+            return _pageRepository.UpdateModulePermission(pageModule);
         }
 
         private IList<ModulePermission> AddAdminPermissions(PageModule pageModule)
@@ -190,7 +119,7 @@ namespace Deviser.Core.Library.Modules
             return adminPermissions;
         }
 
-        public bool HasViewPermission(PageModule pageModule, bool isForCurrentRequest=false)
+        public bool HasViewPermission(PageModule pageModule, bool isForCurrentRequest = false)
         {
             if (pageModule == null || pageModule.ModulePermissions == null)
                 throw new ArgumentNullException("pageModule.ModulePermissions", "PageModule and ModulePermissions should not be null");
@@ -198,7 +127,7 @@ namespace Deviser.Core.Library.Modules
             var result = (pageModule.ModulePermissions.Any(modulePermission => modulePermission.PermissionId == Globals.ModuleViewPermissionId &&
               (modulePermission.RoleId == Globals.AllUsersRoleId || (IsUserAuthenticated && CurrentUserRoles.Any(role => role.Id == modulePermission.RoleId)))));
 
-            var page = isForCurrentRequest? _scopeService.PageContext.CurrentPage : _pageRepository.GetPageAndPagePermissions(pageModule.PageId);
+            var page = isForCurrentRequest ? _scopeService.PageContext.CurrentPage : _pageRepository.GetPageAndPagePermissions(pageModule.PageId);
             return result || (pageModule.InheritViewPermissions && HasViewPermission(page));
         }
 

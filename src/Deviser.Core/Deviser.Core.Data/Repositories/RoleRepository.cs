@@ -10,19 +10,6 @@ using System.Linq;
 
 namespace Deviser.Core.Data.Repositories
 {
-
-    public interface IRoleRepository
-    {
-        List<Role> GetRoles();
-        List<Role> GetRoles(string userName);
-        Role GetRole(Guid roleId);
-        Role GetRoleByName(string roleName);
-        Role CreateRole(Role role);
-        Role UpdateRole(Role role);
-        Role DeleteRole(Guid roleId);
-
-    }
-
     public class RoleRepository : IRoleRepository
     {
         ///Logger
@@ -30,7 +17,7 @@ namespace Deviser.Core.Data.Repositories
         private readonly DbContextOptions<DeviserDbContext> _dbOptions;
         private readonly IMapper _mapper;
         private readonly IServiceProvider _serviceProvider;
-        
+
 
         //Constructor
         public RoleRepository(DbContextOptions<DeviserDbContext> dbOptions,
@@ -47,150 +34,73 @@ namespace Deviser.Core.Data.Repositories
         //Custom Field Declaration
         public List<Role> GetRoles()
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.Roles
-                    .OrderBy(r => r.Name)
-                    .ToList();
-                return _mapper.Map<List<Role>>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting GetRoles", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.Roles
+                .OrderBy(r => r.Name)
+                .ToList();
+            return _mapper.Map<List<Role>>(result);
         }
 
         public List<Role> GetRoles(string userName)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var user = context.Users.FirstOrDefault(u => u.UserName.ToLower() == userName);
-                if (user != null)
-                {
-                    var result = context.Roles
-                        .Include(r=>r.UserRoles)
-                        .Where(r => r.UserRoles.Any(u => u.UserId == user.Id))
-                        .OrderBy(r => r.Name)
-                        .ToList();
-                    return _mapper.Map<List<Role>>(result);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while getting GetRoles", ex);
-            }
-            return null;
+            using var context = new DeviserDbContext(_dbOptions);
+            var user = context.Users.FirstOrDefault(u => u.UserName.ToLower() == userName);
+            
+            if (user == null) throw new InvalidOperationException($"User not found {userName}");
+
+            var result = context.Roles
+                .Include(r => r.UserRoles)
+                .Where(r => r.UserRoles.Any(u => u.UserId == user.Id))
+                .OrderBy(r => r.Name)
+                .ToList();
+            return _mapper.Map<List<Role>>(result);
         }
 
         public Role GetRole(Guid roleId)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.Roles
-                    .FirstOrDefault(e => e.Id == roleId);
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.Roles
+                .FirstOrDefault(e => e.Id == roleId);
 
-                return _mapper.Map<Role>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling GetRole", ex);
-            }
-            return null;
+            return _mapper.Map<Role>(result);
         }
 
         public Role GetRoleByName(string roleName)
         {
-            try
-            {
-                using var context = new DeviserDbContext(_dbOptions);
-                var result = context.Roles
-                    .FirstOrDefault(e => e.Name == roleName);
+            using var context = new DeviserDbContext(_dbOptions);
+            var result = context.Roles
+                .FirstOrDefault(e => e.Name == roleName);
 
-                return _mapper.Map<Role>(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling GetRoleByName", ex);
-            }
-            return null;
+            return _mapper.Map<Role>(result);
         }
 
         public Role CreateRole(Role role)
         {
-            try
-            {
-                var dbRole = _mapper.Map<Entities.Role>(role);
-                RoleManager<Entities.Role> rm = _serviceProvider.GetService<RoleManager<Entities.Role>>();
-                var result = rm.CreateAsync(dbRole).Result;
-
-                //Role resultRole;
-                //role.Id = Guid.NewGuid().ToString();
-                //resultRole = context.Roles.Add(role).Entity;
-                //context.SaveChanges();
-                return role;
-
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling CreateRole", ex);
-            }
-            return null;
+            var dbRole = _mapper.Map<Entities.Role>(role);
+            var rm = _serviceProvider.GetService<RoleManager<Entities.Role>>();
+            var result = rm.CreateAsync(dbRole).GetAwaiter().GetResult();
+            if (!result.Succeeded) throw new InvalidOperationException($"Unable to create new role, {result.Errors}");
+            return role;
         }
         public Role UpdateRole(Role role)
         {
-            try
-            {
-                var rm =_serviceProvider.GetService<RoleManager<Entities.Role>>();
-                var dbRole = rm.Roles.FirstOrDefault(r => r.Id == role.Id);
-                
-                if (dbRole == null) return null;
+            var rm = _serviceProvider.GetService<RoleManager<Entities.Role>>();
+            var dbRole = rm.Roles.FirstOrDefault(r => r.Id == role.Id);
 
-                dbRole.Name = role.Name;
-                var result = rm.UpdateAsync(dbRole).Result;
+            if (dbRole == null) return null;
 
-                //Role resultRole;
-                //resultRole = context.Roles.Attach(role).Entity;
-                //context.Entry(role).State = EntityState.Modified;
-
-                //context.SaveChanges();
-                return role;
-
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling UpdateRole", ex);
-            }
-            return null;
+            dbRole.Name = role.Name;
+            var result = rm.UpdateAsync(dbRole).GetAwaiter().GetResult();
+            if (!result.Succeeded) throw new InvalidOperationException($"Unable to update role, {result.Errors}");
+            return role;
         }
         public Role DeleteRole(Guid roleId)
         {
-            try
-            {
-                var rm =_serviceProvider.GetService<RoleManager<Entities.Role>>();
-                var role = rm.Roles
-                    .FirstOrDefault(e => e.Id == roleId);
-                var result = rm.DeleteAsync(role).Result;
-
-
-                //Role resultRole;
-                //var deleteObj = context.Roles
-                //.Where(e => e.Id == roleId)
-                //    .FirstOrDefault();
-
-                //resultRole = context.Roles.Remove(deleteObj).Entity;
-                //context.SaveChanges();
-                return _mapper.Map<Role>(role);
-
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error occured while calling DeleteRole", ex);
-            }
-            return null;
+            var rm = _serviceProvider.GetService<RoleManager<Entities.Role>>();
+            var role = rm.Roles
+                .FirstOrDefault(e => e.Id == roleId);
+            var result = rm.DeleteAsync(role).Result;
+            return _mapper.Map<Role>(role);
         }
 
     }

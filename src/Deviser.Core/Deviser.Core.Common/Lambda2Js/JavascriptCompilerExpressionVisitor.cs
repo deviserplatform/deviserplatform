@@ -452,7 +452,7 @@ namespace Deviser.Core.Common.Lambda2Js
                 }
             }
 
-            bool isClosure = false;
+            var isClosure = false;
             using (this.resultWriter.Operation(node))
             {
                 var metadataProvider = this.Options.GetMetadataProvider();
@@ -605,7 +605,7 @@ namespace Deviser.Core.Common.Lambda2Js
                     this.resultWriter.Write('{');
 
                     var posStart = this.resultWriter.Length;
-                    for (int itMember = 0; itMember < node.Members.Count; itMember++)
+                    for (var itMember = 0; itMember < node.Members.Count; itMember++)
                     {
                         var member = node.Members[itMember];
                         if (this.resultWriter.Length > posStart)

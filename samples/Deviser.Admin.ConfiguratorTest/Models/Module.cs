@@ -7,7 +7,7 @@ namespace Deviser.Admin.ConfiguratorTest.Models
     {
         public Module()
         {
-            ModuleAction = new HashSet<ModuleAction>();
+            ModuleAction = new HashSet<ModuleView>();
             PageModule = new HashSet<PageModule>();
         }
 
@@ -20,7 +20,7 @@ namespace Deviser.Admin.ConfiguratorTest.Models
         public string Name { get; set; }
         public string Version { get; set; }
 
-        public virtual ICollection<ModuleAction> ModuleAction { get; set; }
+        public virtual ICollection<ModuleView> ModuleAction { get; set; }
         public virtual ICollection<PageModule> PageModule { get; set; }
     }
 }

@@ -51,7 +51,18 @@ namespace Deviser.Modules.ContentManagement.Services
             ParseProperty(item);
             var resultProperty = _propertyRepository.CreateProperty(item);
             ParseResult(resultProperty);
-            var result = new FormResult<Property>(resultProperty);
+            if (resultProperty == null)
+                return new FormResult<Property>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to create the Property"
+                };
+
+            var result = new FormResult<Property>(resultProperty)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "Property has been created"
+            };
             return await Task.FromResult(result);
         }
 
@@ -60,7 +71,18 @@ namespace Deviser.Modules.ContentManagement.Services
             ParseProperty(item);
             var resultProperty = _propertyRepository.UpdateProperty(item);
             ParseResult(resultProperty);
-            var result = new FormResult<Property>(resultProperty);
+            if (resultProperty == null)
+                return new FormResult<Property>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to update the Property"
+                };
+
+            var result = new FormResult<Property>(resultProperty)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "Property has been saved"
+            };
             return await Task.FromResult(result);
         }
 
@@ -69,12 +91,20 @@ namespace Deviser.Modules.ContentManagement.Services
             var property = _propertyRepository.GetProperty(Guid.Parse(itemId));
             if (property == null)
             {
-                return await Task.FromResult<AdminResult<Property>>(null);
+                return new FormResult<Property>()
+                {
+                    IsSucceeded = false,
+                    ErrorMessage = "Unable to delete the Property"
+                };
             }
 
             property.IsActive = false;
             property = _propertyRepository.UpdateProperty(property);
-            var result = new FormResult<Property>(property);
+            var result = new FormResult<Property>(property)
+            {
+                IsSucceeded = true,
+                SuccessMessage = "Property has been deleted successfully"
+            };
             return await Task.FromResult(result);
         }
 

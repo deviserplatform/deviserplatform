@@ -17,19 +17,22 @@
     ViewBag.SiteHeaderTags = siteHeaderTags != null ? siteHeaderTags : "";
     ViewBag.PageHeaderTags = pageHeaderTags != null ? pageHeaderTags : "";
 
-    Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>> moduleActionResults =
-(Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>>)ViewBag.ModuleActionResults;
+    var moduleViewResults =
+(Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>>)ViewBag.ModuleViewResults;
 }
-<script type="text/javascript">
-    var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
-    console.log(pageContext);
-    console.log('@scopeService.ScopeId');
+<script>
+    (function () {
+        var pageContext =  @Html.Raw(SDJsonConvert.SerializeObject(scopeService.PageContext));
+        pageContext.isEmbedded = true;
+        pageContext.assetPath = '/_content/Deviser.Web/ClientApp/';
+        window.pageContext = pageContext;
+    }());
 </script>
 
-@if (moduleActionResults != null)
+@if (moduleViewResults != null)
 {
 
-    <div sde-page="@Model" sde-module-results="@moduleActionResults" class="page-content">
+    <div sde-page="@Model" sde-module-results="@moduleViewResults" class="page-content">
 
     </div>
 }

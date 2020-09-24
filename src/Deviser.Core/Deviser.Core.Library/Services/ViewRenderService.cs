@@ -32,32 +32,30 @@ namespace Deviser.Core.Library.Services
             var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };
             var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
 
-            using (var sw = new StringWriter())
+            await using var sw = new StringWriter();
+            var viewEngineResult = _razorViewEngine.FindView(actionContext, viewName, false);
+
+            if (viewEngineResult.View == null)
             {
-                var viewEngineResult = _razorViewEngine.FindView(actionContext, viewName, false);
-
-                if (viewEngineResult.View == null)
-                {
-                    throw new ArgumentNullException($"{viewName} does not match any available view");
-                }
-
-                var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                {
-                    Model = model
-                };
-
-                var viewContext = new ViewContext(
-                    actionContext,
-                    viewEngineResult.View,
-                    viewDictionary,
-                    new TempDataDictionary(actionContext.HttpContext, _tempDataProvider),
-                    sw,
-                    new HtmlHelperOptions()
-                );
-
-                await viewEngineResult.View.RenderAsync(viewContext);
-                return sw.ToString();
+                throw new ArgumentNullException($"{viewName} does not match any available view");
             }
+
+            var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+            {
+                Model = model
+            };
+
+            var viewContext = new ViewContext(
+                actionContext,
+                viewEngineResult.View,
+                viewDictionary,
+                new TempDataDictionary(actionContext.HttpContext, _tempDataProvider),
+                sw,
+                new HtmlHelperOptions()
+            );
+
+            await viewEngineResult.View.RenderAsync(viewContext);
+            return sw.ToString();
         }
     }
 }

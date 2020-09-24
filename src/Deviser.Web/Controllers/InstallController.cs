@@ -6,26 +6,37 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
+using System.Threading.Tasks;
+using Deviser.Core.Common.Hubs;
+using Deviser.Core.Library.Controllers;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Hosting;
 
 namespace Deviser.Web.Controllers
 {
-    public class InstallController : Controller
+    public class InstallController : DeviserController
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly IHubContext<ApplicationHub> _hubContext;
         private readonly IInstallationProvider _installationProvider;
         private readonly IConfiguration _configuration;
+        private readonly IHostApplicationLifetime _hostApplicationLifetime;
 
-        public InstallController(IWebHostEnvironment hostingEnvironment, 
+        public InstallController(IHostApplicationLifetime hostApplicationLifetime,
+            IHubContext<ApplicationHub> hubContext,
+            IWebHostEnvironment hostingEnvironment, 
             IInstallationProvider installationProvider,
             IConfiguration configuration)
         {
+            _hostApplicationLifetime = hostApplicationLifetime;
+            _hubContext = hubContext;
             _hostingEnvironment = hostingEnvironment;
             _installationProvider = installationProvider;
             _configuration = configuration;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             if (_installationProvider.IsPlatformInstalled)
                 return RedirectToAction("Index", "Home");
@@ -37,62 +48,64 @@ namespace Deviser.Web.Controllers
                 IsIntegratedSecurity = true
             };
 
-            return View(installModel);
+            return await ViewAsync(installModel);
         }
 
-        public IActionResult Terms()
+        public async Task<IActionResult> Terms()
         {
-            return View();
+            return await ViewAsync();
         }
 
-        public IActionResult License()
+        public async Task<IActionResult> License()
         {
-            return View("Terms");
+            return await ViewAsync("Terms");
         }
 
         [HttpPost]
-        public IActionResult Index(InstallModel installModel)
+        public async Task<IActionResult> Index(InstallModel installModel)
         {
             if (_installationProvider.IsPlatformInstalled)
                 return new StatusCodeResult(StatusCodes.Status405MethodNotAllowed);
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return new StatusCodeResult(StatusCodes.Status400BadRequest);
+
+            var connectionString = _installationProvider.GetConnectionString(installModel);
+            var settingFile = Path.Combine(_hostingEnvironment.ContentRootPath, $"appsettings.{_hostingEnvironment.EnvironmentName}.json");
+
+            try
             {
-                string connectionString = _installationProvider.GetConnectionString(installModel);
-                string settingFile = Path.Combine(_hostingEnvironment.ContentRootPath, $"appsettings.{_hostingEnvironment.EnvironmentName}.json");
-
-                try
+                await _installationProvider.InstallPlatform(installModel);
+                //ApplicationManager.Instance.Restart();
+                await _hubContext.Clients.All.SendAsync("OnUpdateInstallLog", "Restarting the website");
+                await Task.Run(() =>
                 {
-                    _installationProvider.InstallPlatform(installModel);
-                    //ApplicationManager.Instance.Restart();
-                    return Ok();
-                }
-                catch (SqlException ex)
-                {
-                    string error = $"Invalid connection to database, kindly check the connection string parameters: {ex.Message}";
-                    ModelState.AddModelError("", error);
-                    return new ObjectResult(error)
-                    {
-                        StatusCode = StatusCodes.Status400BadRequest
-                    };
-                }
-                catch (Exception ex)
-                {
-                    string error = ex.Message;
-                    ModelState.AddModelError("", error);
-                    return new ObjectResult(error)
-                    {
-                        StatusCode = StatusCodes.Status400BadRequest
-                    };
-                }
-
+                    _hostApplicationLifetime.StopApplication();
+                });
+                return Ok();
             }
-            return new StatusCodeResult(StatusCodes.Status400BadRequest);
+            catch (SqlException ex)
+            {
+                var error = $"Invalid connection to database, kindly check the connection string parameters: {ex.Message}";
+                ModelState.AddModelError("", error);
+                return new ObjectResult(error)
+                {
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
+            catch (Exception ex)
+            {
+                var error = ex.Message;
+                ModelState.AddModelError("", error);
+                return new ObjectResult(error)
+                {
+                    StatusCode = StatusCodes.Status400BadRequest
+                };
+            }
         }
 
-        public IActionResult Success()
+        public async Task<IActionResult> Success()
         {
-            return View();
+            return await ViewAsync();
         }
     }    
 }

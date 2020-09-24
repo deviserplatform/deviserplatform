@@ -123,7 +123,7 @@ namespace Deviser.Modules.RecycleBin.Services
                 return await Task.FromResult(new AdminResult<RecycleItem>(itemToBeDeleted)
                 {
                     IsSucceeded = true,
-                    SuccessMessage = $"{itemToBeDeleted.RecycleItemType.Name} has been removed"
+                    SuccessMessage = $"{itemToBeDeleted.RecycleItemType.Name} has been deleted"
                 });
             }
 
@@ -147,22 +147,22 @@ namespace Deviser.Modules.RecycleBin.Services
             {
                 case "Layouts":
                     var layout = _layoutRepository.GetLayout(item.Id);
-                    layout.IsDeleted = false;
+                    layout.IsActive = true;
                     resultItem = _layoutRepository.UpdateLayout(layout);
                     break;
                 case "Page":
                     var page = _pageRepository.GetPage(item.Id);
-                    page.IsDeleted = false;
+                    page.IsActive = true;
                     resultItem = _pageRepository.UpdatePageActiveAndLayout(page);
                     break;
                 case "PageContent":
                     var pageContent = _pageContentRepository.Get(item.Id);
-                    pageContent.IsDeleted = false;
+                    pageContent.IsActive = true;
                     resultItem = _pageContentRepository.Update(pageContent);
                     break;
                 case "PageModule":
                     var pageModule = _pageRepository.GetPageModule(item.Id);
-                    pageModule.IsDeleted = false;
+                    pageModule.IsActive = true;
                     resultItem = _pageRepository.UpdatePageModule(pageModule);
                     break;
             };
