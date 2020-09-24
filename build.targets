@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Project DefaultTargets="Clean;BuildClientApp;Build;PublishOutput">
+<Project DefaultTargets="Clean;DotNetRestore;BuildClientApp;Build;PublishOutput">
 	<PropertyGroup>
 		<WorkspaceDir>.\src\Deviser.Core\Deviser.NgLib\deviser-workspace\</WorkspaceDir>
 		<WorkspaceOutputDir>.\src\Deviser.Core\Deviser.NgLib\deviser-workspace\dist</WorkspaceOutputDir>
@@ -26,6 +26,16 @@
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
 	</Target>
 
+	<Target Name="DotNetRestore">
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		<Message Importance="High" Text="DOTNET RESTORE" />
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		<Message Importance="High" Text="Restoring dotnet packages" />
+		<Exec Command="dotnet restore" ConsoleToMSBuild="true"/>
+		<Message Importance="High" Text="Finished Restoring dotnet packages" />
+		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+	</Target>
+
 	<Target Name="BuildSharedLibClient">
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
 		<Message Importance="High" Text="BUILDING ANGULAR SHARED LIB" />
@@ -35,7 +45,7 @@
 		<Message Importance="High" Text="Finished npm install" />
 
 		<Message Importance="High" Text="Building Angular shared library" />
-		<Exec WorkingDirectory="$(WorkspaceDir)" Command="ng build --prod" ConsoleToMSBuild="true"/>
+		<Exec WorkingDirectory="$(WorkspaceDir)" Command="npm run build" ConsoleToMSBuild="true"/>
 		<Message Importance="High" Text="Finished building Angular shared library" />
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
 	</Target>
@@ -54,7 +64,7 @@
 		<Message Importance="High" Text="Building Admin Client" />
 		<Copy SourceFiles="@(DeviserSharedLibFiles)" DestinationFolder="$(DeviserAdminClientDir)\node_modules\%(RecursiveDir)"/>
 		
-		<Exec WorkingDirectory="$(DeviserAdminClientDir)" Command="ng build --prod --output-hashing none" ConsoleToMSBuild="true" />
+		<Exec WorkingDirectory="$(DeviserAdminClientDir)" Command="npm run build" ConsoleToMSBuild="true" />
 		<Message Importance="High" Text="Finished building Admin Client" />
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
 	</Target>
@@ -72,7 +82,7 @@
 
 		<Message Importance="High" Text="Building Web Client" />
 		<Copy SourceFiles="@(DeviserSharedLibFiles)" DestinationFolder="$(DeviserWebClientDir)\node_modules\%(RecursiveDir)"/>
-		<Exec WorkingDirectory="$(DeviserWebClientDir)" Command="ng build --prod --output-hashing none" ConsoleToMSBuild="true"/>
+		<Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm run build --prod --output-hashing none" ConsoleToMSBuild="true"/>
 		<Message Importance="High" Text="Finished building Web Client" />
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
 	</Target>
