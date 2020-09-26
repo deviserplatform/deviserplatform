@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project DefaultTargets="Clean;DotNetRestore;BuildClientApp;Build;PublishOutput">
 	<PropertyGroup>
-		<WorkspaceDir>.\src\Deviser.Core\Deviser.NgLib\deviser-workspace\</WorkspaceDir>
-		<WorkspaceOutputDir>.\src\Deviser.Core\Deviser.NgLib\deviser-workspace\dist</WorkspaceOutputDir>
-		<DeviserAdminClientDir>.\src\Deviser.Core\Deviser.Admin.Web\ClientApp\</DeviserAdminClientDir>
-		<DeviserWebClientDir>.\src\Deviser.Web\ClientApp\</DeviserWebClientDir>
+		<ProjRoot>.\src</ProjRoot>
+		<WorkspaceDir>$(ProjRoot)\Deviser.Core\Deviser.NgLib\deviser-workspace\</WorkspaceDir>
+		<WorkspaceOutputDir>$(ProjRoot)\Deviser.Core\Deviser.NgLib\deviser-workspace\dist</WorkspaceOutputDir>
+		<DeviserAdminClientDir>$(ProjRoot)\Deviser.Core\Deviser.Admin.Web\ClientApp\</DeviserAdminClientDir>
+		<DeviserWebClientDir>$(ProjRoot)\Deviser.Web\ClientApp\</DeviserWebClientDir>
 		<OutputDir>.\release</OutputDir>
-		<DeviserPlatformPath>.\src\Deviser.Web</DeviserPlatformPath>
+		<DeviserPlatformPath>$(ProjRoot)\Deviser.Web</DeviserPlatformPath>
 		<DeviserPlatformProj>$(DeviserPlatformPath)\Deviser.Web.csproj</DeviserPlatformProj>
 		<Configuration>Release</Configuration>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<NugetFiles Include="$(DeviserPlatformPath)\bin\Release\*.nupkg"/>
-		<DeviserSharedLibFiles Include="$(WorkspaceOutputDir)\**\*.*"/>		
+		<NugetFiles Include="$(ProjRoot)\**\bin\Release\*.nupkg"/>
+		<DeviserSharedLibFiles Include="$(WorkspaceOutputDir)\**\*.*"/>
 	</ItemGroup>
 	
 	<Target Name="Clean">
@@ -22,6 +23,7 @@
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
 		<Message Importance="High" Text="Cleaning output directory" />
 		<RemoveDir Directories="$(OutputDir)" />
+		<RemoveDir Directories="$(WorkspaceDir)\node_modules\;$(WorkspaceDir)\projects\deviser-shared\node_modules\;$(DeviserAdminClientDir)\node_modules\;$(DeviserWebClientDir)\node_modules"/>
 		<Message Importance="High" Text="Output directory has been cleaned" />
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
 	</Target>
@@ -57,14 +59,11 @@
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
 		<Message Importance="High" Text="Running npm install" />
 		<Exec WorkingDirectory="$(DeviserAdminClientDir)" Command="npm install" ConsoleToMSBuild="true"/>
+		<Exec WorkingDirectory="$(DeviserAdminClientDir)" Command="npm install --save ../../Deviser.NgLib/deviser-workspace/dist/deviser-shared" ConsoleToMSBuild="true"/>
 		<Message Importance="High" Text="Finished npm install" />
 
 		<Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
 		<Delete Files="$(DeviserAdminClientDir)**\*.css"/>
-
-		<Message Importance="High" Text="Copying deviser-shared" />
-		<Copy SourceFiles="@(DeviserSharedLibFiles)" DestinationFolder="$(DeviserAdminClientDir)\node_modules\%(RecursiveDir)"/>
-		<Message Importance="High" Text="Finished copying deviser-shared" />
 		
 		<Message Importance="High" Text="Building Admin Client" />
 		<Exec WorkingDirectory="$(DeviserAdminClientDir)" Command="npm run build" ConsoleToMSBuild="true" />
@@ -78,15 +77,12 @@
 		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
 		<Message Importance="High" Text="Running npm install" />
 		<Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm install" ConsoleToMSBuild="true"/>
+		<Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm install --save ../../Deviser.Core/Deviser.NgLib/deviser-workspace/dist/deviser-shared" ConsoleToMSBuild="true"/>
 		<Message Importance="High" Text="Finished npm install" />
 
 		<Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
 		<Delete Files="$(DeviserWebClientDir)**\*.css" />
 
-		<Message Importance="High" Text="Copying deviser-shared" />		
-		<Copy SourceFiles="@(DeviserSharedLibFiles)" DestinationFolder="$(DeviserWebClientDir)\node_modules\%(RecursiveDir)"/>
-		<Message Importance="High" Text="Finished copying deviser-shared" />
-		
 		<Message Importance="High" Text="Building Web Client" />
 		<Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm run build" ConsoleToMSBuild="true"/>
 		<Message Importance="High" Text="Finished building Web Client" />
@@ -114,7 +110,7 @@
 		<Message Importance="High" Text="Copying nuget to release folder" />
 		<MakeDir Directories="$(OutputDir)" />
 		<MakeDir Directories="$(OutputDir)\nuget" />
-		<Copy SourceFiles="@(NugetFiles)" DestinationFiles="@(NugetFiles->'$(OutputDir)\nuget\%(RecursiveDir)%(Filename)%(Extension)')" 
+		<Copy SourceFiles="@(NugetFiles)" DestinationFiles="@(NugetFiles->'$(OutputDir)\nuget\%(Filename)%(Extension)')" 
 		      OverwriteReadOnlyFiles="true"
 		      SkipUnchangedFiles="false"/>
 		<Message Importance="High" Text="Copied nuget to release folder" />

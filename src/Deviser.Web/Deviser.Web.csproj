@@ -2,9 +2,7 @@
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
+		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>		
 		<IsShippingPackage>true</IsShippingPackage>
 		<!--<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>-->
 		<!--Angular App-->

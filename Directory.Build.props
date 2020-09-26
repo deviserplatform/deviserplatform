@@ -13,6 +13,8 @@
 		<VersionSuffix>beta1</VersionSuffix>
 		<ExperimentalVersionPrefix>0.1.0</ExperimentalVersionPrefix>
 		<ExperimentalVersionSuffix>rtm</ExperimentalVersionSuffix>
+		<IsPackable>true</IsPackable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
 		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
 	</PropertyGroup>
