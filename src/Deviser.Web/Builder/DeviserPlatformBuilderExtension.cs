@@ -27,7 +27,7 @@ namespace Deviser.Web.Builder
 
             
 
-            if (env.IsDevelopment())
+            if (env.IsEnvironment(Globals.DeviserDevelopmentEnvironment))
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -102,7 +102,7 @@ namespace Deviser.Web.Builder
             //    }));
             //});
 
-            if (env.IsDevelopment())
+            if (env.IsEnvironment(Globals.DeviserDevelopmentEnvironment))
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();

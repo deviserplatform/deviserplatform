@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Deviser.Core.Common;
 using Deviser.Web.Builder;
 using Deviser.Web.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
@@ -24,7 +25,7 @@ namespace DeviserApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.IsEnvironment(Globals.DeviserDevelopmentEnvironment))
             {
                 app.UseDeveloperExceptionPage();
             }

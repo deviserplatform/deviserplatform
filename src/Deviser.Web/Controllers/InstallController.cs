@@ -12,11 +12,13 @@ using Deviser.Core.Library.Controllers;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Deviser.Web.Controllers
 {
     public class InstallController : DeviserController
     {
+        private readonly ILogger<InstallController> _logger;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IHubContext<ApplicationHub> _hubContext;
         private readonly IInstallationProvider _installationProvider;
@@ -27,12 +29,14 @@ namespace Deviser.Web.Controllers
             IHubContext<ApplicationHub> hubContext,
             IWebHostEnvironment hostingEnvironment, 
             IInstallationProvider installationProvider,
+            ILogger<InstallController> logger,
             IConfiguration configuration)
         {
             _hostApplicationLifetime = hostApplicationLifetime;
             _hubContext = hubContext;
             _hostingEnvironment = hostingEnvironment;
             _installationProvider = installationProvider;
+            _logger = logger;
             _configuration = configuration;
         }
 
@@ -85,18 +89,20 @@ namespace Deviser.Web.Controllers
             }
             catch (SqlException ex)
             {
-                var error = $"Invalid connection to database, kindly check the connection string parameters: {ex.Message}";
-                ModelState.AddModelError("", error);
-                return new ObjectResult(error)
+                var errorMessage = $"Invalid connection to database, kindly check the connection string parameters: {ex.Message}";
+                ModelState.AddModelError("", errorMessage);
+                _logger.LogError(ex, errorMessage);
+                return new ObjectResult(errorMessage)
                 {
                     StatusCode = StatusCodes.Status400BadRequest
                 };
             }
             catch (Exception ex)
             {
-                var error = ex.Message;
-                ModelState.AddModelError("", error);
-                return new ObjectResult(error)
+                var errorMessage = ex.Message;
+                ModelState.AddModelError("", errorMessage);
+                _logger.LogError(ex, errorMessage);
+                return new ObjectResult(errorMessage)
                 {
                     StatusCode = StatusCodes.Status400BadRequest
                 };

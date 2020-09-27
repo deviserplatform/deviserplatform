@@ -208,7 +208,7 @@ namespace Deviser.Web.DependencyInjection
 
 
 
-            if (hostEnvironment.IsDevelopment())
+            if (hostEnvironment.IsEnvironment(Globals.DeviserDevelopmentEnvironment))
             {
                 services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
                 {

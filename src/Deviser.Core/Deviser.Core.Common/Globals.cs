@@ -11,6 +11,8 @@ namespace Deviser.Core.Common
         private static string applicationMapPath;
         private static string hostMapPath;
 
+        public const string DeviserDevelopmentEnvironment = "DeviserDevelopment";
+
         public const string glbHostThemeFolder = "_default";
 
         public const string moduleRoute = "moduleRoute";
