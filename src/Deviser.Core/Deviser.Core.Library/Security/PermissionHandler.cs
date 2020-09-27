@@ -36,6 +36,23 @@ namespace Deviser.Core.Library.Security
         {
             var pendingRequirements = context.PendingRequirements.ToList();
             var httpContext = _httpContextAccessor.HttpContext;
+            var installationProvider = httpContext.RequestServices.GetService<IInstallationProvider>();
+
+            if (!installationProvider.IsPlatformInstalled)
+            {
+                foreach (var requirement in pendingRequirements)
+                {
+                    if (!(requirement is PermissionRequirement permissionRequirement)) continue;
+
+                    if (permissionRequirement.Permission == "VIEW")
+                    {
+                        context.Succeed(requirement);
+                    }
+                    return Task.CompletedTask;
+                }
+                    
+            }
+
             var scopeService = httpContext.RequestServices.GetService<IScopeService>();
             var userRepository = httpContext.RequestServices.GetService<IUserRepository>();
             var permissionRepository = httpContext.RequestServices.GetService<IPermissionRepository>();
