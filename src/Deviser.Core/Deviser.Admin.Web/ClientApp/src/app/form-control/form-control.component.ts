@@ -148,7 +148,7 @@ export class FormControlComponent implements OnInit {
     param.initialState = {
       link: {}
     }
-    if (this.bsModalRef && this.bsModalRef.content) {
+    if (this.bsModalRef && this.bsModalRef.content && this.bsModalRef.content.linkChanged) {
       linkChanged = this.bsModalRef.content.linkChanged as EventEmitter<Link>;
       linkChanged.unsubscribe();
     }
@@ -166,7 +166,7 @@ export class FormControlComponent implements OnInit {
     param.initialState = {
       image: {}
     }
-    if (this.bsModalRef && this.bsModalRef.content) {
+    if (this.bsModalRef && this.bsModalRef.content && this.bsModalRef.content.imageSelected) {
       imageSelected = this.bsModalRef.content.imageSelected as EventEmitter<any>;
       imageSelected.unsubscribe();
     }

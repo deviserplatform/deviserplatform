@@ -37,12 +37,12 @@
                     <tbody cdkDropList [cdkDropListData]="contentItems" (cdkDropListDropped)="drop($event)">
                         <tr *ngFor="let item of contentItems" class="item" cdkDrag>
                             <td *ngFor="let field of fields">
-                                <ng-container *ngTemplateOutlet="previewFieldSelector, context:{content:item, field:field}">
+                                <ng-container
+                                    *ngTemplateOutlet="previewFieldSelector, context:{content:item, field:field}">
                                 </ng-container>
                             </td>
                             <td>
-                                <button type="button" class="action-control btn btn-default"
-                                    (click)="editItem(item);">
+                                <button type="button" class="action-control btn btn-default" (click)="editItem(item);">
                                     <i class="my-icon" aria-label="My icon"
                                         [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
                                 </button>
@@ -92,7 +92,11 @@
         <ng-container *ngSwitchCase="'RichText'">
             <div class="form-group">
                 <label for="field.fieldName">{{field.fieldLabel || field.fieldName}}</label>
-                <ckeditor [editor]="Editor" [id]="field.fieldName" [(ngModel)]="content[field.fieldName]"></ckeditor>
+                <!--<ckeditor [editor]="Editor" [id]="field.fieldName" [(ngModel)]="content[field.fieldName]"></ckeditor>-->
+
+                <quill-editor [id]="field.fieldName" [(ngModel)]="content[field.fieldName]"
+                    [modules]="modules">
+                </quill-editor>
             </div>
         </ng-container>
         <ng-container *ngSwitchCase="'Date'">
@@ -114,7 +118,8 @@
             <!-- <a [href]="getLinkUrl(content[field.fieldName])" target="_blank">
                 {{content[field.fieldName].linkText}}
             </a> -->
-            <app-link [link]="content[field.fieldName]" [field]="field" [properties]="pageContent.properties" (linkChanged)="onLinkChanged($event, content, field)"></app-link>
+            <app-link [link]="content[field.fieldName]" [field]="field" [properties]="pageContent.properties"
+                (linkChanged)="onLinkChanged($event, content, field)"></app-link>
         </ng-container>
         <ng-container *ngSwitchCase="'Attachment'">
             <a [href]="content[field.fieldName].filePath" target="_blank">
@@ -127,8 +132,9 @@
                 <input type="text" class="form-control" [id]="field.fieldName" [(ngModel)]="content[field.fieldName]">
             </div>
         </ng-container>
-        <ng-container *ngSwitchCase="'Image'">            
-            <app-image [image]="content[field.fieldName]" [field]="field" [properties]="pageContent.properties" (imageSelected)="onImageSelected($event, content, field)">
+        <ng-container *ngSwitchCase="'Image'">
+            <app-image [image]="content[field.fieldName]" [field]="field" [properties]="pageContent.properties"
+                (imageSelected)="onImageSelected($event, content, field)">
             </app-image>
         </ng-container>
     </ng-container>

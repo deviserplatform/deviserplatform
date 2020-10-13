@@ -1,17 +1,18 @@
 import { Component, OnInit, Inject, EventEmitter } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { BsModalRef, ModalOptions, BsModalService } from 'ngx-bootstrap/modal';
 import {
   AlertService, CoreService, ContentTranslationService, EditService,
-  Guid, LanguageService, PageService, PageContentService
+  Guid, LanguageService, PageService, PageContentService, EditLinkComponent, ImageSelectorComponent, LinkType
 } from 'deviser-shared';
 import { forkJoin } from 'rxjs';
 import {
   AlertType, ContentType, ContentTypeField, Image, Language, Link, 
   Page, PageContent, PageContentTranslation, PageContext, WINDOW
 } from 'deviser-shared';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+
+var editContentComponent: EditContentComponent;
 
 @Component({
   selector: 'app-edit-content',
@@ -25,6 +26,9 @@ export class EditContentComponent implements OnInit {
   private _fieldValues: { [fieldName: string]: any };
   private _pageContext: PageContext;
   private _baseUrl: string;
+  private _modalConfig: any = {
+    ignoreBackdropClick: true
+  }
   get pageContentId(): string {
     return this._pageContentId;
   }
@@ -48,10 +52,28 @@ export class EditContentComponent implements OnInit {
   isChanged: boolean;
   contentSaved: EventEmitter<PageContentTranslation> = new EventEmitter();
   viewStates = ViewState;
-
-  Editor = ClassicEditor;
-
-
+  modules: any = {
+    toolbar: {
+      container: [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'align': [] }],
+        ['clean'],
+        ['link', 'image']
+      ],
+      handlers: {
+        'link': function (value) {
+          editContentComponent.onEditorLinkClicked(this.quill, value);
+        },
+        'image': function (callback) {
+          editContentComponent.showImagePopup(this.quill);
+        }
+      }
+    }
+  }
 
   get isList(): boolean {
     return this.pageContent && this.pageContent.contentType && this.pageContent.contentType.isList;
@@ -83,6 +105,7 @@ export class EditContentComponent implements OnInit {
     private _editService: EditService,
     private _pageContentService: PageContentService,
     private _langaugeService: LanguageService,
+    private _modalService: BsModalService,
     private _pageService: PageService,
     @Inject(WINDOW) _window: any) {
     this.pageContext = _window.pageContext;
@@ -114,6 +137,7 @@ export class EditContentComponent implements OnInit {
         focusPoint: {}
       }
     }
+    editContentComponent = this;
   }
 
   ngOnInit(): void {
@@ -227,6 +251,80 @@ export class EditContentComponent implements OnInit {
     let gridItems = event.container.data;
     moveItemInArray(gridItems, event.previousIndex, event.currentIndex);
     gridItems.forEach((item, index) => item.sortOrder = index + 1);
+  }
+
+  onEditorLinkClicked(quill: any, value: any) {
+    console.log('from angular component!');
+    if (value) {
+      // let href = prompt('Enter the URL');
+      // quill.format('link', href);
+      this.showLinkPopup(quill);
+    } else {
+      quill.format('link', false);
+    }
+  }
+
+  showLinkPopup(quill: any) {
+    let param: ModalOptions = JSON.parse(JSON.stringify(this._modalConfig));
+    let linkChanged: EventEmitter<Link>;
+    param.class = 'link-selector-modal';
+    param.initialState = {
+      link: {}
+    }
+    if (this.bsModalRef && this.bsModalRef.content && this.bsModalRef.content.linkChanged) {
+      linkChanged = this.bsModalRef.content.linkChanged as EventEmitter<Link>;
+      linkChanged.unsubscribe();
+    }
+
+    this.bsModalRef = this._modalService.show(EditLinkComponent, param), this._modalConfig;
+    linkChanged = this.bsModalRef.content.linkChanged as EventEmitter<Link>;
+    linkChanged.subscribe(link => this.onQuillLinkChanged(quill, link));
+    this.bsModalRef.content.closeBtnName = 'Close';
+  }
+
+  showImagePopup(quill: any) {
+    let param: ModalOptions = JSON.parse(JSON.stringify(this._modalConfig));
+    let imageSelected: EventEmitter<Image>;
+    param.class = 'image-selector-modal';
+    param.initialState = {
+      image: {}
+    }
+    if (this.bsModalRef && this.bsModalRef.content && this.bsModalRef.content.imageSelected) {
+      imageSelected = this.bsModalRef.content.imageSelected as EventEmitter<any>;
+      imageSelected.unsubscribe();
+    }
+
+    this.bsModalRef = this._modalService.show(ImageSelectorComponent, param), this._modalConfig;
+    imageSelected = this.bsModalRef.content.imageSelected as EventEmitter<Image>;
+    imageSelected.subscribe(image => this.onQuillImageSelected(image, quill));
+    this.bsModalRef.content.closeBtnName = 'Close';
+
+
+    // showImageManager().then(function (selectedImage) {
+    //   vm.src = selectedImage.imageSource;
+    //   vm.alt = selectedImage.imageAlt;
+    //   vm.focusPoint = selectedImage.focusPoint;
+    //   //setFocusPoint(vm.focusPoint);
+    // }, function (response) {
+    //   console.log(response);
+    // });
+  }
+
+  onQuillLinkChanged(quill: any, link: Link) {
+    if (link.linkType === LinkType.File || link.linkType === LinkType.Url) {
+      quill.format('link', link.url);
+    } else {
+      this._pageService.getPage(link.pageId).subscribe((page: Page) => {
+        let translation = page.pageTranslation.find(pt => pt.locale === this.pageContext.currentLocale);
+        let url = translation.redirectUrl || `${this.pageContext.siteRoot}\\${translation.url}`;
+        quill.format('link', url);
+      });
+    }
+  }
+
+  onQuillImageSelected(image: Image, quill: any) {
+    let imageUrl = `${this.pageContext.siteRoot}\\${image.imageUrl}`
+    quill.insertEmbed(10, 'image', imageUrl);
   }
 
   private init() {
