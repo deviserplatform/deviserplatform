@@ -4,12 +4,12 @@
 }
 
 
-<require dependency-type="Css" include="Development" priority="10" file-path="~/_content/Deviser.Web/lib/font-awesome/css/font-awesome.css" test="test"></require>
-<require dependency-type="Css" include="Development" priority="15" file-path="~/_content/Deviser.Themes.Skyline/css/admin/admin.css" test="test"></require>
+<require dependency-type="Css" priority="10" file-path="~/_content/Deviser.Web/lib/font-awesome/css/font-awesome.css" test="test"></require>
+<require dependency-type="Css" priority="15" file-path="~/_content/Deviser.Themes.Skyline/css/admin/admin.css" test="test"></require>
 
-<require dependency-type="Script" include="Development" location="Head" priority="10" file-path="~/_content/Deviser.Web/lib/jquery/dist/jquery.js" test="test"></require>
-<require dependency-type="Script" include="Development" priority="16" file-path="~/_content/Deviser.Web/lib/aspnet/signalr/dist/browser/signalr.min.js"></require>
-<require dependency-type="Script" include="Development" priority="31" file-path="~/_content/Deviser.Web/js/dev-form-helper.js"></require>
+<require dependency-type="Script" location="Head" priority="10" file-path="~/_content/Deviser.Web/lib/jquery/dist/jquery.js" test="test"></require>
+<require dependency-type="Script" priority="16" file-path="~/_content/Deviser.Web/lib/aspnet/signalr/dist/browser/signalr.min.js"></require>
+<require dependency-type="Script" priority="31" file-path="~/_content/Deviser.Web/js/dev-form-helper.js"></require>
 
 @await Component.InvokeAsync("ControlBar")
     <div class="clearfix"></div>

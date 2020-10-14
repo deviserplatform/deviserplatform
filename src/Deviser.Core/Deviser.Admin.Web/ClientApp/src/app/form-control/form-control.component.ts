@@ -437,7 +437,7 @@ export class FormControlComponent implements OnInit {
   get f() { return this.form.controls; }
 
   hasError(field: Field): boolean {
-    return this.f[field.fieldNameCamelCase].errors && this.f[field.fieldNameCamelCase].touched;
+    return this.f[field.fieldNameCamelCase] && this.f[field.fieldNameCamelCase].errors && this.f[field.fieldNameCamelCase].touched;
   }
 
   // onIsValidateChange(isValidate: boolean): void {
