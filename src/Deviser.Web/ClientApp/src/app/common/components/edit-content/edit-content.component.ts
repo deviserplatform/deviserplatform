@@ -100,6 +100,8 @@ export class EditContentComponent implements OnInit {
 
   constructor(private _alertService: AlertService,
     public bsModalRef: BsModalRef,
+    public bsImageModalRef: BsModalRef,
+    public bsLinkModalRef: BsModalRef,
     private _coreService: CoreService,
     private _contentTranslationService: ContentTranslationService,
     private _editService: EditService,
@@ -271,15 +273,15 @@ export class EditContentComponent implements OnInit {
     param.initialState = {
       link: {}
     }
-    if (this.bsModalRef && this.bsModalRef.content && this.bsModalRef.content.linkChanged) {
-      linkChanged = this.bsModalRef.content.linkChanged as EventEmitter<Link>;
+    if (this.bsLinkModalRef && this.bsLinkModalRef.content && this.bsLinkModalRef.content.linkChanged) {
+      linkChanged = this.bsLinkModalRef.content.linkChanged as EventEmitter<Link>;
       linkChanged.unsubscribe();
     }
 
-    this.bsModalRef = this._modalService.show(EditLinkComponent, param), this._modalConfig;
-    linkChanged = this.bsModalRef.content.linkChanged as EventEmitter<Link>;
+    this.bsLinkModalRef = this._modalService.show(EditLinkComponent, param), this._modalConfig;
+    linkChanged = this.bsLinkModalRef.content.linkChanged as EventEmitter<Link>;
     linkChanged.subscribe(link => this.onQuillLinkChanged(quill, link));
-    this.bsModalRef.content.closeBtnName = 'Close';
+    this.bsLinkModalRef.content.closeBtnName = 'Close';
   }
 
   showImagePopup(quill: any) {
@@ -289,15 +291,15 @@ export class EditContentComponent implements OnInit {
     param.initialState = {
       image: {}
     }
-    if (this.bsModalRef && this.bsModalRef.content && this.bsModalRef.content.imageSelected) {
-      imageSelected = this.bsModalRef.content.imageSelected as EventEmitter<any>;
+    if (this.bsImageModalRef && this.bsImageModalRef.content && this.bsImageModalRef.content.imageSelected) {
+      imageSelected = this.bsImageModalRef.content.imageSelected as EventEmitter<any>;
       imageSelected.unsubscribe();
     }
 
-    this.bsModalRef = this._modalService.show(ImageSelectorComponent, param), this._modalConfig;
-    imageSelected = this.bsModalRef.content.imageSelected as EventEmitter<Image>;
+    this.bsImageModalRef = this._modalService.show(ImageSelectorComponent, param), this._modalConfig;
+    imageSelected = this.bsImageModalRef.content.imageSelected as EventEmitter<Image>;
     imageSelected.subscribe(image => this.onQuillImageSelected(image, quill));
-    this.bsModalRef.content.closeBtnName = 'Close';
+    this.bsImageModalRef.content.closeBtnName = 'Close';
 
 
     // showImageManager().then(function (selectedImage) {
@@ -316,15 +318,16 @@ export class EditContentComponent implements OnInit {
     } else {
       this._pageService.getPage(link.pageId).subscribe((page: Page) => {
         let translation = page.pageTranslation.find(pt => pt.locale === this.pageContext.currentLocale);
-        let url = translation.redirectUrl || `${this.pageContext.siteRoot}\\${translation.url}`;
+        let url = translation.redirectUrl || `${this.pageContext.siteRoot}${translation.url}`;
         quill.format('link', url);
       });
     }
   }
 
   onQuillImageSelected(image: Image, quill: any) {
-    let imageUrl = `${this.pageContext.siteRoot}\\${image.imageUrl}`
-    quill.insertEmbed(10, 'image', imageUrl);
+    const index = quill.getSelection() || {index: 0}
+    let imageUrl = `${this.pageContext.siteRoot}${image.imageUrl}`
+    quill.insertEmbed(index, 'image', imageUrl);
   }
 
   private init() {
