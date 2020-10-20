@@ -7,7 +7,7 @@ import {
 } from 'deviser-shared';
 import { forkJoin } from 'rxjs';
 import {
-  AlertType, ContentType, ContentTypeField, Image, Language, Link, 
+  AlertType, ContentType, ContentTypeField, Image, Language, Link,
   Page, PageContent, PageContentTranslation, PageContext, WINDOW
 } from 'deviser-shared';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -325,9 +325,16 @@ export class EditContentComponent implements OnInit {
   }
 
   onQuillImageSelected(image: Image, quill: any) {
-    const index = quill.getSelection() || {index: 0}
+    const index = quill.getSelection() || { index: 0 }
     let imageUrl = `${this.pageContext.siteRoot}${image.imageUrl}`
     quill.insertEmbed(index, 'image', imageUrl);
+  }
+
+  //Event handlers
+  changeLanguage() {
+    let translation = this.getTranslationForLocale(this.selectedLocale.cultureCode);
+    this.contentTranslation = translation;
+    this.deserializeContentTranslation();
   }
 
   private init() {
@@ -337,11 +344,12 @@ export class EditContentComponent implements OnInit {
       this.pageContent = results[0];
       this.contentTranslations = this.pageContent.pageContentTranslation;
       this.contentType = this.pageContent.contentType;
-      this.languages = results[1];
+      let siteLanguages = results[1];
+      this.languages = siteLanguages.filter((siteLanguage) => siteLanguage.isActive);
       this._fields = this.pageContent.contentType.contentTypeFields.sort((a, b) => a.sortOrder > b.sortOrder ? 1 : -1);
 
-      const currentCultureCode = this.pageContext.currentLocale;
-      this.selectedLocale = this.languages.find(langauge => langauge.cultureCode === currentCultureCode);
+      const siteLanguage = this.pageContext.siteLanguage;
+      this.selectedLocale = this.languages.find(langauge => langauge.cultureCode === siteLanguage);
       //load the current translation
       let translation = this.getTranslationForLocale(this.selectedLocale.cultureCode);
       this.contentTranslation = translation;

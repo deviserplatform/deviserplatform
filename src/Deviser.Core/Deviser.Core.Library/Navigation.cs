@@ -351,9 +351,11 @@ namespace Deviser.Core.Library
 
             if (!_languageRepository.IsMultilingual()) return dictionary;
 
-            foreach (var kvp in dictionary)
+
+            var keys = new List<string>(dictionary.Keys);
+            foreach (string key in keys)
             {
-                dictionary[kvp.Key] = $"{kvp.Key.ToLower()}/{kvp.Value}";
+                dictionary[key] = $"{key.ToLower()}/{dictionary[key]}";
             }
             return dictionary;
         }

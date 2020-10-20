@@ -20,6 +20,7 @@
     "@angular/platform-browser": "~9.1.6",
     "@angular/platform-browser-dynamic": "~9.1.6",
     "@angular/router": "~9.1.6",
+    "@ng-select/ng-option-highlight": "0.0.5",
     "@types/lodash-es": "^4.17.3",
     "deviser-shared": "file:../../Deviser.Core/Deviser.NgLib/deviser-workspace/dist/deviser-shared",
     "lodash-es": "^4.17.15",

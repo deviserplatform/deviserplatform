@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, EventEmitter } from '@angular/core';
 import { AlertType, Globals, Guid, ContentType, LayoutType, ModuleView, Page, PageLayout, PageContent, PageContext, PageModule, PlaceHolder, PageState, WINDOW } from 'deviser-shared';
-import { AlertService, PageService, PageContentService, LayoutService, LayoutTypeService, ContentTypeService, ModuleViewService, PageModuleService, SharedService} from 'deviser-shared';
+import { AlertService, PageService, PageContentService, LayoutService, LayoutTypeService, ContentTypeService, ModuleViewService, PageModuleService, SharedService } from 'deviser-shared';
 import { forkJoin } from 'rxjs';
 import { sortBy, reject } from 'lodash-es';
 import { CdkDragDrop, moveItemInArray, transferArrayItem, DragRef, DropListRef, CdkDragEnter, CdkDragExit } from '@angular/cdk/drag-drop';
@@ -16,7 +16,7 @@ import { PageContentTranslation } from 'deviser-shared/lib/domain-types/page-con
 })
 export class EditComponent implements OnInit {
 
-  
+
   bsModalRef: BsModalRef;
   currentPage: Page;
   currentPageState: PageState;
@@ -231,7 +231,13 @@ export class EditComponent implements OnInit {
   }
 
   onContentSaved(pageContentTranslation: PageContentTranslation) {
-    this.selectedPlaceHolder.pageContent.pageContentTranslation[0] = pageContentTranslation;
+    let translationToUpdate = this.selectedPlaceHolder.pageContent.pageContentTranslation.find(pct => pct.cultureCode === pageContentTranslation.cultureCode);
+    if (translationToUpdate) {
+      translationToUpdate = pageContentTranslation;
+    }
+    else {
+      this.selectedPlaceHolder.pageContent.pageContentTranslation.push(pageContentTranslation);
+    }
   }
 
   onSaveProperties() {
@@ -300,7 +306,7 @@ export class EditComponent implements OnInit {
     if (this.currentPageState === PageState.Draft) {
       this._pageService.publishPage(this.currentPage.id).subscribe(response => {
         this.currentPageState = PageState.Published;
-        this._alertService.showMessage(AlertType.Success, 'The Page has been published.');        
+        this._alertService.showMessage(AlertType.Success, 'The Page has been published.');
       }, error => this._alertService.showMessage(AlertType.Error, 'Cannot publish the page, please contact the administrator.'));
     }
   }

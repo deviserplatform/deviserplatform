@@ -32,7 +32,7 @@ export class PreviewContentComponent implements OnInit {
   }
 
   get content(): any {
-    const contentTranslation = this.pageContent.pageContentTranslation.find(pct => pct.cultureCode === this._pageContext.currentLocale);
+    const contentTranslation = this.pageContent.pageContentTranslation.find(pct => pct && pct.cultureCode === this._pageContext.siteLanguage);
     let content = (contentTranslation && contentTranslation.contentData) ? JSON.parse(contentTranslation.contentData) : {};
     return content;
   }

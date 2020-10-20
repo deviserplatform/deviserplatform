@@ -6,6 +6,19 @@
 </div>
 <div class="modal-body">
     <div class="edit-content-container" *ngIf="pageContent">
+        <div class="language-selector" *ngIf="languages && languages.length > 1">
+            <div class="form-group">
+                <label>Language</label>
+                <ng-select [items]="languages" bindLabel="englishName" [(ngModel)]="selectedLocale"
+                    autofocus [selectOnTab]="true" [multiple]="false" [clearable]="false" placeholder="Select Language"
+                    (change)="changeLanguage()">
+                    <ng-template ng-option-tmp let-item="item" let-search="searchTerm">
+                        <div><span [ngOptionHighlight]="search">{{item.englishName}}</span></div>
+                        <small> {{item.nativeName}}</small>
+                    </ng-template>
+                </ng-select>
+            </div>
+        </div>
         <div class="non-list" *ngIf="!isList">
             <div *ngFor="let field of fields">
                 <ng-container *ngTemplateOutlet="editFieldSelector, context:{content:content, field:field}">
@@ -94,8 +107,7 @@
                 <label for="field.fieldName">{{field.fieldLabel || field.fieldName}}</label>
                 <!--<ckeditor [editor]="Editor" [id]="field.fieldName" [(ngModel)]="content[field.fieldName]"></ckeditor>-->
 
-                <quill-editor [id]="field.fieldName" [(ngModel)]="content[field.fieldName]"
-                    [modules]="modules">
+                <quill-editor [id]="field.fieldName" [(ngModel)]="content[field.fieldName]" [modules]="modules">
                 </quill-editor>
             </div>
         </ng-container>

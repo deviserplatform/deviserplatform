@@ -12,6 +12,7 @@ import { ImageCropperModule } from 'ngx-image-cropper';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { NgOptionHighlightModule } from '@ng-select/ng-option-highlight';
 import { QuillModule } from 'ngx-quill';
 
 import { DeviserSharedModule } from 'deviser-shared';
@@ -47,6 +48,7 @@ import { PreviewContentComponent } from './common/components/preview-content/pre
     InlineSVGModule.forRoot(),
     ModalModule.forRoot(), 
     NgSelectModule,
+    NgOptionHighlightModule,
     QuillModule.forRoot(),
     ReactiveFormsModule
   ],

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using AutoMapper.Execution;
+using AutoMapper.Internal;
 using Deviser.Core.Data.Cache;
 
 namespace Deviser.Core.Data.Repositories
@@ -286,7 +287,7 @@ namespace Deviser.Core.Data.Repositories
             {
                 //Filter deleted permissions in UI and delete all of them
                 var matchPagePermissions = context.PagePermission.Where(dbPermission => dbPermission.PageId == dbPage.Id)
-                    //.AsNoTracking()
+                    .AsNoTracking()
                     .ToList();
 
                 var toDelete = matchPagePermissions.Where(dbPermission =>
@@ -317,7 +318,7 @@ namespace Deviser.Core.Data.Repositories
 
             UpdatePageAndPermissionsRecursive(dbPage, context);
 
-            //context.PageTranslation.UpdateRange(page.PageTranslation);
+            //context.PageTranslation.UpdateRange(dbPage.PageTranslation);
             context.SaveChanges();
             transaction.Commit();
 
@@ -761,7 +762,26 @@ namespace Deviser.Core.Data.Repositories
             if (dbPage == null) return;
             dbPage.LastModifiedDate = DateTime.Now;
 
-            context.Page.Update(dbPage);
+            //context.Page.Update(dbPage);
+            //context.PageTranslation.UpdateRange(dbPage.PageTranslation);
+
+            foreach (var pageTranslation in dbPage.PageTranslation)
+            {
+                pageTranslation.PageId = dbPage.Id;
+
+                var dbPageTranslation = context.PageTranslation.FirstOrDefault(pt =>
+                    pt.PageId == dbPage.Id && pt.Locale == pageTranslation.Locale);
+
+                if (dbPageTranslation != null)
+                {
+                    _mapper.Map(pageTranslation, dbPageTranslation);
+                }
+                else
+                {
+                    context.PageTranslation.Add(pageTranslation);
+                }
+            }
+
             //Update URL of child pages, if any
             if (dbPage.ChildPage.Count <= 0) return;
 
