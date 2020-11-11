@@ -20,14 +20,18 @@ namespace Deviser.Web.Builder
 {
     public static class DeviserPlatformBuilderExtension
     {
+        static readonly string AllowOrigin = "AllowOrigin";
+
         public static IApplicationBuilder UseDeviserPlatform(this IApplicationBuilder app, Action<IEndpointRouteBuilder> configure = null)
         {
             var serviceProvider = app.ApplicationServices;
             var env = serviceProvider.GetService<IWebHostEnvironment>();
-
+            var isDevelopment = env.IsEnvironment(Globals.DeviserDevelopmentEnvironment);
             
 
-            if (env.IsEnvironment(Globals.DeviserDevelopmentEnvironment))
+
+
+            if (isDevelopment)
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -62,7 +66,11 @@ namespace Deviser.Web.Builder
                         var isSiteMultilingual = languageRepository.IsMultilingual();
                         if (!isSiteMultilingual) return null;
 
-                        var permalink = GetPermalink(context);
+                        var reqParts = context.Request.Path.ToString().Split('/');
+
+                        if (reqParts.Length <= 1) return null;
+
+                        var permalink = reqParts[1];
                         var match = Regex.Match(permalink, @"[a-z]{2}-[a-z]{2}", RegexOptions.IgnoreCase);
                         if (!match.Success) return null;
 
@@ -102,7 +110,7 @@ namespace Deviser.Web.Builder
             //    }));
             //});
 
-            if (env.IsEnvironment(Globals.DeviserDevelopmentEnvironment))
+            if (isDevelopment)
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
@@ -113,13 +121,19 @@ namespace Deviser.Web.Builder
                 app.UseHsts();
             }
 
-            app.UseCors("MyPolicy");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            if (isDevelopment)
+            {
+                app.UseCors(AllowOrigin);
+            }
+
             //Deviser Specific
             app.UsePageContext();
+
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -148,15 +162,18 @@ namespace Deviser.Web.Builder
                 endpoints.MapHub<ApplicationHub>("/appHub");
 
                 endpoints.MapControllerRoute(name: Globals.moduleRoute,
-                    pattern: "modules/{area:exists}/{controller=Home}/{action=Index}");
+                    pattern: "modules/{area:exists}/{controller=Home}/{action=Index}")
+                    .RequireCors(AllowOrigin);
 
                 endpoints.MapControllerRoute(name: "default",
-                    pattern: "{controller=Page}/{action=Index}/{id?}");
+                    pattern: "{controller=Page}/{action=Index}/{id?}")
+                    .RequireCors(AllowOrigin);
 
                 endpoints.MapControllerRoute(name: "CmsRoute",
                     pattern: "{**permalink}",
                     defaults: new { controller = "Page", action = "Index" },
-                    constraints: new { permalink = InternalServiceProvider.Instance.ServiceProvider.GetService<IRouteConstraint>() });
+                    constraints: new { permalink = InternalServiceProvider.Instance.ServiceProvider.GetService<IRouteConstraint>() })
+                    .RequireCors(AllowOrigin);
 
                 configure?.Invoke(endpoints);
             });
