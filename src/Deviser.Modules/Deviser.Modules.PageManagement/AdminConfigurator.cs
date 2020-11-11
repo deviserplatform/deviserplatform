@@ -87,7 +87,7 @@ namespace Deviser.Modules.PageManagement
                     var formBuilder = modelBuilder.FormBuilder;
 
                     modelBuilder.GridBuilder
-                        .AddField(p => p.Language.EnglishName, option => option.DisplayName = "Language")
+                        .AddField(p => p.Language, option => option.DisplayName = "Language")
                         .AddField(p => p.Name)
                         .AddField(p => p.Title);
 
