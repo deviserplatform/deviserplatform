@@ -94,6 +94,7 @@ export class FormControlComponent implements OnInit {
   constructor(private _emailExistValidator: EmailExistValidator,
     private _adminService: AdminService,
     private _customValidator: CustomValidator,
+    private _formControlService: FormControlService,
     private _modalService: BsModalService,
     private _pageService: PageService,
     private _passwordValidator: PasswordValidator,
@@ -271,8 +272,8 @@ export class FormControlComponent implements OnInit {
         const rowKeyNames = Object.keys(rowLookUpGeneric[0].key);
         const colKeyNames = Object.keys(colLookUpGeneric[0].key);
         if (rowLookUpGeneric && colLookUpGeneric) {
-          this.rowLookUp = this.getLookUp(rowLookUpGeneric);
-          this.colLookUp = this.getLookUp(colLookUpGeneric);
+          this.rowLookUp = rowLookUpGeneric;
+          this.colLookUp = colLookUpGeneric;
           this.rowLookUpKey = rowKeyNames[0];
           this.colLookUpKey = colKeyNames[0];
           this.checkBoxMatrix = fieldOption.checkBoxMatrix;
@@ -283,106 +284,42 @@ export class FormControlComponent implements OnInit {
   }
 
   parseM2mControlVal(lookUpGeneric: any) {
-    if (this.field &&
-      this.field.fieldOption &&
-      // this.field.fieldOption.lookupModelTypeCamelCase &&
-      lookUpGeneric) {
-      let formVal = this.form.value;
-      let keyNames = Object.keys(lookUpGeneric[0].key);
-      let controlVal = formVal[this.field.fieldNameCamelCase];
-      let lookUp = this.getLookUp(lookUpGeneric);
 
-      let selectedItems: any[] = [];
+    if (!this.field || !this.field.fieldOption || !lookUpGeneric) return;
 
-      // lookUpGeneric.forEach(item => {
-      //   let propValue: any = {};
-      //   //copy display name from generic lookup  
-      //   propValue.displayName = item.displayName;
+    let formVal = this.form.value;
+    let controlVal = formVal[this.field.fieldNameCamelCase];
+    let lookUpKeys = this._formControlService.getLookUpKeys(lookUpGeneric);
+    let lookUp: any[] = lookUpGeneric;
+    let selectedItems = this._formControlService.getSelectedItemsFor(lookUp, lookUpKeys, controlVal);
 
-      //   //set primary key value based on primary key properties
-      //   keyNames.forEach(keyName => {
-      //     propValue[keyName] = item.key[keyName]
-      //   });
+    let patchVal: any = {};
+    patchVal[this.field.fieldNameCamelCase] = selectedItems;
 
-      //   lookUp.push(propValue);
-      // });
+    setTimeout(() => {
+      this.form.patchValue(patchVal);
+    });
 
-      //Parse control value and set displayName
-      if (controlVal && controlVal.length > 0) {
-        controlVal.forEach(item => {
-
-          let masterItem = lookUp.find(lookUp => {
-            let isMatch = false;
-            for (let i = 0; i < keyNames.length; i++) {
-              let prop = keyNames[i];
-              isMatch = lookUp[prop] === item[prop];
-              if (isMatch)
-                return isMatch;
-            }
-            return false; // propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.principalFieldNameCamelCase]
-          });
-          selectedItems.push(masterItem);
-          // item.displayName = masterItem.displayName; //Not required, since selected items are patched directly
-        });
-
-        let patchVal: any = {};
-        patchVal[this.field.fieldNameCamelCase] = selectedItems;
-
-        setTimeout(() => {
-          this.form.patchValue(patchVal);
-        });
-
-
-      }
-
-      this._lookUpDataSubject.next(lookUp);
-    }
+    this._lookUpDataSubject.next(lookUp);
   }
 
   parseM2oControlVal(lookUpGeneric: any) {
-    if (lookUpGeneric) {
-      let formVal = this.form.value;
-      let keyNames = Object.keys(lookUpGeneric[0].key);
-      let controlVal = formVal[this.field.fieldNameCamelCase];
-      let lookUp: any[] = this.getLookUp(lookUpGeneric);
+    let formVal = this.form.value;
+    let controlVal = formVal[this.field.fieldNameCamelCase];
+    let lookUpKeys = this._formControlService.getLookUpKeys(lookUpGeneric);
+    let lookUp: any[] = lookUpGeneric;
+    let selectedItem = this._formControlService.getSelectedItemFor(lookUp, lookUpKeys, controlVal);
 
-      // lookUpGeneric.forEach(item => {
-      //   let propValue: any = {};
-      //   //copy display name from generic lookup  
-      //   propValue.displayName = item.displayName;
+    if (!selectedItem) return;
 
-      //   keyNames.forEach(keyName => {
-      //     propValue[keyName] = item.key[keyName]
-      //   });
+    let patchVal: any = {};
+    patchVal[this.field.fieldNameCamelCase] = selectedItem;
 
-      //   lookUp.push(propValue);
-      // });
+    setTimeout(() => {
+      this.form.patchValue(patchVal);
+    });
 
-
-      if (controlVal) {
-        let masterItem = lookUp.find(lookUp => {
-          let isMatch = false;
-          for (let i = 0; i < keyNames.length; i++) {
-            let prop = keyNames[i];
-            isMatch = lookUp[prop] === controlVal[prop];
-            if (isMatch)
-              return isMatch;
-          }
-          return false; // propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.principalFieldNameCamelCase]
-        });
-
-        //controlVal.displayName = masterItem.displayName; //Not required, since selected item is patched directly
-        let patchVal: any = {};
-        patchVal[this.field.fieldNameCamelCase] = masterItem;
-
-        setTimeout(() => {
-          this.form.patchValue(patchVal);
-        });
-
-      }
-
-      this._lookUpDataSubject.next(lookUp);
-    }
+    this._lookUpDataSubject.next(lookUp);
   }
 
   private init() {
@@ -409,30 +346,6 @@ export class FormControlComponent implements OnInit {
   private refreshLookUp() {
     return this._adminService.getAdminConfig(true);
   }
-
-  private getLookUp(lookUpGeneric: any): any[] {
-    if (lookUpGeneric) {
-      const keyNames = Object.keys(lookUpGeneric[0].key);
-      const lookUp = [];
-
-      lookUpGeneric.forEach(item => {
-        const propValue: any = {};
-        //copy display name from generic lookup  
-        propValue.displayName = item.displayName;
-
-        keyNames.forEach(keyName => {
-          propValue[keyName] = item.key[keyName]
-        });
-
-        lookUp.push(propValue);
-      });
-      return lookUp;
-    }
-  }
-
-  // get lookUpData() {
-  //   return this._lookUpData;
-  // }
 
   get f() { return this.form.controls; }
 
