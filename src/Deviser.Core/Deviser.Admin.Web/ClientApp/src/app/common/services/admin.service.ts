@@ -12,6 +12,7 @@ import { DAConfig } from '../domain-types/da-config';
 import { FormType } from '../domain-types/form-type';
 import { FilterNode } from '../domain-types/filter-node';
 import { GridType } from '../domain-types/grid-type';
+import { LookUpField } from '../domain-types/look-up-field';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +39,7 @@ export class AdminService {
       // 'Authorization': 'my-auth-token'
     });
     this._httpOptions = {
-      headers: this._httpHeaders
+      headers: this._httpHeaders, withCredentials: true
     };
 
 
@@ -59,7 +60,8 @@ export class AdminService {
     }
     else {
       const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/meta`;
-      this._adminConfig$ = this.http.get<AdminConfig>(serviceUrl, { headers: this._httpHeaders }).pipe(
+      this._adminConfig$ = this.http.get<AdminConfig>(serviceUrl, { headers: this._httpHeaders, withCredentials: true }).pipe(
+        map(adminConfig => this.flattenLookUpKeysInAdminConfig(adminConfig)),
         tap(next => {
           this._adminConfig = next;
           this.log('fetched meta info');
@@ -92,7 +94,7 @@ export class AdminService {
 
 
 
-    return this.http.get<any>(serviceUrl, { headers: this._httpHeaders, params })
+    return this.http.get<any>(serviceUrl, { headers: this._httpHeaders, withCredentials: true, params })
       .pipe(
         tap(_ => this.log('fetched all records')),
         catchError(this.handleError('getAllRecords', null))
@@ -123,7 +125,7 @@ export class AdminService {
   getTree(): Observable<any> {
     const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/tree`;
 
-    return this.http.get<any>(serviceUrl, { headers: this._httpHeaders })
+    return this.http.get<any>(serviceUrl, { headers: this._httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched all records')),
         catchError(this.handleError('getAllRecords', null))
@@ -133,7 +135,7 @@ export class AdminService {
   getRecord(id: string): Observable<any> {
     const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/${id}`;
 
-    return this.http.get<any>(serviceUrl, { headers: this._httpHeaders })
+    return this.http.get<any>(serviceUrl, { headers: this._httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log(`fetched a record for id: ${id}`)),
         catchError(this.handleError('getAllRecords', null))
@@ -142,11 +144,13 @@ export class AdminService {
 
   getLookUp(formType: FormType, formName: string, fieldName: string, filterParam: any) {
     const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/lookup/${formType}/field/${fieldName}`;
-    return this.http.put<any>(serviceUrl, filterParam, this._httpOptions)
+    let lookUp$ = this.http.put<any>(serviceUrl, filterParam, { headers: this._httpHeaders, withCredentials: true })
       .pipe(
-        tap(_ => this.log(`fetched lookup`)),
+        map(lookUp => this.flattenLookUpKeys(lookUp)),
+        tap( _ => this.log(`fetched lookup`)),
         catchError(this.handleError('getAllRecords', null))
       );
+    return lookUp$;
   }
 
   createRecord(record: any) {
@@ -194,7 +198,7 @@ export class AdminService {
       params = params.append('pageSize', pagination.pageSize.toString());
     }
 
-    return this.http.put<any>(serviceUrl, items, { headers: this._httpHeaders, params })
+    return this.http.put<any>(serviceUrl, items, { headers: this._httpHeaders, withCredentials: true, params })
       .pipe(
         tap(_ => this.log('all items have been sorted')),
         catchError(this.handleError('sortGridItems', null))
@@ -240,14 +244,30 @@ export class AdminService {
   deleteRecord(id: string) {
     const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/${id}`;
 
-    return this.http.delete<any>(serviceUrl, { headers: this._httpHeaders })
+    return this.http.delete<any>(serviceUrl, { headers: this._httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log(`deleted a record id:${id}`)),
         catchError(this.handleError('deleteRecord', null))
       );
   }
 
+  flattenLookUpKeysInAdminConfig(adminConfig: AdminConfig): AdminConfig {
+    let lookUpDict = adminConfig.lookUps.lookUpData;
+    Object.keys(lookUpDict).forEach(lookUpName => {
+      let lookUpItems = lookUpDict[lookUpName];
+      this.flattenLookUpKeys(lookUpItems);
+    });
+    return adminConfig;
+  }
 
+  flattenLookUpKeys(lookUpItems: any[]) {
+    let lookUpFieldKeys = Object.keys(lookUpItems[0].key);
+    lookUpItems.forEach(lookUpItem => {
+      lookUpFieldKeys.forEach(keyName => {
+        lookUpItem[keyName] = lookUpItem.key[keyName]
+      });
+    });
+  }
 
   /** Log a AdminService message with the MessageService */
   private log(message: string) {

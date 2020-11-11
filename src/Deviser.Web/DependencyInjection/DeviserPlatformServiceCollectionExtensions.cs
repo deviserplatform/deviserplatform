@@ -42,6 +42,7 @@ using System.Reflection;
 using Deviser.Core.Library.Security;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace Deviser.Web.DependencyInjection
 {
@@ -126,7 +127,10 @@ namespace Deviser.Web.DependencyInjection
 
             InternalServiceProvider.Instance.BuildServiceProvider(services);
 
-            if (installationProvider.IsPlatformInstalled)
+            var isDevelopment = hostEnvironment.IsEnvironment(Globals.DeviserDevelopmentEnvironment);
+            var isPlatformInstalled = installationProvider.IsPlatformInstalled;
+
+            if (isPlatformInstalled)
             {
                 services.AddIdentity<User, Role>()
                     .AddEntityFrameworkStores<DeviserDbContext>()
@@ -173,14 +177,14 @@ namespace Deviser.Web.DependencyInjection
                     });
                 }
 
-                // Add cookie authentication so that it's possible to sign-in to test the
-                // custom authorization policy behavior of the sample
-                //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                //    .AddCookie(options =>
-                //    {
-                //        options.AccessDeniedPath = "/account/denied";
-                //        options.LoginPath = "/account/signin";
-                //    });
+                if (isDevelopment)
+                {
+                    services.ConfigureApplicationCookie(options => {
+                        options.Cookie.Name = ".AspNet.SharedCookie";
+                        options.Cookie.Path = "/";
+                        options.Cookie.Domain = "localhost";
+                    });
+                }
 
                 RegisterModuleDependencies(services);
                 services.AddDeviserAdmin();
@@ -201,14 +205,12 @@ namespace Deviser.Web.DependencyInjection
                 })
                 .AddRazorRuntimeCompilation();
 
-            if (installationProvider.IsPlatformInstalled)
+            if (isPlatformInstalled)
             {
                 mvcBuilder.AddControllersAsServices();
             }
 
-
-
-            if (hostEnvironment.IsEnvironment(Globals.DeviserDevelopmentEnvironment))
+            if (isDevelopment)
             {
                 services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
                 {
@@ -237,12 +239,17 @@ namespace Deviser.Web.DependencyInjection
                 options.Cookie.IsEssential = true;
             });
 
-            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            if (isDevelopment)
             {
-                builder.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
-            }));
+                services.AddCors(o => o.AddPolicy("AllowOrigin", builder =>
+                {
+                    builder
+                        .WithOrigins("http://localhost:4200")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                }));
+            }
 
             InternalServiceProvider.Instance.BuildServiceProvider(services);
             return services;

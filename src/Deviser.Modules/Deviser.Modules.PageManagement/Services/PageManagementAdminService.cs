@@ -256,7 +256,7 @@ namespace Deviser.Modules.PageManagement.Services
 
             foreach (var translation in pageViewModel.PageTranslation)
             {
-                pageTranslation.Language =
+                translation.Language =
                     translateLanguages.FirstOrDefault(t => string.Equals(t?.CultureCode, translation?.Locale));
             }
 

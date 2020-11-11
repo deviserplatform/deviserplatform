@@ -6,6 +6,19 @@
 </div>
 <div class="modal-body">
     <div class="edit-content-container" *ngIf="pageContent">
+        <div class="language-selector" *ngIf="languages && languages.length > 1">
+            <div class="form-group">
+                <label>Language</label>
+                <ng-select [items]="languages" bindLabel="englishName" [(ngModel)]="selectedLocale"
+                    autofocus [selectOnTab]="true" [multiple]="false" [clearable]="false" placeholder="Select Language"
+                    (change)="changeLanguage()">
+                    <ng-template ng-option-tmp let-item="item" let-search="searchTerm">
+                        <div><span [ngOptionHighlight]="search">{{item.englishName}}</span></div>
+                        <small> {{item.nativeName}}</small>
+                    </ng-template>
+                </ng-select>
+            </div>
+        </div>
         <div class="non-list" *ngIf="!isList">
             <div *ngFor="let field of fields">
                 <ng-container *ngTemplateOutlet="editFieldSelector, context:{content:content, field:field}">
@@ -37,12 +50,12 @@
                     <tbody cdkDropList [cdkDropListData]="contentItems" (cdkDropListDropped)="drop($event)">
                         <tr *ngFor="let item of contentItems" class="item" cdkDrag>
                             <td *ngFor="let field of fields">
-                                <ng-container *ngTemplateOutlet="previewFieldSelector, context:{content:item, field:field}">
+                                <ng-container
+                                    *ngTemplateOutlet="previewFieldSelector, context:{content:item, field:field}">
                                 </ng-container>
                             </td>
                             <td>
-                                <button type="button" class="action-control btn btn-default"
-                                    (click)="editItem(item);">
+                                <button type="button" class="action-control btn btn-default" (click)="editItem(item);">
                                     <i class="my-icon" aria-label="My icon"
                                         [inlineSVG]="'assets/icons/edit.svg'| envPath"></i>
                                 </button>
@@ -92,7 +105,10 @@
         <ng-container *ngSwitchCase="'RichText'">
             <div class="form-group">
                 <label for="field.fieldName">{{field.fieldLabel || field.fieldName}}</label>
-                <ckeditor [editor]="Editor" [id]="field.fieldName" [(ngModel)]="content[field.fieldName]"></ckeditor>
+                <!--<ckeditor [editor]="Editor" [id]="field.fieldName" [(ngModel)]="content[field.fieldName]"></ckeditor>-->
+
+                <quill-editor [id]="field.fieldName" [(ngModel)]="content[field.fieldName]" [modules]="modules">
+                </quill-editor>
             </div>
         </ng-container>
         <ng-container *ngSwitchCase="'Date'">
@@ -114,7 +130,8 @@
             <!-- <a [href]="getLinkUrl(content[field.fieldName])" target="_blank">
                 {{content[field.fieldName].linkText}}
             </a> -->
-            <app-link [link]="content[field.fieldName]" [field]="field" [properties]="pageContent.properties" (linkChanged)="onLinkChanged($event, content, field)"></app-link>
+            <app-link [link]="content[field.fieldName]" [field]="field" [properties]="pageContent.properties"
+                (linkChanged)="onLinkChanged($event, content, field)"></app-link>
         </ng-container>
         <ng-container *ngSwitchCase="'Attachment'">
             <a [href]="content[field.fieldName].filePath" target="_blank">
@@ -127,8 +144,9 @@
                 <input type="text" class="form-control" [id]="field.fieldName" [(ngModel)]="content[field.fieldName]">
             </div>
         </ng-container>
-        <ng-container *ngSwitchCase="'Image'">            
-            <app-image [image]="content[field.fieldName]" [field]="field" [properties]="pageContent.properties" (imageSelected)="onImageSelected($event, content, field)">
+        <ng-container *ngSwitchCase="'Image'">
+            <app-image [image]="content[field.fieldName]" [field]="field" [properties]="pageContent.properties"
+                (imageSelected)="onImageSelected($event, content, field)">
             </app-image>
         </ng-container>
     </ng-container>

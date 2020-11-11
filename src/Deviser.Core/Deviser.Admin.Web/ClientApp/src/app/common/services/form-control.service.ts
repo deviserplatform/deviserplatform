@@ -18,6 +18,69 @@ export class FormControlService {
 
   constructor(private fb: FormBuilder) { }
 
+  getLookUpKeys(lookUpGeneric: any) {
+    return Object.keys(lookUpGeneric[0].key);
+  }
+
+  // getLookUp(lookUpGeneric: any): any[] {
+  //   if (lookUpGeneric) {
+  //     const keyNames = this.getLookUpKeys(lookUpGeneric);
+  //     const lookUp = [];
+
+  //     lookUpGeneric.forEach(item => {
+  //       const propValue: any = {};
+  //       //copy display name from generic lookup  
+  //       propValue.displayName = item.displayName;
+
+  //       keyNames.forEach(keyName => {
+  //         propValue[keyName] = item.key[keyName]
+  //       });
+
+  //       lookUp.push(propValue);
+  //     });
+  //     return lookUp;
+  //   }
+  // }
+
+  getSelectedItemFor(lookUp: any[], lookUpKeys: string[], controlVal: any): any {
+    if (!lookUp || !lookUpKeys || !controlVal) return;
+    let selectedItem = lookUp.find(lookUp => {
+      let isMatch = false;
+      for (let i = 0; i < lookUpKeys.length; i++) {
+        let prop = lookUpKeys[i];
+        isMatch = lookUp[prop] === controlVal[prop];
+        if (isMatch)
+          return isMatch;
+      }
+      return false; // propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.principalFieldNameCamelCase]
+    });
+    return selectedItem;
+  }
+
+
+  getSelectedItemsFor(lookUp: any[], lookUpKeys: string[], controlVal: any) {
+    if (!lookUp || !lookUpKeys || !controlVal || controlVal.length <= 0) return;
+
+    let selectedItems: any[] = [];
+
+    //Parse control value and set displayName
+    controlVal.forEach(item => {
+      let masterItem = lookUp.find(lookUp => {
+        let isMatch = false;
+        for (let i = 0; i < lookUpKeys.length; i++) {
+          let prop = lookUpKeys[i];
+          isMatch = lookUp[prop] === item[prop];
+          if (isMatch)
+            return isMatch;
+        }
+        return false; // propValue[fkProp.fieldNameCamelCase] = item.key[fkProp.principalFieldNameCamelCase]
+      });
+      selectedItems.push(masterItem);
+      // item.displayName = masterItem.displayName; //Not required, since selected items are patched directly
+    });
+    return selectedItems;
+  }
+
   toFormGroup(adminConfig: AdminConfig, formMode: FormMode, record: any = null): FormGroup {
     let formObj: any = {};
 
@@ -32,12 +95,12 @@ export class FormControlService {
       });
     }
 
-    if(adminConfig.adminConfigType === AdminConfigType.TreeAndForm) {
+    if (adminConfig.adminConfigType === AdminConfigType.TreeAndForm) {
       const recordKeys = Object.keys(record);
       const formObjKeys = Object.keys(formObj);
-      if(recordKeys.length > 0){
+      if (recordKeys.length > 0) {
         const keysToBeAdded = recordKeys.filter(rk => formObjKeys.indexOf(rk) < 0);
-        if(keysToBeAdded && keysToBeAdded.length > 0){
+        if (keysToBeAdded && keysToBeAdded.length > 0) {
           keysToBeAdded.forEach(k => {
             formObj[k] = new FormControl(record[k]);
           });

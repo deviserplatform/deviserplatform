@@ -17,6 +17,7 @@ import { FieldType } from '../common/domain-types/field-type';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { AdminService } from '../common/services/admin.service';
 import { GridType } from '../common/domain-types/grid-type';
+import { AdminConfig } from '../common/domain-types/admin-config';
 
 @Component({
   selector: 'app-child-grid',
@@ -48,6 +49,7 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
   @ViewChild(ConfirmDialogComponent)
   private confirmDialogComponent: ConfirmDialogComponent;
 
+  private _adminConfig: AdminConfig;
   labelType = LabelType;
   childForm: FormGroup;
   childRecords: [any];
@@ -55,6 +57,7 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
   selectedItem: any;
 
   viewState: ViewState;
+
 
   // _childForm: BehaviorSubject<FormGroup | undefined>;
 
@@ -73,6 +76,8 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
   }
 
   ngOnInit() {
+    this._adminService.getAdminConfig()
+      .subscribe(adminConfig => this._adminConfig = adminConfig);
     // this._childForm = new BehaviorSubject(this._formControlService.toChildFormGroup(this.formConfig, {}));
     // this._childForm.subscribe(childForm => this.childForm = childForm);
     let childForm = this._formControlService.toFormGroupWithModelConfig(this.childConfig.modelConfig, this.formMode, {});
@@ -162,6 +167,25 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
     }
 
     return item[field.fieldOption.labelOption.parameters.paramFieldNameCamelCase];
+  }
+
+  getFieldValue(item: any, field: Field) {
+    let valueObj = item[field.fieldNameCamelCase];
+    if (field.fieldType === FieldType.Select || field.fieldType === FieldType.RadioButton) {
+      let lookUp = this._adminConfig.lookUps.lookUpData[field.fieldNameCamelCase];
+      let lookUpKeys = this._formControlService.getLookUpKeys(lookUp);
+      let selectedItem = this._formControlService.getSelectedItemFor(lookUp, lookUpKeys, valueObj);
+      return selectedItem ? selectedItem.displayName : '';
+    }
+    else if (field.fieldType === FieldType.MultiSelect || field.fieldType === FieldType.MultiSelectCheckBox) {
+      let lookUp = this._adminConfig.lookUps.lookUpData[field.fieldNameCamelCase];
+      let lookUpKeys = this._formControlService.getLookUpKeys(lookUp);
+      let selectedItems = this._formControlService.getSelectedItemsFor(lookUp, lookUpKeys, valueObj);
+      return selectedItems? selectedItems.map(item=>item.displayName).join(',') : '';
+    }
+    else {
+      return valueObj;
+    }
   }
 
   writeValue(obj: [any]): void {
