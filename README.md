@@ -2,7 +2,7 @@
 ## Welcome to Deviser Platform
 An open-source, cross-platform, rapid application and web content development framework [https://www.deviser.io](https://www.deviser.io)
 
-![.NET Core Build](https://github.com/deviserplatform/deviserplatform/workflows/.NET%20Core/badge.svg)
+![.NET 5.0](https://github.com/deviserplatform/deviserplatform/workflows/.NET%205.0/badge.svg)
 
 [![IMAGE ALT TEXT HERE](https://www.deviser.io/assets/images/video_snapshot.png)](https://www.youtube.com/watch?v=_dFH5SdDZyY)
 
