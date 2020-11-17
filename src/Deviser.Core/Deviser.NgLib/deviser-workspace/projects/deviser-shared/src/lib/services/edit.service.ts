@@ -34,8 +34,9 @@ export class EditService {
 
     if (link.linkType === LinkType.Url || link.linkType === LinkType.File) {
       return `${this._baseUrl}${link.url}`;
-    } else if (link.linkType === LinkType.Page) {
+    } else if (link.linkType === LinkType.Page && link.pageId) {
       let page = this.pages.find(p => p.id === link.pageId);
+      if (!page) return '';
       let translation = page.pageTranslation.find(pt => pt.locale === this._pageContext.currentLocale);
       translation = translation ? translation : page.pageTranslation[0];
       let url = page.pageTypeId === Globals.appSettings.pageTypes.url ? translation.url : `${this._pageContext.siteRoot}${translation.url}`;

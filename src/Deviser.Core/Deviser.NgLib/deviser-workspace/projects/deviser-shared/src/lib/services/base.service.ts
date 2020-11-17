@@ -26,7 +26,7 @@ export class BaseService {
       // 'Authorization': 'my-auth-token'
     });
     this.httpOptions = {
-      headers: this.httpHeaders
+      headers: this.httpHeaders, withCredentials: true
     };
 
 

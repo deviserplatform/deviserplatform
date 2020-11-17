@@ -11,7 +11,7 @@ export class PageContentService extends BaseService {
 
   getPageContents(pageId: string, cultureCode: string): Observable<PageContent[]> {
     const serviceUrl: string = `${this.baseUrl}api/pagecontent/${cultureCode}/${pageId}`;
-    return this.http.get<PageContent[]>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<PageContent[]>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched pageContents')),
         catchError(this.handleError('getPageContents', null))
@@ -20,7 +20,7 @@ export class PageContentService extends BaseService {
 
   getPageContent(pageContentId: string): Observable<PageContent> {
     const serviceUrl: string = `${this.baseUrl}api/pagecontent/${pageContentId}`;
-    return this.http.get<PageContent>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<PageContent>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched pageContents')),
         catchError(this.handleError('getPageContents', null))
@@ -29,7 +29,7 @@ export class PageContentService extends BaseService {
 
   deletePageContent(id: string) {
     const serviceUrl: string = `${this.baseUrl}api/pagecontent/${id}`;
-    return this.http.delete<any>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.delete<any>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log(`deleted a pageContent id:${id}`)),
         catchError(this.handleError('deletePageContent', null))

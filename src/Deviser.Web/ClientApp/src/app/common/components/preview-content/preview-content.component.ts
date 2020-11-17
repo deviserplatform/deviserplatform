@@ -22,16 +22,18 @@ export class PreviewContentComponent implements OnInit {
     return this._pageContent;
   }
 
-  @Input() set pageContent(value: PageContent) {
-    this._pageContent = value;
+  @Input() set pageContent(pageContent: PageContent) {
+    if (!pageContent || !pageContent.contentType || !pageContent.contentType.contentTypeFields) return;
+    this._pageContent = pageContent;
     this._fields = this.pageContent.contentType.contentTypeFields.sort((a, b) => a.sortOrder > b.sortOrder ? 1 : -1);
   }
 
   get isList(): boolean {
-    return this.pageContent.contentType && this.pageContent.contentType.isList;
+    return this.pageContent && this.pageContent.contentType && this.pageContent.contentType.isList;
   }
 
   get content(): any {
+    if (!this.pageContent || !this.pageContent.pageContentTranslation) return;
     const contentTranslation = this.pageContent.pageContentTranslation.find(pct => pct && pct.cultureCode === this._pageContext.siteLanguage);
     let content = (contentTranslation && contentTranslation.contentData) ? JSON.parse(contentTranslation.contentData) : {};
     return content;

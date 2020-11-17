@@ -12,7 +12,7 @@ export class ModuleViewService extends BaseService {
 
   getModuleViews(): Observable<ModuleView[]> {
     const serviceUrl: string = `${this.baseUrl}api/moduleview/`;
-    return this.http.get<ModuleView[]>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<ModuleView[]>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched moduleViews')),
         catchError(this.handleError('getModuleViews', null))
@@ -21,7 +21,7 @@ export class ModuleViewService extends BaseService {
 
   getEditActions(id: string): Observable<ModuleView[]> {
     const serviceUrl: string = `${this.baseUrl}api/moduleview/edit/${id}`;
-    return this.http.get<ModuleView[]>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<ModuleView[]>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched moduleViews')),
         catchError(this.handleError('getModuleViews', null))

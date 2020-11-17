@@ -15,7 +15,7 @@ export class LayoutService extends BaseService {
 
   getLayouts(): Observable<PageLayout[]> {
     const serviceUrl: string = `${this.baseUrl}api/layout/`;
-    return this.http.get<PageLayout[]>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<PageLayout[]>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched layouts')),
         catchError(this.handleError('getLayouts', null))
@@ -24,7 +24,7 @@ export class LayoutService extends BaseService {
 
   getLayout(id: string): Observable<PageLayout> {
     const serviceUrl: string = `${this.baseUrl}api/layout/${id}`;
-    return this.http.get<PageLayout>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<PageLayout>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched layouts')),
         catchError(this.handleError('getLayout', null))
@@ -52,7 +52,7 @@ export class LayoutService extends BaseService {
 
   deleteLayout(id: string) {
     const serviceUrl: string = `${this.baseUrl}api/layout/${id}`;
-    return this.http.delete<any>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.delete<any>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log(`deleted a record id:${id}`)),
         catchError(this.handleError('deleteLayout', null))

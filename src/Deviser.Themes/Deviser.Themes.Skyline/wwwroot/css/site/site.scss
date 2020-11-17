@@ -551,6 +551,12 @@ body {
                 flex: 1;
                 padding: 2rem 0;
                 background-color: $lightGrey;
+
+                .features-action {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 2rem;
+                }
             }
 
             .white-section {
@@ -570,7 +576,11 @@ body {
                 .call-to-action-col {
                     display: flex;
                     flex-direction: row;
-                    justify-content: space-evenly;
+                    justify-content: center;
+
+                    a.btn-outline-deviser:last-of-type {
+                        margin-left: 5rem;
+                    }
                 }
             }
         }

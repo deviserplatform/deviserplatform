@@ -11,7 +11,7 @@ export class ContentTypeService extends BaseService {
 
   getContentTypes(): Observable<ContentType[]> {
     const serviceUrl: string = `${this.baseUrl}api/contenttype/`;
-    return this.http.get<ContentType[]>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<ContentType[]>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched contentTypes')),
         catchError(this.handleError('getContentTypes', null))

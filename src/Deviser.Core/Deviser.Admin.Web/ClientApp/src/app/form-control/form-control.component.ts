@@ -310,8 +310,6 @@ export class FormControlComponent implements OnInit {
     let lookUp: any[] = lookUpGeneric;
     let selectedItem = this._formControlService.getSelectedItemFor(lookUp, lookUpKeys, controlVal);
 
-    if (!selectedItem) return;
-
     let patchVal: any = {};
     patchVal[this.field.fieldNameCamelCase] = selectedItem;
 

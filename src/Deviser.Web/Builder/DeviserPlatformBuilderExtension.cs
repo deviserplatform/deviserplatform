@@ -130,6 +130,10 @@ namespace Deviser.Web.Builder
             {
                 app.UseCors(AllowOrigin);
             }
+            else
+            {
+                app.UseCors("default");
+            }
 
             //Deviser Specific
             app.UsePageContext();

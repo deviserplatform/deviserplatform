@@ -147,7 +147,7 @@ export class AdminService {
     let lookUp$ = this.http.put<any>(serviceUrl, filterParam, { headers: this._httpHeaders, withCredentials: true })
       .pipe(
         map(lookUp => this.flattenLookUpKeys(lookUp)),
-        tap( _ => this.log(`fetched lookup`)),
+        tap(_ => this.log(`fetched lookup`)),
         catchError(this.handleError('getAllRecords', null))
       );
     return lookUp$;
@@ -252,6 +252,7 @@ export class AdminService {
   }
 
   flattenLookUpKeysInAdminConfig(adminConfig: AdminConfig): AdminConfig {
+    if (!adminConfig.lookUps || !adminConfig.lookUps.lookUpData) return adminConfig;
     let lookUpDict = adminConfig.lookUps.lookUpData;
     Object.keys(lookUpDict).forEach(lookUpName => {
       let lookUpItems = lookUpDict[lookUpName];
@@ -261,6 +262,7 @@ export class AdminService {
   }
 
   flattenLookUpKeys(lookUpItems: any[]) {
+    if (!lookUpItems[0] || !lookUpItems[0].key) return
     let lookUpFieldKeys = Object.keys(lookUpItems[0].key);
     lookUpItems.forEach(lookUpItem => {
       lookUpFieldKeys.forEach(keyName => {

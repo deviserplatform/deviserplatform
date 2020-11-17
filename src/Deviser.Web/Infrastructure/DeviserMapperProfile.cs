@@ -95,6 +95,7 @@ namespace Deviser.Web.Infrastructure
 
             CreateMap<PageTranslation, Core.Common.DomainTypes.PageTranslation>()
                 .ReverseMap();
+            CreateMap<PageTranslation, PageTranslation>();
 
 
             CreateMap<Permission, Core.Common.DomainTypes.Permission>().ReverseMap();
