@@ -43,9 +43,9 @@ body {
     font-size: 0.96rem;
     line-height: 1.8rem;
     font-weight: 300;
-    overflow-x: hidden;
+    overflow-x: hidden; 
     min-height: 80vh;
-}
+}  
 
 /*--------------------------------------------------------------
     General Elements
@@ -302,20 +302,6 @@ body {
                     opacity: 1;
                     transition: all .3s ease-in-out;
                 }
-            }
-
-            .dropdown-toggle::after {
-                visibility: visible;
-                position: absolute;
-                right: 1rem;
-                margin-left: 0;
-                top: 50%;
-                content: '\f054';
-                font-family: 'FontAwesome';
-                border: 0;
-                top: 0.40rem;
-                -webkit-transform: translateY(-50%);
-                transform: translateY(-50%);
             }
         }
 

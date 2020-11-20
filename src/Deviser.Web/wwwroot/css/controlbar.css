@@ -1,128 +1,129 @@
-﻿/***
+﻿body {
+    margin: 0;
+    padding: 0;
+}
+/***
 Page Header
 ***/
 .dev-controlbar {
     font-family: "Open Sans", sans-serif;
-    line-height: 1.5;
     width: 100%;
-    /*padding: 0 20px 0 20px;*/
-    margin: 0;
-    border: 0;
-    padding: 0;
-    box-shadow: none;
     height: 50px;
-    min-height: 50px;
-    filter: none;
-    background-image: none;
     background-color: #1d2127;
     position: fixed;
     top: 0;
     z-index: 100;
+    display: flex;
 }
 
-    .dev-controlbar .dev-navbar-brand img {
-        margin: 12px;
-        height: 26px;
+    .dev-controlbar .dev-logo {
+        display: flex;
+        align-items: center;
+        margin-left: 0.7rem;
+        margin-right: auto;
     }
 
-.dev-navbar-brand {
-    float: left;
-}
-
-.dev-controlbar .dev-logo {
-    width: 230px;
-}
-
-.dev-controlbar .top-menu {
-    margin: 0;
-    padding: 0;
-    float: right;
-}
-
-    .dev-controlbar .top-menu .dev-navbar-nav {
-        text-transform: uppercase;
-        padding: 0;
-        margin-right: 20px;
-        display: block;
-        float: left;
-        margin: 0;
-        font-size: 0;
-    }
-
-        .dev-controlbar .top-menu .dev-navbar-nav > li.dropdown {
-            margin: 0;
-            display: inline-block;
+        .dev-controlbar .dev-logo .dev-navbar-brand {
+            height: 26px;
         }
 
-            .dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > .dropdown-toggle {
-                margin: 0;
-                padding: 15px;
+            .dev-controlbar .dev-logo .dev-navbar-brand img {
+                height: 26px;
             }
 
-a.dev-toggle::after {
-    content: none !important;
-}
-
-.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > a {
-    display: inline-block;
-    font-size: 13px;
-    font-weight: 300;
-    color: #79869a;
-    text-decoration: none;
-}
-
-    .dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > a span {
-        display: inline-block;
-        font-size: 13px;
-        font-weight: 300;
-        color: #c6cfda;
-        padding-left: 8px;
-        vertical-align: top;
+    .dev-controlbar .controlbar-menu {
+        display: flex;
     }
 
-.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > .dropdown-toggle > i {
-    font-size: 17px;
-    color: #79869a;
-}
+        .dev-controlbar .controlbar-menu form {
+            display: flex;
+            text-transform: uppercase;
+            padding: 0;
+            margin: 0;
+        }
 
-.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown > .dropdown-toggle:focus {
-    background: 0 0;
-}
+            .dev-controlbar .controlbar-menu form a.dev-nav-link {
+                color: #79869a;
+                text-decoration: none;
+                cursor: pointer;
+            }
 
-.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown .dropdown-toggle:hover,
-.dev-dropdown-menu.dropdown-menu li > a:hover {
-    background-color: #171717
-}
-.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown.open .dropdown-toggle,
-.dev-controlbar .top-menu .dev-navbar-nav > li.dropdown.active {
-    background-color: #485261;
-}
+                .dev-controlbar .controlbar-menu form a.dev-nav-link:hover {
+                    background-color: #171717
+                }
 
-.dev-dropdown-menu.dropdown-menu {
-    background-color: #1d2127;
-}
+                .dev-controlbar .controlbar-menu form a.dev-nav-link.active {
+                    background-color: #485261;
+                }
 
-    .dev-dropdown-menu.dropdown-menu li > a {
-        color: #c6cfda;
-        padding: 10px;
+            .dev-controlbar .controlbar-menu form .dev-nav-link svg {
+                margin: 0.5rem;
+                display: flex;
+            }
+
+            .dev-controlbar .controlbar-menu form .dev-nav-link span {
+                display: none;
+            }
+
+            .dev-controlbar .controlbar-menu form .dev-nav-item {
+                display: flex;
+                align-items: center;
+                padding-left: 0.7rem;
+                padding-right: 0.7rem;
+            }
+
+            .dev-controlbar .controlbar-menu form .dev-dropdown {
+                display: flex;
+                align-items: stretch;
+            }
+
+                .dev-controlbar .controlbar-menu form .dev-dropdown .dev-nav-link {
+                    display: flex;
+                    align-items: center;
+                    padding-left: 0.7rem;
+                    padding-right: 0.7rem;
+                }
+
+
+                .dev-controlbar .controlbar-menu form .dev-dropdown .dev-dropdown-menu {
+                    position: absolute;
+                    top: 50px;
+                    display: flex;
+                    flex-direction: column;
+                    /* height: 2rem; */
+                    background-color: #1d2127;
+                    width: 100%;
+                    visibility: hidden;
+                    opacity: 0;
+                    filter: alpha(opacity=0);
+                    -webkit-transition: 200ms ease;
+                    -moz-transition: 200ms ease;
+                    -o-transition: 200ms ease;
+                    transition: 200ms ease;
+                }
+
+                .dev-controlbar .controlbar-menu form .dev-dropdown.dev-dropdown-open .dev-dropdown-menu {
+                    visibility: visible;
+                    opacity: 1;
+                    filter: alpha(opacity=100);
+                }
+
+                .dev-controlbar .controlbar-menu form .dev-dropdown .dev-dropdown-menu .dev-nav-link {
+                    display: block;
+                    padding: 0.5rem 1rem;
+                }
+
+
+/* Tablet menu */
+@media all and (min-width: 700px) {
+    .dev-controlbar .controlbar-menu form .dev-nav-link svg {
+        margin-right: 0.5rem;
     }
 
-
-
-.dev-controlbar .top-menu .dropdown-quick-sidebar-toggler > .dropdown-toggle i {
-    top: 0;
+    .dev-controlbar .controlbar-menu form .dev-nav-link span {
+        display: block;
+    }
 }
-
-.dev-dropdown-menu {
-    z-index: 10000;
-    width: calc(100% - 4px);
-    border-radius: 0;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    padding: 0;
-    margin: 0;
-}
-
 
 .logged-in {
     margin-top: 50px;

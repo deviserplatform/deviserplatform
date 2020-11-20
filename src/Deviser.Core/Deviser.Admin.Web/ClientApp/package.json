@@ -22,7 +22,7 @@
     "@angular/platform-browser-dynamic": "~9.1.7",
     "@angular/router": "~9.1.7",
     "@ng-select/ng-select": "^4.0.0",
-    "bootstrap": "^4.4.1",
+    "bootstrap": "^4.5.3",
     "deviser-shared": "file:../../Deviser.NgLib/deviser-workspace/dist/deviser-shared",
     "ng-inline-svg": "^10.0.0",
     "ngx-bootstrap": "^5.6.1",
