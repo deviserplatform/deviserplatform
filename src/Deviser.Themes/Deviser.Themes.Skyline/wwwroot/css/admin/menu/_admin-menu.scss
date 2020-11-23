@@ -6,36 +6,44 @@
 * @license: MIT 
 */
 .metismenu {
-    .arrow {
+    svg.feather.feather-home {
+        float: left;
+        margin-right: 0.5rem;
+        width: 20px;
+        height: 20px;
+    }
+
+    svg.feather-chevron-right {
         float: right;
-        line-height: 1.42857;
+        transition: all .3s ease-out;
+        /*line-height: 1.42857;*/
     }
     /*
      * Require Font-Awesome
      * http://fortawesome.github.io/Font-Awesome/
     */
-    .fa.arrow:before {
+    /*    .fa.arrow:before {
         content: "\f104";
-    }
-
-    .plus-times {
+    }*/
+    /*    .plus-times {
         float: right;
-    }
-
-    .mm-active > a > .fa.arrow:before {
+    }*/
+    /*    .mm-active > a > .fa.arrow:before {
         content: "\f107";
     }
 
     .fa.plus-times:before {
         content: "\f067";
-    }
-
-    .mm-active > a > .fa.plus-times {
+    }*/
+    /*    .mm-active > a > .fa.plus-times {
         -webkit-transform: rotate(45deg);
         transform: rotate(45deg);
+    }*/
+    .mm-active > a svg.feather-chevron-right {
+        transform: rotate(90deg);
+        transition: all .3s ease-out;
     }
-
-    .plus-minus {
+    /*.plus-minus {
         float: right;
     }
 
@@ -45,8 +53,7 @@
 
     .mm-active > a > .fa.plus-minus:before {
         content: "\f068";
-    }
-
+    }*/
     .mm-collapse:not(.mm-show) {
         display: none;
     }
