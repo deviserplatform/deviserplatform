@@ -114,13 +114,13 @@ namespace Deviser.Modules.PageManagement
                 builder.ShowChildConfigOn(p => p.PageTranslation,
                     provider => provider.GetService<PageManagementAdminService>().IsSiteMultilingual());
 
-                formBuilder.Property(f => f.Name)
-                    .ShowOn(f => f.PageType != null && (f.PageType.Id == standardId || f.PageTypeId == adminId))
-                    .ValidateOn(f => f.PageType != null && (f.PageType.Id == standardId || f.PageTypeId == adminId));
+                //formBuilder.Property(f => f.Name)
+                //    .ShowOn(f => f.PageType != null && (f.PageType.Id == standardId || f.PageType.Id == adminId))
+                //    .ValidateOn(f => f.PageType != null && (f.PageType.Id == standardId || f.PageType.Id == adminId));
 
                 formBuilder.Property(f => f.Title)
-                    .ShowOn(f => f.PageType != null && f.PageType.Id == standardId)
-                    .ValidateOn(f => f.PageType != null && f.PageType.Id == standardId);
+                    .ShowOn(f => f.PageType != null && (f.PageType.Id == standardId || f.PageType.Id == adminId))
+                    .ValidateOn(f => f.PageType != null && (f.PageType.Id == standardId || f.PageType.Id == adminId));
 
                 formBuilder.Property(f => f.Description)
                     .ShowOn(f => f.PageType != null && f.PageType.Id == standardId);
