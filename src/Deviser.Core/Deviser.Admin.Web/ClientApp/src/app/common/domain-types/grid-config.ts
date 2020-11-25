@@ -8,4 +8,5 @@ export interface GridConfig {
     isSortable: boolean;
     rowActions: { [key: string]: AdminAction };
     sortField: Field;
+    title: string;
 }

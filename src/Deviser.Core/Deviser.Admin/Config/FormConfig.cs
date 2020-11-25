@@ -32,6 +32,7 @@ namespace Deviser.Admin
         public IFieldSetConfig FieldSetConfig { get; }
         public IDictionary<string, AdminAction> FormActions { get; }
         public FormOption FormOption { get; set; }
+        public string Title { get; set; }
 
         public FormConfig()
         {

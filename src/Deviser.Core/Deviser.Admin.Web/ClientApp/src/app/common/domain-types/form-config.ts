@@ -8,4 +8,5 @@ export interface FormConfig {
     fieldSetConfig: FieldSetConfig;
     formActions: { [key: string]: AdminAction };
     formOption: FormOption;
+    title: string;
 }

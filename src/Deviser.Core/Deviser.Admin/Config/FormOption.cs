@@ -11,8 +11,6 @@ namespace Deviser.Admin.Config
         /// </summary>
         //public string EditButtonText { get; set; } = "Edit";
 
-        public string FormTitle { get; set; }
-
         /// <summary>
         /// Sets Save Button Text property in a form view, default value is "Save"
         /// </summary>

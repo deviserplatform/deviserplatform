@@ -1,7 +1,7 @@
 <div class="admin-grid card"
   *ngIf="adminConfig && adminConfig.modelConfig && adminConfig.modelConfig.gridConfig && adminConfig.modelConfig.gridConfig.fields && pagination">
   <div class="card-header">
-    {{adminConfig.adminTitle}}
+    {{adminConfig.modelConfig.gridConfig.title || adminConfig.adminTitle}}
   </div>
   <div class="card-body">
     <div class="row action-bar">

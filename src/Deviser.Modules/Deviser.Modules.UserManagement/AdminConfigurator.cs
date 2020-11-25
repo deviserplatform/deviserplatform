@@ -13,6 +13,8 @@ namespace Deviser.Modules.UserManagement
         {
             adminBuilder.Register<User, UserAdminService>(modelBuilder =>
             {
+                modelBuilder.GridBuilder.Title = "Users";
+                modelBuilder.FormBuilder.Title = "User";
 
                 modelBuilder.GridBuilder
                     .AddField(u => u.FirstName)
@@ -50,6 +52,7 @@ namespace Deviser.Modules.UserManagement
 
                 modelBuilder.AddCustomForm<PasswordReset>("PasswordReset", formBuilder =>
                 {
+                    formBuilder.Title = "Password Reset";
                     formBuilder
                         .AddKeyField(f => f.Id)
                         .AddField(f => f.CurrentPassword, option =>
@@ -66,7 +69,6 @@ namespace Deviser.Modules.UserManagement
 
                     formBuilder.SetFormOption(formOption =>
                     {
-                        formOption.FormTitle = "Password Reset";
                         formOption.SaveButtonText = "Reset Password";
                     });
 

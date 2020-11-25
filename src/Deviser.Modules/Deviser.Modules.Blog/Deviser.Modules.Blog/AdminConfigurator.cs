@@ -72,6 +72,8 @@ namespace Deviser.Modules.Blog
 
             adminBuilder.Register<DTO.Post>(modelBuilder =>
             {
+                modelBuilder.GridBuilder.Title = "Posts";
+                modelBuilder.FormBuilder.Title = "Post";
 
                 modelBuilder.GridBuilder
                     .AddField(p => p.Title)

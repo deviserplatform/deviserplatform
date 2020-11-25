@@ -19,6 +19,7 @@ namespace Deviser.Modules.RecycleBin
         {
             adminBuilder.RegisterGrid<RecycleItem, RecycleAdminService>(builder =>
             {
+                builder.Title = "Recycle Bin";
                 builder
                     .AddKeyField(r => r.Id)
                     .AddField(r => r.Name, option => option.DisplayName = "Name / Title")

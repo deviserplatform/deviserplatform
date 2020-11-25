@@ -5,4 +5,5 @@ export interface TreeConfig {
     displayField: BaseField;
     parentField: BaseField;
     sortField: BaseField;
+    title: string;
 }

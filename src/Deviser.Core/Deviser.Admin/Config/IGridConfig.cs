@@ -16,6 +16,7 @@ namespace Deviser.Admin
         IDictionary<string, AdminAction> RowActions { get; }
         public Field SortField { get; set; }
         [JsonIgnore] public LambdaExpression OnSortExpression { get; set; }
+        string Title { get; set; }
         void AddField(Field field);
         void RemoveField(Field field);
     }

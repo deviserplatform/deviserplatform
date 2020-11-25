@@ -18,6 +18,11 @@ namespace Deviser.Admin.Builders
     {
         private readonly IFormConfig _formConfig;
 
+        public string Title
+        {
+            get => _formConfig.Title;
+            set => _formConfig.Title = value;
+        }
 
         public FormBuilder(IFormConfig formConfig, KeyField keyField)
         : base(formConfig.FieldConfig, formConfig.AllFormFields, keyField)

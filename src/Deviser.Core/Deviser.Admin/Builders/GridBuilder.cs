@@ -15,6 +15,12 @@ namespace Deviser.Admin.Builders
     {
         private readonly IModelConfig _modelConfig;
 
+        public string Title
+        {
+            get => _modelConfig.GridConfig.Title;
+            set => _modelConfig.GridConfig.Title = value;
+        }
+
         public GridBuilder(IModelConfig modelConfig)
         {
             //_fieldConfig = fieldConfig;

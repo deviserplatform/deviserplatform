@@ -36,6 +36,8 @@ namespace Deviser.Modules.PageManagement
 
             adminBuilder.RegisterTreeAndForm<PageViewModel, PageManagementAdminService>(builder =>
             {
+                builder.TreeBuilder.Title = "Page Management";
+                builder.FormBuilder.Title = "Page Detail";
                 builder.TreeBuilder.ConfigureTree(p => p.Id,
                     p => p.Name,
                     p => p.Parent,

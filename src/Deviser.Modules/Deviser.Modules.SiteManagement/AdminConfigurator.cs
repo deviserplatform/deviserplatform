@@ -17,7 +17,8 @@ namespace Deviser.Modules.SiteManagement
         public void ConfigureAdmin(IAdminBuilder adminBuilder)
         {
             adminBuilder.RegisterForm<SiteSettingInfo, SiteSettingAdminService>(formBuilder =>
-                {
+            {
+                formBuilder.Title = "Site Settings";
                     formBuilder
                         .AddFieldSet("General", fieldBuilder =>
                         {

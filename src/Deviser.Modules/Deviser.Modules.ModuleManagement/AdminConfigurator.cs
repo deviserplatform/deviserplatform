@@ -15,7 +15,8 @@ namespace Deviser.Modules.ModuleManagement
         {
             adminBuilder.Register<Module, ModuleAdminService>(modelBuilder =>
             {
-                modelBuilder.AdminTitle = "Content Type";
+                modelBuilder.GridBuilder.Title = "Modules";
+                modelBuilder.FormBuilder.Title = "Module";
 
                 modelBuilder.GridBuilder
                     .AddField(c => c.Label)

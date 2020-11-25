@@ -28,6 +28,7 @@ namespace Deviser.Admin
         public bool IsSortable => SortField != null && OnSortExpression != null;
         public IDictionary<string, AdminAction> RowActions { get; }
         public Field SortField { get; set; }
+        public string Title { get; set; }
         public LambdaExpression OnSortExpression { get; set; }
 
         public GridConfig()

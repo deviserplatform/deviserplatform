@@ -11,6 +11,12 @@ namespace Deviser.Admin.Builders
     {
         private readonly IModelConfig _modelConfig;
 
+        public string Title
+        {
+            get => _modelConfig.TreeConfig.Title;
+            set => _modelConfig.TreeConfig.Title = value;
+        }
+
         public TreeBuilder(IModelConfig modelConfig)
         {
             _modelConfig = modelConfig;

@@ -22,6 +22,9 @@ namespace Deviser.Modules.Language
                 var gridBuilder = builder.GridBuilder;
                 var formBuilder = builder.FormBuilder;
 
+                gridBuilder.Title = "Languages";
+                formBuilder.Title = "Language";
+
                 gridBuilder
                     .AddKeyField(r => r.CultureCode)
                     .AddField(r => r.EnglishName, option => option.DisplayName = "English Name")
