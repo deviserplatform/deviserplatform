@@ -69,7 +69,7 @@ const TREE_DATA: any[] = [
 })
 export class TreeControlComponent implements OnInit {
 
-  @Input() treeData: any[];
+  @Input() treeData: Observable<any[]>;
   @Input() keyField: string;
   @Input() childrenField: string;
   @Input() displayField: string;
@@ -120,13 +120,17 @@ export class TreeControlComponent implements OnInit {
     });
   }
   ngOnInit(): void {
-    this.dataChange.next(this.parseInputTree(this.treeData));
+    if (!this.treeData) return;
+    this.treeData.subscribe(treeData =>{
+      // this.dataChange.next(this.parseInputTree(treeData));
+      this.rebuildTreeForData(treeData);
+    });
   }
 
+  
   rebuildTreeForData(treeData: any) {
-    this.rememberExpandedTreeNodes(this.treeControl, this.expandedNodeSet);
-    this.treeData = treeData;
-    this.dataChange.next(this.parseInputTree(this.treeData));
+    this.rememberExpandedTreeNodes(this.treeControl, this.expandedNodeSet);    
+    this.dataChange.next(this.parseInputTree(treeData));
     this.expandNodesById(this.treeControl.dataNodes, Array.from(this.expandedNodeSet));
   }
 

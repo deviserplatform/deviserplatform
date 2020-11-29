@@ -102,8 +102,12 @@ namespace Deviser.Modules.PageManagement
                             option.FieldType = FieldType.TextArea;
                             option.IsRequired = false;
                         })
-                        .AddField(p => p.PageHeaderTags)
-                        .AddField(p => p.RedirectUrl);
+                        .AddField(p => p.PageHeaderTags, option =>
+                        {
+                            option.FieldType = FieldType.TextArea;
+                            option.IsRequired = false;
+                        })
+                        .AddField(p => p.RedirectUrl, option => option.IsRequired = false);
 
                     formBuilder.Property(p => p.Language)
                         .HasLookup(sp => sp.GetService<PageManagementAdminService>().GetTranslateLanguages(),

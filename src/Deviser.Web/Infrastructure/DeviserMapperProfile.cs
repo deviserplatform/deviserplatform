@@ -3,6 +3,7 @@ using Deviser.Core.Common;
 using Deviser.Core.Data.Entities;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace Deviser.Web.Infrastructure
 {
@@ -32,7 +33,7 @@ namespace Deviser.Web.Infrastructure
                             ContentTypeId = src.Id
                         })))
                 .ForMember(dest => dest.ContentTypeProperties, opt => opt.Condition(src => src.Properties != null))
-                
+
                 .ReverseMap()
                 .ForMember(dest => dest.Properties, opt => opt.MapFrom(src => src.ContentTypeProperties.Select(ctp => ctp.Property)))
                 .ForMember(dest => dest.Properties, opt => opt.Condition(src => src.ContentTypeProperties != null && src.ContentTypeProperties.All(cp => cp.Property != null)));
@@ -78,6 +79,17 @@ namespace Deviser.Web.Infrastructure
                 .ReverseMap()
                 .MaxDepth(10);
 
+            CreateMap<Page, Page>()
+                .ForMember(dest => dest.AdminPage, opt => opt.Ignore())
+                .ForMember(dest => dest.ChildPage, opt => opt.Ignore())
+                .ForMember(dest => dest.PageContent, opt => opt.Ignore())
+                .ForMember(dest => dest.PageModule, opt => opt.Ignore())
+                .ForMember(dest => dest.PageTranslation, opt => opt.Ignore())
+                .ForMember(dest => dest.PagePermissions, opt => opt.Ignore())
+                .ForMember(dest => dest.PageType, opt => opt.Ignore())
+                .ForMember(dest => dest.Parent, opt => opt.Ignore())
+                .ForMember(dest => dest.Layout, opt => opt.Ignore());
+
             CreateMap<PageType, Core.Common.DomainTypes.PageType>().ReverseMap();
 
             CreateMap<PageContentTranslation, Core.Common.DomainTypes.PageContentTranslation>().ReverseMap();
@@ -95,7 +107,9 @@ namespace Deviser.Web.Infrastructure
 
             CreateMap<PageTranslation, Core.Common.DomainTypes.PageTranslation>()
                 .ReverseMap();
-            CreateMap<PageTranslation, PageTranslation>();
+
+            CreateMap<PageTranslation, PageTranslation>()
+                .ForMember(dest => dest.Page, opt => opt.Ignore());
 
 
             CreateMap<Permission, Core.Common.DomainTypes.Permission>().ReverseMap();

@@ -294,7 +294,7 @@ namespace Deviser.Modules.PageManagement.Services
 
             if (pageViewModel.ParentId == null || pageViewModel.ParentId == Guid.Empty)
             {
-                return pageViewModel;
+                return _mapper.Map<Page>(pageViewModel);
             }
 
             if (pageViewModel.Id == Guid.Empty)
