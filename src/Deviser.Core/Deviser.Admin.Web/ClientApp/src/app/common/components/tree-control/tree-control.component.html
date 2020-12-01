@@ -7,7 +7,7 @@
     <div class="node-container" [ngClass]="getStyle(node)" draggable="true"
       (dragstart)="handleDragStart($event, node);">
       <!-- use a disabled button to provide padding for tree leaf -->
-      <div class="node-content" [ngClass]="{'selected':selectedNode === node}">
+      <div class="node-content" [ngClass]="{'selected': selectedNode && node && selectedNode.id === node.id}">
         <button disabled class="btn btn-default">&nbsp;</button>
         <div class="tree-label">
           {{node.name}}
@@ -28,11 +28,13 @@
     (click)="onNodeClick(node)">
     <div class="node-container" [ngClass]="getStyle(node)" draggable="true"
       (dragstart)="handleDragStart($event, node);">
-      <div class="node-content" [ngClass]="{'selected':selectedNode === node}">
+      <div class="node-content" [ngClass]="{'selected': selectedNode && node && selectedNode.id === node.id}">
         <button cdkTreeNodeToggle [attr.aria-label]="'toggle ' + node.id" class="btn btn-default">
-          <i class="my-icon" *ngIf="treeControl.isExpanded(node)" aria-label="My icon" [inlineSVG]="'assets/icons/chevron-down.svg' | envPath"></i>
+          <i class="my-icon" *ngIf="treeControl.isExpanded(node)" aria-label="My icon"
+            [inlineSVG]="'assets/icons/chevron-down.svg' | envPath"></i>
 
-          <i class="my-icon" *ngIf="!treeControl.isExpanded(node)" aria-label="My icon" [inlineSVG]="'assets/icons/chevron-right.svg' | envPath"></i>
+          <i class="my-icon" *ngIf="!treeControl.isExpanded(node)" aria-label="My icon"
+            [inlineSVG]="'assets/icons/chevron-right.svg' | envPath"></i>
         </button>
         <div class="tree-label">
           {{node.name}}

@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location, DOCUMENT } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { forkJoin, Observable, BehaviorSubject } from 'rxjs';
+import { forkJoin, Observable, BehaviorSubject, Subject } from 'rxjs';
 import { AlertType } from 'deviser-shared';
 import { AlertService } from 'deviser-shared';
 
@@ -40,7 +40,8 @@ export class AdminFormComponent implements OnInit {
   // childFormContexts: { [key: string]: FormContext }
 
   formType = FormType;
-  submitSubject: BehaviorSubject<FormResult> = new BehaviorSubject<any>({});
+  submitSubject: Subject<FormResult> = new Subject<any>();
+  submit$ = this.submitSubject.asObservable();
   daConfig: DAConfig;
   adminConfigType = AdminConfigType;
   activeChildConfigs: ChildConfig[];

@@ -80,7 +80,7 @@ export class AdminTreeComponent implements OnInit {
     }
 
     if (this.adminForm) {
-      this.formSubmitSubscription = this.adminForm.submitSubject.subscribe(formResult => this.onFormSubmit(formResult));
+      this.formSubmitSubscription = this.adminForm.submit$.subscribe(formResult => this.onFormSubmit(formResult));
     }
   }
 
@@ -147,7 +147,7 @@ export class AdminTreeComponent implements OnInit {
       }
 
       if (this.adminForm) {
-        this.formSubmitSubscription = this.adminForm.submitSubject.subscribe(formResult => this.onFormSubmit(formResult));
+        this.formSubmitSubscription = this.adminForm.submit$.subscribe(formResult => this.onFormSubmit(formResult));
       }
     });
   }
