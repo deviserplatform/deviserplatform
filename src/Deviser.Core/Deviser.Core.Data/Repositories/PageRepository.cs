@@ -386,9 +386,14 @@ namespace Deviser.Core.Data.Repositories
         {
             using var context = new DeviserDbContext(_dbOptions);
             using var transaction = context.Database.BeginTransaction();
-            var dbPage = _mapper.Map<Entities.Page>(page);
-            dbPage.LastModifiedDate = DateTime.Now;
-            UpdatePageTreeRecursive(context, dbPage);
+            var pageEntity = _mapper.Map<Entities.Page>(page);
+            pageEntity.LastModifiedDate = DateTime.Now;
+
+            var dbPagesDict = context.Page
+                .Include(p => p.PageTranslation)
+                .ToDictionary(p => p.Id, p => p);
+
+            UpdatePageTreeRecursive(pageEntity, dbPagesDict);
 
             context.SaveChanges();
             transaction.Commit();
@@ -759,32 +764,27 @@ namespace Deviser.Core.Data.Repositories
             return true;
         }
 
-        private static void UpdatePageTreeRecursive(DeviserDbContext context, Entities.Page page)
+        private static void UpdatePageTreeRecursive(Entities.Page pageEntity, Dictionary<Guid, Entities.Page> dbPageDict)
         {
-            if (page == null || page.Id == Guid.Empty) return;
+            if (pageEntity == null || pageEntity.Id == Guid.Empty) return;
 
-            var dbPage = context.Page
-                .Include(p => p.PageTranslation)
-                .First(p => p.Id == page.Id);
-            dbPage.PageLevel = page.PageLevel;
-            dbPage.PageOrder = page.PageOrder;
-            dbPage.ParentId = page.ParentId;
+            var dbPage = dbPageDict[pageEntity.Id];
+            dbPage.PageLevel = pageEntity.PageLevel;
+            dbPage.PageOrder = pageEntity.PageOrder;
+            dbPage.ParentId = pageEntity.ParentId;
 
-            foreach (var pageTranslation in page.PageTranslation)
+            foreach (var pageTranslation in pageEntity.PageTranslation)
             {
-                var dbPageTranslation = dbPage.PageTranslation.FirstOrDefault(pt =>
-                    pt.PageId == pageTranslation.PageId && string.Equals(pt.Locale, pageTranslation.Locale,
-                        StringComparison.InvariantCultureIgnoreCase));
+                var dbPageTranslation = dbPage.PageTranslation.First(pt => string.Equals(pt.Locale, pageTranslation.Locale, StringComparison.InvariantCultureIgnoreCase));
                 dbPageTranslation.URL = pageTranslation.URL;
             }
 
-            context.SaveChanges();
+            if (pageEntity.ChildPage == null || pageEntity.ChildPage.Count <= 0) return;
 
-            if (page.ChildPage == null || page.ChildPage.Count <= 0) return;
-
-            foreach (var child in page.ChildPage.Select((value, index) => new { index, value }))
+            foreach (var child in pageEntity.ChildPage.Select((value, index) => new { index, value }))
             {
-                UpdatePageTreeRecursive(context, child.value);
+                child.value.ParentId = dbPage.Id;
+                UpdatePageTreeRecursive(child.value, dbPageDict);
             }
         }
 
