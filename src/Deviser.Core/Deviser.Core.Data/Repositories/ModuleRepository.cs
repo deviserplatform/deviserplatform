@@ -142,7 +142,7 @@ namespace Deviser.Core.Data.Repositories
                 {
 
                     UpdateModuleViewProperties(context, moduleView);
-
+                    moduleView.ModuleId = dbModule.Id;
                     //content exist, therefore update the content 
                     context.ModuleView.Update(moduleView);
                 }

@@ -80,6 +80,14 @@ namespace Deviser.Modules.Blog.Models
         public string Slug { get; set; }
 
         [Order]
+        [FieldInfo(FieldType.TextArea)]
+        public string Summary { get; set; }
+
+        [Order]
+        [FieldInfo(FieldType.Image)]
+        public string Thumbnail { get; set; }
+
+        [Order]
         [FieldInfo(FieldType.RichText)]
         public string Content { get; set; }
 

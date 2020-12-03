@@ -52,6 +52,7 @@ namespace Deviser.Modules.ModuleManagement
                         .AddSelectField(c => c.ModuleViewType, de=>de.ControlType)
                         .AddField(c => c.ControllerName)
                         .AddField(c => c.ControllerNamespace)
+                        .AddField(c => c.ActionName)
                         .AddField(c => c.IconClass)
                         .AddField(c => c.IconImage)
                         .AddField(c => c.IsDefault)

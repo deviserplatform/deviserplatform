@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output, Inject } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, Inject, forwardRef } from '@angular/core';
 import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
 import { Image } from '../../domain-types/image';
 import { Property } from '../../domain-types/property';
@@ -6,13 +6,26 @@ import { ImageSelectorComponent } from '../image-selector/image-selector.compone
 import { ContentTypeField } from '../../domain-types/content-type-field';
 import { WINDOW } from '../../services/window.service';
 import { PageContext } from '../../domain-types/page-context';
+import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 
 @Component({
   selector: 'app-image',
   templateUrl: './image.component.html',
-  styleUrls: ['./image.component.scss']
+  styleUrls: ['./image.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => ImageComponent),
+      multi: true
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => ImageComponent),
+      multi: true
+    }
+  ]
 })
-export class ImageComponent implements OnInit {
+export class ImageComponent implements OnInit, ControlValueAccessor, Validator {
 
   @Input() set image(value: Image) {
     this._image = value
@@ -40,6 +53,9 @@ export class ImageComponent implements OnInit {
   }
   private _pageContext: PageContext;
 
+  public onTouched: () => void = () => { };
+  public onChanged: () => void = () => { };
+
   constructor(private _modalService: BsModalService,
     @Inject(WINDOW) private _window: any) {
     this.imageCropSize = {};
@@ -51,6 +67,23 @@ export class ImageComponent implements OnInit {
     else {
       this._baseUrl = this._pageContext.debugBaseUrl;
     }
+  }
+
+  validate(control: AbstractControl): ValidationErrors {
+    return this.image ? null : { invalidForm: { valid: false, message: "Image field is mandatory" } };
+  }
+
+  writeValue(obj: any): void {
+    this.image = JSON.parse(obj) as Image;
+  }
+  registerOnChange(fn: any): void {
+    this.onChanged = fn;
+  }
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+  setDisabledState?(isDisabled: boolean): void {
+    
   }
 
   ngOnInit(): void {

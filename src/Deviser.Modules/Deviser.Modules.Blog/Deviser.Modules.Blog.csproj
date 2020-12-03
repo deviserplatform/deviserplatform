@@ -12,8 +12,8 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Deviser.Core\Deviser.Admin.Web\Deviser.Admin.Web.csproj" />
-    <ProjectReference Include="..\..\..\Deviser.Core\Deviser.Admin\Deviser.Admin.csproj" />
-    <ProjectReference Include="..\..\..\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj" />
+    <ProjectReference Include="..\..\Deviser.Core\Deviser.Admin.Web\Deviser.Admin.Web.csproj" />
+    <ProjectReference Include="..\..\Deviser.Core\Deviser.Admin\Deviser.Admin.csproj" />
+    <ProjectReference Include="..\..\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj" />
   </ItemGroup>
 </Project>

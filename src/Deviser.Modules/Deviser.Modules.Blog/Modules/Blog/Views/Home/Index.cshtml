@@ -1,0 +1,30 @@
+@using Deviser.Core.Common.DomainTypes
+@using Newtonsoft.Json
+@model ICollection<Deviser.Modules.Blog.Models.Post>
+
+@{
+    ViewData["Title"] = "Index";
+    //Layout = "~/_Layout.cshtml";
+}
+
+@foreach (var post in Model)
+{
+    var image = !string.IsNullOrEmpty(post.Thumbnail) ? JsonConvert.DeserializeObject<Image>(post.Thumbnail) : new Image();
+    <a dev-module="Blog" dev-controller="Home" dev-action="Post" dev-route-slug="@post.Slug">
+        <div class="card mb-3">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="@image.ImageUrl" class="card-img" alt="@image.ImageAltText">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">@post.Title</h5>
+                        <p class="card-text">@Html.Raw(post.Summary)</p>
+                        <p class="card-text"><small class="text-muted">@post.CreatedOn.ToString("MMM dd, yyyy") | @post.CreatedBy</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+}
+

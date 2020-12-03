@@ -225,6 +225,10 @@ namespace Deviser.Web.DependencyInjection
                     libraryPath = Path.GetFullPath(
                         Path.Combine(hostEnvironment.ContentRootPath, "..", "Deviser.Themes", "Deviser.Themes.Skyline"));
                     options.FileProviders.Add(new PhysicalFileProvider(libraryPath));
+
+                    libraryPath = Path.GetFullPath(
+                        Path.Combine(hostEnvironment.ContentRootPath, "..", "Deviser.Modules", "Deviser.Modules.Blog"));
+                    options.FileProviders.Add(new PhysicalFileProvider(libraryPath));
                 });
             }
 

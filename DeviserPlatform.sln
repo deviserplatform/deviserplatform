@@ -45,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.ContactForm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Admin", "src\Deviser.Core\Deviser.Admin\Deviser.Admin.csproj", "{4D9DBEDF-D8F5-49EF-B98E-D345F1F4D8FB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.Blog", "src\Deviser.Modules\Deviser.Modules.Blog\Deviser.Modules.Blog\Deviser.Modules.Blog.csproj", "{4725F1FF-6BBD-4D8C-AB1F-3C4145EAFA43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.Blog", "src\Deviser.Modules\Deviser.Modules.Blog\Deviser.Modules.Blog.csproj", "{4725F1FF-6BBD-4D8C-AB1F-3C4145EAFA43}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Admin.Web", "src\Deviser.Core\Deviser.Admin.Web\Deviser.Admin.Web.csproj", "{63AE23DB-46F5-4196-B3FF-9750CF169E61}"
 EndProject

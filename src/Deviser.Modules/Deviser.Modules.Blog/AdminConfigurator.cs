@@ -87,9 +87,12 @@ namespace Deviser.Modules.Blog
                 .AddKeyField(p => p.Id)
                 .AddField(p => p.Title)
                 .AddField(p => p.Slug)
+                .AddField(s => s.Summary)
+                .AddField(s => s.Thumbnail)
                 .AddField(s => s.Content)
                 .AddSelectField(s => s.Category, expr => expr.Name)
                 .AddInlineMultiSelectField<DTO.Tag>(s => s.Tags, expr => expr.TagName)
+                .AddField(p => p.CreatedOn, option => option.Format = "dd.MM.yyyy")
                 .AddField(p => p.CreatedBy, option => option.DisplayName="Author");
 
 

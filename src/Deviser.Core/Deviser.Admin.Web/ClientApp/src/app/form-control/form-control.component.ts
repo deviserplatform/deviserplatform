@@ -205,6 +205,11 @@ export class FormControlComponent implements OnInit {
     quill.insertEmbed(10, 'image', imageUrl);
   }
 
+  onImageSelectedOnImageField($event: Image) {
+    let imageStr = JSON.stringify($event);
+    this.form.controls[this.field.fieldNameCamelCase].patchValue(imageStr);
+  }
+
   addTagPromise = (value: string) => {
     if (this.field.fieldOption.addItemBy) {
       let fieldName = this.field.fieldOption.addItemBy.fieldNameCamelCase;
@@ -233,7 +238,7 @@ export class FormControlComponent implements OnInit {
   };
 
   // addTagPromise(value: string) {
-
+ 
   //   if (this.field.fieldOption.addItemBy) {
   //     let fieldName = this.field.fieldOption.addItemBy.fieldNameCamelCase;
   //     this._adminService
