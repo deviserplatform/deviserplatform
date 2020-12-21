@@ -8030,9 +8030,10 @@ body {
     .header .header-content .navbar-nav {
       text-transform: uppercase; }
       .header .header-content .navbar-nav .nav-item .nav-link {
-        padding: 10px 24px; }
+        padding: 10px 24px;
+        color: #ef4934; }
         .header .header-content .navbar-nav .nav-item .nav-link:hover {
-          color: #ef4934; }
+          color: #981c0c; }
       .header .header-content .navbar-nav .nav-item.active .nav-link {
         color: #ef4934; }
       .header .header-content .navbar-nav .dropdown-menu {
@@ -8309,11 +8310,53 @@ body {
     width: 100%; }
 
 /*Blog*/
-.blog-container .blog-item span {
-  color: #8b8e93; }
-
-.blog-container .blog-item .blog-img img {
-  max-width: 50%; }
+.blog-section-container {
+  display: flex;
+  flex-direction: column; }
+  .blog-section-container a {
+    text-decoration: none;
+    color: inherit; }
+  .blog-section-container .card {
+    box-shadow: 0 0.15rem 1.75rem 0 #dee2e6;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
+  .blog-section-container .blog-header-section {
+    background: url(/_content/Deviser.Themes.Skyline/images/blog-background-edit.png);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    min-height: 200px; }
+  .blog-section-container .blog-post-section {
+    padding-top: 2rem; }
+    .blog-section-container .blog-post-section .post-summary-item .content-col {
+      display: flex; }
+      .blog-section-container .blog-post-section .post-summary-item .content-col .card:hover {
+        transform: translateY(-0.1rem);
+        box-shadow: 0 0.5rem 2rem 0 #adb5bd; }
+      .blog-section-container .blog-post-section .post-summary-item .content-col .card .card-body {
+        display: flex;
+        flex-direction: column;
+        padding: 1.25rem 1.25rem 0 1.25rem; }
+        .blog-section-container .blog-post-section .post-summary-item .content-col .card .card-body .summary-content {
+          flex: 3; }
+        .blog-section-container .blog-post-section .post-summary-item .content-col .card .card-body .summary-footer {
+          flex: 1;
+          display: flex;
+          align-items: center; }
+    .blog-section-container .blog-post-section .blog-post-content {
+      padding-top: 4rem; }
+  .blog-section-container .card.tags {
+    margin-top: 2rem; }
+    .blog-section-container .card.tags a {
+      display: block;
+      float: left;
+      margin-right: 4px;
+      margin-bottom: 4px;
+      padding: 3px 6px;
+      border: 1px solid #adb5bd;
+      font-size: 13px !important;
+      border-radius: 2px; }
 
 /*Login*/
 .security-container {

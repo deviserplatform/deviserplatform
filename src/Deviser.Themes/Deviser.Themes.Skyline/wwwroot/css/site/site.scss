@@ -43,9 +43,9 @@ body {
     font-size: 0.96rem;
     line-height: 1.8rem;
     font-weight: 300;
-    overflow-x: hidden; 
+    overflow-x: hidden;
     min-height: 80vh;
-}  
+}
 
 /*--------------------------------------------------------------
     General Elements
@@ -249,9 +249,10 @@ body {
             .nav-item {
                 .nav-link {
                     padding: 10px 24px;
+                    color: $devPrimary;
 
                     &:hover {
-                        color: $devPrimary;
+                        color: $devPrimaryDark;
                     }
                 }
 
@@ -667,222 +668,283 @@ body {
 
 
 /*Blog*/
-.blog-container {
-    .blog-item {
-        span {
-            color: $darkGrey;
+.blog-section-container {
+    display: flex;
+    flex-direction: column;
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .card {
+        box-shadow: 0 0.15rem 1.75rem 0 $gray-300;
+        overflow: hidden;
+        position: relative;
+        transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .blog-header-section {
+        background: url(/_content/Deviser.Themes.Skyline/images/blog-background-edit.png);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        min-height: 200px;
+    }
+
+    .blog-post-section {
+        padding-top: 2rem;
+
+        .post-summary-item {
+            .card {
+                &:hover {
+                    transform: translateY(-0.1rem);
+                    box-shadow: 0 0.5rem 2rem 0 $gray-500;
+                }
+
+                .content-col {
+                    display: flex;
+
+                    .card-body {
+                        display: flex;
+                        flex-direction: column;
+                        padding: 1.25rem 1.25rem 0 1.25rem;
+
+                        .summary-content {
+                            flex: 3;
+                        }
+
+                        .summary-footer {
+                            flex: 1;
+                            display: flex;
+                            align-items: center;
+                        }
+                    }
+                }
+            }
+
+            .blog-post-content {
+                padding-top: 4rem;
+            }
         }
 
-        .blog-img {
-            img {
-                max-width: 50%;
+        .card.tags {
+            margin-top: 2rem;
+
+            a {
+                display: block;
+                float: left;
+                margin-right: 4px;
+                margin-bottom: 4px;
+                padding: 3px 6px;
+                border: 1px solid $gray-500;
+                font-size: 13px !important;
+                border-radius: 2px;
             }
         }
     }
-}
+    /*Login*/
+    .security-container {
+        padding: 20px;
 
-/*Login*/
-.security-container {
-    padding: 20px;
-
-    .validation-summary-errors {
-        ul {
-            list-style: none;
-            padding: 0;
+        .validation-summary-errors {
+            ul {
+                list-style: none;
+                padding: 0;
+            }
         }
-    }
 
-    .btn-primary {
-        width: 100%;
-    }
-
-    .login-right {
-        .btn {
+        .btn-primary {
             width: 100%;
         }
 
-        .btn.facebook {
-            color: $white;
-            background-color: $facebookLight;
-            border-color: $facebookLight;
+        .login-right {
+            .btn {
+                width: 100%;
+            }
 
-            &:hover {
+            .btn.facebook {
                 color: $white;
-                background-color: $facebook;
-                border-color: $facebook;
+                background-color: $facebookLight;
+                border-color: $facebookLight;
+
+                &:hover {
+                    color: $white;
+                    background-color: $facebook;
+                    border-color: $facebook;
+                }
+            }
+
+            .btn.google {
+                color: $white;
+                background-color: $googleLight;
+                border-color: $googleLight;
+
+                &:hover {
+                    color: $white;
+                    background-color: $google;
+                    border-color: $google;
+                }
+            }
+
+            .btn.twitter {
+                color: $white;
+                background-color: $twitterLight;
+                border-color: $twitterLight;
+
+                &:hover {
+                    color: $white;
+                    background-color: $twitter;
+                    border-color: $twitter;
+                }
             }
         }
 
-        .btn.google {
-            color: $white;
-            background-color: $googleLight;
-            border-color: $googleLight;
+        .forget-password {
+            padding-top: 20px;
+        }
+    }
 
-            &:hover {
-                color: $white;
-                background-color: $google;
-                border-color: $google;
+    .footer {
+        padding: 20px 0;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+
+        a {
+            color: $white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .social-icons {
+            font-weight: unset;
+            font-size: 3rem;
+            margin: 1% 0;
+        }
+
+        p {
+            color: $lightGrey;
+            padding: 0;
+            margin: 0;
+        }
+    }
+
+
+    @include media-breakpoint-down(md) {
+        .header {
+            height: 90px;
+        }
+
+        .content-wrapper {
+            padding-top: 90px;
+
+            &.page-content-logged-in {
+                padding-top: 140px;
             }
         }
 
-        .btn.twitter {
-            color: $white;
-            background-color: $twitterLight;
-            border-color: $twitterLight;
+        .hamburger {
+            display: block;
+        }
 
-            &:hover {
-                color: $white;
-                background-color: $twitter;
-                border-color: $twitter;
+        .header {
+
+            .header-top {
+                display: none;
             }
-        }
-    }
 
-    .forget-password {
-        padding-top: 20px;
-    }
-}
+            .navbar-brand {
+                img {
+                    width: 240px;
+                    padding: 20px;
+                }
+            }
 
-.footer {
-    padding: 20px 0;
-    width: 100%;
-    position: absolute;
-    bottom: 0;
+            .navbar-nav {
+                .nav-item {
+                    .nav-link {
+                        padding: 10px 0;
+                    }
+                }
 
-    a {
-        color: $white;
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .social-icons {
-        font-weight: unset;
-        font-size: 3rem;
-        margin: 1% 0;
-    }
-
-    p {
-        color: $lightGrey;
-        padding: 0;
-        margin: 0;
-    }
-}
-
-
-@include media-breakpoint-down(md) {
-    .header {
-        height: 90px;
-    }
-
-    .content-wrapper {
-        padding-top: 90px;
-
-        &.page-content-logged-in {
-            padding-top: 140px;
-        }
-    }
-
-    .hamburger {
-        display: block;
-    }
-
-    .header {
-
-        .header-top {
-            display: none;
-        }
-
-        .navbar-brand {
-            img {
-                width: 240px;
                 padding: 20px;
             }
         }
 
-        .navbar-nav {
-            .nav-item {
-                .nav-link {
-                    padding: 10px 0;
-                }
-            }
+        .banner {
+            background-size: 150%;
+        }
 
-            padding: 20px;
+        .content-wrapper {
+            .img-statistics {
+                width: 100%;
+            }
+        }
+
+        .swiper-container {
+            height: 40vh;
         }
     }
 
-    .banner {
-        background-size: 150%;
-    }
 
-    .content-wrapper {
-        .img-statistics {
-            width: 100%;
-        }
-    }
-
-    .swiper-container {
-        height: 40vh;
-    }
-}
+    @include media-breakpoint-down(sm) {
 
 
-@include media-breakpoint-down(sm) {
+        .banner {
+            background-size: 500%;
+            min-height: 480px;
 
+            .banner-overlay {
+                .banner-container {
+                    position: relative;
 
-    .banner {
-        background-size: 500%;
-        min-height: 480px;
-
-        .banner-overlay {
-            .banner-container {
-                position: relative;
-
-                .banner-content {
-                    transform: translateY(14%);
+                    .banner-content {
+                        transform: translateY(14%);
+                    }
                 }
-            }
 
-            .banner-text {
+                .banner-text {
 
 
-                h1 {
-                    font-size: 1.8rem;
+                    h1 {
+                        font-size: 1.8rem;
+                    }
                 }
-            }
 
-            .banner-calls {
+                .banner-calls {
 
-                .banner-call {
-                    padding: 10px 0;
+                    .banner-call {
+                        padding: 10px 0;
+                    }
                 }
             }
         }
-    }
 
-    .content-wrapper {
+        .content-wrapper {
 
 
-        .img-statistics, .about-image {
-            width: 60%;
-            padding: 40px;
-        }
+            .img-statistics, .about-image {
+                width: 60%;
+                padding: 40px;
+            }
 
-        .why-deviser, .about-deviser, .about-vision, .about-mission {
-            h1, h2 {
-                text-align: center;
+            .why-deviser, .about-deviser, .about-vision, .about-mission {
+                h1, h2 {
+                    text-align: center;
+                }
+            }
+
+            .why-deviser, .about-deviser, .about-mission {
+                flex-direction: column-reverse
             }
         }
 
-        .why-deviser, .about-deviser, .about-mission {
-            flex-direction: column-reverse
+        .swiper-container {
+            height: 30vh;
+
+            h1, .h1 {
+                font-size: 1.8rem;
+            }
         }
     }
-
-    .swiper-container {
-        height: 30vh;
-
-        h1, .h1 {
-            font-size: 1.8rem;
-        }
-    }
-}

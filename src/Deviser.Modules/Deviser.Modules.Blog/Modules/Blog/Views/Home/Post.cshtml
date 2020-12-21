@@ -4,15 +4,18 @@
 
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Sites/Default/Themes/Skyline/ModuleDefault.cshtml";
+    Layout = "_PostLayout";
 }
 
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <h5 class="card-title">@Model.Title</h5>
-            <p class="card-text"><small class="text-muted">@Model.CreatedOn.ToString("MMM dd, yyyy") | @Model.CreatedBy</small></p>
-            <p class="card-text">@Html.Raw(Model.Content)</p>
+
+<div class="blog-post-content card">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2 class="card-title">@Model.Title</h2>
+                <p class="card-text"><small class="text-muted">@Model.CreatedOn.ToString("MMM dd, yyyy") | @Model.CreatedBy</small></p>
+                <p class="card-text">@Html.Raw(Model.Content)</p>
+            </div>
         </div>
     </div>
 </div>

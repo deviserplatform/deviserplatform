@@ -17,6 +17,8 @@ namespace Deviser.Modules.Blog.DTO
 
         public List<Post> Posts { get; set; }
 
+        public int PostCount { get; set; }
+
         public int CompareTo(Category other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -99,13 +101,13 @@ namespace Deviser.Modules.Blog.DTO
     {
         public Guid Id { get; set; }
         public string TagName { get; set; }
+        public int PostCount { get; set; }
     }
 
 
     public class Comments
     {
         public Guid Id { get; set; }
-        public string UserName { get; set; }
         public string Comment { get; set; }
         public DateTime CreatedOn { get; set; }
         public bool IsApproved { get; set; }

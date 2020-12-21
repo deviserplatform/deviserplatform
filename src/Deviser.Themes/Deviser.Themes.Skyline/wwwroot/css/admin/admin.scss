@@ -70,14 +70,17 @@ html, body {
         width: 280px
     }
 
-    .admin-body {
+    .admin-container {
         margin-left: 280px;
         width: 100%;
 
-        .admin-content {
+        .admin-body {
             padding-top: 30px;
             padding-left: 20px;
             padding-bottom: 80px;
+            .admin-header{
+                margin-bottom: 1rem;
+            }
         }
 
         .admin-footer {
