@@ -1,8 +1,9 @@
-﻿using Deviser.Admin.Data;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Deviser.Admin.Config;
 using Deviser.Admin.Config.Filters;
+using Deviser.Admin.Data;
 
-namespace Deviser.Admin.Config
+namespace Deviser.Admin.Services
 {
     public interface IAdminService<TModel> //: IAdminService
         where TModel : class

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Deviser.Admin.Config;
 using Deviser.Admin.Config.Filters;
 using Deviser.Admin.Data;
 
-namespace Deviser.Admin.Config
+namespace Deviser.Admin.Services
 {
     public interface IAdminGridService<TModel>
         where TModel : class

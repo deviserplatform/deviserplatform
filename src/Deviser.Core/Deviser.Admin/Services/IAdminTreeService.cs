@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using Deviser.Admin.Data;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Deviser.Admin.Config;
 
-
-namespace Deviser.Admin.Config
+namespace Deviser.Admin.Services
 {
     public interface IAdminTreeService<TModel> //: IAdminService
         where TModel : class

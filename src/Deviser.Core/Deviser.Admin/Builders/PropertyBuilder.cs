@@ -86,7 +86,7 @@ namespace Deviser.Admin.Builders
     }
 
     public PropertyBuilder<TModel, TProperty> HasLookup<TRelatedModel, TKey>(
-        Expression<Func<IServiceProvider, IList<TRelatedModel>>> lookupExpression,
+        Expression<Func<IServiceProvider, ICollection<TRelatedModel>>> lookupExpression,
         Expression<Func<TRelatedModel, TKey>> lookUpKeyExpression,
         Expression<Func<TRelatedModel, string>> lookupDisplayExpression)
         where TRelatedModel : class
@@ -98,10 +98,10 @@ namespace Deviser.Admin.Builders
     }
 
     public PropertyBuilder<TModel, TProperty> HasMatrixLookup<TRowType, TColumnType, TKey>(
-        Expression<Func<IServiceProvider, IList<TRowType>>> rowExpression,
+        Expression<Func<IServiceProvider, ICollection<TRowType>>> rowExpression,
         Expression<Func<TRowType, TKey>> rowKeyExpression,
         Expression<Func<TRowType, string>> rowDisplayExpression,
-        Expression<Func<IServiceProvider, IList<TColumnType>>> colExpression,
+        Expression<Func<IServiceProvider, ICollection<TColumnType>>> colExpression,
         Expression<Func<TColumnType, TKey>> colKeyExpression,
         Expression<Func<TColumnType, string>> colDisplayExpression)
         where TRowType : class
@@ -116,7 +116,7 @@ namespace Deviser.Admin.Builders
     }
 
     public PropertyBuilder<TModel, TProperty> HasLookup<TRelatedModel, TKey, TFilterProperty>(
-        Expression<Func<IServiceProvider, TFilterProperty, IList<TRelatedModel>>> lookupExpression,
+        Expression<Func<IServiceProvider, TFilterProperty, ICollection<TRelatedModel>>> lookupExpression,
         Expression<Func<TRelatedModel, TKey>> lookUpKeyExpression,
         Expression<Func<TRelatedModel, string>> lookupDisplayExpression,
         Expression<Func<TModel, TFilterProperty>> lookupFilterExpression)

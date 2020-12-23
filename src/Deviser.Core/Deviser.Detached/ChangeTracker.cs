@@ -190,9 +190,10 @@ namespace Deviser.Detached
 
             //var obj = _context.Entry(entity).CurrentValues.ToObject();
 
-            
 
-            var contextSet = typeof(DbContext).GetMethod("Set").MakeGenericMethod(clrType).Invoke(_context, null);
+            var method = typeof(DbContext).GetMethods().First(m => m.Name == "Set" && m.GetParameters().Length == 0 && m.IsGenericMethod);
+
+            var contextSet = method.MakeGenericMethod(clrType).Invoke(_context, null);
             var localValue = contextSet.GetType().GetProperty("Local").GetValue(contextSet);
 
             var obj = ((IEnumerable<object>)localValue).FirstOrDefault(local => _entityManager.AreKeysIdentical(local, entity));

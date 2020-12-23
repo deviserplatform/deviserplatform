@@ -334,8 +334,8 @@ namespace Deviser.Admin.Services
                     return await adminService.CreateItem(modelToAdd);
                 case AdminConfigType.TreeAndForm when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminTreeService<TModel> adminService:
                     return await adminService.CreateItem(modelToAdd);
-                case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminTreeService<TModel> adminService:
-                    return await adminService.CreateItem(modelToAdd);
+                case AdminConfigType.FormOnly when _serviceProvider.GetService(adminConfig.AdminServiceType) is IAdminFormService<TModel> adminService:
+                    return await adminService.SaveModel(modelToAdd);
                 default:
                     throw new InvalidOperationException(string.Format(Resources.AdminServiceNotFoundInvalidOperation, typeof(TModel)));
             }

@@ -273,7 +273,7 @@ namespace Deviser.Admin.Data
             var queryableData = dbSet.AsQueryable();
             var adminConfig = GetAdminConfig(modelType);
 
-            var filterExpression = CreatePrimaryKeyFilter(adminConfig, new List<string> { itemId });
+            var filterExpression = CreatePrimaryKeyFilter(adminConfig.EntityConfig.PrimaryKey, new List<string> { itemId });
 
             var whereCallExpression = ExpressionHelper.GetWhereExpression(entityClrType, queryableData.Expression, filterExpression);
 
@@ -555,16 +555,14 @@ namespace Deviser.Admin.Data
             return m2mFields;
         }
 
-        private LambdaExpression CreatePrimaryKeyFilter(IAdminConfig adminConfig, List<string> keyValues)
+        public static LambdaExpression CreatePrimaryKeyFilter(IKey primaryKey, List<string> keyValues)
         {
-            if (adminConfig == null)
+            if (primaryKey == null)
             {
                 return null;
             }
-
-            var key = adminConfig.EntityConfig.PrimaryKey;
             //return CreateFilter(key.Properties, keyValues, key.DeclaringEntityType.ClrType);
-            return BuildObjectLambda(key.Properties, keyValues, key.DeclaringEntityType.ClrType);
+            return BuildObjectLambda(primaryKey.Properties, keyValues, primaryKey.DeclaringEntityType.ClrType);
         }
 
         private static LambdaExpression BuildObjectLambda(IReadOnlyList<IProperty> keyProperties, List<string> keyValues, Type entityClrType)
