@@ -26,70 +26,70 @@ namespace Deviser.Modules.Blog
             _mapper = BlogMapper.Mapper;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            return await Post();
-        }
+        //public async Task<IActionResult> Index()
+        //{
+        //    return await Post();
+        //}
 
-        [Route("modules/[area]/[controller]/Post/Category/{categoryName?}")]
-        [Route("modules/[area]/[controller]/Post/Tag/{tagName?}")]
-        public async Task<IActionResult> Post(string categoryName = null, string tagName = null)
-        {
-            var dbPosts = await _dbContext.Posts
-                .Include(p => p.Category)
-                .Include(p => p.PostTags)
-                .ToListAsync();
-            var dbCategories = await _dbContext.Categories.Include(c => c.Posts).ToListAsync();
-            var dbTags = await _dbContext.Tags.Include(t => t.PostTags).ToListAsync();
+        //[Route("modules/[area]/[controller]/Post/Category/{categoryName?}")]
+        //[Route("modules/[area]/[controller]/Post/Tag/{tagName?}")]
+        //public async Task<IActionResult> Post(string categoryName = null, string tagName = null)
+        //{
+        //    var dbPosts = await _dbContext.Posts
+        //        .Include(p => p.Category)
+        //        .Include(p => p.PostTags)
+        //        .ToListAsync();
+        //    var dbCategories = await _dbContext.Categories.Include(c => c.Posts).ToListAsync();
+        //    var dbTags = await _dbContext.Tags.Include(t => t.PostTags).ToListAsync();
 
-            if (!string.IsNullOrEmpty(categoryName))
-            {
-                dbPosts = dbPosts.Where(p =>
-                    string.Equals(p.Category.Name, categoryName, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            }
+        //    if (!string.IsNullOrEmpty(categoryName))
+        //    {
+        //        dbPosts = dbPosts.Where(p =>
+        //            string.Equals(p.Category.Name, categoryName, StringComparison.InvariantCultureIgnoreCase)).ToList();
+        //    }
 
-            if (!string.IsNullOrEmpty(tagName))
-            {
-                dbPosts = dbPosts.Where(p =>
-                    p.Tags.Any(t => string.Equals(t.TagName, tagName, StringComparison.InvariantCultureIgnoreCase))).ToList();
-            }
+        //    if (!string.IsNullOrEmpty(tagName))
+        //    {
+        //        dbPosts = dbPosts.Where(p =>
+        //            p.Tags.Any(t => string.Equals(t.Name, tagName, StringComparison.InvariantCultureIgnoreCase))).ToList();
+        //    }
 
-            var posts = _mapper.Map<ICollection<Post>>(dbPosts);
-            var categories = new List<Category>();
-            var tags = new List<Tag>();
+        //    var posts = _mapper.Map<ICollection<Post>>(dbPosts);
+        //    var categories = new List<Category>();
+        //    var tags = new List<Tag>();
 
-            foreach (var dbCategory in dbCategories)
-            {
-                var category = _mapper.Map<Category>(dbCategory);
-                category.PostCount = dbCategory.Posts?.Count ?? 0;
-                categories.Add(category);
-            }
+        //    foreach (var dbCategory in dbCategories)
+        //    {
+        //        var category = _mapper.Map<Category>(dbCategory);
+        //        category.PostCount = dbCategory.Posts?.Count ?? 0;
+        //        categories.Add(category);
+        //    }
 
-            foreach (var dbTag in dbTags)
-            {
-                var tag = _mapper.Map<Tag>(dbTag);
-                tag.PostCount = dbTag.PostTags?.Count ?? 0;
-                tags.Add(tag);
-            }
+        //    foreach (var dbTag in dbTags)
+        //    {
+        //        var tag = _mapper.Map<Tag>(dbTag);
+        //        tag.PostCount = dbTag.PostTags?.Count ?? 0;
+        //        tags.Add(tag);
+        //    }
 
-            ViewBag.Categories = categories;
-            ViewBag.Tags = tags;
-            return View("Index", posts);
-        }
+        //    ViewBag.Categories = categories;
+        //    ViewBag.Tags = tags;
+        //    return View("Index", posts);
+        //}
 
-        [Route("modules/[area]/[controller]/Post/{slug}")]
-        public IActionResult Post(string slug)
-        {
-            if (string.IsNullOrEmpty(slug))
-                return NotFound();
+        //[Route("modules/[area]/[controller]/Post/{slug}")]
+        //public IActionResult Post(string slug)
+        //{
+        //    if (string.IsNullOrEmpty(slug))
+        //        return NotFound();
 
-            var post = _dbContext.Posts.ToList().FirstOrDefault(p =>
-                string.Equals(slug, p.Slug, StringComparison.InvariantCultureIgnoreCase));
+        //    var post = _dbContext.Posts.ToList().FirstOrDefault(p =>
+        //        string.Equals(slug, p.Slug, StringComparison.InvariantCultureIgnoreCase));
 
-            if (post == null)
-                return NotFound();
+        //    if (post == null)
+        //        return NotFound();
 
-            return View(post);
-        }
+        //    return View(post);
+        //}
     }
 }

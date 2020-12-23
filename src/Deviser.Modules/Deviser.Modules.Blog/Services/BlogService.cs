@@ -2,40 +2,48 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AutoMapper;
 using Deviser.Admin.Config;
+using Deviser.Admin.Config.Filters;
+using Deviser.Admin.Data;
+using Deviser.Admin.Services;
 using Deviser.Modules.Blog.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace Deviser.Modules.Blog.Services
 {
-    public class BlogService
+    public class BlogService : IAdminService<DTO.Blog>
     {
+        private readonly AdminService<DTO.Blog, Models.Blog> _adminService;
+        private readonly IMapper _blogMapper;
         private readonly BlogDbContext _dbContext;
 
-        public BlogService(BlogDbContext dbContext)
+        public BlogService(BlogDbContext dbContext,
+            IHttpContextAccessor httpContextAccessor,
+            IMapper mapper)
         {
+            _blogMapper = BlogMapper.Mapper;
             _dbContext = dbContext;
+            _adminService = new AdminService<DTO.Blog, Models.Blog>(_dbContext, dbContext.Blogs, _blogMapper);
         }
 
-        public async Task<ValidationResult> ValidateSlug(string slug)
+        public async Task<PagedResult<DTO.Blog>> GetAll(int pageNo, int pageSize, string orderByProperties,
+            FilterNode filter = null) => await _adminService.GetAll(pageNo, pageSize, orderByProperties, filter);
+
+        public async Task<DTO.Blog> GetItem(string itemId) => await _adminService.GetItem(itemId);
+
+        public async Task<IFormResult<DTO.Blog>> CreateItem(DTO.Blog item) => await _adminService.CreateItem(item);
+
+        public async Task<IFormResult<DTO.Blog>> UpdateItem(DTO.Blog item) => await _adminService.UpdateItem(item);
+
+        public async Task<IAdminResult<DTO.Blog>> DeleteItem(string itemId) => await _adminService.DeleteItem(itemId);
+
+        public ICollection<DTO.Blog> GetBlogs()
         {
-            var posts = await _dbContext.Posts.ToListAsync();
-            var result = posts.Any(p => p.Slug.Equals(slug, StringComparison.InvariantCultureIgnoreCase)) ? ValidationResult.Failed(new ValidationError() { Code = "Slug not available!", Description = "This slug has already been used" }) : ValidationResult.Success;
-            return await Task.FromResult(result);
+            var blogs = _dbContext.Blogs.ToList();
+            return _blogMapper.Map<ICollection<DTO.Blog>>(blogs);
         }
 
-        public async Task<string> GetSlugFor(string title)
-        {
-            var slugCandidate = Regex.Replace(title, @"\s+", "");
-            var posts = await _dbContext.Posts.ToListAsync();
-            while (posts.Any(p => p.Slug.Equals(slugCandidate, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                slugCandidate += "1";
-            }
-
-            return await Task.FromResult(slugCandidate);
-        }
     }
 }

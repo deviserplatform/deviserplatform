@@ -3,10 +3,22 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
-using Deviser.Admin.Config;
+using Deviser.Core.Common.DomainTypes;
+using FieldType = Deviser.Admin.Config.FieldType;
 
 namespace Deviser.Modules.Blog.DTO
 {
+    public class Blog
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public ICollection<Post> Posts { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public Guid CreatedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
+        public Guid ModifiedBy { get; set; }
+    }
+
     public class Category : IComparable<Category>
     {
         [Order]
@@ -27,31 +39,6 @@ namespace Deviser.Modules.Blog.DTO
             if (idComparison != 0) return idComparison;
             return string.Compare(Name, other.Name, StringComparison.Ordinal);
         }
-
-        //public override string ToString()
-        //{
-        //    return Name;
-        //}
-
-        //public override string ToString()
-        //{
-        //    return this.Name;
-        //}
-
-        //public override bool Equals(object? obj)
-        //{
-        //    if (obj == null)
-        //    {
-        //        return false;
-        //    }
-
-        //    if (obj is Category category)
-        //    {
-        //        return category.Name?.Equals(this.Name, StringComparison.Ordinal) ?? false;
-        //    }
-
-        //    return obj.Equals(this);
-        //}
     }
 
     public class Post
@@ -78,7 +65,19 @@ namespace Deviser.Modules.Blog.DTO
         public string Content { get; set; }
 
         [Order]
+        public string Status { get; set; }
+
+        [Order]
+        public bool IsCommentEnabled { get; set; }
+
+        [Order]
+        public Guid BlogId { get; set; }
+
+        [Order]
         public Guid CategoryId { get; set; }
+
+        [Order]
+        public Blog Blog { get; set; }
 
         [Order]
         public Category Category { get; set; }
@@ -89,18 +88,28 @@ namespace Deviser.Modules.Blog.DTO
         [Order]
         public List<Comments> Comments { get; set; }
 
+        public User CreatedByUser { get; set; }
+
+        public User ModifiedByUser { get; set; }
+
         [Order]
         public DateTime CreatedOn { get; set; }
 
         [Order]
-        public string CreatedBy { get; set; }
+        public Guid CreatedBy { get; set; }
+        
+        [Order]
+        public DateTime ModifiedOn { get; set; }
+        
+        [Order]
+        public Guid ModifiedBy { get; set; }
 
     }
 
     public class Tag
     {
         public Guid Id { get; set; }
-        public string TagName { get; set; }
+        public string Name { get; set; }
         public int PostCount { get; set; }
     }
 
@@ -108,6 +117,7 @@ namespace Deviser.Modules.Blog.DTO
     public class Comments
     {
         public Guid Id { get; set; }
+        public string UserName { get; set; }
         public string Comment { get; set; }
         public DateTime CreatedOn { get; set; }
         public bool IsApproved { get; set; }

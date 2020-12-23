@@ -5,85 +5,79 @@ using System.Text;
 using AutoMapper;
 using Deviser.Admin;
 using Deviser.Admin.Extensions;
+using Deviser.Core.Data.Repositories;
 using Deviser.Modules.Blog.Models;
 using Deviser.Modules.Blog.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Deviser.Modules.Blog
 {
-    public class AdminConfigurator : IAdminConfigurator<BlogDbContext>
+    public class AdminConfigurator : IAdminConfigurator
     {
-        public void ConfigureAdmin(IAdminSite adminSite)
-        {
-            //adminSite.SiteName = "TestAdmin";
-            ////Register Student model, fields are automatically identified
-            //adminSite.Register<Tag>();
-
-
-            ////Register Student model by specifying the fields to be included with custom configuration
-            //adminSite.Register<Post>(config =>
-            //{
-            //    config.FieldConfig
-            //    .AddField(s => s.Title)
-            //    .AddField(s => s.Content, new FieldOption { ValidationType = ValidationType.UserExist })
-            //    .AddField(s => s.PostTags)
-            //    .AddField(s => s.CreatedOn)
-            //    .AddField(s => s.CreatedBy);
-
-            //    config.Property(s => s.Content)
-            //    .ValidateOn(p => p.Title == "Test");
-
-
-
-            //    config.AddChildConfig(s => s.PostTags, (childConfig) =>
-            //      {
-            //          childConfig.FieldConfig.AddField(s => s.Capacity);
-            //      });
-            //});
-        }
-
         public void ConfigureAdmin(IAdminBuilder adminBuilder)
         {
             adminBuilder.MapperConfiguration = BlogMapper.MapperConfiguration;
 
-            adminBuilder.Register<DTO.Post>(modelBuilder =>
+            adminBuilder.Register<DTO.Blog, BlogService>(modelBuilder =>
+            {
+                modelBuilder.GridBuilder
+                    .AddField(p => p.Name);
+
+                modelBuilder.FormBuilder
+                    .AddKeyField(p => p.Id)
+                    .AddField(p => p.Name);
+            });
+
+            adminBuilder.Register<DTO.Post, PostService>(modelBuilder =>
             {
                 modelBuilder.GridBuilder.Title = "Posts";
                 modelBuilder.FormBuilder.Title = "Post";
 
                 modelBuilder.GridBuilder
+                    .AddField(p => p.Blog)
                     .AddField(p => p.Title)
-                    
                     .AddField(p => p.Category)
                     .AddField(p => p.Tags)
                     .AddField(p => p.CreatedOn, option => option.Format = "dd.MM.yyyy")
-                    .AddField(p => p.CreatedBy);
+                    .AddField(p => p.CreatedBy, option => option.DisplayName = "Author");
 
                 modelBuilder.FormBuilder
-                .AddKeyField(p => p.Id)
-                .AddField(p => p.Title)
-                .AddField(p => p.Slug)
-                .AddField(s => s.Summary)
-                .AddField(s => s.Thumbnail)
-                .AddField(s => s.Content)
-                .AddSelectField(s => s.Category, expr => expr.Name)
-                .AddInlineMultiSelectField<DTO.Tag>(s => s.Tags, expr => expr.TagName)
-                .AddField(p => p.CreatedOn, option => option.Format = "dd.MM.yyyy")
-                .AddField(p => p.CreatedBy, option => option.DisplayName="Author");
+                    .AddKeyField(p => p.Id)
+                    .AddSelectField(p => p.Blog)
+                    .AddField(p => p.Title)
+                    .AddField(p => p.Slug)
+                    .AddField(s => s.Summary)
+                    .AddField(s => s.Thumbnail)
+                    .AddField(s => s.Content)
+                    .AddSelectField(s => s.Category, expr => expr.Name)
+                    .AddInlineMultiSelectField<DTO.Tag>(s => s.Tags, expr => expr.Name)
+                    .AddField(p => p.CreatedOn, option => option.Format = "dd.MM.yyyy");
 
 
                 modelBuilder.FormBuilder.SetCustomValidationFor(c => c.Slug,
                     (sp, slug) =>
-                        sp.GetService<BlogService>().ValidateSlug(slug));
+                        sp.GetService<PostService>().ValidateSlug(slug));
 
                 modelBuilder.FormBuilder.Property(c => c.Slug).AutoFillBasedOn(p => p.Title,
                     (sp, title) =>
-                        sp.GetService<BlogService>().GetSlugFor(title));
+                        sp.GetService<PostService>().GetSlugFor(title));
 
                 modelBuilder.FormBuilder
                     .Property(p => p.Tags)
-                    .AddItemBy(t => t.TagName);
-                    
+                    .AddItemBy(t => t.Name);
+
+                modelBuilder.FormBuilder.Property(u => u.Blog).HasLookup(sp => sp.GetService<BlogService>().GetBlogs(),
+                    ke => ke.Id,
+                    de => de.Name);
+
+                modelBuilder.FormBuilder.Property(u => u.Category).HasLookup(sp => sp.GetService<CategoryService>().GetCategories(),
+                    ke => ke.Id,
+                    de => de.Name);
+
+                modelBuilder.FormBuilder.Property(u => u.Tags).HasLookup(sp => sp.GetService<TagService>().GetTags(),
+                    ke => ke.Id,
+                    de => de.Name);
+
 
                 modelBuilder.AddChildConfig(s => s.Comments, (childForm) =>
                   {
@@ -96,7 +90,7 @@ namespace Deviser.Modules.Blog
                   });
             });
 
-            adminBuilder.Register<DTO.Category>(modelBuilder =>
+            adminBuilder.Register<DTO.Category, CategoryService>(modelBuilder =>
             {
 
                 modelBuilder.GridBuilder
@@ -107,15 +101,15 @@ namespace Deviser.Modules.Blog
                     .AddField(p => p.Name);
             });
 
-            adminBuilder.Register<DTO.Tag>(modelBuilder =>
+            adminBuilder.Register<DTO.Tag, TagService>(modelBuilder =>
             {
 
                 modelBuilder.GridBuilder
-                    .AddField(p => p.TagName);
+                    .AddField(p => p.Name);
 
                 modelBuilder.FormBuilder
                     .AddKeyField(p => p.Id)
-                    .AddField(p => p.TagName);
+                    .AddField(p => p.Name);
             });
         }
     }

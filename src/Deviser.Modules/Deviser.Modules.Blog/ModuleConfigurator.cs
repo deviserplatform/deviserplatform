@@ -21,6 +21,9 @@ namespace Deviser.Modules.Blog
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<BlogService>();
+            services.AddScoped<CategoryService>();
+            services.AddScoped<PostService>();
+            services.AddScoped<TagService>();
         }
     }
 }

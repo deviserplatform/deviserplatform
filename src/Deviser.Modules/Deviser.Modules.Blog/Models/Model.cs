@@ -20,136 +20,113 @@ namespace Deviser.Modules.Blog.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Blog>(entity =>
+            {
+                entity.Property(p => p.Id).ValueGeneratedOnAdd();
+                entity.Property(p => p.Name).IsRequired();
+                entity.HasIndex(p => p.Name).IsUnique();
+                entity.Property(p => p.CreatedOn).IsRequired();
+                entity.Property(p => p.CreatedBy).IsRequired();
+                entity.ToTable("dm_Blog");
+            });
+
             modelBuilder.Entity<Post>(entity =>
             {
                 entity.Property(p => p.Id).ValueGeneratedOnAdd();
                 entity.Property(p => p.Title).IsRequired();
-                entity.Property(p => p.Slug)
-                    .IsRequired();
+                entity.Property(p => p.Slug).IsRequired();
                 entity.HasIndex(p => p.Slug).IsUnique();
+                entity.Property(p => p.Status).IsRequired();
                 entity.Property(p => p.CreatedOn).IsRequired();
+
+                entity.HasOne(p => p.Blog).WithMany(c => c.Posts).HasForeignKey(p => p.BlogId);
                 entity.HasOne(p => p.Category).WithMany(c => c.Posts).HasForeignKey(p => p.CategoryId);
+                entity.HasMany(p => p.Tags)
+                    .WithMany(p => p.Posts)
+                    .UsingEntity(j => j.ToTable("dm_PostTag"));
+                entity.ToTable("dm_Post");
             });
 
             modelBuilder.Entity<Tag>(entity =>
             {
                 entity.Property(t => t.Id).ValueGeneratedOnAdd();
-                entity.HasAlternateKey(t => t.TagName);
+                entity.HasIndex(t => t.Name).IsUnique();
+                entity.ToTable("dm_Tag");
             });
-
-            modelBuilder.Entity<PostTag>(entity =>
-            {
-                entity.HasKey(pt => new { pt.PostId, pt.TagId });
-                entity.HasOne(pt => pt.Post).WithMany(p => p.PostTags).HasForeignKey(pt => pt.PostId);
-                entity.HasOne(pt => pt.Tag).WithMany(t => t.PostTags).HasForeignKey(pt => pt.TagId);
-            });
-
+            
             modelBuilder.Entity<Comments>(entity =>
             {
                 entity.HasOne(d => d.Post).WithMany(p => p.Comments).HasForeignKey(d => d.PostId).OnDelete(DeleteBehavior.Restrict);
+                entity.ToTable("dm_Comment");
             });
         }
-
+        public virtual DbSet<Blog> Blogs { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Comments> Comments { get; set; }
         public virtual DbSet<Post> Posts { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
-        public virtual DbSet<PostTag> PostTags { get; set; }
+    }
+
+    public class Blog
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public ICollection<Post> Posts { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public Guid CreatedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
+        public Guid ModifiedBy { get; set; }
     }
 
     public class Category
     {
-        [Order]
         public Guid Id { get; set; }
-
-        [Order]
         public string Name { get; set; }
-
         public List<Post> Posts { get; set; }
     }
 
     public class Post
     {
-        [Order]
         public Guid Id { get; set; }
-
-        [Order]
         public string Title { get; set; }
-
-        [Order]
         public string Slug { get; set; }
 
-        [Order]
         [FieldInfo(FieldType.TextArea)]
         public string Summary { get; set; }
 
-        [Order]
         [FieldInfo(FieldType.Image)]
         public string Thumbnail { get; set; }
 
-        [Order]
         [FieldInfo(FieldType.RichText)]
         public string Content { get; set; }
-
-        [Order]
+        public string Status { get; set; }
+        public bool IsCommentEnabled { get; set; }
+        public Guid BlogId { get; set; }
         public Guid CategoryId { get; set; }
-
-        [Order]
+        public Blog Blog { get; set; }
         public Category Category { get; set; }
-
-        [Order]
-        public List<PostTag> PostTags { get; set; }
-
-        [Order]
-        [NotMapped]
-        public IEnumerable<Tag> Tags
-        {
-            set
-            {
-                var tags = value;
-                if (tags != null && tags.Count() > 0)
-                {
-                    PostTags = new List<PostTag>();
-                    foreach (var tag in tags)
-                    {
-                        PostTags.Add(new PostTag
-                        {
-                            Post = this,
-                            PostId = Id,
-                            TagId = tag.Id,
-                            Tag = tag
-                        });
-                    }
-                }
-            }
-            get => PostTags.Select(e => e.Tag);
-        }
-
-        [Order]
+        public ICollection<Tag> Tags { get; set; }
         public List<Comments> Comments { get; set; }
-
-        [Order]
         public DateTime CreatedOn { get; set; }
-
-        [Order]
-        public string CreatedBy { get; set; }
-
+        public Guid CreatedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
+        public Guid ModifiedBy { get; set; }
     }
 
     public class Tag
     {
         public Guid Id { get; set; }
-        public string TagName { get; set; }
-        public List<PostTag> PostTags { get; set; }
+        public string Name { get; set; }
+        public ICollection<Post> Posts { get; set; }
     }
 
-    public class PostTag
-    {
-        public Guid PostId { get; set; }
-        public Post Post { get; set; }
-        public Guid TagId { get; set; }
-        public Tag Tag { get; set; }
-    }
+    //public class PostTag
+    //{
+    //    public Guid PostId { get; set; }
+    //    public Post Post { get; set; }
+    //    public Guid TagId { get; set; }
+    //    public Tag Tag { get; set; }
+    //}
 
     public class Comments
     {

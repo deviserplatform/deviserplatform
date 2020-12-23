@@ -16,17 +16,8 @@ namespace Deviser.Modules.Blog
         {
             MapperConfiguration = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Post, DTO.Post>()
-                    .ForMember(dest => dest.Tags, opt =>
-                    {
-                        opt.Condition(src => src.PostTags != null && src.PostTags.Count > 0);
-                        opt.MapFrom(src => src.PostTags.Select(pt => pt.Tag));
-                    }).ReverseMap()
-                    .ForMember(dest => dest.PostTags, opt =>
-                    {
-                        opt.Condition(src => src.Tags != null && src.Tags.Count > 0);
-                        opt.MapFrom(src => src.Tags.Select(t => new PostTag { TagId = t.Id, PostId = src.Id }));
-                    });
+                cfg.CreateMap<Models.Blog, DTO.Blog>().ReverseMap();
+                cfg.CreateMap<Post, DTO.Post>().ReverseMap();
                 cfg.CreateMap<Tag, DTO.Tag>().ReverseMap();
                 cfg.CreateMap<Comments, DTO.Comments>().ReverseMap();
                 cfg.CreateMap<Category, DTO.Category>().ReverseMap();

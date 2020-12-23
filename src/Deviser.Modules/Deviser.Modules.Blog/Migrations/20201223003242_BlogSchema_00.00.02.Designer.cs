@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Deviser.Modules.Blog.Migrations
 {
     [DbContext(typeof(BlogDbContext))]
-    [Migration("20201202230709_BlogSchema_00.00.04")]
-    partial class BlogSchema_000004
+    [Migration("20201223003242_BlogSchema_00.00.02")]
+    partial class BlogSchema_000002
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,36 @@ namespace Deviser.Modules.Blog.Migrations
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.0");
+
+            modelBuilder.Entity("Deviser.Modules.Blog.Models.Blog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("dm_Blog");
+                });
 
             modelBuilder.Entity("Deviser.Modules.Blog.Models.Category", b =>
                 {
@@ -60,7 +90,7 @@ namespace Deviser.Modules.Blog.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("dm_Comment");
                 });
 
             modelBuilder.Entity("Deviser.Modules.Blog.Models.Post", b =>
@@ -69,21 +99,37 @@ namespace Deviser.Modules.Blog.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("BlogId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsCommentEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ModifiedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Summary")
                         .HasColumnType("nvarchar(max)");
@@ -97,27 +143,14 @@ namespace Deviser.Modules.Blog.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BlogId");
+
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("Slug")
                         .IsUnique();
 
-                    b.ToTable("Posts");
-                });
-
-            modelBuilder.Entity("Deviser.Modules.Blog.Models.PostTag", b =>
-                {
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TagId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("PostId", "TagId");
-
-                    b.HasIndex("TagId");
-
-                    b.ToTable("PostTags");
+                    b.ToTable("dm_Post");
                 });
 
             modelBuilder.Entity("Deviser.Modules.Blog.Models.Tag", b =>
@@ -126,15 +159,31 @@ namespace Deviser.Modules.Blog.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("TagName")
-                        .IsRequired()
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("TagName");
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
-                    b.ToTable("Tags");
+                    b.ToTable("dm_Tag");
+                });
+
+            modelBuilder.Entity("PostTag", b =>
+                {
+                    b.Property<Guid>("PostsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TagsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("PostsId", "TagsId");
+
+                    b.HasIndex("TagsId");
+
+                    b.ToTable("dm_PostTag");
                 });
 
             modelBuilder.Entity("Deviser.Modules.Blog.Models.Comments", b =>
@@ -150,32 +199,41 @@ namespace Deviser.Modules.Blog.Migrations
 
             modelBuilder.Entity("Deviser.Modules.Blog.Models.Post", b =>
                 {
+                    b.HasOne("Deviser.Modules.Blog.Models.Blog", "Blog")
+                        .WithMany("Posts")
+                        .HasForeignKey("BlogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Deviser.Modules.Blog.Models.Category", "Category")
                         .WithMany("Posts")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Blog");
+
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Deviser.Modules.Blog.Models.PostTag", b =>
+            modelBuilder.Entity("PostTag", b =>
                 {
-                    b.HasOne("Deviser.Modules.Blog.Models.Post", "Post")
-                        .WithMany("PostTags")
-                        .HasForeignKey("PostId")
+                    b.HasOne("Deviser.Modules.Blog.Models.Post", null)
+                        .WithMany()
+                        .HasForeignKey("PostsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Deviser.Modules.Blog.Models.Tag", "Tag")
-                        .WithMany("PostTags")
-                        .HasForeignKey("TagId")
+                    b.HasOne("Deviser.Modules.Blog.Models.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.Navigation("Post");
-
-                    b.Navigation("Tag");
+            modelBuilder.Entity("Deviser.Modules.Blog.Models.Blog", b =>
+                {
+                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("Deviser.Modules.Blog.Models.Category", b =>
@@ -186,13 +244,6 @@ namespace Deviser.Modules.Blog.Migrations
             modelBuilder.Entity("Deviser.Modules.Blog.Models.Post", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("PostTags");
-                });
-
-            modelBuilder.Entity("Deviser.Modules.Blog.Models.Tag", b =>
-                {
-                    b.Navigation("PostTags");
                 });
 #pragma warning restore 612, 618
         }
