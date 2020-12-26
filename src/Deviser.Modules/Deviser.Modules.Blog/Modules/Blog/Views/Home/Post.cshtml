@@ -1,6 +1,6 @@
 ﻿@using Deviser.Core.Common.DomainTypes
 @using Newtonsoft.Json
-@model Deviser.Modules.Blog.Models.Post
+@model Deviser.Modules.Blog.DTO.Post
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col">
                 <h2 class="card-title">@Model.Title</h2>
-                <p class="card-text"><small class="text-muted">@Model.CreatedOn.ToString("MMM dd, yyyy") | @Model.CreatedBy</small></p>
+                <p class="card-text"><small class="text-muted">@Model.CreatedOn.ToString("MMM dd, yyyy") | @(Model.CreatedByUser!=null? $"{Model.CreatedByUser.FirstName} {Model.CreatedByUser.LastName}": "")</small></p>
                 <p class="card-text">@Html.Raw(Model.Content)</p>
             </div>
         </div>

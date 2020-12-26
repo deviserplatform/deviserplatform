@@ -13,9 +13,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace Deviser.Modules.Blog.Services
 {
-    public class BlogService : IAdminService<DTO.Blog>
+    public class BlogService : IBlogService
     {
-        private readonly AdminService<DTO.Blog, Models.Blog> _adminService;
+        private readonly AdminModelService<DTO.Blog, Models.Blog> _adminModelService;
         private readonly IMapper _blogMapper;
         private readonly BlogDbContext _dbContext;
 
@@ -25,19 +25,19 @@ namespace Deviser.Modules.Blog.Services
         {
             _blogMapper = BlogMapper.Mapper;
             _dbContext = dbContext;
-            _adminService = new AdminService<DTO.Blog, Models.Blog>(_dbContext, dbContext.Blogs, _blogMapper);
+            _adminModelService = new AdminModelService<DTO.Blog, Models.Blog>(_dbContext, dbContext.Blogs, _blogMapper);
         }
 
         public async Task<PagedResult<DTO.Blog>> GetAll(int pageNo, int pageSize, string orderByProperties,
-            FilterNode filter = null) => await _adminService.GetAll(pageNo, pageSize, orderByProperties, filter);
+            FilterNode filter = null) => await _adminModelService.GetAll(pageNo, pageSize, orderByProperties, filter);
 
-        public async Task<DTO.Blog> GetItem(string itemId) => await _adminService.GetItem(itemId);
+        public async Task<DTO.Blog> GetItem(string itemId) => await _adminModelService.GetItem(itemId);
 
-        public async Task<IFormResult<DTO.Blog>> CreateItem(DTO.Blog item) => await _adminService.CreateItem(item);
+        public async Task<IFormResult<DTO.Blog>> CreateItem(DTO.Blog item) => await _adminModelService.CreateItem(item);
 
-        public async Task<IFormResult<DTO.Blog>> UpdateItem(DTO.Blog item) => await _adminService.UpdateItem(item);
+        public async Task<IFormResult<DTO.Blog>> UpdateItem(DTO.Blog item) => await _adminModelService.UpdateItem(item);
 
-        public async Task<IAdminResult<DTO.Blog>> DeleteItem(string itemId) => await _adminService.DeleteItem(itemId);
+        public async Task<IAdminResult<DTO.Blog>> DeleteItem(string itemId) => await _adminModelService.DeleteItem(itemId);
 
         public ICollection<DTO.Blog> GetBlogs()
         {

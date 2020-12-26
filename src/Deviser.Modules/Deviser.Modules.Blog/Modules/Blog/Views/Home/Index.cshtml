@@ -1,7 +1,10 @@
+@using System.Collections.Generic
 @using Deviser.Core.Common.DomainTypes
 @using Deviser.Modules.Blog.DTO
+@using Microsoft.AspNetCore.Routing
 @using Newtonsoft.Json
-@model ICollection<Deviser.Modules.Blog.DTO.Post>
+@inject LinkGenerator _linkGenerator;
+@model System.Collections.Generic.ICollection<Deviser.Modules.Blog.DTO.Post>
 
 @{
     ViewData["Title"] = "Index";
@@ -11,16 +14,20 @@
     }
 
     var categories = ViewBag.Categories as ICollection<Category>;
+    var moduleContext = ViewBag.ModuleContext as ModuleContext;
     var tags = ViewBag.Tags as ICollection<Tag>;
+    var blogName = ViewBag.BlogName;
 }
 
 <div class="row">
     <div class="col-8">
+
         <div class="post-summary">
             @foreach (var post in Model)
             {
                 var image = !string.IsNullOrEmpty(post.Thumbnail) ? JsonConvert.DeserializeObject<Image>(post.Thumbnail) : new Image();
-                <a href="/modules/Blog/Home/Post/@post.Slug" class="post-summary-item">
+
+                <a href="/modules/Blog/Home/@post.Blog.Name/Post/@post.Slug" class="post-summary-item">
                     <div class="card mb-3">
                         <div class="row no-gutters">
                             <div class="col-md-4">
@@ -33,7 +40,7 @@
                                         <p class="card-text">@Html.Raw(post.Summary)</p>
                                     </div>
                                     <div class="summary-footer">
-                                        <p class="card-text"><small class="text-muted">@post.CreatedOn.ToString("MMM dd, yyyy") | @post.CreatedBy</small></p>
+                                        <p class="card-text"><small class="text-muted">@post.CreatedOn.ToString("MMM dd, yyyy") | @(post.CreatedByUser!=null? $"{post.CreatedByUser.FirstName} {post.CreatedByUser.LastName}": "")</small></p>
                                     </div>
                                 </div>
                             </div>
@@ -50,7 +57,7 @@
                 <div class="card-text">
                     @foreach (var category in categories)
                     {
-                        <a href="/modules/Blog/Home/Post/Category/@category.Name">@category.Name</a>
+                        <a href="/modules/Blog/Home/@blogName/Post/Category/@category.Name">@category.Name</a>
                     }
                 </div>
             </div>
@@ -61,7 +68,7 @@
                 <div class="card-text">
                     @foreach (var tag in tags)
                     {
-                        <a href="/modules/Blog/Home/Post/Tag/@tag.Name">@tag.Name</a>
+                        <a href="/modules/Blog/Home/@blogName/Post/Tag/@tag.Name">@tag.Name</a>
                     }
                 </div>
             </div>

@@ -15,14 +15,15 @@ using Deviser.Modules.Blog.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Post = Deviser.Modules.Blog.DTO.Post;
 using Tag = Deviser.Modules.Blog.DTO.Tag;
 
 namespace Deviser.Modules.Blog.Services
 {
-    public class PostService : IAdminService<Post>
+    public class PostService : IPostService
     {
-        private readonly AdminService<Post, Models.Post> _adminService;
+        private readonly AdminModelService<Post, Models.Post> _adminModelService;
         private readonly IMapper _blogMapper;
         private readonly BlogDbContext _dbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -46,7 +47,7 @@ namespace Deviser.Modules.Blog.Services
                 .Include(p => p.Category)
                 .Include(p => p.Tags);
 
-            _adminService = new AdminService<Post, Models.Post>(_dbContext, _postBaseQueryable, _blogMapper);
+            _adminModelService = new AdminModelService<Post, Models.Post>(_dbContext, _postBaseQueryable, _blogMapper);
         }
 
         public async Task<ValidationResult> ValidateSlug(string slug)
@@ -70,26 +71,36 @@ namespace Deviser.Modules.Blog.Services
 
         public async Task<PagedResult<Post>> GetAll(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null)
         {
-            var result = await _adminService.GetAll(pageNo, pageSize, orderByProperties, filter);
+            var result = await _adminModelService.GetAll(pageNo, pageSize, orderByProperties, filter, new List<string>()
+            {
+                nameof(Post.Blog),
+                nameof(Post.Category),
+                nameof(Post.Tags),
+            });
             var allUsers = await GetAllUsers();
             foreach (var post in result.Data)
             {
-                post.CreatedByUser = _platformMapper.Map<Core.Common.DomainTypes.User>(allUsers[post.CreatedBy]);
+                post.CreatedByUser = allUsers[post.CreatedBy];
                 if (post.ModifiedBy == Guid.Empty) continue;
 
-                post.ModifiedByUser = _platformMapper.Map<Core.Common.DomainTypes.User>(allUsers[post.ModifiedBy]);
+                post.ModifiedByUser = allUsers[post.ModifiedBy];
             }
             return await Task.FromResult(result);
         }
 
         public async Task<Post> GetItem(string itemId)
         {
-            var result = await _adminService.GetItem(itemId);
+            var result = await _adminModelService.GetItem(itemId, new List<string>()
+            {
+                nameof(Post.Blog),
+                nameof(Post.Category),
+                nameof(Post.Tags),
+            });
             var allUsers = await GetAllUsers();
-            result.CreatedByUser = _platformMapper.Map<Core.Common.DomainTypes.User>(allUsers[result.CreatedBy]);
+            result.CreatedByUser = allUsers[result.CreatedBy];
             if (result.ModifiedBy != Guid.Empty)
             {
-                result.ModifiedByUser = _platformMapper.Map<Core.Common.DomainTypes.User>(allUsers[result.ModifiedBy]);
+                result.ModifiedByUser = allUsers[result.ModifiedBy];
             }
             return await Task.FromResult(result);
         }
@@ -147,13 +158,14 @@ namespace Deviser.Modules.Blog.Services
         public async Task<IFormResult<Post>> UpdateItem(Post item)
         {
             var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            var existingPost = await _dbContext.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == item.Id);
             item.BlogId = item.Blog.Id;
             item.Blog = null;
             item.CategoryId = item.Category.Id;
             item.Category = null;
             item.CreatedBy = user.Id;
             item.CreatedOn = DateTime.Now;
-            item.Status = PostStatus.Draft.ToString();
+            item.Status = existingPost.Status;
 
             var entity = _blogMapper.Map<Models.Post>(item);
             _dbContext.UpdateGraph(entity, mapping => mapping.AssociatedCollection(p=>p.Tags));
@@ -168,13 +180,24 @@ namespace Deviser.Modules.Blog.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<IAdminResult<Post>> DeleteItem(string itemId) => await _adminService.DeleteItem(itemId);
+        public async Task<IAdminResult<Post>> DeleteItem(string itemId) => await _adminModelService.DeleteItem(itemId);
 
-        private async Task<Dictionary<Guid, User>> GetAllUsers()
+        public async Task<Dictionary<Guid, Core.Common.DomainTypes.User>> GetAllUsers()
         {
-            var allUsers = await _userManager.Users.ToDictionaryAsync(u => u.Id, u => u);
+            var allUsers = await _userManager.Users.ToDictionaryAsync(u => u.Id, u => _platformMapper.Map<Core.Common.DomainTypes.User>(u));
             return allUsers;
         }
 
+        public async Task<IFormResult<Post>> PublishPost(Post post)
+        {
+            var existingPost = await _dbContext.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == post.Id);
+            existingPost.Status = PostStatus.Published.ToString();
+            var result = new FormResult<Post>(_blogMapper.Map<Post>(existingPost))
+            {
+                IsSucceeded = true,
+                SuccessMessage = $"Post has been published"
+            };
+            return await Task.FromResult(result);
+        }
     }
 }

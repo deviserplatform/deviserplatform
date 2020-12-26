@@ -18,7 +18,7 @@ namespace Deviser.Modules.Blog
         {
             adminBuilder.MapperConfiguration = BlogMapper.MapperConfiguration;
 
-            adminBuilder.Register<DTO.Blog, BlogService>(modelBuilder =>
+            adminBuilder.Register<DTO.Blog, IBlogService>(modelBuilder =>
             {
                 modelBuilder.GridBuilder
                     .AddField(p => p.Name);
@@ -28,7 +28,7 @@ namespace Deviser.Modules.Blog
                     .AddField(p => p.Name);
             });
 
-            adminBuilder.Register<DTO.Post, PostService>(modelBuilder =>
+            adminBuilder.Register<DTO.Post, IPostService>(modelBuilder =>
             {
                 modelBuilder.GridBuilder.Title = "Posts";
                 modelBuilder.FormBuilder.Title = "Post";
@@ -56,27 +56,30 @@ namespace Deviser.Modules.Blog
 
                 modelBuilder.FormBuilder.SetCustomValidationFor(c => c.Slug,
                     (sp, slug) =>
-                        sp.GetService<PostService>().ValidateSlug(slug));
+                        sp.GetService<IPostService>().ValidateSlug(slug));
 
                 modelBuilder.FormBuilder.Property(c => c.Slug).AutoFillBasedOn(p => p.Title,
                     (sp, title) =>
-                        sp.GetService<PostService>().GetSlugFor(title));
+                        sp.GetService<IPostService>().GetSlugFor(title));
 
                 modelBuilder.FormBuilder
                     .Property(p => p.Tags)
                     .AddItemBy(t => t.Name);
 
-                modelBuilder.FormBuilder.Property(u => u.Blog).HasLookup(sp => sp.GetService<BlogService>().GetBlogs(),
+                modelBuilder.FormBuilder.Property(u => u.Blog).HasLookup(sp => sp.GetService<IBlogService>().GetBlogs(),
                     ke => ke.Id,
                     de => de.Name);
 
-                modelBuilder.FormBuilder.Property(u => u.Category).HasLookup(sp => sp.GetService<CategoryService>().GetCategories(),
+                modelBuilder.FormBuilder.Property(u => u.Category).HasLookup(sp => sp.GetService<ICategoryService>().GetCategories(),
                     ke => ke.Id,
                     de => de.Name);
 
-                modelBuilder.FormBuilder.Property(u => u.Tags).HasLookup(sp => sp.GetService<TagService>().GetTags(),
+                modelBuilder.FormBuilder.Property(u => u.Tags).HasLookup(sp => sp.GetService<ITagService>().GetTags(),
                     ke => ke.Id,
                     de => de.Name);
+
+                modelBuilder.FormBuilder.AddFormAction("Publish", "Publish",
+                    (sp, post) => sp.GetService<IPostService>().PublishPost(post));
 
 
                 modelBuilder.AddChildConfig(s => s.Comments, (childForm) =>
@@ -90,9 +93,8 @@ namespace Deviser.Modules.Blog
                   });
             });
 
-            adminBuilder.Register<DTO.Category, CategoryService>(modelBuilder =>
+            adminBuilder.Register<DTO.Category, ICategoryService>(modelBuilder =>
             {
-
                 modelBuilder.GridBuilder
                     .AddField(p => p.Name);
 
@@ -101,9 +103,8 @@ namespace Deviser.Modules.Blog
                     .AddField(p => p.Name);
             });
 
-            adminBuilder.Register<DTO.Tag, TagService>(modelBuilder =>
+            adminBuilder.Register<DTO.Tag, ITagService>(modelBuilder =>
             {
-
                 modelBuilder.GridBuilder
                     .AddField(p => p.Name);
 

@@ -46,7 +46,7 @@ namespace Deviser.Modules.ContactForm.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var moduleProperties = GetModuleProperties(PageModuleId);
+            var moduleProperties = GetModuleProperties(ModuleContext.PageModuleId);
             var viewTemplate = moduleProperties.Get("cf_view_template")?.ToString();
             var viewPath = $"{_modulePath}/ViewTemplates/{viewTemplate}.cshtml";
             return View(viewPath);

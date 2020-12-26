@@ -20,10 +20,10 @@ namespace Deviser.Modules.Blog
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<BlogService>();
-            services.AddScoped<CategoryService>();
-            services.AddScoped<PostService>();
-            services.AddScoped<TagService>();
+            services.AddScoped<IBlogService, BlogService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IPostService, PostService>();
+            services.AddScoped<ITagService, TagService>();
         }
     }
 }
