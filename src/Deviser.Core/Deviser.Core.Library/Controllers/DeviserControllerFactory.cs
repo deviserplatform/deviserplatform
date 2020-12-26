@@ -79,9 +79,7 @@ namespace Deviser.Core.Library.Controllers
             {
                 var module = _moduleRepository.GetModule(pageModule.ModuleId);
                 var moduleView = module.ModuleView.FirstOrDefault(ma => ma.Id == pageModule.ModuleViewId);
-                var moduleContext = new ModuleContext();
-                moduleContext.ModuleInfo = module;
-                moduleContext.PageModuleId = pageModule.Id;
+                var moduleContext = new ModuleContext(module, pageModule);
                 if (moduleView == null) continue;
 
                 List<ContentResult> contentResults;
@@ -129,7 +127,7 @@ namespace Deviser.Core.Library.Controllers
         //    try
         //    {
         //        var module = _moduleRepository.Get(pageModule.ModuleId);
-        //        ModuleView moduleView = module.ModuleView.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleViewType
+        //        ModuleView moduleView = module.ModuleView.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It refers PageModule's Edit ModuleViewType
         //        ModuleContext moduleContext = new ModuleContext();
         //        moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleViewType
         //        moduleContext.PageModuleId = pageModule.Id;
@@ -154,13 +152,10 @@ namespace Deviser.Core.Library.Controllers
             try
             {
                 var module = _moduleRepository.GetModule(pageModule.ModuleId);
-                var moduleView = module.ModuleView.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It referes PageModule's Edit ModuleViewType
-                var moduleContext = new ModuleContext();
-                moduleContext.ModuleInfo = module; //Context should be PageModule's instance, but not Edit ModuleViewType
-                moduleContext.PageModuleId = pageModule.Id;
-                if (module != null && moduleView != null)
+                var moduleView = module.ModuleView.FirstOrDefault(ma => ma.Id == moduleEditActionId); //It refers PageModule's Edit ModuleViewType
+                var moduleContext = new ModuleContext(module, pageModule);//Context should be PageModule's instance, but not Edit ModuleViewType
+                if (moduleView != null)
                 {
-
                     var actionResult = await ExecuteModuleController(actionContext, moduleContext, moduleView);
                     editResult = GetModuleResult(actionResult, moduleContext);
                 }
@@ -262,7 +257,7 @@ namespace Deviser.Core.Library.Controllers
 
             //var invoker = _moduleInvokerProvider.CreateInvoker(moduleActionContext);
             //var result = await invoker.InvokeAction() as ViewResult;
-            var result = await _actionInvoker.InvokeAction(actionContext.HttpContext, moduleView, moduleActionContext) as ViewResult;
+            var result = await _actionInvoker.InvokeAction(actionContext.HttpContext, moduleView, moduleActionContext, moduleContext) as ViewResult;
 
             var htmlResult = result.ExecuteResultToHTML(moduleActionContext);
             return htmlResult;

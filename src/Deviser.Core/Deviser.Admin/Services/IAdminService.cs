@@ -8,10 +8,10 @@ namespace Deviser.Admin.Services
     public interface IAdminService<TModel> //: IAdminService
         where TModel : class
     {
-        Task<PagedResult<TModel>> GetAll(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null);
-        Task<TModel> GetItem(string itemId);
-        Task<IFormResult<TModel>> CreateItem(TModel item);
-        Task<IFormResult<TModel>> UpdateItem(TModel item);
-        Task<IAdminResult<TModel>> DeleteItem(string itemId);
+        public Task<PagedResult<TModel>> GetAll(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null);
+        public Task<TModel> GetItem(string itemId);
+        public Task<IFormResult<TModel>> CreateItem(TModel item);
+        public Task<IFormResult<TModel>> UpdateItem(TModel item);
+        public Task<IAdminResult<TModel>> DeleteItem(string itemId);
     }
 }

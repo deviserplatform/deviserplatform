@@ -12,26 +12,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Admin.Services
 {
-    public class AdminService<TModel, TEntity> : IAdminService<TModel>
+    public class AdminModelService<TModel, TEntity> : IAdminServiceEntity<TModel>
         where TModel : class
         where TEntity : class
     {
         private readonly IMapper _modelMapper;
-        private readonly IAdminService<TEntity> _adminServiceEntity;
-        public AdminService(DbContext dbContext, IQueryable<TEntity> baseQuery, IMapper modelMapper)
+        private readonly IAdminServiceEntity<TEntity> _adminServiceEntity;
+        public AdminModelService(DbContext dbContext, IQueryable<TEntity> baseQuery, IMapper modelMapper)
         {
             _adminServiceEntity = new AdminServiceEntity<TEntity>(dbContext, baseQuery);
             _modelMapper = modelMapper;
         }
 
-        public virtual async Task<PagedResult<TModel>> GetAll(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null)
+        public virtual async Task<PagedResult<TModel>> GetAll(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null, ICollection<string> includeStrings = null)
         {
             var entityResult = await _adminServiceEntity.GetAll(pageNo, pageSize, orderByProperties, filter);
             var result = new PagedResult<TModel>(_modelMapper.Map<ICollection<TModel>>(entityResult.Data), pageNo, pageSize, orderByProperties);
             return await Task.FromResult(result);
         }
 
-        public virtual async Task<TModel> GetItem(string itemId)
+        public virtual async Task<TModel> GetItem(string itemId, ICollection<string> includeStrings = null)
         {
             var entityResult = await _adminServiceEntity.GetItem(itemId);
             var result = _modelMapper.Map<TModel>(entityResult);

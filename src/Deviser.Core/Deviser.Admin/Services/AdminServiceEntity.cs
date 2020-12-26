@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Deviser.Admin.Services
 {
-    public class AdminServiceEntity<TEntity> : IAdminService<TEntity>
+    public class AdminServiceEntity<TEntity> : IAdminServiceEntity<TEntity>
         where TEntity : class
     {
         private readonly DbContext _dbContext;
@@ -32,23 +32,37 @@ namespace Deviser.Admin.Services
             _navigations = entityType.GetNavigations();
         }
 
-        public virtual async Task<PagedResult<TEntity>> GetAll(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null)
+        public virtual async Task<PagedResult<TEntity>> GetAll(int pageNo, int pageSize, string orderByProperties, FilterNode filter = null, ICollection<string> includeStrings = null)
         {
             // Determine the number of records to skip
             var skip = (pageNo - 1) * pageSize;
             // Get total number of records
             var total = _baseQuery.Count();
             var query = _baseQuery.Skip(skip).Take(pageSize);
+            if (includeStrings != null && includeStrings.Count > 0)
+            {
+                foreach (var includeString in includeStrings)
+                {
+                    query = query.Include(includeString);
+                }
+            }
             var dbResult = await query.ToListAsync();
             var pagedResult = new PagedResult<TEntity>(dbResult, pageNo, pageSize, orderByProperties);
             return await Task.FromResult(pagedResult);
         }
 
-        public virtual async Task<TEntity> GetItem(string itemId)
+        public virtual async Task<TEntity> GetItem(string itemId, ICollection<string> includeStrings = null)
         {
             var filterExpression = AdminRepository.CreatePrimaryKeyFilter(_primaryKey, new List<string> { itemId });
             var whereCallExpression = ExpressionHelper.GetWhereExpression(_entityClrType, _baseQuery.Expression, filterExpression);
             var query = _baseQuery.Provider.CreateQuery<TEntity>(whereCallExpression);
+            if (includeStrings != null && includeStrings.Count > 0)
+            {
+                foreach (var includeString in includeStrings)
+                {
+                    query = query.Include(includeString);
+                }
+            }
             var dbResult = await query.FirstOrDefaultAsync();
             return await Task.FromResult(dbResult);
         }

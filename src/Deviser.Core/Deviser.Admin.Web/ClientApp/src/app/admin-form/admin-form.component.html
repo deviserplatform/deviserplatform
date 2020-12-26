@@ -30,7 +30,7 @@
                 <ng-container *ngIf="formTab.formConfig.formActions && formMode === FormMode.Update">
                   <button class="btn btn-light btn-action " type="button" [disabled]="!adminForm.valid"
                     *ngFor="let formAction of formTab.formConfig.formActions | keyvalue"
-                    (click)="onAction(formTab.formName, formAction.key)">
+                    (click)="onAction(formTab, formAction.key)">
                     {{formAction.value.buttonText}}
                   </button>
                 </ng-container>

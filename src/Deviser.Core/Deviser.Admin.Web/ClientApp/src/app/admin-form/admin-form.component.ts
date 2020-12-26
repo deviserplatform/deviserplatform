@@ -176,9 +176,9 @@ export class AdminFormComponent implements OnInit {
       .subscribe(formValue => this.onActionResult(formValue));
   }
 
-  onAction(formName: string, actionName: string): void {
-    if (formName) {
-      this._adminService.executeCustomFormAction(formName, actionName, this.adminForm.value)
+  onAction(formTab: any, actionName: string): void {
+    if (formTab.formType == this.formType.CustomForm) {
+      this._adminService.executeCustomFormAction(formTab.formName, actionName, this.adminForm.value)
         .subscribe(formValue => this.onActionResult(formValue));
     } else {
       this._adminService.executeMainFormAction(actionName, this.adminForm.value)

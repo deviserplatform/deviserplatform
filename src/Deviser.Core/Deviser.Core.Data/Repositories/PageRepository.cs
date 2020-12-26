@@ -159,7 +159,7 @@ namespace Deviser.Core.Data.Repositories
                     .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType).ThenInclude(ct => ct.ContentTypeFields)
                     .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType).ThenInclude(ct => ct.ContentTypeProperties).ThenInclude(ctp => ctp.Property).ThenInclude(p => p.OptionList)
                     .Include(p => p.PageContent).ThenInclude(pc => pc.ContentPermissions)
-                    .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
+                    .Include(p => p.PageModule).ThenInclude(m=>m.ModuleView).ThenInclude(mv=>mv.ModuleViewProperties).ThenInclude(ctp => ctp.Property).ThenInclude(p => p.OptionList)
                     .Include(p => p.PageModule).ThenInclude(pm => pm.ModulePermissions)
                     .OrderBy(p => p.Id)
                     .AsNoTracking()
@@ -404,32 +404,45 @@ namespace Deviser.Core.Data.Repositories
         }
 
         public IList<PageModule> GetPageModules(Guid pageId)
-        {
-            using var context = new DeviserDbContext(_dbOptions);
-            var result = context.PageModule
+        {   
+            var result = GetPageModules()
                 .Where(e => e.PageId == pageId && e.IsActive)
-                .Include(e => e.Module)
-                .Include(e => e.ModuleView).ThenInclude(mp => mp.ModuleViewProperties).ThenInclude(cp => cp.Property)
-                .Include(e => e.ModulePermissions)
-                .OrderBy(p => p.Id)
                 .ToList();
-
             return _mapper.Map<IList<PageModule>>(result);
         }
 
         public PageModule GetPageModule(Guid pageModuleId)
         {
-            using var context = new DeviserDbContext(_dbOptions);
-            var result = context.PageModule
-                .Include(pm => pm.ModulePermissions)
-                .Include(pm => pm.Module)
-                .Include(e => e.ModuleView).ThenInclude(ma => ma.ModuleViewProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
+            var result = GetPageModules()
                 .Where(e => e.Id == pageModuleId && e.IsActive)
                 .OrderBy(p => p.Id)
                 .FirstOrDefault();
 
             return _mapper.Map<PageModule>(result);
         }
+
+        public IList<PageModule> GetPageModules(bool refreshCache = false)
+        {
+            if (_deviserDataCache.ContainsKey(nameof(GetPageModules)) && !refreshCache)
+            {
+                var cacheResult = _deviserDataCache.GetItem<IList<Entities.PageModule>>(nameof(GetPageModules));
+                return _mapper.Map<IList<PageModule>>(cacheResult);
+            }
+            
+            using var context = new DeviserDbContext(_dbOptions);
+            var dbResult = context.PageModule
+                .Include(e => e.Module)
+                .Include(e => e.ModuleView).ThenInclude(mp => mp.ModuleViewProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
+                .Include(e => e.ModulePermissions)
+                .OrderBy(p => p.Id)
+                .ToList();
+
+            var result = _mapper.Map<IList<PageModule>>(dbResult);
+            _deviserDataCache.AddOrUpdate(nameof(GetPageModules), dbResult);
+            //AddResultToCache(cacheName, result);
+            return result;
+        }
+
 
         public IList<PageModule> GetDeletedPageModules()
         {
@@ -449,6 +462,10 @@ namespace Deviser.Core.Data.Repositories
             var dbPageModule = _mapper.Map<Entities.PageModule>(pageModule);
             var result = context.PageModule.Add(dbPageModule).Entity;
             context.SaveChanges();
+
+            //Refresh cache
+            GetPageModules(true);
+
             return _mapper.Map<PageModule>(result);
         }
 
@@ -458,6 +475,10 @@ namespace Deviser.Core.Data.Repositories
             var dbPageModule = _mapper.Map<Entities.PageModule>(pageModule);
             var result = context.PageModule.Update(dbPageModule).Entity;
             context.SaveChanges();
+
+            //Refresh cache
+            GetPageModules(true);
+
             return _mapper.Map<PageModule>(result);
         }
 
@@ -509,6 +530,9 @@ namespace Deviser.Core.Data.Repositories
                 }
             }
             context.SaveChanges();
+
+            //Refresh cache
+            GetPageModules(true);
         }
 
         /// <summary>
@@ -570,6 +594,10 @@ namespace Deviser.Core.Data.Repositories
             }
 
             context.SaveChanges();
+
+            //Refresh cache
+            GetPageModules(true);
+
             return _mapper.Map<IList<ModulePermission>>(toAdd);
 
         }
@@ -616,6 +644,10 @@ namespace Deviser.Core.Data.Repositories
                 }
             }
             context.SaveChanges();
+
+            //Refresh cache
+            GetPageModules(true);
+
             return GetPageModule(pageModule.Id);
         }
 
@@ -628,6 +660,10 @@ namespace Deviser.Core.Data.Repositories
             dbPageModule.IsActive = true;
             var result = context.PageModule.Update(dbPageModule).Entity;
             context.SaveChanges();
+
+            //Refresh cache
+            GetPageModules(true);
+
             return _mapper.Map<PageModule>(result);
         }
 
@@ -643,6 +679,10 @@ namespace Deviser.Core.Data.Repositories
                 .ToList();
             context.ModulePermission.RemoveRange(pageModulePermissions);
             context.SaveChanges();
+
+            //Refresh cache
+            GetPageModules(true);
+
             return true;
         }
 
