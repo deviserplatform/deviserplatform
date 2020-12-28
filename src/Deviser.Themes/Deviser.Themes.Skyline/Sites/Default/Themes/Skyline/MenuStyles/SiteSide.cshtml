@@ -5,31 +5,53 @@
 @using Deviser.Core.Common;
 @{
     Layout = null;
-    //var pageContext = scopeService.PageContext;
-    //var currentCulture = pageContext.CurrentCulture.ToString();
+    var pageContext = scopeService.PageContext;
+    //var translation = Model.PageTranslation.FirstOrDefault(t => t.Locale == pageContext.CurrentCulture.ToString());
     //var siteRoot = pageContext.SiteSettingInfo.SiteRoot;
 }
 
-
-
-@if (Model.ChildMenuItems != null)
+@if (Model.PageLevel == 0)
 {
-
-    <h2>@Model.PageName</h2>
-    <ul class="navbar-nav ml-auto">
+    @foreach (var menuItem in Model.ChildMenuItems)
+    {
+        if (menuItem != null)
+        {
+            var activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "mm-active" : "";
+            <li class=" @activeClass ">
+                <a href="@(!string.IsNullOrEmpty(menuItem.URL) && !menuItem.HasChild?menuItem.URL:"#")">
+                    @menuItem.PageName
+                    @if (menuItem.HasChild)
+                    {
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    }
+                </a>
+                @if (menuItem.ChildMenuItems != null && menuItem.ChildMenuItems.Count > 0)
+                {
+                    @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "AdminBS4"), menuItem)
+                }
+            </li>
+        }
+    }
+}
+else if (Model.PageLevel == 1)
+{
+    <ul class="mm-collapse">
         @foreach (var menuItem in Model.ChildMenuItems)
         {
             if (menuItem != null)
             {
-                var activeClass = menuItem.IsActive || menuItem.IsBreadCrumb ? "active" : "";
-                <li class="nav-item @(menuItem.HasChild?"dropdown":"") @activeClass">
-                    <a class="nav-link @(menuItem.HasChild && menuItem.PageLevel>1?"dropdown-toggle":"")" href="@menuItem.URL">@menuItem.PageName</a>
+                var activeClass = (menuItem.IsActive || menuItem.IsBreadCrumb) ? "mm-active open" : "";
+                <li class="@activeClass">
+                    <a href="@(!string.IsNullOrEmpty(menuItem.URL) && !menuItem.HasChild?menuItem.URL:"#")">
+                        @menuItem.PageName
+                        @if (menuItem.HasChild)
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        }
+                    </a>
                     @if (menuItem.HasChild)
                     {
-                        <ul class="dropdown-menu @(menuItem.PageLevel>1?"submenu":"")">
-                            @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "SiteSide"), menuItem)
-                        </ul>
-
+                        @Html.Partial(string.Format(Globals.MenuStylePath, scopeService.PageContext.SelectedTheme, "AdminBS4"), menuItem)
                     }
                 </li>
             }

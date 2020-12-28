@@ -12,7 +12,7 @@
     var pageContext = scopeService.PageContext;
     var culture = pageContext.CurrentCulture.Name;
     var permalink = (string)ViewContext.RouteData.Values["permalink"];
-    permalink = Uri.UnescapeDataString(permalink);
+    permalink = string.IsNullOrEmpty(permalink) ? "" : Uri.UnescapeDataString(permalink);
     var requestPath = ViewContext.HttpContext.Request.Path.ToString();
     var mode = "view";
     if (requestPath.ToLower().Contains("edit"))

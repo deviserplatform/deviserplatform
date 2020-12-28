@@ -3,6 +3,7 @@
 @using Deviser.Core.Library;
 @using Deviser.Core.Library.Services;
 @using Deviser.Core.Common;
+@using System
 @inject IScopeService scopeService
 @inject INavigation navigation
 @{
@@ -10,9 +11,9 @@
     var pageContext = scopeService.PageContext;
     var loggedInClass = pageContext.HasPageEditPermission ? "logged-in" : "";
     var pageContentLoggedInClass = pageContext.HasPageEditPermission ? "page-content-logged-in" : "";
-    var parentId = Guid.Parse("aaa7c6b9-03e8-424f-a42e-08d587845981");
+    var parentId = Guid.Parse("29DD5D0B-B4E5-4966-931B-08D8AB043A8A");
 }
-
+<require dependency-type="Script" location="Head" priority="15" file-path="~/_content/Deviser.Themes.Skyline/js/metisMenu.min.js"></require>
 
 @await Html.PartialAsync("~/Sites/Default/Themes/Skyline/_SiteHeader.cshtml")
 
@@ -20,7 +21,10 @@
     <div class="container">
         <div class="row">
             <div class="col-3">
-                <div dev-nav="SiteSide" dev-nav-parent="parentId" dev-nav-page="PublicOnly" class="side-nav"></div>
+                <nav class="sidebar-nav">
+                    <h2>Elements</h2>
+                    <ul class="metismenu" id="side-menu" dev-nav="SiteSide" dev-nav-parent="parentId" dev-nav-page="PublicOnly"></ul>
+                </nav>
             </div>
             <div class="col-9">
                 @RenderBody()
@@ -35,4 +39,11 @@
 
 @section Scripts{
     @RenderSection("scripts", required: false)
+    <script>
+        (function() {
+            $(function () {
+                $('#side-menu').metisMenu();
+            });
+        }());
+    </script>
 }

@@ -23,4 +23,8 @@
 	  <ProjectReference Include="..\..\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\css\site\NewFolder\" />
+	</ItemGroup>
+
 </Project>

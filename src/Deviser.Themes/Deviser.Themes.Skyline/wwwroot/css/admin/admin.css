@@ -10826,3 +10826,7 @@ html, body {
 
 .admin-container .is-invalid {
   color: #dc3545; }
+
+.admin-container .dev-controlbar svg {
+  height: 20px;
+  width: 20px; }
