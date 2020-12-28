@@ -231,6 +231,7 @@ namespace Deviser.Core.Library.Middleware
                 //if permalink is null, check for querystring
                 permalink = httpContext.Request.Query["permalink"].ToString();
             }
+            permalink = Uri.UnescapeDataString(permalink);
             return permalink;
         }
     }

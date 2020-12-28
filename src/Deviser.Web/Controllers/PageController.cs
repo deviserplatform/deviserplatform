@@ -127,6 +127,7 @@ namespace Deviser.Web.Controllers
         }
 
         [PermissionAuthorize("PAGE","EDIT")]
+        [Route("[controller]/[action]/permalink/{permalink}")]
         public IActionResult Layout(string permalink)
         {
             var currentPage = _scopeService.PageContext.CurrentPage;
@@ -134,13 +135,14 @@ namespace Deviser.Web.Controllers
             if (_scopeService.PageContext != null)
             {
                 ViewBag.Theme = Globals.AdminTheme;
-                RouteData.Values.Add("permalink", permalink);
+                //RouteData.Values.Add("permalink", permalink);
                 return View(ViewBag);
             }
             return null;
         }
 
         [PermissionAuthorize("PAGE", "EDIT")]
+        [Route("[controller]/[action]/permalink/{permalink}")]
         public IActionResult Edit(string permalink)
         {
             var currentPage = _scopeService.PageContext.CurrentPage;
@@ -150,7 +152,7 @@ namespace Deviser.Web.Controllers
                 if (_scopeService.PageContext.HasPageEditPermission)
                 {
                     ViewBag.Theme = Globals.AdminTheme;
-                    RouteData.Values.Add("permalink", permalink);
+                    //RouteData.Values.Add("permalink", permalink);
                     return View(_scopeService.PageContext.CurrentPage);
                 }
                 else

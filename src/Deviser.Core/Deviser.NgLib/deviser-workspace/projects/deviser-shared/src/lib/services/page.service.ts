@@ -60,7 +60,7 @@ export class PageService extends BaseService {
 
   draftPage(id: string): Observable<any> {
     const serviceUrl: string = `${this.baseUrl}api/page/draft/${id}`;
-    return this.http.put<any>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
+    return this.http.put<any>(serviceUrl, {}, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log(`current page has been changed to draft state, pageId: ${id}`)),
         catchError(this.handleError('draftPage', null))
@@ -69,7 +69,7 @@ export class PageService extends BaseService {
 
   publishPage(id: string): Observable<any> {
     const serviceUrl: string = `${this.baseUrl}api/page/publish/${id}`;
-    return this.http.put<any>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
+    return this.http.put<any>(serviceUrl, {}, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log(`current page has been published, pageId: ${id}`)),
         catchError(this.handleError('publishPage', null))
