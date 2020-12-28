@@ -6,7 +6,7 @@ namespace Deviser.Core.Common.DomainTypes
 {
     public class Theme
     {
-        public string Key { get; set; }
+        public string Id { get; set; }
         public string Value { get; set; }
     }
 }

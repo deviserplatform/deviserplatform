@@ -153,7 +153,7 @@ namespace Deviser.Modules.PageManagement
 
                 formBuilder.Property(f => f.Theme).HasLookup(
                      sp => sp.GetService<PageManagementAdminService>().GetThemes(),
-                     ke => ke.Key,
+                     ke => ke.Id,
                      de => de.Value);
 
                 formBuilder.Property(f => f.PagePermissions).HasMatrixLookup<Role, Permission, Guid>(

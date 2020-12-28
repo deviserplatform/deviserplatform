@@ -156,12 +156,12 @@ namespace Deviser.Modules.SiteManagement
 
                     formBuilder.Property(f => f.DefaultTheme).HasLookup(
                         sp => sp.GetService<SiteSettingAdminService>().GetThemes(),
-                        ke => ke.Key,
+                        ke => ke.Id,
                         de => de.Value);
 
                     formBuilder.Property(f => f.DefaultAdminTheme).HasLookup(
                         sp => sp.GetService<SiteSettingAdminService>().GetThemes(),
-                        ke => ke.Key,
+                        ke => ke.Id,
                         de => de.Value);
                 });
         }
