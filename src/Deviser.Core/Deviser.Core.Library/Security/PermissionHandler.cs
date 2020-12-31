@@ -76,12 +76,13 @@ namespace Deviser.Core.Library.Security
             var routeData = _httpContextAccessor.HttpContext.GetRouteData();
             var activeLanguages = languageRepository.GetActiveLanguages();
 
-            var currentPage = scopeService.PageContext.CurrentPage;
+            
 
             foreach (var requirement in pendingRequirements)
             {
                 if (!(requirement is PermissionRequirement permissionRequirement)) continue;
 
+                var currentPage = scopeService.PageContext.CurrentPage;
                 var requiredPermission = permissions.Single(p =>
                     string.Equals(p.Entity, permissionRequirement.Entity,
                         StringComparison.InvariantCultureIgnoreCase)

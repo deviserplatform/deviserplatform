@@ -69,6 +69,8 @@ namespace DeviserWI.Controllers.API
         {
             try
             {
+                if (id == Guid.Empty) return NotFound();
+
                 var result = _layoutManager.GetPageLayout(id);
                 if (result != null)
                     return Ok(result);

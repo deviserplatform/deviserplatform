@@ -87,6 +87,9 @@ namespace Deviser.Core.Library.Middleware
                         if (string.IsNullOrEmpty(permalink))
                         {
                             currentPage = pageContext.HomePage;
+                            var currentTranslation = currentPage.PageTranslation.First(p =>
+                                string.Equals(p.Locale, currentCulture.ToString()));
+                            routeData.Values.Add("permalink", currentTranslation.URL);
                         }
                         else
                         {

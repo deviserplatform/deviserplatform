@@ -74,6 +74,7 @@ namespace Deviser.Web.DependencyInjection
                     installationProvider.GetDbContextOptionsBuilder<DeviserDbContext>(dbContextOptionBuilder);
                 });
 
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddAutoMapper(typeof(DeviserPlatformServiceCollectionExtensions).Assembly);
 
