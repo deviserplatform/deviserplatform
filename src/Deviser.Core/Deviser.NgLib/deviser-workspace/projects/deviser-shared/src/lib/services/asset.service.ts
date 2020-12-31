@@ -47,6 +47,9 @@ export class AssetService extends BaseService {
     const formData: FormData = new FormData();
     formData.append('file', file);
     return this.http.post<any>(serviceUrl, formData, {
+      headers: {
+        'currentPageId': this.pageContext.currentPageId
+      },
       reportProgress: true,
       observe: 'events'
     })
@@ -61,6 +64,9 @@ export class AssetService extends BaseService {
     const formData: FormData = new FormData();
     formData.append('file', file);
     return this.http.post<any>(serviceUrl, formData, {
+      headers: {
+        'currentPageId': this.pageContext.currentPageId
+      },
       reportProgress: true,
       observe: 'events'
     })
