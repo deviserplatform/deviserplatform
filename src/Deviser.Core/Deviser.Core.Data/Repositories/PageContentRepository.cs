@@ -170,23 +170,29 @@ namespace Deviser.Core.Data.Repositories
         }
 
         /// <summary>
-        /// Update page content
+        /// Update page content (Title, ContainerId, SortOrder, Properties)
         /// </summary>
         /// <param name="pageContent"></param>
         /// <returns></returns>
         public PageContent Update(PageContent pageContent)
         {
             using var context = new DeviserDbContext(_dbOptions);
-            var dbPageContent = _mapper.Map<Entities.PageContent>(pageContent);
-            dbPageContent.LastModifiedDate = DateTime.Now;
-            dbPageContent.ContentType.ContentTypeProperties = null;
-            var result = context.PageContent.Update(dbPageContent).Entity;
+            var pageContentEntity = _mapper.Map<Entities.PageContent>(pageContent);
+            var existingPageContent = GetPageContent(context, pageContent.Id);
+
+            existingPageContent.Title = pageContentEntity.Title;
+            existingPageContent.ContainerId = pageContentEntity.ContainerId;
+            existingPageContent.SortOrder = pageContentEntity.SortOrder;
+            existingPageContent.LastModifiedDate = DateTime.Now;
+            existingPageContent.Properties = pageContentEntity.Properties;
+            existingPageContent.LastModifiedDate = DateTime.Now;
             context.SaveChanges();
-            return _mapper.Map<PageContent>(result);
+
+            return _mapper.Map<PageContent>(existingPageContent);
         }
 
         /// <summary>
-        /// It updates given list of page content if the content exisit in db, else it adds the content
+        /// It updates only SortOrder and ContainerId of provided list of page contents. If a page content does not exist in db, it adds it.
         /// </summary>
         /// <param name="pageContents">
         /// List of page contents
@@ -345,21 +351,27 @@ namespace Deviser.Core.Data.Repositories
         public PageContent RestorePageContent(Guid id)
         {
             using var context = new DeviserDbContext(_dbOptions);
-            var dbPageContent = GetDeletedPageContent(id);
-            if (dbPageContent == null) throw new InvalidOperationException($"Page content is not found {id}");
-
+            var dbPageContent = GetDeletedPageContent(context, id);
             dbPageContent.IsActive = true;
             var result = context.PageContent.Update(dbPageContent).Entity;
             context.SaveChanges();
             return _mapper.Map<PageContent>(result);
         }
 
-        public bool DeletePageContent(Guid id)
+        public PageContent SoftDeletePageContent(Guid id)
         {
             using var context = new DeviserDbContext(_dbOptions);
-            var dbPageContent = GetDeletedPageContent(id);
+            var dbPageContent = GetPageContent(context, id);
+            dbPageContent.IsActive = false;
+            var result = context.PageContent.Update(dbPageContent).Entity;
+            context.SaveChanges();
+            return _mapper.Map<PageContent>(result);
+        }
 
-            if (dbPageContent == null) throw new InvalidOperationException($"Page content is not found {id}");
+        public bool DeletePageContentPermanent(Guid id)
+        {
+            using var context = new DeviserDbContext(_dbOptions);
+            var dbPageContent = GetDeletedPageContent(context, id);
 
             context.PageContent.Remove(dbPageContent);
 
@@ -380,13 +392,19 @@ namespace Deviser.Core.Data.Repositories
 
         }
 
-        private Entities.PageContent GetDeletedPageContent(Guid id)
+        private static Entities.PageContent GetPageContent(DeviserDbContext context, Guid id)
         {
-            using var context = new DeviserDbContext(_dbOptions);
-            var pageContent = context.PageContent.FirstOrDefault(p => p.Id == id && !p.IsActive);
+            var pageContent = context.PageContent.FirstOrDefault(p => p.Id == id);
+            if (pageContent == null) throw new InvalidOperationException($"Page content is not found {id}");
             return pageContent;
         }
 
+        private static Entities.PageContent GetDeletedPageContent(DeviserDbContext context, Guid id)
+        {
+            var pageContent = context.PageContent.FirstOrDefault(p => p.Id == id && !p.IsActive);
+            if (pageContent == null) throw new InvalidOperationException($"Page content is not found {id}");
+            return pageContent;
+        }
     }
 
 }//End namespace

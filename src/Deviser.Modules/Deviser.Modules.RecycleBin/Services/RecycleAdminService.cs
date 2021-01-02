@@ -113,7 +113,7 @@ namespace Deviser.Modules.RecycleBin.Services
             {
                 "Layouts" => _layoutRepository.DeleteLayout(itemToBeDeleted.Id),
                 "Page" => _pageRepository.DeletePage(itemToBeDeleted.Id),
-                "PageContent" => _pageContentRepository.DeletePageContent(itemToBeDeleted.Id),
+                "PageContent" => _pageContentRepository.DeletePageContentPermanent(itemToBeDeleted.Id),
                 "PageModule" => _pageRepository.DeletePageModule(itemToBeDeleted.Id),
                 _ => isDeleted
             };
@@ -157,9 +157,7 @@ namespace Deviser.Modules.RecycleBin.Services
                     resultItem = _pageRepository.UpdatePageActiveAndLayout(page);
                     break;
                 case "PageContent":
-                    var pageContent = _pageContentRepository.Get(item.Id);
-                    pageContent.IsActive = true;
-                    resultItem = _pageContentRepository.Update(pageContent);
+                    resultItem = _pageContentRepository.RestorePageContent(item.Id);
                     break;
                 case "PageModule":
                     var pageModule = _pageRepository.GetPageModule(item.Id);
