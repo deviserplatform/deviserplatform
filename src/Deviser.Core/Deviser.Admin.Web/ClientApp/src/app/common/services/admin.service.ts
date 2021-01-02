@@ -143,7 +143,7 @@ export class AdminService {
   }
 
   getLookUp(formType: FormType, formName: string, fieldName: string, filterParam: any) {
-    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/lookup/${formType}/field/${fieldName}`;
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/lookup/${formType}/fieldName/${fieldName}`;
     let lookUp$ = this.http.put<any>(serviceUrl, filterParam, { headers: this._httpHeaders, withCredentials: true })
       .pipe(
         map(lookUp => this.flattenLookUpKeys(lookUp)),
@@ -269,6 +269,7 @@ export class AdminService {
         lookUpItem[keyName] = lookUpItem.key[keyName]
       });
     });
+    return lookUpItems;
   }
 
   /** Log a AdminService message with the MessageService */

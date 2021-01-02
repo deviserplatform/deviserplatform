@@ -238,7 +238,7 @@ export class FormControlComponent implements OnInit {
   };
 
   // addTagPromise(value: string) {
- 
+
   //   if (this.field.fieldOption.addItemBy) {
   //     let fieldName = this.field.fieldOption.addItemBy.fieldNameCamelCase;
   //     this._adminService
@@ -334,10 +334,13 @@ export class FormControlComponent implements OnInit {
         .subscribe(([prev, next]: [any, any]) => {
           let val = next ? next : prev;
           console.log(val);
+          if (!val) return;
           this._adminService.getLookUp(this.formType, this.formName, this.field.fieldName, val)
             .subscribe(lookupResult => {
               // console.log(lookupResult);
               this.parseControlValue(lookupResult);
+            }, error => {
+              console.log(error);
             });
         });
     }
