@@ -14,6 +14,7 @@ export interface Property
         optionList: OptionList;
         defaultValuePropertyOption: PropertyOption;
         isActive: boolean;
+        isMoreOption: boolean;
         createdDate: Date | string | null;
         lastModifiedDate: Date | string | null;
     }

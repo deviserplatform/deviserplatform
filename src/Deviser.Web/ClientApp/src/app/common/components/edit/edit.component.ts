@@ -170,8 +170,8 @@ export class EditComponent implements OnInit {
     if (node.layoutTemplate === "content" || node.layoutTemplate === "module") {
       this.selectedPlaceHolder = node;
       node.properties.forEach(prop => {
-        if (prop.optionList && prop.optionList.list) {
-          prop.optionList = prop.optionList;
+        if (!prop.value) {
+          prop.value = prop.defaultValue
         }
       });
     }

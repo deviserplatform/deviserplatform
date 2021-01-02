@@ -127,7 +127,7 @@ export class LayoutComponent {
       this.layoutTypes = results[0];
       this.pageLayouts = results[1];
       this.onGetLayouts();
-    }, error => {      
+    }, error => {
       this._alertService.showMessage(AlertType.Error, 'Unable to  get this item');
     });
   }
@@ -265,10 +265,10 @@ export class LayoutComponent {
       this.selectedLayout.id = formValue.id;
       this.selectedLayout.placeHolders = formValue.placeHolders;
       this.selectedLayout.isChanged = false;
-      this.setPageLayout();      
+      this.setPageLayout();
       this._alertService.showMessage(AlertType.Success, 'Layout has been saved');
     }
-    else {      
+    else {
       this._alertService.showMessage(AlertType.Error, 'Unable to save the Layout');
     }
   }
@@ -321,6 +321,8 @@ export class LayoutComponent {
   }
 
   private setPageLayout(): void {
+    if (!this.selectedLayout) return;
+    
     if (this.selectedLayout.placeHolders &&
       this.selectedLayout.placeHolders.length > 0) {
       this.parsePlaceHolders(this.selectedLayout.placeHolders);
@@ -408,6 +410,9 @@ export class LayoutComponent {
   }
 
   private getIdsRecursive(item: PlaceHolder): string[] {
+    if (!item) {
+      return [''];
+    }
     let ids = [item.id];
     item.placeHolders.forEach((childItem) => { ids = ids.concat(this.getIdsRecursive(childItem)); });
     return ids;
