@@ -130,7 +130,9 @@ namespace Deviser.Web.DependencyInjection
 
             var isDevelopment = hostEnvironment.IsEnvironment(Globals.DeviserDevelopmentEnvironment);
             var isPlatformInstalled = installationProvider.IsPlatformInstalled;
-
+            
+            RegisterModuleDependencies(services);
+            
             if (isPlatformInstalled)
             {
                 services.AddIdentity<User, Role>()
@@ -187,7 +189,6 @@ namespace Deviser.Web.DependencyInjection
                     });
                 }
 
-                RegisterModuleDependencies(services);
                 services.AddDeviserAdmin();
             }
 

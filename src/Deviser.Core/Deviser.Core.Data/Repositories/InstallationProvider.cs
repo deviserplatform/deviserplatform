@@ -100,48 +100,48 @@ namespace Deviser.Core.Data.Repositories
             _installModel = installModel;
             await UpdateInstallLog($"Deviser Platform Installation begins");
             await UpdateInstallLog($"Verifying whether the database exist");
-            if (!IsDatabaseExistsFor(connectionString))
-            {
-                //Creating database                        
-                await UpdateInstallLog($"Creating database");
-                await using var context = new DeviserDbContext(dbOption);
-                await UpdateInstallLog($"Creating platform database objects");
-                await context.Database.MigrateAsync();
+            //if (!IsDatabaseExistsFor(connectionString))
+            //{
+            //Creating database                        
+            await UpdateInstallLog($"Creating database");
+            await using var context = new DeviserDbContext(dbOption);
+            await UpdateInstallLog($"Creating platform database objects");
+            await context.Database.MigrateAsync();
 
-                //Insert data
-                await UpdateInstallLog($"Inserting platform data");
-                InsertData(dbOption);
+            //Insert data
+            await UpdateInstallLog($"Inserting platform data");
+            InsertData(dbOption);
 
-                //Migrate module
-                await UpdateInstallLog($"Creating module database objects");
-                MigrateModuleContexts(installModel);
+            //Migrate module
+            await UpdateInstallLog($"Creating module database objects");
+            await MigrateModuleContexts(installModel);
 
-                IServiceCollection services = new ServiceCollection();
-                var logger = Logger.GetLogger();
+            IServiceCollection services = new ServiceCollection();
+            var logger = Logger.GetLogger();
 
-                services.AddLogging(loggingBuilder =>
-                    loggingBuilder.AddSerilog(logger, true));
-                services.AddDbContext<DeviserDbContext>(
-                    (internalServiceProvider, dbContextOptionBuilder) =>
-                    {
-                        GetDbContextOptionsBuilder<DeviserDbContext>(dbContextOptionBuilder);
-                    });
-                services.AddIdentity<Entities.User, Entities.Role>()
-                    .AddEntityFrameworkStores<DeviserDbContext>()
-                    .AddDefaultTokenProviders();
-                var sp = services.BuildServiceProvider();
-                //Create user account
-                await UpdateInstallLog($"Creating admin user account");
-                _userManager = sp.GetService<UserManager<Entities.User>>();
-
-                var user = new Entities.User { UserName = installModel.AdminEmail, Email = installModel.AdminEmail };
-                var result = _userManager.CreateAsync(user, installModel.AdminPassword).GetAwaiter().GetResult();
-                if (result.Succeeded)
+            services.AddLogging(loggingBuilder =>
+                loggingBuilder.AddSerilog(logger, true));
+            services.AddDbContext<DeviserDbContext>(
+                (internalServiceProvider, dbContextOptionBuilder) =>
                 {
-                    //Assign user to admin role
-                    await _userManager.AddToRoleAsync(user, "Administrators");
-                }
+                    GetDbContextOptionsBuilder<DeviserDbContext>(dbContextOptionBuilder);
+                });
+            services.AddIdentity<Entities.User, Entities.Role>()
+                .AddEntityFrameworkStores<DeviserDbContext>()
+                .AddDefaultTokenProviders();
+            var sp = services.BuildServiceProvider();
+            //Create user account
+            await UpdateInstallLog($"Creating admin user account");
+            _userManager = sp.GetService<UserManager<Entities.User>>();
+
+            var user = new Entities.User { UserName = installModel.AdminEmail, Email = installModel.AdminEmail };
+            var result = _userManager.CreateAsync(user, installModel.AdminPassword).GetAwaiter().GetResult();
+            if (result.Succeeded)
+            {
+                //Assign user to admin role
+                await _userManager.AddToRoleAsync(user, "Administrators");
             }
+            //}
 
             //Write install settings
             await UpdateInstallLog($"Creating the config files");
@@ -176,7 +176,7 @@ namespace Deviser.Core.Data.Repositories
                 var output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
                 await File.WriteAllTextAsync(settingFile, output);
             }
-            
+
 
             //Updating it in cache
             //_configuration["ConnectionStrings:DefaultConnection"] = connectionString;
@@ -488,14 +488,14 @@ namespace Deviser.Core.Data.Repositories
             File.WriteAllText(filePath, JsonConvert.SerializeObject(model));
         }
 
-        private void MigrateModuleContexts(InstallModel installModel)
+        private async Task MigrateModuleContexts(InstallModel installModel)
         {
             var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.EntryPointAssembly);
             var moduleDbContextTypes = new List<TypeInfo>();
 
             var moduleDbContextBaseType = typeof(ModuleDbContext);
-            var databaseField = moduleDbContextBaseType.GetProperty("Database");
-            var registerServiceMethodInfo = typeof(Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions).GetMethod("Migrate");
+            //var databaseField = moduleDbContextBaseType.GetProperty("Database");
+            //var registerServiceMethodInfo = typeof(Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions).GetMethod("MigrateAsync");
             foreach (var assembly in assemblies)
             {
                 var controllerTypes = assembly.DefinedTypes.Where(t => moduleDbContextBaseType.IsAssignableFrom(t)).ToList();
@@ -508,17 +508,20 @@ namespace Deviser.Core.Data.Repositories
 
             foreach (var moduleDbContextType in moduleDbContextTypes)
             {
+                var assembly = moduleDbContextType.Assembly.GetName().Name;
                 var moduleDbOptionBuilderGType = typeof(DbContextOptionsBuilder<>);
                 Type[] typeArgs = { moduleDbContextType };
                 var moduleDbOptionBuilderType = moduleDbOptionBuilderGType.MakeGenericType(typeArgs);
                 var moduleDbOptionBuilder = Activator.CreateInstance(moduleDbOptionBuilderType); //var optionsBuilder = new DbContextOptionsBuilder<DeviserDbContext>();
-                var dbContextOptionBuilder = GetDbContextOptionsBuilder(installModel, (DbContextOptionsBuilder)moduleDbOptionBuilder);
+                var dbContextOptionBuilder = GetDbContextOptionsBuilder(installModel, (DbContextOptionsBuilder)moduleDbOptionBuilder, assembly);
 
-                var moduleDbContextObj = Activator.CreateInstance(moduleDbContextType, dbContextOptionBuilder.Options);
+                var moduleDbContextObj = Activator.CreateInstance(moduleDbContextType, dbContextOptionBuilder.Options) as DbContext;
 
-                var databaseObj = databaseField.GetValue(moduleDbContextObj);
+                await moduleDbContextObj.Database.MigrateAsync();
 
-                registerServiceMethodInfo.Invoke(databaseObj, new object[] { databaseObj });
+                //var databaseObj = databaseField.GetValue(moduleDbContextObj);
+
+                //await (dynamic) registerServiceMethodInfo.Invoke(databaseObj, new object[] { databaseObj });
                 //registerServiceMethodInfo.Invoke(obj, new object[] { serviceCollection });
 
             }
@@ -528,6 +531,15 @@ namespace Deviser.Core.Data.Repositories
         {
             _logger.LogInformation(message);
             await _hubContext.Clients.All.SendAsync("OnUpdateInstallLog", message);
+        }
+        private static void CallGenericMethod(string methodName, Type genericType, object[] parameters)
+        {
+            var getItemMethodInfo = typeof(InstallationProvider).GetMethods(BindingFlags.NonPublic | BindingFlags.Static).FirstOrDefault(m => m.Name == methodName && m.IsGenericMethod);
+
+            if (getItemMethodInfo == null) return;
+
+            var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericType);
+            var result = getItemMethod.Invoke(null, parameters);
         }
     }
 }

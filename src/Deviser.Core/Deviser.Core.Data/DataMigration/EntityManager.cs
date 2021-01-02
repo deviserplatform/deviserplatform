@@ -59,7 +59,7 @@ namespace Deviser.Core.Data.DataMigration
             foreach (var etype in orderedEntityTypes)
             {
                 var entityClrType = etype.EntityType.ClrType;
-                var genericMethodInfo = typeof(DbContext).GetMethod("Set");
+                var genericMethodInfo = typeof(DbContext).GetMethods().First(m => m.Name == "Set" && m.GetParameters().Length == 0 && m.IsGenericMethod); //typeof(DbContext).GetMethod("Set");
                 var setGenericMethod = genericMethodInfo.MakeGenericMethod(entityClrType);
                 var dbSet = setGenericMethod.Invoke(_dbContext, null);
 
