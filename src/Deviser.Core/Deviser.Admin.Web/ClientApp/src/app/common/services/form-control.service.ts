@@ -19,7 +19,7 @@ export class FormControlService {
   constructor(private fb: FormBuilder) { }
 
   getLookUpKeys(lookUpGeneric: any) {
-    if (lookUpGeneric.length == 0 || !lookUpGeneric[0].key) return [];
+    if (!lookUpGeneric || lookUpGeneric.length == 0 || !lookUpGeneric[0].key) return [];
     return Object.keys(lookUpGeneric[0].key);
   }
 
