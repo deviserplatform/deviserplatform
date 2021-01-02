@@ -459,7 +459,9 @@ body {
         background-color: $white;
         border-radius: 50%;
         margin-bottom: 20px;
-        display: inline-block;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
         height: 100px;
         width: 100px;
         line-height: 116px;
@@ -468,7 +470,7 @@ body {
 
         svg {
             width: 30px;
-
+            
             path {
                 fill: $black;
             }
@@ -585,17 +587,25 @@ body {
         }
 
         .thumb-text {
-            background: white;
+            position: absolute;
+            top: 40%;
+            left: 47%;
+            background: #fff;
             color: #ef4934;
             border: 0 solid transparent;
             border-radius: 50%;
-            display: inline-block;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             transition: all .3s ease;
-            font-size: 1.6rem;
-            position: absolute;
-            padding: 30px;
-            top: 40%;
-            left: 47%;
+            margin-bottom: 2rem;
+
+            svg {
+                stroke: #ef4934;
+                width: 30px;
+            }
         }
     }
 

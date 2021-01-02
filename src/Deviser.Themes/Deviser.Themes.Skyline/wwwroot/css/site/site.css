@@ -8354,7 +8354,9 @@ body {
     background-color: #fff;
     border-radius: 50%;
     margin-bottom: 20px;
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     height: 100px;
     width: 100px;
     line-height: 116px;
@@ -8437,17 +8439,23 @@ body {
     .content-wrapper .video-container img {
       width: 100%; }
     .content-wrapper .video-container .thumb-text {
-      background: white;
+      position: absolute;
+      top: 40%;
+      left: 47%;
+      background: #fff;
       color: #ef4934;
       border: 0 solid transparent;
       border-radius: 50%;
-      display: inline-block;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       transition: all .3s ease;
-      font-size: 1.6rem;
-      position: absolute;
-      padding: 30px;
-      top: 40%;
-      left: 47%; }
+      margin-bottom: 2rem; }
+      .content-wrapper .video-container .thumb-text svg {
+        stroke: #ef4934;
+        width: 30px; }
   .content-wrapper .home-action-container {
     padding: 12% 6%; }
     .content-wrapper .home-action-container .home-action-container a.btn {
