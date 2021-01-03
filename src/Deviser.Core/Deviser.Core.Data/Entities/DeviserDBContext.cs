@@ -54,7 +54,7 @@ namespace Deviser.Core.Data
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-                entity.ToTable("User");
+                entity.ToTable("dp_User");
             });
 
             modelBuilder.Entity<UserRole>(entity =>
@@ -71,7 +71,7 @@ namespace Deviser.Core.Data
                     .HasForeignKey(ur => ur.UserId)
                     .IsRequired();
 
-                entity.ToTable("UserRole");
+                entity.ToTable("dp_UserRole");
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -82,34 +82,27 @@ namespace Deviser.Core.Data
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-                entity.ToTable("Role");
+                entity.ToTable("dp_Role");
             });
 
             modelBuilder.Entity<IdentityUserClaim<Guid>>(entity =>
             {
-                entity.ToTable("UserClaim");
+                entity.ToTable("dp_UserClaim");
             });
 
             modelBuilder.Entity<IdentityRoleClaim<Guid>>(entity =>
             {
-                entity.ToTable("RoleClaim");
+                entity.ToTable("dp_RoleClaim");
             });
-
-            //modelBuilder.Entity<UserRole>(entity =>
-            //{
-            //    entity.HasOne(d => d.Role).WithMany(r => r.UserRoles).HasForeignKey(d => d.RoleId).OnDelete(DeleteBehavior.Restrict);
-
-            //    entity.HasOne(d => d.User).WithMany(p => p.UserRoles).HasForeignKey(d => d.UserId).OnDelete(DeleteBehavior.Restrict);
-            //});
-
-            //modelBuilder.Entity<IdentityUserRole<Guid>>(entity =>
-            //{
-
-            //});
 
             modelBuilder.Entity<IdentityUserLogin<Guid>>(entity =>
             {
-                entity.ToTable("UserLogin");
+                entity.ToTable("dp_UserLogin");
+            });
+
+            modelBuilder.Entity<IdentityUserToken<Guid>>(entity =>
+            {
+                entity.ToTable("dp_UserToken");
             });
 
             modelBuilder.Entity<Layout>(entity =>
@@ -119,6 +112,7 @@ namespace Deviser.Core.Data
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.Name).HasMaxLength(50);
+                entity.ToTable("dp_Layout");
             });
 
             modelBuilder.Entity<Module>(entity =>
@@ -144,11 +138,12 @@ namespace Deviser.Core.Data
                 entity.Property(e => e.Version)
                     .IsRequired()
                     .HasMaxLength(10);
+                entity.ToTable("dp_Module");
             });
 
             modelBuilder.Entity<ModuleView>(entity =>
             {
-                entity.HasIndex(e => e.ModuleId).HasName("IX_FK_ModuleViews_Modules");
+                entity.HasIndex(e => e.ModuleId);
 
                 entity.Property(e => e.ActionName).HasMaxLength(50);
 
@@ -165,16 +160,18 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.ModuleViewType).WithMany(p => p.ModuleView).HasForeignKey(d => d.ModuleViewTypeId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(d => d.Module).WithMany(p => p.ModuleView).HasForeignKey(d => d.ModuleId).OnDelete(DeleteBehavior.Restrict);
+                entity.ToTable("dp_ModuleView");
             });
 
             modelBuilder.Entity<ModuleViewType>(entity =>
             {
                 entity.Property(e => e.ControlType).HasMaxLength(50);
+                entity.ToTable("dp_ModuleViewType");
             });
 
             modelBuilder.Entity<Page>(entity =>
             {
-                entity.HasIndex(e => e.ParentId).HasName("IX_FK_Pages_Pages");
+                entity.HasIndex(e => e.ParentId);
 
                 entity.Property(e => e.CreatedDate);
 
@@ -201,6 +198,8 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Parent).WithMany(p => p.ChildPage).HasForeignKey(d => d.ParentId);
 
                 entity.Ignore(e => e.IsBreadCrumb);
+
+                entity.ToTable("dp_Page");
             });
 
 
@@ -229,6 +228,7 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Page).WithMany(p => p.PageContent).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(d => d.ContentType).WithMany(p => p.PageContents).HasForeignKey(d => d.ContentTypeId).OnDelete(DeleteBehavior.Restrict);
+                entity.ToTable("dp_PageContent");
 
             });
 
@@ -249,15 +249,17 @@ namespace Deviser.Core.Data
                 entity.Property(e => e.LastModifiedDate);
 
                 entity.HasOne(d => d.PageContent).WithMany(p => p.PageContentTranslation).HasForeignKey(d => d.PageContentId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.ToTable("dp_PageContentTranslation");
             });
 
             modelBuilder.Entity<PageModule>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.HasIndex(e => e.ModuleId).HasName("IX_FK_PageModule_Modules");
+                entity.HasIndex(e => e.ModuleId);
 
-                entity.HasIndex(e => e.PageId).HasName("IX_FK_PageModule_Module");
+                entity.HasIndex(e => e.PageId);
 
                 entity.Property(e => e.IsActive)
                     .HasDefaultValue(true)
@@ -278,6 +280,8 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Page).WithMany(p => p.PageModule).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(d => d.ModuleView).WithMany(p => p.PageModules).HasForeignKey(d => d.ModuleViewId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.ToTable("dp_PageModule");
             });
 
             modelBuilder.Entity<PageTranslation>(entity =>
@@ -297,12 +301,24 @@ namespace Deviser.Core.Data
                 entity.Property(e => e.URL).HasMaxLength(255);
 
                 entity.HasOne(d => d.Page).WithMany(p => p.PageTranslation).HasForeignKey(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.ToTable("dp_PageTranslation");
             });
 
             modelBuilder.Entity<PageType>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.ToTable("dp_PageType");
             });
+
+            modelBuilder.Entity<Permission>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.ToTable("dp_Permission");
+            });
+
 
             modelBuilder.Entity<AdminPage>(entity =>
             {
@@ -311,11 +327,15 @@ namespace Deviser.Core.Data
                 entity.HasOne(a => a.Page).WithOne(p => p.AdminPage).HasForeignKey<AdminPage>(d => d.PageId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(a => a.Module).WithMany(p => p.AdminPage).HasForeignKey(d => d.ModuleId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.ToTable("dp_AdminPage");
             });
 
             modelBuilder.Entity<SiteSetting>(entity =>
             {
                 entity.Property(e => e.SettingName).HasMaxLength(50);
+
+                entity.ToTable("dp_SiteSetting");
             });
 
             modelBuilder.Entity<Language>(entity =>
@@ -330,6 +350,8 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.LastModifiedDate);
 
+                entity.ToTable("dp_Language");
+
             });
 
             modelBuilder.Entity<LayoutType>(entity =>
@@ -339,6 +361,8 @@ namespace Deviser.Core.Data
                 entity.Property(e => e.IsActive)
                     .HasDefaultValue(true)
                     .ValueGeneratedNever();
+
+                entity.ToTable("dp_LayoutType");
             });
 
             modelBuilder.Entity<ContentFieldType>(entity =>
@@ -350,6 +374,8 @@ namespace Deviser.Core.Data
 
                 entity.Property(e => e.Name)
                     .ValueGeneratedNever();
+
+                entity.ToTable("dp_ContentFieldType");
             });
 
             modelBuilder.Entity<ContentType>(entity =>
@@ -359,6 +385,8 @@ namespace Deviser.Core.Data
                 entity.Property(e => e.IsActive)
                     .HasDefaultValue(true)
                     .ValueGeneratedNever();
+
+                entity.ToTable("dp_ContentType");
 
             });
 
@@ -377,6 +405,8 @@ namespace Deviser.Core.Data
                     .WithMany(p => p.ContentTypeFields)
                     .HasForeignKey(d => d.ContentTypeId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                entity.ToTable("dp_ContentTypeField");
             });
 
             modelBuilder.Entity<Property>(entity =>
@@ -390,6 +420,8 @@ namespace Deviser.Core.Data
                     .ValueGeneratedNever();
 
                 entity.HasOne(d => d.OptionList).WithMany(p => p.Properties).HasForeignKey(d => d.OptionListId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.ToTable("dp_Property");
             });
 
             modelBuilder.Entity<OptionList>(entity =>
@@ -399,6 +431,8 @@ namespace Deviser.Core.Data
                 entity.Property(e => e.IsActive)
                     .HasDefaultValue(true)
                     .ValueGeneratedNever();
+
+                entity.ToTable("dp_OptionList");
             });
 
             modelBuilder.Entity<LayoutTypeProperty>(entity =>
@@ -408,6 +442,8 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Property).WithMany(p => p.LayoutTypeProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasKey(d => new { d.LayoutTypeId, d.PropertyId });
+
+                entity.ToTable("dp_LayoutTypeProperty");
             });
 
             modelBuilder.Entity<ContentTypeProperty>(entity =>
@@ -417,6 +453,8 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Property).WithMany(p => p.ContentTypeProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasKey(d => new { d.ContentTypeId, d.PropertyId });
+
+                entity.ToTable("dp_ContentTypeProperty");
             });
 
             modelBuilder.Entity<PagePermission>(entity =>
@@ -426,6 +464,8 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Permission).WithMany(p => p.PagePermissions).HasForeignKey(d => d.PermissionId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(d => d.Role).WithMany(p => p.PagePermissions).HasForeignKey(d => d.RoleId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.ToTable("dp_PagePermission");
             });
 
             modelBuilder.Entity<ModulePermission>(entity =>
@@ -435,6 +475,8 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Permission).WithMany(p => p.ModulePermissions).HasForeignKey(d => d.PermissionId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(d => d.Role).WithMany(p => p.ModulePermissions).HasForeignKey(d => d.RoleId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.ToTable("dp_ModulePermission");
             });
 
             modelBuilder.Entity<ContentPermission>(entity =>
@@ -444,6 +486,8 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Permission).WithMany(p => p.ContentPermissions).HasForeignKey(d => d.PermissionId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(d => d.Role).WithMany(p => p.ContentPermissions).HasForeignKey(d => d.RoleId).OnDelete(DeleteBehavior.Restrict);
+
+                entity.ToTable("dp_ContentPermission");
             });
 
             modelBuilder.Entity<ModuleViewProperty>(entity =>
@@ -453,6 +497,8 @@ namespace Deviser.Core.Data
                 entity.HasOne(d => d.Property).WithMany(p => p.ModuleViewProperties).HasForeignKey(d => d.PropertyId).OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasKey(d => new { ModuleViewId = d.ModuleViewId, d.PropertyId });
+
+                entity.ToTable("dp_ModuleViewProperty");
             });
         }
 

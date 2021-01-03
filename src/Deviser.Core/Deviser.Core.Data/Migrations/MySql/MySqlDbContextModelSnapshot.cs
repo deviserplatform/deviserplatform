@@ -14,8 +14,8 @@ namespace Deviser.Core.Data.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.1")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64)
+                .HasAnnotation("ProductVersion", "5.0.0");
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.AdminPage", b =>
                 {
@@ -32,7 +32,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("AdminPage");
+                    b.ToTable("dp_AdminPage");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentFieldType", b =>
@@ -52,7 +52,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasAlternateKey("Name");
 
-                    b.ToTable("ContentFieldType");
+                    b.ToTable("dp_ContentFieldType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentPermission", b =>
@@ -78,7 +78,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("ContentPermission");
+                    b.ToTable("dp_ContentPermission");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentType", b =>
@@ -117,7 +117,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContentType");
+                    b.ToTable("dp_ContentType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeField", b =>
@@ -156,7 +156,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("ContentTypeId");
 
-                    b.ToTable("ContentTypeField");
+                    b.ToTable("dp_ContentTypeField");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeProperty", b =>
@@ -171,7 +171,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("ContentTypeProperty");
+                    b.ToTable("dp_ContentTypeProperty");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Language", b =>
@@ -204,7 +204,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("Language");
+                    b.ToTable("dp_Language");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Layout", b =>
@@ -221,12 +221,12 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasDefaultValue(true);
 
                     b.Property<string>("Name")
-                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Layout");
+                    b.ToTable("dp_Layout");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.LayoutType", b =>
@@ -262,7 +262,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("LayoutType");
+                    b.ToTable("dp_LayoutType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.LayoutTypeProperty", b =>
@@ -277,7 +277,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("LayoutTypeProperty");
+                    b.ToTable("dp_LayoutTypeProperty");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Module", b =>
@@ -290,8 +290,8 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("varchar(2000) CHARACTER SET utf8mb4")
-                        .HasMaxLength(2000);
+                        .HasMaxLength(2000)
+                        .HasColumnType("varchar(2000) CHARACTER SET utf8mb4");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)")
@@ -299,25 +299,25 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.Property<string>("Label")
                         .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
 
                     b.Property<string>("Version")
                         .IsRequired()
-                        .HasColumnType("varchar(10) CHARACTER SET utf8mb4")
-                        .HasMaxLength(10);
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Module");
+                    b.ToTable("dp_Module");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModulePermission", b =>
@@ -343,7 +343,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("ModulePermission");
+                    b.ToTable("dp_ModulePermission");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleView", b =>
@@ -353,20 +353,20 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasColumnType("char(36)");
 
                     b.Property<string>("ActionName")
-                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4");
 
                     b.Property<string>("ControllerName")
-                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4");
 
                     b.Property<string>("ControllerNamespace")
-                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4");
 
                     b.Property<string>("DisplayName")
-                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4");
 
                     b.Property<string>("IconClass")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -386,12 +386,11 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ModuleId")
-                        .HasName("IX_FK_ModuleViews_Modules");
+                    b.HasIndex("ModuleId");
 
                     b.HasIndex("ModuleViewTypeId");
 
-                    b.ToTable("ModuleView");
+                    b.ToTable("dp_ModuleView");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleViewProperty", b =>
@@ -406,7 +405,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("ModuleViewProperty");
+                    b.ToTable("dp_ModuleViewProperty");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleViewType", b =>
@@ -416,12 +415,12 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasColumnType("char(36)");
 
                     b.Property<string>("ControlType")
-                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ModuleViewType");
+                    b.ToTable("dp_ModuleViewType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.OptionList", b =>
@@ -452,7 +451,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("OptionList");
+                    b.ToTable("dp_OptionList");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Page", b =>
@@ -503,8 +502,8 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("ThemeSrc")
-                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
@@ -512,10 +511,9 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("PageTypeId");
 
-                    b.HasIndex("ParentId")
-                        .HasName("IX_FK_Pages_Pages");
+                    b.HasIndex("ParentId");
 
-                    b.ToTable("Page");
+                    b.ToTable("dp_Page");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageContent", b =>
@@ -565,7 +563,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("PageId");
 
-                    b.ToTable("PageContent");
+                    b.ToTable("dp_PageContent");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageContentTranslation", b =>
@@ -582,8 +580,8 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.Property<string>("CultureCode")
                         .IsRequired()
-                        .HasColumnType("varchar(10) CHARACTER SET utf8mb4")
-                        .HasMaxLength(10);
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10) CHARACTER SET utf8mb4");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)")
@@ -599,7 +597,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("PageContentId");
 
-                    b.ToTable("PageContentTranslation");
+                    b.ToTable("dp_PageContentTranslation");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageModule", b =>
@@ -642,15 +640,13 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ModuleId")
-                        .HasName("IX_FK_PageModule_Modules");
+                    b.HasIndex("ModuleId");
 
                     b.HasIndex("ModuleViewId");
 
-                    b.HasIndex("PageId")
-                        .HasName("IX_FK_PageModule_Module");
+                    b.HasIndex("PageId");
 
-                    b.ToTable("PageModule");
+                    b.ToTable("dp_PageModule");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PagePermission", b =>
@@ -676,7 +672,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("PagePermission");
+                    b.ToTable("dp_PagePermission");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageTranslation", b =>
@@ -685,23 +681,23 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Locale")
-                        .HasColumnType("varchar(10) CHARACTER SET utf8mb4")
-                        .HasMaxLength(10);
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10) CHARACTER SET utf8mb4");
 
                     b.Property<string>("Description")
-                        .HasColumnType("varchar(500) CHARACTER SET utf8mb4")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500) CHARACTER SET utf8mb4");
 
                     b.Property<bool>("IsLinkNewWindow")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Keywords")
-                        .HasColumnType("varchar(500) CHARACTER SET utf8mb4")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500) CHARACTER SET utf8mb4");
 
                     b.Property<string>("Name")
-                        .HasColumnType("varchar(100) CHARACTER SET utf8mb4")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100) CHARACTER SET utf8mb4");
 
                     b.Property<string>("PageHeaderTags")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -710,16 +706,16 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Title")
-                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4");
 
                     b.Property<string>("URL")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.HasKey("PageId", "Locale");
 
-                    b.ToTable("PageTranslation");
+                    b.ToTable("dp_PageTranslation");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageType", b =>
@@ -732,13 +728,12 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("PageType");
+                    b.ToTable("dp_PageType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Permission", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime?>("CreatedDate")
@@ -761,7 +756,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasKey("Id");
 
-                    b.ToTable("Permission");
+                    b.ToTable("dp_Permission");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Property", b =>
@@ -799,7 +794,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("OptionListId");
 
-                    b.ToTable("Property");
+                    b.ToTable("dp_Property");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Role", b =>
@@ -813,20 +808,20 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Name")
-                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4");
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex");
+                        .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("Role");
+                    b.ToTable("dp_Role");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.SiteSetting", b =>
@@ -836,15 +831,15 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasColumnType("char(36)");
 
                     b.Property<string>("SettingName")
-                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4");
 
                     b.Property<string>("SettingValue")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
-                    b.ToTable("SiteSetting");
+                    b.ToTable("dp_SiteSetting");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.User", b =>
@@ -861,19 +856,19 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Email")
-                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("varchar(100) CHARACTER SET utf8mb4")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100) CHARACTER SET utf8mb4");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("varchar(100) CHARACTER SET utf8mb4")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100) CHARACTER SET utf8mb4");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -882,12 +877,12 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -905,19 +900,19 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
-                        .HasName("EmailIndex");
+                        .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex");
+                        .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("User");
+                    b.ToTable("dp_User");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.UserRole", b =>
@@ -932,7 +927,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRole");
+                    b.ToTable("dp_UserRole");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -954,7 +949,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleClaim");
+                    b.ToTable("dp_RoleClaim");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
@@ -976,7 +971,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserClaim");
+                    b.ToTable("dp_UserClaim");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
@@ -997,7 +992,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLogin");
+                    b.ToTable("dp_UserLogin");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -1016,7 +1011,7 @@ namespace Deviser.Core.Data.Migrations.MySql
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens");
+                    b.ToTable("dp_UserToken");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.AdminPage", b =>
@@ -1032,6 +1027,10 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("Deviser.Core.Data.Entities.AdminPage", "PageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Module");
+
+                    b.Navigation("Page");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentPermission", b =>
@@ -1053,6 +1052,12 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("PageContent");
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeField", b =>
@@ -1068,6 +1073,10 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("ContentTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("ContentFieldType");
+
+                    b.Navigation("ContentType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeProperty", b =>
@@ -1083,6 +1092,10 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("ContentType");
+
+                    b.Navigation("Property");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.LayoutTypeProperty", b =>
@@ -1098,6 +1111,10 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("LayoutType");
+
+                    b.Navigation("Property");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModulePermission", b =>
@@ -1119,6 +1136,12 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("PageModule");
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleView", b =>
@@ -1134,6 +1157,10 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("ModuleViewTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Module");
+
+                    b.Navigation("ModuleViewType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleViewProperty", b =>
@@ -1149,6 +1176,10 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("ModuleView");
+
+                    b.Navigation("Property");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Page", b =>
@@ -1165,6 +1196,12 @@ namespace Deviser.Core.Data.Migrations.MySql
                     b.HasOne("Deviser.Core.Data.Entities.Page", "Parent")
                         .WithMany("ChildPage")
                         .HasForeignKey("ParentId");
+
+                    b.Navigation("Layout");
+
+                    b.Navigation("PageType");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageContent", b =>
@@ -1180,6 +1217,10 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("PageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("ContentType");
+
+                    b.Navigation("Page");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageContentTranslation", b =>
@@ -1189,6 +1230,8 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("PageContentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("PageContent");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageModule", b =>
@@ -1210,6 +1253,12 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("PageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Module");
+
+                    b.Navigation("ModuleView");
+
+                    b.Navigation("Page");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PagePermission", b =>
@@ -1231,6 +1280,12 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Page");
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageTranslation", b =>
@@ -1240,6 +1295,8 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("PageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Page");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Property", b =>
@@ -1248,6 +1305,8 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .WithMany("Properties")
                         .HasForeignKey("OptionListId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("OptionList");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.UserRole", b =>
@@ -1263,6 +1322,10 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -1299,6 +1362,126 @@ namespace Deviser.Core.Data.Migrations.MySql
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ContentFieldType", b =>
+                {
+                    b.Navigation("ContentTypeFields");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ContentType", b =>
+                {
+                    b.Navigation("ContentTypeFields");
+
+                    b.Navigation("ContentTypeProperties");
+
+                    b.Navigation("PageContents");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Layout", b =>
+                {
+                    b.Navigation("Page");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.LayoutType", b =>
+                {
+                    b.Navigation("LayoutTypeProperties");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Module", b =>
+                {
+                    b.Navigation("AdminPage");
+
+                    b.Navigation("ModuleView");
+
+                    b.Navigation("PageModule");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleView", b =>
+                {
+                    b.Navigation("ModuleViewProperties");
+
+                    b.Navigation("PageModules");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleViewType", b =>
+                {
+                    b.Navigation("ModuleView");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.OptionList", b =>
+                {
+                    b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Page", b =>
+                {
+                    b.Navigation("AdminPage");
+
+                    b.Navigation("ChildPage");
+
+                    b.Navigation("PageContent");
+
+                    b.Navigation("PageModule");
+
+                    b.Navigation("PagePermissions");
+
+                    b.Navigation("PageTranslation");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.PageContent", b =>
+                {
+                    b.Navigation("ContentPermissions");
+
+                    b.Navigation("PageContentTranslation");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.PageModule", b =>
+                {
+                    b.Navigation("ModulePermissions");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.PageType", b =>
+                {
+                    b.Navigation("Page");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Permission", b =>
+                {
+                    b.Navigation("ContentPermissions");
+
+                    b.Navigation("ModulePermissions");
+
+                    b.Navigation("PagePermissions");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Property", b =>
+                {
+                    b.Navigation("ContentTypeProperties");
+
+                    b.Navigation("LayoutTypeProperties");
+
+                    b.Navigation("ModuleViewProperties");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Role", b =>
+                {
+                    b.Navigation("ContentPermissions");
+
+                    b.Navigation("ModulePermissions");
+
+                    b.Navigation("PagePermissions");
+
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.User", b =>
+                {
+                    b.Navigation("UserClaims");
+
+                    b.Navigation("UserLogins");
+
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

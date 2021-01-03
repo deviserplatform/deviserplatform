@@ -14,7 +14,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.1");
+                .HasAnnotation("ProductVersion", "5.0.0");
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.AdminPage", b =>
                 {
@@ -31,7 +31,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("AdminPage");
+                    b.ToTable("dp_AdminPage");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentFieldType", b =>
@@ -51,7 +51,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasAlternateKey("Name");
 
-                    b.ToTable("ContentFieldType");
+                    b.ToTable("dp_ContentFieldType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentPermission", b =>
@@ -77,7 +77,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("ContentPermission");
+                    b.ToTable("dp_ContentPermission");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentType", b =>
@@ -116,7 +116,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContentType");
+                    b.ToTable("dp_ContentType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeField", b =>
@@ -155,7 +155,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("ContentTypeId");
 
-                    b.ToTable("ContentTypeField");
+                    b.ToTable("dp_ContentTypeField");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeProperty", b =>
@@ -170,7 +170,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("ContentTypeProperty");
+                    b.ToTable("dp_ContentTypeProperty");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Language", b =>
@@ -203,7 +203,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasKey("Id");
 
-                    b.ToTable("Language");
+                    b.ToTable("dp_Language");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Layout", b =>
@@ -220,12 +220,12 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasDefaultValue(true);
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Layout");
+                    b.ToTable("dp_Layout");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.LayoutType", b =>
@@ -261,7 +261,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasKey("Id");
 
-                    b.ToTable("LayoutType");
+                    b.ToTable("dp_LayoutType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.LayoutTypeProperty", b =>
@@ -276,7 +276,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("LayoutTypeProperty");
+                    b.ToTable("dp_LayoutTypeProperty");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Module", b =>
@@ -289,8 +289,8 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(2000);
+                        .HasMaxLength(2000)
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER")
@@ -298,25 +298,25 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.Property<string>("Label")
                         .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Version")
                         .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(10);
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Module");
+                    b.ToTable("dp_Module");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModulePermission", b =>
@@ -342,7 +342,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("ModulePermission");
+                    b.ToTable("dp_ModulePermission");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleView", b =>
@@ -352,20 +352,20 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ActionName")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ControllerName")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ControllerNamespace")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("DisplayName")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("IconClass")
                         .HasColumnType("TEXT");
@@ -385,12 +385,11 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ModuleId")
-                        .HasName("IX_FK_ModuleViews_Modules");
+                    b.HasIndex("ModuleId");
 
                     b.HasIndex("ModuleViewTypeId");
 
-                    b.ToTable("ModuleView");
+                    b.ToTable("dp_ModuleView");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleViewProperty", b =>
@@ -405,7 +404,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("ModuleViewProperty");
+                    b.ToTable("dp_ModuleViewProperty");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleViewType", b =>
@@ -415,12 +414,12 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ControlType")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ModuleViewType");
+                    b.ToTable("dp_ModuleViewType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.OptionList", b =>
@@ -451,7 +450,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasKey("Id");
 
-                    b.ToTable("OptionList");
+                    b.ToTable("dp_OptionList");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Page", b =>
@@ -502,8 +501,8 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ThemeSrc")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -511,10 +510,9 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("PageTypeId");
 
-                    b.HasIndex("ParentId")
-                        .HasName("IX_FK_Pages_Pages");
+                    b.HasIndex("ParentId");
 
-                    b.ToTable("Page");
+                    b.ToTable("dp_Page");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageContent", b =>
@@ -564,7 +562,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("PageId");
 
-                    b.ToTable("PageContent");
+                    b.ToTable("dp_PageContent");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageContentTranslation", b =>
@@ -581,8 +579,8 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.Property<string>("CultureCode")
                         .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(10);
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER")
@@ -598,7 +596,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("PageContentId");
 
-                    b.ToTable("PageContentTranslation");
+                    b.ToTable("dp_PageContentTranslation");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageModule", b =>
@@ -641,15 +639,13 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ModuleId")
-                        .HasName("IX_FK_PageModule_Modules");
+                    b.HasIndex("ModuleId");
 
                     b.HasIndex("ModuleViewId");
 
-                    b.HasIndex("PageId")
-                        .HasName("IX_FK_PageModule_Module");
+                    b.HasIndex("PageId");
 
-                    b.ToTable("PageModule");
+                    b.ToTable("dp_PageModule");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PagePermission", b =>
@@ -675,7 +671,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("PagePermission");
+                    b.ToTable("dp_PagePermission");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageTranslation", b =>
@@ -684,23 +680,23 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Locale")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(10);
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("IsLinkNewWindow")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Keywords")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PageHeaderTags")
                         .HasColumnType("TEXT");
@@ -709,16 +705,16 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("URL")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(255);
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("PageId", "Locale");
 
-                    b.ToTable("PageTranslation");
+                    b.ToTable("dp_PageTranslation");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageType", b =>
@@ -731,13 +727,12 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasKey("Id");
 
-                    b.ToTable("PageType");
+                    b.ToTable("dp_PageType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Permission", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("CreatedDate")
@@ -760,7 +755,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasKey("Id");
 
-                    b.ToTable("Permission");
+                    b.ToTable("dp_Permission");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Property", b =>
@@ -798,7 +793,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("OptionListId");
 
-                    b.ToTable("Property");
+                    b.ToTable("dp_Property");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Role", b =>
@@ -812,20 +807,20 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex");
+                        .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("Role");
+                    b.ToTable("dp_Role");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.SiteSetting", b =>
@@ -835,15 +830,15 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SettingName")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("SettingValue")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("SiteSetting");
+                    b.ToTable("dp_SiteSetting");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.User", b =>
@@ -860,19 +855,19 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("INTEGER");
@@ -881,12 +876,12 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasColumnType("TEXT");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("TEXT");
@@ -904,19 +899,19 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
-                        .HasName("EmailIndex");
+                        .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex");
+                        .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("User");
+                    b.ToTable("dp_User");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.UserRole", b =>
@@ -931,7 +926,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRole");
+                    b.ToTable("dp_UserRole");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -953,7 +948,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleClaim");
+                    b.ToTable("dp_RoleClaim");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
@@ -975,7 +970,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserClaim");
+                    b.ToTable("dp_UserClaim");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
@@ -996,7 +991,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLogin");
+                    b.ToTable("dp_UserLogin");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -1015,7 +1010,7 @@ namespace Deviser.Core.Data.Migrations.SqlLite
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens");
+                    b.ToTable("dp_UserToken");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.AdminPage", b =>
@@ -1031,6 +1026,10 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("Deviser.Core.Data.Entities.AdminPage", "PageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Module");
+
+                    b.Navigation("Page");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentPermission", b =>
@@ -1052,6 +1051,12 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("PageContent");
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeField", b =>
@@ -1067,6 +1072,10 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("ContentTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("ContentFieldType");
+
+                    b.Navigation("ContentType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ContentTypeProperty", b =>
@@ -1082,6 +1091,10 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("ContentType");
+
+                    b.Navigation("Property");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.LayoutTypeProperty", b =>
@@ -1097,6 +1110,10 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("LayoutType");
+
+                    b.Navigation("Property");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModulePermission", b =>
@@ -1118,6 +1135,12 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("PageModule");
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleView", b =>
@@ -1133,6 +1156,10 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("ModuleViewTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Module");
+
+                    b.Navigation("ModuleViewType");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleViewProperty", b =>
@@ -1148,6 +1175,10 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("ModuleView");
+
+                    b.Navigation("Property");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Page", b =>
@@ -1164,6 +1195,12 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                     b.HasOne("Deviser.Core.Data.Entities.Page", "Parent")
                         .WithMany("ChildPage")
                         .HasForeignKey("ParentId");
+
+                    b.Navigation("Layout");
+
+                    b.Navigation("PageType");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageContent", b =>
@@ -1179,6 +1216,10 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("PageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("ContentType");
+
+                    b.Navigation("Page");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageContentTranslation", b =>
@@ -1188,6 +1229,8 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("PageContentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("PageContent");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageModule", b =>
@@ -1209,6 +1252,12 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("PageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Module");
+
+                    b.Navigation("ModuleView");
+
+                    b.Navigation("Page");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PagePermission", b =>
@@ -1230,6 +1279,12 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Page");
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.PageTranslation", b =>
@@ -1239,6 +1294,8 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("PageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Page");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.Property", b =>
@@ -1247,6 +1304,8 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .WithMany("Properties")
                         .HasForeignKey("OptionListId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("OptionList");
                 });
 
             modelBuilder.Entity("Deviser.Core.Data.Entities.UserRole", b =>
@@ -1262,6 +1321,10 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -1298,6 +1361,126 @@ namespace Deviser.Core.Data.Migrations.SqlLite
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ContentFieldType", b =>
+                {
+                    b.Navigation("ContentTypeFields");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ContentType", b =>
+                {
+                    b.Navigation("ContentTypeFields");
+
+                    b.Navigation("ContentTypeProperties");
+
+                    b.Navigation("PageContents");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Layout", b =>
+                {
+                    b.Navigation("Page");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.LayoutType", b =>
+                {
+                    b.Navigation("LayoutTypeProperties");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Module", b =>
+                {
+                    b.Navigation("AdminPage");
+
+                    b.Navigation("ModuleView");
+
+                    b.Navigation("PageModule");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleView", b =>
+                {
+                    b.Navigation("ModuleViewProperties");
+
+                    b.Navigation("PageModules");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.ModuleViewType", b =>
+                {
+                    b.Navigation("ModuleView");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.OptionList", b =>
+                {
+                    b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Page", b =>
+                {
+                    b.Navigation("AdminPage");
+
+                    b.Navigation("ChildPage");
+
+                    b.Navigation("PageContent");
+
+                    b.Navigation("PageModule");
+
+                    b.Navigation("PagePermissions");
+
+                    b.Navigation("PageTranslation");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.PageContent", b =>
+                {
+                    b.Navigation("ContentPermissions");
+
+                    b.Navigation("PageContentTranslation");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.PageModule", b =>
+                {
+                    b.Navigation("ModulePermissions");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.PageType", b =>
+                {
+                    b.Navigation("Page");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Permission", b =>
+                {
+                    b.Navigation("ContentPermissions");
+
+                    b.Navigation("ModulePermissions");
+
+                    b.Navigation("PagePermissions");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Property", b =>
+                {
+                    b.Navigation("ContentTypeProperties");
+
+                    b.Navigation("LayoutTypeProperties");
+
+                    b.Navigation("ModuleViewProperties");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.Role", b =>
+                {
+                    b.Navigation("ContentPermissions");
+
+                    b.Navigation("ModulePermissions");
+
+                    b.Navigation("PagePermissions");
+
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Deviser.Core.Data.Entities.User", b =>
+                {
+                    b.Navigation("UserClaims");
+
+                    b.Navigation("UserLogins");
+
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Core.Common
 {
@@ -10,6 +12,14 @@ namespace Deviser.Core.Common
     {
         private static string applicationMapPath;
         private static string hostMapPath;
+
+        public static Dictionary<DatabaseProvider, string> ConnectionStringKeys = new Dictionary<DatabaseProvider, string>()
+        {
+            {DatabaseProvider.PostgreSql, "PostgreSqlConnection"},
+            {DatabaseProvider.MySql, "MySqlConnection"},
+            {DatabaseProvider.SqlLite, "SqlLiteConnection"},
+            {DatabaseProvider.SqlServer, "SqlServerConnection"}
+        };
 
         public const string DeviserDevelopmentEnvironment = "DeviserDevelopment";
 

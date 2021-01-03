@@ -18,7 +18,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Deviser.Core.Common.Extensions;
 using Deviser.Core.Common.Hubs;
+using Deviser.Core.Data.Installation.Contexts;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -40,9 +42,11 @@ namespace Deviser.Core.Data.Repositories
         private DbContextOptions _dbContextOptions;
         private DbContextOptionsBuilder _dbContextOptionsBuilder;
         private static InstallModel _installModel;
+        private static Dictionary<DatabaseProvider, string> ConnectionStringKeys = Globals.ConnectionStringKeys;
         private static bool _isInstallInProgress;
         private static bool _isPlatformInstalled;
         private static bool _isDbExist;
+
 
         public InstallationProvider(IWebHostEnvironment hostingEnvironment,
             IHubContext<ApplicationHub> hubContext,
@@ -104,7 +108,13 @@ namespace Deviser.Core.Data.Repositories
             //{
             //Creating database                        
             await UpdateInstallLog($"Creating database");
-            await using var context = new DeviserDbContext(dbOption);
+            var deviserDbContextType = typeof(DeviserDbContext);
+            var contextType = this.GetType().Assembly.DefinedTypes
+                .FirstOrDefault(t =>
+                    deviserDbContextType.IsAssignableFrom(t) &&
+                    t.Name.ToLower().Contains(installModel.DatabaseProvider.ToString().ToLower()));
+
+            await using var context = GetDbContext(contextType, dbOption);
             await UpdateInstallLog($"Creating platform database objects");
             await context.Database.MigrateAsync();
 
@@ -159,20 +169,23 @@ namespace Deviser.Core.Data.Repositories
             var json = File.ReadAllText(settingFile);
             if (string.IsNullOrEmpty(json))
             {
-                var jsonObj = JObject.FromObject(new
-                {
-                    ConnectionStrings = new
-                    {
-                        DefaultConnection = connectionString
-                    }
-                });
+                //var jsonObj = JObject.FromObject(new
+                //{
+                //    ConnectionStrings = new
+                //    {
+                //        DefaultConnection = connectionString
+                //    }
+                //});
+                //var jsonObj = JObject.Parse(@$"{{ ConnectionStrings: {{ ""{ConnectionStringKeys[installModel.DatabaseProvider]}"":""{connectionString}"" }} }}");
+                var jsonObj = JObject.Parse(@"{'ConnectionStrings': {}}");
+                jsonObj["ConnectionStrings"][ConnectionStringKeys[installModel.DatabaseProvider]] = connectionString;
                 var output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
                 await File.WriteAllTextAsync(settingFile, output);
             }
             else
             {
                 var jsonObj = JObject.Parse(json);
-                jsonObj["ConnectionStrings"]["DefaultConnection"] = connectionString;
+                jsonObj["ConnectionStrings"][ConnectionStringKeys[installModel.DatabaseProvider]] = connectionString;
                 var output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
                 await File.WriteAllTextAsync(settingFile, output);
             }
@@ -188,6 +201,12 @@ namespace Deviser.Core.Data.Repositories
             await UpdateInstallLog($"Deviser Platform has been installed successfully!");
         }
 
+        public DbContext GetDbContext(Type dbContextType, DbContextOptions options)
+        {
+            var dbContext = Activator.CreateInstance(dbContextType, options) as DbContext;
+            return dbContext;
+        }
+
         public void InsertData(DbContextOptions<DeviserDbContext> dbOption)
         {
             using var context = new DeviserDbContext(dbOption);
@@ -197,17 +216,13 @@ namespace Deviser.Core.Data.Repositories
 
         public string GetConnectionString(InstallModel model)
         {
-            if (model.DatabaseProvider == DatabaseProvider.SQLServer)
+            if (model.DatabaseProvider == DatabaseProvider.SqlServer)
             {
                 if (model.IsIntegratedSecurity)
                     return $"Server={model.ServerName};Database={model.DatabaseName};Trusted_Connection=True;MultipleActiveResultSets=true";
                 return $"Server={model.ServerName};Database={model.DatabaseName};User Id={model.DBUserName};Password={model.DBPassword}";
             }
-            else if (model.DatabaseProvider == DatabaseProvider.SQLLocalDb)
-            {
-                return $"Server={model.ServerName};Database={model.DatabaseName};Trusted_Connection=True;MultipleActiveResultSets=true";
-            }
-            else if (model.DatabaseProvider == DatabaseProvider.PostgreSQL)
+            else if (model.DatabaseProvider == DatabaseProvider.PostgreSql)
             {
                 var host = model.ServerName;
                 var port = "";
@@ -221,7 +236,7 @@ namespace Deviser.Core.Data.Repositories
 
                 return $"Host={host};{((!string.IsNullOrEmpty(port)) ? $"Port={port};" : "")}Database={model.DatabaseName};User ID={model.DBUserName};Password={model.DBPassword};";
             }
-            else if (model.DatabaseProvider == DatabaseProvider.MySQL)
+            else if (model.DatabaseProvider == DatabaseProvider.MySql)
             {
                 var host = model.ServerName;
                 var port = "";
@@ -298,10 +313,10 @@ namespace Deviser.Core.Data.Repositories
 
         private DbContextOptionsBuilder GetDbContextOptionsBuilder(InstallModel installModel, DbContextOptionsBuilder optionsBuilder, string moduleAssembly = null)
         {
-            var connectionString = IsPlatformInstalled ? _configuration.GetConnectionString("DefaultConnection") : GetConnectionString(installModel);
+            var connectionString = IsPlatformInstalled ? _configuration.GetConnectionString(ConnectionStringKeys[installModel.DatabaseProvider]) : GetConnectionString(installModel);
 
 
-            if (installModel.DatabaseProvider == DatabaseProvider.SQLServer || installModel.DatabaseProvider == DatabaseProvider.SQLLocalDb)
+            if (installModel.DatabaseProvider == DatabaseProvider.SqlServer)
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
@@ -318,7 +333,7 @@ namespace Deviser.Core.Data.Repositories
                 }
 
             }
-            else if (installModel.DatabaseProvider == DatabaseProvider.PostgreSQL)
+            else if (installModel.DatabaseProvider == DatabaseProvider.PostgreSql)
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
@@ -334,7 +349,7 @@ namespace Deviser.Core.Data.Repositories
                     .ReplaceService<IHistoryRepository, NpgsqlModuleHistoryRepository>();
                 }
             }
-            else if (installModel.DatabaseProvider == DatabaseProvider.MySQL)
+            else if (installModel.DatabaseProvider == DatabaseProvider.MySql)
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
@@ -373,10 +388,10 @@ namespace Deviser.Core.Data.Repositories
         private DbContextOptionsBuilder<TContext> GetDbContextOptionsBuilder<TContext>(InstallModel installModel, DbContextOptionsBuilder<TContext> optionsBuilder, string moduleAssembly = null)
             where TContext : DbContext
         {
-            var connectionString = IsPlatformInstalled ? _configuration.GetConnectionString("DefaultConnection") : GetConnectionString(installModel);
+            var connectionString = IsPlatformInstalled ? _configuration.GetConnectionString(ConnectionStringKeys[installModel.DatabaseProvider]) : GetConnectionString(installModel);
 
 
-            if (installModel.DatabaseProvider == DatabaseProvider.SQLServer || installModel.DatabaseProvider == DatabaseProvider.SQLLocalDb)
+            if (installModel.DatabaseProvider == DatabaseProvider.SqlServer)
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
@@ -393,7 +408,7 @@ namespace Deviser.Core.Data.Repositories
                 }
 
             }
-            else if (installModel.DatabaseProvider == DatabaseProvider.PostgreSQL)
+            else if (installModel.DatabaseProvider == DatabaseProvider.PostgreSql)
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
@@ -409,7 +424,7 @@ namespace Deviser.Core.Data.Repositories
                     .ReplaceService<IHistoryRepository, NpgsqlModuleHistoryRepository>();
                 }
             }
-            else if (installModel.DatabaseProvider == DatabaseProvider.MySQL)
+            else if (installModel.DatabaseProvider == DatabaseProvider.MySql)
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
@@ -498,10 +513,10 @@ namespace Deviser.Core.Data.Repositories
             //var registerServiceMethodInfo = typeof(Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions).GetMethod("MigrateAsync");
             foreach (var assembly in assemblies)
             {
-                var controllerTypes = assembly.DefinedTypes.Where(t => moduleDbContextBaseType.IsAssignableFrom(t)).ToList();
+                var moduleDbContextTypesOnAssembly = assembly.DefinedTypes.Where(t => t.IsSubclassOf(moduleDbContextBaseType) && t.BaseType == moduleDbContextBaseType).ToList();
 
-                if (controllerTypes != null && controllerTypes.Count > 0)
-                    moduleDbContextTypes.AddRange(controllerTypes);
+                if (moduleDbContextTypesOnAssembly.Count > 0)
+                    moduleDbContextTypes.AddRange(moduleDbContextTypesOnAssembly);
             }
 
             if (moduleDbContextTypes.Count <= 0) return;
@@ -515,15 +530,13 @@ namespace Deviser.Core.Data.Repositories
                 var moduleDbOptionBuilder = Activator.CreateInstance(moduleDbOptionBuilderType); //var optionsBuilder = new DbContextOptionsBuilder<DeviserDbContext>();
                 var dbContextOptionBuilder = GetDbContextOptionsBuilder(installModel, (DbContextOptionsBuilder)moduleDbOptionBuilder, assembly);
 
-                var moduleDbContextObj = Activator.CreateInstance(moduleDbContextType, dbContextOptionBuilder.Options) as DbContext;
+                var contextType = moduleDbContextType.Assembly.DefinedTypes
+                    .FirstOrDefault(t =>
+                        moduleDbContextType.IsAssignableFrom(t) &&
+                        t.Name.ToLower().Contains(installModel.DatabaseProvider.ToString().ToLower()));
 
-                await moduleDbContextObj.Database.MigrateAsync();
-
-                //var databaseObj = databaseField.GetValue(moduleDbContextObj);
-
-                //await (dynamic) registerServiceMethodInfo.Invoke(databaseObj, new object[] { databaseObj });
-                //registerServiceMethodInfo.Invoke(obj, new object[] { serviceCollection });
-
+                await using var moduleDbContext = GetDbContext(contextType, dbContextOptionBuilder.Options);
+                await moduleDbContext.Database.MigrateAsync();
             }
         }
 

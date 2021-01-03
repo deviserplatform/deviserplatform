@@ -8,11 +8,10 @@ namespace Deviser.Core.Common.DomainTypes
 {
     public enum DatabaseProvider
     {
-        SQLLocalDb = 1,
-        SQLServer = 2,
-        SQLite = 3,
-        PostgreSQL = 4,
-        MySQL = 5,
+        SqlServer = 1,
+        SqlLite = 2,
+        PostgreSql = 3,
+        MySql = 4,
     }
 
     public class InstallModel

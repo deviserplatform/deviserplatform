@@ -4,9 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Linq;
 using System.Text;
-using Deviser.Admin.Config;
+using Deviser.Core.Common;
+using Deviser.Core.Common.DomainTypes;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
+using FieldType = Deviser.Admin.Config.FieldType;
 
 namespace Deviser.Modules.Blog.Models
 {
@@ -27,7 +32,12 @@ namespace Deviser.Modules.Blog.Models
                 entity.HasIndex(p => p.Name).IsUnique();
                 entity.Property(p => p.CreatedOn).IsRequired();
                 entity.Property(p => p.CreatedBy).IsRequired();
-                entity.ToTable("dm_Blog");
+                entity.ToTable("dm_blog_Blog");
+            });
+
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.ToTable("dm_blog_Category");
             });
 
             modelBuilder.Entity<Post>(entity =>
@@ -43,21 +53,21 @@ namespace Deviser.Modules.Blog.Models
                 entity.HasOne(p => p.Category).WithMany(c => c.Posts).HasForeignKey(p => p.CategoryId);
                 entity.HasMany(p => p.Tags)
                     .WithMany(p => p.Posts)
-                    .UsingEntity(j => j.ToTable("dm_PostTag"));
-                entity.ToTable("dm_Post");
+                    .UsingEntity(j => j.ToTable("dm_blog_PostTag"));
+                entity.ToTable("dm_blog_Post");
             });
 
             modelBuilder.Entity<Tag>(entity =>
             {
                 entity.Property(t => t.Id).ValueGeneratedOnAdd();
                 entity.HasIndex(t => t.Name).IsUnique();
-                entity.ToTable("dm_Tag");
+                entity.ToTable("dm_blog_Tag");
             });
             
             modelBuilder.Entity<Comments>(entity =>
             {
                 entity.HasOne(d => d.Post).WithMany(p => p.Comments).HasForeignKey(d => d.PostId).OnDelete(DeleteBehavior.Restrict);
-                entity.ToTable("dm_Comment");
+                entity.ToTable("dm_blog_Comment");
             });
         }
         public virtual DbSet<Blog> Blogs { get; set; }
@@ -120,14 +130,6 @@ namespace Deviser.Modules.Blog.Models
         public ICollection<Post> Posts { get; set; }
     }
 
-    //public class PostTag
-    //{
-    //    public Guid PostId { get; set; }
-    //    public Post Post { get; set; }
-    //    public Guid TagId { get; set; }
-    //    public Tag Tag { get; set; }
-    //}
-
     public class Comments
     {
         public Guid Id { get; set; }
@@ -137,5 +139,101 @@ namespace Deviser.Modules.Blog.Models
         public bool IsApproved { get; set; }
         public Guid PostId { get; set; }
         public Post Post { get; set; }
+    }
+
+
+    public class MySqlBlogDbContext : BlogDbContext
+    {
+        public MySqlBlogDbContext(DbContextOptions<BlogDbContext> options)
+            : base(options)
+        {
+
+        }
+    }
+
+    public class PostgreSqlBlogDbContext : BlogDbContext
+    {
+        public PostgreSqlBlogDbContext(DbContextOptions<BlogDbContext> options)
+            : base(options)
+        {
+
+        }
+    }
+
+    public class SqlLiteBlogDbContext : BlogDbContext
+    {
+        public SqlLiteBlogDbContext(DbContextOptions<BlogDbContext> options)
+            : base(options)
+        {
+
+        }
+    }
+
+    public class SqlServerBlogDbContext : BlogDbContext
+    {
+        public SqlServerBlogDbContext(DbContextOptions<BlogDbContext> options)
+            : base(options)
+        {
+
+        }
+    }
+    public class SqlLiteDbContextDesignTimeDbContextFactory : IDesignTimeDbContextFactory<SqlLiteBlogDbContext>
+    {
+        public SqlLiteBlogDbContext CreateDbContext(string[] args)
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.Development.json")
+                .Build();
+            var builder = new DbContextOptionsBuilder<BlogDbContext>();
+            var connectionString = configuration.GetConnectionString(Globals.ConnectionStringKeys[DatabaseProvider.SqlLite]);
+            builder.UseSqlite(connectionString, b => b.MigrationsAssembly("Deviser.Modules.Blog"));
+            return new SqlLiteBlogDbContext(builder.Options);
+        }
+    }
+
+    public class SqlServerDbContextDbContextDesignTimeDbContextFactory : IDesignTimeDbContextFactory<SqlServerBlogDbContext>
+    {
+        public SqlServerBlogDbContext CreateDbContext(string[] args)
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.Development.json")
+                .Build();
+            var builder = new DbContextOptionsBuilder<BlogDbContext>();
+            var connectionString = configuration.GetConnectionString(Globals.ConnectionStringKeys[DatabaseProvider.SqlServer]);
+            builder.UseSqlServer(connectionString, b => b.MigrationsAssembly("Deviser.Modules.Blog"));
+            return new SqlServerBlogDbContext(builder.Options);
+        }
+    }
+
+    public class PostgreSqlDbContextDbContextDesignTimeDbContextFactory : IDesignTimeDbContextFactory<PostgreSqlBlogDbContext>
+    {
+        public PostgreSqlBlogDbContext CreateDbContext(string[] args)
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.Development.json")
+                .Build();
+            var builder = new DbContextOptionsBuilder<BlogDbContext>();
+            var connectionString = configuration.GetConnectionString(Globals.ConnectionStringKeys[DatabaseProvider.PostgreSql]);
+            builder.UseNpgsql(connectionString, b => b.MigrationsAssembly("Deviser.Modules.Blog"));
+            return new PostgreSqlBlogDbContext(builder.Options);
+        }
+    }
+
+    public class MySqlDbContextContextDesignTimeDbContextFactory : IDesignTimeDbContextFactory<MySqlBlogDbContext>
+    {
+        public MySqlBlogDbContext CreateDbContext(string[] args)
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.Development.json")
+                .Build();
+            var builder = new DbContextOptionsBuilder<BlogDbContext>();
+            var connectionString = configuration.GetConnectionString(Globals.ConnectionStringKeys[DatabaseProvider.MySql]);
+            builder.UseMySql(connectionString, b => b.MigrationsAssembly("Deviser.Modules.Blog"));
+            return new MySqlBlogDbContext(builder.Options);
+        }
     }
 }
