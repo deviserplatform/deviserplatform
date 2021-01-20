@@ -724,9 +724,20 @@ namespace Deviser.Admin.Internal
                 .Where(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne)
                 .ToList();
 
+            var relatedFieldsInGrid = adminConfig.ModelConfig.GridConfig.AllFields
+                .Where(f => f.FieldOption.LookupExpression != null).ToList();
+
             var matrixFields = adminConfig.ModelConfig.FormConfig.AllFields
                 .Where(f => f.FieldOption.FieldType == FieldType.CheckBoxMatrix)
                 .ToList();
+
+            foreach (var field in relatedFieldsInGrid)
+            {
+                if (relatedFileds.All(f => f.FieldName != field.FieldName))
+                {
+                    relatedFileds.Add(field);
+                }
+            }
 
             if (adminConfig.ChildConfigs != null)
             {
