@@ -130,9 +130,7 @@ namespace Deviser.Web.DependencyInjection
 
             var isDevelopment = hostEnvironment.IsEnvironment(Globals.DeviserDevelopmentEnvironment);
             var isPlatformInstalled = installationProvider.IsPlatformInstalled;
-            
-            RegisterModuleDependencies(services);
-            
+
             if (isPlatformInstalled)
             {
                 services.AddIdentity<User, Role>()
@@ -188,8 +186,12 @@ namespace Deviser.Web.DependencyInjection
                         options.Cookie.Domain = "localhost";
                     });
                 }
-
+                RegisterModuleDependencies(services, false);
                 services.AddDeviserAdmin();
+            }
+            else
+            {
+                RegisterModuleDependencies(services, true);
             }
 
             var mvcBuilder = services
@@ -261,7 +263,7 @@ namespace Deviser.Web.DependencyInjection
             return services;
         }
 
-        private static void RegisterModuleDependencies(IServiceCollection serviceCollection)
+        private static void RegisterModuleDependencies(IServiceCollection serviceCollection, bool isConfigureModuleAlone)
         {
 
             var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.EntryPointAssembly);
@@ -283,11 +285,17 @@ namespace Deviser.Web.DependencyInjection
                     moduleManifest.ModuleMetaInfo.AdminConfiguratorTypeInfo =
                         GetAdminConfiguratorInModule(moduleConfigurator.Assembly);
                     moduleRegistry.TryRegisterModule(moduleManifest.ModuleMetaInfo);
+
+                    if (isConfigureModuleAlone) continue;
+
                     moduleConfig.ConfigureServices(serviceCollection);
                 }
 
-                //RegisterModuleDbContexts
-                RegisterModuleDbContexts(moduleConfigurator.Assembly, serviceCollection);
+                if (!isConfigureModuleAlone)
+                {
+                    //RegisterModuleDbContexts
+                    RegisterModuleDbContexts(moduleConfigurator.Assembly, serviceCollection);
+                }
             }
         }
 
