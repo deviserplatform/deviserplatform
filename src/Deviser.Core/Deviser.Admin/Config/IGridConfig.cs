@@ -7,7 +7,7 @@ namespace Deviser.Admin
 {
     public interface IGridConfig
     {
-        [JsonIgnore] ICollection<Field> AllIncludeFields { get; }
+        [JsonIgnore] ICollection<Field> AllFields { get; }
         [JsonIgnore] ICollection<Field> ExcludedFields { get; }
         ICollection<Field> Fields { get; }
         bool IsEditVisible { get; set; }

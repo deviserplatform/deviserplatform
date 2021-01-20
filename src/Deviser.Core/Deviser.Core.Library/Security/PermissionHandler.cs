@@ -89,7 +89,7 @@ namespace Deviser.Core.Library.Security
                     && string.Equals(p.Name, permissionRequirement.Permission,
                         StringComparison.InvariantCultureIgnoreCase));
 
-                if (!isUserAuthenticated && requiredPermission.Name == "VIEW" && currentPage.PagePermissions.Any(p => p.RoleId == Globals.AllUsersRoleId))
+                if (!isUserAuthenticated && (requiredPermission.Name == "VIEW" || requiredPermission.Name == "EDIT") && currentPage.PagePermissions.Any(p => p.RoleId == Globals.AllUsersRoleId))
                 {
                     //PagePermission VIEW is assigned to AllUsers (AllowAnonymous)
                     context.Succeed(requirement);

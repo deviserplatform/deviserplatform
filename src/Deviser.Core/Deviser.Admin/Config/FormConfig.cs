@@ -6,7 +6,7 @@ namespace Deviser.Admin
 {
     public class FormConfig : IFormConfig
     {
-        [JsonIgnore] public ICollection<Field> AllFormFields
+        [JsonIgnore] public ICollection<Field> AllFields
         {
             get
             {

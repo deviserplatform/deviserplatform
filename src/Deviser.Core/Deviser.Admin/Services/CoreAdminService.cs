@@ -169,7 +169,7 @@ namespace Deviser.Admin.Services
         public async Task<object> AutoFill(Type modelType, string fieldName, object fieldValue)
         {
             var adminConfig = GetAdminConfig(modelType);
-            var field = adminConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f =>
+            var field = adminConfig.ModelConfig.FormConfig.AllFields.FirstOrDefault(f =>
                 f.FieldName.Equals(fieldName, StringComparison.InvariantCultureIgnoreCase));
             if (field == null) return await Task.FromResult<object>(null);
 
@@ -187,7 +187,7 @@ namespace Deviser.Admin.Services
         public async Task<ValidationResult> ExecuteMainFormCustomValidation(Type modelType, string fieldName, object fieldObject)
         {
             var adminConfig = GetAdminConfig(modelType);
-            var field = adminConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f =>
+            var field = adminConfig.ModelConfig.FormConfig.AllFields.FirstOrDefault(f =>
                 string.Equals(f.FieldName, fieldName, StringComparison.InvariantCultureIgnoreCase));
 
             return await CustomValidation(fieldObject, field);
@@ -207,7 +207,7 @@ namespace Deviser.Admin.Services
             }
 
 
-            var field = childConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f =>
+            var field = childConfig.ModelConfig.FormConfig.AllFields.FirstOrDefault(f =>
                 string.Equals(f.FieldName, fieldName, StringComparison.InvariantCultureIgnoreCase));
 
             return await CustomValidation(fieldObject, field);
@@ -225,7 +225,7 @@ namespace Deviser.Admin.Services
             formName = formName.Pascalize();
             var customForm = adminConfig.ModelConfig.CustomForms[formName];
 
-            var field = customForm.FormConfig.AllFormFields.FirstOrDefault(f =>
+            var field = customForm.FormConfig.AllFields.FirstOrDefault(f =>
                 string.Equals(f.FieldName, fieldName, StringComparison.InvariantCultureIgnoreCase));
 
             return await CustomValidation(fieldObject, field);
@@ -234,7 +234,7 @@ namespace Deviser.Admin.Services
         public async Task<ICollection<LookUpField>> GetLookUpForMainForm(Type modelType, string fieldName, object filterParam)
         {
             var adminConfig = GetAdminConfig(modelType);
-            var relatedFiled = adminConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
+            var relatedFiled = adminConfig.ModelConfig.FormConfig.AllFields.FirstOrDefault(f => f.FieldName == fieldName);
             return await GetLookUpFields(filterParam, relatedFiled);
         }
 
@@ -242,12 +242,12 @@ namespace Deviser.Admin.Services
         {
             var adminConfig = GetAdminConfig(modelType);
             var childConfig = adminConfig.ChildConfigs.FirstOrDefault(c =>
-                c.ModelConfig.FormConfig.AllFormFields.Any(f => f.FieldName == fieldName));
+                c.ModelConfig.FormConfig.AllFields.Any(f => f.FieldName == fieldName));
 
             if (childConfig == null) return await Task.FromResult<ICollection<LookUpField>>(null);
 
 
-            var relatedField = childConfig.ModelConfig.FormConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
+            var relatedField = childConfig.ModelConfig.FormConfig.AllFields.FirstOrDefault(f => f.FieldName == fieldName);
             return await GetLookUpFields(filterParam, relatedField);
         }
 
@@ -261,7 +261,7 @@ namespace Deviser.Admin.Services
 
             if (customForm == null) return await Task.FromResult<ICollection<LookUpField>>(null);
 
-            var relatedField = customForm.FormConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
+            var relatedField = customForm.FormConfig.AllFields.FirstOrDefault(f => f.FieldName == fieldName);
             return await GetLookUpFields(filterParam, relatedField);
         }
 

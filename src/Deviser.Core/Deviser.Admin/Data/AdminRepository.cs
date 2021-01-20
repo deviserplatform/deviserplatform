@@ -378,8 +378,8 @@ namespace Deviser.Admin.Data
             {
                 var childFieldName = GetIncludeString(typeMap, childConfig.Field.FieldClrType); //childConfig.Field.FieldName;
 
-                var cM2mFields = childConfig.ModelConfig.FormConfig.AllFormFields.Where(f => f.FieldOption.RelationType == RelationType.ManyToMany).ToList();
-                var cM2oFields = childConfig.ModelConfig.FormConfig.AllFormFields.Where(f => f.FieldOption.RelationType == RelationType.ManyToOne).ToList();
+                var cM2mFields = childConfig.ModelConfig.FormConfig.AllFields.Where(f => f.FieldOption.RelationType == RelationType.ManyToMany).ToList();
+                var cM2oFields = childConfig.ModelConfig.FormConfig.AllFields.Where(f => f.FieldOption.RelationType == RelationType.ManyToOne).ToList();
 
                 query = query.Include(childFieldName);
 
@@ -544,7 +544,7 @@ namespace Deviser.Admin.Data
         private List<Field> GetFieldsFor(IAdminConfig adminConfig, Func<Field, bool> predicate)
         {
             //ManyToMany Includes
-            var m2mFields = adminConfig.ModelConfig.FormConfig.AllFormFields.Where(predicate).ToList();
+            var m2mFields = adminConfig.ModelConfig.FormConfig.AllFields.Where(predicate).ToList();
             return m2mFields;
         }
 

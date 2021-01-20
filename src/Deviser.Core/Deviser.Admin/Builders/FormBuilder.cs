@@ -25,7 +25,7 @@ namespace Deviser.Admin.Builders
         }
 
         public FormBuilder(IFormConfig formConfig, KeyField keyField)
-        : base(formConfig.FieldConfig, formConfig.AllFormFields, keyField)
+        : base(formConfig.FieldConfig, formConfig.AllFields, keyField)
         {
             _formConfig = formConfig;
         }
@@ -37,7 +37,7 @@ namespace Deviser.Admin.Builders
                 throw new InvalidOperationException(Resources.AddRemoveInvalidOperation);
 
             var fieldConfig = new FieldConfig();
-            var fieldBuilder = new FieldBuilder<TModel>(fieldConfig, _formConfig.AllFormFields, _keyField);
+            var fieldBuilder = new FieldBuilder<TModel>(fieldConfig, _formConfig.AllFields, _keyField);
 
             fieldBuilderAction.Invoke(fieldBuilder);
 
@@ -54,20 +54,20 @@ namespace Deviser.Admin.Builders
             return this;
         }
 
-        public PropertyBuilder<TModel, TProperty> Property<TProperty>(Expression<Func<TModel, TProperty>> expression)
+        public FormPropertyBuilder<TModel, TProperty> Property<TProperty>(Expression<Func<TModel, TProperty>> expression)
         {
-            return new PropertyBuilder<TModel, TProperty>(_formConfig, expression);
+            return new FormPropertyBuilder<TModel, TProperty>(_formConfig, expression);
         }
 
-        public PropertyBuilder<TModel, TProperty> Property<TProperty>(Expression<Func<TModel, ICollection<TProperty>>> expression)
+        public FormPropertyBuilder<TModel, TProperty> Property<TProperty>(Expression<Func<TModel, ICollection<TProperty>>> expression)
         {
-            return new PropertyBuilder<TModel, TProperty>(_formConfig, expression);
+            return new FormPropertyBuilder<TModel, TProperty>(_formConfig, expression);
         }
 
         public FormBuilder<TModel> SetCustomValidationFor<TProperty>(Expression<Func<TModel, TProperty>> fieldExpression, Expression<Func<IServiceProvider, TProperty, Task<ValidationResult>>> validationExpression)
         {
             var fieldName = ReflectionExtensions.GetMemberName(fieldExpression);
-            var field = _formConfig.AllFormFields.FirstOrDefault(f => f.FieldName == fieldName);
+            var field = _formConfig.AllFields.FirstOrDefault(f => f.FieldName == fieldName);
             if (field == null)
             {
                 throw new InvalidOperationException(Resources.FieldNotFoundInvaidOperation);

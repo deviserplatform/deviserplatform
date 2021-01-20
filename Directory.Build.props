@@ -10,7 +10,7 @@
 		<Company>Deviser.IO</Company>
 		<Authors>Karthick Sundararajan</Authors>
 		<VersionPrefix>1.0.0</VersionPrefix>
-		<VersionSuffix>beta2</VersionSuffix>
+		<VersionSuffix>beta1</VersionSuffix>
 		<ExperimentalVersionPrefix>0.1.0</ExperimentalVersionPrefix>
 		<ExperimentalVersionSuffix>rtm</ExperimentalVersionSuffix>
 		<IsPackable>true</IsPackable>

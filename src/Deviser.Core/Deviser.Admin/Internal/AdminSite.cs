@@ -274,7 +274,7 @@ namespace Deviser.Admin.Internal
                 PopulateFields(modelType, formConfig, formConfig.FieldConfig.ExcludedFields);
             }
 
-            var fields = formConfig.AllFormFields;
+            var fields = formConfig.AllFields;
             foreach (var field in fields)
             {
                 PopulateFieldOptions(field, formConfig.FieldConditions, entityConfig);
@@ -720,11 +720,11 @@ namespace Deviser.Admin.Internal
         private void LoadMasterData<TModel>(AdminConfig<TModel> adminConfig) where TModel : class
         {
             //Loading Master Data
-            var relatedFileds = adminConfig.ModelConfig.FormConfig.AllFormFields
+            var relatedFileds = adminConfig.ModelConfig.FormConfig.AllFields
                 .Where(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne)
                 .ToList();
 
-            var matrixFields = adminConfig.ModelConfig.FormConfig.AllFormFields
+            var matrixFields = adminConfig.ModelConfig.FormConfig.AllFields
                 .Where(f => f.FieldOption.FieldType == FieldType.CheckBoxMatrix)
                 .ToList();
 
@@ -732,7 +732,7 @@ namespace Deviser.Admin.Internal
             {
                 foreach (var childConfig in adminConfig.ChildConfigs)
                 {
-                    var childConfigReleatedFields = childConfig.ModelConfig.FormConfig.AllFormFields
+                    var childConfigReleatedFields = childConfig.ModelConfig.FormConfig.AllFields
                         .Where(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne)
                         .ToList();
 

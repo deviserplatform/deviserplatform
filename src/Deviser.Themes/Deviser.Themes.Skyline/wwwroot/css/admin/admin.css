@@ -9968,6 +9968,8 @@ html, body {
   .admin-wrapper .admin-container {
     margin-left: 280px;
     width: 100%; }
+    .admin-wrapper .admin-container.no-menu {
+      margin-left: 0; }
     .admin-wrapper .admin-container .admin-body {
       padding-top: 30px;
       padding-left: 20px;

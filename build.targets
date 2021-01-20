@@ -12,9 +12,15 @@
 		<Configuration>Release</Configuration>
 	</PropertyGroup>
 
+
+
 	<ItemGroup>
 		<NugetFiles Include="$(ProjRoot)\**\bin\Release\*.nupkg"/>
 		<DeviserSharedLibFiles Include="$(WorkspaceOutputDir)\**\*.*"/>
+		<CssFilesInAdminClient Include="$(DeviserAdminClientDir)**\*.css"
+		                       Exclude="$(DeviserAdminClientDir)\node_modules\@ng-select\ng-select\themes\*.css;$(DeviserWebClientDir)\node_modules\quill\dist\*.css"/>
+		<CssFilesInWebClient Include="$(DeviserWebClientDir)**\*.css"
+		                       Exclude="$(DeviserWebClientDir)\node_modules\@ng-select\ng-select\themes\*.css;$(DeviserWebClientDir)\node_modules\quill\dist\*.css"/>
 	</ItemGroup>
 	
 	<Target Name="Clean">
@@ -63,12 +69,9 @@
 		<Message Importance="High" Text="Finished npm install" />
 
 		<Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
-		<Delete Files="$(DeviserAdminClientDir)**\*.css"/>
+		<Delete Files="@(CssFilesInAdminClient)"/>
 		
-		<Message Importance="High" Text="Building Admin Client" />
-		<Exec WorkingDirectory="$(DeviserAdminClientDir)" Command="npm run build" ConsoleToMSBuild="true" />
-		<Message Importance="High" Text="Finished building Admin Client" />
-		<Message Importance="High" Text="------------------------------------------------------------------------------------" />
+		
 	</Target>
 
 	<Target Name="BuildDeviserWebClient">
@@ -81,7 +84,7 @@
 		<Message Importance="High" Text="Finished npm install" />
 
 		<Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
-		<Delete Files="$(DeviserWebClientDir)**\*.css" />
+		<Delete Files="@(CssFilesInWebClient)" />
 
 		<Message Importance="High" Text="Building Web Client" />
 		<Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm run build" ConsoleToMSBuild="true"/>

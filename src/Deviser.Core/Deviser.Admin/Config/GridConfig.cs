@@ -8,7 +8,7 @@ namespace Deviser.Admin
     {
         private readonly Dictionary<string, Field> _allFields;
 
-        public ICollection<Field> AllIncludeFields
+        public ICollection<Field> AllFields
         {
             get
             {
