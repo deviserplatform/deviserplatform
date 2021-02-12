@@ -10,8 +10,12 @@
                 </dev-checkbox>
             </div>
             <div class="filter-actions">
-                <button type="button" class="btn btn-light btn-filter" (click)="onClear();">Clear</button>
-                <button type="submit" class="btn btn-light btn-filter">Filter</button>
+                <button type="button" class="btn btn-light btn-filter" (click)="onClear();">
+                    <span>Clear</span>
+                </button>
+                <button type="submit" class="btn btn-light btn-filter">
+                    <span>Filter</span>
+                </button>
             </div>
         </ng-container>
 
@@ -61,8 +65,12 @@
                 </div>
             </div>
             <div class="filter-actions">
-                <button type="button" class="btn btn-light btn-filter" (click)="onClear();">Clear</button>
-                <button type="submit" class="btn btn-light btn-filter">Filter</button>
+                <button type="button" class="btn btn-light btn-filter" (click)="onClear();">
+                    <span>Clear</span>
+                </button>
+                <button type="submit" class="btn btn-light btn-filter">
+                    <span>Filter</span>
+                </button>
             </div>
         </ng-container>
 
@@ -84,8 +92,12 @@
                 <input type="number" formControlName="toNumber" class="form-control">
             </div>
             <div class="filter-actions">
-                <button type="button" class="btn btn-light btn-filter" (click)="onClear();">Clear</button>
-                <button type="submit" class="btn btn-light btn-filter">Filter</button>
+                <button type="button" class="btn btn-light btn-filter" (click)="onClear();">
+                    <span>Clear</span>
+                </button>
+                <button type="submit" class="btn btn-light btn-filter">
+                    <span>Filter</span>
+                </button>
             </div>
         </ng-container>
 
@@ -96,8 +108,12 @@
                 <dev-check-box-list formControlName="filterKeyValues" [dataSource]="lookUp" [labelField]="'displayName'" [keyField]="lookUpKey" (changeValue)="onSelectFilterChange($event);"></dev-check-box-list>
             </div>
             <div class="filter-actions">
-                <button type="button" class="btn btn-light btn-filter" (click)="onClear();">Clear</button>
-                <button type="submit" class="btn btn-light btn-filter">Filter</button>
+                <button type="button" class="btn btn-light btn-filter" (click)="onClear();">
+                    <span>Clear</span>
+                </button>
+                <button type="submit" class="btn btn-light btn-filter">
+                    <span>Filter</span>
+                </button>
             </div>
         </ng-container>
 
@@ -111,8 +127,12 @@
                 <input type="text" class="form-control" formControlName="text">
             </div>
             <div class="filter-actions">
-                <button type="button" class="btn btn-light btn-filter" (click)="onClear();">Clear</button>
-                <button type="submit" class="btn btn-light btn-filter">Filter</button>
+                <button type="button" class="btn btn-light btn-filter" (click)="onClear();">
+                    <span>Clear</span>
+                </button>
+                <button type="submit" class="btn btn-light btn-filter">
+                    <span>Filter</span>
+                </button>
             </div>
         </ng-container>
     </ng-container>

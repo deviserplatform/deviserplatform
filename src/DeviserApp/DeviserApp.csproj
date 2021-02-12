@@ -7,6 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\..\Deviser.Demo\Deviser.Demo\Deviser.Demo.Blog\Deviser.Demo.Blog.csproj" />
 		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.Blog\Deviser.Modules.Blog.csproj" />
 		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.Contact\Deviser.Modules.ContactForm.csproj" />
 		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.ContentManagement\Deviser.Modules.ContentManagement.csproj" />

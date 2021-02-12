@@ -10627,7 +10627,12 @@ html, body {
   height: 18px; }
 
 .admin-container .btn.btn-action {
-  min-width: 80px; }
+  min-width: 80px;
+  display: flex;
+  align-items: center; }
+  .admin-container .btn.btn-action i {
+    display: flex;
+    margin-right: 0.3rem; }
 
 .admin-container label {
   display: inline-flex; }

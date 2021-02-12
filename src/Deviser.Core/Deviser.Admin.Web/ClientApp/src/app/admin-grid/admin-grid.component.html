@@ -8,7 +8,7 @@
       <div class="col" *ngIf="daConfig.adminConfigType == adminConfigType.GridAndForm">
         <div class="float-left">
           <button type="button" class="btn btn-primary btn-action" (click)="onNewItem()">
-            <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/plus-circle.svg'| envPath"></i> New
+            <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/plus-circle.svg'| envPath"></i> <span>New</span>
           </button>
         </div>
       </div>
@@ -29,7 +29,7 @@
                 </td>
                 <td *ngFor="let rowAction of adminConfig.modelConfig.gridConfig.rowActions | keyvalue">
                   <button class="btn btn-light" type="button" (click)="onRowAction(rowAction.key, item)">
-                    {{rowAction.value.buttonText}}
+                    <span>{{rowAction.value.buttonText}}</span>
                   </button>
                 </td>
                 <td *ngIf="adminConfig.modelConfig.gridConfig.isEditVisible">

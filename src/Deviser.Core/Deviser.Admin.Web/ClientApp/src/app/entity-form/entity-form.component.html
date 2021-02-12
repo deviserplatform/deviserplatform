@@ -39,9 +39,10 @@
     </ng-container>
 
     <accordion [isAnimated]="true" class="admin-accordion">
-      <accordion-group *ngFor="let fieldSet of formContext.formConfig.fieldSetConfig.fieldSets" [isOpen]="fieldSet.isOpen">        
-        <div accordion-heading type="div">          
-          <div class="pull-left float-left">{{fieldSet.groupName}}</div>          
+      <accordion-group *ngFor="let fieldSet of formContext.formConfig.fieldSetConfig.fieldSets"
+        [isOpen]="fieldSet.isOpen">
+        <div accordion-heading type="div">
+          <div class="pull-left float-left">{{fieldSet.groupName}}</div>
         </div>
 
         <div *ngFor="let fieldRow of fieldSet.fields" class="form-row">
@@ -49,7 +50,8 @@
             <fieldset class="form-group col" [disabled]="!(field.isEnabled | async)" *ngIf="field.isShown | async">
               <app-form-control [form]="formContext.formGroup" [field]="field" [isShown]="field.isShown | async"
                 [formName]="formContext.formName" [isDisabled]="!(field.isEnabled | async)"
-                [isValidate]="field.isValidate | async" [lookUps]="formContext.lookUps" [formType]="formContext.formType" [formItemId]="formItemId">
+                [isValidate]="field.isValidate | async" [lookUps]="formContext.lookUps"
+                [formType]="formContext.formType" [formItemId]="formItemId">
               </app-form-control>
               <!-- <pre>{{field|json}}</pre> -->
             </fieldset>

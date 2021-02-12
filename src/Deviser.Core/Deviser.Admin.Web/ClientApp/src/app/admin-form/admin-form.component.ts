@@ -151,11 +151,11 @@ export class AdminFormComponent implements OnInit {
         }
       }
 
-      setTimeout(() => {
-        if (this.record) {
-          this.patchFormValue(this.record);
-        }
-      });
+      // setTimeout(() => {
+      //   if (this.record) {
+      //     this.patchFormValue(this.record);
+      //   }
+      // });
     }
   }
 

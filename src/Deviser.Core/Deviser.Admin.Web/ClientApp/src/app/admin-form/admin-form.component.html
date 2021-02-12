@@ -31,20 +31,20 @@
                   <button class="btn btn-light btn-action " type="button" [disabled]="!adminForm.valid"
                     *ngFor="let formAction of formTab.formConfig.formActions | keyvalue"
                     (click)="onAction(formTab, formAction.key)">
-                    {{formAction.value.buttonText}}
+                    <span>{{formAction.value.buttonText}}</span>
                   </button>
                 </ng-container>
 
                 <ng-container *ngIf="formTab.formType == formType.MainForm">
                   <button class="btn btn-primary btn-action" type="submit" [disabled]="!adminForm.valid">
                     <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/save.svg' | envPath"></i>
-                    Save
+                    <span>Save</span>
                   </button>
                 </ng-container>
                 <ng-container *ngIf="formTab.formType == formType.CustomForm">
                   <button class="btn btn-primary btn-action" type="button" [disabled]="!formTab.formGroup.valid"
                     (click)="onCustomFormSubmit(formTab)">
-                    {{formTab.formConfig.formOption.saveButtonText}}
+                    <span>{{formTab.formConfig.formOption.saveButtonText}}</span>
                   </button>
                 </ng-container>
               </div>

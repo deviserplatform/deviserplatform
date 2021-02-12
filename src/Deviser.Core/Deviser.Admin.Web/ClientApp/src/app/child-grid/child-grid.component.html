@@ -3,7 +3,8 @@
     <div class="col">
       <div class="float-left">
         <button type="button" class="btn btn-primary btn-action" (click)="onNewItem()">
-          <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/plus-circle.svg'| envPath"></i> Add
+          <i class="my-icon" aria-label="My icon" [inlineSVG]="'assets/icons/plus-circle.svg'| envPath"></i>
+          <span>Add</span>
         </button>
       </div>
     </div>
@@ -74,11 +75,17 @@
     </div>
   </div>
   <div class="d-flex justify-content-end">
-    <button type="button" class="btn btn-light btn-action" (click)="onCancelItem()">Cancel</button>
+    <button type="button" class="btn btn-light btn-action" (click)="onCancelItem()">
+      <span>Cancel</span>
+    </button>
     <button type="button" class="btn btn-primary btn-action" *ngIf="viewState == ViewState.ADD"
-      [disabled]="!childForm.valid" (click)="onAddItem()">Add</button>
+      [disabled]="!childForm.valid" (click)="onAddItem()">
+      <span>Add</span>
+    </button>
     <button type="button" class="btn btn-primary btn-action" *ngIf="viewState == ViewState.EDIT"
-      [disabled]="!childForm.valid" (click)="onUpdateItem()">Update</button>
+      [disabled]="!childForm.valid" (click)="onUpdateItem()">
+      <span>Update</span>
+    </button>
   </div>
 </div>
 
