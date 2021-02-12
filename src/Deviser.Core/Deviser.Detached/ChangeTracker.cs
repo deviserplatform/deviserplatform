@@ -140,7 +140,7 @@ namespace Deviser.Detached
             //EntityEntry persisted = GetEntry(detached);
             //persisted.State = EntityState.Added;
             //return persisted;
-            var clrType = detached.GetType();
+            //var clrType = detached.GetType();
 
             //var contextSet = typeof(DbContext).GetMethod("Set").MakeGenericMethod(clrType).Invoke(_context, null);
             //var localValue = contextSet.GetType().GetMethod("Add").Invoke(contextSet, new object[] { detached });

@@ -215,7 +215,7 @@ namespace Deviser.Admin.Internal
             return typeMap;
         }
 
-        private Type GetEntityClrTypeFor(Type modelType)
+        public Type GetEntityClrTypeFor(Type modelType)
         {
             var entityClrType = _typeMaps.FirstOrDefault(tm => tm.SourceType == modelType)?.DestinationType;
             if (entityClrType == null)
@@ -868,7 +868,7 @@ namespace Deviser.Admin.Internal
             }
         }
 
-        private List<Expression<Func<TEntity, object>>> GetPrimaryKeyExpressions<TEntity>(DbContext dbContext)
+        public static List<Expression<Func<TEntity, object>>> GetPrimaryKeyExpressions<TEntity>(DbContext dbContext)
             where TEntity : class
         {
             var eClrType = typeof(TEntity);
@@ -887,7 +887,29 @@ namespace Deviser.Admin.Internal
             return keySelectorExpressions;
         }
 
-        private static Dictionary<string, object> GetLookUpKey<TEntity>(TEntity item, List<Expression<Func<TEntity, object>>> primaryKeyExpr)
+        public static List<Expression<Func<TEntity, string>>> GetPrimaryKeyStringExpressions<TEntity>(DbContext dbContext)
+            where TEntity : class
+        {
+            var eClrType = typeof(TEntity);
+            var eType = dbContext.Model.FindEntityType(eClrType);
+            var primaryKey = eType.FindPrimaryKey();
+            var properties = primaryKey.Properties;
+            var eTypeParamExpr = Expression.Parameter(eClrType);
+            var keySelectorExpressions = new List<Expression<Func<TEntity, string>>>();
+            foreach (var prop in properties)
+            {
+                var memberExpression = Expression.Property(eTypeParamExpr, prop.PropertyInfo);
+
+                var toStringMethod = typeof(object).GetMethod("ToString");
+                var methodCall = Expression.Call(memberExpression, toStringMethod);
+                //Expression objectMemberExpr = Expression.Convert(memberExpression, typeof(object)); //Convert Value/Reference type to object using boxing/lifting
+                var pkValExpr = Expression.Lambda<Func<TEntity, string>>(methodCall, eTypeParamExpr);
+                keySelectorExpressions.Add(pkValExpr);
+            }
+            return keySelectorExpressions;
+        }
+
+        public static Dictionary<string, object> GetLookUpKey<TEntity>(TEntity item, List<Expression<Func<TEntity, object>>> primaryKeyExpr)
             where TEntity : class
         {
             var lookUpKey = new Dictionary<string, object>();
