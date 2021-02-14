@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+		<IsShippingPackage>true</IsShippingPackage>
+		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!--<PackageReference Include="Deviser.Admin" Version="1.0.0-beta1" />
+		<PackageReference Include="Deviser.Admin.Web" Version="1.0.0-beta1" />
+		<PackageReference Include="Deviser.Core.Library" Version="1.0.0-beta1" />-->
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="5.0.0" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<EmbeddedResource Include="countries.json" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Karthick\deviserplatform\src\Deviser.Core\Deviser.Admin.Web\Deviser.Admin.Web.csproj" />
+		<ProjectReference Include="..\..\..\Karthick\deviserplatform\src\Deviser.Core\Deviser.Admin\Deviser.Admin.csproj" />
+		<ProjectReference Include="..\..\..\Karthick\deviserplatform\src\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj" />
+	</ItemGroup>
+
+</Project>

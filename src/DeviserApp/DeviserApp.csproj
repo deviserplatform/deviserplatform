@@ -7,6 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\..\Deviser.Demo\Deviser.Demo\Deviser.Demo.Admin\Deviser.Demo.Admin.csproj" />
 		<ProjectReference Include="..\..\..\..\Deviser.Demo\Deviser.Demo\Deviser.Demo.Blog\Deviser.Demo.Blog.csproj" />
 		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.Blog\Deviser.Modules.Blog.csproj" />
 		<ProjectReference Include="..\Deviser.Modules\Deviser.Modules.Contact\Deviser.Modules.ContactForm.csproj" />
@@ -34,6 +35,10 @@
 	<ItemGroup>
 		<Folder Include="logs\" />
 		<Folder Include="wwwroot\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Deviser.Demo.Admin.csproj" />
 	</ItemGroup>
 
 </Project>

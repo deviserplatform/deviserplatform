@@ -160,6 +160,7 @@
       display: flex;
       align-items: center;
       justify-content: space-around;
+
       i {
         display: flex;
         margin-right: 0.3rem;
@@ -202,12 +203,21 @@
 
     .data-table {
       border-radius: 4px;
-      overflow: hidden;
+      overflow-y: auto;
       border: 1px solid rgba($black, 0.125);
       margin-bottom: 1rem;
+      min-height: 500px;
+      max-height: 50vh;
 
       .table {
         margin-bottom: unset;
+
+        thead {
+          th {
+            position: sticky;
+            top: 0;
+          }
+        }
 
         tr {
           th,
@@ -286,6 +296,12 @@
             padding: 10px;
             width: 200px;
             z-index: 10;
+
+            .filter-items {
+              min-height: 100px;
+              max-height: 200px;
+              overflow-y: auto;
+            }
 
             .form-check {
               padding: 0px;

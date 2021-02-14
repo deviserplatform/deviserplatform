@@ -10667,11 +10667,16 @@ html, body {
 
 .admin-container .admin-grid .data-table {
   border-radius: 4px;
-  overflow: hidden;
+  overflow-y: auto;
   border: 1px solid rgba(0, 0, 0, 0.125);
-  margin-bottom: 1rem; }
+  margin-bottom: 1rem;
+  min-height: 500px;
+  max-height: 50vh; }
   .admin-container .admin-grid .data-table .table {
     margin-bottom: unset; }
+    .admin-container .admin-grid .data-table .table thead th {
+      position: sticky;
+      top: 0; }
     .admin-container .admin-grid .data-table .table tr th,
     .admin-container .admin-grid .data-table .table tr td {
       padding: 0.4rem; }
@@ -10715,6 +10720,10 @@ html, body {
         padding: 10px;
         width: 200px;
         z-index: 10; }
+        .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content .filter-items {
+          min-height: 100px;
+          max-height: 200px;
+          overflow-y: auto; }
         .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content .form-check {
           padding: 0px; }
           .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content .form-check a {
