@@ -10013,7 +10013,13 @@ html, body {
     height: 18px;
     stroke-width: 2px; }
   .edit-layout-container .btn.btn-action {
-    min-width: 80px; }
+    min-width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around; }
+    .edit-layout-container .btn.btn-action i {
+      display: flex;
+      margin-right: 0.3rem; }
   .edit-layout-container .card .card-body.properties {
     font-size: 0.8rem;
     padding: 0.3rem; }
@@ -10629,7 +10635,8 @@ html, body {
 .admin-container .btn.btn-action {
   min-width: 80px;
   display: flex;
-  align-items: center; }
+  align-items: center;
+  justify-content: space-around; }
   .admin-container .btn.btn-action i {
     display: flex;
     margin-right: 0.3rem; }
@@ -10660,11 +10667,16 @@ html, body {
 
 .admin-container .admin-grid .data-table {
   border-radius: 4px;
-  overflow: hidden;
+  overflow-y: auto;
   border: 1px solid rgba(0, 0, 0, 0.125);
-  margin-bottom: 1rem; }
+  margin-bottom: 1rem;
+  min-height: 500px;
+  max-height: 50vh; }
   .admin-container .admin-grid .data-table .table {
     margin-bottom: unset; }
+    .admin-container .admin-grid .data-table .table thead th {
+      position: sticky;
+      top: 0; }
     .admin-container .admin-grid .data-table .table tr th,
     .admin-container .admin-grid .data-table .table tr td {
       padding: 0.4rem; }
@@ -10708,6 +10720,10 @@ html, body {
         padding: 10px;
         width: 200px;
         z-index: 10; }
+        .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content .filter-items {
+          min-height: 100px;
+          max-height: 200px;
+          overflow-y: auto; }
         .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content .form-check {
           padding: 0px; }
           .admin-container .admin-grid .data-table .header-field-cotnainer .filter-container .filter-content .form-check a {
