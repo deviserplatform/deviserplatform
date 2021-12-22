@@ -124,7 +124,7 @@ namespace Deviser.Modules.ContactForm.Data
                 .Build();
             var builder = new DbContextOptionsBuilder<ContactDbContext>();
             var connectionString = configuration.GetConnectionString(Globals.ConnectionStringKeys[DatabaseProvider.MySql]);
-            builder.UseMySql(connectionString, b => b.MigrationsAssembly("Deviser.Modules.ContactForm"));
+            builder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Deviser.Modules.ContactForm"));
             return new MySqlContactDbContext(builder.Options);
         }
     }

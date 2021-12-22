@@ -86,7 +86,7 @@ namespace Deviser.Core.Data.Entities
                 .Build();
             var builder = new DbContextOptionsBuilder<DeviserDbContext>();
             var connectionString = configuration.GetConnectionString(Globals.ConnectionStringKeys[DatabaseProvider.MySql]);
-            builder.UseMySql(connectionString, b => b.MigrationsAssembly("Deviser.Core.Data"));
+            builder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Deviser.Core.Data"));
             return new MySqlDbContext(builder.Options);
         }
     }

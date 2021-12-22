@@ -353,11 +353,12 @@ namespace Deviser.Core.Data.Repositories
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
-                    optionsBuilder.UseMySql(connectionString, b => b.MigrationsAssembly(Globals.MigrationAssembly));
+                    
+                    optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly(Globals.MigrationAssembly));
                 }
                 else
                 {
-                    optionsBuilder.UseMySql(connectionString, (x) =>
+                    optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),(x) =>
                     {
                         x.MigrationsAssembly(moduleAssembly);
                         x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
@@ -428,11 +429,11 @@ namespace Deviser.Core.Data.Repositories
             {
                 if (string.IsNullOrEmpty(moduleAssembly))
                 {
-                    optionsBuilder.UseMySql(connectionString, b => b.MigrationsAssembly(Globals.MigrationAssembly));
+                    optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly(Globals.MigrationAssembly));
                 }
                 else
                 {
-                    optionsBuilder.UseMySql(connectionString, (x) =>
+                    optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), (x) =>
                     {
                         x.MigrationsAssembly(moduleAssembly);
                         x.MigrationsHistoryTable(Globals.ModuleMigrationTableName);
