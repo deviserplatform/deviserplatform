@@ -15,6 +15,9 @@ import { LinkType } from '../../domain-types/link-type';
 export class LinkComponent implements OnInit {
 
   @Input() set link(value: Link) {
+    if (!value) {
+      value = { linkType: LinkType.Url, linkText: '', isNewWindow: true, url: '', pageId: undefined }
+    }
     this._link = value
     this.init();
   }
@@ -65,7 +68,7 @@ export class LinkComponent implements OnInit {
 
   removeLink() {
     this.link.linkText = null;
-    this.link.pageId= null;
+    this.link.pageId = null;
     this.link.url = null;
     this.link.isNewWindow = false;
     this.link.linkType = LinkType.Url;

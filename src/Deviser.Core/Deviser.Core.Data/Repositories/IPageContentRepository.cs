@@ -19,7 +19,8 @@ namespace Deviser.Core.Data.Repositories
         PageContentTranslation UpdateTranslation(PageContentTranslation dbPageContentTranslation);
         List<ContentPermission> AddContentPermissions(List<ContentPermission> dbContentPermissions);
         PageContent UpdateContentPermission(PageContent dbPageContentSrc);
-        bool DeletePageContent(Guid id);
+        PageContent SoftDeletePageContent(Guid id);
+        bool DeletePageContentPermanent(Guid id);
 
     }
 }

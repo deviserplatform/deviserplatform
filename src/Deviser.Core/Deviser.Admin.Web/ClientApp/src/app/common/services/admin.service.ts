@@ -143,11 +143,11 @@ export class AdminService {
   }
 
   getLookUp(formType: FormType, formName: string, fieldName: string, filterParam: any) {
-    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/lookup/${formType}/field/${fieldName}`;
+    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/lookup/${formType}/fieldName/${fieldName}`;
     let lookUp$ = this.http.put<any>(serviceUrl, filterParam, { headers: this._httpHeaders, withCredentials: true })
       .pipe(
         map(lookUp => this.flattenLookUpKeys(lookUp)),
-        tap( _ => this.log(`fetched lookup`)),
+        tap(_ => this.log(`fetched lookup`)),
         catchError(this.handleError('getAllRecords', null))
       );
     return lookUp$;
@@ -252,6 +252,7 @@ export class AdminService {
   }
 
   flattenLookUpKeysInAdminConfig(adminConfig: AdminConfig): AdminConfig {
+    if (!adminConfig.lookUps || !adminConfig.lookUps.lookUpData) return adminConfig;
     let lookUpDict = adminConfig.lookUps.lookUpData;
     Object.keys(lookUpDict).forEach(lookUpName => {
       let lookUpItems = lookUpDict[lookUpName];
@@ -261,12 +262,14 @@ export class AdminService {
   }
 
   flattenLookUpKeys(lookUpItems: any[]) {
+    if (!lookUpItems[0] || !lookUpItems[0].key) return
     let lookUpFieldKeys = Object.keys(lookUpItems[0].key);
     lookUpItems.forEach(lookUpItem => {
       lookUpFieldKeys.forEach(keyName => {
         lookUpItem[keyName] = lookUpItem.key[keyName]
       });
     });
+    return lookUpItems;
   }
 
   /** Log a AdminService message with the MessageService */

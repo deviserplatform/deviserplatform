@@ -170,8 +170,8 @@ export class EditComponent implements OnInit {
     if (node.layoutTemplate === "content" || node.layoutTemplate === "module") {
       this.selectedPlaceHolder = node;
       node.properties.forEach(prop => {
-        if (prop.optionList && prop.optionList.list) {
-          prop.optionList = prop.optionList;
+        if (!prop.value) {
+          prop.value = prop.defaultValue
         }
       });
     }
@@ -372,6 +372,9 @@ export class EditComponent implements OnInit {
   }
 
   private loadPageElements() {
+
+    if (!this.pageLayout || !this.pageLayout.placeHolders || !this.pageContext) return;
+
 
     let unAssignedContents = [],
       unAssignedModules = [];
@@ -593,16 +596,27 @@ export class EditComponent implements OnInit {
     let pageContents = this.parseAndSortPageContents(contentContainer);
     let pageModules = this.parseAndSortPageModules(moduleContainer);
 
-    let pageContents$ = this._pageContentService.updatePageContents(pageContents);
-    let pageModules$ = this._pageModuleService.updatePageModules(pageModules);
-    let pageLayout$ = this._layoutService.updateLayout(layoutOnly)
+
+    let elementUpdateObservables = [];
+    if (pageContents && pageContents.length > 0) {
+      let pageContents$ = this._pageContentService.updatePageContents(pageContents);
+      elementUpdateObservables.push(pageContents$);
+    }
+
+    if (pageModules && pageModules.length > 0) {
+      let pageModules$ = this._pageModuleService.updatePageModules(pageModules);
+      elementUpdateObservables.push(pageModules$);
+    }
+
+    let pageLayout$ = this._layoutService.updateLayout(layoutOnly);
+    elementUpdateObservables.push(pageLayout$);
 
     //Refresh pageContents and pageModules    
 
 
 
-    forkJoin([pageContents$, pageModules$, pageLayout$]).subscribe(results => {
-      this.pageLayout = results[2];
+    forkJoin(elementUpdateObservables).subscribe(results => {
+      this.pageLayout = results[results.length - 1] as PageLayout;
       const pageContentsFull$ = this._pageContentService.getPageContents(this.pageContext.currentPageId, this.pageContext.currentLocale);
       const pageModulesFull$ = this._pageModuleService.getPageModules(this.pageContext.currentPageId);
 

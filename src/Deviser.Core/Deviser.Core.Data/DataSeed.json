@@ -64,7 +64,7 @@
         "ContentTypeFields": null,
         "IsActive": true,
         "CreatedDate": null,
-        "LastModifiedDate": "2020-07-31T00:01:04.0281467"
+        "LastModifiedDate": "2020-12-29T12:58:06.8726034"
       },
       {
         "Id": "a7bbfc37-b496-4c8f-b481-309ec38fbac0",
@@ -109,7 +109,7 @@
         "ContentTypeFields": null,
         "IsActive": true,
         "CreatedDate": null,
-        "LastModifiedDate": "2020-07-31T00:04:27.614457"
+        "LastModifiedDate": "2021-01-02T00:46:44.3839333"
       },
       {
         "Id": "978bd890-7dbd-4ee0-9d86-8356dfadf4e6",
@@ -124,7 +124,7 @@
         "ContentTypeFields": null,
         "IsActive": true,
         "CreatedDate": null,
-        "LastModifiedDate": "2020-07-31T00:04:50.07757"
+        "LastModifiedDate": "2021-01-02T10:55:38.8945015"
       },
       {
         "Id": "9b2ec6ac-8fdf-4cb5-ae60-90b73a6931fc",
@@ -199,7 +199,7 @@
         "ContentTypeFields": null,
         "IsActive": true,
         "CreatedDate": null,
-        "LastModifiedDate": "2020-07-31T00:04:03.7159741"
+        "LastModifiedDate": "2021-01-02T00:41:29.1283792"
       },
       {
         "Id": "00332002-f2c7-401c-b59c-d0181eaf657b",
@@ -229,7 +229,7 @@
         "ContentTypeFields": null,
         "IsActive": true,
         "CreatedDate": null,
-        "LastModifiedDate": "2020-07-31T00:03:04.0024574"
+        "LastModifiedDate": "2021-01-01T19:17:26.5954091"
       },
       {
         "Id": "d8e458b3-daa2-4bc5-90a0-d56e9a78839e",
@@ -244,7 +244,7 @@
         "ContentTypeFields": null,
         "IsActive": true,
         "CreatedDate": null,
-        "LastModifiedDate": "2020-07-30T23:59:55.7920566"
+        "LastModifiedDate": "2020-12-28T22:16:57.4786257"
       },
       {
         "Id": "d2e62921-32f5-4c66-a9b3-e5b61d60b193",
@@ -259,7 +259,7 @@
         "ContentTypeFields": null,
         "IsActive": true,
         "CreatedDate": null,
-        "LastModifiedDate": "2020-07-31T00:03:45.0456843"
+        "LastModifiedDate": "2021-01-01T19:42:09.8320066"
       }
     ]
   },
@@ -322,14 +322,14 @@
       },
       {
         "Id": "bef258d0-173c-4b70-343c-08d58851a063",
-        "Config": "[{\"Id\":\"64cddbaf-2dfb-e310-1024-0f9d04dc6a17\",\"Type\":\"wrapper\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"5a0a5884-da84-4922-a02f-5828b55d5c92\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"section-container\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"72a016ee-451e-e340-f23b-b503ffdebc18\",\"Type\":\"section\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"a72ce8d2-5f5f-4176-0141-08d57ef792d3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"white-section\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"5a8cf3e2-8381-e708-5672-3eb9ca6c82ca\",\"Type\":\"container\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"9341f92e-83d8-4afe-ad4a-a95deeda9ae3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"container\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"97704415-4b3d-e368-cd79-a2101b2f97f7\",\"Type\":\"row\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"43734210-943e-4f33-a161-f12260b8c001\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[{\"Id\":\"eb477330-eddb-cda2-bf87-3d380f5ff6e5\",\"Type\":\"column\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"4c98f160-d676-40a2-9b88-79fd1343f333\",\"Properties\":[{\"Id\":\"f4fff310-340a-437a-8ce3-08d54de42fea\",\"Name\":\"column_width\",\"Label\":\"Column Width (M)\",\"Value\":\"2c6d4b41-a103-d2a0-4d2f-0b75646d05fe\",\"DefaultValue\":\"f2eafdde-4f79-a195-c1c1-0794e293fa27\",\"Description\":\"Column width for extra small (XS) devices: ≥768px\",\"OptionListId\":\"969eb4ef-188c-4174-4194-08d54de4cd18\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2017-12-28T12:14:39.4480249\",\"LastModifiedDate\":\"2017-12-28T12:14:39.4480249\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3de7dc0a-b6c1-4136-aeaa-08d58c5c2d05\",\"Name\":\"column_width_xs\",\"Label\":\"Column Width (XS)\",\"Value\":null,\"DefaultValue\":\"6597d3bd-0971-9d73-968b-64ff6e2eabda\",\"Description\":\"Column width for extra small (XS) devices: <576px\",\"OptionListId\":\"b98ba240-64b4-4862-f1fb-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:09:46.2963207\",\"LastModifiedDate\":\"2018-03-18T00:09:46.2963207\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3379dca0-ada6-4245-aeab-08d58c5c2d05\",\"Name\":\"column_width_s\",\"Label\":\"Column Width (S)\",\"Value\":null,\"DefaultValue\":\"e7cf0d7d-e66b-09cb-f338-720588431bee\",\"Description\":\"Colum width for Small (S) devices: ≥576px\",\"OptionListId\":\"17fa4063-c7b4-4659-f1fc-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:10:49.9721966\",\"LastModifiedDate\":\"2018-03-18T00:10:49.9721966\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"14539266-bd68-440f-aeac-08d58c5c2d05\",\"Name\":\"column_width_l\",\"Label\":\"Column Width (L)\",\"Value\":null,\"DefaultValue\":\"5913c029-6cd8-352b-eae0-6f3f2e146b01\",\"Description\":\"Column width for Large (L) devices: ≥768px\",\"OptionListId\":\"ed74aa2d-dd21-42d9-f1fd-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:12:06.3393526\",\"LastModifiedDate\":\"2018-03-18T00:12:06.3393526\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f0ad85a3-ff8c-40c6-aead-08d58c5c2d05\",\"Name\":\"column_width_xl\",\"Label\":\"Column Width (XL)\",\"Value\":null,\"DefaultValue\":\"4e3ff987-b14b-0713-4243-053fc5787389\",\"Description\":\"Column width for Extra Large (XL) devices: ≥1200px\",\"OptionListId\":\"bfd219cc-12a0-4d8b-f1fe-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:13:00.1266679\",\"LastModifiedDate\":\"2018-03-18T00:13:00.1266679\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"welcome-text-col\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[]}]},{\"Id\":\"61708e95-ba2c-6017-1001-22182b44f4aa\",\"Type\":\"row\",\"LayoutTemplate\":\"container\",\"SortOrder\":2,\"LayoutTypeId\":\"43734210-943e-4f33-a161-f12260b8c001\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[{\"Id\":\"a28a029f-b9ae-0c2b-598d-b5293a01ac82\",\"Type\":\"column\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"4c98f160-d676-40a2-9b88-79fd1343f333\",\"Properties\":[{\"Id\":\"f4fff310-340a-437a-8ce3-08d54de42fea\",\"Name\":\"column_width\",\"Label\":\"Column Width (M)\",\"Value\":\"2c6d4b41-a103-d2a0-4d2f-0b75646d05fe\",\"DefaultValue\":\"f2eafdde-4f79-a195-c1c1-0794e293fa27\",\"Description\":\"Column width for extra small (XS) devices: ≥768px\",\"OptionListId\":\"969eb4ef-188c-4174-4194-08d54de4cd18\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2017-12-28T12:14:39.4480249\",\"LastModifiedDate\":\"2017-12-28T12:14:39.4480249\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3de7dc0a-b6c1-4136-aeaa-08d58c5c2d05\",\"Name\":\"column_width_xs\",\"Label\":\"Column Width (XS)\",\"Value\":null,\"DefaultValue\":\"6597d3bd-0971-9d73-968b-64ff6e2eabda\",\"Description\":\"Column width for extra small (XS) devices: <576px\",\"OptionListId\":\"b98ba240-64b4-4862-f1fb-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:09:46.2963207\",\"LastModifiedDate\":\"2018-03-18T00:09:46.2963207\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3379dca0-ada6-4245-aeab-08d58c5c2d05\",\"Name\":\"column_width_s\",\"Label\":\"Column Width (S)\",\"Value\":null,\"DefaultValue\":\"e7cf0d7d-e66b-09cb-f338-720588431bee\",\"Description\":\"Colum width for Small (S) devices: ≥576px\",\"OptionListId\":\"17fa4063-c7b4-4659-f1fc-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:10:49.9721966\",\"LastModifiedDate\":\"2018-03-18T00:10:49.9721966\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"14539266-bd68-440f-aeac-08d58c5c2d05\",\"Name\":\"column_width_l\",\"Label\":\"Column Width (L)\",\"Value\":null,\"DefaultValue\":\"5913c029-6cd8-352b-eae0-6f3f2e146b01\",\"Description\":\"Column width for Large (L) devices: ≥768px\",\"OptionListId\":\"ed74aa2d-dd21-42d9-f1fd-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:12:06.3393526\",\"LastModifiedDate\":\"2018-03-18T00:12:06.3393526\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f0ad85a3-ff8c-40c6-aead-08d58c5c2d05\",\"Name\":\"column_width_xl\",\"Label\":\"Column Width (XL)\",\"Value\":null,\"DefaultValue\":\"4e3ff987-b14b-0713-4243-053fc5787389\",\"Description\":\"Column width for Extra Large (XL) devices: ≥1200px\",\"OptionListId\":\"bfd219cc-12a0-4d8b-f1fe-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:13:00.1266679\",\"LastModifiedDate\":\"2018-03-18T00:13:00.1266679\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"call-to-action-col\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[]}]}]}]},{\"Id\":\"88fd4084-c81e-7a88-efee-466a2c8ceab5\",\"Type\":\"section\",\"LayoutTemplate\":\"container\",\"SortOrder\":2,\"LayoutTypeId\":\"a72ce8d2-5f5f-4176-0141-08d57ef792d3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"grey-section\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"375aab3a-e545-a51c-93e5-5734a47ee530\",\"Type\":\"container\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"9341f92e-83d8-4afe-ad4a-a95deeda9ae3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"container\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"31fe7bb3-96d9-6ded-7a6e-32ca3857e77f\",\"Type\":\"row\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"43734210-943e-4f33-a161-f12260b8c001\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"2063f422-528f-2863-4864-80dc43b84f4b\",\"Type\":\"column\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"4c98f160-d676-40a2-9b88-79fd1343f333\",\"Properties\":[{\"Id\":\"f4fff310-340a-437a-8ce3-08d54de42fea\",\"Name\":\"column_width\",\"Label\":\"Column Width (M)\",\"Value\":\"2c6d4b41-a103-d2a0-4d2f-0b75646d05fe\",\"DefaultValue\":\"f2eafdde-4f79-a195-c1c1-0794e293fa27\",\"Description\":\"Column width for extra small (XS) devices: ≥768px\",\"OptionListId\":\"969eb4ef-188c-4174-4194-08d54de4cd18\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2017-12-28T12:14:39.4480249\",\"LastModifiedDate\":\"2017-12-28T12:14:39.4480249\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3de7dc0a-b6c1-4136-aeaa-08d58c5c2d05\",\"Name\":\"column_width_xs\",\"Label\":\"Column Width (XS)\",\"Value\":null,\"DefaultValue\":\"6597d3bd-0971-9d73-968b-64ff6e2eabda\",\"Description\":\"Column width for extra small (XS) devices: <576px\",\"OptionListId\":\"b98ba240-64b4-4862-f1fb-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:09:46.2963207\",\"LastModifiedDate\":\"2018-03-18T00:09:46.2963207\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3379dca0-ada6-4245-aeab-08d58c5c2d05\",\"Name\":\"column_width_s\",\"Label\":\"Column Width (S)\",\"Value\":null,\"DefaultValue\":\"e7cf0d7d-e66b-09cb-f338-720588431bee\",\"Description\":\"Colum width for Small (S) devices: ≥576px\",\"OptionListId\":\"17fa4063-c7b4-4659-f1fc-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:10:49.9721966\",\"LastModifiedDate\":\"2018-03-18T00:10:49.9721966\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"14539266-bd68-440f-aeac-08d58c5c2d05\",\"Name\":\"column_width_l\",\"Label\":\"Column Width (L)\",\"Value\":null,\"DefaultValue\":\"5913c029-6cd8-352b-eae0-6f3f2e146b01\",\"Description\":\"Column width for Large (L) devices: ≥768px\",\"OptionListId\":\"ed74aa2d-dd21-42d9-f1fd-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:12:06.3393526\",\"LastModifiedDate\":\"2018-03-18T00:12:06.3393526\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f0ad85a3-ff8c-40c6-aead-08d58c5c2d05\",\"Name\":\"column_width_xl\",\"Label\":\"Column Width (XL)\",\"Value\":null,\"DefaultValue\":\"4e3ff987-b14b-0713-4243-053fc5787389\",\"Description\":\"Column width for Extra Large (XL) devices: ≥1200px\",\"OptionListId\":\"bfd219cc-12a0-4d8b-f1fe-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:13:00.1266679\",\"LastModifiedDate\":\"2018-03-18T00:13:00.1266679\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[]}]}]}]}]}]",
+        "Config": "[{\"Id\":\"64cddbaf-2dfb-e310-1024-0f9d04dc6a17\",\"Type\":\"wrapper\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"5a0a5884-da84-4922-a02f-5828b55d5c92\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"section-container\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"72a016ee-451e-e340-f23b-b503ffdebc18\",\"Type\":\"section\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"a72ce8d2-5f5f-4176-0141-08d57ef792d3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"white-section\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"5a8cf3e2-8381-e708-5672-3eb9ca6c82ca\",\"Type\":\"container\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"9341f92e-83d8-4afe-ad4a-a95deeda9ae3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"container\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"97704415-4b3d-e368-cd79-a2101b2f97f7\",\"Type\":\"row\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"43734210-943e-4f33-a161-f12260b8c001\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[{\"Id\":\"eb477330-eddb-cda2-bf87-3d380f5ff6e5\",\"Type\":\"column\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"4c98f160-d676-40a2-9b88-79fd1343f333\",\"Properties\":[{\"Id\":\"f4fff310-340a-437a-8ce3-08d54de42fea\",\"Name\":\"column_width\",\"Label\":\"Column Width (M)\",\"Value\":\"2c6d4b41-a103-d2a0-4d2f-0b75646d05fe\",\"DefaultValue\":\"f2eafdde-4f79-a195-c1c1-0794e293fa27\",\"Description\":\"Column width for extra small (XS) devices: ≥768px\",\"OptionListId\":\"969eb4ef-188c-4174-4194-08d54de4cd18\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2017-12-28T12:14:39.4480249\",\"LastModifiedDate\":\"2017-12-28T12:14:39.4480249\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3de7dc0a-b6c1-4136-aeaa-08d58c5c2d05\",\"Name\":\"column_width_xs\",\"Label\":\"Column Width (XS)\",\"Value\":null,\"DefaultValue\":\"6597d3bd-0971-9d73-968b-64ff6e2eabda\",\"Description\":\"Column width for extra small (XS) devices: <576px\",\"OptionListId\":\"b98ba240-64b4-4862-f1fb-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:09:46.2963207\",\"LastModifiedDate\":\"2018-03-18T00:09:46.2963207\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3379dca0-ada6-4245-aeab-08d58c5c2d05\",\"Name\":\"column_width_s\",\"Label\":\"Column Width (S)\",\"Value\":null,\"DefaultValue\":\"e7cf0d7d-e66b-09cb-f338-720588431bee\",\"Description\":\"Colum width for Small (S) devices: ≥576px\",\"OptionListId\":\"17fa4063-c7b4-4659-f1fc-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:10:49.9721966\",\"LastModifiedDate\":\"2018-03-18T00:10:49.9721966\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"14539266-bd68-440f-aeac-08d58c5c2d05\",\"Name\":\"column_width_l\",\"Label\":\"Column Width (L)\",\"Value\":null,\"DefaultValue\":\"5913c029-6cd8-352b-eae0-6f3f2e146b01\",\"Description\":\"Column width for Large (L) devices: ≥768px\",\"OptionListId\":\"ed74aa2d-dd21-42d9-f1fd-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:12:06.3393526\",\"LastModifiedDate\":\"2018-03-18T00:12:06.3393526\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f0ad85a3-ff8c-40c6-aead-08d58c5c2d05\",\"Name\":\"column_width_xl\",\"Label\":\"Column Width (XL)\",\"Value\":null,\"DefaultValue\":\"4e3ff987-b14b-0713-4243-053fc5787389\",\"Description\":\"Column width for Extra Large (XL) devices: ≥1200px\",\"OptionListId\":\"bfd219cc-12a0-4d8b-f1fe-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:13:00.1266679\",\"LastModifiedDate\":\"2018-03-18T00:13:00.1266679\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"welcome-text-col\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[]}]},{\"Id\":\"61708e95-ba2c-6017-1001-22182b44f4aa\",\"Type\":\"row\",\"LayoutTemplate\":\"container\",\"SortOrder\":2,\"LayoutTypeId\":\"43734210-943e-4f33-a161-f12260b8c001\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[{\"Id\":\"a28a029f-b9ae-0c2b-598d-b5293a01ac82\",\"Type\":\"column\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"4c98f160-d676-40a2-9b88-79fd1343f333\",\"Properties\":[{\"Id\":\"f4fff310-340a-437a-8ce3-08d54de42fea\",\"Name\":\"column_width\",\"Label\":\"Column Width (M)\",\"Value\":\"2c6d4b41-a103-d2a0-4d2f-0b75646d05fe\",\"DefaultValue\":\"f2eafdde-4f79-a195-c1c1-0794e293fa27\",\"Description\":\"Column width for extra small (XS) devices: ≥768px\",\"OptionListId\":\"969eb4ef-188c-4174-4194-08d54de4cd18\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2017-12-28T12:14:39.4480249\",\"LastModifiedDate\":\"2017-12-28T12:14:39.4480249\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3de7dc0a-b6c1-4136-aeaa-08d58c5c2d05\",\"Name\":\"column_width_xs\",\"Label\":\"Column Width (XS)\",\"Value\":null,\"DefaultValue\":\"6597d3bd-0971-9d73-968b-64ff6e2eabda\",\"Description\":\"Column width for extra small (XS) devices: <576px\",\"OptionListId\":\"b98ba240-64b4-4862-f1fb-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:09:46.2963207\",\"LastModifiedDate\":\"2018-03-18T00:09:46.2963207\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3379dca0-ada6-4245-aeab-08d58c5c2d05\",\"Name\":\"column_width_s\",\"Label\":\"Column Width (S)\",\"Value\":null,\"DefaultValue\":\"e7cf0d7d-e66b-09cb-f338-720588431bee\",\"Description\":\"Colum width for Small (S) devices: ≥576px\",\"OptionListId\":\"17fa4063-c7b4-4659-f1fc-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:10:49.9721966\",\"LastModifiedDate\":\"2018-03-18T00:10:49.9721966\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"14539266-bd68-440f-aeac-08d58c5c2d05\",\"Name\":\"column_width_l\",\"Label\":\"Column Width (L)\",\"Value\":null,\"DefaultValue\":\"5913c029-6cd8-352b-eae0-6f3f2e146b01\",\"Description\":\"Column width for Large (L) devices: ≥768px\",\"OptionListId\":\"ed74aa2d-dd21-42d9-f1fd-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:12:06.3393526\",\"LastModifiedDate\":\"2018-03-18T00:12:06.3393526\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f0ad85a3-ff8c-40c6-aead-08d58c5c2d05\",\"Name\":\"column_width_xl\",\"Label\":\"Column Width (XL)\",\"Value\":null,\"DefaultValue\":\"4e3ff987-b14b-0713-4243-053fc5787389\",\"Description\":\"Column width for Extra Large (XL) devices: ≥1200px\",\"OptionListId\":\"bfd219cc-12a0-4d8b-f1fe-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:13:00.1266679\",\"LastModifiedDate\":\"2018-03-18T00:13:00.1266679\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"call-to-action-col\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[]}]}]}]},{\"Id\":\"88fd4084-c81e-7a88-efee-466a2c8ceab5\",\"Type\":\"section\",\"LayoutTemplate\":\"container\",\"SortOrder\":2,\"LayoutTypeId\":\"a72ce8d2-5f5f-4176-0141-08d57ef792d3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"grey-section\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"375aab3a-e545-a51c-93e5-5734a47ee530\",\"Type\":\"container\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"9341f92e-83d8-4afe-ad4a-a95deeda9ae3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"container\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"31fe7bb3-96d9-6ded-7a6e-32ca3857e77f\",\"Type\":\"row\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"43734210-943e-4f33-a161-f12260b8c001\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"2063f422-528f-2863-4864-80dc43b84f4b\",\"Type\":\"column\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"4c98f160-d676-40a2-9b88-79fd1343f333\",\"Properties\":[{\"Id\":\"f4fff310-340a-437a-8ce3-08d54de42fea\",\"Name\":\"column_width\",\"Label\":\"Column Width (M)\",\"Value\":\"2c6d4b41-a103-d2a0-4d2f-0b75646d05fe\",\"DefaultValue\":\"f2eafdde-4f79-a195-c1c1-0794e293fa27\",\"Description\":\"Column width for extra small (XS) devices: ≥768px\",\"OptionListId\":\"969eb4ef-188c-4174-4194-08d54de4cd18\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2017-12-28T12:14:39.4480249\",\"LastModifiedDate\":\"2017-12-28T12:14:39.4480249\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3de7dc0a-b6c1-4136-aeaa-08d58c5c2d05\",\"Name\":\"column_width_xs\",\"Label\":\"Column Width (XS)\",\"Value\":null,\"DefaultValue\":\"6597d3bd-0971-9d73-968b-64ff6e2eabda\",\"Description\":\"Column width for extra small (XS) devices: <576px\",\"OptionListId\":\"b98ba240-64b4-4862-f1fb-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:09:46.2963207\",\"LastModifiedDate\":\"2018-03-18T00:09:46.2963207\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3379dca0-ada6-4245-aeab-08d58c5c2d05\",\"Name\":\"column_width_s\",\"Label\":\"Column Width (S)\",\"Value\":null,\"DefaultValue\":\"e7cf0d7d-e66b-09cb-f338-720588431bee\",\"Description\":\"Colum width for Small (S) devices: ≥576px\",\"OptionListId\":\"17fa4063-c7b4-4659-f1fc-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:10:49.9721966\",\"LastModifiedDate\":\"2018-03-18T00:10:49.9721966\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"14539266-bd68-440f-aeac-08d58c5c2d05\",\"Name\":\"column_width_l\",\"Label\":\"Column Width (L)\",\"Value\":null,\"DefaultValue\":\"5913c029-6cd8-352b-eae0-6f3f2e146b01\",\"Description\":\"Column width for Large (L) devices: ≥768px\",\"OptionListId\":\"ed74aa2d-dd21-42d9-f1fd-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:12:06.3393526\",\"LastModifiedDate\":\"2018-03-18T00:12:06.3393526\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f0ad85a3-ff8c-40c6-aead-08d58c5c2d05\",\"Name\":\"column_width_xl\",\"Label\":\"Column Width (XL)\",\"Value\":null,\"DefaultValue\":\"4e3ff987-b14b-0713-4243-053fc5787389\",\"Description\":\"Column width for Extra Large (XL) devices: ≥1200px\",\"OptionListId\":\"bfd219cc-12a0-4d8b-f1fe-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:13:00.1266679\",\"LastModifiedDate\":\"2018-03-18T00:13:00.1266679\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[]}]},{\"Id\":\"66525467-de15-387e-693e-42ba82d5aa97\",\"Type\":\"row\",\"LayoutTemplate\":\"container\",\"SortOrder\":2,\"LayoutTypeId\":\"43734210-943e-4f33-a161-f12260b8c001\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[{\"Id\":\"118e276b-03e7-1145-ea91-ce8da0f914e5\",\"Type\":\"column\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"4c98f160-d676-40a2-9b88-79fd1343f333\",\"Properties\":[{\"Id\":\"f4fff310-340a-437a-8ce3-08d54de42fea\",\"Name\":\"column_width\",\"Label\":\"Column Width (M)\",\"Value\":\"2c6d4b41-a103-d2a0-4d2f-0b75646d05fe\",\"DefaultValue\":\"f2eafdde-4f79-a195-c1c1-0794e293fa27\",\"Description\":\"Column width for extra small (XS) devices: ≥768px\",\"OptionListId\":\"969eb4ef-188c-4174-4194-08d54de4cd18\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2017-12-28T12:14:39.4480249\",\"LastModifiedDate\":\"2017-12-28T12:14:39.4480249\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3de7dc0a-b6c1-4136-aeaa-08d58c5c2d05\",\"Name\":\"column_width_xs\",\"Label\":\"Column Width (XS)\",\"Value\":null,\"DefaultValue\":\"6597d3bd-0971-9d73-968b-64ff6e2eabda\",\"Description\":\"Column width for extra small (XS) devices: <576px\",\"OptionListId\":\"b98ba240-64b4-4862-f1fb-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:09:46.2963207\",\"LastModifiedDate\":\"2018-03-18T00:09:46.2963207\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3379dca0-ada6-4245-aeab-08d58c5c2d05\",\"Name\":\"column_width_s\",\"Label\":\"Column Width (S)\",\"Value\":null,\"DefaultValue\":\"e7cf0d7d-e66b-09cb-f338-720588431bee\",\"Description\":\"Colum width for Small (S) devices: ≥576px\",\"OptionListId\":\"17fa4063-c7b4-4659-f1fc-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:10:49.9721966\",\"LastModifiedDate\":\"2018-03-18T00:10:49.9721966\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"14539266-bd68-440f-aeac-08d58c5c2d05\",\"Name\":\"column_width_l\",\"Label\":\"Column Width (L)\",\"Value\":null,\"DefaultValue\":\"5913c029-6cd8-352b-eae0-6f3f2e146b01\",\"Description\":\"Column width for Large (L) devices: ≥768px\",\"OptionListId\":\"ed74aa2d-dd21-42d9-f1fd-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:12:06.3393526\",\"LastModifiedDate\":\"2018-03-18T00:12:06.3393526\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f0ad85a3-ff8c-40c6-aead-08d58c5c2d05\",\"Name\":\"column_width_xl\",\"Label\":\"Column Width (XL)\",\"Value\":null,\"DefaultValue\":\"4e3ff987-b14b-0713-4243-053fc5787389\",\"Description\":\"Column width for Extra Large (XL) devices: ≥1200px\",\"OptionListId\":\"bfd219cc-12a0-4d8b-f1fe-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:13:00.1266679\",\"LastModifiedDate\":\"2018-03-18T00:13:00.1266679\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"features-action\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[]}]}]}]}]}]",
         "IsActive": true,
         "Name": "Demo Home",
         "Page": null
       },
       {
         "Id": "aa05d040-361d-45a8-d347-08d5a398fdd9",
-        "Config": "[{\"Id\":\"61715f60-dcec-0d8c-e8ff-87ebd526a768\",\"Type\":\"wrapper\",\"LayoutTemplate\":\"repeater\",\"SortOrder\":1,\"LayoutTypeId\":\"5a0a5884-da84-4922-a02f-5828b55d5c92\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":null,\"Description\":null,\"OptionListId\":null,\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null}],\"PlaceHolders\":[{\"Id\":\"a8bb3a4f-d4a0-94bb-c1d2-6d1734074a78\",\"Type\":\"section\",\"LayoutTemplate\":\"repeater\",\"SortOrder\":1,\"LayoutTypeId\":\"a72ce8d2-5f5f-4176-0141-08d57ef792d3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"page-title\",\"DefaultValue\":null,\"Description\":null,\"OptionListId\":null,\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null}],\"PlaceHolders\":[{\"Id\":\"24464d4d-9422-2ed7-2fdc-c8e3bb96f316\",\"Type\":\"row\",\"LayoutTemplate\":\"row\",\"SortOrder\":1,\"LayoutTypeId\":\"43734210-943e-4f33-a161-f12260b8c001\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":null,\"Description\":null,\"OptionListId\":null,\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null}],\"PlaceHolders\":[{\"Id\":\"40531ef2-a872-a56a-c06e-8f4bd93cce53\",\"Type\":\"column\",\"LayoutTemplate\":\"column\",\"SortOrder\":1,\"LayoutTypeId\":\"4c98f160-d676-40a2-9b88-79fd1343f333\",\"Properties\":[{\"Id\":\"f4fff310-340a-437a-8ce3-08d54de42fea\",\"Name\":\"column_width\",\"Label\":\"Column Width (M)\",\"Value\":\"2c6d4b41-a103-d2a0-4d2f-0b75646d05fe\",\"DefaultValue\":\"f2eafdde-4f79-a195-c1c1-0794e293fa27\",\"Description\":\"Column width for extra small (XS) devices: ≥768px\",\"OptionListId\":\"969eb4ef-188c-4174-4194-08d54de4cd18\",\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":\"2017-12-28T12:14:39.4480249\",\"LastModifiedDate\":\"2017-12-28T12:14:39.4480249\"},{\"Id\":\"3de7dc0a-b6c1-4136-aeaa-08d58c5c2d05\",\"Name\":\"column_width_xs\",\"Label\":\"Column Width (XS)\",\"Value\":null,\"DefaultValue\":\"6597d3bd-0971-9d73-968b-64ff6e2eabda\",\"Description\":\"Column width for extra small (XS) devices: <576px\",\"OptionListId\":\"b98ba240-64b4-4862-f1fb-08d58c5a4d88\",\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:09:46.2963207\",\"LastModifiedDate\":\"2018-03-18T00:09:46.2963207\"},{\"Id\":\"3379dca0-ada6-4245-aeab-08d58c5c2d05\",\"Name\":\"column_width_s\",\"Label\":\"Column Width (S)\",\"Value\":null,\"DefaultValue\":\"e7cf0d7d-e66b-09cb-f338-720588431bee\",\"Description\":\"Colum width for Small (S) devices: ≥576px\",\"OptionListId\":\"17fa4063-c7b4-4659-f1fc-08d58c5a4d88\",\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:10:49.9721966\",\"LastModifiedDate\":\"2018-03-18T00:10:49.9721966\"},{\"Id\":\"14539266-bd68-440f-aeac-08d58c5c2d05\",\"Name\":\"column_width_l\",\"Label\":\"Column Width (L)\",\"Value\":null,\"DefaultValue\":\"5913c029-6cd8-352b-eae0-6f3f2e146b01\",\"Description\":\"Column width for Large (L) devices: ≥768px\",\"OptionListId\":\"ed74aa2d-dd21-42d9-f1fd-08d58c5a4d88\",\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:12:06.3393526\",\"LastModifiedDate\":\"2018-03-18T00:12:06.3393526\"},{\"Id\":\"f0ad85a3-ff8c-40c6-aead-08d58c5c2d05\",\"Name\":\"column_width_xl\",\"Label\":\"Column Width (XL)\",\"Value\":null,\"DefaultValue\":\"4e3ff987-b14b-0713-4243-053fc5787389\",\"Description\":\"Column width for Extra Large (XL) devices: ≥1200px\",\"OptionListId\":\"bfd219cc-12a0-4d8b-f1fe-08d58c5a4d88\",\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:13:00.1266679\",\"LastModifiedDate\":\"2018-03-18T00:13:00.1266679\"},{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":null,\"Description\":null,\"OptionListId\":null,\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null}],\"PlaceHolders\":[]}]}]},{\"Id\":\"ff32cfe7-c0d0-4cb0-6a95-37e5b651d847\",\"Type\":\"container\",\"LayoutTemplate\":\"container\",\"SortOrder\":2,\"LayoutTypeId\":\"9341f92e-83d8-4afe-ad4a-a95deeda9ae3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":null,\"Description\":null,\"OptionListId\":null,\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null}],\"PlaceHolders\":[{\"Id\":\"e75e2f92-a360-57e4-1415-ae18ddd71158\",\"Type\":\"section\",\"LayoutTemplate\":\"repeater\",\"SortOrder\":1,\"LayoutTypeId\":\"a72ce8d2-5f5f-4176-0141-08d57ef792d3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"\",\"DefaultValue\":null,\"Description\":null,\"OptionListId\":null,\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null}],\"PlaceHolders\":[{\"Id\":\"77ac7c1a-b31a-0a4c-72a8-aa563c318288\",\"Type\":\"row\",\"LayoutTemplate\":\"row\",\"SortOrder\":1,\"LayoutTypeId\":\"43734210-943e-4f33-a161-f12260b8c001\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":null,\"Description\":null,\"OptionListId\":null,\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null}],\"PlaceHolders\":[{\"Id\":\"29bb681c-fda7-19e4-4a31-3a7356a111dc\",\"Type\":\"column\",\"LayoutTemplate\":\"column\",\"SortOrder\":1,\"LayoutTypeId\":\"4c98f160-d676-40a2-9b88-79fd1343f333\",\"Properties\":[{\"Id\":\"f4fff310-340a-437a-8ce3-08d54de42fea\",\"Name\":\"column_width\",\"Label\":\"Column Width (M)\",\"Value\":\"2c6d4b41-a103-d2a0-4d2f-0b75646d05fe\",\"DefaultValue\":\"f2eafdde-4f79-a195-c1c1-0794e293fa27\",\"Description\":\"Column width for extra small (XS) devices: ≥768px\",\"OptionListId\":\"969eb4ef-188c-4174-4194-08d54de4cd18\",\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":\"2017-12-28T12:14:39.4480249\",\"LastModifiedDate\":\"2017-12-28T12:14:39.4480249\"},{\"Id\":\"3de7dc0a-b6c1-4136-aeaa-08d58c5c2d05\",\"Name\":\"column_width_xs\",\"Label\":\"Column Width (XS)\",\"Value\":null,\"DefaultValue\":\"6597d3bd-0971-9d73-968b-64ff6e2eabda\",\"Description\":\"Column width for extra small (XS) devices: <576px\",\"OptionListId\":\"b98ba240-64b4-4862-f1fb-08d58c5a4d88\",\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:09:46.2963207\",\"LastModifiedDate\":\"2018-03-18T00:09:46.2963207\"},{\"Id\":\"3379dca0-ada6-4245-aeab-08d58c5c2d05\",\"Name\":\"column_width_s\",\"Label\":\"Column Width (S)\",\"Value\":null,\"DefaultValue\":\"e7cf0d7d-e66b-09cb-f338-720588431bee\",\"Description\":\"Colum width for Small (S) devices: ≥576px\",\"OptionListId\":\"17fa4063-c7b4-4659-f1fc-08d58c5a4d88\",\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:10:49.9721966\",\"LastModifiedDate\":\"2018-03-18T00:10:49.9721966\"},{\"Id\":\"14539266-bd68-440f-aeac-08d58c5c2d05\",\"Name\":\"column_width_l\",\"Label\":\"Column Width (L)\",\"Value\":null,\"DefaultValue\":\"5913c029-6cd8-352b-eae0-6f3f2e146b01\",\"Description\":\"Column width for Large (L) devices: ≥768px\",\"OptionListId\":\"ed74aa2d-dd21-42d9-f1fd-08d58c5a4d88\",\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:12:06.3393526\",\"LastModifiedDate\":\"2018-03-18T00:12:06.3393526\"},{\"Id\":\"f0ad85a3-ff8c-40c6-aead-08d58c5c2d05\",\"Name\":\"column_width_xl\",\"Label\":\"Column Width (XL)\",\"Value\":null,\"DefaultValue\":\"4e3ff987-b14b-0713-4243-053fc5787389\",\"Description\":\"Column width for Extra Large (XL) devices: ≥1200px\",\"OptionListId\":\"bfd219cc-12a0-4d8b-f1fe-08d58c5a4d88\",\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:13:00.1266679\",\"LastModifiedDate\":\"2018-03-18T00:13:00.1266679\"},{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":null,\"Description\":null,\"OptionListId\":null,\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null}],\"PlaceHolders\":[]}]}]}]}]}]",
+        "Config": "[{\"Id\":\"61715f60-dcec-0d8c-e8ff-87ebd526a768\",\"Type\":\"wrapper\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"5a0a5884-da84-4922-a02f-5828b55d5c92\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"a8bb3a4f-d4a0-94bb-c1d2-6d1734074a78\",\"Type\":\"section\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"a72ce8d2-5f5f-4176-0141-08d57ef792d3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"page-title\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"24464d4d-9422-2ed7-2fdc-c8e3bb96f316\",\"Type\":\"row\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"43734210-943e-4f33-a161-f12260b8c001\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"40531ef2-a872-a56a-c06e-8f4bd93cce53\",\"Type\":\"column\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"4c98f160-d676-40a2-9b88-79fd1343f333\",\"Properties\":[{\"Id\":\"f4fff310-340a-437a-8ce3-08d54de42fea\",\"Name\":\"column_width\",\"Label\":\"Column Width (M)\",\"Value\":\"2c6d4b41-a103-d2a0-4d2f-0b75646d05fe\",\"DefaultValue\":\"f2eafdde-4f79-a195-c1c1-0794e293fa27\",\"Description\":\"Column width for extra small (XS) devices: ≥768px\",\"OptionListId\":\"969eb4ef-188c-4174-4194-08d54de4cd18\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2017-12-28T12:14:39.4480249\",\"LastModifiedDate\":\"2017-12-28T12:14:39.4480249\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3de7dc0a-b6c1-4136-aeaa-08d58c5c2d05\",\"Name\":\"column_width_xs\",\"Label\":\"Column Width (XS)\",\"Value\":null,\"DefaultValue\":\"6597d3bd-0971-9d73-968b-64ff6e2eabda\",\"Description\":\"Column width for extra small (XS) devices: <576px\",\"OptionListId\":\"b98ba240-64b4-4862-f1fb-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:09:46.2963207\",\"LastModifiedDate\":\"2018-03-18T00:09:46.2963207\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3379dca0-ada6-4245-aeab-08d58c5c2d05\",\"Name\":\"column_width_s\",\"Label\":\"Column Width (S)\",\"Value\":null,\"DefaultValue\":\"e7cf0d7d-e66b-09cb-f338-720588431bee\",\"Description\":\"Colum width for Small (S) devices: ≥576px\",\"OptionListId\":\"17fa4063-c7b4-4659-f1fc-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:10:49.9721966\",\"LastModifiedDate\":\"2018-03-18T00:10:49.9721966\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"14539266-bd68-440f-aeac-08d58c5c2d05\",\"Name\":\"column_width_l\",\"Label\":\"Column Width (L)\",\"Value\":null,\"DefaultValue\":\"5913c029-6cd8-352b-eae0-6f3f2e146b01\",\"Description\":\"Column width for Large (L) devices: ≥768px\",\"OptionListId\":\"ed74aa2d-dd21-42d9-f1fd-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:12:06.3393526\",\"LastModifiedDate\":\"2018-03-18T00:12:06.3393526\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f0ad85a3-ff8c-40c6-aead-08d58c5c2d05\",\"Name\":\"column_width_xl\",\"Label\":\"Column Width (XL)\",\"Value\":null,\"DefaultValue\":\"4e3ff987-b14b-0713-4243-053fc5787389\",\"Description\":\"Column width for Extra Large (XL) devices: ≥1200px\",\"OptionListId\":\"bfd219cc-12a0-4d8b-f1fe-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:13:00.1266679\",\"LastModifiedDate\":\"2018-03-18T00:13:00.1266679\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[]}]}]},{\"Id\":\"ff32cfe7-c0d0-4cb0-6a95-37e5b651d847\",\"Type\":\"container\",\"LayoutTemplate\":\"container\",\"SortOrder\":2,\"LayoutTypeId\":\"9341f92e-83d8-4afe-ad4a-a95deeda9ae3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"e75e2f92-a360-57e4-1415-ae18ddd71158\",\"Type\":\"section\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"a72ce8d2-5f5f-4176-0141-08d57ef792d3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"77ac7c1a-b31a-0a4c-72a8-aa563c318288\",\"Type\":\"row\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"43734210-943e-4f33-a161-f12260b8c001\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"29bb681c-fda7-19e4-4a31-3a7356a111dc\",\"Type\":\"column\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"4c98f160-d676-40a2-9b88-79fd1343f333\",\"Properties\":[{\"Id\":\"f4fff310-340a-437a-8ce3-08d54de42fea\",\"Name\":\"column_width\",\"Label\":\"Column Width (M)\",\"Value\":\"2c6d4b41-a103-d2a0-4d2f-0b75646d05fe\",\"DefaultValue\":\"f2eafdde-4f79-a195-c1c1-0794e293fa27\",\"Description\":\"Column width for extra small (XS) devices: ≥768px\",\"OptionListId\":\"969eb4ef-188c-4174-4194-08d54de4cd18\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2017-12-28T12:14:39.4480249\",\"LastModifiedDate\":\"2017-12-28T12:14:39.4480249\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3de7dc0a-b6c1-4136-aeaa-08d58c5c2d05\",\"Name\":\"column_width_xs\",\"Label\":\"Column Width (XS)\",\"Value\":null,\"DefaultValue\":\"6597d3bd-0971-9d73-968b-64ff6e2eabda\",\"Description\":\"Column width for extra small (XS) devices: <576px\",\"OptionListId\":\"b98ba240-64b4-4862-f1fb-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:09:46.2963207\",\"LastModifiedDate\":\"2018-03-18T00:09:46.2963207\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3379dca0-ada6-4245-aeab-08d58c5c2d05\",\"Name\":\"column_width_s\",\"Label\":\"Column Width (S)\",\"Value\":null,\"DefaultValue\":\"e7cf0d7d-e66b-09cb-f338-720588431bee\",\"Description\":\"Colum width for Small (S) devices: ≥576px\",\"OptionListId\":\"17fa4063-c7b4-4659-f1fc-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:10:49.9721966\",\"LastModifiedDate\":\"2018-03-18T00:10:49.9721966\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"14539266-bd68-440f-aeac-08d58c5c2d05\",\"Name\":\"column_width_l\",\"Label\":\"Column Width (L)\",\"Value\":null,\"DefaultValue\":\"5913c029-6cd8-352b-eae0-6f3f2e146b01\",\"Description\":\"Column width for Large (L) devices: ≥768px\",\"OptionListId\":\"ed74aa2d-dd21-42d9-f1fd-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:12:06.3393526\",\"LastModifiedDate\":\"2018-03-18T00:12:06.3393526\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f0ad85a3-ff8c-40c6-aead-08d58c5c2d05\",\"Name\":\"column_width_xl\",\"Label\":\"Column Width (XL)\",\"Value\":null,\"DefaultValue\":\"4e3ff987-b14b-0713-4243-053fc5787389\",\"Description\":\"Column width for Extra Large (XL) devices: ≥1200px\",\"OptionListId\":\"bfd219cc-12a0-4d8b-f1fe-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:13:00.1266679\",\"LastModifiedDate\":\"2018-03-18T00:13:00.1266679\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[]}]}]}]}]}]",
         "IsActive": true,
         "Name": "Demo Layout",
         "Page": null
@@ -343,7 +343,7 @@
       },
       {
         "Id": "49ca6d71-a647-4b3e-8c59-08d5b45b8cf4",
-        "Config": "[{\"Id\":\"1f95a2c2-abf2-cb3b-7dc5-8449e7e8a220\",\"Type\":\"wrapper\",\"LayoutTemplate\":\"repeater\",\"SortOrder\":1,\"LayoutTypeId\":\"5a0a5884-da84-4922-a02f-5828b55d5c92\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"container\",\"DefaultValue\":null,\"Description\":null,\"OptionListId\":null,\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null}],\"PlaceHolders\":[{\"Id\":\"26e7b693-7dff-d941-4492-b313b05fef6e\",\"Type\":\"section\",\"LayoutTemplate\":\"repeater\",\"SortOrder\":1,\"LayoutTypeId\":\"a72ce8d2-5f5f-4176-0141-08d57ef792d3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":null,\"Description\":null,\"OptionListId\":null,\"OptionList\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null}],\"PlaceHolders\":[]}]}]",
+        "Config": "[{\"Id\":\"1f95a2c2-abf2-cb3b-7dc5-8449e7e8a220\",\"Type\":\"wrapper\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"5a0a5884-da84-4922-a02f-5828b55d5c92\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"blog-section-container\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"bb66dfbc-1276-3fc5-f4b2-fc022f04c54c\",\"Type\":\"section\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"a72ce8d2-5f5f-4176-0141-08d57ef792d3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"blog-header-section\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[{\"Id\":\"0d7bdd31-b761-b53f-b1b1-72294809d415\",\"Type\":\"container\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"9341f92e-83d8-4afe-ad4a-a95deeda9ae3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"container\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[{\"Id\":\"e4580c60-9033-853e-db7a-d09056416888\",\"Type\":\"row\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"43734210-943e-4f33-a161-f12260b8c001\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[{\"Id\":\"7f1cbad0-04b2-68d4-7c02-6f2c3c29f1bb\",\"Type\":\"column\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"4c98f160-d676-40a2-9b88-79fd1343f333\",\"Properties\":[{\"Id\":\"f4fff310-340a-437a-8ce3-08d54de42fea\",\"Name\":\"column_width\",\"Label\":\"Column Width (M)\",\"Value\":\"2c6d4b41-a103-d2a0-4d2f-0b75646d05fe\",\"DefaultValue\":\"f2eafdde-4f79-a195-c1c1-0794e293fa27\",\"Description\":\"Column width for extra small (XS) devices: ≥768px\",\"OptionListId\":\"969eb4ef-188c-4174-4194-08d54de4cd18\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2017-12-28T12:14:39.4480249\",\"LastModifiedDate\":\"2017-12-28T12:14:39.4480249\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3de7dc0a-b6c1-4136-aeaa-08d58c5c2d05\",\"Name\":\"column_width_xs\",\"Label\":\"Column Width (XS)\",\"Value\":null,\"DefaultValue\":\"6597d3bd-0971-9d73-968b-64ff6e2eabda\",\"Description\":\"Column width for extra small (XS) devices: <576px\",\"OptionListId\":\"b98ba240-64b4-4862-f1fb-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:09:46.2963207\",\"LastModifiedDate\":\"2018-03-18T00:09:46.2963207\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"3379dca0-ada6-4245-aeab-08d58c5c2d05\",\"Name\":\"column_width_s\",\"Label\":\"Column Width (S)\",\"Value\":null,\"DefaultValue\":\"e7cf0d7d-e66b-09cb-f338-720588431bee\",\"Description\":\"Colum width for Small (S) devices: ≥576px\",\"OptionListId\":\"17fa4063-c7b4-4659-f1fc-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:10:49.9721966\",\"LastModifiedDate\":\"2018-03-18T00:10:49.9721966\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"14539266-bd68-440f-aeac-08d58c5c2d05\",\"Name\":\"column_width_l\",\"Label\":\"Column Width (L)\",\"Value\":null,\"DefaultValue\":\"5913c029-6cd8-352b-eae0-6f3f2e146b01\",\"Description\":\"Column width for Large (L) devices: ≥768px\",\"OptionListId\":\"ed74aa2d-dd21-42d9-f1fd-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:12:06.3393526\",\"LastModifiedDate\":\"2018-03-18T00:12:06.3393526\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f0ad85a3-ff8c-40c6-aead-08d58c5c2d05\",\"Name\":\"column_width_xl\",\"Label\":\"Column Width (XL)\",\"Value\":null,\"DefaultValue\":\"4e3ff987-b14b-0713-4243-053fc5787389\",\"Description\":\"Column width for Extra Large (XL) devices: ≥1200px\",\"OptionListId\":\"bfd219cc-12a0-4d8b-f1fe-08d58c5a4d88\",\"IsMoreOption\":true,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":\"2018-03-18T00:13:00.1266679\",\"LastModifiedDate\":\"2018-03-18T00:13:00.1266679\",\"IsActiveBadgeClass\":\"badge-primary\"},{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":null,\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[]}]}]}]},{\"Id\":\"26e7b693-7dff-d941-4492-b313b05fef6e\",\"Type\":\"section\",\"LayoutTemplate\":\"container\",\"SortOrder\":2,\"LayoutTypeId\":\"a72ce8d2-5f5f-4176-0141-08d57ef792d3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"blog-post-section\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":true,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-primary\"}],\"PlaceHolders\":[{\"Id\":\"b61f26d3-02f1-82ac-0386-9880d22a19da\",\"Type\":\"container\",\"LayoutTemplate\":\"container\",\"SortOrder\":1,\"LayoutTypeId\":\"9341f92e-83d8-4afe-ad4a-a95deeda9ae3\",\"Properties\":[{\"Id\":\"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\"Name\":\"css_class\",\"Label\":\"Css Class\",\"Value\":\"container\",\"DefaultValue\":\" \",\"Description\":\" \",\"OptionListId\":null,\"IsMoreOption\":false,\"OptionList\":null,\"DefaultValuePropertyOption\":null,\"IsActive\":false,\"CreatedDate\":null,\"LastModifiedDate\":null,\"IsActiveBadgeClass\":\"badge-secondary\"}],\"PlaceHolders\":[]}]}]}]",
         "IsActive": true,
         "Name": "Blog Layout",
         "Page": null
@@ -490,11 +490,11 @@
       },
       {
         "Id": "1ced7790-2ba9-4c75-cdcb-08d631f97e17",
-        "CreatedDate": "2018-10-14T19:21:35.147",
-        "Description": null,
+        "CreatedDate": null,
+        "Description": "Blog",
         "IsActive": true,
         "Label": "Blog",
-        "LastModifiedDate": "2018-10-14T19:21:35.147",
+        "LastModifiedDate": null,
         "Name": "Blog",
         "Version": "00.01.00",
         "ModuleView": null,
@@ -1127,21 +1127,21 @@
     "AllRecords": [
       {
         "Id": "a5b5b79d-58cb-4fc5-48aa-08d5885ab545",
-        "ContentData": "{\"items\":[{\"icon\":\" <svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-code\\\"><polyline points=\\\"16 18 22 12 16 6\\\"></polyline><polyline points=\\\"8 6 2 12 8 18\\\"></polyline></svg>\",\"title\":\"Low Code\",\"description\":\"Develop Admin UI and REST API with very few lines of code. How? Deviser Admin provides Fluent API to build Admin UI and REST API.\",\"id\":\"501975f7-ae93-53e1-82b3-38eb880df63f\",\"viewOrder\":1},{\"icon\":\" <svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-globe\\\"><circle cx=\\\"12\\\" cy=\\\"12\\\" r=\\\"10\\\"></circle><line x1=\\\"2\\\" y1=\\\"12\\\" x2=\\\"22\\\" y2=\\\"12\\\"></line><path d=\\\"M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z\\\"></path></svg>\",\"title\":\"Web Contents\",\"description\":\"Light weight dynamic contents and layouts enable web developers to build modern web pages rapidly with full control of HTML structure. Thanks to razor views!\",\"id\":\"0e51fb30-af16-b50e-6ca5-d8e7cdaecc08\",\"viewOrder\":2},{\"icon\":\"<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-grid\\\"><rect x=\\\"3\\\" y=\\\"3\\\" width=\\\"7\\\" height=\\\"7\\\"/><rect x=\\\"14\\\" y=\\\"3\\\" width=\\\"7\\\" height=\\\"7\\\" transform=\\\"translate(10,-11) rotate(45)\\\"/><rect x=\\\"14\\\" y=\\\"14\\\" width=\\\"7\\\" height=\\\"7\\\"/><rect x=\\\"3\\\" y=\\\"14\\\" width=\\\"7\\\" height=\\\"7\\\"/></svg>\",\"title\":\"Extensions\",\"description\":\"Extend your functionalities with modules. Customize the appearance with themes.\",\"id\":\"158ddebc-b739-a07c-6abe-a519a68e7d89\",\"viewOrder\":3}]}",
+        "ContentData": "{\"items\":[{\"icon\":\" <svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-code\\\"><polyline points=\\\"16 18 22 12 16 6\\\"></polyline><polyline points=\\\"8 6 2 12 8 18\\\"></polyline></svg>\",\"title\":\"Low Code\",\"description\":\"Develop Admin UI and REST API with very few lines of code. How? Deviser Admin provides Fluent API to build Admin UI and REST API.\",\"id\":\"501975f7-ae93-53e1-82b3-38eb880df63f\",\"viewOrder\":1},{\"icon\":\" <svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-globe\\\"><circle cx=\\\"12\\\" cy=\\\"12\\\" r=\\\"10\\\"></circle><line x1=\\\"2\\\" y1=\\\"12\\\" x2=\\\"22\\\" y2=\\\"12\\\"></line><path d=\\\"M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z\\\"></path></svg>\",\"title\":\"Web Contents\",\"description\":\"Light weight dynamic contents and layouts enable web developers to build modern web contents rapidly with full control of HTML structure. Thanks to razor views!\",\"id\":\"0e51fb30-af16-b50e-6ca5-d8e7cdaecc08\",\"viewOrder\":2},{\"icon\":\"<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" width=\\\"24\\\" height=\\\"24\\\" viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"2\\\" stroke-linecap=\\\"round\\\" stroke-linejoin=\\\"round\\\" class=\\\"feather feather-grid\\\"><rect x=\\\"3\\\" y=\\\"3\\\" width=\\\"7\\\" height=\\\"7\\\"/><rect x=\\\"14\\\" y=\\\"3\\\" width=\\\"7\\\" height=\\\"7\\\" transform=\\\"translate(10,-11) rotate(45)\\\"/><rect x=\\\"14\\\" y=\\\"14\\\" width=\\\"7\\\" height=\\\"7\\\"/><rect x=\\\"3\\\" y=\\\"14\\\" width=\\\"7\\\" height=\\\"7\\\"/></svg>\",\"title\":\"Extensions\",\"description\":\"Extend the functionalities with modules. Customize the appearance with themes and dynamic layouts.\",\"id\":\"158ddebc-b739-a07c-6abe-a519a68e7d89\",\"viewOrder\":3}]}",
         "CreatedDate": "2018-03-12T21:55:00.553",
         "CultureCode": "en-US",
         "IsActive": true,
-        "LastModifiedDate": "2020-09-04T00:09:28.757",
+        "LastModifiedDate": "2020-11-15T23:28:20.3641394",
         "PageContentId": "deae8c01-cc70-ebc1-b165-af94417eae61",
         "PageContent": null
       },
       {
         "Id": "9517fc8b-f221-4095-afc6-08d5932bbde0",
-        "ContentData": "{\"items\":[],\"content\":\"<h2>Awesome! You've installed Deviser Platform Successfully.</h2><p>What's Next? You can develop any kind of web applications and websites with very few lines of code!</p>\"}",
+        "ContentData": "{\"items\":[],\"content\":\"<h2>A Low-Code Framework based on .NET Core to build web applicaions and web contents.</h2><p>Stop building SPAs, REST API and middleware from scratch! Build modern web apps with a fluent API and build webcontents with dynamic content features</p>\"}",
         "CreatedDate": "2018-03-26T17:10:42.12",
         "CultureCode": "en-US",
         "IsActive": true,
-        "LastModifiedDate": "2020-09-03T23:31:08.277",
+        "LastModifiedDate": "2020-09-30T23:19:06.2256425",
         "PageContentId": "2fcd1f08-42b0-fe77-bf67-0fa01148eef3",
         "PageContent": null
       },
@@ -1173,6 +1173,16 @@
         "IsActive": true,
         "LastModifiedDate": "2018-08-13T21:25:35.48",
         "PageContentId": "642d6302-8036-d651-5553-1a8ed64c7b59",
+        "PageContent": null
+      },
+      {
+        "Id": "a58a51d1-d9c3-439a-cf8c-08d88a8387ff",
+        "ContentData": "{\"items\":[],\"link\":{\"linkType\":\"Url\",\"linkText\":\"Read More\",\"isNewWindow\":true,\"url\":\"/\"}}",
+        "CreatedDate": "2020-11-17T00:01:19.9884021",
+        "CultureCode": "en-US",
+        "IsActive": false,
+        "LastModifiedDate": "2020-11-17T00:01:19.9884021",
+        "PageContentId": "decf0b5d-6e61-ce21-a55b-e11659fc6aa3",
         "PageContent": null
       }
     ]
@@ -1212,9 +1222,9 @@
         "Locale": "en-US",
         "Description": null,
         "Keywords": null,
-        "Name": "Home Demo",
-        "Title": "Home Demo",
-        "URL": "HomeDemo",
+        "Name": "Home",
+        "Title": "Home",
+        "URL": "Home",
         "RedirectUrl": null,
         "IsLinkNewWindow": false,
         "PageHeaderTags": "<meta property=\"og:image\" content=\"https://localhost:44304/images/favicons/apple-touch-icon.png\" />",
@@ -1228,7 +1238,7 @@
         "Name": "Blog",
         "Title": "Blog",
         "URL": "Admin/Blog",
-        "RedirectUrl": null,
+        "RedirectUrl": "/Admin/Blog/Posts",
         "IsLinkNewWindow": false,
         "PageHeaderTags": " ",
         "Page": null
@@ -1239,7 +1249,7 @@
         "Description": null,
         "Keywords": null,
         "Name": "User Management",
-        "Title": "New User Management",
+        "Title": "User Management",
         "URL": "Admin/UserManagement",
         "RedirectUrl": null,
         "IsLinkNewWindow": false,
@@ -1317,7 +1327,7 @@
         "Description": " ",
         "Keywords": null,
         "Name": "Site Settings",
-        "Title": "New Site Settings",
+        "Title": "Site Settings",
         "URL": "Admin/SiteSettings",
         "RedirectUrl": null,
         "IsLinkNewWindow": false,
@@ -1330,11 +1340,11 @@
         "Description": null,
         "Keywords": null,
         "Name": "Recycle Bin",
-        "Title": null,
+        "Title": "Recycle Bin",
         "URL": "Admin/RecycleBin",
         "RedirectUrl": null,
         "IsLinkNewWindow": false,
-        "PageHeaderTags": "  ",
+        "PageHeaderTags": "",
         "Page": null
       },
       {
@@ -1356,7 +1366,7 @@
         "Description": null,
         "Keywords": null,
         "Name": "Page Management",
-        "Title": null,
+        "Title": "Page Management",
         "URL": "Admin/PageManagement",
         "RedirectUrl": null,
         "IsLinkNewWindow": false,
@@ -1371,6 +1381,84 @@
         "Name": "Security Role",
         "Title": "Security Role",
         "URL": "Admin/SecurityRole",
+        "RedirectUrl": "",
+        "IsLinkNewWindow": false,
+        "PageHeaderTags": "",
+        "Page": null
+      },
+      {
+        "PageId": "cc33feb0-b32f-4410-f23d-08d891899736",
+        "Locale": "en-US",
+        "Description": "Test2",
+        "Keywords": null,
+        "Name": "Categories",
+        "Title": "Blog - Categories",
+        "URL": "Admin/Blog/Categories",
+        "RedirectUrl": null,
+        "IsLinkNewWindow": false,
+        "PageHeaderTags": " ",
+        "Page": null
+      },
+      {
+        "PageId": "bca211fd-dcb6-41fb-8be3-08d89192b8f4",
+        "Locale": "en-US",
+        "Description": "Test1",
+        "Keywords": null,
+        "Name": "Posts",
+        "Title": "Blog - Posts",
+        "URL": "Admin/Blog/Posts",
+        "RedirectUrl": null,
+        "IsLinkNewWindow": false,
+        "PageHeaderTags": " ",
+        "Page": null
+      },
+      {
+        "PageId": "8ffe1753-e57d-4628-d250-08d891930b4f",
+        "Locale": "en-US",
+        "Description": "Test",
+        "Keywords": null,
+        "Name": "Tags",
+        "Title": "Blog - Tags",
+        "URL": "Admin/Blog/Tags",
+        "RedirectUrl": null,
+        "IsLinkNewWindow": false,
+        "PageHeaderTags": null,
+        "Page": null
+      },
+      {
+        "PageId": "87d23925-a06c-4f1b-ad09-08d8a36cdaa4",
+        "Locale": "en-US",
+        "Description": "",
+        "Keywords": null,
+        "Name": "About",
+        "Title": "About",
+        "URL": "About",
+        "RedirectUrl": "",
+        "IsLinkNewWindow": false,
+        "PageHeaderTags": "",
+        "Page": null
+      },
+      {
+        "PageId": "a80f4256-f285-4931-0215-08d8a6dbd291",
+        "Locale": "en-US",
+        "Description": "",
+        "Keywords": null,
+        "Name": "Blogs",
+        "Title": "Blogs",
+        "URL": "Admin/Blog/Blogs",
+        "RedirectUrl": "",
+        "IsLinkNewWindow": false,
+        "PageHeaderTags": "",
+        "Page": null
+      },
+      {
+        "PageId": "29dd5d0b-b4e5-4966-931b-08d8ab043a8a",
+        "Locale": "en-US",
+        "Description": "",
+        "Keywords": null,
+        "Name": "Content Demos",
+        "Title": "Content Demos",
+        "URL": "ContentDemos",
         "RedirectUrl": "",
         "IsLinkNewWindow": false,
         "PageHeaderTags": "",
@@ -1453,8 +1541,8 @@
         "ModuleViewProperties": null,
         "OptionList": null,
         "IsActive": true,
-        "CreatedDate": "2018-03-17T11:38:45.2177732",
-        "LastModifiedDate": "2018-03-17T11:38:45.2177732"
+        "CreatedDate": null,
+        "LastModifiedDate": null
       },
       {
         "Id": "278c0cc1-5212-4bfa-095a-08d58bf2fdc6",
@@ -1485,8 +1573,8 @@
         "ModuleViewProperties": null,
         "OptionList": null,
         "IsActive": true,
-        "CreatedDate": "2018-03-17T22:54:23.1428646",
-        "LastModifiedDate": "2018-03-17T22:54:23.1428646"
+        "CreatedDate": null,
+        "LastModifiedDate": null
       },
       {
         "Id": "238b60e4-bcea-4171-5532-08d58c515929",
@@ -1501,8 +1589,8 @@
         "ModuleViewProperties": null,
         "OptionList": null,
         "IsActive": true,
-        "CreatedDate": "2018-03-17T22:55:16.5781397",
-        "LastModifiedDate": "2018-03-17T22:55:16.5781397"
+        "CreatedDate": null,
+        "LastModifiedDate": null
       },
       {
         "Id": "c436196b-f19e-4e3b-5535-08d58c515929",
@@ -1517,8 +1605,8 @@
         "ModuleViewProperties": null,
         "OptionList": null,
         "IsActive": true,
-        "CreatedDate": "2018-03-17T22:58:12.8026701",
-        "LastModifiedDate": "2018-03-17T22:58:12.8026701"
+        "CreatedDate": null,
+        "LastModifiedDate": null
       },
       {
         "Id": "4a81a097-a694-4db2-5538-08d58c515929",
@@ -1533,8 +1621,8 @@
         "ModuleViewProperties": null,
         "OptionList": null,
         "IsActive": true,
-        "CreatedDate": "2018-03-17T23:08:42.9818332",
-        "LastModifiedDate": "2018-03-17T23:08:42.9818332"
+        "CreatedDate": null,
+        "LastModifiedDate": null
       },
       {
         "Id": "338675b6-6ffa-4f2d-5539-08d58c515929",
@@ -1549,8 +1637,8 @@
         "ModuleViewProperties": null,
         "OptionList": null,
         "IsActive": true,
-        "CreatedDate": "2018-03-17T23:12:53.462526",
-        "LastModifiedDate": "2018-03-17T23:12:53.462526"
+        "CreatedDate": null,
+        "LastModifiedDate": null
       },
       {
         "Id": "7b2d6527-199b-406d-553b-08d58c515929",
@@ -1565,8 +1653,8 @@
         "ModuleViewProperties": null,
         "OptionList": null,
         "IsActive": true,
-        "CreatedDate": "2018-03-17T23:18:07.0178304",
-        "LastModifiedDate": "2018-03-17T23:18:07.0178304"
+        "CreatedDate": null,
+        "LastModifiedDate": null
       },
       {
         "Id": "2157ff87-35a5-405c-553c-08d58c515929",
@@ -1581,8 +1669,8 @@
         "ModuleViewProperties": null,
         "OptionList": null,
         "IsActive": true,
-        "CreatedDate": "2018-03-17T23:23:56.8360342",
-        "LastModifiedDate": "2018-03-17T23:23:56.8360342"
+        "CreatedDate": null,
+        "LastModifiedDate": null
       },
       {
         "Id": "4f6bf74f-b4eb-4b66-553d-08d58c515929",
@@ -1889,6 +1977,22 @@
         "LastModifiedDate": "2020-03-12T22:38:44.4910275"
       },
       {
+        "Id": "e62b2991-91f8-4458-f768-08d8a790e49c",
+        "Name": "BlogName",
+        "Label": "Blog Name",
+        "Value": null,
+        "DefaultValue": "",
+        "Description": "Blog Name",
+        "OptionListId": null,
+        "LayoutTypeProperties": null,
+        "ContentTypeProperties": null,
+        "ModuleViewProperties": null,
+        "OptionList": null,
+        "IsActive": true,
+        "CreatedDate": "2020-12-23T23:20:02.5367754",
+        "LastModifiedDate": "2020-12-23T23:20:02.5367754"
+      },
+      {
         "Id": "f5031c31-778b-45dd-bd33-eeb2a088d2bc",
         "Name": "css_class",
         "Label": "Css Class",
@@ -1909,22 +2013,26 @@
   {
     "EntityTypeName": "IdentityRoleClaim<System.Guid>",
     "SortOrder": 1,
-    "AllRecords": []
+    "AllRecords": [
+    ]
   },
   {
     "EntityTypeName": "IdentityUserClaim<System.Guid>",
     "SortOrder": 1,
-    "AllRecords": []
+    "AllRecords": [
+    ]
   },
   {
     "EntityTypeName": "IdentityUserLogin<System.Guid>",
     "SortOrder": 1,
-    "AllRecords": []
+    "AllRecords": [
+    ]
   },
   {
     "EntityTypeName": "IdentityUserToken<System.Guid>",
     "SortOrder": 1,
-    "AllRecords": []
+    "AllRecords": [
+    ]
   },
   {
     "EntityTypeName": "AdminPage",
@@ -2013,6 +2121,34 @@
         "ModelName": "Role",
         "Page": null,
         "Module": null
+      },
+      {
+        "ModuleId": "1ced7790-2ba9-4c75-cdcb-08d631f97e17",
+        "PageId": "cc33feb0-b32f-4410-f23d-08d891899736",
+        "ModelName": "Category",
+        "Page": null,
+        "Module": null
+      },
+      {
+        "ModuleId": "1ced7790-2ba9-4c75-cdcb-08d631f97e17",
+        "PageId": "bca211fd-dcb6-41fb-8be3-08d89192b8f4",
+        "ModelName": "Post",
+        "Page": null,
+        "Module": null
+      },
+      {
+        "ModuleId": "1ced7790-2ba9-4c75-cdcb-08d631f97e17",
+        "PageId": "8ffe1753-e57d-4628-d250-08d891930b4f",
+        "ModelName": "Tag",
+        "Page": null,
+        "Module": null
+      },
+      {
+        "ModuleId": "1ced7790-2ba9-4c75-cdcb-08d631f97e17",
+        "PageId": "a80f4256-f285-4931-0215-08d8a6dbd291",
+        "ModelName": "Blog",
+        "Page": null,
+        "Module": null
       }
     ]
   },
@@ -2027,7 +2163,7 @@
         "FieldDescription": "Enter the title",
         "ContentTypeId": "d8e458b3-daa2-4bc5-90a0-d56e9a78839e",
         "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
-        "SortOrder": 0,
+        "SortOrder": 1,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2039,8 +2175,8 @@
         "FieldLabel": "Description",
         "FieldDescription": "Enter Description",
         "ContentTypeId": "d8e458b3-daa2-4bc5-90a0-d56e9a78839e",
-        "ContentFieldTypeId": "be8f7859-428c-42c6-82d4-16781575591a",
-        "SortOrder": 0,
+        "ContentFieldTypeId": "a6e6adf3-2e1f-4924-bfd1-3e3ffb201231",
+        "SortOrder": 2,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2079,7 +2215,7 @@
         "FieldDescription": "Icon of the feature",
         "ContentTypeId": "817fea8f-59e2-4b77-8e63-1ea002772893",
         "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
-        "SortOrder": 0,
+        "SortOrder": 1,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2092,7 +2228,7 @@
         "FieldDescription": "Enter the title",
         "ContentTypeId": "817fea8f-59e2-4b77-8e63-1ea002772893",
         "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
-        "SortOrder": 0,
+        "SortOrder": 2,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2105,7 +2241,7 @@
         "FieldDescription": "Enter the description",
         "ContentTypeId": "817fea8f-59e2-4b77-8e63-1ea002772893",
         "ContentFieldTypeId": "be8f7859-428c-42c6-82d4-16781575591a",
-        "SortOrder": 0,
+        "SortOrder": 3,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2157,7 +2293,7 @@
         "FieldDescription": "Enter location name",
         "ContentTypeId": "b2c35761-a953-4bf7-bfb2-d0ea9e63786d",
         "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
-        "SortOrder": 0,
+        "SortOrder": 1,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2170,7 +2306,7 @@
         "FieldDescription": "Enter latitude",
         "ContentTypeId": "b2c35761-a953-4bf7-bfb2-d0ea9e63786d",
         "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
-        "SortOrder": 0,
+        "SortOrder": 2,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2183,7 +2319,7 @@
         "FieldDescription": "Enter longitude",
         "ContentTypeId": "b2c35761-a953-4bf7-bfb2-d0ea9e63786d",
         "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
-        "SortOrder": 0,
+        "SortOrder": 3,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2196,7 +2332,7 @@
         "FieldDescription": "Enter street and house number",
         "ContentTypeId": "b2c35761-a953-4bf7-bfb2-d0ea9e63786d",
         "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
-        "SortOrder": 0,
+        "SortOrder": 4,
         "IsShownOnList": false,
         "IsShownOnPreview": false,
         "ContentType": null,
@@ -2209,7 +2345,7 @@
         "FieldDescription": "Enter postal code and city",
         "ContentTypeId": "b2c35761-a953-4bf7-bfb2-d0ea9e63786d",
         "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
-        "SortOrder": 0,
+        "SortOrder": 5,
         "IsShownOnList": false,
         "IsShownOnPreview": false,
         "ContentType": null,
@@ -2235,7 +2371,7 @@
         "FieldDescription": "Enter the title",
         "ContentTypeId": "d2e62921-32f5-4c66-a9b3-e5b61d60b193",
         "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
-        "SortOrder": 0,
+        "SortOrder": 1,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2248,7 +2384,7 @@
         "FieldDescription": "Enter the description",
         "ContentTypeId": "d2e62921-32f5-4c66-a9b3-e5b61d60b193",
         "ContentFieldTypeId": "be8f7859-428c-42c6-82d4-16781575591a",
-        "SortOrder": 0,
+        "SortOrder": 2,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2261,7 +2397,7 @@
         "FieldDescription": "Select an image",
         "ContentTypeId": "d2e62921-32f5-4c66-a9b3-e5b61d60b193",
         "ContentFieldTypeId": "fd7050c4-d21b-4108-b4f9-e69cbef49d60",
-        "SortOrder": 0,
+        "SortOrder": 3,
         "IsShownOnList": false,
         "IsShownOnPreview": false,
         "ContentType": null,
@@ -2274,7 +2410,7 @@
         "FieldDescription": "Enter the title",
         "ContentTypeId": "8d878db7-c3e2-4c39-b359-bd0e39d87df9",
         "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
-        "SortOrder": 0,
+        "SortOrder": 1,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2286,8 +2422,8 @@
         "FieldLabel": "Description",
         "FieldDescription": "Enter the description",
         "ContentTypeId": "8d878db7-c3e2-4c39-b359-bd0e39d87df9",
-        "ContentFieldTypeId": "be8f7859-428c-42c6-82d4-16781575591a",
-        "SortOrder": 0,
+        "ContentFieldTypeId": "a6e6adf3-2e1f-4924-bfd1-3e3ffb201231",
+        "SortOrder": 2,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2295,12 +2431,12 @@
       },
       {
         "Id": "81d1a654-e3b2-45f4-7935-08d82454ccd4",
-        "FieldName": "memberName",
-        "FieldLabel": "Member Name",
+        "FieldName": "name",
+        "FieldLabel": "Name",
         "FieldDescription": "Enter name of team member",
         "ContentTypeId": "c49840f4-5a00-4d1d-86b7-7881e3841314",
         "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
-        "SortOrder": 0,
+        "SortOrder": 2,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2313,7 +2449,7 @@
         "FieldDescription": "Select an image",
         "ContentTypeId": "c49840f4-5a00-4d1d-86b7-7881e3841314",
         "ContentFieldTypeId": "fd7050c4-d21b-4108-b4f9-e69cbef49d60",
-        "SortOrder": 0,
+        "SortOrder": 1,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2326,7 +2462,7 @@
         "FieldDescription": "Enter the title",
         "ContentTypeId": "978bd890-7dbd-4ee0-9d86-8356dfadf4e6",
         "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
-        "SortOrder": 0,
+        "SortOrder": 2,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2339,7 +2475,7 @@
         "FieldDescription": "Enter the description",
         "ContentTypeId": "978bd890-7dbd-4ee0-9d86-8356dfadf4e6",
         "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
-        "SortOrder": 0,
+        "SortOrder": 3,
         "IsShownOnList": true,
         "IsShownOnPreview": true,
         "ContentType": null,
@@ -2379,6 +2515,45 @@
         "ContentTypeId": "9b2ec6ac-8fdf-4cb5-ae60-90b73a6931fc",
         "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
         "SortOrder": 0,
+        "IsShownOnList": false,
+        "IsShownOnPreview": false,
+        "ContentType": null,
+        "ContentFieldType": null
+      },
+      {
+        "Id": "8626736b-1fe6-4da0-a98c-08d8aeaf7763",
+        "FieldName": "Position",
+        "FieldLabel": "Position",
+        "FieldDescription": "Position",
+        "ContentTypeId": "c49840f4-5a00-4d1d-86b7-7881e3841314",
+        "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
+        "SortOrder": 3,
+        "IsShownOnList": true,
+        "IsShownOnPreview": true,
+        "ContentType": null,
+        "ContentFieldType": null
+      },
+      {
+        "Id": "29f4723e-9d5b-40ed-435e-08d8af047db2",
+        "FieldName": "icon",
+        "FieldLabel": "Icon",
+        "FieldDescription": "Icon",
+        "ContentTypeId": "978bd890-7dbd-4ee0-9d86-8356dfadf4e6",
+        "ContentFieldTypeId": "ac737083-9c27-4f49-83cb-cc7c9043978e",
+        "SortOrder": 1,
+        "IsShownOnList": true,
+        "IsShownOnPreview": true,
+        "ContentType": null,
+        "ContentFieldType": null
+      },
+      {
+        "Id": "b4bf7809-ed77-4092-435f-08d8af047db2",
+        "FieldName": "link",
+        "FieldLabel": "Link",
+        "FieldDescription": "Link",
+        "ContentTypeId": "978bd890-7dbd-4ee0-9d86-8356dfadf4e6",
+        "ContentFieldTypeId": "41207235-9584-44df-a50b-657af352bf82",
+        "SortOrder": 4,
         "IsShownOnList": false,
         "IsShownOnPreview": false,
         "ContentType": null,
@@ -2731,6 +2906,22 @@
         "ModuleViewProperties": null
       },
       {
+        "Id": "05fe7ad6-29b1-472a-e656-08d896c89224",
+        "ActionName": "Index",
+        "ControllerName": "Home",
+        "ControllerNamespace": "Deviser.Modules.Blog",
+        "DisplayName": "Blog Posts",
+        "IconImage": " <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"feather feather-book-open\"><path d=\"M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z\"></path><path d=\"M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z\"></path></svg>",
+        "IconClass": " ",
+        "ModuleViewTypeId": "72366792-3740-4e6b-b960-9c9c5334163a",
+        "ModuleId": "1ced7790-2ba9-4c75-cdcb-08d631f97e17",
+        "IsDefault": true,
+        "ModuleViewType": null,
+        "Module": null,
+        "PageModules": null,
+        "ModuleViewProperties": null
+      },
+      {
         "Id": "ae7afca8-56f6-4381-822c-1a04022c779b",
         "ActionName": "Modules",
         "ControllerName": "Home",
@@ -2959,7 +3150,20 @@
   {
     "EntityTypeName": "ModuleViewProperty",
     "SortOrder": 2,
-    "AllRecords": []
+    "AllRecords": [
+      {
+        "PropertyId": "e62b2991-91f8-4458-f768-08d8a790e49c",
+        "ModuleViewId": "05fe7ad6-29b1-472a-e656-08d896c89224",
+        "Property": null,
+        "ModuleView": null
+      },
+      {
+        "PropertyId": "f5031c31-778b-45dd-bd33-eeb2a088d2bc",
+        "ModuleViewId": "05fe7ad6-29b1-472a-e656-08d896c89224",
+        "Property": null,
+        "ModuleView": null
+      }
+    ]
   },
   {
     "EntityTypeName": "PageContent",
@@ -3042,6 +3246,25 @@
         "ContentPermissions": null
       },
       {
+        "Id": "decf0b5d-6e61-ce21-a55b-e11659fc6aa3",
+        "Title": "Call to action 1",
+        "ContainerId": "118e276b-03e7-1145-ea91-ce8da0f914e5",
+        "Properties": "[\r\n  {\r\n    \"id\": \"f5031c31-778b-45dd-bd33-eeb2a088d2bc\",\r\n    \"name\": \"css_class\",\r\n    \"label\": \"Css Class\",\r\n    \"value\": \"btn btn-lg btn-outline-deviser\",\r\n    \"defaultValue\": \" \",\r\n    \"description\": \" \",\r\n    \"optionListId\": null,\r\n    \"isMoreOption\": false,\r\n    \"optionList\": null,\r\n    \"defaultValuePropertyOption\": null,\r\n    \"isActive\": false,\r\n    \"createdDate\": null,\r\n    \"lastModifiedDate\": null,\r\n    \"isActiveBadgeClass\": \"badge-secondary\"\r\n  }\r\n]",
+        "SortOrder": 1,
+        "CreatedDate": null,
+        "IsActive": true,
+        "LastModifiedDate": "2020-11-17T00:01:45.5811407",
+        "PageId": "42e0d3c9-2269-46fd-a42a-08d587845981",
+        "ContentTypeId": "69933d62-31ed-481e-be1f-95dfb8210027",
+        "Page": null,
+        "InheritViewPermissions": true,
+        "InheritEditPermissions": true,
+        "HasEditPermission": false,
+        "ContentType": null,
+        "PageContentTranslation": null,
+        "ContentPermissions": null
+      },
+      {
         "Id": "f03ba956-f3cb-8268-32b6-f69a37e196a1",
         "Title": "Call to actions 3",
         "ContainerId": "a28a029f-b9ae-0c2b-598d-b5293a01ac82",
@@ -3070,12 +3293,32 @@
   {
     "EntityTypeName": "ContentPermission",
     "SortOrder": 3,
-    "AllRecords": []
+    "AllRecords": [
+      {
+        "Id": "290e9e8e-d2ef-4717-a1c0-167a0587626a",
+        "PageContentId": "decf0b5d-6e61-ce21-a55b-e11659fc6aa3",
+        "PermissionId": "491b37a3-deba-4f55-9df6-a67cdd810108",
+        "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
+        "PageContent": null,
+        "Permission": null,
+        "Role": null
+      },
+      {
+        "Id": "3b455d2b-d750-452e-8854-ffedf98e7042",
+        "PageContentId": "decf0b5d-6e61-ce21-a55b-e11659fc6aa3",
+        "PermissionId": "461b37d9-b801-4235-b74f-0c51f35d170f",
+        "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
+        "PageContent": null,
+        "Permission": null,
+        "Role": null
+      }
+    ]
   },
   {
     "EntityTypeName": "ModulePermission",
     "SortOrder": 3,
-    "AllRecords": []
+    "AllRecords": [
+    ]
   },
   {
     "EntityTypeName": "Page",
@@ -3118,7 +3361,7 @@
         "LastModifiedDate": "2020-05-28T22:12:17.4",
         "LayoutId": "af7533aa-3e4b-4e29-b118-1841ab5a0a91",
         "PageLevel": 1,
-        "PageOrder": 3,
+        "PageOrder": 6,
         "ParentId": "d1c11d1f-2345-43b6-baa1-8ce890242397",
         "PageTypeId": "4c06dcfd-214f-45af-8404-ff84b412ab01",
         "ThemeSrc": "[G]Themes/Skyline/Default.cshtml",
@@ -3169,12 +3412,12 @@
         "IsActive": true,
         "IsSystem": true,
         "IsIncludedInMenu": true,
-        "LastModifiedDate": "2020-09-01T23:19:56.287",
+        "LastModifiedDate": "2020-11-29T15:16:14.1932332",
         "LayoutId": "af8ecc7d-e300-41af-b55a-deeb097836d2",
         "PageLevel": 2,
         "PageOrder": 8,
         "ParentId": "dd650840-0ee7-46cf-abb5-8a1591dc0936",
-        "PageTypeId": "5308b86c-a2fc-4220-8ba2-47e7bec1938d",
+        "PageTypeId": "bfefa535-7af1-4ddc-82c0-c906c948367a",
         "ThemeSrc": "[G]Themes/Skyline/Admin.cshtml",
         "StartDate": null,
         "SiteMapPriority": 0.0,
@@ -3385,7 +3628,7 @@
         "IsActive": true,
         "IsSystem": true,
         "IsIncludedInMenu": true,
-        "LastModifiedDate": "2020-09-01T23:19:56.287",
+        "LastModifiedDate": "2020-09-30T23:21:56.8365302",
         "LayoutId": null,
         "PageLevel": 2,
         "PageOrder": 5,
@@ -3487,6 +3730,168 @@
         "IsBreadCrumb": false
       },
       {
+        "Id": "cc33feb0-b32f-4410-f23d-08d891899736",
+        "CreatedDate": "2020-11-25T22:32:20.6279882",
+        "EndDate": null,
+        "IsActive": true,
+        "IsSystem": true,
+        "IsIncludedInMenu": true,
+        "LastModifiedDate": "2020-11-29T15:16:15.1660355",
+        "LayoutId": null,
+        "PageLevel": null,
+        "PageOrder": 1,
+        "ParentId": "caa7b3f3-e6a4-4a2a-1176-08d6d7a0dc20",
+        "PageTypeId": "5308b86c-a2fc-4220-8ba2-47e7bec1938d",
+        "ThemeSrc": "[G]Themes/Skyline/Admin.cshtml",
+        "StartDate": null,
+        "SiteMapPriority": 0.0,
+        "PageContent": null,
+        "PageModule": null,
+        "PageTranslation": null,
+        "PagePermissions": null,
+        "Layout": null,
+        "Parent": null,
+        "PageType": null,
+        "ChildPage": null,
+        "AdminPage": null,
+        "IsBreadCrumb": false
+      },
+      {
+        "Id": "bca211fd-dcb6-41fb-8be3-08d89192b8f4",
+        "CreatedDate": "2020-11-25T23:37:42.7037933",
+        "EndDate": null,
+        "IsActive": true,
+        "IsSystem": true,
+        "IsIncludedInMenu": true,
+        "LastModifiedDate": "2020-11-29T15:16:15.8711783",
+        "LayoutId": null,
+        "PageLevel": null,
+        "PageOrder": 3,
+        "ParentId": "caa7b3f3-e6a4-4a2a-1176-08d6d7a0dc20",
+        "PageTypeId": "5308b86c-a2fc-4220-8ba2-47e7bec1938d",
+        "ThemeSrc": "[G]Themes/Skyline/Admin.cshtml",
+        "StartDate": null,
+        "SiteMapPriority": 0.0,
+        "PageContent": null,
+        "PageModule": null,
+        "PageTranslation": null,
+        "PagePermissions": null,
+        "Layout": null,
+        "Parent": null,
+        "PageType": null,
+        "ChildPage": null,
+        "AdminPage": null,
+        "IsBreadCrumb": false
+      },
+      {
+        "Id": "8ffe1753-e57d-4628-d250-08d891930b4f",
+        "CreatedDate": "2020-11-25T23:40:00.8739503",
+        "EndDate": null,
+        "IsActive": true,
+        "IsSystem": true,
+        "IsIncludedInMenu": true,
+        "LastModifiedDate": "2020-11-29T15:16:16.5425454",
+        "LayoutId": null,
+        "PageLevel": null,
+        "PageOrder": 4,
+        "ParentId": "caa7b3f3-e6a4-4a2a-1176-08d6d7a0dc20",
+        "PageTypeId": "5308b86c-a2fc-4220-8ba2-47e7bec1938d",
+        "ThemeSrc": "[G]Themes/Skyline/Admin.cshtml",
+        "StartDate": null,
+        "SiteMapPriority": 0.0,
+        "PageContent": null,
+        "PageModule": null,
+        "PageTranslation": null,
+        "PagePermissions": null,
+        "Layout": null,
+        "Parent": null,
+        "PageType": null,
+        "ChildPage": null,
+        "AdminPage": null,
+        "IsBreadCrumb": false
+      },
+      {
+        "Id": "87d23925-a06c-4f1b-ad09-08d8a36cdaa4",
+        "CreatedDate": "2020-12-18T16:51:59.2792606",
+        "EndDate": null,
+        "IsActive": true,
+        "IsSystem": false,
+        "IsIncludedInMenu": true,
+        "LastModifiedDate": "2020-12-18T16:51:59.2792617",
+        "LayoutId": null,
+        "PageLevel": null,
+        "PageOrder": 2,
+        "ParentId": "d1c11d1f-2345-43b6-baa1-8ce890242397",
+        "PageTypeId": "4c06dcfd-214f-45af-8404-ff84b412ab01",
+        "ThemeSrc": "[G]Themes/Skyline/Default.cshtml",
+        "StartDate": null,
+        "SiteMapPriority": 0.0,
+        "PageContent": null,
+        "PageModule": null,
+        "PageTranslation": null,
+        "PagePermissions": null,
+        "Layout": null,
+        "Parent": null,
+        "PageType": null,
+        "ChildPage": null,
+        "AdminPage": null,
+        "IsBreadCrumb": false
+      },
+      {
+        "Id": "a80f4256-f285-4931-0215-08d8a6dbd291",
+        "CreatedDate": "2020-12-23T01:43:53.3422073",
+        "EndDate": null,
+        "IsActive": true,
+        "IsSystem": true,
+        "IsIncludedInMenu": true,
+        "LastModifiedDate": "2020-12-23T01:43:53.3422133",
+        "LayoutId": null,
+        "PageLevel": null,
+        "PageOrder": 2,
+        "ParentId": "caa7b3f3-e6a4-4a2a-1176-08d6d7a0dc20",
+        "PageTypeId": "5308b86c-a2fc-4220-8ba2-47e7bec1938d",
+        "ThemeSrc": "[G]Themes/Skyline/Admin.cshtml",
+        "StartDate": null,
+        "SiteMapPriority": 0.0,
+        "PageContent": null,
+        "PageModule": null,
+        "PageTranslation": null,
+        "PagePermissions": null,
+        "Layout": null,
+        "Parent": null,
+        "PageType": null,
+        "ChildPage": null,
+        "AdminPage": null,
+        "IsBreadCrumb": false
+      },
+      {
+        "Id": "29dd5d0b-b4e5-4966-931b-08d8ab043a8a",
+        "CreatedDate": "2020-12-28T08:43:12.3155384",
+        "EndDate": null,
+        "IsActive": true,
+        "IsSystem": false,
+        "IsIncludedInMenu": true,
+        "LastModifiedDate": "2020-12-28T08:43:12.3155429",
+        "LayoutId": null,
+        "PageLevel": null,
+        "PageOrder": 3,
+        "ParentId": "d1c11d1f-2345-43b6-baa1-8ce890242397",
+        "PageTypeId": "4c06dcfd-214f-45af-8404-ff84b412ab01",
+        "ThemeSrc": "[G]Themes/Skyline/Admin.cshtml",
+        "StartDate": null,
+        "SiteMapPriority": 0.0,
+        "PageContent": null,
+        "PageModule": null,
+        "PageTranslation": null,
+        "PagePermissions": null,
+        "Layout": null,
+        "Parent": null,
+        "PageType": null,
+        "ChildPage": null,
+        "AdminPage": null,
+        "IsBreadCrumb": false
+      },
+      {
         "Id": "dd650840-0ee7-46cf-abb5-8a1591dc0936",
         "CreatedDate": "2016-07-03T19:34:55.593",
         "EndDate": null,
@@ -3496,7 +3901,7 @@
         "LastModifiedDate": "2020-09-01T23:19:56.223",
         "LayoutId": "bef258d0-173c-4b70-343c-08d58851a063",
         "PageLevel": 1,
-        "PageOrder": 4,
+        "PageOrder": 7,
         "ParentId": "d1c11d1f-2345-43b6-baa1-8ce890242397",
         "PageTypeId": "bfefa535-7af1-4ddc-82c0-c906c948367a",
         "ThemeSrc": "[G]Themes/Skyline/Default.cshtml",
@@ -3550,7 +3955,7 @@
         "LastModifiedDate": "2020-05-24T14:54:59.607",
         "LayoutId": "af7533aa-3e4b-4e29-b118-1841ab5a0a91",
         "PageLevel": 1,
-        "PageOrder": 2,
+        "PageOrder": 5,
         "ParentId": "d1c11d1f-2345-43b6-baa1-8ce890242397",
         "PageTypeId": "4c06dcfd-214f-45af-8404-ff84b412ab01",
         "ThemeSrc": "[G]Themes/Skyline/Default.cshtml",
@@ -3690,6 +4095,114 @@
       {
         "Id": "e1bf9d1b-80cc-44c6-14b7-08d8537b650e",
         "PageId": "e7687fb1-5ee4-4c2c-1d52-08d8537b6507",
+        "PermissionId": "2da41181-be15-4ad6-a89c-3ba8b71f993b",
+        "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
+        "Page": null,
+        "Permission": null,
+        "Role": null
+      },
+      {
+        "Id": "03f16151-0913-4c3b-edc4-08d891899741",
+        "PageId": "cc33feb0-b32f-4410-f23d-08d891899736",
+        "PermissionId": "29cb1b57-1862-4300-b378-f3271b870148",
+        "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
+        "Page": null,
+        "Permission": null,
+        "Role": null
+      },
+      {
+        "Id": "ff7bd3f0-1ab0-4400-edc5-08d891899741",
+        "PageId": "cc33feb0-b32f-4410-f23d-08d891899736",
+        "PermissionId": "2da41181-be15-4ad6-a89c-3ba8b71f993b",
+        "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
+        "Page": null,
+        "Permission": null,
+        "Role": null
+      },
+      {
+        "Id": "390593d4-78a9-48cb-86ec-08d89192b8fe",
+        "PageId": "bca211fd-dcb6-41fb-8be3-08d89192b8f4",
+        "PermissionId": "29cb1b57-1862-4300-b378-f3271b870148",
+        "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
+        "Page": null,
+        "Permission": null,
+        "Role": null
+      },
+      {
+        "Id": "d9e5ac4c-82e7-4de5-86ed-08d89192b8fe",
+        "PageId": "bca211fd-dcb6-41fb-8be3-08d89192b8f4",
+        "PermissionId": "2da41181-be15-4ad6-a89c-3ba8b71f993b",
+        "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
+        "Page": null,
+        "Permission": null,
+        "Role": null
+      },
+      {
+        "Id": "a80da970-2efd-43c8-ce90-08d891930b5a",
+        "PageId": "8ffe1753-e57d-4628-d250-08d891930b4f",
+        "PermissionId": "29cb1b57-1862-4300-b378-f3271b870148",
+        "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
+        "Page": null,
+        "Permission": null,
+        "Role": null
+      },
+      {
+        "Id": "abafe8e8-8ade-493c-ce91-08d891930b5a",
+        "PageId": "8ffe1753-e57d-4628-d250-08d891930b4f",
+        "PermissionId": "2da41181-be15-4ad6-a89c-3ba8b71f993b",
+        "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
+        "Page": null,
+        "Permission": null,
+        "Role": null
+      },
+      {
+        "Id": "7c211894-c82a-4f09-7195-08d8a36cdaa6",
+        "PageId": "87d23925-a06c-4f1b-ad09-08d8a36cdaa4",
+        "PermissionId": "29cb1b57-1862-4300-b378-f3271b870148",
+        "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
+        "Page": null,
+        "Permission": null,
+        "Role": null
+      },
+      {
+        "Id": "c717921f-12d1-4f24-7196-08d8a36cdaa6",
+        "PageId": "87d23925-a06c-4f1b-ad09-08d8a36cdaa4",
+        "PermissionId": "2da41181-be15-4ad6-a89c-3ba8b71f993b",
+        "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
+        "Page": null,
+        "Permission": null,
+        "Role": null
+      },
+      {
+        "Id": "27b55683-a025-43c7-0773-08d8a6dbd299",
+        "PageId": "a80f4256-f285-4931-0215-08d8a6dbd291",
+        "PermissionId": "29cb1b57-1862-4300-b378-f3271b870148",
+        "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
+        "Page": null,
+        "Permission": null,
+        "Role": null
+      },
+      {
+        "Id": "a29240b9-dfd0-499a-0774-08d8a6dbd299",
+        "PageId": "a80f4256-f285-4931-0215-08d8a6dbd291",
+        "PermissionId": "2da41181-be15-4ad6-a89c-3ba8b71f993b",
+        "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
+        "Page": null,
+        "Permission": null,
+        "Role": null
+      },
+      {
+        "Id": "83502552-d59c-4cfb-9072-08d8ab043a91",
+        "PageId": "29dd5d0b-b4e5-4966-931b-08d8ab043a8a",
+        "PermissionId": "29cb1b57-1862-4300-b378-f3271b870148",
+        "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
+        "Page": null,
+        "Permission": null,
+        "Role": null
+      },
+      {
+        "Id": "3d297782-e8df-4474-9073-08d8ab043a91",
+        "PageId": "29dd5d0b-b4e5-4966-931b-08d8ab043a8a",
         "PermissionId": "2da41181-be15-4ad6-a89c-3ba8b71f993b",
         "RoleId": "9b461499-c49e-4398-bfed-4364a176ebbd",
         "Page": null,
@@ -3880,6 +4393,15 @@
         "Id": "dd1864e6-003a-4cf8-91bb-c5b8acb19843",
         "PageId": "51a79e31-9bb1-4fa7-4da6-08d3c2d166ce",
         "PermissionId": "29cb1b57-1862-4300-b378-f3271b870148",
+        "RoleId": "086357bf-01b1-494c-a8b8-54fdfa7c4c9e",
+        "Page": null,
+        "Permission": null,
+        "Role": null
+      },
+      {
+        "Id": "fd7c200b-1143-4033-9e27-c70c235b749b",
+        "PageId": "29dd5d0b-b4e5-4966-931b-08d8ab043a8a",
+        "PermissionId": "2da41181-be15-4ad6-a89c-3ba8b71f993b",
         "RoleId": "086357bf-01b1-494c-a8b8-54fdfa7c4c9e",
         "Page": null,
         "Permission": null,

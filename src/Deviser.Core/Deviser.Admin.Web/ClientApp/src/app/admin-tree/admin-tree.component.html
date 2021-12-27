@@ -5,7 +5,7 @@
       adminConfig.modelConfig.treeConfig.displayField &&
       tree">
   <div class="card-header">
-    {{adminConfig.adminTitle}}
+    {{adminConfig.modelConfig.treeConfig.title || adminConfig.adminTitle}}
   </div>
   <div class="card-body">
     <div class="row action-bar">
@@ -14,7 +14,7 @@
 
     <div class="row">
       <div class="col admin-tree">
-        <app-tree-control [treeData]="tree[adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase]"
+        <app-tree-control [treeData]="treeData"
           [keyField]="adminConfig.modelConfig.keyField.fieldNameCamelCase"
           [childrenField]="adminConfig.modelConfig.treeConfig.childrenField.fieldNameCamelCase"
           [displayField]="adminConfig.modelConfig.treeConfig.displayField.fieldNameCamelCase"

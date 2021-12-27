@@ -15,6 +15,12 @@ namespace Deviser.Admin.Builders
     {
         private readonly IModelConfig _modelConfig;
 
+        public string Title
+        {
+            get => _modelConfig.GridConfig.Title;
+            set => _modelConfig.GridConfig.Title = value;
+        }
+
         public GridBuilder(IModelConfig modelConfig)
         {
             //_fieldConfig = fieldConfig;
@@ -69,7 +75,7 @@ namespace Deviser.Admin.Builders
         /// <returns></returns>
         public GridBuilder<TModel> RemoveField<TProperty>(Expression<Func<TModel, TProperty>> expression)
         {
-            if (_modelConfig.GridConfig.AllIncludeFields.Count > 0)
+            if (_modelConfig.GridConfig.AllFields.Count > 0)
                 ThrowAddRemoveInvalidOperationException();
 
             var field = new Field()
@@ -83,7 +89,7 @@ namespace Deviser.Admin.Builders
 
         public GridBuilder<TModel> DisplayFieldAs<TProperty, TParamFieldProperty>(Expression<Func<TModel, TProperty>> fieldExpression, LabelType labelType, Expression<Func<TModel, TParamFieldProperty>> paramFieldExpression)
         {
-            var field = _modelConfig.GridConfig.AllIncludeFields.FirstOrDefault(f => f.FieldName == ReflectionExtensions.GetMemberName(fieldExpression));
+            var field = _modelConfig.GridConfig.AllFields.FirstOrDefault(f => f.FieldName == ReflectionExtensions.GetMemberName(fieldExpression));
             var paramField = CreateSimpleField(paramFieldExpression);
             
             if (field == null)
@@ -102,7 +108,7 @@ namespace Deviser.Admin.Builders
 
         public GridBuilder<TModel> DisplayFieldAs<TProperty>(Expression<Func<TModel, TProperty>> fieldExpression, LabelType labelType)
         {
-            var field = _modelConfig.GridConfig.AllIncludeFields.FirstOrDefault(f => f.FieldName == ReflectionExtensions.GetMemberName(fieldExpression));
+            var field = _modelConfig.GridConfig.AllFields.FirstOrDefault(f => f.FieldName == ReflectionExtensions.GetMemberName(fieldExpression));
 
             if (field == null)
             {
@@ -136,6 +142,16 @@ namespace Deviser.Admin.Builders
         {
             _modelConfig.GridConfig.IsEditVisible = false;
             return this;
+        }
+
+        public PropertyBuilder<TModel, TProperty> Property<TProperty>(Expression<Func<TModel, TProperty>> expression)
+        {
+            return new PropertyBuilder<TModel, TProperty>(_modelConfig.GridConfig.AllFields, expression);
+        }
+
+        public PropertyBuilder<TModel, TProperty> Property<TProperty>(Expression<Func<TModel, ICollection<TProperty>>> expression)
+        {
+            return new PropertyBuilder<TModel, TProperty>(_modelConfig.GridConfig.AllFields, expression);
         }
 
         private Field CreateSimpleField<TProperty>(Expression<Func<TModel, TProperty>> expression, Action<FieldOption> fieldOptionAction = null)

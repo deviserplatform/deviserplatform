@@ -44,17 +44,17 @@
 @import "menu/admin-menu.scss";
 
 $drag-placeholder-bg-color: theme-color-level("primary", -10);
-$drag-placeholder-border-color: theme-color-level("primary", 6); 
+$drag-placeholder-border-color: theme-color-level("primary", 6);
 $action-bar-font-size: 0.84rem;
 
-//#1D2127 
+//#1D2127
 
 html, body {
     height: 100%;
 }
 
 .admin-wrapper {
-    display: flex !important;
+    display: flex !important; 
     min-height: 100vh;
     padding-top: 50px;
 
@@ -70,14 +70,21 @@ html, body {
         width: 280px
     }
 
-    .admin-body {
+    .admin-container {
         margin-left: 280px;
         width: 100%;
 
-        .admin-content {
+        &.no-menu{
+            margin-left:0; 
+        }
+        .admin-body {
             padding-top: 30px;
             padding-left: 20px;
             padding-bottom: 80px;
+
+            .admin-header {
+                margin-bottom: 1rem;
+            }
         }
 
         .admin-footer {
@@ -132,4 +139,12 @@ html, body {
 
 @import "../../../../../Deviser.Web/ClientApp/src/edit-layout";
 @import "../../../../../Deviser.Core/Deviser.Admin.Web/ClientApp/src/deviser-admin";
- 
+
+.admin-container {
+    .dev-controlbar {
+        svg {
+            height: 20px;
+            width: 20px;
+        }
+    }
+}

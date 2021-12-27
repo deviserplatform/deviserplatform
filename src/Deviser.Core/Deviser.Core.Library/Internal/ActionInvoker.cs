@@ -22,7 +22,7 @@ namespace Deviser.Core.Library.Internal
         private readonly List<TypeInfo> _allControllers;
 
         private const string ControllerTypeNameSuffix = "Controller";
-        
+
         public ActionInvoker(
             //ITypeActivatorCache typeActivatorCache,
             ObjectMethodExecutorCache cache/*,
@@ -44,12 +44,12 @@ namespace Deviser.Core.Library.Internal
             }
         }
 
-        public async Task<IActionResult> InvokeAction(HttpContext httpContext, ModuleView moduleView, ActionContext actionContext)
-        {            
-            return await InvokeAction(httpContext, moduleView.ControllerNamespace, moduleView.ControllerName, moduleView.ActionName, actionContext);
+        public async Task<IActionResult> InvokeAction(HttpContext httpContext, ModuleView moduleView, ActionContext actionContext, ModuleContext moduleContext = null)
+        {
+            return await InvokeAction(httpContext, moduleView.ControllerNamespace, moduleView.ControllerName, moduleView.ActionName, actionContext, moduleContext);
         }
 
-        public async Task<IActionResult> InvokeAction(HttpContext httpContext, string controllerNamespace, string controllerName, string actionName, ActionContext actionContext)
+        public async Task<IActionResult> InvokeAction(HttpContext httpContext, string controllerNamespace, string controllerName, string actionName, ActionContext actionContext, ModuleContext moduleContext = null)
         {
             IActionResult result = null;
 
@@ -87,6 +87,10 @@ namespace Deviser.Core.Library.Internal
                 return null;
 
             controller.ControllerContext = controllerContext;
+            if (controller is ModuleController moduleController && moduleContext != null)
+            {
+                moduleController.ModuleContext = moduleContext;
+            }
             //var controller = _typeActivatorCache.CreateInstance<object>(serviceProvider, targetController.AsType()); //Returns 
 
             //foreach (var propertyActivator in _propertyActivators)
@@ -103,12 +107,12 @@ namespace Deviser.Core.Library.Internal
             }
             else if (returnType == typeof(Task))
             {
-                await (Task) executor.Execute(controller, arguments);
+                await (Task)executor.Execute(controller, arguments);
                 result = new EmptyResult();
             }
             else if (executor.TaskGenericType == typeof(IActionResult))
             {
-                result = await (Task<IActionResult>) executor.Execute(controller, arguments);
+                result = await (Task<IActionResult>)executor.Execute(controller, arguments);
                 if (result == null)
                 {
                     throw new InvalidOperationException(
@@ -119,11 +123,11 @@ namespace Deviser.Core.Library.Internal
             {
                 if (executor.IsMethodAsync)
                 {
-                    result = (IActionResult) await executor.ExecuteAsync(controller, arguments);
+                    result = (IActionResult)await executor.ExecuteAsync(controller, arguments);
                 }
                 else
                 {
-                    result = (IActionResult) executor.Execute(controller, arguments);
+                    result = (IActionResult)executor.Execute(controller, arguments);
                 }
 
                 if (result == null)
@@ -157,7 +161,7 @@ namespace Deviser.Core.Library.Internal
                     executor.MethodInfo.DeclaringType));
             }
 
-            ((IDisposable) controller).RegisterForDispose(httpContext);
+            ((IDisposable)controller).RegisterForDispose(httpContext);
 
             return result;
         }

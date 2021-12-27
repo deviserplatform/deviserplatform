@@ -14,7 +14,8 @@ namespace Deviser.Modules.ContentManagement
         {
             adminBuilder.Register<ContentType, ContentTypeAdminService>(modelBuilder =>
             {
-                modelBuilder.AdminTitle = "Content Type";
+                modelBuilder.GridBuilder.Title = "Content Types";
+                modelBuilder.FormBuilder.Title = "Content Type";
 
                 modelBuilder.GridBuilder
                     .AddField(c => c.Label)

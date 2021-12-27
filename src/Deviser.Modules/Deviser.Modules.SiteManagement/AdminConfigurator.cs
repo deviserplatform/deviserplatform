@@ -17,7 +17,8 @@ namespace Deviser.Modules.SiteManagement
         public void ConfigureAdmin(IAdminBuilder adminBuilder)
         {
             adminBuilder.RegisterForm<SiteSettingInfo, SiteSettingAdminService>(formBuilder =>
-                {
+            {
+                formBuilder.Title = "Site Settings";
                     formBuilder
                         .AddFieldSet("General", fieldBuilder =>
                         {
@@ -155,12 +156,12 @@ namespace Deviser.Modules.SiteManagement
 
                     formBuilder.Property(f => f.DefaultTheme).HasLookup(
                         sp => sp.GetService<SiteSettingAdminService>().GetThemes(),
-                        ke => ke.Key,
+                        ke => ke.Id,
                         de => de.Value);
 
                     formBuilder.Property(f => f.DefaultAdminTheme).HasLookup(
                         sp => sp.GetService<SiteSettingAdminService>().GetThemes(),
-                        ke => ke.Key,
+                        ke => ke.Id,
                         de => de.Value);
                 });
         }

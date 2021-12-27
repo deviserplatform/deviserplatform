@@ -1,4 +1,5 @@
-﻿@model Deviser.Core.Common.DomainTypes.Page
+﻿@using System.Collections.Generic
+@model Deviser.Core.Common.DomainTypes.Page
 @inject IScopeService scopeService
 @inject ISettingManager settingManager
 @{
@@ -17,8 +18,7 @@
     ViewBag.SiteHeaderTags = siteHeaderTags != null ? siteHeaderTags : "";
     ViewBag.PageHeaderTags = pageHeaderTags != null ? pageHeaderTags : "";
 
-    var moduleViewResults =
-(Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>>)ViewBag.ModuleViewResults;
+    var moduleViewResults = (Dictionary<string, List<Deviser.Core.Common.DomainTypes.ContentResult>>)ViewBag.ModuleViewResults;
 }
 <script>
     (function () {

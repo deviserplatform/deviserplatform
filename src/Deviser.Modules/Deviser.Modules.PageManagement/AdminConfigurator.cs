@@ -36,6 +36,8 @@ namespace Deviser.Modules.PageManagement
 
             adminBuilder.RegisterTreeAndForm<PageViewModel, PageManagementAdminService>(builder =>
             {
+                builder.TreeBuilder.Title = "Page Management";
+                builder.FormBuilder.Title = "Page Detail";
                 builder.TreeBuilder.ConfigureTree(p => p.Id,
                     p => p.Name,
                     p => p.Parent,
@@ -100,8 +102,12 @@ namespace Deviser.Modules.PageManagement
                             option.FieldType = FieldType.TextArea;
                             option.IsRequired = false;
                         })
-                        .AddField(p => p.PageHeaderTags)
-                        .AddField(p => p.RedirectUrl);
+                        .AddField(p => p.PageHeaderTags, option =>
+                        {
+                            option.FieldType = FieldType.TextArea;
+                            option.IsRequired = false;
+                        })
+                        .AddField(p => p.RedirectUrl, option => option.IsRequired = false);
 
                     formBuilder.Property(p => p.Language)
                         .HasLookup(sp => sp.GetService<PageManagementAdminService>().GetTranslateLanguages(),
@@ -112,13 +118,13 @@ namespace Deviser.Modules.PageManagement
                 builder.ShowChildConfigOn(p => p.PageTranslation,
                     provider => provider.GetService<PageManagementAdminService>().IsSiteMultilingual());
 
-                formBuilder.Property(f => f.Name)
-                    .ShowOn(f => f.PageType != null && (f.PageType.Id == standardId || f.PageTypeId == adminId))
-                    .ValidateOn(f => f.PageType != null && (f.PageType.Id == standardId || f.PageTypeId == adminId));
+                //formBuilder.Property(f => f.Name)
+                //    .ShowOn(f => f.PageType != null && (f.PageType.Id == standardId || f.PageType.Id == adminId))
+                //    .ValidateOn(f => f.PageType != null && (f.PageType.Id == standardId || f.PageType.Id == adminId));
 
                 formBuilder.Property(f => f.Title)
-                    .ShowOn(f => f.PageType != null && f.PageType.Id == standardId)
-                    .ValidateOn(f => f.PageType != null && f.PageType.Id == standardId);
+                    .ShowOn(f => f.PageType != null && (f.PageType.Id == standardId || f.PageType.Id == adminId))
+                    .ValidateOn(f => f.PageType != null && (f.PageType.Id == standardId || f.PageType.Id == adminId));
 
                 formBuilder.Property(f => f.Description)
                     .ShowOn(f => f.PageType != null && f.PageType.Id == standardId);
@@ -147,7 +153,7 @@ namespace Deviser.Modules.PageManagement
 
                 formBuilder.Property(f => f.Theme).HasLookup(
                      sp => sp.GetService<PageManagementAdminService>().GetThemes(),
-                     ke => ke.Key,
+                     ke => ke.Id,
                      de => de.Value);
 
                 formBuilder.Property(f => f.PagePermissions).HasMatrixLookup<Role, Permission, Guid>(

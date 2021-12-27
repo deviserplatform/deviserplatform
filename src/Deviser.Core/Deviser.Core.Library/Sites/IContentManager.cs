@@ -12,7 +12,7 @@ namespace Deviser.Core.Library.Sites
         PageContent RestorePageContent(Guid id);
         PageContent AddOrUpdatePageContent(PageContent pageContent);
         void AddOrUpdatePageContents(List<PageContent> contents);
-        bool RemovePageContent(Guid id);
+        bool SoftDeletePageContent(Guid id);
         bool DeletePageContent(Guid id);
         PageContent UpdateContentPermission(PageContent pageContent);
         bool HasViewPermission(PageContent pageContent, bool isForCurrentRequest = false);

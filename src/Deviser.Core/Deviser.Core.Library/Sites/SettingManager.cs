@@ -111,8 +111,8 @@ namespace Deviser.Core.Library.Sites
 
                 DefaultLayout = !string.IsNullOrEmpty(strDefaultLayoutId) ? allLayouts.FirstOrDefault(l => l.Id == Guid.Parse(strDefaultLayoutId)) : null,
                 DefaultAdminLayout = !string.IsNullOrEmpty(strDefaultAdminLayoutId) ? allLayouts.FirstOrDefault(l => l.Id == Guid.Parse(strDefaultAdminLayoutId)) : null,
-                DefaultTheme = !string.IsNullOrEmpty(strDefaultTheme) ? allThemes.FirstOrDefault(t => t.Key == strDefaultTheme) : null,
-                DefaultAdminTheme = !string.IsNullOrEmpty(strDefaultAdminTheme) ? allThemes.FirstOrDefault(t => t.Key == strDefaultAdminTheme) : null,
+                DefaultTheme = !string.IsNullOrEmpty(strDefaultTheme) ? allThemes.FirstOrDefault(t => t.Id == strDefaultTheme) : null,
+                DefaultAdminTheme = !string.IsNullOrEmpty(strDefaultAdminTheme) ? allThemes.FirstOrDefault(t => t.Id == strDefaultAdminTheme) : null,
 
                 RegistrationEnabled = !string.IsNullOrEmpty(strRegistrationEnabled) && bool.Parse(strRegistrationEnabled),
                 EnableFacebookAuth = !string.IsNullOrEmpty(strEnableFacebookAuth) && bool.Parse(strEnableFacebookAuth),
@@ -186,11 +186,11 @@ namespace Deviser.Core.Library.Sites
             }
             if (settingInfo.DefaultTheme != null)
             {
-                settings.First(s => s.SettingName == nameof(SiteSettingInfo.DefaultTheme)).SettingValue = settingInfo.DefaultTheme.Key;
+                settings.First(s => s.SettingName == nameof(SiteSettingInfo.DefaultTheme)).SettingValue = settingInfo.DefaultTheme.Id;
             }
             if (settingInfo.DefaultAdminTheme != null)
             {
-                settings.First(s => s.SettingName == nameof(SiteSettingInfo.DefaultAdminTheme)).SettingValue = settingInfo.DefaultAdminTheme.Key;
+                settings.First(s => s.SettingName == nameof(SiteSettingInfo.DefaultAdminTheme)).SettingValue = settingInfo.DefaultAdminTheme.Id;
             }
 
             settings.First(s => s.SettingName == nameof(SiteSettingInfo.RegistrationEnabled)).SettingValue = settingInfo.RegistrationEnabled.ToString().ToLower();
@@ -223,7 +223,7 @@ namespace Deviser.Core.Library.Sites
 
         private List<Theme> GetThemes()
         {
-            var themes = _themeManager.GetHostThemes().Select(kvp => new Theme() { Key = kvp.Value, Value = kvp.Key })
+            var themes = _themeManager.GetHostThemes().Select(kvp => new Theme() { Id = kvp.Value, Value = kvp.Key })
                 .ToList();
             return themes;
         }

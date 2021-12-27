@@ -11,7 +11,7 @@ export class PageModuleService extends BaseService {
 
   getPageModules(pageId: string): Observable<PageModule[]> {
     const serviceUrl: string = `${this.baseUrl}api/pagemodule/page/${pageId}`;
-    return this.http.get<PageModule[]>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<PageModule[]>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched pageModules')),
         catchError(this.handleError('getPageModules', null))
@@ -20,7 +20,7 @@ export class PageModuleService extends BaseService {
 
   getPageModule(pageModuleId: string): Observable<PageModule> {
     const serviceUrl: string = `${this.baseUrl}api/pagemodule/${pageModuleId}`;
-    return this.http.get<PageModule>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<PageModule>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched pageModule')),
         catchError(this.handleError('getPageModule', null))
@@ -29,7 +29,7 @@ export class PageModuleService extends BaseService {
 
   deletePageModule(id: string) {
     const serviceUrl: string = `${this.baseUrl}api/pagemodule/${id}`;
-    return this.http.delete<any>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.delete<any>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log(`deleted a pageModule id:${id}`)),
         catchError(this.handleError('deletePageModule', null))

@@ -12,7 +12,7 @@ export class LanguageService extends BaseService {
 
   getSiteLanguages(): Observable<Language[]> {
     const serviceUrl: string = `${this.baseUrl}api/language/site/`;
-    return this.http.get<Language[]>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<Language[]>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched Site Languages')),
         catchError(this.handleError('getSiteLanguages', null))

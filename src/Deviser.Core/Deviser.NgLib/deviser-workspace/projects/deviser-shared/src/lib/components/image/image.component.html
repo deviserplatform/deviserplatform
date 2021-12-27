@@ -1,5 +1,5 @@
 <div class="image-manager">
-    <div *ngIf="field.fieldLabel || field.fieldName">
+    <div *ngIf="field && (field.fieldLabel || field.fieldName)">
         <label>{{ field.fieldLabel || field.fieldName}}</label>
     </div>
     <div class="form-group">

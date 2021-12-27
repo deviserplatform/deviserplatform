@@ -1,27 +1,27 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Deviser.Web.Builder;
+using Deviser.Web.DependencyInjection;
 
-namespace DeviserApp
+//Solution based on https://stackoverflow.com/questions/70083598/site-css-not-found-in-net-6-web-app-with-custom-environment until https://github.com/dotnet/AspNetCore.Docs/issues/24053 is fixed!
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+    Args = args,
+    WebRootPath = "wwwroot"
+});
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStaticWebAssets();
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+builder.WebHost.UseStaticWebAssets();
+
+// Add services to the container.
+builder.Services.AddDeviserPlatform();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
 }
+
+app.UseDeviserPlatform();
+
+app.Run();
+

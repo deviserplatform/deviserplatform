@@ -205,6 +205,11 @@ export class FormControlComponent implements OnInit {
     quill.insertEmbed(10, 'image', imageUrl);
   }
 
+  onImageSelectedOnImageField($event: Image) {
+    let imageStr = JSON.stringify($event);
+    this.form.controls[this.field.fieldNameCamelCase].patchValue(imageStr);
+  }
+
   addTagPromise = (value: string) => {
     if (this.field.fieldOption.addItemBy) {
       let fieldName = this.field.fieldOption.addItemBy.fieldNameCamelCase;
@@ -310,8 +315,6 @@ export class FormControlComponent implements OnInit {
     let lookUp: any[] = lookUpGeneric;
     let selectedItem = this._formControlService.getSelectedItemFor(lookUp, lookUpKeys, controlVal);
 
-    if (!selectedItem) return;
-
     let patchVal: any = {};
     patchVal[this.field.fieldNameCamelCase] = selectedItem;
 
@@ -331,10 +334,13 @@ export class FormControlComponent implements OnInit {
         .subscribe(([prev, next]: [any, any]) => {
           let val = next ? next : prev;
           console.log(val);
+          if (!val) return;
           this._adminService.getLookUp(this.formType, this.formName, this.field.fieldName, val)
             .subscribe(lookupResult => {
               // console.log(lookupResult);
               this.parseControlValue(lookupResult);
+            }, error => {
+              console.log(error);
             });
         });
     }

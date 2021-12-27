@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location, DOCUMENT } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { forkJoin, Observable, BehaviorSubject } from 'rxjs';
+import { forkJoin, Observable, BehaviorSubject, Subject } from 'rxjs';
 import { AlertType } from 'deviser-shared';
 import { AlertService } from 'deviser-shared';
 
@@ -40,7 +40,8 @@ export class AdminFormComponent implements OnInit {
   // childFormContexts: { [key: string]: FormContext }
 
   formType = FormType;
-  submitSubject: BehaviorSubject<FormResult> = new BehaviorSubject<any>({});
+  submitSubject: Subject<FormResult> = new Subject<any>();
+  submit$ = this.submitSubject.asObservable();
   daConfig: DAConfig;
   adminConfigType = AdminConfigType;
   activeChildConfigs: ChildConfig[];
@@ -126,7 +127,7 @@ export class AdminFormComponent implements OnInit {
         formGroup: this.adminForm,
         formConfig: this.adminConfig.modelConfig.formConfig,
         formName: this.adminConfig.modelType,
-        formTitle: this.adminConfig.modelType,
+        formTitle: this.adminConfig.modelConfig.formConfig.title ? this.adminConfig.modelConfig.formConfig.title : this.adminConfig.modelType,
         formType: this.formType.MainForm,
         keyField: this.adminConfig.modelConfig.keyField,
         formMode: this.formMode,
@@ -141,7 +142,7 @@ export class AdminFormComponent implements OnInit {
             formGroup: customFormGroup,
             formConfig: customForm.formConfig,
             formName: customFormName,
-            formTitle: customForm.formConfig.formOption.formTitle,
+            formTitle: customForm.formConfig.title ? customForm.formConfig.title : customForm.formName,
             formType: this.formType.CustomForm,
             keyField: customForm.keyField,
             formMode: this.formMode,
@@ -150,11 +151,11 @@ export class AdminFormComponent implements OnInit {
         }
       }
 
-      setTimeout(() => {
-        if (this.record) {
-          this.patchFormValue(this.record);
-        }
-      });
+      // setTimeout(() => {
+      //   if (this.record) {
+      //     this.patchFormValue(this.record);
+      //   }
+      // });
     }
   }
 
@@ -175,9 +176,9 @@ export class AdminFormComponent implements OnInit {
       .subscribe(formValue => this.onActionResult(formValue));
   }
 
-  onAction(formName: string, actionName: string): void {
-    if (formName) {
-      this._adminService.executeCustomFormAction(formName, actionName, this.adminForm.value)
+  onAction(formTab: any, actionName: string): void {
+    if (formTab.formType == this.formType.CustomForm) {
+      this._adminService.executeCustomFormAction(formTab.formName, actionName, this.adminForm.value)
         .subscribe(formValue => this.onActionResult(formValue));
     } else {
       this._adminService.executeMainFormAction(actionName, this.adminForm.value)

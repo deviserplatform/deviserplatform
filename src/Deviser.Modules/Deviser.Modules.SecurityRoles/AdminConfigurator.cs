@@ -17,6 +17,9 @@ namespace Deviser.Modules.SecurityRoles
                     var gridBuilder = builder.GridBuilder;
                     var formBuilder = builder.FormBuilder;
 
+                    gridBuilder.Title = "Security Roles";
+                    formBuilder.Title = "Role";
+
                     gridBuilder
                         .AddKeyField(r => r.Id)
                         .AddField(r => r.Name, option => option.DisplayName = "Role Name");

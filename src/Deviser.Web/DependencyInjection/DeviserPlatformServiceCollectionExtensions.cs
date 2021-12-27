@@ -74,6 +74,7 @@ namespace Deviser.Web.DependencyInjection
                     installationProvider.GetDbContextOptionsBuilder<DeviserDbContext>(dbContextOptionBuilder);
                 });
 
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddAutoMapper(typeof(DeviserPlatformServiceCollectionExtensions).Assembly);
 
@@ -185,9 +186,12 @@ namespace Deviser.Web.DependencyInjection
                         options.Cookie.Domain = "localhost";
                     });
                 }
-
-                RegisterModuleDependencies(services);
+                RegisterModuleDependencies(services, false);
                 services.AddDeviserAdmin();
+            }
+            else
+            {
+                RegisterModuleDependencies(services, true);
             }
 
             var mvcBuilder = services
@@ -225,6 +229,10 @@ namespace Deviser.Web.DependencyInjection
                     libraryPath = Path.GetFullPath(
                         Path.Combine(hostEnvironment.ContentRootPath, "..", "Deviser.Themes", "Deviser.Themes.Skyline"));
                     options.FileProviders.Add(new PhysicalFileProvider(libraryPath));
+
+                    libraryPath = Path.GetFullPath(
+                        Path.Combine(hostEnvironment.ContentRootPath, "..", "Deviser.Modules", "Deviser.Modules.Blog"));
+                    options.FileProviders.Add(new PhysicalFileProvider(libraryPath));
                 });
             }
 
@@ -255,7 +263,7 @@ namespace Deviser.Web.DependencyInjection
             return services;
         }
 
-        private static void RegisterModuleDependencies(IServiceCollection serviceCollection)
+        private static void RegisterModuleDependencies(IServiceCollection serviceCollection, bool isConfigureModuleAlone)
         {
 
             var assemblies = DefaultAssemblyPartDiscoveryProvider.DiscoverAssemblyParts(Globals.EntryPointAssembly);
@@ -277,11 +285,17 @@ namespace Deviser.Web.DependencyInjection
                     moduleManifest.ModuleMetaInfo.AdminConfiguratorTypeInfo =
                         GetAdminConfiguratorInModule(moduleConfigurator.Assembly);
                     moduleRegistry.TryRegisterModule(moduleManifest.ModuleMetaInfo);
+
+                    if (isConfigureModuleAlone) continue;
+
                     moduleConfig.ConfigureServices(serviceCollection);
                 }
 
-                //RegisterModuleDbContexts
-                RegisterModuleDbContexts(moduleConfigurator.Assembly, serviceCollection);
+                if (!isConfigureModuleAlone)
+                {
+                    //RegisterModuleDbContexts
+                    RegisterModuleDbContexts(moduleConfigurator.Assembly, serviceCollection);
+                }
             }
         }
 

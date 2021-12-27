@@ -17,29 +17,25 @@
 
 @if (rootObj != null)
 {
-    <div id="@id">
+    var index = 0;
+    <div class="accordion" id="@id">
         @foreach (var item in rootObj.items)
         {
-            var itemId = "pane" + item.id;
+            var headingId = $"heading_{item.id}";
+            var paneId = $"pane_{item.id}";
             <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <a class="btn btn-link" data-toggle="collapse" data-target="#@itemId" aria-expanded="true" aria-controls="@itemId" role="button" href="">
-                            @item.title
-                        </a>
-                    </h5>
+                <div class="card-header" id="@headingId">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#@paneId" aria-expanded="true" aria-controls="@paneId">
+                        @item.title
+                    </button>
                 </div>
-                <div id="@itemId" class="collapse @(item.viewOrder == 1 ? "show" : "")" role="tabpanel" data-parent="#@id">
+                <div id="@paneId" class="collapse @(index==0?"show":"")" aria-labelledby="@headingId" data-parent="#@id">
                     <div class="card-body">
-                        @item.description
-
-                        <br />
-
-                        Description1: @item.description1
-
+                        @Html.Raw(item.description)
                     </div>
                 </div>
             </div>
+            index++;
         }
     </div>
 }

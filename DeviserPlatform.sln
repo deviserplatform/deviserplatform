@@ -45,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.ContactForm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Admin", "src\Deviser.Core\Deviser.Admin\Deviser.Admin.csproj", "{4D9DBEDF-D8F5-49EF-B98E-D345F1F4D8FB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.Blog", "src\Deviser.Modules\Deviser.Modules.Blog\Deviser.Modules.Blog\Deviser.Modules.Blog.csproj", "{4725F1FF-6BBD-4D8C-AB1F-3C4145EAFA43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Modules.Blog", "src\Deviser.Modules\Deviser.Modules.Blog\Deviser.Modules.Blog.csproj", "{4725F1FF-6BBD-4D8C-AB1F-3C4145EAFA43}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deviser.Admin.Web", "src\Deviser.Core\Deviser.Admin.Web\Deviser.Admin.Web.csproj", "{63AE23DB-46F5-4196-B3FF-9750CF169E61}"
 EndProject
@@ -161,6 +161,10 @@ Global
 		{A3768C5E-BA6A-4ECA-9583-A52F0890C4A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3768C5E-BA6A-4ECA-9583-A52F0890C4A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3768C5E-BA6A-4ECA-9583-A52F0890C4A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FAF2B5A-6C01-4096-A3F1-8E85E931E37D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FAF2B5A-6C01-4096-A3F1-8E85E931E37D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FAF2B5A-6C01-4096-A3F1-8E85E931E37D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FAF2B5A-6C01-4096-A3F1-8E85E931E37D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

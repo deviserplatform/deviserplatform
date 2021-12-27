@@ -6,7 +6,7 @@ namespace Deviser.Admin
 {
     public class FormConfig : IFormConfig
     {
-        [JsonIgnore] public ICollection<Field> AllFormFields
+        [JsonIgnore] public ICollection<Field> AllFields
         {
             get
             {
@@ -32,6 +32,7 @@ namespace Deviser.Admin
         public IFieldSetConfig FieldSetConfig { get; }
         public IDictionary<string, AdminAction> FormActions { get; }
         public FormOption FormOption { get; set; }
+        public string Title { get; set; }
 
         public FormConfig()
         {

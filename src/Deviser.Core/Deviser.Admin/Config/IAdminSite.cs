@@ -2,6 +2,8 @@
 using Deviser.Admin.Config;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Admin
 {
@@ -18,6 +20,6 @@ namespace Deviser.Admin
 
         TypeMap GetTypeMapFor(Type modelType);
 
-        //List<ReleatedField> GetReleatedFields(IForeignKey foreignKey, Type entityType);
+        Type GetEntityClrTypeFor(Type modelType);
     }
 }

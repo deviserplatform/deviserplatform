@@ -190,7 +190,7 @@ namespace DeviserWI.Controllers.API
                 //var page = _pageRepository.GetPageAndDependencies(pageModule.PageId);
                 //if (!_pageManager.HasEditPermission(page)) return Unauthorized();
 
-                var deleteResult = _contentManager.RemovePageContent(id);
+                var deleteResult = _contentManager.SoftDeletePageContent(id);
                 if (deleteResult)
                 {
                     return Ok();

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Deviser.Admin.Config.Filters;
 using Deviser.Admin.Extensions;
+using Deviser.Admin.Services;
 using Deviser.Core.Data.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

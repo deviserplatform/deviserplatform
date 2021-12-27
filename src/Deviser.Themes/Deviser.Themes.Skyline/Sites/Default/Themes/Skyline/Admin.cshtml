@@ -1,4 +1,7 @@
 ﻿@using Deviser.Core.Library.TagHelpers;
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using System
+@using System.Linq
 @inject IScopeService scopeService
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -29,16 +32,16 @@
         </nav>
 
     </div>
-    <div class="admin-body">
-        <div class="admin-content container-fluid">
-            <div class="row">
+    <div class="admin-container">
+        <div class="admin-body container-fluid">
+            <div class="row admin-header">
                 <div class="col">
                     <section class="content-header">
-                        <h1 class="page-header">@currentPage.PageTranslation.First().Title</h1>
+                        <h2 class="page-header">@currentPage.PageTranslation.First().Title</h2>
                     </section>
                 </div>
             </div>
-            <div class="row">
+            <div class="row admin-content">
                 <div class="col">
                     <section class="content-body">
                         @RenderBody()

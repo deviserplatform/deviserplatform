@@ -25,7 +25,7 @@ export class PageService extends BaseService {
     }
     else {
       const serviceUrl: string = `${this.baseUrl}api/page/list`;
-      this._pages$ = this.http.get<Page[]>(serviceUrl, { headers: this.httpHeaders }).pipe(
+      this._pages$ = this.http.get<Page[]>(serviceUrl, { headers: this.httpHeaders, withCredentials: true }).pipe(
         tap(next => {
           this._pages = next;
           this.log('fetched pages');
@@ -38,7 +38,7 @@ export class PageService extends BaseService {
 
   getPageTree(): Observable<Page> {
     const serviceUrl: string = `${this.baseUrl}api/page`;
-    let pageRoot$ = this.http.get<Page>(serviceUrl, { headers: this.httpHeaders }).pipe(
+    let pageRoot$ = this.http.get<Page>(serviceUrl, { headers: this.httpHeaders, withCredentials: true }).pipe(
       tap(next => {
         // pageRoot$ = next;
         this.log('fetched pages');
@@ -51,7 +51,7 @@ export class PageService extends BaseService {
   getPage(id: string): Observable<any> {
     const serviceUrl: string = `${this.baseUrl}api/page/${id}`;
 
-    return this.http.get<any>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<any>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log(`fetched a page for id: ${id}`)),
         catchError(this.handleError('getPage', null))
@@ -60,7 +60,7 @@ export class PageService extends BaseService {
 
   draftPage(id: string): Observable<any> {
     const serviceUrl: string = `${this.baseUrl}api/page/draft/${id}`;
-    return this.http.put<any>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.put<any>(serviceUrl, {}, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log(`current page has been changed to draft state, pageId: ${id}`)),
         catchError(this.handleError('draftPage', null))
@@ -69,7 +69,7 @@ export class PageService extends BaseService {
 
   publishPage(id: string): Observable<any> {
     const serviceUrl: string = `${this.baseUrl}api/page/publish/${id}`;
-    return this.http.put<any>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.put<any>(serviceUrl, {}, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log(`current page has been published, pageId: ${id}`)),
         catchError(this.handleError('publishPage', null))

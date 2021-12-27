@@ -10,7 +10,7 @@ namespace Deviser.Admin.Config
         public BaseField DisplayField { get; }
         public BaseField ParentField { get; }
         public BaseField SortField { get; }
-
+        public string Title { get; set; }
         public TreeConfig()
         {
             ChildrenField = new BaseField();

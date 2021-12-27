@@ -35,7 +35,7 @@
         {
             var id = "tabPane" + item.id;
             <div id="@id" role="tabpanel" class="tab-pane fade @(item.viewOrder == 1 ? "active show" : "")">
-                @item.description
+                @Html.Raw(item.description)
             </div>
         }
     </div>

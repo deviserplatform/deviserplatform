@@ -90,15 +90,15 @@ namespace Deviser.Core.Data.Repositories
             }
 
             using var context = new DeviserDbContext(_dbOptions);
-            var dbResult = context.Page
+            var query = context.Page
                 .AsNoTracking()
                 .Include(p => p.AdminPage).ThenInclude(ap => ap.Module)
                 .Include(p => p.PageTranslation)
                 .Include(p => p.PagePermissions)
-                .OrderBy(p => p.PageLevel).ThenBy(p => p.PageOrder)
-                .AsNoTracking()
-                .ToList();
+                .OrderBy(p => p.PageLevel).ThenBy(p => p.PageOrder);
 
+
+            var dbResult = query.ToList();
             var result = _mapper.Map<IList<Page>>(dbResult);
             _deviserDataCache.AddOrUpdate(nameof(GetPagesFlat), dbResult);
             //AddResultToCache(cacheName, result);
@@ -159,7 +159,7 @@ namespace Deviser.Core.Data.Repositories
                     .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType).ThenInclude(ct => ct.ContentTypeFields)
                     .Include(p => p.PageContent).ThenInclude(pc => pc.ContentType).ThenInclude(ct => ct.ContentTypeProperties).ThenInclude(ctp => ctp.Property).ThenInclude(p => p.OptionList)
                     .Include(p => p.PageContent).ThenInclude(pc => pc.ContentPermissions)
-                    .Include(p => p.PageModule).ThenInclude(pm => pm.Module)
+                    .Include(p => p.PageModule).ThenInclude(m=>m.ModuleView).ThenInclude(mv=>mv.ModuleViewProperties).ThenInclude(ctp => ctp.Property).ThenInclude(p => p.OptionList)
                     .Include(p => p.PageModule).ThenInclude(pm => pm.ModulePermissions)
                     .OrderBy(p => p.Id)
                     .AsNoTracking()
@@ -274,19 +274,19 @@ namespace Deviser.Core.Data.Repositories
         {
             using var context = new DeviserDbContext(_dbOptions);
             using var transaction = context.Database.BeginTransaction();
-            var dbPage = _mapper.Map<Entities.Page>(page);
+            var pageEntity = _mapper.Map<Entities.Page>(page);
 
-            var pagePermissions = dbPage.PagePermissions;
-            //var pageTranslation = dbPage.PageTranslation;
-            dbPage.PagePermissions = null;
-            //dbPage.PageTranslation = null;
+            var pagePermissions = pageEntity.PagePermissions;
+            //var pageTranslation = pageEntity.PageTranslation;
+            pageEntity.PagePermissions = null;
+            //pageEntity.PageTranslation = null;
 
-            //context.Page.Update(dbPage);
+            //context.Page.Update(pageEntity);
 
             if (pagePermissions != null & pagePermissions.Count > 0)
             {
                 //Filter deleted permissions in UI and delete all of them
-                var matchPagePermissions = context.PagePermission.Where(dbPermission => dbPermission.PageId == dbPage.Id)
+                var matchPagePermissions = context.PagePermission.Where(dbPermission => dbPermission.PageId == pageEntity.Id)
                     .AsNoTracking()
                     .ToList();
 
@@ -315,10 +315,59 @@ namespace Deviser.Core.Data.Repositories
                 }
             }
 
+            var sourcePageTranslations = new Dictionary<Guid, Dictionary<string, Entities.PageTranslation>>();
+            GetFlatPagesFromRoot(pageEntity, sourcePageTranslations);
 
-            UpdatePageAndPermissionsRecursive(dbPage, context);
+            //Update selected page
+            var dbPage = context.Page
+                .FirstOrDefault(p => p.Id == page.Id);
+            _mapper.Map(pageEntity, dbPage);
 
-            //context.PageTranslation.UpdateRange(dbPage.PageTranslation);
+            var pageIds = sourcePageTranslations.Keys.ToHashSet();
+
+            var dbPageTranslations = context.PageTranslation
+                .Where(pt => pageIds.Contains(pt.PageId))
+                .ToList()
+                .GroupBy(pt => pt.PageId)
+                .ToDictionary(g => g.Key, g => g.ToDictionary(g => g.Locale, g => g));
+
+            //Update PageTranslation and children page translations
+            foreach (var sourcePageTranslation in sourcePageTranslations)
+            {
+                var destPageTranslations = dbPageTranslations[sourcePageTranslation.Key];
+
+                foreach (var pageTranslationKvp in sourcePageTranslation.Value)
+                {
+                    if (destPageTranslations.ContainsKey(pageTranslationKvp.Key))
+                    {
+                        var dbPageTranslation = destPageTranslations[pageTranslationKvp.Key];
+                        _mapper.Map(pageTranslationKvp.Value, dbPageTranslation);
+                    }
+                    else
+                    {
+                        context.PageTranslation.Add(pageTranslationKvp.Value);
+                    }
+                }
+            }
+
+            if (pageEntity.AdminPage != null)
+            {
+                var dbAdminPage = context.AdminPage.FirstOrDefault(p => p.PageId == pageEntity.Id);
+                if (dbAdminPage == null)
+                {
+                    pageEntity.AdminPage.PageId = pageEntity.Id;
+                    context.AdminPage.Add(pageEntity.AdminPage);
+                }
+                else
+                {
+                    dbAdminPage.ModuleId = pageEntity.AdminPage.ModuleId;
+                    dbAdminPage.ModelName = pageEntity.AdminPage.ModelName;
+                }
+            }
+
+            ////UpdatePageAndTranslationRecursive(pageEntity, context);
+
+            ////context.PageTranslation.UpdateRange(pageEntity.PageTranslation);
             context.SaveChanges();
             transaction.Commit();
 
@@ -337,9 +386,14 @@ namespace Deviser.Core.Data.Repositories
         {
             using var context = new DeviserDbContext(_dbOptions);
             using var transaction = context.Database.BeginTransaction();
-            var dbPage = _mapper.Map<Entities.Page>(page);
-            dbPage.LastModifiedDate = DateTime.Now;
-            UpdatePageTreeRecursive(context, dbPage);
+            var pageEntity = _mapper.Map<Entities.Page>(page);
+            pageEntity.LastModifiedDate = DateTime.Now;
+
+            var dbPagesDict = context.Page
+                .Include(p => p.PageTranslation)
+                .ToDictionary(p => p.Id, p => p);
+
+            UpdatePageTreeRecursive(pageEntity, dbPagesDict);
 
             context.SaveChanges();
             transaction.Commit();
@@ -350,32 +404,45 @@ namespace Deviser.Core.Data.Repositories
         }
 
         public IList<PageModule> GetPageModules(Guid pageId)
-        {
-            using var context = new DeviserDbContext(_dbOptions);
-            var result = context.PageModule
+        {   
+            var result = GetPageModules()
                 .Where(e => e.PageId == pageId && e.IsActive)
-                .Include(e => e.Module)
-                .Include(e => e.ModuleView).ThenInclude(mp => mp.ModuleViewProperties).ThenInclude(cp => cp.Property)
-                .Include(e => e.ModulePermissions)
-                .OrderBy(p => p.Id)
                 .ToList();
-
             return _mapper.Map<IList<PageModule>>(result);
         }
 
         public PageModule GetPageModule(Guid pageModuleId)
         {
-            using var context = new DeviserDbContext(_dbOptions);
-            var result = context.PageModule
-                .Include(pm => pm.ModulePermissions)
-                .Include(pm => pm.Module)
-                .Include(e => e.ModuleView).ThenInclude(ma => ma.ModuleViewProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
+            var result = GetPageModules()
                 .Where(e => e.Id == pageModuleId && e.IsActive)
                 .OrderBy(p => p.Id)
                 .FirstOrDefault();
 
             return _mapper.Map<PageModule>(result);
         }
+
+        public IList<PageModule> GetPageModules(bool refreshCache = false)
+        {
+            if (_deviserDataCache.ContainsKey(nameof(GetPageModules)) && !refreshCache)
+            {
+                var cacheResult = _deviserDataCache.GetItem<IList<Entities.PageModule>>(nameof(GetPageModules));
+                return _mapper.Map<IList<PageModule>>(cacheResult);
+            }
+            
+            using var context = new DeviserDbContext(_dbOptions);
+            var dbResult = context.PageModule
+                .Include(e => e.Module)
+                .Include(e => e.ModuleView).ThenInclude(mp => mp.ModuleViewProperties).ThenInclude(cp => cp.Property).ThenInclude(p => p.OptionList)
+                .Include(e => e.ModulePermissions)
+                .OrderBy(p => p.Id)
+                .ToList();
+
+            var result = _mapper.Map<IList<PageModule>>(dbResult);
+            _deviserDataCache.AddOrUpdate(nameof(GetPageModules), dbResult);
+            //AddResultToCache(cacheName, result);
+            return result;
+        }
+
 
         public IList<PageModule> GetDeletedPageModules()
         {
@@ -395,6 +462,10 @@ namespace Deviser.Core.Data.Repositories
             var dbPageModule = _mapper.Map<Entities.PageModule>(pageModule);
             var result = context.PageModule.Add(dbPageModule).Entity;
             context.SaveChanges();
+
+            //Refresh cache
+            GetPageModules(true);
+
             return _mapper.Map<PageModule>(result);
         }
 
@@ -404,6 +475,10 @@ namespace Deviser.Core.Data.Repositories
             var dbPageModule = _mapper.Map<Entities.PageModule>(pageModule);
             var result = context.PageModule.Update(dbPageModule).Entity;
             context.SaveChanges();
+
+            //Refresh cache
+            GetPageModules(true);
+
             return _mapper.Map<PageModule>(result);
         }
 
@@ -455,6 +530,9 @@ namespace Deviser.Core.Data.Repositories
                 }
             }
             context.SaveChanges();
+
+            //Refresh cache
+            GetPageModules(true);
         }
 
         /// <summary>
@@ -516,6 +594,10 @@ namespace Deviser.Core.Data.Repositories
             }
 
             context.SaveChanges();
+
+            //Refresh cache
+            GetPageModules(true);
+
             return _mapper.Map<IList<ModulePermission>>(toAdd);
 
         }
@@ -562,6 +644,10 @@ namespace Deviser.Core.Data.Repositories
                 }
             }
             context.SaveChanges();
+
+            //Refresh cache
+            GetPageModules(true);
+
             return GetPageModule(pageModule.Id);
         }
 
@@ -574,6 +660,10 @@ namespace Deviser.Core.Data.Repositories
             dbPageModule.IsActive = true;
             var result = context.PageModule.Update(dbPageModule).Entity;
             context.SaveChanges();
+
+            //Refresh cache
+            GetPageModules(true);
+
             return _mapper.Map<PageModule>(result);
         }
 
@@ -589,6 +679,10 @@ namespace Deviser.Core.Data.Repositories
                 .ToList();
             context.ModulePermission.RemoveRange(pageModulePermissions);
             context.SaveChanges();
+
+            //Refresh cache
+            GetPageModules(true);
+
             return true;
         }
 
@@ -710,32 +804,27 @@ namespace Deviser.Core.Data.Repositories
             return true;
         }
 
-        private static void UpdatePageTreeRecursive(DeviserDbContext context, Entities.Page page)
+        private static void UpdatePageTreeRecursive(Entities.Page pageEntity, Dictionary<Guid, Entities.Page> dbPageDict)
         {
-            if (page == null || page.Id == Guid.Empty) return;
+            if (pageEntity == null || pageEntity.Id == Guid.Empty) return;
 
-            var dbPage = context.Page
-                .Include(p => p.PageTranslation)
-                .First(p => p.Id == page.Id);
-            dbPage.PageLevel = page.PageLevel;
-            dbPage.PageOrder = page.PageOrder;
-            dbPage.ParentId = page.ParentId;
+            var dbPage = dbPageDict[pageEntity.Id];
+            dbPage.PageLevel = pageEntity.PageLevel;
+            dbPage.PageOrder = pageEntity.PageOrder;
+            dbPage.ParentId = pageEntity.ParentId;
 
-            foreach (var pageTranslation in page.PageTranslation)
+            foreach (var pageTranslation in pageEntity.PageTranslation)
             {
-                var dbPageTranslation = dbPage.PageTranslation.FirstOrDefault(pt =>
-                    pt.PageId == pageTranslation.PageId && string.Equals(pt.Locale, pageTranslation.Locale,
-                        StringComparison.InvariantCultureIgnoreCase));
+                var dbPageTranslation = dbPage.PageTranslation.First(pt => string.Equals(pt.Locale, pageTranslation.Locale, StringComparison.InvariantCultureIgnoreCase));
                 dbPageTranslation.URL = pageTranslation.URL;
             }
 
-            context.SaveChanges();
+            if (pageEntity.ChildPage == null || pageEntity.ChildPage.Count <= 0) return;
 
-            if (page.ChildPage == null || page.ChildPage.Count <= 0) return;
-
-            foreach (var child in page.ChildPage.Select((value, index) => new { index, value }))
+            foreach (var child in pageEntity.ChildPage.Select((value, index) => new { index, value }))
             {
-                UpdatePageTreeRecursive(context, child.value);
+                child.value.ParentId = dbPage.Id;
+                UpdatePageTreeRecursive(child.value, dbPageDict);
             }
         }
 
@@ -757,37 +846,57 @@ namespace Deviser.Core.Data.Repositories
             return pageTranslations;
         }
 
-        private void UpdatePageAndPermissionsRecursive(Entities.Page dbPage, DeviserDbContext context)
+        private void GetFlatPagesFromRoot(Entities.Page pageEntity, Dictionary<Guid, Dictionary<string, Entities.PageTranslation>> flatPages)
         {
-            if (dbPage == null) return;
-            dbPage.LastModifiedDate = DateTime.Now;
+            if (pageEntity == null) return;
 
-            //context.Page.Update(dbPage);
-            //context.PageTranslation.UpdateRange(dbPage.PageTranslation);
+            var pageTranslations = pageEntity.PageTranslation.ToDictionary(pt => pt.Locale, pt => pt);
+            flatPages.Add(pageEntity.Id, pageTranslations);
 
-            foreach (var pageTranslation in dbPage.PageTranslation)
+            //Update URL of child pages, if any
+            if (pageEntity.ChildPage.Count <= 0) return;
+
+            foreach (var child in pageEntity.ChildPage)
             {
-                pageTranslation.PageId = dbPage.Id;
+                GetFlatPagesFromRoot(child, flatPages);
+            }
+        }
+
+        private void UpdatePageAndTranslationRecursive(Entities.Page pageEntity, DeviserDbContext context)
+        {
+            if (pageEntity == null) return;
+            pageEntity.LastModifiedDate = DateTime.Now;
+
+            var dbPage = context.Page.Where(p => p.Id == pageEntity.Id).FirstOrDefault();
+
+            _mapper.Map(pageEntity, dbPage);
+
+            //context.Page.Update(pageEntity);
+            //context.PageTranslation.UpdateRange(pageEntity.PageTranslation);
+
+            foreach (var translationEntity in pageEntity.PageTranslation)
+            {
+                translationEntity.PageId = pageEntity.Id;
 
                 var dbPageTranslation = context.PageTranslation.FirstOrDefault(pt =>
-                    pt.PageId == dbPage.Id && pt.Locale == pageTranslation.Locale);
+                    pt.PageId == pageEntity.Id && pt.Locale == translationEntity.Locale);
 
                 if (dbPageTranslation != null)
                 {
-                    _mapper.Map(pageTranslation, dbPageTranslation);
+                    _mapper.Map(translationEntity, dbPageTranslation);
                 }
                 else
                 {
-                    context.PageTranslation.Add(pageTranslation);
+                    context.PageTranslation.Add(translationEntity);
                 }
             }
 
             //Update URL of child pages, if any
-            if (dbPage.ChildPage.Count <= 0) return;
+            if (pageEntity.ChildPage.Count <= 0) return;
 
-            foreach (var child in dbPage.ChildPage)
+            foreach (var child in pageEntity.ChildPage)
             {
-                UpdatePageAndPermissionsRecursive(child, context);
+                UpdatePageAndTranslationRecursive(child, context);
             }
         }
     }

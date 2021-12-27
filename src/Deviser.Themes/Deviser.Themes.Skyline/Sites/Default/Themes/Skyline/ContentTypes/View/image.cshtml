@@ -12,7 +12,8 @@
 
 @if (rootObj != null)
 {
-    <img class="@cssClass" src="@rootObj.imageUrl" alt="@rootObj.imageAltText"/>
+    var image = (rootObj.image as Newtonsoft.Json.Linq.JObject).ToObject<Image>();
+    <img class="@cssClass" src="/@image.ImageUrl" alt="@image.ImageAltText"/>
 }
 else{
     <div>

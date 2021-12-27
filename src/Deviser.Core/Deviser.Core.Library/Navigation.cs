@@ -436,7 +436,7 @@ namespace Deviser.Core.Library
                     string pageUrl;
                     if (parentUrls.ContainsKey(pageTranslation.Locale) && !string.IsNullOrEmpty(parentUrls[pageTranslation.Locale]))
                     {
-                        pageUrl = $"{parentUrls[pageTranslation.Locale]}{pageName}";
+                        pageUrl = $"{parentUrls[pageTranslation.Locale]}/{pageName}";
                     }
                     else
                     {

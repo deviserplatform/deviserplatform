@@ -24,8 +24,9 @@
         <!-- Slides -->
         @foreach (var item in rootObj.items)
         {
+            var image = (item.image as Newtonsoft.Json.Linq.JObject).ToObject<Image>();
             <div class="team-item col-12 col-sm-6 @colWidthM">
-                <img src="@item.imageUrl" alt="@item.imageAltText" />
+                <img src="/@image.ImageUrl" alt="@image.ImageAltText" />
                 <div class="team-text">
                     <h4>@item.name</h4>
                     <span>@item.position</span>

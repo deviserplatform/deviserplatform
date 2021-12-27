@@ -19,15 +19,20 @@ namespace Deviser.Modules.RecycleBin
         {
             adminBuilder.RegisterGrid<RecycleItem, RecycleAdminService>(builder =>
             {
+                builder.Title = "Recycle Bin";
                 builder
                     .AddKeyField(r => r.Id)
                     .AddField(r => r.Name, option => option.DisplayName = "Name / Title")
-                    .AddField(r => r.RecycleItemTypeString, option => option.DisplayName = "Item Type");
+                    .AddField(r => r.RecycleItemType, option => option.DisplayName = "Item Type");
 
                 builder.DisplayFieldAs(c => c.Name, LabelType.Icon, c => c.RecycleItemTypeIconClass);
 
                 builder.AddRowAction("Restore", "Restore",
                     (provider, item) => provider.GetService<RecycleAdminService>().Restore(item));
+
+                builder.Property(f => f.RecycleItemType).HasLookup(sp => RecycleItemType.GetRecycleItemTypes(),
+                    ke => ke.Id,
+                    de => de.Name);
 
                 builder.HideEditButton();
             });

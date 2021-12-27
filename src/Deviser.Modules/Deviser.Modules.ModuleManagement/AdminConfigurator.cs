@@ -15,7 +15,8 @@ namespace Deviser.Modules.ModuleManagement
         {
             adminBuilder.Register<Module, ModuleAdminService>(modelBuilder =>
             {
-                modelBuilder.AdminTitle = "Content Type";
+                modelBuilder.GridBuilder.Title = "Modules";
+                modelBuilder.FormBuilder.Title = "Module";
 
                 modelBuilder.GridBuilder
                     .AddField(c => c.Label)
@@ -51,6 +52,7 @@ namespace Deviser.Modules.ModuleManagement
                         .AddSelectField(c => c.ModuleViewType, de=>de.ControlType)
                         .AddField(c => c.ControllerName)
                         .AddField(c => c.ControllerNamespace)
+                        .AddField(c => c.ActionName)
                         .AddField(c => c.IconClass)
                         .AddField(c => c.IconImage)
                         .AddField(c => c.IsDefault)

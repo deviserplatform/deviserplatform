@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <title>ClientApp</title>
@@ -9,18 +10,19 @@
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="/_content/Deviser.Admin.Web/ClientApp/styles.css"></head>
+
 <body class="admin-container">
   <script>
     (function () {
       var daConfig = {
-        basePath:"https://localhost:44328/",
+        basePath: "https://localhost:44328/",
         currentPageId: "9b868526-8f09-4b79-7b41-08d7e56e581d",
         isEmbedded: false, //true for embedded in admin module, false for standalone
         debugBaseUrl: "https://localhost:44328",
-        module: "PageManagement",
-        model: "PageViewModel",
-        adminConfigType: "TreeAndForm", //GridOnly OR GridAndForm OR FormOnly OR TreeAndForm
-        assetPath:"/admin/dist"
+        module: "DemoAdminBlog",
+        model: "Post",
+        adminConfigType: "GridAndForm", //GridOnly OR GridAndForm OR FormOnly OR TreeAndForm
+        assetPath: "/admin/dist"
       }
       var pageContext = {
         assetPath: "/admin/dist",
@@ -58,4 +60,5 @@
   </script>
   <app-root></app-root>
 <script src="/_content/Deviser.Admin.Web/ClientApp/runtime-es2015.js" type="module"></script><script src="/_content/Deviser.Admin.Web/ClientApp/runtime-es5.js" nomodule defer></script><script src="/_content/Deviser.Admin.Web/ClientApp/polyfills-es5.js" nomodule defer></script><script src="/_content/Deviser.Admin.Web/ClientApp/polyfills-es2015.js" type="module"></script><script src="/_content/Deviser.Admin.Web/ClientApp/main-es2015.js" type="module"></script><script src="/_content/Deviser.Admin.Web/ClientApp/main-es5.js" nomodule defer></script></body>
+
 </html>

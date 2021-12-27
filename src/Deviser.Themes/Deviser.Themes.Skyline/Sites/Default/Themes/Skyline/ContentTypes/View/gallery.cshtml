@@ -21,9 +21,10 @@
     @foreach (var item in rootObj.items)
     {
         var itemId = "pane" + item.id;
+        var image = (item.image as Newtonsoft.Json.Linq.JObject).ToObject<Image>();
         <figure class="col-lg-4 col-md-6 image-thumb" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-            <a href="@item.imageUrl" itemprop="contentUrl" data-size="1024x683">
-                <img src="@item.imageUrl" itemprop="thumbnail" alt="@item.imageAltText" />
+            <a href="/@image.ImageUrl" itemprop="contentUrl" data-size="1024x683">
+                <img src="/@image.ImageUrl" itemprop="thumbnail" alt="@image.ImageAltText" />
             </a>
             <figcaption itemprop="caption description">@item.description</figcaption>
         </figure>

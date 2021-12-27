@@ -11,13 +11,13 @@ export class AssetService extends BaseService {
 
   getDocuments(): Observable<FileItem[]> {
     const serviceUrl: string = `${this.baseUrl}api/upload/documents/`;
-    var obs = this.http.get<FileItem[]>(serviceUrl, { headers: this.httpHeaders });
+    var obs = this.http.get<FileItem[]>(serviceUrl, { headers: this.httpHeaders, withCredentials: true });
     return obs;
   }
 
   getImages(): Observable<FileItem[]> {
     const serviceUrl: string = `${this.baseUrl}api/upload/images/`;
-    return this.http.get<FileItem[]>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<FileItem[]>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched images')),
         catchError(this.handleError('getImages', null))
@@ -26,7 +26,7 @@ export class AssetService extends BaseService {
 
   searchDocuments(term: string) {
     const serviceUrl: string = `${this.baseUrl}api/upload/documents?searchTerm=${term}`;
-    return this.http.get<FileItem[]>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<FileItem[]>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched images')),
         catchError(this.handleError('searchImages', null))
@@ -35,7 +35,7 @@ export class AssetService extends BaseService {
 
   searchImages(term: string) {
     const serviceUrl: string = `${this.baseUrl}api/upload/images?searchTerm=${term}`;
-    return this.http.get<FileItem[]>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<FileItem[]>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched images')),
         catchError(this.handleError('searchImages', null))
@@ -47,6 +47,9 @@ export class AssetService extends BaseService {
     const formData: FormData = new FormData();
     formData.append('file', file);
     return this.http.post<any>(serviceUrl, formData, {
+      headers: {
+        'currentPageId': this.pageContext.currentPageId
+      },
       reportProgress: true,
       observe: 'events'
     })
@@ -61,6 +64,9 @@ export class AssetService extends BaseService {
     const formData: FormData = new FormData();
     formData.append('file', file);
     return this.http.post<any>(serviceUrl, formData, {
+      headers: {
+        'currentPageId': this.pageContext.currentPageId
+      },
       reportProgress: true,
       observe: 'events'
     })

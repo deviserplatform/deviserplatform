@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Deviser.Admin.Config;
 using Deviser.Admin.Data;
+using Deviser.Admin.Services;
 using Deviser.Core.Common;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
@@ -182,7 +183,7 @@ namespace Deviser.Modules.PageManagement.Services
 
         public IList<Theme> GetThemes()
         {
-            var themes = _themeManager.GetHostThemes().Select(kvp => new Theme() { Key = kvp.Value, Value = kvp.Key })
+            var themes = _themeManager.GetHostThemes().Select(kvp => new Theme() { Id = kvp.Value, Value = kvp.Key })
                 .ToList();
             return themes;
         }
@@ -248,7 +249,7 @@ namespace Deviser.Modules.PageManagement.Services
             }
 
             pageViewModel.Theme = !string.IsNullOrEmpty(pageViewModel.ThemeSrc)
-                ? _themes.FirstOrDefault(t => t.Key == pageViewModel.ThemeSrc)
+                ? _themes.FirstOrDefault(t => t.Id == pageViewModel.ThemeSrc)
                 : null;
 
             if (!isMultilingual || pageViewModel?.PageTranslation == null || pageViewModel.PageTranslation.Count <= 0)
@@ -294,7 +295,7 @@ namespace Deviser.Modules.PageManagement.Services
 
             if (pageViewModel.ParentId == null || pageViewModel.ParentId == Guid.Empty)
             {
-                return pageViewModel;
+                return _mapper.Map<Page>(pageViewModel);
             }
 
             if (pageViewModel.Id == Guid.Empty)
@@ -356,7 +357,7 @@ namespace Deviser.Modules.PageManagement.Services
                 page.AdminPage = null;
             }
 
-            page.ThemeSrc = pageViewModel.Theme?.Key;
+            page.ThemeSrc = pageViewModel.Theme?.Id;
 
             return page;
         }

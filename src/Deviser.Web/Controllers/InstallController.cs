@@ -47,7 +47,7 @@ namespace Deviser.Web.Controllers
 
             var installModel = new InstallModel
             {
-                DatabaseProvider = DatabaseProvider.SQLite,
+                DatabaseProvider = DatabaseProvider.SqlLite,
                 //ServerName = "(localdb)\\mssqllocaldb",
                 IsIntegratedSecurity = true
             };

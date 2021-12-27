@@ -8,14 +8,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Deviser.Admin.Config.Filters;
 using Deviser.Admin.Extensions;
+using Deviser.Admin.Internal;
 
 namespace Deviser.Admin.Data
 {
@@ -129,7 +132,25 @@ namespace Deviser.Admin.Data
             var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericTypes);
             var result = (Task<TResult>)getItemMethod.Invoke(this, parmeters);
             return await result;
+            //return await CallGenericMethodOf<TResult>(typeof(AdminRepository), this, methodName, genericTypes, parmeters);
         }
+
+        private async Task CallGenericMethod(string methodName, Type[] genericTypes, object[] parmeters)
+        {
+            var getItemMethodInfo = typeof(AdminRepository).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
+            var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericTypes);
+            var task = (Task)getItemMethod.Invoke(this, parmeters);
+            await task;
+        }
+
+        //private async Task<TResult> CallGenericMethodOf<TResult>(Type classType, object classObject, string methodName, Type[] genericTypes, object[] parmeters)
+        //    where TResult : class
+        //{
+        //    var getItemMethodInfo = classType.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
+        //    var getItemMethod = getItemMethodInfo.MakeGenericMethod(genericTypes);
+        //    var result = (Task<TResult>)getItemMethod.Invoke(classObject, parmeters);
+        //    return await result;
+        //}
 
 
         private async Task<PagedResult<TModel>> GetAll<TModel, TEntity>(int pageNo, int pageSize, string orderByProperties, FilterNode filter)
@@ -194,6 +215,11 @@ namespace Deviser.Admin.Data
             var m2ofields = GetManyToOneFields(adminConfig);
 
             SetManyToOneFields(adminConfig, itemToAdd, m2ofields);
+
+            //ManyToMany Includes
+            var m2mFields = GetManyToManyFields(adminConfig);
+
+            await SetM2mReferences(itemToAdd, m2mFields);
 
             var dbSet = _dbContext.Set<TEntity>();
             var queryableData = dbSet.Add(itemToAdd);
@@ -273,7 +299,7 @@ namespace Deviser.Admin.Data
             var queryableData = dbSet.AsQueryable();
             var adminConfig = GetAdminConfig(modelType);
 
-            var filterExpression = CreatePrimaryKeyFilter(adminConfig, new List<string> { itemId });
+            var filterExpression = CreatePrimaryKeyFilter(adminConfig.EntityConfig.PrimaryKey, new List<string> { itemId });
 
             var whereCallExpression = ExpressionHelper.GetWhereExpression(entityClrType, queryableData.Expression, filterExpression);
 
@@ -312,6 +338,64 @@ namespace Deviser.Admin.Data
 
                 fieldPropInfo.SetValue(itemToAdd, null, null); //item.Category = null;
             }
+        }
+
+        private async Task SetM2mReferences<TEntity>(TEntity itemToAdd, List<Field> m2mFields)
+        {
+            foreach (var m2MField in m2mFields)
+            {
+                var relatedModelType = m2MField.FieldOption.LookupModelType;
+                var propEntityClrType = _adminSite.GetEntityClrTypeFor(relatedModelType);
+                await CallGenericMethod(nameof(SetM2mReferencesFor), new Type[] { typeof(TEntity), propEntityClrType }, new object[] { itemToAdd, m2MField });
+            }
+
+        }
+
+        private async Task SetM2mReferencesFor<TEntity, TPropEntity>(TEntity itemToAdd, Field m2mField)
+            where TEntity : class
+            where TPropEntity : class
+        {
+            var primaryKeyExpressions = AdminSite.GetPrimaryKeyStringExpressions<TPropEntity>(_dbContext);
+            var dictionary = await GetItemsAsDict(primaryKeyExpressions);
+
+            var propInfo = typeof(TEntity).GetProperties().First(p => p.Name == m2mField.FieldName);
+
+            if (propInfo?.GetValue(itemToAdd) is IList<TPropEntity> propCollection)
+            {
+                for (var i = 0; i < propCollection.Count; i++)
+                {
+                    var propEntity = propCollection[i];
+                    var key = GetPrimaryKeyValue(primaryKeyExpressions, propEntity);
+                    propCollection[i] = dictionary[key];
+                }
+            }
+
+            //var dbTags = await _dbContext.Tags.ToDictionaryAsync(t => t.Id, t => t);
+            //var tags = entity.Tags as List<Models.Tag>;
+            //for (int i = 0; i < tags.Count; i++)
+            //{
+            //    tags[i] = dbTags[tags[i].Id];
+            //}
+        }
+
+        private async Task<IDictionary<string, TEntity>> GetItemsAsDict<TEntity>(List<Expression<Func<TEntity, string>>> pkExpressions)
+            where TEntity : class
+        {
+            var result = await _dbContext.Set<TEntity>().ToDictionaryAsync(e => GetPrimaryKeyValue(pkExpressions, e));
+            return result;
+        }
+
+        private static string GetPrimaryKeyValue<TEntity>(List<Expression<Func<TEntity, string>>> pkExpressions, TEntity e) where TEntity : class
+        {
+            var keys = new List<string>();
+            foreach (var pkExpression in pkExpressions)
+            {
+                var memberName = ((pkExpression.Body as MethodCallExpression).Object as MemberExpression).Member.Name;
+                var del = pkExpression.Compile();
+                keys.Add($"{memberName}:{del(e)}");
+            }
+
+            return string.Join('|', keys);
         }
 
         private async Task<PagedResult<TModel>> SortItems<TModel, TEntity>(int pageNo, int pageSize, IList<TModel> items)
@@ -378,8 +462,8 @@ namespace Deviser.Admin.Data
             {
                 var childFieldName = GetIncludeString(typeMap, childConfig.Field.FieldClrType); //childConfig.Field.FieldName;
 
-                var cM2mFields = childConfig.ModelConfig.FormConfig.AllFormFields.Where(f => f.FieldOption.RelationType == RelationType.ManyToMany).ToList();
-                var cM2oFields = childConfig.ModelConfig.FormConfig.AllFormFields.Where(f => f.FieldOption.RelationType == RelationType.ManyToOne).ToList();
+                var cM2mFields = childConfig.ModelConfig.FormConfig.AllFields.Where(f => f.FieldOption.RelationType == RelationType.ManyToMany).ToList();
+                var cM2oFields = childConfig.ModelConfig.FormConfig.AllFields.Where(f => f.FieldOption.RelationType == RelationType.ManyToOne).ToList();
 
                 query = query.Include(childFieldName);
 
@@ -451,7 +535,7 @@ namespace Deviser.Admin.Data
                         graphConfig.Add(new GraphConfig
                         {
                             FieldExpression = entityFieldExpression.Body as MemberExpression,
-                            GraphConfigType = isManyToMany ? GraphConfigType.OwnedCollection : GraphConfigType.AssociatedCollection
+                            GraphConfigType = GraphConfigType.AssociatedCollection
                         });
                     }
                     else
@@ -544,7 +628,7 @@ namespace Deviser.Admin.Data
         private List<Field> GetFieldsFor(IAdminConfig adminConfig, Func<Field, bool> predicate)
         {
             //ManyToMany Includes
-            var m2mFields = adminConfig.ModelConfig.FormConfig.AllFormFields.Where(predicate).ToList();
+            var m2mFields = adminConfig.ModelConfig.FormConfig.AllFields.Where(predicate).ToList();
             return m2mFields;
         }
 
@@ -555,16 +639,14 @@ namespace Deviser.Admin.Data
             return m2mFields;
         }
 
-        private LambdaExpression CreatePrimaryKeyFilter(IAdminConfig adminConfig, List<string> keyValues)
+        public static LambdaExpression CreatePrimaryKeyFilter(IKey primaryKey, List<string> keyValues)
         {
-            if (adminConfig == null)
+            if (primaryKey == null)
             {
                 return null;
             }
-
-            var key = adminConfig.EntityConfig.PrimaryKey;
             //return CreateFilter(key.Properties, keyValues, key.DeclaringEntityType.ClrType);
-            return BuildObjectLambda(key.Properties, keyValues, key.DeclaringEntityType.ClrType);
+            return BuildObjectLambda(primaryKey.Properties, keyValues, primaryKey.DeclaringEntityType.ClrType);
         }
 
         private static LambdaExpression BuildObjectLambda(IReadOnlyList<IProperty> keyProperties, List<string> keyValues, Type entityClrType)

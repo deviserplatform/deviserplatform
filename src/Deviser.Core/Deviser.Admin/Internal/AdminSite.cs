@@ -215,7 +215,7 @@ namespace Deviser.Admin.Internal
             return typeMap;
         }
 
-        private Type GetEntityClrTypeFor(Type modelType)
+        public Type GetEntityClrTypeFor(Type modelType)
         {
             var entityClrType = _typeMaps.FirstOrDefault(tm => tm.SourceType == modelType)?.DestinationType;
             if (entityClrType == null)
@@ -274,7 +274,7 @@ namespace Deviser.Admin.Internal
                 PopulateFields(modelType, formConfig, formConfig.FieldConfig.ExcludedFields);
             }
 
-            var fields = formConfig.AllFormFields;
+            var fields = formConfig.AllFields;
             foreach (var field in fields)
             {
                 PopulateFieldOptions(field, formConfig.FieldConditions, entityConfig);
@@ -720,19 +720,30 @@ namespace Deviser.Admin.Internal
         private void LoadMasterData<TModel>(AdminConfig<TModel> adminConfig) where TModel : class
         {
             //Loading Master Data
-            var relatedFileds = adminConfig.ModelConfig.FormConfig.AllFormFields
+            var relatedFileds = adminConfig.ModelConfig.FormConfig.AllFields
                 .Where(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne)
                 .ToList();
 
-            var matrixFields = adminConfig.ModelConfig.FormConfig.AllFormFields
+            var relatedFieldsInGrid = adminConfig.ModelConfig.GridConfig.AllFields
+                .Where(f => f.FieldOption.LookupExpression != null).ToList();
+
+            var matrixFields = adminConfig.ModelConfig.FormConfig.AllFields
                 .Where(f => f.FieldOption.FieldType == FieldType.CheckBoxMatrix)
                 .ToList();
+
+            foreach (var field in relatedFieldsInGrid)
+            {
+                if (relatedFileds.All(f => f.FieldName != field.FieldName))
+                {
+                    relatedFileds.Add(field);
+                }
+            }
 
             if (adminConfig.ChildConfigs != null)
             {
                 foreach (var childConfig in adminConfig.ChildConfigs)
                 {
-                    var childConfigReleatedFields = childConfig.ModelConfig.FormConfig.AllFormFields
+                    var childConfigReleatedFields = childConfig.ModelConfig.FormConfig.AllFields
                         .Where(f => f.FieldOption.RelationType == RelationType.ManyToMany || f.FieldOption.RelationType == RelationType.ManyToOne)
                         .ToList();
 
@@ -857,7 +868,7 @@ namespace Deviser.Admin.Internal
             }
         }
 
-        private List<Expression<Func<TEntity, object>>> GetPrimaryKeyExpressions<TEntity>(DbContext dbContext)
+        public static List<Expression<Func<TEntity, object>>> GetPrimaryKeyExpressions<TEntity>(DbContext dbContext)
             where TEntity : class
         {
             var eClrType = typeof(TEntity);
@@ -876,7 +887,29 @@ namespace Deviser.Admin.Internal
             return keySelectorExpressions;
         }
 
-        private static Dictionary<string, object> GetLookUpKey<TEntity>(TEntity item, List<Expression<Func<TEntity, object>>> primaryKeyExpr)
+        public static List<Expression<Func<TEntity, string>>> GetPrimaryKeyStringExpressions<TEntity>(DbContext dbContext)
+            where TEntity : class
+        {
+            var eClrType = typeof(TEntity);
+            var eType = dbContext.Model.FindEntityType(eClrType);
+            var primaryKey = eType.FindPrimaryKey();
+            var properties = primaryKey.Properties;
+            var eTypeParamExpr = Expression.Parameter(eClrType);
+            var keySelectorExpressions = new List<Expression<Func<TEntity, string>>>();
+            foreach (var prop in properties)
+            {
+                var memberExpression = Expression.Property(eTypeParamExpr, prop.PropertyInfo);
+
+                var toStringMethod = typeof(object).GetMethod("ToString");
+                var methodCall = Expression.Call(memberExpression, toStringMethod);
+                //Expression objectMemberExpr = Expression.Convert(memberExpression, typeof(object)); //Convert Value/Reference type to object using boxing/lifting
+                var pkValExpr = Expression.Lambda<Func<TEntity, string>>(methodCall, eTypeParamExpr);
+                keySelectorExpressions.Add(pkValExpr);
+            }
+            return keySelectorExpressions;
+        }
+
+        public static Dictionary<string, object> GetLookUpKey<TEntity>(TEntity item, List<Expression<Func<TEntity, object>>> primaryKeyExpr)
             where TEntity : class
         {
             var lookUpKey = new Dictionary<string, object>();

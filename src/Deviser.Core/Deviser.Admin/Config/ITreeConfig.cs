@@ -6,5 +6,6 @@
         BaseField DisplayField { get;}
         BaseField ParentField { get; }
         BaseField SortField { get; }
+        string Title { get; set; }
     }
 }

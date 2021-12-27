@@ -1,0 +1,45 @@
+﻿@using Deviser.Core.Library.TagHelpers;
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using System
+@using System.Linq
+@inject IScopeService scopeService
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var currentPage = scopeService.PageContext.CurrentPage;
+    ViewBag.BodyClass += "admin-container";
+}
+
+
+@*<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />*@
+<require dependency-type="Css" priority="10" file-path="~/_content/Deviser.Web/lib/font-awesome/css/font-awesome.css" test="test"></require>
+<require dependency-type="Css" priority="15" file-path="~/_content/Deviser.Themes.Skyline/css/admin/admin.css" test="test"></require>
+<!-- END GLOBAL MANDATORY STYLES -->
+
+<require dependency-type="Script" location="Head" priority="10" file-path="~/_content/Deviser.Web/lib/jquery/dist/jquery.js" test="test"></require>
+<require dependency-type="Script" location="Head" priority="13" file-path="//stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></require>
+<require dependency-type="Script" location="Head" priority="15" file-path="~/_content/Deviser.Themes.Skyline/js/metisMenu.min.js"></require>
+
+@*<require type="Script" include="Development" priority="31" path="~/_content/Deviser.Web/js/dev-form-helper.js"></require>*@
+<require dependency-type="Script" priority="32" file-path="~/_content/Deviser.Themes.Skyline/js/admin/main.js"></require>
+
+@await Component.InvokeAsync("ControlBar")
+<div class="admin-wrapper">
+    <div class="admin-container no-menu">
+        <div class="admin-body container-fluid">
+            <div class="row admin-header">
+                <div class="col">
+                    <section class="content-header">
+                        <h2 class="page-header">@currentPage.PageTranslation.First().Title</h2>
+                    </section>
+                </div>
+            </div>
+            <div class="row admin-content">
+                <div class="col">
+                    <section class="content-body">
+                        @RenderBody()
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

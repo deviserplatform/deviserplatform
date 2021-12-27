@@ -42,7 +42,7 @@
             }];
 
             var markerImage = {
-                url: "/images/map-marker.svg",
+                url: "/assets/images/map-marker.svg",
                 size: new google.maps.Size(40, 55),
                 origin: new google.maps.Point(0, 0),
                 anchor: new google.maps.Point(20, 55),
@@ -54,7 +54,7 @@
                 pixelOffset: new google.maps.Size(0, -130),
                 zIndex: null,
                 closeBoxMargin: "0px",
-                closeBoxURL: "/images/close.svg",
+                closeBoxURL: "/assets/images/close.svg",
                 isHidden: false,
                 pane: "floatPane",
                 enableEventPropagation: false,
@@ -70,11 +70,8 @@
                 var content = '';
                 content += (location.title) ? '<div class="title">' + location.title + '</div>' : '';
                 content += (location.locationName) ? '<div>' + location.locationName + '</div>' : '';
-                content += (location.address) ? '<div>' + location.address + '</div>' : '';
+                content += (location.street) ? '<div>' + location.street + '</div>' : '';
                 content += (location.postalCodeAndCity) ? '<div>' + location.postalCodeAndCity + '</div>' : '';
-                content += (location.phone) ? '<div>' + location.phone + '</div>' : '';
-                content += (location.fax) ? '<div>' + location.fax + '</div>' : '';
-                content += (location.email) ? '<div>' + location.email + '</div>' : '';
 
                 location.content = content;
             }

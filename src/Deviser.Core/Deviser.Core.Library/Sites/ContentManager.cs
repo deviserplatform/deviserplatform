@@ -58,6 +58,7 @@ namespace Deviser.Core.Library.Sites
             var result = _pageContentRepository.RestorePageContent(id);
             return result;
         }
+
         public PageContent AddOrUpdatePageContent(PageContent pageContent)
         {
             var result = _pageContentRepository.Get(pageContent.Id);
@@ -80,12 +81,7 @@ namespace Deviser.Core.Library.Sites
             else
             {
                 pageContent.IsActive = true;
-                result.Title = pageContent.Title;
-                result.ContainerId = pageContent.ContainerId;
-                result.SortOrder = pageContent.SortOrder;
-                result.LastModifiedDate = DateTime.Now;
-                result.Properties = pageContent.Properties;
-                result = _pageContentRepository.Update(result);
+                result = _pageContentRepository.Update(pageContent);
             }
             return result;
         }
@@ -97,18 +93,15 @@ namespace Deviser.Core.Library.Sites
             _pageContentRepository.AddOrUpdate(contents);
         }
 
-        public bool RemovePageContent(Guid id)
+        public bool SoftDeletePageContent(Guid id)
         {
-            var content = _pageContentRepository.Get(id);
-            if (content == null) throw new InvalidOperationException($"PageContents cannot be found {id}");
-            content.IsActive = false;
-            _pageContentRepository.Update(content);
-            return true;
+            var content = _pageContentRepository.SoftDeletePageContent(id);
+            return content != null;
         }
 
         public bool DeletePageContent(Guid id)
         {
-            var result = _pageContentRepository.DeletePageContent(id);
+            var result = _pageContentRepository.DeletePageContentPermanent(id);
             return result;
         }
 

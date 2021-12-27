@@ -6,8 +6,35 @@ using Deviser.Core.Common.DomainTypes;
 
 namespace Deviser.Modules.PageManagement.Services
 {
-    public class PageViewModel : Page
+    public class PageViewModel
     {
+        public Guid Id { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsSystem { get; set; }
+        public bool IsIncludedInMenu { get; set; }
+        public DateTime? LastModifiedDate { get; set; }
+        public Guid? LayoutId { get; set; }
+        public int? PageLevel { get; set; }
+        public int? PageOrder { get; set; }
+        public Guid? ParentId { get; set; }
+        public Guid? PageTypeId { get; set; }
+        public string ThemeSrc { get; set; }
+        public DateTime? StartDate { get; set; }
+        public float SiteMapPriority { get; set; }
+        public virtual ICollection<PageContent> PageContent { get; set; }
+        public virtual ICollection<PageModule> PageModule { get; set; }
+        public virtual ICollection<PageTranslation> PageTranslation { get; set; }
+        public virtual ICollection<PagePermission> PagePermissions { get; set; }
+        public virtual Layout Layout { get; set; }
+        public virtual PageType PageType { get; set; }
+        public virtual AdminPage AdminPage { get; set; }
+
+        //Non DB Properties
+        public bool IsCurrentPage { get; set; }
+        public bool IsBreadCrumb { get; set; }
+
         public string Name { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }

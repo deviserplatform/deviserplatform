@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 		<IsShippingPackage>true</IsShippingPackage>
 		<!--<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>-->
@@ -21,6 +21,10 @@
 	  <ProjectReference Include="..\..\Deviser.Core\Deviser.ClientDependency\Deviser.ClientDependency.csproj" />
 	  <ProjectReference Include="..\..\Deviser.Core\Deviser.Core.Common\Deviser.Core.Common.csproj" />
 	  <ProjectReference Include="..\..\Deviser.Core\Deviser.Core.Library\Deviser.Core.Library.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\css\site\NewFolder\" />
 	</ItemGroup>
 
 </Project>

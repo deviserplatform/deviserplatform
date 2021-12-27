@@ -21,36 +21,38 @@ export class ValidationService {
   //   })
   // };
 
-  private baseUrl;
-  private httpOptions;
+  private _baseUrl;
+  private _httpOptions;
 
-  private daConfig: DAConfig;
+  private _daConfig: DAConfig;
 
   constructor(private http: HttpClient,
     private messageService: MessageService,
     @Inject(WINDOW) private window: any) {
-    this.httpOptions = {
+    this._daConfig = window.daConfig;
+    this._httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': 'my-auth-token'
-      })
+        'currentPageId': this._daConfig.currentPageId
+      }),
+      withCredentials: true
     };
 
-    this.daConfig = window.daConfig;
 
-    if (this.daConfig.isEmbedded) {
-      this.baseUrl = `${window.location.origin}/modules`;
+
+    if (this._daConfig.isEmbedded) {
+      this._baseUrl = `${window.location.origin}/modules`;
     }
     else {
-      this.baseUrl = `${this.daConfig.debugBaseUrl}/modules`;
+      this._baseUrl = `${this._daConfig.debugBaseUrl}/modules`;
     }
   }
 
 
   validatePassword(password: string) {
-    const serviceUrl: string = this.baseUrl + `/password/`;
+    const serviceUrl: string = this._baseUrl + `/password/`;
     let userObj = { password: password };
-    return this.http.put<ValidationResult>(serviceUrl, userObj, this.httpOptions)
+    return this.http.put<ValidationResult>(serviceUrl, userObj, this._httpOptions)
       .pipe(
         tap(_ => this.log('created a record')),
         catchError(this.handleError('createRecord', null))
@@ -58,9 +60,9 @@ export class ValidationService {
   }
 
   validateEmailExist(email: string) {
-    const serviceUrl: string = this.baseUrl + `/emailexist/`;
+    const serviceUrl: string = this._baseUrl + `/emailexist/`;
     let userObj = { email: email };
-    return this.http.put<ValidationResult>(serviceUrl, userObj, this.httpOptions)
+    return this.http.put<ValidationResult>(serviceUrl, userObj, this._httpOptions)
       .pipe(
         tap(_ => this.log('created a record')),
         catchError(this.handleError('createRecord', null))
@@ -68,9 +70,9 @@ export class ValidationService {
   }
 
   validateUserExist(userName: string) {
-    const serviceUrl: string = this.baseUrl + `/userexist/`;
+    const serviceUrl: string = this._baseUrl + `/userexist/`;
     let userObj = { userName: userName };
-    return this.http.put<ValidationResult>(serviceUrl, userObj, this.httpOptions)
+    return this.http.put<ValidationResult>(serviceUrl, userObj, this._httpOptions)
       .pipe(
         tap(_ => this.log('created a record')),
         catchError(this.handleError('createRecord', null))
@@ -81,13 +83,13 @@ export class ValidationService {
   validateCustom(formType: FormType, formName: string, fieldName: string, fieldObject: any) {
     let serviceUrl: string;
     if (formType == FormType.MainForm) {
-      serviceUrl = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/validate/${formType}/field/${fieldName}`;
+      serviceUrl = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/validate/${formType}/fieldName/${fieldName}`;
     }
     else {
-      serviceUrl = this.baseUrl + `/${this.daConfig.module}/api/${this.daConfig.model}/validate/${formType}/form/${formName}/field/${fieldName}`;
+      serviceUrl = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/validate/${formType}/form/${formName}/fieldName/${fieldName}`;
     }
     // let postObj = { fieldObject: fieldObject }
-    return this.http.put<ValidationResult>(serviceUrl, JSON.stringify(fieldObject), this.httpOptions)
+    return this.http.put<ValidationResult>(serviceUrl, JSON.stringify(fieldObject), this._httpOptions)
       .pipe(
         tap(_ => this.log('created a record')),
         catchError(this.handleError('createRecord', null))

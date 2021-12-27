@@ -83,15 +83,13 @@
 
                     <select asp-for="DatabaseProvider" class="form-control">
 
-                        <option value="1">SQL Server LocalDb</option>
+                        <option value="1">SQL Server</option>
 
-                        <option value="2">SQL Server</option>
+                        <option value="2">SQLite</option>
 
-                        <option value="3">SQLite</option>
+                        <option value="3">PostgreSQL</option>
 
-                        <option value="4">PostgreSQL</option>
-
-                        <option value="5">MySQL</option>
+                        <option value="4">MySQL</option>
 
                     </select>
 
@@ -195,7 +193,7 @@
 
                 <div class="offset-4 col">
 
-                    <input type="submit" value="Install" class="btn btn-primary btn-install" />
+                    <input type="submit" value="Install" class="btn btn-deviser btn-install" />
 
                 </div>
 
@@ -334,7 +332,7 @@
                 $inputDBPassword.rules("remove");
 
 
-                if (dbProvider === 1) {
+                @*if (dbProvider === 1) {
 
                     //SQL LocalDb
 
@@ -366,7 +364,9 @@
 
                         });
 
-                } else if (dbProvider === 2) {
+                } else*@
+
+                if (dbProvider === 1) {
 
                     //SQL Server
 
@@ -433,7 +433,7 @@
 
                     }
 
-                } else if (dbProvider === 3) {
+                } else if (dbProvider === 2) {
 
                     //SQLite
 
@@ -451,7 +451,7 @@
 
                         });
 
-                } else if (dbProvider === 4 || dbProvider === 5) {
+                } else if (dbProvider === 3 || dbProvider === 4) {
 
                     //PostgreSQL or MySQL
 
@@ -510,8 +510,6 @@
                             }
 
                         });
-
-
                 }
 
 

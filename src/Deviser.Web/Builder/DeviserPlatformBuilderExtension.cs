@@ -27,9 +27,7 @@ namespace Deviser.Web.Builder
             var serviceProvider = app.ApplicationServices;
             var env = serviceProvider.GetService<IWebHostEnvironment>();
             var isDevelopment = env.IsEnvironment(Globals.DeviserDevelopmentEnvironment);
-            
-
-
+            var installationProvider = serviceProvider.GetService<IInstallationProvider>();
 
             if (isDevelopment)
             {
@@ -40,10 +38,6 @@ namespace Deviser.Web.Builder
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-
-            //var defaultRequestCulture = new RequestCulture(new CultureInfo(enUSCulture));
-
-            var installationProvider = serviceProvider.GetService<IInstallationProvider>();
 
             if (installationProvider.IsPlatformInstalled)
             {
@@ -91,70 +85,21 @@ namespace Deviser.Web.Builder
                 app.UseRequestLocalization(localizationOptions);
             }
 
-            //services.Configure<RequestLocalizationOptions>(options =>
-            //{
-            //    var supportedCultures = new[]
-            //    {
-            //        new CultureInfo(enUSCulture),
-            //        new CultureInfo("fr")
-            //    };
-
-            //    options.DefaultRequestCulture = new RequestCulture(culture: enUSCulture, uiCulture: enUSCulture);
-            //    options.SupportedCultures = supportedCultures;
-            //    options.SupportedUICultures = supportedCultures;
-
-            //    options.AddInitialRequestCultureProvider(new CustomRequestCultureProvider(async context =>
-            //    {
-            //        // My custom request culture logic
-            //        return new ProviderCultureResult("en");
-            //    }));
-            //});
-
-            if (isDevelopment)
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
-            if (isDevelopment)
-            {
-                app.UseCors(AllowOrigin);
-            }
+            app.UseCors(isDevelopment ? AllowOrigin : "default");
 
             //Deviser Specific
             app.UsePageContext();
-
 
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UsePageAuthorization();
-            //app.Use(async (context, next) =>
-            //{
-            //    var cultureQuery = context.Request.Query["culture"];
-            //    if (!string.IsNullOrWhiteSpace(cultureQuery))
-            //    {
-            //        var culture = new CultureInfo(cultureQuery);
-
-            //        CultureInfo.CurrentCulture = culture;
-            //        CultureInfo.CurrentUICulture = culture;
-            //    }
-            //    // Call the next delegate/middleware in the pipeline
-            //    await next();
-            //});
-
-
-
             app.UseSession();
 
             return app.UseEndpoints(endpoints =>
@@ -177,19 +122,6 @@ namespace Deviser.Web.Builder
 
                 configure?.Invoke(endpoints);
             });
-        }
-
-        private static string GetPermalink(HttpContext httpContext)
-        {
-            var routeData = httpContext.GetRouteData();
-            //permalink in the url has first preference
-            var permalink = (routeData.Values["permalink"] != null) ? routeData.Values["permalink"].ToString() : "";
-            if (string.IsNullOrEmpty(permalink))
-            {
-                //if permalink is null, check for querystring
-                permalink = httpContext.Request.Query["permalink"].ToString();
-            }
-            return permalink;
         }
     }
 }

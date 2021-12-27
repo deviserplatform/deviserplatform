@@ -52,21 +52,33 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   fieldType = FieldType;
   formItemId: string;
 
-  private valChangeSubscription: Subscription;
-  private allFields: Field[];
+  private _autoFillFields: Field[];
+  private _autoFieldSubscriptions: Subscription[] = [];
+  private _allFields: Field[];
+  private _valChangeSubscription: Subscription;
 
   constructor(private _adminService: AdminService,
     private emailExistValidator: EmailExistValidator,
     private passwordValidator: PasswordValidator,
     private userExistValidator: UserExistValidator,
     private customValidator: CustomValidator) {
-    this.allFields = [];
+    this._allFields = [];
   }
 
   ngOnInit() {
     this.initUIProperties();
     this.unsubscribeValueChanges();
-    this.valChangeSubscription = this.formContext.formGroup.valueChanges
+
+    this._autoFillFields = this._allFields.filter(f => f.fieldOption.autoFillField);
+    this._autoFillFields.forEach(field => {
+      let triggerFieldName = field.fieldOption.autoFillField.fieldNameCamelCase;
+      let subscription = this.formContext.formGroup.controls[triggerFieldName].valueChanges.subscribe(value => {
+        this.onAutoFillFieldValueChanges(field, value);
+      });
+      this._autoFieldSubscriptions.push(subscription);
+    })
+
+    this._valChangeSubscription = this.formContext.formGroup.valueChanges
       .pipe(
         // wait 300ms after each keystroke before considering the term
         debounceTime(300),
@@ -87,8 +99,13 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   public onChange: () => void = () => { };
 
   private unsubscribeValueChanges() {
-    if (this.valChangeSubscription) {
-      this.valChangeSubscription.unsubscribe();
+    if (this._valChangeSubscription) {
+      this._valChangeSubscription.unsubscribe();
+    }
+
+    if (this._autoFieldSubscriptions.length > 0) {
+      this._autoFieldSubscriptions.forEach(subscription => subscription.unsubscribe());
+      this._autoFieldSubscriptions = [];
     }
   }
 
@@ -124,22 +141,11 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
 
   private onFormValueChanges(val: any) {
     this.formItemId = this.formContext.formGroup.value[this.formContext.keyField.fieldNameCamelCase];
-    this.allFields.forEach(field => {
+
+    this._allFields.forEach(field => {
       let isEnabled = this.isFieldEnabled(field);
       let isShown = this.isFieldShown(field);
       let isValidate = field.fieldOption.isRequired && this.isFieldValidate(field);
-
-      if (field.fieldOption.autoFillField) {
-        let srcField = this.allFields.find(f => f.fieldNameCamelCase === field.fieldOption.autoFillField.fieldNameCamelCase);
-        let srcFieldVal = this.formContext.formGroup.value[srcField.fieldNameCamelCase]
-        srcFieldVal && this._adminService.autoFill(field.fieldName, srcFieldVal).subscribe(val => {
-          let valToPatch = {};
-          valToPatch[field.fieldNameCamelCase] = val.result;
-          this.formContext.formGroup.patchValue(valToPatch);
-          // this.formContext.formGroup.value[field.fieldNameCamelCase] = val;
-        });
-      }
-
 
       setTimeout(() => {
         field.isEnabledSubject.next(isEnabled);
@@ -159,7 +165,24 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
     });
   }
 
+  private onAutoFillFieldValueChanges(field: Field, value: any) {
 
+    value && this._adminService.autoFill(field.fieldName, value).subscribe(val => {      
+      this.formContext.formGroup.controls[field.fieldNameCamelCase].patchValue(val.result);
+      // this.formContext.formGroup.value[field.fieldNameCamelCase] = val;
+    });
+
+    // if (field.fieldOption.autoFillField) {
+    //   let srcField = this._allFields.find(f => f.fieldNameCamelCase === field.fieldOption.autoFillField.fieldNameCamelCase);
+    //   let srcFieldVal = this.formContext.formGroup.value[srcField.fieldNameCamelCase]
+    //   srcFieldVal && this._adminService.autoFill(field.fieldName, srcFieldVal).subscribe(val => {
+    //     let valToPatch = {};
+    //     valToPatch[field.fieldNameCamelCase] = val.result;
+    //     this.formContext.formGroup.patchValue(valToPatch);
+    //     // this.formContext.formGroup.value[field.fieldNameCamelCase] = val;
+    //   });
+    // }
+  }
 
   private initFieldProp(field: Field) {
     field.isEnabledSubject = new BehaviorSubject<boolean>(true);
@@ -168,7 +191,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
     field.isShown = field.isShownSubject.asObservable();
     field.isValidateSubject = new BehaviorSubject<boolean>(true);
     field.isValidate = field.isValidateSubject.asObservable();
-    this.allFields.push(field);
+    this._allFields.push(field);
   }
 
   private isFieldShown(field: Field) {

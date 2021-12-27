@@ -114,6 +114,9 @@ export class GridControlComponent implements OnInit {
 
     const lookUpGeneric = this.lookUps.lookUpData[this.field.fieldNameCamelCase]
     const lookUp = this.getLookUp(lookUpGeneric);
+
+    if (!lookUpGeneric || !lookUp || !lookUpGeneric[0]) return;
+
     const keyNames = Object.keys(lookUpGeneric[0].key);
 
 

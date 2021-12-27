@@ -164,10 +164,10 @@
                                 <input type="text" class="form-control input-sm" [(ngModel)]="property.value" />
                             </div>
                             <div class="col-md-6" *ngIf="property.optionList">
-                                <select class="form-control input-sm" name="repeatSelect" id="repeatSelect"
+                                <select class="form-control input-sm"
                                     [(ngModel)]="property.value">
                                     <option value="">Select</option>
-                                    <option *ngFor="let option of property.optionList.list" [value]="option.id">
+                                    <option *ngFor="let option of property.optionList" [value]="option.id">
                                         {{option.label}}</option>
                                 </select>
                             </div>

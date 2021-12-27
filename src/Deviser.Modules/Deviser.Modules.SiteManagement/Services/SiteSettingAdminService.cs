@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Deviser.Admin.Config;
+using Deviser.Admin.Services;
 using Deviser.Core.Common.DomainTypes;
 using Deviser.Core.Data.Repositories;
 using Deviser.Core.Library.Layouts;
@@ -70,7 +71,7 @@ namespace Deviser.Modules.SiteManagement.Services
 
         public List<Theme> GetThemes()
         {
-            var themes = _themeManager.GetHostThemes().Select(kvp => new Theme() { Key = kvp.Value, Value = kvp.Key })
+            var themes = _themeManager.GetHostThemes().Select(kvp => new Theme() { Id = kvp.Value, Value = kvp.Key })
                 .ToList();
             return themes;
         }

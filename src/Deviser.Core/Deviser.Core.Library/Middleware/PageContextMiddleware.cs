@@ -57,6 +57,7 @@ namespace Deviser.Core.Library.Middleware
             {
 
                 var pageManager = serviceProvider.GetService<IPageManager>();
+                var pageRepository = serviceProvider.GetService<IPageRepository>();
                 var moduleRepository = serviceProvider.GetService<IModuleRepository>();
                 var settingManager = serviceProvider.GetService<ISettingManager>();
                 var languageRepository = serviceProvider.GetService<ILanguageRepository>();
@@ -86,6 +87,9 @@ namespace Deviser.Core.Library.Middleware
                         if (string.IsNullOrEmpty(permalink))
                         {
                             currentPage = pageContext.HomePage;
+                            var currentTranslation = currentPage.PageTranslation.First(p =>
+                                string.Equals(p.Locale, currentCulture.ToString()));
+                            routeData.Values.Add("permalink", currentTranslation.URL);
                         }
                         else
                         {
@@ -98,7 +102,7 @@ namespace Deviser.Core.Library.Middleware
                         }
 
                         InitPageContext(httpContext, pageManager, scopeService, currentPage, pageContext);
-                        InitModuleContext(httpContext, moduleRepository, scopeService, routeData);
+                        InitModuleContext(httpContext, pageRepository, moduleRepository, scopeService, routeData);
                     }
                     catch (Exception ex)
                     {
@@ -119,24 +123,37 @@ namespace Deviser.Core.Library.Middleware
             _logger.LogInformation("Finished handling request.");
         }
 
-        private static void InitModuleContext(HttpContext httpContext, IModuleRepository moduleRepository,
-            IScopeService scopeService, RouteData routeData)
+        private static void InitModuleContext(HttpContext httpContext, 
+            IPageRepository pageRepository,
+            IModuleRepository moduleRepository,
+            IScopeService scopeService, 
+            RouteData routeData)
         {
-            var moduleContext = new ModuleContext();
+            Module module = null;
+            ModuleContext moduleContext = null;
+            var pageModuleId = Guid.Empty;
 
             if (routeData.Values.TryGetValue("area", out var moduleName))
             {
-                moduleContext.ModuleInfo = moduleRepository.GetModule((string)moduleName);
+                module = moduleRepository.GetModule((string)moduleName);
             }
 
-            if (routeData.Values.TryGetValue("pageModuleId", out var pageModuleId))
+            if (routeData.Values.TryGetValue("pageModuleId", out var objPageModuleId))
             {
-                moduleContext.PageModuleId = Guid.Parse((string)pageModuleId);
-
-                moduleContext.ModuleInfo ??= moduleRepository.GetModuleByPageModuleId(moduleContext.PageModuleId);
+                Guid.TryParse(objPageModuleId.ToString(), out pageModuleId);
             }
 
-            if (moduleContext.ModuleInfo == null && moduleContext.PageModuleId == null) return;
+            if (module == null) return;
+
+            if (pageModuleId == Guid.Empty)
+            {
+                moduleContext = new ModuleContext(module);
+            }
+            else
+            {
+                var pageModule = pageRepository.GetPageModule(pageModuleId);
+                moduleContext = new ModuleContext(module, pageModule);
+            }
 
 
             if (!httpContext.Items.ContainsKey("ModuleContext"))
@@ -217,6 +234,7 @@ namespace Deviser.Core.Library.Middleware
                 //if permalink is null, check for querystring
                 permalink = httpContext.Request.Query["permalink"].ToString();
             }
+            permalink = Uri.UnescapeDataString(permalink);
             return permalink;
         }
     }

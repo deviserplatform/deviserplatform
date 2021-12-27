@@ -12,7 +12,7 @@ export class RoleService  extends BaseService {
 
   getRoles(): Observable<Role[]> {
     const serviceUrl: string = `${this.baseUrl}api/role/`;
-    return this.http.get<Role[]>(serviceUrl, { headers: this.httpHeaders })
+    return this.http.get<Role[]>(serviceUrl, { headers: this.httpHeaders, withCredentials: true })
       .pipe(
         tap(_ => this.log('fetched roles')),
         catchError(this.handleError('getRoles', null))

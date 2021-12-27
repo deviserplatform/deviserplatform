@@ -3,7 +3,7 @@
   "SiteName": "Deviser",
   "DatabaseProvider": 1,
   "ServerName": "(localdb)\\mssqllocaldb",
-  "DatabaseName": "DeviserWI",
+  "DatabaseName": "Deviser",
   "IsIntegratedSecurity": true,
   "DBUserName": null,
   "DBPassword": null,
