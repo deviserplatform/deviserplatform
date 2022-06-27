@@ -31,4 +31,4 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: Publish
-      run: donet nuget push .\release\nuget\*.nupkg -k ${{secrets.NUGET_API}} -s https://api.nuget.org/v3/index.json
+      run: dotnet nuget push .\release\nuget\*.nupkg -k ${{secrets.NUGET_API}} -s https://api.nuget.org/v3/index.json
