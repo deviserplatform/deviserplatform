@@ -28,4 +28,6 @@ jobs:
     - name: Publish
       run: |
         pwd
+        ls
+        ls ./release/nuget/
         dotnet nuget push ./release/nuget/*.nupkg -k ${{secrets.NUGET_API}} -s https://api.nuget.org/v3/index.json
