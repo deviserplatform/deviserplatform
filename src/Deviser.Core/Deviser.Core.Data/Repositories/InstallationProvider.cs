@@ -185,6 +185,10 @@ namespace Deviser.Core.Data.Repositories
             else
             {
                 var jsonObj = JObject.Parse(json);
+                if (jsonObj["ConnectionStrings"] == null)
+                {
+                    jsonObj["ConnectionStrings"] = JObject.Parse(@"{}");
+                }
                 jsonObj["ConnectionStrings"][ConnectionStringKeys[installModel.DatabaseProvider]] = connectionString;
                 var output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
                 await File.WriteAllTextAsync(settingFile, output);
