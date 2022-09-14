@@ -12,7 +12,7 @@ namespace Deviser.Core.Common
         {
             var logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
-                .WriteTo.RollingFile(Path.Combine("./logs", "log-{Date}.txt"))
+                .WriteTo.File(Path.Combine("./logs", "log-{Date}.txt"))
                 .CreateLogger();
             return logger;
         }

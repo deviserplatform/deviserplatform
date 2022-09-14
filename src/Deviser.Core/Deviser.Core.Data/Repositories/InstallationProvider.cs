@@ -146,11 +146,15 @@ namespace Deviser.Core.Data.Repositories
 
             var user = new Entities.User { UserName = installModel.AdminEmail, Email = installModel.AdminEmail };
             var result = _userManager.CreateAsync(user, installModel.AdminPassword).GetAwaiter().GetResult();
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                //Assign user to admin role
-                await _userManager.AddToRoleAsync(user, "Administrators");
+                await context.Database.EnsureDeletedAsync();
+                throw new InvalidOperationException(string.Join(Environment.NewLine,
+                    result.Errors.Select(e => $"{e.Description}")));
             }
+
+            //Assign user to admin role
+            await _userManager.AddToRoleAsync(user, "Administrators");
             //}
 
             //Write install settings
@@ -185,6 +189,10 @@ namespace Deviser.Core.Data.Repositories
             else
             {
                 var jsonObj = JObject.Parse(json);
+                if (jsonObj["ConnectionStrings"] == null)
+                {
+                    jsonObj["ConnectionStrings"] = JObject.Parse(@"{}");
+                }
                 jsonObj["ConnectionStrings"][ConnectionStringKeys[installModel.DatabaseProvider]] = connectionString;
                 var output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
                 await File.WriteAllTextAsync(settingFile, output);

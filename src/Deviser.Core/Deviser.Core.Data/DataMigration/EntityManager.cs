@@ -89,7 +89,7 @@ namespace Deviser.Core.Data.DataMigration
         }
         private List<Entity> GetOrderedEntities()
         {
-            var entityTypes = _dbContext.Model.GetEntityTypes();
+            var entityTypes = _dbContext.Model.GetEntityTypes().ToList();
 
             var entitesToSorted = new List<Entity>();
 
@@ -107,18 +107,14 @@ namespace Deviser.Core.Data.DataMigration
             foreach (var entityType in entityTypes)
             {
                 var primaryKey = entityType.FindPrimaryKey();
-                if (primaryKey != null)
+                if (primaryKey == null) continue;
+                var internalPk = ((Microsoft.EntityFrameworkCore.Metadata.RuntimeKey)primaryKey);
+                if (internalPk.ReferencingForeignKeys == null || internalPk.ReferencingForeignKeys.Count <= 0) continue;
+                //This key is referenced on other entities
+                foreach (var fk in internalPk.ReferencingForeignKeys)
                 {
-                    var internalPk = ((Microsoft.EntityFrameworkCore.Metadata.Internal.Key)primaryKey);
-                    if (internalPk.ReferencingForeignKeys != null && internalPk.ReferencingForeignKeys.Count > 0)
-                    {
-                        //This key is referenced on other entities
-                        foreach (var fk in internalPk.ReferencingForeignKeys)
-                        {
-                            var fkEntityType = entitesToSorted.Find(e => e.EntityType == fk.DeclaringEntityType);
-                            fkEntityType.SortOrder++;
-                        }
-                    }
+                    var fkEntityType = entitesToSorted.Find(e => e.EntityType == fk.DeclaringEntityType);
+                    if (fkEntityType != null) fkEntityType.SortOrder++;
                 }
 
                 //var primaryKey = keys!=null && keys.Count()>0 ? keys.Where(k=>((Microsoft.EntityFrameworkCore.Metadata.Internal.Key)k).).ToList()
