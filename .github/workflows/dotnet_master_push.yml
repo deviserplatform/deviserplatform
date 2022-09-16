@@ -3,9 +3,7 @@ name: .NET
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
+    
 jobs:
   build:
 
@@ -28,4 +26,8 @@ jobs:
         chmod +x ./build.sh
         ./build.sh    
     - name: Publish
-      run: dotnet nuget push ./release/nuget/*.nupkg -k ${{secrets.NUGET_API}} -s https://api.nuget.org/v3/index.json
+      run: |
+        pwd
+        ls
+        ls ./release/nuget/
+        dotnet nuget push ./release/nuget/*.nupkg -k ${{secrets.NUGET_API}} -s https://api.nuget.org/v3/index.json
