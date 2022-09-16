@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Project DefaultTargets="Clean;DotNetRestore;BuildClientApp;Build;PublishOutput">
+<Project DefaultTargets="PublishOutput">
   <PropertyGroup>
     <ProjRoot>.\src</ProjRoot>
     <WorkspaceDir>$(ProjRoot)\Deviser.Core\Deviser.NgLib\deviser-workspace\</WorkspaceDir>
@@ -120,8 +120,8 @@
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
     <Message Importance="High" Text="Copying nuget to release folder" />
     <MakeDir Directories="$(OutputDir)" />
-    <MakeDir Directories="$(OutputDir)\nuget" />
-    <Copy SourceFiles="@(NugetFiles)" DestinationFiles="@(NugetFiles->'$(OutputDir)\nuget\%(Filename)%(Extension)')"
+    <MakeDir Directories="$(OutputDir)/nuget" />
+    <Copy SourceFiles="@(NugetFiles)" DestinationFiles="@(NugetFiles->'$(OutputDir)/nuget/%(Filename)%(Extension)')"
 		      OverwriteReadOnlyFiles="true"
 		      SkipUnchangedFiles="false"/>
     <Message Importance="High" Text="Copied nuget to release folder" />
