@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project DefaultTargets="Clean;DotNetRestore;BuildClientApp;Build;PublishOutput">
   <PropertyGroup>
-    <ProjRoot>.\src</ProjRoot>
-    <WorkspaceDir>$(ProjRoot)\Deviser.Core\Deviser.NgLib\deviser-workspace\</WorkspaceDir>
-    <WorkspaceOutputDir>$(ProjRoot)\Deviser.Core\Deviser.NgLib\deviser-workspace\dist</WorkspaceOutputDir>
-    <DeviserAdminClientDir>$(ProjRoot)\Deviser.Core\Deviser.Admin.Web\ClientApp\</DeviserAdminClientDir>
-    <DeviserWebClientDir>$(ProjRoot)\Deviser.Web\ClientApp\</DeviserWebClientDir>
-    <OutputDir>.\release</OutputDir>
-    <DeviserPlatformPath>$(ProjRoot)\Deviser.Web</DeviserPlatformPath>
-    <DeviserPlatformProj>$(DeviserPlatformPath)\Deviser.Web.csproj</DeviserPlatformProj>
+    <ProjRoot>./src</ProjRoot>
+    <WorkspaceDir>$(ProjRoot)/Deviser.Core/Deviser.NgLib/deviser-workspace/</WorkspaceDir>
+    <WorkspaceOutputDir>$(ProjRoot)/Deviser.Core/Deviser.NgLib/deviser-workspace/dist</WorkspaceOutputDir>
+    <DeviserAdminClientDir>$(ProjRoot)/Deviser.Core/Deviser.Admin.Web/ClientApp/</DeviserAdminClientDir>
+    <DeviserWebClientDir>$(ProjRoot)/Deviser.Web/ClientApp/</DeviserWebClientDir>
+    <OutputDir>./release</OutputDir>
+    <DeviserPlatformPath>$(ProjRoot)/Deviser.Web</DeviserPlatformPath>
+    <DeviserPlatformProj>$(DeviserPlatformPath)/Deviser.Web.csproj</DeviserPlatformProj>
     <Configuration>Release</Configuration>
   </PropertyGroup>
 
 
 
   <ItemGroup>
-    <NugetFiles Include="$(ProjRoot)\**\bin\Release\*.nupkg"/>
-    <DeviserSharedLibFiles Include="$(WorkspaceOutputDir)\**\*.*"/>
-    <CssFilesInAdminClient Include="$(DeviserAdminClientDir)**\*.css"
-		                       Exclude="$(DeviserAdminClientDir)\node_modules\@ng-select\ng-select\themes\*.css;$(DeviserWebClientDir)\node_modules\quill\dist\*.css"/>
-    <CssFilesInWebClient Include="$(DeviserWebClientDir)**\*.css"
-		                       Exclude="$(DeviserWebClientDir)\node_modules\@ng-select\ng-select\themes\*.css;$(DeviserWebClientDir)\node_modules\quill\dist\*.css"/>
+    <NugetFiles Include="$(ProjRoot)/**/bin/Release/*.nupkg"/>
+    <DeviserSharedLibFiles Include="$(WorkspaceOutputDir)/**/*.*"/>
+    <CssFilesInAdminClient Include="$(DeviserAdminClientDir)**/*.css"
+		                       Exclude="$(DeviserAdminClientDir)/node_modules/@ng-select/ng-select/themes/*.css;$(DeviserWebClientDir)/node_modules/quill/dist/*.css"/>
+    <CssFilesInWebClient Include="$(DeviserWebClientDir)**/*.css"
+		                       Exclude="$(DeviserWebClientDir)/node_modules/@ng-select/ng-select/themes/*.css;$(DeviserWebClientDir)/node_modules/quill/dist/*.css"/>
   </ItemGroup>
 
   <Target Name="Clean">
@@ -29,7 +29,7 @@
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
     <Message Importance="High" Text="Cleaning output directory" />
     <RemoveDir Directories="$(OutputDir)" />
-    <RemoveDir Directories="$(WorkspaceDir)\node_modules\;$(WorkspaceDir)\projects\deviser-shared\node_modules\;$(DeviserAdminClientDir)\node_modules\;$(DeviserWebClientDir)\node_modules"/>
+    <RemoveDir Directories="$(WorkspaceDir)/node_modules/;$(WorkspaceDir)/projects/deviser-shared/node_modules/;$(DeviserAdminClientDir)/node_modules/;$(DeviserWebClientDir)/node_modules"/>
     <Message Importance="High" Text="Output directory has been cleaned" />
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
   </Target>
@@ -50,7 +50,7 @@
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
     <Message Importance="High" Text="Running npm install" />
     <Exec WorkingDirectory="$(WorkspaceDir)" Command="npm install" ConsoleToMSBuild="true"/>
-    <Exec WorkingDirectory="$(WorkspaceDir)\projects\deviser-shared\" Command="npm install" ConsoleToMSBuild="true"/>
+    <Exec WorkingDirectory="$(WorkspaceDir)/projects/deviser-shared/" Command="npm install" ConsoleToMSBuild="true"/>
     <Message Importance="High" Text="Finished npm install" />
 
     <Message Importance="High" Text="Building Angular shared library" />
