@@ -24,7 +24,7 @@ jobs:
     - name: Restore Build and Test
       run: |
         chmod +x ./build.sh
-        ./build.sh
+        ./build.sh -buildNumber ${{github.run_number}}
     - name: Inspect Publish 1
       run: |       
         pwd
