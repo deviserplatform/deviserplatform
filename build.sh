@@ -1,2 +1,3 @@
  #!/bin/bash
-dotnet msbuild build.targets -property:Configuration=Release;BuildNumber=$buildNumber
+echo "build number: ${1}"
+dotnet msbuild build.targets /p:"Configuration=Release;VersionSuffix=beta1.${1}"
