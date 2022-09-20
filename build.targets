@@ -103,7 +103,7 @@
     <Message Importance="High" Text="Finished Building Deviser Platform" />
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
   </Target>
-  
+
   <Target Name="Test">
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
     <Message Importance="High" Text="DOTNET TEST" />
@@ -121,9 +121,7 @@
     <Message Importance="High" Text="Copying nuget to release folder" />
     <MakeDir Directories="$(OutputDir)" />
     <MakeDir Directories="$(OutputDir)/nuget" />
-    <Copy SourceFiles="@(NugetFiles)" DestinationFiles="@(NugetFiles->'$(OutputDir)/nuget/%(Filename)%(Extension)')"
-		      OverwriteReadOnlyFiles="true"
-		      SkipUnchangedFiles="false"/>
+    <Exec Command="dotnet pack -o $(OutputDir)/nuget" ConsoleToMSBuild="true"/>
     <Message Importance="High" Text="Copied nuget to release folder" />
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
   </Target>
