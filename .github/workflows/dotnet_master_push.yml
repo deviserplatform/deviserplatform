@@ -28,10 +28,11 @@ jobs:
     - name: Inspect Publish 1
       run: |       
         pwd
+        ls
     - name: Inspect Publish 2
       run: |       
-        cd ./release/nuget/
-        ls
+        ls ./release
+        ls ./release/nuget/
     - name: Publish
       run: |       
         dotnet nuget push ./release/nuget/*.nupkg -k ${{secrets.NUGET_API}} -s https://api.nuget.org/v3/index.json
