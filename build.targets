@@ -121,7 +121,7 @@
     <Message Importance="High" Text="Copying nuget to release folder" />
     <MakeDir Directories="$(OutputDir)" />
     <MakeDir Directories="$(OutputDir)/nuget" />
-    <Copy SourceFiles="@(NugetFiles)" DestinationFiles="@(NugetFiles->'$(OutputDir)/nuget/%(Filename)%(Extension)')"
+    <Copy SourceFiles="@(NugetFiles)" DestinationFiles="$(OutputDir)/nuget/%(Filename)%(Extension)"
 		      OverwriteReadOnlyFiles="true"
 		      SkipUnchangedFiles="false"/>
     <Message Importance="High" Text="Copied nuget to release folder" />
