@@ -99,7 +99,7 @@
     <Message Importance="High" Text="BUILDING DEVISER PLATFORM" />
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
     <Message Importance="High" Text="Building Deviser Platform" />
-    <MSBuild Projects="$(DeviserPlatformProj)" Targets="Build"  />
+    <MSBuild Projects="$(DeviserPlatformProj)" Targets="Build" Properties="VersionSuffix=$(VersionSuffix)"/>
     <Message Importance="High" Text="Finished Building Deviser Platform" />
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
   </Target>
@@ -121,7 +121,7 @@
     <Message Importance="High" Text="Copying nuget to release folder" />
     <MakeDir Directories="$(OutputDir)" />
     <MakeDir Directories="$(OutputDir)/nuget" />
-    <Exec Command="dotnet pack -o $(OutputDir)/nuget" ConsoleToMSBuild="true"/>
+    <Exec Command="dotnet pack -o $(OutputDir)/nuget --version-suffix $(VersionSuffix)" ConsoleToMSBuild="true"/>
     <Message Importance="High" Text="Copied nuget to release folder" />
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
   </Target>
