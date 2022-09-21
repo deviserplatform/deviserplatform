@@ -1,37 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Description>
+      Deviser Admin is a core feature of Deviser Platform to build backend admin user interfaces with just few lines of code. 
+      This package provides client independent core functionality of Deviser Admin.
+    </Description>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<Compile Remove="Controllers\**" />
-		<EmbeddedResource Remove="Controllers\**" />
-		<None Remove="Controllers\**" />
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Controllers\**" />
+    <EmbeddedResource Remove="Controllers\**" />
+    <None Remove="Controllers\**" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Deviser.Core.Common\Deviser.Core.Common.csproj" />
-		<ProjectReference Include="..\Deviser.Core.Data\Deviser.Core.Data.csproj" />
-		<ProjectReference Include="..\Deviser.Detached\Deviser.Detached.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Deviser.Core.Common\Deviser.Core.Common.csproj" />
+    <ProjectReference Include="..\Deviser.Core.Data\Deviser.Core.Data.csproj" />
+    <ProjectReference Include="..\Deviser.Detached\Deviser.Detached.csproj" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<Compile Update="Properties\Resources.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Resources.resx</DependentUpon>
-		</Compile>
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Update="Properties\Resources.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-	</ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
 
 </Project>

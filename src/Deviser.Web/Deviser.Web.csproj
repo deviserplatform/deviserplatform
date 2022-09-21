@@ -1,6 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+    <Description>
+      Deviser is a .NET based web framework to build web applications and web context faster than convetional approach. 
+      This package is the user interface of Deviser Platform.</Description>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 		<IsShippingPackage>true</IsShippingPackage>
 		<!--<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>-->

@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+    <Description>Provides file manger functionality.</Description>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 		<IsShippingPackage>true</IsShippingPackage>
 	</PropertyGroup>

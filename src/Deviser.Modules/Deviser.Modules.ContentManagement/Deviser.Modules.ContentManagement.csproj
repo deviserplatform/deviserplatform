@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+    <Description>Provides content features of Deviser Platform.</Description>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 		<IsShippingPackage>true</IsShippingPackage>
 	</PropertyGroup>

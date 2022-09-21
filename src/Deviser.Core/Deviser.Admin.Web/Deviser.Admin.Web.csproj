@@ -2,6 +2,10 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+    <Description>
+      Deviser Admin is a core feature of Deviser Platform to build backend admin user interfaces with just few lines of code.
+      This package generates web interfaces from a UI model of Deviser Admin.
+    </Description>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 		<IsShippingPackage>true</IsShippingPackage>
 		<!--<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>-->
