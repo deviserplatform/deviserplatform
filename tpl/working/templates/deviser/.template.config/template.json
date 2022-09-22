@@ -1,0 +1,12 @@
+{
+	"$schema": "http://json.schemastore.org/template",
+	"author": "Karthick Sundararajan",
+	"classifications": [ "Web", "Deviser" ],
+	"identity": "DeviserTemplate.Web",
+	"name": "Deviser Platform Web",
+	"shortName": "deviserweb",
+	"tags": {
+		"language": "C#",
+		"type": "project"
+	}
+}
