@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Copyright>Copyright © Karthick Sundararajan</Copyright>
     <Product>Deviser Platform</Product>
-    <PackageLicenseUrl>https://www.deviser.io/install/terms</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://www.deviser.io/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/deviserplatform/deviserplatform</RepositoryUrl>
     <PackageIcon>DeviserIcon.png</PackageIcon>
@@ -16,5 +16,9 @@
     <!--<GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
     <TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="DeviserIcon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
 </Project>
