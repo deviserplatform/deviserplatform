@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Project DefaultTargets="Clean;DotNetRestore;BuildClientApp;Build;PublishOutput">
+<!-- <Project DefaultTargets="Clean;DotNetRestore;BuildClientApp;Build;PublishOutput"> -->
+<Project DefaultTargets="Clean;DotNetRestore;Build;PublishOutput">
   <PropertyGroup>
     <ProjRoot>./src</ProjRoot>
     <WorkspaceDir>$(ProjRoot)/Deviser.Core/Deviser.NgLib/deviser-workspace/</WorkspaceDir>
@@ -21,6 +22,15 @@
 		                       Exclude="$(DeviserAdminClientDir)/node_modules/@ng-select/ng-select/themes/*.css;$(DeviserWebClientDir)/node_modules/quill/dist/*.css"/>
     <CssFilesInWebClient Include="$(DeviserWebClientDir)**/*.css"
 		                       Exclude="$(DeviserWebClientDir)/node_modules/@ng-select/ng-select/themes/*.css;$(DeviserWebClientDir)/node_modules/quill/dist/*.css"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectToBuild Include="$(DeviserPlatformPath)/Deviser.Web.csproj">
+      <Properties>VersionSuffix=$(VersionSuffix)</Properties>
+    </ProjectToBuild>
+    <ProjectToBuild Include="./tpl/working/TemplatePack.csproj">
+      <Properties>VersionSuffix=$(VersionSuffix)</Properties>
+    </ProjectToBuild>
   </ItemGroup>
 
   <Target Name="Clean">
@@ -99,7 +109,8 @@
     <Message Importance="High" Text="BUILDING DEVISER PLATFORM" />
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
     <Message Importance="High" Text="Building Deviser Platform" />
-    <MSBuild Projects="$(DeviserPlatformProj)" Targets="Build" Properties="VersionSuffix=$(VersionSuffix)"/>
+    <!--<MSBuild Projects="$(DeviserPlatformProj)" Targets="Build" Properties="VersionSuffix=$(VersionSuffix)"/>-->
+    <MSBuild Projects="@(ProjectToBuild)"  Properties="Configuration=Release"/>
     <Message Importance="High" Text="Finished Building Deviser Platform" />
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
   </Target>
