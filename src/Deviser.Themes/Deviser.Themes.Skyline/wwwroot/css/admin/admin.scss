@@ -54,9 +54,13 @@ html, body {
 }
 
 .admin-wrapper {
-    display: flex !important; 
+    display: flex !important;
     min-height: 100vh;
     padding-top: 50px;
+
+    &.no-menu {
+        padding-top: 0;
+    }
 
     .admin-sidebar {
         /*overflow-y: auto;*/
@@ -74,9 +78,10 @@ html, body {
         margin-left: 280px;
         width: 100%;
 
-        &.no-menu{
-            margin-left:0; 
+        &.no-menu {
+            margin-left: 0;
         }
+
         .admin-body {
             padding-top: 30px;
             padding-left: 20px;
