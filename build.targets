@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- <Project DefaultTargets="Clean;DotNetRestore;BuildClientApp;Build;PublishOutput"> -->
-<Project DefaultTargets="Clean;DotNetRestore;Build;PublishOutput">
+<Project DefaultTargets="Clean;DotNetRestore;BuildClientApp;Build;PublishOutput">
   <PropertyGroup>
     <ProjRoot>./src</ProjRoot>
     <WorkspaceDir>$(ProjRoot)/Deviser.Core/Deviser.NgLib/deviser-workspace/</WorkspaceDir>
