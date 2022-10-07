@@ -7,7 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ImageCropperModule } from 'ngx-image-cropper';
-import { InlineSVGModule } from 'ng-inline-svg';
+import { InlineSVGModule } from 'ng-inline-svg-2';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { WINDOW_PROVIDERS } from './services/window.service';
