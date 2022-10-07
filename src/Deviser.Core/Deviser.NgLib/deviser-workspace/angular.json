@@ -28,18 +28,6 @@
             "tsConfig": "projects/deviser-shared/tsconfig.spec.json",
             "karmaConfig": "projects/deviser-shared/karma.conf.js"
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/deviser-shared/tsconfig.lib.json",
-              "projects/deviser-shared/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
         }
       }
     }},
