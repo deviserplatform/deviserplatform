@@ -2,7 +2,7 @@
   "name": "deviser-shared",
   "version": "0.0.1",
   "dependencies": {
-    "tslib": "^1.10.0"
+    "tslib": "^2.0.0"
   },
   "peerDependencies": {
     "@angular/animations": "~9.1.6",
