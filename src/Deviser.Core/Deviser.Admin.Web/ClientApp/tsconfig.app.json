@@ -20,7 +20,10 @@
         "./node_modules/ngx-image-cropper"
       ],
       "ng-inline-svg": [
-        "./node_modules/ng-inline-svg"
+        "./node_modules/ng-inline-svg-2"
+      ],
+      "deviser-shared":[
+        "../../Deviser.NgLib/deviser-workspace/dist/deviser-shared"
       ]
     }
   },

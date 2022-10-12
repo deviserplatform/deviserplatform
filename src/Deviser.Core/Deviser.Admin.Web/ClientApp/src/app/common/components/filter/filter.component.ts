@@ -1,11 +1,9 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FilterField } from '../../domain-types/filter-field';
-import { LookUpDictionary } from '../../domain-types/look-up-dictionary';
 import { FilterOperator } from '../../domain-types/filter-operator';
 import { FilterType } from '../../domain-types/filter-type';
 import { BooleanFilter } from '../../domain-types/boolean-filter';
 import { FormGroup, FormControl } from '@angular/forms';
-import { ThrowStmt } from '@angular/compiler';
 import { TextFilter } from '../../domain-types/text-filter';
 import { DateTimeOperator } from '../../domain-types/date-time-operator';
 import { NumberOperator } from '../../domain-types/number-operator';
@@ -14,7 +12,6 @@ import { NumberFilter } from '../../domain-types/number-filter';
 import { SelectFilter } from '../../domain-types/select-filter';
 import { AdminConfig } from '../../domain-types/admin-config';
 import { AdminService } from '../../services/admin.service';
-import { Filter } from '../../domain-types/filter';
 import { FieldType } from '../../domain-types/field-type';
 
 @Component({

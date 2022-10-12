@@ -16,8 +16,7 @@
       "dom"
     ],
     "paths": {
-      "deviser-shared": [
-        "dist/deviser-shared/deviser-shared",
+      "deviser-shared": [        
         "dist/deviser-shared"
       ],
       "@angular/*": [
