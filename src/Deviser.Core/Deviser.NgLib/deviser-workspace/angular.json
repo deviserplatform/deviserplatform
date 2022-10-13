@@ -12,14 +12,17 @@
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "tsConfig": "projects/deviser-shared/tsconfig.lib.json",
             "project": "projects/deviser-shared/ng-package.json"
           },
           "configurations": {
             "production": {
               "tsConfig": "projects/deviser-shared/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/deviser-shared/tsconfig.lib.json"
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -30,6 +33,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "deviser-shared"
 }
