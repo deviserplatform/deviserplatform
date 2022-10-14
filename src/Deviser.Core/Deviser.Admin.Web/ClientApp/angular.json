@@ -84,14 +84,15 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "ClientApp:build"
-          },
           "configurations": {
             "production": {
               "browserTarget": "ClientApp:build:production"
+            },
+            "development": {
+              "browserTarget": "ClientApp:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
