@@ -28,7 +28,14 @@ export class CoreService {
 
       if (response.hasOwnProperty(key)) {
 
-        if (moment(response[key], moment.ISO_8601, true).isValid()) {
+        let value = response[key];
+        const newLocal = value instanceof String;
+        if(!value || Array.isArray(value) || 
+        typeof value !== 'string' || !(newLocal) 
+        || !moment(value).isValid()) return;
+
+        let momentObj = moment(value, moment.ISO_8601, true);
+        if (momentObj && momentObj.isValid()) {
           response[key] = moment(response[key]).toDate();//new Date(response[prop]);
         }
 
