@@ -27,9 +27,9 @@ export class SharedService {
 
   getColumnWidthProperty(properties: Property[]) {
     if (!properties || properties.length == 0) {
-      return;
+      return null;
     }
-    return properties.find(prop => prop.name === 'column_width');
+    return properties.find(prop => prop.name === 'column_width');    
   }
 
   newGuid() {

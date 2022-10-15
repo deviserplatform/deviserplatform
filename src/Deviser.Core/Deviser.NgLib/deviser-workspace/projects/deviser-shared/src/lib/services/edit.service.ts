@@ -42,5 +42,6 @@ export class EditService {
       let url = page.pageTypeId === Globals.appSettings.pageTypes.url ? translation.url : `${this._pageContext.siteRoot}${translation.url}`;
       return url;
     }
+    return '';
   }
 }
