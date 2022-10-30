@@ -17,13 +17,15 @@
     }
 
     &.btn-action {      
-      min-width: 80px;
-      display: flex;
+      min-width: 80px;      
       align-items: center;
       justify-content: space-around;
       i {
         display: flex;
         margin-right: 0.3rem;
+      }
+      &.btn-default{
+        margin-left: 1rem;
       }
     }
   }
