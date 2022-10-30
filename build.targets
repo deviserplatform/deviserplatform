@@ -79,6 +79,11 @@
 
     <Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
     <Delete Files="@(CssFilesInAdminClient)"/>
+
+    <Message Importance="High" Text="Building Web Client" />
+    <Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm run build" ConsoleToMSBuild="true"/>
+    <Message Importance="High" Text="Finished building Web Client" />
+    <Message Importance="High" Text="------------------------------------------------------------------------------------" />
   </Target>
 
   <Target Name="BuildDeviserWebClient">
