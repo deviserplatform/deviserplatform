@@ -53,36 +53,54 @@
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
   </Target>
 
-  <Target Name="BuildSharedLibClient">
+  <Target Name="RestoreSharedLibClient">
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
-    <Message Importance="High" Text="BUILDING ANGULAR SHARED LIB" />
+    <Message Importance="High" Text="RESTORING ANGULAR SHARED LIB" />
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
     <Message Importance="High" Text="Running npm install" />
     <Exec WorkingDirectory="$(WorkspaceDir)" Command="npm install" ConsoleToMSBuild="true"/>
     <Exec WorkingDirectory="$(WorkspaceDir)/projects/deviser-shared/" Command="npm install" ConsoleToMSBuild="true"/>
     <Message Importance="High" Text="Finished npm install" />
+    <Message Importance="High" Text="------------------------------------------------------------------------------------" />
+  </Target>
 
+  <Target Name="BuildSharedLibClient">
+    <Message Importance="High" Text="------------------------------------------------------------------------------------" />
+    <Message Importance="High" Text="BUILDING ANGULAR SHARED LIB" />
+    <Message Importance="High" Text="------------------------------------------------------------------------------------" />
     <Message Importance="High" Text="Building Angular shared library" />
     <Exec WorkingDirectory="$(WorkspaceDir)" Command="npm run build" ConsoleToMSBuild="true"/>
     <Message Importance="High" Text="Finished building Angular shared library" />
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
   </Target>
 
-  <Target Name="BuildDeviserAdminClient">
+  <Target Name="RestoreDeviserAdminClient">
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
-    <Message Importance="High" Text="BUILDING DEVISER ADMIN CLIENT" />
+    <Message Importance="High" Text="RESTORING DEVISER ADMIN CLIENT" />
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
     <Message Importance="High" Text="Running npm install" />
     <Exec WorkingDirectory="$(DeviserAdminClientDir)" Command="npm install" ConsoleToMSBuild="true"/>
-    <Exec WorkingDirectory="$(DeviserAdminClientDir)" Command="npm install --save ../../Deviser.NgLib/deviser-workspace/dist/deviser-shared" ConsoleToMSBuild="true"/>
     <Message Importance="High" Text="Finished npm install" />
+    <Message Importance="High" Text="------------------------------------------------------------------------------------" />
+  </Target>
 
-    <!--<Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
-    <Delete Files="@(CssFilesInAdminClient)"/>-->
-
+  <Target Name="BuildDeviserAdminClient">
+    <Message Importance="High" Text="------------------------------------------------------------------------------------" />
+    <Message Importance="High" Text="BUILDING DEVISER ADMIN CLIENT" />
+    <Message Importance="High" Text="------------------------------------------------------------------------------------" />    
     <Message Importance="High" Text="Building Web Client" />
     <Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm run build" ConsoleToMSBuild="true"/>
     <Message Importance="High" Text="Finished building Web Client" />
+    <Message Importance="High" Text="------------------------------------------------------------------------------------" />
+  </Target>
+
+  <Target Name="RestoreDeviserWebClient">
+    <Message Importance="High" Text="------------------------------------------------------------------------------------" />
+    <Message Importance="High" Text="RESTORING DEVISER WEB CLIENT" />
+    <Message Importance="High" Text="------------------------------------------------------------------------------------" />
+    <Message Importance="High" Text="Running npm install" />
+    <Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm install" ConsoleToMSBuild="true"/>    
+    <Message Importance="High" Text="Finished npm install" />
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
   </Target>
 
@@ -90,14 +108,6 @@
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
     <Message Importance="High" Text="BUILDING DEVISER WEB CLIENT" />
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
-    <Message Importance="High" Text="Running npm install" />
-    <Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm install" ConsoleToMSBuild="true"/>
-    <Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm install --save ../../Deviser.Core/Deviser.NgLib/deviser-workspace/dist/deviser-shared" ConsoleToMSBuild="true"/>
-    <Message Importance="High" Text="Finished npm install" />
-
-    <!--<Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
-    <Delete Files="@(CssFilesInWebClient)" />-->
-
     <Message Importance="High" Text="Building Web Client" />
     <Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm run build" ConsoleToMSBuild="true"/>
     <Message Importance="High" Text="Finished building Web Client" />
@@ -106,7 +116,7 @@
 
   <Target Name ="BuildClientApp"
 	        BeforeTargets="PreBuildEvent"
-	        DependsOnTargets="BuildSharedLibClient;BuildDeviserAdminClient;BuildDeviserWebClient"></Target>
+	        DependsOnTargets="RestoreSharedLibClient;BuildSharedLibClient;RestoreDeviserAdminClient;BuildDeviserAdminClient;RestoreDeviserWebClient;BuildDeviserWebClient"></Target>
 
   <Target Name="Build">
     <Message Importance="High" Text="------------------------------------------------------------------------------------" />
