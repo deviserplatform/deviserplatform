@@ -77,8 +77,8 @@
     <Exec WorkingDirectory="$(DeviserAdminClientDir)" Command="npm install --save ../../Deviser.NgLib/deviser-workspace/dist/deviser-shared" ConsoleToMSBuild="true"/>
     <Message Importance="High" Text="Finished npm install" />
 
-    <Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
-    <Delete Files="@(CssFilesInAdminClient)"/>
+    <!--<Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
+    <Delete Files="@(CssFilesInAdminClient)"/>-->
 
     <Message Importance="High" Text="Building Web Client" />
     <Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm run build" ConsoleToMSBuild="true"/>
@@ -95,8 +95,8 @@
     <Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm install --save ../../Deviser.Core/Deviser.NgLib/deviser-workspace/dist/deviser-shared" ConsoleToMSBuild="true"/>
     <Message Importance="High" Text="Finished npm install" />
 
-    <Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
-    <Delete Files="@(CssFilesInWebClient)" />
+    <!--<Message Importance="High" Text="Deleting css files as workaround for node-sass"/>
+    <Delete Files="@(CssFilesInWebClient)" />-->
 
     <Message Importance="High" Text="Building Web Client" />
     <Exec WorkingDirectory="$(DeviserWebClientDir)" Command="npm run build" ConsoleToMSBuild="true"/>
