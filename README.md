@@ -49,7 +49,7 @@ Follow the guidelines to start developing your applications:
 2. Install [Node.js](https://nodejs.org)
 3. Clone this repository
 `git clone https://github.com/deviserplatform/deviserplatform.git`
-4. Run build.sh (on Linux) or build.ps1 on windows
+4. Run `build.sh` on Linux or `build.ps1` on Windows
 7. Run Deviser Platform 
 `dotnet run`
 8. Open the url `https://localhost:5000`
