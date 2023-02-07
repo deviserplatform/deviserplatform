@@ -173,7 +173,7 @@ namespace Deviser.Core.Library
                     ? $"{parentUrl}/{pageName}"
                     : pageName;
             }
-
+            page.PageLevel = page.PageTranslation.First().URL.Split('/').Count();
             SetDefaultPermissions(page);
 
             var newPage = _pageRepository.CreatePage(page);
@@ -447,6 +447,8 @@ namespace Deviser.Core.Library
                     parentUrls[pageTranslation.Locale] = pageUrl;
                     pageTranslation.URL = pageUrl;
                 }
+
+                page.PageLevel = page.PageTranslation.First().URL.Split('/').Length;
             }
 
             if (page.ChildPage == null || page.ChildPage.Count <= 0) return;
