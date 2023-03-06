@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Deviser.Admin.Config;
@@ -10,6 +11,7 @@ using Deviser.Admin.Data;
 using Deviser.Admin.Services;
 using Deviser.Modules.Blog.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Deviser.Modules.Blog.Services
 {
@@ -44,6 +46,5 @@ namespace Deviser.Modules.Blog.Services
             var blogs = _dbContext.Blogs.ToList();
             return _blogMapper.Map<ICollection<DTO.Blog>>(blogs);
         }
-
     }
 }

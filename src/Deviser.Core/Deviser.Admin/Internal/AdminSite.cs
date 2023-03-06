@@ -292,7 +292,7 @@ namespace Deviser.Admin.Internal
                 }
                 else
                 {
-                    var properties = GetProperties(modelType);
+                    var properties = ExpressionHelper.GetProperties(modelType);
                     foreach (var prop in properties)
                     {
                         var field = new Field
@@ -310,7 +310,7 @@ namespace Deviser.Admin.Internal
 
         private void PopulateFields(Type modelType, IFormConfig formConfig, ICollection<Field> excludeField = null)
         {
-            var properties = GetProperties(modelType);
+            var properties = ExpressionHelper.GetProperties(modelType);
 
             foreach (var prop in properties)
             {
@@ -324,11 +324,6 @@ namespace Deviser.Admin.Internal
                     });
                 }
             }
-        }
-
-        private List<PropertyInfo> GetProperties(Type type)
-        {
-            return type.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).ToList();
         }
 
         //private List<PropertyInfo> GetProperties(IEntityType entityType)

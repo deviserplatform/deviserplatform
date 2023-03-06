@@ -10,6 +10,7 @@ import { CheckBoxMatrix } from './checkbox-matrix';
 export interface FieldOption {    
     addItemBy: Field;
     autoFillField: Field;
+    calculateSelectedFields: Field[];
     checkBoxMatrix: CheckBoxMatrix;
     description: string;
     displayName: string;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Deviser.Admin.Config;
 using Newtonsoft.Json;
 
@@ -6,6 +7,7 @@ namespace Deviser.Admin
 {
     public interface IFormConfig
     {
+        Type FormType { get; }  
         [JsonIgnore] ICollection<Field> AllFields { get; }
         IFieldConfig FieldConfig { get; }
         IFieldSetConfig FieldSetConfig { get; }

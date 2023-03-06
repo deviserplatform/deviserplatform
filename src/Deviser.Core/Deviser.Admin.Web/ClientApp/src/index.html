@@ -13,50 +13,52 @@
 
 <body class="admin-container">
   <script>
-    (function () {
-      var daConfig = {
-        basePath: "https://localhost:44328/",
-        currentPageId: "02fe733d-043b-41c0-bdf1-08d7e81d6588",
-        isEmbedded: false, //true for embedded in admin module, false for standalone
-        debugBaseUrl: "https://localhost:44328",
-        module: "PageManagement",
-        model: "PageViewModel",
-        adminConfigType: "TreeAndForm", //GridOnly OR GridAndForm OR FormOnly OR TreeAndForm
-        assetPath: "/admin/dist"
-      }
-      var pageContext = {
-        assetPath: "/admin/dist",
-        currentPageId: "02fe733d-043b-41c0-bdf1-08d7e81d6588",
-        currentUrl: "Admin",
-        currentTranslation: {
-          pageId: "02fe733d-043b-41c0-bdf1-08d7e81d6588",
-          locale: "en-US",
-          description: null,
-          keywords: null,
-          name: "Home Demo",
-          title: "Home Demo",
-          url: "HomeDemo",
-          redirectUrl: null,
-          isLinkNewWindow: false,
-          pageHeaderTags: "<meta property=\"og:image\" content=\"https://localhost:44304/images/favicons/apple-touch-icon.png\" />",
-          language: null
-        },
-        currentLocale: "en-US",
-        debugBaseUrl: "https://localhost:44328/",
-        hasPageViewPermission: true,
-        hasPageEditPermission: true,
-        homePageUrl: "HomeDemo",
-        homePageFullUrl: "/HomeDemo",
-        isEmbedded: false, //true for embedded in admin module, false for standalone
-        isMultilingual: false,
-        layoutId: "bef258d0-173c-4b70-343c-08d58851a063",
-        siteRoot: "/",
-        siteLanguage: "en-US",
-        selectedTheme: "Skyline"
-      };
-      window.daConfig = daConfig;
-      window.pageContext = pageContext;
+   (function () {
+        var pageContext =  {
+  "currentPageId": "c83fb3c2-6eed-41ca-825b-133329a860c8",
+  "currentUrl": "Admin/InvoiceManagement/Invoice",
+  "currentTranslation": {
+    "pageId": "c83fb3c2-6eed-41ca-825b-133329a860c8",
+    "locale": "en-US",
+    "description": "",
+    "keywords": null,
+    "name": "Invoice",
+    "title": "Invoice",
+    "url": "Admin/InvoiceManagement/Invoice",
+    "redirectUrl": "",
+    "isLinkNewWindow": false,
+    "pageHeaderTags": "",
+    "language": null
+  },
+  "currentLocale": "en-US",
+  "hasPageViewPermission": true,
+  "hasPageEditPermission": true,
+  "homePageUrl": "Home",
+  "homePageFullUrl": "/Home",
+  "isMultilingual": false,
+  "layoutId": null,
+  "siteRoot": "/",
+  "siteLanguage": "en-US",
+  "selectedTheme": "Skyline"
+};
+        pageContext.isEmbedded = false;
+        pageContext.assetPath = '/_content/Deviser.Web/ClientApp/';
+        window.pageContext = pageContext;
     }());
+
+    (function () {
+            var daConfig = {
+                basePath:"https://localhost:44328/",
+                currentPageId: "c83fb3c2-6eed-41ca-825b-133329a860c8",
+                isEmbedded: false, //true for embedded in admin module, false for standalone
+                debugBaseUrl: "https://localhost:44328",
+                module: "Invoice",
+                model: "Invoice",
+                adminConfigType: "GridAndForm",
+                assetPath:"/_content/Deviser.Admin.Web/ClientApp/"
+            }
+            window.daConfig = daConfig;
+        }());
   </script>
   <app-root></app-root>
 </body>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -19,7 +20,7 @@ namespace Deviser.Admin.Data
         public static bool PropertyExists<T>(string propertyName)
         {
             return typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase |
-                BindingFlags.Public | BindingFlags.Instance) != null;
+                                                       BindingFlags.Public | BindingFlags.Instance) != null;
         }
 
         public static LambdaExpression GetPropertyExpression(Type type, string propertyName)
@@ -113,5 +114,9 @@ namespace Deviser.Admin.Data
         //    object ret = genericMethod.Invoke(null, new object[] { source, lambda });
         //    return (IQueryable<T>)ret;
         //}
+        public static List<PropertyInfo> GetProperties(Type type)
+        {
+            return type.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance).ToList();
+        }
     }
 }
