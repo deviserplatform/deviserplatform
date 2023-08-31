@@ -221,6 +221,18 @@ namespace Deviser.Admin.Services
             return await Task.FromResult(new { result = resultStr });
         }
 
+        public async Task<object> Calculate(Type modelType, string fieldName, dynamic basedOnFields)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+            var field = adminConfig.ModelConfig.FormConfig.AllFields.FirstOrDefault(f =>
+                f.FieldName.Equals(fieldName, StringComparison.InvariantCultureIgnoreCase));
+            if (field == null) return await Task.FromResult<object>(null);
+
+            var del = field.FieldOption.CalculateExpression.Compile();
+            var resultStr = await del.DynamicInvoke(basedOnFields)!;
+            return await Task.FromResult(new { result = resultStr });
+        }
+
         public async Task<object> UpdateTreeFor(Type modelType, object item)
         {
             return await CallGenericMethod(nameof(UpdateTree), new Type[] { modelType }, new object[] { item });

@@ -67,6 +67,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tpl", "tpl", "{05FB12BC-7DE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplatePack", "tpl\working\TemplatePack.csproj", "{5A6A570E-9A2E-4BE2-B38C-CBF5B9487568}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvoiceModule", "..\..\SundaramAndYuvaraj\InvoiceModule\InvoiceModule.csproj", "{7FFBE34B-1024-436E-ABE6-235EB681DBE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -169,6 +171,10 @@ Global
 		{5A6A570E-9A2E-4BE2-B38C-CBF5B9487568}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A6A570E-9A2E-4BE2-B38C-CBF5B9487568}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A6A570E-9A2E-4BE2-B38C-CBF5B9487568}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FFBE34B-1024-436E-ABE6-235EB681DBE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FFBE34B-1024-436E-ABE6-235EB681DBE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FFBE34B-1024-436E-ABE6-235EB681DBE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FFBE34B-1024-436E-ABE6-235EB681DBE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -201,6 +207,7 @@ Global
 		{A3768C5E-BA6A-4ECA-9583-A52F0890C4A5} = {1306D17F-1883-4A03-9369-84A5CC505ED5}
 		{1306D17F-1883-4A03-9369-84A5CC505ED5} = {91BD4D35-CFF1-48D1-BAF6-BA0E3FB96B3B}
 		{5A6A570E-9A2E-4BE2-B38C-CBF5B9487568} = {05FB12BC-7DE6-47A1-B8EE-351632CE39EC}
+		{7FFBE34B-1024-436E-ABE6-235EB681DBE7} = {3977F3A1-D23E-4CBB-962E-3AEC6BC272D7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {91F2FF8F-6646-4F1E-A7D9-059D41B096BE}
