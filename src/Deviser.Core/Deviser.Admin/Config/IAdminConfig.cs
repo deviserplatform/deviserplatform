@@ -16,10 +16,7 @@ namespace Deviser.Admin
         ICollection<IChildConfig> ChildConfigs { get; }
 
         FilterOperator FilterOperator { get; }
-
-        [JsonConverter(typeof(TypeJsonConverter))]
-        Type ModelType { get; }
-
+        
         LookUpDictionary LookUps { get; }
     }
 }

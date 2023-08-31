@@ -72,8 +72,15 @@ export class AdminService {
     }
   }
 
-  autoFill(formName: string, fieldName: string, fieldValue: string): Observable<any> {
-    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${formName}/autofill/${fieldName}`;
+  autoFill(formType: FormType, formName: string, fieldName: string, fieldValue: string): Observable<any> {
+    let serviceUrl: string;
+    if (formType == FormType.MainForm) {
+      serviceUrl = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/autofill/${formType}/fieldName/${fieldName}`;
+    }
+    else {
+      serviceUrl = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/autofill/${formType}/form/${formName}/fieldName/${fieldName}`;
+    }
+    
     return this.http.put<any>(serviceUrl, { fieldValue: fieldValue }, this._httpOptions)
       .pipe(
         tap(_ => this.log('autofilling a field')),
@@ -81,8 +88,15 @@ export class AdminService {
       );
   }
 
-  calculate(formName:string, fieldName: string, fieldAndValues: any): Observable<any> {
-    const serviceUrl: string = this._baseUrl + `/${this._daConfig.module}/api/${formName}/calculate/${fieldName}`;
+  calculate(formType: FormType, formName:string, fieldName: string, fieldAndValues: any): Observable<any> {    
+    let serviceUrl: string;
+    if (formType == FormType.MainForm) {
+      serviceUrl = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/calculate/${formType}/fieldName/${fieldName}`;
+    }
+    else {
+      serviceUrl = this._baseUrl + `/${this._daConfig.module}/api/${this._daConfig.model}/calculate/${formType}/form/${formName}/fieldName/${fieldName}`;
+    }
+
     return this.http.put<any>(serviceUrl, fieldAndValues, this._httpOptions)
       .pipe(
         tap(_ => this.log('calculating a field')),

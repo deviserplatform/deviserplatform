@@ -25,7 +25,6 @@
 
   <ItemGroup>    
     <ProjectReference Include="..\Deviser.Admin.Web\Deviser.Admin.Web.csproj" />    
-    <ProjectReference Include="..\Deviser.Admin\Deviser.Admin.csproj" />    
     <ProjectReference Include="..\Deviser.Core.Data\Deviser.Core.Data.csproj" />
     <ProjectReference Include="..\Deviser.Core.Common\Deviser.Core.Common.csproj" />
   </ItemGroup>

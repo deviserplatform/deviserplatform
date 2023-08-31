@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Deviser.Admin
 {
-    public class ChildConfig : IChildConfig
+    public class ChildConfig: IChildConfig
     {
         [JsonIgnore]
         public EntityConfig EntityConfig { get; set; }
@@ -16,9 +16,16 @@ namespace Deviser.Admin
         [JsonIgnore]
         public Func<bool> ShowOnDelegateFunc { get; set; }
 
-        public Field Field { get; set; }
+        public Field Field { get; }
         public bool IsShown => ShowOnDelegateFunc?.Invoke() ?? true; //By default it child config should be visible
-        public IModelConfig ModelConfig { get; set; }
-        
+        public IModelConfig ModelConfig { get; }
+        public Type ModelType { get; }
+
+        public ChildConfig(Field field, IModelConfig modelConfig, Type modelType)
+        {
+            Field = field;
+            ModelConfig = modelConfig;
+            ModelType = modelType;
+        }
     }
 }

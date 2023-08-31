@@ -26,18 +26,16 @@ namespace Deviser.Admin.Services
         Task<object> ExecuteCustomFormAction(Type modelType, string formName, string actionName, object entityObject);
         Task<object> CustomFormSubmit(string strModel, string formName, object entityObject);
         Task<ValidationResult> ExecuteMainFormCustomValidation(Type modelType, string fieldName, object fieldObject);
-
-        Task<ValidationResult> ExecuteChildFormCustomValidation(Type modelType, string formName, string fieldName,
-            object fieldObject);
-
-        Task<ValidationResult> ExecuteCustomFormCustomValidation(Type modelType, string formName, string fieldName,
-            object fieldObject);
-
-
+        Task<ValidationResult> ExecuteChildFormCustomValidation(Type modelType, string formName, string fieldName, object fieldObject);
+        Task<ValidationResult> ExecuteCustomFormCustomValidation(Type modelType, string formName, string fieldName, object fieldObject);
         Task<ICollection<LookUpField>> GetLookUpForMainForm(Type modelType, string fieldName, object filterParam);
         Task<ICollection<LookUpField>> GetLookUpForChildForm(Type modelType, string formName, string fieldName, object filterParam);
         Task<ICollection<LookUpField>> GetLookUpForCustomForm(Type modelType, string formName, string fieldName, object filterParam);
-        Task<object> AutoFill(Type modelType, string fieldName, object modelObject);
-        Task<object> Calculate(Type modelType, string fieldName, dynamic basedOnFields);
+        Task<object> AutoFillMainForm(Type modelType, string fieldName, object modelObject);
+        Task<object> AutoFillChildForm(Type modelType, string formName, string fieldName, object fieldObject);
+        Task<object> AutoFillCustomForm(Type modelType, string formName, string fieldName, object fieldObject);
+        Task<object> CalculateMainForm(Type modelType, string fieldName, dynamic basedOnFields);
+        Task<object> CalculateChildForm(Type modelType, string formName, string fieldName, object fieldObject);
+        Task<object> CalculateCustomForm(Type modelType, string formName, string fieldName, object fieldObject);
     }
 }
