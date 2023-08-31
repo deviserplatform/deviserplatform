@@ -90,7 +90,8 @@ export class ChildGridComponent implements OnInit, ControlValueAccessor, Validat
       formType: FormType.ChildForm,
       keyField: this.childConfig.modelConfig.keyField,
       formMode: this.formMode,
-      lookUps: this.lookUps
+      lookUps: this.lookUps,
+      modelType: this.childConfig.field.fieldClrType
     }
     // this.childForm = this._formControlService.toFormGroupWithFormConfig(this.childFormContext.formConfig, this.childFormContext.formMode, this.childFormContext.keyField, {});
     // this.formContext.formGroup = this.childForm;

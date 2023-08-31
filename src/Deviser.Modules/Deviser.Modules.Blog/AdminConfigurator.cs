@@ -6,6 +6,7 @@ using AutoMapper;
 using Deviser.Admin;
 using Deviser.Admin.Extensions;
 using Deviser.Core.Data.Repositories;
+using Deviser.Modules.Blog.DTO;
 using Deviser.Modules.Blog.Models;
 using Deviser.Modules.Blog.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,8 +63,16 @@ namespace Deviser.Modules.Blog
                     (sp, title) =>
                         sp.GetService<IPostService>().GetSlugFor(title));
 
+                modelBuilder.FormBuilder.Property(c => c.Slug)
+                    .CalculateWith(c => new
+                    {
+                        c.Content,
+                        c.Slug,
+                        c.Title,
+                    }, (post) => $"{post.Title};{post.Slug};{post.Content}");
+
                 modelBuilder.FormBuilder
-                    .Property(p => p.Tags)
+                .Property(p => p.Tags)
                     .AddItemBy(t => t.Name);
 
                 modelBuilder.FormBuilder.Property(u => u.Blog).HasLookup(sp => sp.GetService<IBlogService>().GetBlogs(),

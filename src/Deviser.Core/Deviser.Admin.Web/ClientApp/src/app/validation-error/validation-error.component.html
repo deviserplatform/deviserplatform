@@ -1,4 +1,4 @@
-<div class="invalid-feedback">
+<div class="invalid-feedback" *ngIf="errors">
   <div *ngIf="errors.required">{{field.fieldOption.displayName}} is required</div>
   <div *ngIf="errors.email">{{field.fieldOption.displayName}} must be a valid email address</div>
   <div *ngIf="errors.pattern && field.fieldOption.validationType == validationType.NumberOnly">{{field.fieldOption.displayName}} must be numbers only</div>

@@ -53,7 +53,9 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
   formItemId: string;
 
   private _autoFillFields: Field[];
+  private _calculatedFields: Field[];
   private _autoFieldSubscriptions: Subscription[] = [];
+  private _calculatedFieldSubscriptions: Subscription[] = [];
   private _allFields: Field[];
   private _valChangeSubscription: Subscription;
 
@@ -76,7 +78,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
         this.onAutoFillFieldValueChanges(field, value);
       });
       this._autoFieldSubscriptions.push(subscription);
-    })
+    });
 
     this._valChangeSubscription = this.formContext.formGroup.valueChanges
       .pipe(
@@ -87,8 +89,22 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
       .subscribe(val => {
         this.onFormValueChanges(val);
       });
-  }
 
+      this._calculatedFields = this._allFields.filter(f => f.fieldOption.calculateSelectedFields);
+      this._calculatedFields.forEach(field => {
+        let selectedFields = field.fieldOption.calculateSelectedFields;
+        
+        selectedFields.forEach(selectedField =>{
+          let triggerFieldName = selectedField.fieldNameCamelCase;
+          let subscription = this.formContext.formGroup.controls[triggerFieldName].valueChanges.subscribe(value => {
+            this.onCacluatedFieldValueChanges(field, selectedFields);
+          });
+          this._autoFieldSubscriptions.push(subscription);
+        });
+      
+    })
+  }
+  
   ngOnDestroy() {
     this.unsubscribeValueChanges();
   }
@@ -167,7 +183,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
 
   private onAutoFillFieldValueChanges(field: Field, value: any) {
 
-    value && this._adminService.autoFill(field.fieldName, value).subscribe(val => {      
+    value && this._adminService.autoFill(this.formContext.modelType, field.fieldName, value).subscribe(val => {      
       this.formContext.formGroup.controls[field.fieldNameCamelCase].patchValue(val.result);
       // this.formContext.formGroup.value[field.fieldNameCamelCase] = val;
     });
@@ -182,6 +198,16 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
     //     // this.formContext.formGroup.value[field.fieldNameCamelCase] = val;
     //   });
     // }
+  }
+  private onCacluatedFieldValueChanges( calculatedField: Field, selectedFields: Field[]) {
+    let fieldAndValues:any = {};
+    selectedFields.forEach(field=>{
+      fieldAndValues[field.fieldName] = this.formContext.formGroup.get(field.fieldNameCamelCase).value;
+    })
+    fieldAndValues && this._adminService.calculate(this.formContext.modelType, calculatedField.fieldName, fieldAndValues).subscribe(val => {      
+      this.formContext.formGroup.controls[calculatedField.fieldNameCamelCase].patchValue(val.result);
+      // this.formContext.formGroup.value[field.fieldNameCamelCase] = val;
+    });
   }
 
   private initFieldProp(field: Field) {

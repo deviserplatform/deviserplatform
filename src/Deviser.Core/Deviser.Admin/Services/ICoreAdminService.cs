@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Deviser.Admin.Config;
 using Deviser.Admin.Config.Filters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Deviser.Admin.Services
 {
@@ -37,5 +38,6 @@ namespace Deviser.Admin.Services
         Task<ICollection<LookUpField>> GetLookUpForChildForm(Type modelType, string formName, string fieldName, object filterParam);
         Task<ICollection<LookUpField>> GetLookUpForCustomForm(Type modelType, string formName, string fieldName, object filterParam);
         Task<object> AutoFill(Type modelType, string fieldName, object modelObject);
+        Task<object> Calculate(Type modelType, string fieldName, dynamic basedOnFields);
     }
 }

@@ -77,10 +77,10 @@ export class AdminFormComponent implements OnInit {
     if (this.formMode === FormMode.Update) {
       const adminConfig$ = this._adminService.getAdminConfig();
       const record$ = this._adminService.getRecord(itemId);
-      forkJoin([adminConfig$, record$]).subscribe(results => {
+      forkJoin([adminConfig$, record$]).subscribe((results) => {
         this.record = results[1];
         this.onGetAdminConfig(results[0]);
-      }, error => this._alertService.showMessage(AlertType.Error, 'Unable to get this item, please contact administrator'));
+      }, (error) => this._alertService.showMessage(AlertType.Error, 'Unable to get this item, please contact administrator'));
     } else if (this.formMode === FormMode.Create) {
       this.record = record;
       this._adminService.getAdminConfig()
@@ -131,7 +131,8 @@ export class AdminFormComponent implements OnInit {
         formType: this.formType.MainForm,
         keyField: this.adminConfig.modelConfig.keyField,
         formMode: this.formMode,
-        lookUps: this.adminConfig.lookUps
+        lookUps: this.adminConfig.lookUps,
+        modelType: this.adminConfig.modelType
       });
       this.selectedFormTab = this.formTabs[0];
       if (this.formMode == FormMode.Update && this.adminConfig.modelConfig.customForms) {
@@ -146,7 +147,8 @@ export class AdminFormComponent implements OnInit {
             formType: this.formType.CustomForm,
             keyField: customForm.keyField,
             formMode: this.formMode,
-            lookUps: this.adminConfig.lookUps
+            lookUps: this.adminConfig.lookUps,
+            modelType: customForm.modelType
           });
         }
       }

@@ -12,6 +12,16 @@ namespace Deviser.Admin.Config
 {
     public class FieldOption
     {
+        public FieldOption()
+        {
+            CalculateSelectedFields = new HashSet<Field>();
+        }
+
+        public HashSet<Field> CalculateSelectedFields { get; set; }
+
+        [JsonIgnore]
+        public LambdaExpression CalculateExpression { get; set; }
+
         public FieldType FieldType { get; set; }
 
         public Field AddItemBy { get; set; }
