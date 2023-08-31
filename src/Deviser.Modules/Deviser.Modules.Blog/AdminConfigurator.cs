@@ -62,15 +62,7 @@ namespace Deviser.Modules.Blog
                 modelBuilder.FormBuilder.Property(c => c.Slug).AutoFillBasedOn(p => p.Title,
                     (sp, title) =>
                         sp.GetService<IPostService>().GetSlugFor(title));
-
-                modelBuilder.FormBuilder.Property(c => c.Slug)
-                    .CalculateWith(c => new
-                    {
-                        c.Content,
-                        c.Slug,
-                        c.Title,
-                    }, (post) => $"{post.Title};{post.Slug};{post.Content}");
-
+                
                 modelBuilder.FormBuilder
                 .Property(p => p.Tags)
                     .AddItemBy(t => t.Name);

@@ -166,17 +166,59 @@ namespace Deviser.Admin.Services
             return await CallGenericMethod(nameof(UpdateItem), new Type[] { modelType }, new object[] { item });
         }
 
-        public async Task<object> AutoFill(Type modelType, string fieldName, object fieldValue)
+        public async Task<object> AutoFillMainForm(Type modelType, string fieldName, object fieldValue)
         {
-            var adminConfig = GetAdminConfig(modelType);
-            var field = adminConfig.ModelConfig.FormConfig.AllFields.FirstOrDefault(f =>
-                f.FieldName.Equals(fieldName, StringComparison.InvariantCultureIgnoreCase));
-            if (field == null) return await Task.FromResult<object>(null);
+            var field = GetMainFormField(modelType, fieldName);
+            return await AutoFill(fieldValue, field);
+        }
 
+        public async Task<object> AutoFillChildForm(Type modelType, string formName, string fieldName, object fieldValue)
+        {
+            var field = GetChildFormField(modelType, formName, fieldName);
+            return await AutoFill(fieldValue, field);
+        }
+
+        public async Task<object> AutoFillCustomForm(Type modelType, string formName, string fieldName, object fieldValue)
+        {
+            var field = GetChildFormField(modelType, formName, fieldName);
+            return await AutoFill(fieldValue, field);
+        }
+
+        private async Task<object> AutoFill(object fieldValue, Field field)
+        {
             var del = field.FieldOption.AutoFillExpression.Compile();
             var resultStr = await ((dynamic)del.DynamicInvoke(_serviceProvider, fieldValue.ToString()))!;
             return await Task.FromResult(new { result = resultStr });
+        }
 
+        public async Task<object> CalculateMainForm(Type modelType, string fieldName, dynamic basedOnFields)
+        {
+            var field = GetMainFormField(modelType, fieldName);
+            return await Calculate(basedOnFields, field);
+        }
+
+        public async Task<object> CalculateChildForm(Type modelType, string formName, string fieldName, dynamic basedOnFields)
+        {
+            var field = GetChildFormField(modelType, formName, fieldName);
+            return await Calculate(basedOnFields, field);
+        }
+
+        public async Task<object> CalculateCustomForm(Type modelType, string formName, string fieldName, dynamic basedOnFields)
+        {
+            var field = GetChildFormField(modelType, formName, fieldName);
+            return await Calculate(basedOnFields, field);
+        }
+
+        private static async Task<object> Calculate(dynamic basedOnFields, Field field)
+        {
+            var del = field.FieldOption.CalculateExpression.Compile();
+            var paramType = field.FieldOption.CalculateExpression.Parameters[0].Type;
+            //var param = Activator.CreateInstance(paramType);
+            var jsonParam = ((Newtonsoft.Json.Linq.JObject)basedOnFields).ToString();
+            //var typedParam = JsonConvert.DeserializeAnonymousType(jsonParam, param);
+            var typedParam = JsonConvert.DeserializeObject(jsonParam, paramType);
+            var resultStr = del.DynamicInvoke(typedParam)!;
+            return await Task.FromResult(new { result = resultStr });
         }
 
         public async Task<object> Calculate(Type modelType, string fieldName, dynamic basedOnFields)
@@ -198,14 +240,27 @@ namespace Deviser.Admin.Services
 
         public async Task<ValidationResult> ExecuteMainFormCustomValidation(Type modelType, string fieldName, object fieldObject)
         {
-            var adminConfig = GetAdminConfig(modelType);
-            var field = adminConfig.ModelConfig.FormConfig.AllFields.FirstOrDefault(f =>
-                string.Equals(f.FieldName, fieldName, StringComparison.InvariantCultureIgnoreCase));
+            var field = GetMainFormField(modelType, fieldName);
 
             return await CustomValidation(fieldObject, field);
         }
 
+        private Field GetMainFormField(Type modelType, string fieldName)
+        {
+            var adminConfig = GetAdminConfig(modelType);
+            var field = adminConfig.ModelConfig.FormConfig.AllFields.FirstOrDefault(f =>
+                string.Equals(f.FieldName, fieldName, StringComparison.InvariantCultureIgnoreCase));
+            return field;
+        }
+
         public async Task<ValidationResult> ExecuteChildFormCustomValidation(Type modelType, string formName, string fieldName, object fieldObject)
+        {
+            var field = GetChildFormField(modelType, formName, fieldName);
+
+            return await CustomValidation(fieldObject, field);
+        }
+
+        private Field GetChildFormField(Type modelType, string formName, string fieldName)
         {
             var adminConfig = GetAdminConfig(modelType);
 
@@ -213,34 +268,29 @@ namespace Deviser.Admin.Services
                 //Child form name is same as field parent form
                 c.Field.FieldName.Equals(formName, StringComparison.InvariantCultureIgnoreCase));
 
-            if (childConfig == null)
-            {
-                return null;
-            }
-
 
             var field = childConfig.ModelConfig.FormConfig.AllFields.FirstOrDefault(f =>
                 string.Equals(f.FieldName, fieldName, StringComparison.InvariantCultureIgnoreCase));
-
-            return await CustomValidation(fieldObject, field);
+            return field;
         }
 
         public async Task<ValidationResult> ExecuteCustomFormCustomValidation(Type modelType, string formName, string fieldName, object fieldObject)
         {
+            var field = GetCustomFormField(modelType, formName, fieldName);
+
+            return await CustomValidation(fieldObject, field);
+        }
+
+        private Field GetCustomFormField(Type modelType, string formName, string fieldName)
+        {
             var adminConfig = GetAdminConfig(modelType);
 
-
-            if (!adminConfig.ModelConfig.CustomForms.ContainsKey(formName))
-            {
-                return null;
-            }
             formName = formName.Pascalize();
             var customForm = adminConfig.ModelConfig.CustomForms[formName];
 
             var field = customForm.FormConfig.AllFields.FirstOrDefault(f =>
                 string.Equals(f.FieldName, fieldName, StringComparison.InvariantCultureIgnoreCase));
-
-            return await CustomValidation(fieldObject, field);
+            return field;
         }
 
         public async Task<ICollection<LookUpField>> GetLookUpForMainForm(Type modelType, string fieldName, object filterParam)

@@ -90,7 +90,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
         this.onFormValueChanges(val);
       });
 
-      this._calculatedFields = this._allFields.filter(f => f.fieldOption.calculateSelectedFields);
+      this._calculatedFields = this._allFields.filter(f => f.fieldOption.calculateSelectedFields && f.fieldOption.calculateSelectedFields.length>0);
       this._calculatedFields.forEach(field => {
         let selectedFields = field.fieldOption.calculateSelectedFields;
         
@@ -183,7 +183,8 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
 
   private onAutoFillFieldValueChanges(field: Field, value: any) {
 
-    value && this._adminService.autoFill(this.formContext.modelType, field.fieldName, value).subscribe(val => {      
+    
+    value && this._adminService.autoFill(this.formContext.formType, this.formContext.formName, field.fieldName, value).subscribe(val => {      
       this.formContext.formGroup.controls[field.fieldNameCamelCase].patchValue(val.result);
       // this.formContext.formGroup.value[field.fieldNameCamelCase] = val;
     });
@@ -204,7 +205,7 @@ export class EntityFormComponent implements OnInit, ControlValueAccessor, Valida
     selectedFields.forEach(field=>{
       fieldAndValues[field.fieldName] = this.formContext.formGroup.get(field.fieldNameCamelCase).value;
     })
-    fieldAndValues && this._adminService.calculate(this.formContext.modelType, calculatedField.fieldName, fieldAndValues).subscribe(val => {      
+    fieldAndValues && this._adminService.calculate(this.formContext.formType, this.formContext.formName, calculatedField.fieldName, fieldAndValues).subscribe(val => {      
       this.formContext.formGroup.controls[calculatedField.fieldNameCamelCase].patchValue(val.result);
       // this.formContext.formGroup.value[field.fieldNameCamelCase] = val;
     });

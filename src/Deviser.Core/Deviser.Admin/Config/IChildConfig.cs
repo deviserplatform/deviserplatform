@@ -7,7 +7,7 @@ namespace Deviser.Admin
     public interface IChildConfig : IAdminBaseConfig
     {
         Field Field { get; }
-        IModelConfig ModelConfig { get; set; }
+        IModelConfig ModelConfig { get; }
 
         [JsonIgnore]
         LambdaExpression ShowOnStaticExpression { get; set; }

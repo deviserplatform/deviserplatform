@@ -127,7 +127,6 @@ namespace Deviser.Web.DependencyInjection
             services.TryAddSingleton<ITypeActivatorCache, TypeActivatorCache>();
 
             InternalServiceProvider.Instance.BuildServiceProvider(services);
-
             var isDevelopment = hostEnvironment.IsEnvironment(Globals.DeviserDevelopmentEnvironment);
             var isPlatformInstalled = installationProvider.IsPlatformInstalled;
 

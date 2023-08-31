@@ -290,4 +290,4 @@ src/Deviser.Core/Deviser.Core.Common/DomainTypes/ModuleActionType_BACKUP_16112.c
 /packages-microsoft-prod.deb
 /src/Deviser.Web/wwwroot/ClientApp
 /src/Deviser.Core/Deviser.Admin.Web/wwwroot/ClientApp
-/.idea/.idea.DeviserPlatform/.idea
+/.idea/

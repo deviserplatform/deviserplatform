@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Deviser.Admin.Properties;
 using Deviser.Core.Common.Extensions;
+using Microsoft.DotNet.Scaffolding.Shared.Project;
 
 namespace Deviser.Admin.Builders
 {
@@ -38,14 +39,10 @@ namespace Deviser.Admin.Builders
             var childConfig = new AdminConfig<TProperty>();
             var childFormBuilder = new ModelBuilder<TProperty>(childConfig);
             childFormBuilderAction(childFormBuilder);
-            _adminConfig.ChildConfigs.Add(new ChildConfig
+            _adminConfig.ChildConfigs.Add(new ChildConfig(new Field
             {
-                Field = new Field
-                {
-                    FieldExpression = expression
-                },
-                ModelConfig = childConfig.ModelConfig
-            });
+                FieldExpression = expression
+            }, childConfig.ModelConfig, typeof(TProperty)));
             return this;
         }
 
@@ -68,7 +65,7 @@ namespace Deviser.Admin.Builders
             }
 
             childConfig.ShowOnStaticExpression = predicate;
-            
+
             return this;
         }
 

@@ -119,7 +119,7 @@ namespace Deviser.Admin.Web.Controllers
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
                 var modelType = coreAdminService.GetModelType(model);
                 if (modelType == null)
-                {   
+                {
                     return BadRequest($"Model {model} is not found");
                 }
 
@@ -193,7 +193,7 @@ namespace Deviser.Admin.Web.Controllers
 
         [HttpPost]
         [Route("modules/[area]/api/{model:required}")]
-        public async Task<IActionResult> Create(string model, [FromBody]object modelObject)
+        public async Task<IActionResult> Create(string model, [FromBody] object modelObject)
         {
             try
             {
@@ -219,62 +219,8 @@ namespace Deviser.Admin.Web.Controllers
         }
 
         [HttpPut]
-        [Route("modules/[area]/api/{model:required}/autofill/{fieldName:required}")]
-        public async Task<IActionResult> AutoFill(string model, string fieldName, [FromBody] dynamic modelObject)
-        {
-            try
-            {
-                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                var modelType = coreAdminService.GetModelType(model);
-                if (modelType == null)
-                {
-                    return BadRequest($"Model {model} is not found");
-                }
-
-                var result = await coreAdminService.AutoFill(modelType, fieldName, modelObject.fieldValue); //_adminRepository.UpdateItemFor(model, fieldObject);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error occured while autofilling for model: {model}, fieldName: {fieldName}", ex);
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        [HttpPut]
-        [Route("modules/[area]/api/{model:required}/calculate/{fieldName:required}")]
-        public async Task<IActionResult> Calculate(string model, string fieldName, [FromBody] dynamic basedOnFields)
-        {
-            try
-            {
-                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                var modelType = coreAdminService.GetModelType(model);
-                if (modelType == null)
-                {
-                    return BadRequest($"Model {model} is not found");
-                }
-
-                var result = await coreAdminService.Calculate(modelType, fieldName, basedOnFields); //_adminRepository.UpdateItemFor(model, fieldObject);
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error occured while autofilling for model: {model}, fieldName: {fieldName}", ex);
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        [HttpPut]
         [Route("modules/[area]/api/{model:required}")]
-        public async Task<IActionResult> Update(string model, [FromBody]object modelObject)
+        public async Task<IActionResult> Update(string model, [FromBody] object modelObject)
         {
             try
             {
@@ -301,7 +247,7 @@ namespace Deviser.Admin.Web.Controllers
 
         [HttpPut]
         [Route("modules/[area]/api/{model:required}/tree")]
-        public async Task<IActionResult> UpdateTree(string model, [FromBody]object modelObject)
+        public async Task<IActionResult> UpdateTree(string model, [FromBody] object modelObject)
         {
             try
             {
@@ -333,7 +279,7 @@ namespace Deviser.Admin.Web.Controllers
             try
             {
                 ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
-                
+
                 var modelType = coreAdminService.GetModelType(model);
                 if (modelType == null)
                 {
@@ -356,7 +302,7 @@ namespace Deviser.Admin.Web.Controllers
 
         [HttpPut]
         [Route("modules/[area]/api/{model:required}/grid/{actionName:required}")]
-        public async Task<IActionResult> ExecuteGridAction(string model, string actionName, [FromBody]object modelObject)
+        public async Task<IActionResult> ExecuteGridAction(string model, string actionName, [FromBody] object modelObject)
         {
             try
             {
@@ -383,7 +329,7 @@ namespace Deviser.Admin.Web.Controllers
 
         [HttpPut]
         [Route("modules/[area]/api/{model:required}/mainform/{actionName:required}")]
-        public async Task<IActionResult> ExecuteMainFormAction(string model, string actionName, [FromBody]object modelObject)
+        public async Task<IActionResult> ExecuteMainFormAction(string model, string actionName, [FromBody] object modelObject)
         {
             try
             {
@@ -410,7 +356,7 @@ namespace Deviser.Admin.Web.Controllers
 
         [HttpPut]
         [Route("modules/[area]/api/{model:required}/form/{formName:required}/")]
-        public async Task<IActionResult> CustomFormSubmit(string model, string formName, [FromBody]object modelObject)
+        public async Task<IActionResult> CustomFormSubmit(string model, string formName, [FromBody] object modelObject)
         {
             try
             {
@@ -437,7 +383,7 @@ namespace Deviser.Admin.Web.Controllers
 
         [HttpPut]
         [Route("modules/[area]/api/{model:required}/form/{formName:required}/action/{actionName:required}")]
-        public async Task<IActionResult> ExecuteCustomFormAction(string model, string formName, string actionName, [FromBody]object modelObject)
+        public async Task<IActionResult> ExecuteCustomFormAction(string model, string formName, string actionName, [FromBody] object modelObject)
         {
             try
             {
@@ -555,7 +501,7 @@ namespace Deviser.Admin.Web.Controllers
         [HttpPut]
         [Route("modules/[area]/api/{model:required}/validate/{formType:required}/fieldName/{fieldName:required}")]
         [Route("modules/[area]/api/{model:required}/validate/{formType:required}/form/{formName:required}/fieldName/{fieldName:required}")]
-        public async Task<IActionResult> CustomValidate(string model, string formType, string formName, string fieldName, [FromBody]object fieldObject)
+        public async Task<IActionResult> CustomValidate(string model, string formType, string formName, string fieldName, [FromBody] object fieldObject)
         {
             try
             {
@@ -615,7 +561,7 @@ namespace Deviser.Admin.Web.Controllers
         [HttpPut]
         [Route("modules/[area]/api/{model:required}/lookup/{formType:required}/fieldName/{fieldName:required}")]
         public async Task<IActionResult> GetLookupFor(string model, string formType, string formName, string fieldName,
-            [FromBody]object filterParam)
+            [FromBody] object filterParam)
         {
             ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
             var modelType = coreAdminService.GetModelType(model);
@@ -661,6 +607,138 @@ namespace Deviser.Admin.Web.Controllers
             }
 
             return NotFound();
+        }
+
+        [HttpPut]
+        [Route("modules/[area]/api/{model:required}/autofill/{formType:required}/fieldName/{fieldName:required}")]
+        [Route("modules/[area]/api/{model:required}/autofill/{formType:required}/form/{formName:required}/fieldName/{fieldName:required}")]
+        public async Task<IActionResult> AutoFill(string model, string formType, string formName, string fieldName, [FromBody] dynamic modelObject)
+        {
+            try
+            {
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(model);
+                object result = null;
+                if (modelType == null)
+                {
+                    return BadRequest($"Model {model} is not found");
+                }
+
+                if (string.IsNullOrEmpty(formType))
+                {
+                    return BadRequest($"formType is required");
+                }
+
+                if (formType == "MainForm")
+                {
+                    result = await coreAdminService.AutoFillMainForm(modelType, fieldName, modelObject.fieldValue);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                }
+
+                if (string.IsNullOrEmpty(formName))
+                {
+                    return BadRequest($"formName is required for ChildForm and CustomForm");
+                }
+
+
+                if (formType == "ChildForm")
+                {
+                    result = await coreAdminService.AutoFillChildForm(modelType, formName, fieldName, modelObject.fieldValue);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                }
+                else //if (formType == "CustomForm")
+                {
+                    result = await coreAdminService.AutoFillCustomForm(modelType, formName, fieldName, modelObject.fieldValue);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                }
+
+                result = await coreAdminService.AutoFillMainForm(modelType, fieldName, modelObject.fieldValue); //_adminRepository.UpdateItemFor(model, fieldObject);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occurred while auto-filling for model: {model}, fieldName: {fieldName}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        [Route("modules/[area]/api/{model:required}/calculate/{formType:required}/fieldName/{fieldName:required}")]
+        [Route("modules/[area]/api/{model:required}/calculate/{formType:required}/form/{formName:required}/fieldName/{fieldName:required}")]
+        public async Task<IActionResult> Calculate(string model, string formType, string formName, string fieldName, [FromBody] dynamic basedOnFields)
+        {
+            try
+            {
+                ICoreAdminService coreAdminService = new CoreAdminService(Area, _serviceProvider);
+                var modelType = coreAdminService.GetModelType(model);
+                object result = null;
+                if (modelType == null)
+                {
+                    return BadRequest($"Model {model} is not found");
+                }
+
+                if (string.IsNullOrEmpty(formType))
+                {
+                    return BadRequest($"formType is required");
+                }
+
+                if (formType == "MainForm")
+                {
+                    result = await coreAdminService.CalculateMainForm(modelType, fieldName, basedOnFields);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                }
+
+                if (string.IsNullOrEmpty(formName))
+                {
+                    return BadRequest($"formName is required for ChildForm and CustomForm");
+                }
+
+
+                if (formType == "ChildForm")
+                {
+                    result = await coreAdminService.CalculateChildForm(modelType, formName, fieldName, basedOnFields);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                }
+                else //if (formType == "CustomForm")
+                {
+                    result = await coreAdminService.CalculateCustomForm(modelType, formName, fieldName, basedOnFields);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                }
+
+                result = await coreAdminService.CalculateMainForm(modelType, fieldName, basedOnFields); //_adminRepository.UpdateItemFor(model, fieldObject);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occurred while calculating for model: {model}, fieldName: {fieldName}", ex);
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }
