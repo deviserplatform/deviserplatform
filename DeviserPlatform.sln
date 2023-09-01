@@ -67,8 +67,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tpl", "tpl", "{05FB12BC-7DE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplatePack", "tpl\working\TemplatePack.csproj", "{5A6A570E-9A2E-4BE2-B38C-CBF5B9487568}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvoiceModule", "..\..\SundaramAndYuvaraj\InvoiceModule\InvoiceModule.csproj", "{7FFBE34B-1024-436E-ABE6-235EB681DBE7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
