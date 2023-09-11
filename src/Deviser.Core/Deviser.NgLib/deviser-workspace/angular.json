@@ -27,9 +27,11 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/deviser-shared/src/test.ts",
             "tsConfig": "projects/deviser-shared/tsconfig.spec.json",
-            "karmaConfig": "projects/deviser-shared/karma.conf.js"
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
           }
         }
       }
