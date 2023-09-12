@@ -20,14 +20,13 @@
       "ngx-image-cropper": [
         "./node_modules/ngx-image-cropper"
       ],
-      "ng-inline-svg": [
-        "./node_modules/ng-inline-svg"
+      "ng-inline-svg-2": [
+        "./node_modules/ng-inline-svg-2"
       ]
     }
   },
   "files": [
-    "src/main.ts",
-    "src/polyfills.ts"
+    "src/main.ts"
   ],
   "include": [
     "src/**/*.d.ts"
