@@ -2,7 +2,7 @@ name: .NET
 
 on:
   push:
-    branches: [ master ]
+    branches: [ develop ]
     
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
       with:
         dotnet-version: 6.0.x
         
-    - name: Use Node.js 16.x
+    - name: Use Node.js 18.x
       uses: actions/setup-node@v3
       with:
         node-version: 18.17.1
@@ -25,14 +25,3 @@ jobs:
       run: |
         chmod +x ./build.sh
         ./build.sh ${{github.run_number}}
-    - name: Inspect Publish 1
-      run: |       
-        pwd
-        ls
-    - name: Inspect Publish 2
-      run: |       
-        ls ./release
-        ls ./release/nuget/
-    - name: Publish
-      run: |       
-        dotnet nuget push ./release/nuget/*.nupkg -k ${{secrets.NUGET_API}} -s https://api.nuget.org/v3/index.json

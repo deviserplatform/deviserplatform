@@ -44,7 +44,6 @@ src/Deviser.Core/Deviser.Core.Common/DomainTypes/ModuleActionType_BACKUP_16112.c
 /dist
 /src/Deviser.Web/wwwroot/lib/angular/angular.min.js.gzip
 /src/Deviser.Web/wwwroot/lib/angular-ui-tree/e2e
-.github
 /src/Deviser.Web/wwwroot/lib/bootstrap/site
 /src/Deviser.Web/wwwroot/lib/bootstrap/scss
 /src/Deviser.Web/wwwroot/lib/bootstrap/nuget

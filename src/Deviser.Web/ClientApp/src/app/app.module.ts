@@ -1,6 +1,6 @@
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -52,7 +52,7 @@ import { PreviewContentComponent } from './common/components/preview-content/pre
     QuillModule.forRoot(),
     ReactiveFormsModule
   ],
-  // providers: [WINDOW_PROVIDERS],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
